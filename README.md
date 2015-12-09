@@ -40,4 +40,4 @@ Application is built and [published to gh-pages](http://kinto.github.io/kinto-ad
 
 ## License
 
-Mozilla Public License 2.0
+Apache Licence Version 2.0
