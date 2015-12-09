@@ -1,9 +1,9 @@
 import { SETTINGS_SAVED } from "../actions/settings";
 
 export const defaultSettings = {
-  server: "http://localhost:8888/v1",
+  server: "https://kinto.dev.mozaws.net/v1",
   username: "user",
-  password: "",
+  password: "pass",
   bucket: "default",
 };
 const jsonSettings = localStorage.getItem("kwac_settings");
