@@ -41,7 +41,7 @@ describe("SettingsPage container", () => {
 
   it("should fill form with default settings", () => {
     expect(mapNodesProp(comp, "input[type=text]", "value"))
-      .eql(["http://localhost:8888/v1", "default", "user", ""]);
+      .eql(["https://kinto.dev.mozaws.net/v1", "default", "user", "pass"]);
   });
 
   it("should save settings", () => {

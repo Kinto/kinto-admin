@@ -2,7 +2,7 @@ import { expect } from "chai";
 import sinon from "sinon";
 import btoa from "btoa";
 import KintoCollection from "kinto/lib/collection";
-import kwacConfig from "../../config/kwac-config.json";
+import adminConfig from "../../config/config.json";
 import collectionReducer from "../../scripts/reducers/collection";
 import collectionsReducer from "../../scripts/reducers/collections";
 import settingsReducer from "../../scripts/reducers/settings";
@@ -26,8 +26,8 @@ describe("collection actions", () => {
 
   describe("configure()", () => {
     it("should retrieve the collection schema", () => {
-      expect(actions.configure("addons", kwacConfig.addons.config).schema)
-        .eql(kwacConfig.addons.config.schema);
+      expect(actions.configure("tasks", adminConfig.tasks.config).schema)
+        .eql(adminConfig.tasks.config.schema);
     });
   });
 
@@ -37,13 +37,13 @@ describe("collection actions", () => {
       const dispatch = sandbox.spy();
       const getState = () => ({collections, settings});
 
-      actions.select("addons")(dispatch, getState);
+      actions.select("tasks")(dispatch, getState);
 
       sinon.assert.calledWith(dispatch, {
         type: actions.COLLECTION_READY,
-        name: "addons",
-        schema: kwacConfig.addons.config.schema,
-        config: collections.addons.config,
+        name: "tasks",
+        schema: adminConfig.tasks.config.schema,
+        config: collections.tasks.config,
       });
     });
 
@@ -53,7 +53,7 @@ describe("collection actions", () => {
       const dispatch = sandbox.spy();
       const getState = () => ({collections, settings});
 
-      actions.select("addons")(dispatch, getState);
+      actions.select("tasks")(dispatch, getState);
 
       sinon.assert.calledWithMatch(notifyError,
         {message: "Cannot configure Kinto: Unsupported protocol version: v999" +
@@ -92,7 +92,7 @@ describe("collection actions", () => {
       const dispatch = sandbox.spy();
       const getState = () => ({collections, settings});
 
-      actions.select("addons")(dispatch, getState);
+      actions.select("tasks")(dispatch, getState);
       expect(actions.kinto._options.remote).eql(settings.server);
       expect(actions.kinto._options.bucket).eql(settings.bucket);
       expect(actions.kinto._options.headers.Authorization)
@@ -105,7 +105,7 @@ describe("collection actions", () => {
 
     beforeEach(() => {
       const collections = collectionsReducer(undefined, {type: null});
-      const collection = collectionReducer({name: "addons"}, {type: null});
+      const collection = collectionReducer({name: "tasks"}, {type: null});
       dispatch = sandbox.spy();
       getState = () => ({
         collections,
@@ -143,7 +143,7 @@ describe("collection actions", () => {
 
     beforeEach(() => {
       const collections = collectionsReducer(undefined, {type: null});
-      const collection = collectionReducer({name: "addons"}, {type: null});
+      const collection = collectionReducer({name: "tasks"}, {type: null});
       dispatch = sandbox.spy();
       getState = () => ({
         collections,
@@ -153,11 +153,11 @@ describe("collection actions", () => {
     });
 
     it("should select and load a named collection", () => {
-      actions.selectAndLoad("certificates")(dispatch, getState);
+      actions.selectAndLoad("tasks")(dispatch, getState);
 
       sinon.assert.calledWithMatch(dispatch, {
         type: actions.COLLECTION_READY,
-        name: "certificates",
+        name: "tasks",
       });
       sinon.assert.calledWithMatch(dispatch, actions.load);
     });
@@ -168,7 +168,7 @@ describe("collection actions", () => {
 
     beforeEach(() => {
       const collections = collectionsReducer(undefined, {type: null});
-      const collection = collectionReducer({name: "addons"}, {type: null});
+      const collection = collectionReducer({name: "tasks"}, {type: null});
       dispatch = sandbox.spy();
       getState = () => ({
         collections,
@@ -214,7 +214,7 @@ describe("collection actions", () => {
       setImmediate(() => {
         sinon.assert.calledWithMatch(dispatch, {
           type: UPDATE_PATH,
-          path: "/collections/addons",
+          path: "/collections/tasks",
         });
         done();
       });
@@ -226,7 +226,7 @@ describe("collection actions", () => {
 
     beforeEach(() => {
       const collections = collectionsReducer(undefined, {type: null});
-      const collection = collectionReducer({name: "addons"}, {type: null});
+      const collection = collectionReducer({name: "tasks"}, {type: null});
       dispatch = sandbox.spy();
       getState = () => ({
         collections,
@@ -272,7 +272,7 @@ describe("collection actions", () => {
       setImmediate(() => {
         sinon.assert.calledWithMatch(dispatch, {
           type: UPDATE_PATH,
-          path: "/collections/addons",
+          path: "/collections/tasks",
         });
         done();
       });
@@ -284,7 +284,7 @@ describe("collection actions", () => {
 
     beforeEach(() => {
       const collections = collectionsReducer(undefined, {type: null});
-      const collection = collectionReducer({name: "addons"}, {type: null});
+      const collection = collectionReducer({name: "tasks"}, {type: null});
       dispatch = sandbox.spy();
       getState = () => ({
         collections,
@@ -327,7 +327,7 @@ describe("collection actions", () => {
 
     beforeEach(() => {
       const collections = collectionsReducer(undefined, {type: null});
-      const collection = collectionReducer({name: "addons"}, {type: null});
+      const collection = collectionReducer({name: "tasks"}, {type: null});
       dispatch = sandbox.spy();
       getState = () => ({
         collections,
@@ -414,7 +414,7 @@ describe("collection actions", () => {
 
     beforeEach(() => {
       const collections = collectionsReducer(undefined, {type: null});
-      const collection = collectionReducer({name: "addons"}, {type: null});
+      const collection = collectionReducer({name: "tasks"}, {type: null});
       dispatch = sandbox.spy();
       getState = () => ({
         collections,

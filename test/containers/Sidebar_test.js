@@ -7,16 +7,13 @@ import Sidebar from "../../scripts/containers/Sidebar";
 
 describe("Sidebar container", () => {
   it("should render the navigation menu", () => {
-    const props = {params: {name: "/addons"}, location: {pathname: "/addons"}};
+    const props = {params: {name: "/tasks"}, location: {pathname: "/tasks"}};
     const comp = setupContainer(<Sidebar {...props} />);
 
     expect(nodeTexts(comp, "li")).eql([
       "Home",
       "Settings",
-      "addons",
-      "certificates",
-      "gfx",
-      "plugins",
+      "tasks",
     ]);
   });
 
@@ -35,24 +32,24 @@ describe("Sidebar container", () => {
   });
 
   it("should highlight a collection menu entry when selected", () => {
-    const props = {params: {name: "addons"}, location: {pathname: "/addons"}};
+    const props = {params: {name: "tasks"}, location: {pathname: "/tasks"}};
     const comp = setupContainer(<Sidebar {...props} />);
 
-    expect(nodeText(comp, "li.active a")).eql("addons");
+    expect(nodeText(comp, "li.active a")).eql("tasks");
   });
 
   it("should denote an unsynced collection", () => {
-    const props = {params: {name: "addons"}, location: {pathname: "/addons"}};
+    const props = {params: {name: "tasks"}, location: {pathname: "/tasks"}};
     const comp = setupContainer(<Sidebar {...props} />, {
       collections: {
-        addons: {
-          name: "addons",
+        tasks: {
+          name: "tasks",
           synced: false,
         }
       }
     });
 
-    expect(nodeText(comp, "li a.unsynced")).eql("addons");
+    expect(nodeText(comp, "li a.unsynced")).eql("tasks");
   });
 });
 

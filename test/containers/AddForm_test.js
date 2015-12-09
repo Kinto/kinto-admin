@@ -14,10 +14,10 @@ describe("AddFormPage container", () => {
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
-    const props = {params: {name: "addons"}};
+    const props = {params: {name: "tasks"}};
     comp = setupContainer(<AddFormPage {...props} />);
     const { dispatch } = comp.store;
-    dispatch(CollectionActions.select("addons"));
+    dispatch(CollectionActions.select("tasks"));
   });
 
   afterEach(() => {
@@ -25,7 +25,7 @@ describe("AddFormPage container", () => {
   });
 
   it("should render page title", () => {
-    expect(nodeText(comp, "h1")).eql("addons");
+    expect(nodeText(comp, "h1")).eql("tasks");
   });
 
   it("should render a form", () => {
@@ -36,10 +36,10 @@ describe("AddFormPage container", () => {
     const create = sandbox.stub(KintoCollection.prototype, "create");
 
     Simulate.change(findOne(comp, "input[type=text]"), {
-      target: {value: "sampleAddonId"}
+      target: {value: "sampleTitle"}
     });
     Simulate.submit(findOne(comp, "form"));
 
-    sinon.assert.calledWith(create, {addonId: "sampleAddonId"});
+    sinon.assert.calledWith(create, {title: "sampleTitle"});
   });
 });

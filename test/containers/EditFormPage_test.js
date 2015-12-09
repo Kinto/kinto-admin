@@ -15,11 +15,11 @@ describe("EditFormPage container", () => {
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
-    const props = {params: {name: "addons"}};
+    const props = {params: {name: "tasks"}};
     comp = setupContainer(<EditFormPage {...props} />);
     const { dispatch } = comp.store;
-    dispatch(CollectionActions.select("addons"));
-    dispatch(FormActions.recordLoaded({addonId: "existingAddondId"}));
+    dispatch(CollectionActions.select("tasks"));
+    dispatch(FormActions.recordLoaded({title: "existingTitle"}));
   });
 
   afterEach(() => {
@@ -27,7 +27,7 @@ describe("EditFormPage container", () => {
   });
 
   it("should render page title", () => {
-    expect(nodeText(comp, "h1")).eql("addons");
+    expect(nodeText(comp, "h1")).eql("tasks");
   });
 
   it("should render a form", () => {
@@ -35,17 +35,17 @@ describe("EditFormPage container", () => {
   });
 
   it("should render the form loaded with record info", () => {
-    expect(findOne(comp, "input[type=text]").value).eql("existingAddondId");
+    expect(findOne(comp, "input[type=text]").value).eql("existingTitle");
   });
 
   it("should submit record", () => {
     const update = sandbox.stub(KintoCollection.prototype, "update");
 
     Simulate.change(findOne(comp, "input[type=text]"), {
-      target: {value: "modifiedAddonId"}
+      target: {value: "modifiedTitle"}
     });
     Simulate.submit(findOne(comp, "form"));
 
-    sinon.assert.calledWith(update, {addonId: "modifiedAddonId"});
+    sinon.assert.calledWith(update, {title: "modifiedTitle"});
   });
 });

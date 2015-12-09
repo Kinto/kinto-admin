@@ -22,9 +22,9 @@ describe("CollectionListPage container", () => {
   });
 
   it("should render an empty collection", () => {
-    const props = {params: {name: "addons"}};
+    const props = {params: {name: "tasks"}};
     const comp = setupContainer(<CollectionListPage {...props} />, {collection: {
-      name: "addons",
+      name: "tasks",
       records: []
     }});
 
@@ -35,20 +35,20 @@ describe("CollectionListPage container", () => {
     var comp;
 
     beforeEach(() => {
-      const props = {params: {name: "addons"}};
+      const props = {params: {name: "tasks"}};
       comp = setupContainer(<CollectionListPage {...props} />);
       const { dispatch } = comp.store;
-      dispatch(CollectionActions.select("addons"));
+      dispatch(CollectionActions.select("tasks"));
       dispatch(CollectionActions.loaded([
         {
-          enabled: false,
-          addonId: "addon#1",
+          done: false,
+          title: "task#1",
           last_modified: 100000000,
           _status: "synced"
         },
         {
-          enabled: true,
-          addonId: "addon#2",
+          done: true,
+          title: "task#2",
           last_modified: 200000000,
           _status: "updated"
         },
@@ -56,7 +56,7 @@ describe("CollectionListPage container", () => {
     });
 
     it("should render collection title", () => {
-      expect(nodeText(comp, "h1 > span")).eql("addons");
+      expect(nodeText(comp, "h1 > span")).eql("tasks");
     });
 
     it("should render current configured server URL", () => {
@@ -66,21 +66,21 @@ describe("CollectionListPage container", () => {
 
     it("should render expected column headings", () => {
       expect(nodeTexts(comp, "thead th"))
-        .eql(["Enabled", "Addon id", "Last mod.", "Status", ""]);
+        .eql(["Title", "Done?", "Last mod.", "Status", ""]);
     });
 
     it("should render record rows", () => {
       const rowTexts = n => nodeTexts(comp, `tbody tr:nth-child(${n}) td`);
       expect(rowTexts(1)).eql([
+        "task#1",
         "false",
-        "addon#1",
         "1970-01-02 03:46:40",
         "synced",
         "EditDelete",
       ]);
       expect(rowTexts(2)).eql([
+        "task#2",
         "true",
-        "addon#2",
         "1970-01-03 07:33:20",
         "updated",
         "EditDelete",
