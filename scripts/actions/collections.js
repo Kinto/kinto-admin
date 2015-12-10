@@ -19,10 +19,14 @@ export function loadCollections() {
     fetch("./config.json")
       .then(res => res.json())
       .then(json => {
-        dispatch(collectionsListReceived(json));
+        if (Object.keys(json).length === 0) {
+          throw new Error("Empty collections configuration.");
+        } else {
+          dispatch(collectionsListReceived(json));
+        }
       })
       .catch(err => {
-        NotificationsActions.notifyError(err);
+        dispatch(NotificationsActions.notifyError(err));
       });
   };
 }

@@ -8,7 +8,7 @@ import collectionsReducer from "../../scripts/reducers/collections";
 import settingsReducer from "../../scripts/reducers/settings";
 import * as actions from "../../scripts/actions/collection";
 import * as NotificationsActions from "../../scripts/actions/notifications";
-import { UPDATE_PATH } from "redux-simple-router";
+import * as ReduxRouter from "redux-simple-router";
 import defaultCollections from "../../config/config.json";
 
 describe("collection actions", () => {
@@ -61,17 +61,6 @@ describe("collection actions", () => {
                   "; please check your settings."});
     });
 
-    it("should dispatch an error on collection unavailable", () => {
-      const collections = {};
-      const dispatch = sandbox.spy();
-      const getState = () => ({collections, settings});
-
-      actions.select("foo")(dispatch, getState);
-
-      sinon.assert.calledWithMatch(notifyError,
-        {message: "Collection \"foo\" is not available."});
-    });
-
     it("should dispatch an error on unconfigured collection", () => {
       const collections = {
         unconfigured: {
@@ -98,6 +87,20 @@ describe("collection actions", () => {
       expect(actions.kinto._options.bucket).eql(settings.bucket);
       expect(actions.kinto._options.headers.Authorization)
         .eql("Basic " + btoa(settings.username + ":" + settings.password));
+    });
+
+    it("should redirect to home if collection is not configured", () => {
+      sandbox.stub(ReduxRouter, "updatePath");
+      const collections = collectionsReducer(defaultCollections, {type: null});
+      const dispatch = sandbox.spy();
+      const getState = () => ({collections, settings});
+
+      actions.select("blah")(dispatch, getState);
+
+      sinon.assert.calledWithMatch(dispatch, {
+        type: ReduxRouter.UPDATE_PATH,
+        path: ""
+      });
     });
   });
 
@@ -214,7 +217,7 @@ describe("collection actions", () => {
 
       setImmediate(() => {
         sinon.assert.calledWithMatch(dispatch, {
-          type: UPDATE_PATH,
+          type: ReduxRouter.UPDATE_PATH,
           path: "/collections/tasks",
         });
         done();
@@ -272,7 +275,7 @@ describe("collection actions", () => {
 
       setImmediate(() => {
         sinon.assert.calledWithMatch(dispatch, {
-          type: UPDATE_PATH,
+          type: ReduxRouter.UPDATE_PATH,
           path: "/collections/tasks",
         });
         done();

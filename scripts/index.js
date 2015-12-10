@@ -24,7 +24,11 @@ function onRouteUpdate() {
   const currentCollectionName = store.getState().collection.name;
   const newCollectionName = this.state.params.name;
   if (newCollectionName && currentCollectionName !== newCollectionName) {
-    store.dispatch(CollectionActions.selectAndLoad(newCollectionName));
+    if (newCollectionName in store.getState().collections) {
+      store.dispatch(CollectionActions.selectAndLoad(newCollectionName));
+    } else {
+      store.dispatch(CollectionActions.select(newCollectionName));
+    }
   }
 }
 

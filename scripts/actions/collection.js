@@ -75,8 +75,13 @@ export function select(name) {
       return dispatch(NotificationsActions.notifyError(error));
     }
     const collections = getState().collections;
+    if (Object.keys(collections).length === 0) {
+      return;
+    }
     if (!collections.hasOwnProperty(name)) {
       const error = new Error(`Collection "${name}" is not available.`);
+      // redirect to homepage with the error message
+      dispatch(updatePath(""));
       return dispatch(NotificationsActions.notifyError(error));
     }
     const config = collections[name].config;

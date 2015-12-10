@@ -24,7 +24,6 @@ describe("Sidebar container", () => {
     const props = {params: {}, location: {pathname: "/"}};
     const comp = setupContainer(<Sidebar {...props} />);
 
-
     expect(nodeText(comp, "li.active a")).eql("Home");
   });
 
