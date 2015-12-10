@@ -7,6 +7,7 @@ import routes from "./routes";
 import configureStore from "./store/configureStore";
 const createHashHistory = require("history/lib/createHashHistory");
 import { syncReduxAndRouter } from "redux-simple-router";
+import { loadCollections } from "./actions/collections";
 import * as CollectionActions from "./actions/collection";
 
 import "../css/styles.css";
@@ -26,6 +27,9 @@ function onRouteUpdate() {
     store.dispatch(CollectionActions.selectAndLoad(newCollectionName));
   }
 }
+
+// Trigger loading the list of collections
+store.dispatch(loadCollections());
 
 render((
   <Provider store={store}>

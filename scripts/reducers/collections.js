@@ -1,5 +1,9 @@
-import INITIAL_STATE from "../../config/config.json";
-import { COLLECTION_SYNCED } from "../actions/collections";
+import {
+  COLLECTION_SYNCED,
+  COLLECTIONS_LIST_RECEIVED
+} from "../actions/collections";
+
+const INITIAL_STATE = {};
 
 export default function collections(state = INITIAL_STATE, action) {
   switch(action.type) {
@@ -13,6 +17,8 @@ export default function collections(state = INITIAL_STATE, action) {
       ...state,
       [action.name]: collectionState
     };
+  case COLLECTIONS_LIST_RECEIVED:
+    return action.collections;
   default:
     return state;
   }

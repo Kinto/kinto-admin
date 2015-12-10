@@ -9,6 +9,7 @@ import settingsReducer from "../../scripts/reducers/settings";
 import * as actions from "../../scripts/actions/collection";
 import * as NotificationsActions from "../../scripts/actions/notifications";
 import { UPDATE_PATH } from "redux-simple-router";
+import defaultCollections from "../../config/config.json";
 
 describe("collection actions", () => {
   var sandbox, notifyError;
@@ -33,7 +34,7 @@ describe("collection actions", () => {
 
   describe("select()", () => {
     it("should select and configure a collection", () => {
-      const collections = collectionsReducer(undefined, {type: null});
+      const collections = collectionsReducer(defaultCollections, {type: null});
       const dispatch = sandbox.spy();
       const getState = () => ({collections, settings});
 
@@ -48,7 +49,7 @@ describe("collection actions", () => {
     });
 
     it("should dispatch an error on bad kinto configuration", () => {
-      const collections = collectionsReducer(undefined, {type: null});
+      const collections = collectionsReducer(defaultCollections, {type: null});
       const settings = {server: "http://bad.server/v999"};
       const dispatch = sandbox.spy();
       const getState = () => ({collections, settings});
@@ -142,7 +143,7 @@ describe("collection actions", () => {
     var dispatch, getState;
 
     beforeEach(() => {
-      const collections = collectionsReducer(undefined, {type: null});
+      const collections = collectionsReducer(defaultCollections, {type: null});
       const collection = collectionReducer({name: "tasks"}, {type: null});
       dispatch = sandbox.spy();
       getState = () => ({

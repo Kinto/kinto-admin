@@ -6,7 +6,9 @@ import { Simulate } from "react-addons-test-utils";
 
 import { setupContainer, findOne, nodeText, nodeExists } from "../test-utils";
 import AddFormPage from "../../scripts/containers/AddFormPage";
+import * as CollectionsActions from "../../scripts/actions/collections";
 import * as CollectionActions from "../../scripts/actions/collection";
+import defaultCollections from "../../config/config.json";
 
 
 describe("AddFormPage container", () => {
@@ -17,6 +19,7 @@ describe("AddFormPage container", () => {
     const props = {params: {name: "tasks"}};
     comp = setupContainer(<AddFormPage {...props} />);
     const { dispatch } = comp.store;
+    dispatch(CollectionsActions.collectionsListReceived(defaultCollections));
     dispatch(CollectionActions.select("tasks"));
   });
 

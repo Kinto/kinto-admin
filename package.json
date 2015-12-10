@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "description": "Kinto Web Administration Console in React.js",
   "scripts": {
-    "build": "NODE_ENV=production webpack --optimize-minimize --config webpack.prod.js && cp index.prod.html build/index.html",
+    "build": "NODE_ENV=production webpack --optimize-minimize --config webpack.prod.js && cp index.prod.html build/index.html && cp config/config.json build/",
     "lint": "eslint scripts test",
     "publish": "npm run build && gh-pages --dist build/",
     "start": "node devServer.js",
