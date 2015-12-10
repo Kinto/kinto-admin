@@ -8,7 +8,7 @@ module.exports = {
     vendors: ["react", "kinto", "jsonschema"]
   },
   output: {
-    path: path.join(__dirname, "build"),
+    path: path.join(__dirname, "dist"),
     filename: "bundle.js",
     publicPath: "/"
   },

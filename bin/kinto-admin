@@ -1,0 +1,120 @@
+#!/usr/bin/env node
+var fs = require("node-fs-extra");
+var path = require("path");
+var express = require("express");
+var yargs = require("yargs");
+
+var root = path.join(__dirname, "..");
+var distRoot = path.join(root, "dist");
+
+function serve(port, config) {
+  var app = express();
+
+  app.use(express.static(distRoot));
+
+  app.get("/config.json", function(req, res) {
+    res.sendFile(config);
+  });
+
+  app.get("*", function(req, res) {
+    res.sendFile(path.join(distRoot, "index.html"));
+  });
+
+  app.listen(port, "0.0.0.0", function(err) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    console.log("Using config at " + config);
+    console.log("Listening at http://0.0.0.0:" + port);
+  });
+}
+
+function build(destination, config) {
+  try {
+    // create the destination folder
+    fs.mkdirpSync(destination);
+    // copy dist folder to destination
+    fs.copySync(distRoot, destination);
+    // copy config file to destination
+    fs.copySync(config, path.join(destination, "config.json"));
+  } catch(err) {
+    console.error(err);
+    return process.exit(1);
+  }
+}
+
+function baseCommand(yargs) {
+  return yargs
+    .help("h")
+    .alias("h", "help")
+    .option("c", {
+      alias: "config",
+      describe: "Path to the Kinto admin JSON configuration file.",
+    })
+    .demand(["config"])
+    .check(function(argv) {
+      var customConfigPath;
+      if (argv.config) {
+        // Extend relative paths to absolute ones.
+        if (argv.config[0] === "/") {
+          customConfigPath = argv.config;
+        } else {
+          customConfigPath = path.join(process.cwd(), argv.config);
+        }
+      }
+      if (!fs.existsSync(customConfigPath)) {
+        throw new Error("File not found: " + customConfigPath);
+      }
+      if (!fs.statSync(customConfigPath).isFile()) {
+        throw new Error(customConfigPath + " is not a file");
+      }
+      try {
+        JSON.parse(fs.readFileSync(customConfigPath));
+      } catch(err) {
+        throw new Error(customConfigPath + " is not a valid JSON file");
+      }
+      argv.config = customConfigPath;
+      return true;
+    });
+}
+
+// Command line controller setup
+yargs
+  .strict()
+  .version(function() {
+    return require("../package").version;
+  })
+  .usage("Usage: $0 <command> [options]")
+  .help("h")
+  .alias("h", "help")
+
+  // serve command
+  .command("serve", "Serves the Kinto Web admin UI.", function(yargs) {
+    var argv = baseCommand(yargs)
+      .example("$ kinto-admin serve -c config.json -d build")
+      .option("p", {
+        alias: "port",
+        describe: "Server port to use",
+        default: 3000,
+      })
+      .argv;
+
+    serve(argv.port, argv.config);
+  })
+
+  // build command
+  .command("build", "Builds the Web admin assets for static hosting.", function(yargs) {
+    var argv = baseCommand(yargs)
+      .example("$ kinto-admin build -c config.json")
+      .option("d", {
+        alias: "destination",
+        describe: "Target build directory.",
+      })
+      .demand(["destination"])
+      .argv;
+
+    build(argv.destination, argv.config);
+  })
+  .argv;
