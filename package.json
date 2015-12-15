@@ -13,6 +13,10 @@
   "bin": {
     "kinto-admin": "bin/kinto-admin"
   },
+  "files": [
+    "bin",
+    "dist"
+  ],
   "dependencies": {
     "btoa": "^1.1.2",
     "extract-text-webpack-plugin": "^0.9.1",
