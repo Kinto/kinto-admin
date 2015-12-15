@@ -56,7 +56,14 @@ class Row extends Component {
 
   recordField(displayField) {
     if (this.props.record.hasOwnProperty(displayField)) {
-      return String(this.props.record[displayField]);
+      const field = this.props.record[displayField];
+      if (typeof field === "string") {
+        return field;
+      } else if (typeof field === "object") {
+        return JSON.stringify(field);
+      } else {
+        return String(field);
+      }
     }
     return "<unknown>";
   }

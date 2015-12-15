@@ -3,25 +3,32 @@
   "version": "0.3.0",
   "description": "Kinto Web Administration Console in React.js",
   "scripts": {
-    "build": "NODE_ENV=production webpack --optimize-minimize --config webpack.prod.js && cp index.prod.html build/index.html && cp config/config.json build/",
+    "dist": "NODE_ENV=production webpack --optimize-minimize --config webpack.prod.js && cp index.prod.html dist/index.html",
     "lint": "eslint scripts test",
-    "publish": "npm run build && gh-pages --dist build/",
+    "publish": "rimraf build && npm run dist && bin/kinto-admin build -c config/config.json -d build && gh-pages --dist build/",
     "start": "node devServer.js",
     "tdd": "npm test -- -w",
     "test": "NODE_ENV=test mocha --compilers js:babel/register --recursive --require ./test/setup-jsdom.js $(find test -name '*_test.js')"
   },
+  "bin": {
+    "kinto-admin": "bin/kinto-admin"
+  },
   "dependencies": {
     "btoa": "^1.1.2",
     "extract-text-webpack-plugin": "^0.9.1",
+    "express": "^4.13.3",
     "jsonschema": "^1.0.2",
     "kinto": "^1.1.0",
+    "node-fs-extra": "^0.8.1",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
     "react-redux": "^4.0.0",
     "react-router": "^1.0.0",
     "redux": "^3.0.4",
     "redux-simple-router": "0.0.10",
-    "redux-thunk": "^1.0.0"
+    "redux-thunk": "^1.0.0",
+    "webpack": "^1.10.5",
+    "yargs": "^3.31.0"
   },
   "devDependencies": {
     "babel": "^5.8.20",
@@ -32,7 +39,6 @@
     "css-loader": "^0.15.6",
     "eslint": "^1.8.0",
     "eslint-plugin-react": "^3.6.3",
-    "express": "^4.13.3",
     "gh-pages": "^0.4.0",
     "jsdom": "^7.1.0",
     "json-loader": "^0.5.4",
@@ -41,9 +47,9 @@
     "react-transform-catch-errors": "^1.0.0",
     "react-transform-hmr": "^1.0.1",
     "redbox-react": "^1.2.0",
+    "rimraf": "^2.4.4",
     "sinon": "^1.17.2",
     "style-loader": "^0.12.3",
-    "webpack": "^1.10.5",
     "webpack-dev-middleware": "^1.4.0",
     "webpack-hot-middleware": "^2.5.1"
   },
