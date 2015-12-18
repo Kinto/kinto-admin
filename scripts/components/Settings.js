@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import GenericForm from "./GenericForm";
+import Form from "react-jsonschema-form";
 import BusyIndicator from "./BusyIndicator";
 
 const settingsSchema = {
@@ -54,7 +54,7 @@ export default class Settings extends Component {
     return (
       <div>
         <h1>Settings</h1>
-        <GenericForm
+        <Form
           schema={settingsSchema}
           formData={Object.keys(settings).length ? settings : null}
           onChange={this.onChange.bind(this)}

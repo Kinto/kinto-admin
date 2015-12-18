@@ -1,6 +1,6 @@
 import React,{ Component } from "react";
 import { Link } from "react-router";
-import GenericForm from "./GenericForm";
+import Form from "react-jsonschema-form";
 
 export default class EditForm extends Component {
   componentDidMount() {
@@ -30,7 +30,7 @@ export default class EditForm extends Component {
           <Link to={`/collections/${name}`}>&laquo; Back</Link>
         </p>
         {form.record &&
-          <GenericForm
+          <Form
             formData={form.formData}
             schema={schema}
             onSubmit={this.onSubmit.bind(this)} />}

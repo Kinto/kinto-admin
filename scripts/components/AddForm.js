@@ -1,6 +1,6 @@
 import React,{ Component } from "react";
 import { Link } from "react-router";
-import GenericForm from "./GenericForm";
+import Form from "react-jsonschema-form";
 
 export default class AddForm extends Component {
   shouldComponentUpdate(nextProps) {
@@ -17,7 +17,7 @@ export default class AddForm extends Component {
       <div>
         <h1>{name}</h1>
         <Link to={`/collections/${name}`}>&laquo; Back</Link>
-        <GenericForm
+        <Form
           schema={schema}
           onSubmit={this.onSubmit.bind(this)} />
       </div>
