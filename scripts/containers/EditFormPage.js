@@ -9,6 +9,7 @@ function mapStateToProps(state) {
   return {
     name: state.collection.name,
     schema: state.collection.schema,
+    uiSchema: state.collection.uiSchema,
     form: state.form,
   };
 }

@@ -27,6 +27,11 @@
             "default": ""
           }
         }
+      },
+      "uiSchema": {
+        "done": {
+          "widget": "radio"
+        }
       }
     }
   }

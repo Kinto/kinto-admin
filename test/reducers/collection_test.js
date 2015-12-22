@@ -8,10 +8,12 @@ describe("collection reducer", () => {
       type: actions.COLLECTION_READY,
       name: "test.name",
       schema: "test.schema",
+      uiSchema: "test.uiSchema",
       config: "test.config",
     })).eql({
       name: "test.name",
       schema: "test.schema",
+      uiSchema: "test.uiSchema",
       config: "test.config",
       message: null,
       busy: false,
