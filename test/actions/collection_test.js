@@ -44,6 +44,7 @@ describe("collection actions", () => {
         type: actions.COLLECTION_READY,
         name: "tasks",
         schema: adminConfig.tasks.config.schema,
+        uiSchema: adminConfig.tasks.config.uiSchema,
         config: collections.tasks.config,
       });
     });

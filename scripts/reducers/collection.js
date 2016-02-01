@@ -19,6 +19,7 @@ export function collection(state = INITIAL_STATE, action) {
       ...state,
       name: action.name,
       schema: action.schema,
+      uiSchema: action.uiSchema,
       config: action.config,
       message: null,
     };

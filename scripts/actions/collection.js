@@ -52,7 +52,8 @@ export function configure(name, config) {
     type: COLLECTION_READY,
     name,
     config,
-    schema: config.schema
+    schema: config.schema,
+    uiSchema: config.uiSchema,
   };
 }
 

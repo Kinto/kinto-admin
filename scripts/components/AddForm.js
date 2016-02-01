@@ -12,13 +12,14 @@ export default class AddForm extends Component {
   }
 
   render() {
-    const {name, schema} = this.props;
+    const {name, schema, uiSchema} = this.props;
     return (
       <div>
         <h1>{name}</h1>
         <Link to={`/collections/${name}`}>&laquo; Back</Link>
         <Form
           schema={schema}
+          uiSchema={uiSchema}
           onSubmit={this.onSubmit.bind(this)} />
       </div>
     );

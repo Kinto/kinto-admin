@@ -22,7 +22,7 @@ export default class EditForm extends Component {
   }
 
   render() {
-    const {name, form, schema} = this.props;
+    const {name, form, schema, uiSchema} = this.props;
     return (
       <div>
         <h1>{name}</h1>
@@ -33,6 +33,7 @@ export default class EditForm extends Component {
           <Form
             formData={form.formData}
             schema={schema}
+            uiSchema={uiSchema}
             onSubmit={this.onSubmit.bind(this)} />}
       </div>
     );
