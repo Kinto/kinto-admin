@@ -82,6 +82,22 @@ Here, production-ready assets are generated into the `static-build/` directory,
 and can be published to any static webserver like
 [github-pages](https://pages.github.com/).
 
+## Build kinto-admin locally
+
+Clone repository:
+
+```
+$ git clone https://github.com/ayusharma/kinto-admin.git
+```
+
+Install packages:
+
+```
+$ cd kinto-admin && npm install
+```
+
+After installation  of packages, run the development server.
+
 ## Development server
 
 The development server should only be used when working on the kinto-admin
