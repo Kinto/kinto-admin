@@ -87,7 +87,7 @@ and can be published to any static webserver like
 Clone repository:
 
 ```
-$ git clone https://github.com/ayusharma/kinto-admin.git
+$ git clone https://github.com/Kinto/kinto-admin.git
 ```
 
 Install packages:
