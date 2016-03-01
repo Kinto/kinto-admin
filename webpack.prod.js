@@ -15,6 +15,11 @@ module.exports = {
   plugins: [
     new webpack.optimize.CommonsChunkPlugin("vendors", "vendors.js"),
     new ExtractTextPlugin("styles.css", {allChunks: true}),
+    new webpack.DefinePlugin({
+      "process.env": {
+        NODE_ENV: JSON.stringify("production")
+      }
+    })
   ],
   resolve: {
     extensions: ["", ".js", ".jsx", ".css"]
