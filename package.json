@@ -17,6 +17,11 @@
     "bin",
     "dist"
   ],
+  "engineStrict": false,
+  "engines" : {
+      "npm": "^2.14.7",
+      "node": ">=4"
+  },
   "dependencies": {
     "btoa": "^1.1.2",
     "express": "^4.13.3",
