@@ -1,25 +1,25 @@
-.generic-form * {
+.rjsf * {
   box-sizing: border-box;
 }
 
-.generic-form {
+.rjsf {
   padding: 0;
   font-size: .8em;
   color: #555;
 }
 
-.generic-form fieldset {
+.rjsf fieldset {
   border: 1px solid #aaa;
   border-radius: 4px;
   margin-top: .5em;
 }
 
-.generic-form fieldset legend {
+.rjsf fieldset legend {
   font-weight: bold;
   margin-left: -.2em;
 }
 
-.generic-form button {
+.rjsf button {
   display: inline-block;
   color: #FFF;
   background-color: #286090;
@@ -35,7 +35,7 @@
   border-radius: 4px;
 }
 
-.generic-form input[type=text] {
+.rjsf input[type=text] {
   display: block;
   width: 100%;
   height: 34px;
@@ -47,48 +47,48 @@
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset;
 }
 
-.generic-form .errors {
+.rjsf .errors {
   color: red;
 }
 
-.generic-form .field {
+.rjsf .field {
   padding-top: 1em;
 }
 
-.generic-form .field label {
+.rjsf .field label {
   display: block;
   font-weight: bold;
 }
 
-.generic-form .field input[type=text] {
+.rjsf .field input[type=text] {
 }
 
-.generic-form .field select {
+.rjsf .field select {
   display: block;
 }
 
-.generic-form .array-item-list {
+.rjsf .array-item-list {
 }
 
-.generic-form .array-item-add button,
-.generic-form .array-item-remove button {
+.rjsf .array-item-add button,
+.rjsf .array-item-remove button {
   width: 32px;
   height: 32px;
 }
 
-.generic-form .array-item-add {
+.rjsf .array-item-add {
   margin-bottom: 0;
 }
 
-.generic-form .array-item-remove {
+.rjsf .array-item-remove {
   margin: .2em 0;
 }
 
-.generic-form .field-array-of-string input[type=text] {
+.rjsf .field-array-of-string input[type=text] {
   width: calc(100% - 38px);
 }
 
-.generic-form .field-array-of-string .array-item-remove {
+.rjsf .field-array-of-string .array-item-remove {
   float: right;
   width: 30px;
   margin-top: -2.3em;
