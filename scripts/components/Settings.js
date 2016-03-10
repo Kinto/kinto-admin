@@ -35,34 +35,38 @@ class ServerInfo extends Component {
 export default class Settings extends Component {
   constructor(props) {
     super(props);
-    this.state = {saved: false, serverToTest: null};
+    this.state = {
+      saved: false,
+      formData: this.props.settings
+    };
   }
 
   onChange({formData}) {
     this.props.resetServerInfo();
-    this.setState({saved: false, serverToTest: formData.server});
+    this.setState({saved: false, formData});
   }
 
   onSave({formData}) {
     this.props.clearNotifications();
     this.props.saveSettings(formData);
-    this.setState({saved: true, serverToTest: formData.server});
+    this.setState({saved: true});
   }
 
   render() {
-    const { settings, serverInfo, loadServerInfo } = this.props;
+    const { serverInfo, loadServerInfo } = this.props;
+    const { formData } = this.state;
     return (
       <div>
         <h1>Settings</h1>
         <Form
           schema={settingsSchema}
-          formData={Object.keys(settings).length ? settings : null}
+          formData={formData}
           onChange={this.onChange.bind(this)}
           onSubmit={this.onSave.bind(this)} />
         {!this.state.saved ? null :
           <ServerInfo
             serverInfo={serverInfo}
-            server={this.state.serverToTest || settings.server}
+            server={this.state.formData.server}
             loadServerInfo={loadServerInfo} />}
       </div>
     );

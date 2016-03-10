@@ -33,7 +33,7 @@ describe("EditFormPage container", () => {
   });
 
   it("should render a form", () => {
-    expect(nodeExists(comp, "form.generic-form")).eql(true);
+    expect(nodeExists(comp, "form.rjsf")).eql(true);
   });
 
   it("should render the form loaded with record info", () => {

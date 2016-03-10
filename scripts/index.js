@@ -11,7 +11,7 @@ import { loadCollections } from "./actions/collections";
 import * as CollectionActions from "./actions/collection";
 
 import "../css/styles.css";
-import "../css/generic-form.css";
+import "../css/rjsf.css";
 
 const history = createHashHistory();
 const store = configureStore();
