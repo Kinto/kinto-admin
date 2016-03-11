@@ -110,6 +110,17 @@ $ npm start
 The application is served at [localhost:3000](http://localhost:3000/), and any
 React component update will trigger a hot reload.
 
+## Releasing
+
+1. Bump the version number in `package.json`;
+2. Commit with `git commit -a -m "Bump vX.X.X"`;
+3. Create the tag with `git tag vX.X.X`;
+4. Push the commit with `git push`;
+5. Push the tag with `git push origin vX.X.X`;
+6. Run the prepublication command with `npm run prepublish`;
+7. Publish the package to npm with `npm publish`;
+8. Done.
+
 ## License
 
 Apache Licence Version 2.0

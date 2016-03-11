@@ -5,7 +5,7 @@
   "scripts": {
     "dist": "NODE_ENV=production webpack --optimize-minimize --config webpack.prod.js && cp index.prod.html dist/index.html",
     "lint": "eslint scripts test",
-    "publish": "rimraf build && npm run dist && bin/kinto-admin build -c config/config.json -d build && gh-pages --dist build/",
+    "prepublish": "rimraf build && npm run dist && bin/kinto-admin build -c config/config.json -d build && gh-pages --dist build/",
     "start": "node devServer.js",
     "tdd": "npm test -- -w",
     "test": "NODE_ENV=test mocha --compilers js:babel/register --recursive --require ./test/setup-jsdom.js $(find test -name '*_test.js')"
