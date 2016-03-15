@@ -29,7 +29,7 @@ describe("CollectionListPage container", () => {
       records: []
     }});
 
-    expect(nodeText(comp, "p")).eql("This collection is empty.");
+    expect(nodeText(comp, "p:not(.actions)")).eql("This collection is empty.");
   });
 
   describe("Non-empty collection", () => {
@@ -91,7 +91,8 @@ describe("CollectionListPage container", () => {
 
     describe("Collection action buttons", () => {
       it("should render collection action buttons", () => {
-        expect(nodeTexts(comp, "p.actions button")).eql(["Synchronize", "Add"]);
+        expect(nodeTexts(comp, "p.actions button")).eql(
+            ["Synchronize", "Add", "Synchronize", "Add"]);
       });
 
       it("should call kinto collection sync()", () => {
