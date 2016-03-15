@@ -48,6 +48,6 @@ describe("EditFormPage container", () => {
     });
     Simulate.submit(findOne(comp, "form"));
 
-    sinon.assert.calledWith(update, {title: "modifiedTitle"});
+    sinon.assert.calledWith(update, {title: "modifiedTitle", done: false});
   });
 });
