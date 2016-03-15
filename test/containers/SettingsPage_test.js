@@ -60,12 +60,14 @@ describe("SettingsPage container", () => {
     });
     Simulate.submit(findOne(comp, "form"));
 
-    sinon.assert.calledWith(setItem, "kwac_settings", JSON.stringify({
+    const args = setItem.firstCall.args;
+    expect(args[0]).eql("kwac_settings");
+    expect(JSON.parse(args[1])).eql({
       server: "http://other.server/v1",
       username: "newUsername",
       password: "newPassword",
       bucket: "otherBucket",
-    }));
+    });
   });
 
   it("should not render server information initially", () => {
