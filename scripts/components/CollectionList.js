@@ -127,6 +127,20 @@ class Table extends Component {
   }
 }
 
+function ListActions(props) {
+  const { name, onSyncClick, onResetSyncClick } = props;
+
+  return (
+    <p className="actions">
+      <button type="button"
+        className="btn-sync"
+        onClick={onSyncClick}>Synchronize</button>
+      <LinkButton label="Add" to={`/collections/${name}/add`} />
+      <AdvancedActions resetSync={onResetSyncClick} />
+    </p>
+  );
+}
+
 export default class CollectionList extends Component {
   onSyncClick() {
     this.props.sync();
@@ -151,6 +165,10 @@ export default class CollectionList extends Component {
           {name}
           <em>{busy ? <BusyIndicator/> : null}{server}</em>
         </h1>
+        <ListActions
+          name={name}
+          onSyncClick={this.onSyncClick.bind(this)}
+          onResetSyncClick={this.onResetSyncClick.bind(this)} />
         <Table
           name={name}
           records={records}
@@ -158,13 +176,10 @@ export default class CollectionList extends Component {
           config={config}
           deleteRecord={deleteRecord}
           updatePath={this.props.updatePath} />
-        <p className="actions">
-          <button type="button"
-            className="btn-sync"
-            onClick={this.onSyncClick.bind(this)}>Synchronize</button>
-          <LinkButton label="Add" to={`/collections/${name}/add`} />
-          <AdvancedActions resetSync={this.onResetSyncClick.bind(this)} />
-        </p>
+        <ListActions
+          name={name}
+          onSyncClick={this.onSyncClick.bind(this)}
+          onResetSyncClick={this.onResetSyncClick.bind(this)} />
       </div>
     );
   }
