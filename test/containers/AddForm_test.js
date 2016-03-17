@@ -43,6 +43,8 @@ describe("AddFormPage container", () => {
     });
     Simulate.submit(findOne(comp, "form"));
 
-    sinon.assert.calledWith(create, {done: false, title: "sampleTitle"});
+    sinon.assert.calledWith(
+      create,
+      {done: false, title: "sampleTitle", description: ""});
   });
 });
