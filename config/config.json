@@ -25,12 +25,21 @@
             "description": "The task title.",
             "minLength": 1,
             "default": ""
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "description": "The task description.",
+            "default": ""
           }
         }
       },
       "uiSchema": {
         "done": {
-          "widget": "radio"
+          "ui:widget": "radio"
+        },
+        "description": {
+          "ui:widget": "textarea"
         }
       }
     }
