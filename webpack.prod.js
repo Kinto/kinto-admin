@@ -13,6 +13,7 @@ module.exports = {
     publicPath: "/"
   },
   plugins: [
+    new webpack.IgnorePlugin(/^(buffertools)$/), // unwanted "deeper" dependency
     new webpack.optimize.CommonsChunkPlugin("vendors", "vendors.js"),
     new ExtractTextPlugin("styles.css", {allChunks: true}),
     new webpack.DefinePlugin({

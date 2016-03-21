@@ -13,6 +13,7 @@ module.exports = {
     publicPath: "/"
   },
   plugins: [
+    new webpack.IgnorePlugin(/^(buffertools)$/), // unwanted "deeper" dependency
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
   ],
