@@ -181,15 +181,17 @@ p.actions a {
 .notification {
   border-radius: 8px;
   margin-bottom: 1em;
+  position: relative;
 }
 
 .notification .close {
-  position: fixed;
-  right: 1.5vw;
+  position: absolute;
+  right: .2em;
   font-size: 1.2em;
   color: white;
   border: 0;
   padding-top: .2em;
+  top: -.2em;
 }
 
 .notification h2 {
