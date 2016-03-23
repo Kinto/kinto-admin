@@ -79,7 +79,11 @@ body {
 
 .content {
   background: #F6F4EC;
-  padding: .5em 1vw 0 21vw;
+  padding: .5em 1vw 1em 21vw;
+}
+
+.content.with-notifications {
+  padding-top: 5em;
 }
 
 .content h1 {
@@ -170,7 +174,7 @@ table.record-list td.status {
 table.record-list td.actions {
   width: 120px;
   text-align: right;
-   white-space: nowrap;
+  white-space: nowrap;
 }
 
 p.actions a {
@@ -178,10 +182,20 @@ p.actions a {
   margin-left: .5em;
 }
 
-.notification {
-  border-radius: 8px;
+.notifications {
+  background: #F6F4EC;
+  left: 20vw;
   margin-bottom: 1em;
+  position: fixed;
+  right: 0;
+  top: 0;
+  padding: .5em 1vw 1vw 1vw;
+}
+
+.notification {
   position: relative;
+  background-color: white;
+  border-radius: 8px;
 }
 
 .notification .close {
