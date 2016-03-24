@@ -254,3 +254,57 @@ a.link-button {
   text-decoration: none;
   border: none;
 }
+
+.rjsf .field input[type=text],
+.rjsf .field input[type=number],
+.rjsf .field textarea,
+.rjsf .field select {
+  font-family: inherit;
+  font-size: 1.1em;
+  margin-top: .2em;
+  padding-top: .3em;
+}
+
+.rjsf .field textarea {
+  padding: .7em .5em;
+}
+
+.error-detail {
+  color: #C13832;
+  list-style-type: '- ';
+  padding-left: 1.4em;
+}
+
+.rjsf .field-error input[type=text],
+.rjsf .field-error input[type=number],
+.rjsf .field-error textarea,
+.rjsf .field-error select {
+  border: 2px solid #C13832;
+  color: #C13832;
+}
+.rjsf .field-error label {
+  color: #C13832;
+}
+
+/* If the screen is large enough, display the errors left of the fields. */
+@media (min-width: 768px) {
+  fieldset {
+    width: 100%;
+  }
+  .field {
+    align-items: stretch;
+    display: flex;
+    width: 100%;
+  }
+
+  .field-string label {
+    min-width: 50%;
+  }
+
+  .error-detail {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 50%;
+  }
+}
