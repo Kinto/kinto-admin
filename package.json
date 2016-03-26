@@ -51,6 +51,7 @@
     "eslint-plugin-react": "^3.6.3",
     "fake-indexeddb": "1.0.3",
     "gh-pages": "^0.4.0",
+    "history": "^2.0.0",
     "jsdom": "^7.1.0",
     "json-loader": "^0.5.4",
     "mocha": "^2.3.0",
