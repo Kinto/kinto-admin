@@ -1,80 +1,17 @@
 html, body {
-  height: 100%;
+  background: #F6F4EC;
 }
 
 body {
-  font-family: sans-serif;
-  font-size: .9em;
-  color: #444;
-  padding: 0;
-  margin: 0;
-  height: 100%;
-  background: #C13832;
-}
-
-#app {
-  height: 100%;
+  color: #333;
+  background: #F6F4EC;
 }
 
 .main {
-  position: relative;
-  height: 100%;
   background: #F6F4EC;
 }
 
 .sidebar {
-  position: fixed;
-  background: #C13832;
-  float: left;
-  width:20vw;
-  height: 100%;
-}
-
-.sidebar ul {
-  list-style-type: none;
-  margin: 0;
-  line-height: 2em;
-  padding: 3em 1em 0 1em;
-}
-
-.sidebar li {
-  border-radius: 4px;
-  margin-bottom: .5em;
-  padding: 0;
-  height: 100%;
-}
-
-.sidebar li > a {
-  display: block;
-  width: 100%;
-  padding-right: 1em;
-  text-align: right;
-  color: #F6F4EC;
-  text-decoration: none;
-}
-
-.sidebar li > a:after {
-  content: "  ";
-}
-
-.sidebar li.active,
-.sidebar li:hover {
-  background: #F6F4EC;
-}
-
-.sidebar li.active a,
-.sidebar li:hover a {
-  color: #C13832;
-}
-
-.sidebar li a.unsynced::after {
-   content: "*";
-   margin-left: .1em;
-}
-
-.sidebar hr {
-  border: none;
-  border-top: 1px solid #F6F4EC;
 }
 
 .content {
@@ -82,28 +19,16 @@ body {
   padding: .5em 1vw 1em 21vw;
 }
 
+.content .list-actions > * {
+  margin-right: .5em;
+}
+
 .content.with-notifications {
-  padding-top: 5em;
+  padding-top: 6.5em;
 }
 
-.content h1 {
-  font-size: 1.3em;
-  margin-top: 0;
-  border-bottom: 1px dotted #aaa;
-}
-
-.content a {
-  color: #444;
-  text-decoration: none;
-  border-bottom: 1px dashed #444;
-}
-
-.collection-page h1 em {
-  font-size: .6em;
-  line-height: 2.5em;
-  font-weight: normal;
-  display: block;
-  float: right;
+.content-header .server-info {
+  padding-top: 2.5em;
 }
 
 .server-info pre {
@@ -117,41 +42,8 @@ body {
   color: #F6F4EC;
 }
 
-table.record-list {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: .8em;
-}
-
-table.record-list th {
-}
-
-table.record-list thead tr {
-  border-bottom: 1px solid #ccc;
-}
-
-table.record-list tbody tr {
-  border-bottom: 1px solid #ccc;
-  border-left: 1px solid #ccc;
-  border-right: 1px solid #ccc;
-}
-
-table.record-list td {
-  padding: .3em .4em;
-  max-width: 300px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-table.record-list tbody tr:nth-child(odd) {
-  background: #e5e3db;
-}
-
-table.record-list tbody tr:nth-child(even) {
-  background: #F7F5FD;
-}
-
 table.record-list tbody tr.unsynced {
+  /*XXX reproduce with bootstrap*/
   background: repeating-linear-gradient(
     45deg,
     #eee,
@@ -162,149 +54,26 @@ table.record-list tbody tr.unsynced {
 }
 
 table.record-list td.lastmod {
-  width: 80px;
-  text-align: center;
+  width: 180px;
 }
 
 table.record-list td.status {
   width: 80px;
-  text-align: center;
 }
 
 table.record-list td.actions {
   width: 120px;
-  text-align: right;
   white-space: nowrap;
 }
 
-p.actions a {
-  font-size: .8em;
-  margin-left: .5em;
-}
-
 .notifications {
+  z-index: 99;
   background: #F6F4EC;
-  left: 20vw;
   margin-bottom: 1em;
   position: fixed;
-  right: 0;
   top: 0;
-  padding: .5em 1vw 1vw 1vw;
-}
-
-.notification {
-  position: relative;
-  background-color: white;
-  border-radius: 8px;
-}
-
-.notification .close {
-  position: absolute;
-  right: .2em;
-  font-size: 1.2em;
-  color: white;
-  border: 0;
-  padding-top: .2em;
-  top: -.2em;
-}
-
-.notification h2 {
-  color: white;
-  margin: 0;
-  font-size: 1em;
-  padding: .1em .4em .3em .4em;
-}
-
-.notification p {
-  margin: .5em 0;
-  padding: 0 .5em;
-  font-size: .8em;
-}
-
-.notification li {
-  color: #C13832;
-  font-size: .8em;
-}
-
-.notification-error {
-  border: 2px solid #C13832;
-}
-
-.notification-error h2 {
-  background: #C13832;
-}
-
-.notification-error p {
-  color: #C13832;
-}
-
-.notification-info {
-  border: 2px solid #368CA8;
-}
-
-.notification-info h2 {
-  background: #368CA8;
-}
-
-.notification-info p {
-  color: #368CA8;
-}
-
-a.link-button {
-  text-decoration: none;
-  border: none;
-}
-
-.rjsf .field input[type=text],
-.rjsf .field input[type=number],
-.rjsf .field textarea,
-.rjsf .field select {
-  font-family: inherit;
-  font-size: 1.1em;
-  margin-top: .2em;
-  padding-top: .3em;
-}
-
-.rjsf .field textarea {
-  padding: .7em .5em;
-}
-
-.error-detail {
-  color: #C13832;
-  list-style-type: '- ';
-  padding-left: 1.4em;
-}
-
-.rjsf .field-error input[type=text],
-.rjsf .field-error input[type=number],
-.rjsf .field-error textarea,
-.rjsf .field-error select {
-  border: 2px solid #C13832;
-  color: #C13832;
-}
-.rjsf .field-error label {
-  color: #C13832;
-}
-
-/* If the screen is large enough, display the errors left of the fields. */
-@media (min-width: 768px) {
-  fieldset {
-    width: 100%;
-  }
-  .field {
-    align-items: stretch;
-    display: flex;
-    width: 100%;
-  }
-
-  .field-string label {
-    min-width: 50%;
-  }
-
-  .error-detail {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-width: 50%;
-  }
+  right: 1em;
+  width: inherit;
+  padding-left: 2em;
+  padding-top: 1em;
 }

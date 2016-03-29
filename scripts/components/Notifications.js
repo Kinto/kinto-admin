@@ -28,13 +28,13 @@ export class Notification extends Component {
 
   render() {
     return (
-      <div className={`notification notification-${this.props.type}`}>
+      <div className={`alert notification alert-${this.props.type}`}>
         <a className="close" href=""
           onClick={this.onCloseClick.bind(this)}>✖</a>
-        <h2>
+        <h4>
           {this.props.type || "Info"}{" "}
           <small>[{new Date(this.props.time).toLocaleString()}]</small>
-        </h2>
+        </h4>
         <p>{this.props.message}</p>
         <ErrorDetails details={this.props.details} />
       </div>

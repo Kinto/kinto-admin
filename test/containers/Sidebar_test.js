@@ -13,7 +13,7 @@ describe("Sidebar container", () => {
     const comp = setupContainer(<Sidebar {...props} />);
     comp.store.dispatch(CollectionsActions.collectionsListReceived(defaultCollections));
 
-    expect(nodeTexts(comp, "li")).eql([
+    expect(nodeTexts(comp, "a")).eql([
       "Home",
       "Settings",
       "tasks",
@@ -24,14 +24,14 @@ describe("Sidebar container", () => {
     const props = {params: {}, location: {pathname: "/"}};
     const comp = setupContainer(<Sidebar {...props} />);
 
-    expect(nodeText(comp, "li.active a")).eql("Home");
+    expect(nodeText(comp, "a.active")).eql("Home");
   });
 
   it("should highlight the settings menu entry when on settings", () => {
     const props = {params: {}, location: {pathname: "/settings"}};
     const comp = setupContainer(<Sidebar {...props} />);
 
-    expect(nodeText(comp, "li.active a")).eql("Settings");
+    expect(nodeText(comp, "a.active")).eql("Settings");
   });
 
   it("should highlight a collection menu entry when selected", () => {
@@ -39,7 +39,7 @@ describe("Sidebar container", () => {
     const comp = setupContainer(<Sidebar {...props} />);
     comp.store.dispatch(CollectionsActions.collectionsListReceived(defaultCollections));
 
-    expect(nodeText(comp, "li.active a")).eql("tasks");
+    expect(nodeText(comp, "a.active")).eql("tasks");
   });
 
   it("should denote an unsynced collection", () => {
@@ -53,7 +53,7 @@ describe("Sidebar container", () => {
       }
     });
 
-    expect(nodeText(comp, "li a.unsynced")).eql("tasks");
+    expect(nodeText(comp, "a.active")).eql("tasks*");
   });
 });
 

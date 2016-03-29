@@ -29,7 +29,7 @@ describe("CollectionListPage container", () => {
       records: []
     }});
 
-    expect(nodeText(comp, "p:not(.actions)")).eql("This collection is empty.");
+    expect(nodeText(comp, "p:not(.list-actions)")).eql("This collection is empty.");
   });
 
   describe("Non-empty collection", () => {
@@ -58,12 +58,12 @@ describe("CollectionListPage container", () => {
     });
 
     it("should render collection title", () => {
-      expect(nodeText(comp, "h1 > span")).eql("tasks");
+      expect(nodeText(comp, "h1")).eql("tasks");
     });
 
     it("should render current configured server URL", () => {
       const { server } = comp.store.getState().settings;
-      expect(nodeText(comp, "h1 > em")).eql(server);
+      expect(nodeText(comp, ".server-info")).eql(server);
     });
 
     it("should render expected column headings", () => {
@@ -91,15 +91,15 @@ describe("CollectionListPage container", () => {
 
     describe("Collection action buttons", () => {
       it("should render collection action buttons", () => {
-        expect(nodeTexts(comp, "p.actions button")).eql(
-            ["Synchronize", "Add", "Synchronize", "Add"]);
+        expect(nodeTexts(comp, "p.list-actions button")).eql(
+            ["Synchronize", "Synchronize"]);
       });
 
       it("should call kinto collection sync()", () => {
         const sync = sandbox.stub(KintoCollection.prototype, "sync")
           .returns(Promise.resolve({ok: true}));
 
-        click(comp, "p.actions button.btn-sync");
+        click(comp, "p.list-actions button.btn-sync");
 
         sinon.assert.called(sync);
       });
