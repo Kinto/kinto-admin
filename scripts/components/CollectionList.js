@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import LinkButton from "./LinkButton";
+import { Link } from "react-router";
 import BusyIndicator from "./BusyIndicator";
 
 class AdvancedActions extends React.Component {
@@ -15,7 +15,7 @@ class AdvancedActions extends React.Component {
 
   render() {
     if (this.state.enabled) {
-      return <button type="button"
+      return <button type="button" className="btn btn-warning"
         onClick={this.props.resetSync}>Reset Sync Status</button>;
     }
     return <a href="" onClick={this.onAdvancedLinkClick.bind(this)}>
@@ -70,7 +70,7 @@ class Row extends Component {
 
   render() {
     const { name, record, config } = this.props;
-    return <tr className={record._status !== "synced" ? "unsynced" : ""}
+    return <tr className={record._status !== "synced" ? "warning" : ""}
       onDoubleClick={this.onDoubleClick.bind(this)}>
       {
         config.displayFields.map((displayField, index) => {
@@ -79,11 +79,13 @@ class Row extends Component {
       }
       <td className="lastmod">{this.lastModified}</td>
       <td className="status">{record._status}</td>
-      <td className="actions">
-        <LinkButton label="Edit"
-          to={`/collections/${name}/edit/${record.id}`} />
-        <button type="button"
-          onClick={this.onDeleteClick.bind(this)}>Delete</button>
+      <td className="actions text-right">
+        <div className="btn-group">
+          <Link to={`/collections/${name}/edit/${record.id}`}
+            className="btn btn-sm btn-info">Edit</Link>
+          <button type="button" className="btn btn-sm btn-danger"
+            onClick={this.onDeleteClick.bind(this)}>Delete</button>
+        </div>
       </td>
     </tr>;
   }
@@ -96,7 +98,7 @@ class Table extends Component {
       return <p>This collection is empty.</p>;
     }
     return (
-      <table className="record-list">
+      <table className="table table-striped record-list">
         <thead>
           <tr>
             {
@@ -131,11 +133,11 @@ function ListActions(props) {
   const { name, onSyncClick, onResetSyncClick } = props;
 
   return (
-    <p className="actions">
+    <p className="list-actions">
       <button type="button"
-        className="btn-sync"
+        className="btn-sync btn btn-info"
         onClick={onSyncClick}>Synchronize</button>
-      <LinkButton label="Add" to={`/collections/${name}/add`} />
+      <Link to={`/collections/${name}/add`} className="btn btn-info">Add</Link>
       <AdvancedActions resetSync={onResetSyncClick} />
     </p>
   );
@@ -161,10 +163,12 @@ export default class CollectionList extends Component {
     }
     return (
       <div className="collection-page">
-        <h1>
-          {name}
-          <em>{busy ? <BusyIndicator/> : null}{server}</em>
-        </h1>
+        <div className="row content-header">
+          <h1 className="col-md-8">{name}</h1>
+          <div className="server-info col-md-4 text-right">
+            <em>{busy ? <BusyIndicator/> : null}{server}</em>
+          </div>
+        </div>
         <ListActions
           name={name}
           onSyncClick={this.onSyncClick.bind(this)}
