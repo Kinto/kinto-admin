@@ -19,7 +19,7 @@ export function notifyInfo(message) {
 }
 
 export function notifyError(error) {
-  return notify("error", error.message, error.details);
+  return notify("danger", error.message, error.details);
 }
 
 export function removeNotification(index) {
