@@ -56,15 +56,25 @@ table.record-list tbody tr.unsynced {
   );
 }
 
+table.record-list td {
+  max-width: 10vw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 table.record-list td.lastmod {
+  white-space: nowrap;
   width: 180px;
 }
 
 table.record-list td.status {
+  white-space: nowrap;
   width: 80px;
 }
 
 table.record-list td.actions {
+  min-width: 120px;
   width: 120px;
   white-space: nowrap;
 }
