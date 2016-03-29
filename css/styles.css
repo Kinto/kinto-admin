@@ -42,14 +42,17 @@ body {
   color: #F6F4EC;
 }
 
+.alert h4 small {
+  margin-left: .5em;
+}
+
 table.record-list tbody tr.unsynced {
-  /*XXX reproduce with bootstrap*/
   background: repeating-linear-gradient(
     45deg,
-    #eee,
+    #fcf8e3,
+    #fcf8e3 10px,
     #eee 10px,
-    #ddd 10px,
-    #ddd 20px
+    #eee 20px
   );
 }
 

@@ -26,13 +26,24 @@ export class Notification extends Component {
     this.props.close();
   }
 
+  getHeading() {
+    const {type} = this.props;
+    const messages = {
+      info: "Info",
+      danger: "Error",
+      success: "Success",
+      warning: "Warning",
+    };
+    return messages["type" in messages ? type : "info"];
+  }
+
   render() {
     return (
       <div className={`alert notification alert-${this.props.type}`}>
         <a className="close" href=""
           onClick={this.onCloseClick.bind(this)}>✖</a>
         <h4>
-          {this.props.type || "Info"}{" "}
+          {this.getHeading()}
           <small>[{new Date(this.props.time).toLocaleString()}]</small>
         </h4>
         <p>{this.props.message}</p>

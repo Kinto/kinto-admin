@@ -70,7 +70,7 @@ class Row extends Component {
 
   render() {
     const { name, record, config } = this.props;
-    return <tr className={record._status !== "synced" ? "warning" : ""}
+    return <tr className={record._status !== "synced" ? "unsynced" : ""}
       onDoubleClick={this.onDoubleClick.bind(this)}>
       {
         config.displayFields.map((displayField, index) => {
