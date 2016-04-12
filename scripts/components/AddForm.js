@@ -16,11 +16,14 @@ export default class AddForm extends Component {
     return (
       <div>
         <h1>{name}</h1>
-        <Link to={`/collections/${name}`}>&laquo; Back</Link>
         <Form
           schema={schema}
           uiSchema={uiSchema}
-          onSubmit={this.onSubmit.bind(this)} />
+          onSubmit={this.onSubmit.bind(this)}>
+          <input type="submit" className="btn btn-primary" value="Create" />
+          {" or "}
+          <Link to={`/collections/${name}`}>Cancel</Link>
+        </Form>
       </div>
     );
   }

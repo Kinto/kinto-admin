@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 export default class App extends Component {
   render() {
-    const {sidebar, notifications, content, notificationList} = this.props;
+    const {sidebar, notifications, content, notificationList, linkBack} = this.props;
     const notificationsClass = notificationList.length ?
                                " with-notifications" : "";
     const contentClasses = `col-sm-9 content${notificationsClass}`;
@@ -10,6 +10,8 @@ export default class App extends Component {
       <div className="container-fluid main">
         <div className="row">
           <div className="col-sm-3 sidebar">
+            <h1>Kinto admin</h1>
+            {linkBack}
             {sidebar || <p>Sidebar.</p>}
           </div>
           <div className={contentClasses}>

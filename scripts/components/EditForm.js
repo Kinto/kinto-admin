@@ -26,15 +26,16 @@ export default class EditForm extends Component {
     return (
       <div>
         <h1>{name}</h1>
-        <p>
-          <Link to={`/collections/${name}`}>&laquo; Back</Link>
-        </p>
         {form.record &&
           <Form
             formData={form.formData}
             schema={schema}
             uiSchema={uiSchema}
-            onSubmit={this.onSubmit.bind(this)} />}
+            onSubmit={this.onSubmit.bind(this)}>
+            <input type="submit" className="btn btn-primary" value="Update" />
+            {" or "}
+            <Link to={`/collections/${name}`}>Cancel</Link>
+          </Form>}
       </div>
     );
   }

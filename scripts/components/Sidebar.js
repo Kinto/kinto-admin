@@ -11,7 +11,6 @@ export default class Sidebar extends Component {
     const {collections, params} = this.props;
     return (
       <div>
-        <h1>Kinto admin</h1>
         <div className="panel panel-default">
           <div className="list-group">
             <Link to="/" className={this.activeIfPathname("/")}>Home</Link>
