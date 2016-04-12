@@ -14,9 +14,17 @@ class AdvancedActions extends React.Component {
   }
 
   render() {
+    const {collection} = this.props;
     if (this.state.enabled) {
-      return <button type="button" className="btn btn-warning"
-        onClick={this.props.resetSync}>Reset Sync Status</button>;
+      return (
+        <span className="btn-group" role="group">
+          <Link className="btn btn-info" to={`/collections/${collection}/bulk`}>
+            Bulk add
+          </Link>
+          <button type="button" className="btn btn-warning"
+            onClick={this.props.resetSync}>Reset Sync Status</button>
+        </span>
+      );
     }
     return <a href="" onClick={this.onAdvancedLinkClick.bind(this)}>
       &raquo; Show advanced actions
@@ -138,7 +146,7 @@ function ListActions(props) {
         className="btn-sync btn btn-info"
         onClick={onSyncClick}>Synchronize</button>
       <Link to={`/collections/${name}/add`} className="btn btn-info">Add</Link>
-      <AdvancedActions resetSync={onResetSyncClick} />
+      <AdvancedActions collection={name} resetSync={onResetSyncClick} />
     </p>
   );
 }
