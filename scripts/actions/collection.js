@@ -175,6 +175,16 @@ export function create(record) {
   });
 }
 
+export function bulkCreate(records) {
+  return withCollection((dispatch, collection) => {
+    const bulk = Promise.all(records.map(record => collection.create(record)));
+    execute(dispatch, bulk, {
+      message: "All records have been created.",
+      redirect: `/collections/${collection._name}`,
+    });
+  });
+}
+
 export function update(record) {
   return withCollection((dispatch, collection) => {
     execute(dispatch, collection.update(record), {

@@ -226,6 +226,65 @@ describe("collection actions", () => {
     });
   });
 
+  describe("bulkCreate()", () => {
+    var dispatch, getState;
+
+    beforeEach(() => {
+      const collections = collectionsReducer(undefined, {type: null});
+      const collection = collectionReducer({name: "tasks"}, {type: null});
+      dispatch = sandbox.spy();
+      getState = () => ({
+        collections,
+        collection,
+      });
+    });
+
+    it("should mark the collection as busy", () => {
+      actions.load()(dispatch, getState);
+
+      sinon.assert.calledWith(dispatch, {
+        type: actions.COLLECTION_BUSY,
+        flag: true,
+      });
+    });
+
+    it("should create the record", () => {
+      const create = sandbox.stub(KintoCollection.prototype, "create").returns(
+        Promise.resolve());
+
+      actions.bulkCreate([{foo: "bar"}, {foo: "bar2"}])(dispatch, getState);
+
+      sinon.assert.calledWith(create, {foo: "bar"});
+      sinon.assert.calledWith(create, {foo: "bar2"});
+    });
+
+    it("should clear notifications", () => {
+      sandbox.stub(KintoCollection.prototype, "create").returns(
+        Promise.resolve());
+
+      actions.bulkCreate([{foo: "bar"}])(dispatch, getState);
+
+      sinon.assert.calledWith(dispatch, {
+        type: NotificationsActions.NOTIFICATION_CLEAR,
+      });
+    });
+
+    it("should redirect to collection URL", (done) => {
+      sandbox.stub(KintoCollection.prototype, "create").returns(
+        Promise.resolve());
+
+      actions.bulkCreate([{foo: "bar"}])(dispatch, getState);
+
+      setImmediate(() => {
+        sinon.assert.calledWithMatch(dispatch, {
+          type: ReduxRouter.UPDATE_PATH,
+          path: "/collections/tasks",
+        });
+        done();
+      });
+    });
+  });
+
   describe("update()", () => {
     var dispatch, getState;
 

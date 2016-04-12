@@ -6,6 +6,7 @@ import Sidebar from "./containers/Sidebar";
 import Notifications from "./containers/Notifications";
 import CollectionListPage from "./containers/CollectionListPage";
 import AddFormPage from "./containers/AddFormPage";
+import BulkFormPage from "./containers/BulkFormPage";
 import EditFormPage from "./containers/EditFormPage";
 import SettingsPage from "./containers/SettingsPage";
 
@@ -34,6 +35,8 @@ export default (
       components={{...common, content: CollectionListPage}} />
     <Route path="/collections/:name/add"
       components={{...common, content: AddFormPage, linkBack: LinkBack}} />
+    <Route path="/collections/:name/bulk"
+      components={{...common, content: BulkFormPage, linkBack: LinkBack}} />
     <Route path="/collections/:name/edit/:id"
       components={{...common, content: EditFormPage, linkBack: LinkBack}} />
     <Route path="/settings"
