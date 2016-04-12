@@ -9,7 +9,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, "dist"),
     filename: "bundle.js",
-    publicPath: "/"
+    publicPath: process.env.KINTO_ADMIN_PUBLIC_PATH || "/",
   },
   plugins: [
     new webpack.IgnorePlugin(/^(buffertools)$/), // unwanted "deeper" dependency
