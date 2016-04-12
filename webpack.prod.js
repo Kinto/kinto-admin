@@ -5,7 +5,6 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 module.exports = {
   entry: {
     app: path.resolve(__dirname, "scripts/index.js"),
-    vendors: ["react", "kinto", "jsonschema"]
   },
   output: {
     path: path.join(__dirname, "dist"),
@@ -14,7 +13,6 @@ module.exports = {
   },
   plugins: [
     new webpack.IgnorePlugin(/^(buffertools)$/), // unwanted "deeper" dependency
-    new webpack.optimize.CommonsChunkPlugin("vendors", "vendors.js"),
     new ExtractTextPlugin("styles.css", {allChunks: true}),
     new webpack.DefinePlugin({
       "process.env": {
