@@ -3,6 +3,10 @@ import { Link } from "react-router";
 import Form from "react-jsonschema-form";
 
 export default class AddForm extends Component {
+  defaultProps = {
+    liveValidate: false
+  };
+
   shouldComponentUpdate(nextProps) {
     return nextProps.name && nextProps.schema;
   }

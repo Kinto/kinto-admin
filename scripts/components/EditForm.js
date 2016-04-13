@@ -3,6 +3,10 @@ import { Link } from "react-router";
 import Form from "react-jsonschema-form";
 
 export default class EditForm extends Component {
+  defaultProps = {
+    liveValidate: false
+  };
+
   componentDidMount() {
     this.props.select(this.props.params.name);
     this.props.loadRecord(this.props.params.id);
