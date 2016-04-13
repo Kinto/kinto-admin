@@ -22,12 +22,14 @@ export default class EditForm extends Component {
   }
 
   render() {
-    const {name, form, schema, uiSchema} = this.props;
+    const {name, form, schema, uiSchema, config} = this.props;
+    const {liveValidate} = config;
     return (
       <div>
         <h1>{name}</h1>
         {form.record &&
           <Form
+            liveValidate={liveValidate}
             formData={form.formData}
             schema={schema}
             uiSchema={uiSchema}
