@@ -4,6 +4,7 @@
     "synced": true,
     "config": {
       "displayFields": ["title", "done"],
+      "liveValidate": true,
       "schema": {
         "title": "Todo Tasks",
         "description": "Tasks collection.",

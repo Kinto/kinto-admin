@@ -54,6 +54,8 @@ UI as well as their own individual configuration:
     "config": {
       // The fields to render in list view
       "displayFields": ["title", "done"],
+      // Live forms validation
+      "liveValidate": false,
       // The JSON schema for this collection
       "schema": {
         "title": "Todo Tasks",
