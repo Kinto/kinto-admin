@@ -1,4 +1,6 @@
+import { loadSettings } from "../utils";
 import * as NotificationsActions from "./notifications";
+import * as SettingsActions from "./settings";
 
 export const COLLECTION_SYNCED = "COLLECTION_SYNCED";
 export const COLLECTIONS_LIST_RECEIVED = "COLLECTIONS_LIST_RECEIVED";
@@ -19,10 +21,13 @@ export function loadCollections() {
     fetch("./config.json")
       .then(res => res.json())
       .then(json => {
-        if (Object.keys(json).length === 0) {
+        if (!json || Object.keys(json).length === 0) {
           throw new Error("Empty collections configuration.");
         } else {
-          dispatch(collectionsListReceived(json));
+          const {settings, collections} = json;
+          const loadedSettings = loadSettings() || settings;
+          dispatch(SettingsActions.settingsLoaded(loadedSettings));
+          dispatch(collectionsListReceived(collections));
         }
       })
       .catch(err => {

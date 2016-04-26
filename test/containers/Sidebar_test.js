@@ -4,14 +4,16 @@ import React from "react";
 import { setupContainer, nodeText, nodeTexts } from "../test-utils";
 import Sidebar from "../../scripts/containers/Sidebar";
 import * as CollectionsActions from "../../scripts/actions/collections";
-import defaultCollections from "../../config/config.json";
+import jsonConfig from "../../config/config.json";
 
+
+const {collections} = jsonConfig;
 
 describe("Sidebar container", () => {
   it("should render the navigation menu", () => {
     const props = {params: {name: "/tasks"}, location: {pathname: "/tasks"}};
     const comp = setupContainer(<Sidebar {...props} />);
-    comp.store.dispatch(CollectionsActions.collectionsListReceived(defaultCollections));
+    comp.store.dispatch(CollectionsActions.collectionsListReceived(collections));
 
     expect(nodeTexts(comp, "a")).eql([
       "Home",
@@ -37,7 +39,7 @@ describe("Sidebar container", () => {
   it("should highlight a collection menu entry when selected", () => {
     const props = {params: {name: "tasks"}, location: {pathname: "/tasks"}};
     const comp = setupContainer(<Sidebar {...props} />);
-    comp.store.dispatch(CollectionsActions.collectionsListReceived(defaultCollections));
+    comp.store.dispatch(CollectionsActions.collectionsListReceived(collections));
 
     expect(nodeText(comp, "a.active")).eql("tasks");
   });

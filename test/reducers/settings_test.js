@@ -1,5 +1,6 @@
 import { expect } from "chai";
-import settings, {defaultSettings} from "../../scripts/reducers/settings";
+import settings from "../../scripts/reducers/settings";
+import { defaultSettings } from "../../scripts/actions/settings";
 import * as actions from "../../scripts/actions/settings";
 
 describe("settings reducer", () => {

@@ -1,46 +1,48 @@
 {
-  "tasks": {
-    "name": "Todo tasks",
-    "synced": true,
-    "config": {
-      "displayFields": ["title", "done"],
-      "liveValidate": true,
-      "schema": {
-        "title": "Todo Tasks",
-        "description": "Tasks collection.",
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "title"
-        ],
-        "properties": {
+  "collections": {
+    "tasks": {
+      "name": "Todo tasks",
+      "synced": true,
+      "config": {
+        "displayFields": ["title", "done"],
+        "liveValidate": true,
+        "schema": {
+          "title": "Todo Tasks",
+          "description": "Tasks collection.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "title"
+          ],
+          "properties": {
+            "done": {
+              "type": "boolean",
+              "title": "Done?",
+              "description": "Is that task done already?",
+              "default": false
+            },
+            "title": {
+              "type": "string",
+              "title": "Title",
+              "description": "The task title.",
+              "minLength": 3,
+              "default": ""
+            },
+            "description": {
+              "type": "string",
+              "title": "Description",
+              "description": "The task description.",
+              "default": ""
+            }
+          }
+        },
+        "uiSchema": {
           "done": {
-            "type": "boolean",
-            "title": "Done?",
-            "description": "Is that task done already?",
-            "default": false
-          },
-          "title": {
-            "type": "string",
-            "title": "Title",
-            "description": "The task title.",
-            "minLength": 3,
-            "default": ""
+            "ui:widget": "radio"
           },
           "description": {
-            "type": "string",
-            "title": "Description",
-            "description": "The task description.",
-            "default": ""
+            "ui:widget": "textarea"
           }
-        }
-      },
-      "uiSchema": {
-        "done": {
-          "ui:widget": "radio"
-        },
-        "description": {
-          "ui:widget": "textarea"
         }
       }
     }

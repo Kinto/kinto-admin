@@ -8,7 +8,7 @@ import { setupContainer, findOne, nodeText, nodeExists } from "../test-utils";
 import EditFormPage from "../../scripts/containers/EditFormPage";
 import * as CollectionActions from "../../scripts/actions/collection";
 import * as FormActions from "../../scripts/actions/form";
-import defaultCollections from "../../config/config.json";
+import jsonConfig from "../../config/config.json";
 
 describe("EditFormPage container", () => {
   var sandbox, comp;
@@ -17,7 +17,7 @@ describe("EditFormPage container", () => {
     sandbox = sinon.sandbox.create();
     const props = {params: {name: "tasks"}};
     comp = setupContainer(<EditFormPage {...props} />, {
-      collections: defaultCollections
+      collections: jsonConfig.collections
     });
     const { dispatch } = comp.store;
     dispatch(CollectionActions.select("tasks"));

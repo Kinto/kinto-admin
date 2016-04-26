@@ -2,14 +2,16 @@ import sinon from "sinon";
 
 import * as actions from "../../scripts/actions/collections";
 import * as NotificationsActions from "../../scripts/actions/notifications";
+import * as SettingsActions from "../../scripts/actions/settings";
 
 
 describe("collections actions", () => {
-  var sandbox, notifyError;
+  var sandbox, notifyError, settingsLoaded;
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
     notifyError = sandbox.stub(NotificationsActions, "notifyError");
+    settingsLoaded = sandbox.stub(SettingsActions, "settingsLoaded");
   });
 
   afterEach(() => {
@@ -17,10 +19,25 @@ describe("collections actions", () => {
   });
 
   describe("loadCollections()", () => {
-    it("should retrieve the collection schema", (done) => {
+    it("should load settings from the config when they're provided", (done) => {
       sandbox.stub(global, "fetch").returns(Promise.resolve({
         json() {
-          return {a: 1};
+          return {settings: {isSetting: true}};
+        }
+      }));
+
+      actions.loadCollections()(sandbox.spy());
+
+      setImmediate(() => {
+        sinon.assert.calledWithMatch(settingsLoaded, {isSetting: true});
+        done();
+      });
+    });
+
+    it("should retrieve the collections configuration", (done) => {
+      sandbox.stub(global, "fetch").returns(Promise.resolve({
+        json() {
+          return {collections: {a: 1}};
         }
       }));
       const dispatch = sandbox.spy();

@@ -7,7 +7,7 @@ import { setupContainer, nodeText, nodeTexts, click } from "../test-utils";
 import CollectionListPage from "../../scripts/containers/CollectionListPage";
 import * as CollectionsActions from "../../scripts/actions/collections";
 import * as CollectionActions from "../../scripts/actions/collection";
-import defaultCollections from "../../config/config.json";
+import jsonConfig from "../../config/config.json";
 
 
 describe("CollectionListPage container", () => {
@@ -39,7 +39,7 @@ describe("CollectionListPage container", () => {
       const props = {params: {name: "tasks"}};
       comp = setupContainer(<CollectionListPage {...props} />);
       const { dispatch } = comp.store;
-      dispatch(CollectionsActions.collectionsListReceived(defaultCollections));
+      dispatch(CollectionsActions.collectionsListReceived(jsonConfig.collections));
       dispatch(CollectionActions.select("tasks"));
       dispatch(CollectionActions.loaded([
         {

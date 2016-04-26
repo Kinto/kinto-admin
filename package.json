@@ -58,6 +58,7 @@
     "fake-indexeddb": "1.0.3",
     "file-loader": "^0.8.5",
     "gh-pages": "^0.11.0",
+    "history": "^1.17.0",
     "jsdom": "^8.3.0",
     "json-loader": "^0.5.4",
     "mocha": "^2.3.0",
