@@ -1,14 +1,14 @@
 import { expect } from "chai";
 import collections from "../../scripts/reducers/collections";
 import * as CollectionsActions from "../../scripts/actions/collections";
-import defaultCollections from "../../config/config.json";
+import jsonConfig from "../../config/config.json";
 
 
 describe("collections reducer", () => {
   it("should update collections list", () => {
     expect(collections(undefined, {
       type: CollectionsActions.COLLECTIONS_LIST_RECEIVED,
-      collections: defaultCollections
+      collections: jsonConfig.collections
     }))
       .to.include.keys(["tasks"]);
   });

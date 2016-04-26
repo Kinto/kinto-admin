@@ -46,26 +46,36 @@ UI as well as their own individual configuration:
 ```js
 // config.json
 {
-  // The name of a collection to manage
-  "tasks": {
-    // Human readable name
-    "name": "Todo tasks",
-    // Collection configuration object
-    "config": {
-      // The fields to render in list view
-      "displayFields": ["title", "done"],
-      // Live forms validation
-      "liveValidate": false,
-      // The JSON schema for this collection
-      "schema": {
-        "title": "Todo Tasks",
-        ...
-      }
-    }
+  // Optional: The default Kinto server settings to use
+  "settings": {
+    "server": "http://my.kinto.server.tld/v1",
+    "bucket": "mybucketname",
+    "username": "myusername",
+    "password": "mypassword"
   },
-  // Another collection to manage
-  "articles": {
-    // ...
+  // Required: The collection definitions
+  "collections": {
+    // The name of a collection to manage
+    "tasks": {
+      // Human readable name
+      "name": "Todo tasks",
+      // Collection configuration object
+      "config": {
+        // The fields to render in list view
+        "displayFields": ["title", "done"],
+        // Live forms validation
+        "liveValidate": false,
+        // The JSON schema for this collection
+        "schema": {
+          "title": "Todo Tasks",
+          ...
+        }
+      }
+    },
+    // Another collection to manage
+    "articles": {
+      // ...
+    }
   }
 }
 ```

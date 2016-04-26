@@ -9,7 +9,7 @@ import settingsReducer from "../../scripts/reducers/settings";
 import * as actions from "../../scripts/actions/collection";
 import * as NotificationsActions from "../../scripts/actions/notifications";
 import * as ReduxRouter from "redux-simple-router";
-import defaultCollections from "../../config/config.json";
+import jsonConfig from "../../config/config.json";
 
 describe("collection actions", () => {
   var sandbox, notifyError;
@@ -27,14 +27,14 @@ describe("collection actions", () => {
 
   describe("configure()", () => {
     it("should retrieve the collection schema", () => {
-      expect(actions.configure("tasks", adminConfig.tasks.config).schema)
-        .eql(adminConfig.tasks.config.schema);
+      expect(actions.configure("tasks", adminConfig.collections.tasks.config).schema)
+        .eql(adminConfig.collections.tasks.config.schema);
     });
   });
 
   describe("select()", () => {
     it("should select and configure a collection", () => {
-      const collections = collectionsReducer(defaultCollections, {type: null});
+      const collections = collectionsReducer(jsonConfig.collections, {type: null});
       const dispatch = sandbox.spy();
       const getState = () => ({collections, settings});
 
@@ -43,14 +43,14 @@ describe("collection actions", () => {
       sinon.assert.calledWith(dispatch, {
         type: actions.COLLECTION_READY,
         name: "tasks",
-        schema: adminConfig.tasks.config.schema,
-        uiSchema: adminConfig.tasks.config.uiSchema,
+        schema: adminConfig.collections.tasks.config.schema,
+        uiSchema: adminConfig.collections.tasks.config.uiSchema,
         config: collections.tasks.config,
       });
     });
 
     it("should dispatch an error on bad kinto configuration", () => {
-      const collections = collectionsReducer(defaultCollections, {type: null});
+      const collections = collectionsReducer(jsonConfig.collections, {type: null});
       const settings = {server: "http://bad.server/v999"};
       const dispatch = sandbox.spy();
       const getState = () => ({collections, settings});
@@ -92,7 +92,7 @@ describe("collection actions", () => {
 
     it("should redirect to home if collection is not configured", () => {
       sandbox.stub(ReduxRouter, "updatePath");
-      const collections = collectionsReducer(defaultCollections, {type: null});
+      const collections = collectionsReducer(jsonConfig.collections, {type: null});
       const dispatch = sandbox.spy();
       const getState = () => ({collections, settings});
 
@@ -147,7 +147,7 @@ describe("collection actions", () => {
     var dispatch, getState;
 
     beforeEach(() => {
-      const collections = collectionsReducer(defaultCollections, {type: null});
+      const collections = collectionsReducer(jsonConfig.collections, {type: null});
       const collection = collectionReducer({name: "tasks"}, {type: null});
       dispatch = sandbox.spy();
       getState = () => ({

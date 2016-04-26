@@ -8,7 +8,7 @@ import { setupContainer, findOne, findAll, nodeText, nodeExists } from "../test-
 import BulkFormPage from "../../scripts/containers/BulkFormPage";
 import * as CollectionsActions from "../../scripts/actions/collections";
 import * as CollectionActions from "../../scripts/actions/collection";
-import defaultCollections from "../../config/config.json";
+import jsonConfig from "../../config/config.json";
 
 
 describe("BulkFormPage container", () => {
@@ -19,7 +19,7 @@ describe("BulkFormPage container", () => {
     const props = {params: {name: "tasks"}};
     comp = setupContainer(<BulkFormPage {...props} />);
     const { dispatch } = comp.store;
-    dispatch(CollectionsActions.collectionsListReceived(defaultCollections));
+    dispatch(CollectionsActions.collectionsListReceived(jsonConfig.collections));
     dispatch(CollectionActions.select("tasks"));
   });
 

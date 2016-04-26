@@ -1,16 +1,12 @@
-import { SETTINGS_SAVED } from "../actions/settings";
+import {
+  SETTINGS_LOADED,
+  SETTINGS_SAVED,
+  defaultSettings
+} from "../actions/settings";
 
-export const defaultSettings = {
-  server: "https://kinto.dev.mozaws.net/v1",
-  username: "user",
-  password: "pass",
-  bucket: "default",
-};
-const jsonSettings = localStorage.getItem("kwac_settings");
-const INITIAL_STATE = jsonSettings ? JSON.parse(jsonSettings) : defaultSettings;
-
-export default function settings(state = INITIAL_STATE, action) {
+export default function settings(state = defaultSettings, action) {
   switch (action.type) {
+  case SETTINGS_LOADED:
   case SETTINGS_SAVED:
     return {...state, ...action.settings};
   default:
