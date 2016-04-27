@@ -61,19 +61,8 @@ export function click(comp, sel, event) {
   Simulate.click(node, event);
 }
 
-export function SimulateAsync(delay = 15) {
-  return Object.keys(Simulate).reduce((acc, key) => {
-    const prop = Simulate[key];
-    if (typeof prop === "function") {
-      acc[key] = (...args) => {
-        return new Promise((resolve) => {
-          Simulate[key](...args);
-          setTimeout(resolve, delay);
-        });
-      };
-    } else {
-      acc[key] = prop;
-    }
-    return acc;
-  }, {});
+export function pause(delay = 50) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, delay);
+  });
 }
