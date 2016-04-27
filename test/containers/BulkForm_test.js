@@ -18,27 +18,31 @@ import * as CollectionActions from "../../scripts/actions/collection";
 import jsonConfig from "../../config/config.json";
 
 
-function setupBulkForm(config) {
+function setupBulkForm(collectionsConfig) {
   const props = {params: {name: "tasks"}};
   const comp = setupContainer(<BulkFormPage {...props} />);
   const { dispatch } = comp.store;
-  dispatch(CollectionsActions.collectionsListReceived(config));
+  dispatch(CollectionsActions.collectionsListReceived(collectionsConfig));
   dispatch(CollectionActions.select("tasks"));
   return comp;
 }
 
-
 describe("BulkFormPage container", () => {
-  var sandbox, comp;
+  var sandbox;
+
+  beforeEach(() => {
+    sandbox = sinon.sandbox.create();
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+  });
 
   describe("Default config schema", () => {
-    beforeEach(() => {
-      sandbox = sinon.sandbox.create();
-      comp = setupBulkForm(jsonConfig.collections);
-    });
+    var comp;
 
-    afterEach(() => {
-      sandbox.restore();
+    beforeEach(() => {
+      comp = setupBulkForm(jsonConfig.collections);
     });
 
     it("should render page title", () => {
@@ -84,37 +88,38 @@ describe("BulkFormPage container", () => {
   });
 
   describe("Custom schema with definitions", () => {
-    beforeEach(() => {
-      const config = {
-        collections: {
-          tasks: {
-            config: {
-              schema: {
-                definitions: {
-                  version: {
-                    type: "integer"
-                  }
-                },
-                type: "object",
-                properties: {
-                  version: {"$ref": "#/definitions/version"}
-                }
-              }
+    var comp;
+
+    const config = {
+      tasks: {
+        name: "plop",
+        config: {
+          schema: {
+            definitions: {
+              version: {type: "number"}
+            },
+            type: "object",
+            properties: {
+              version: {$ref: "#/definitions/version"}
+            }
+          },
+          uiSchema: {
+            version: {
+              "ui:widget": "updown"
             }
           }
         }
-      };
+      }
+    };
+
+    beforeEach(() => {
       comp = setupBulkForm(config);
     });
 
     it("should support schema definitions references", () => {
       Simulate.click(findOne(comp, ".array-item-add button"));
-      return pause()
-        .then(() => {
-          expect(nodeExists(comp, "form input")).eql(true);
-        });
+
+      expect(nodeExists(comp, "form input[type=number]")).eql(true);
     });
   });
-
-
 });
