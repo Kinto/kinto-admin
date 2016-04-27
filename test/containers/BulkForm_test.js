@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import sinon from "sinon";
 import React from "react";
+import { Simulate } from "react-addons-test-utils";
 import KintoCollection from "kinto/lib/collection";
 
 import {
@@ -9,7 +10,7 @@ import {
   findAll,
   nodeText,
   nodeExists,
-  SimulateAsync
+  pause
 } from "../test-utils";
 import BulkFormPage from "../../scripts/containers/BulkFormPage";
 import * as CollectionsActions from "../../scripts/actions/collections";
@@ -44,24 +45,22 @@ describe("BulkFormPage container", () => {
   it("should submit records", () => {
     const create = sandbox.stub(KintoCollection.prototype, "create");
 
-    return SimulateAsync().click(findOne(comp, ".array-item-add button"))
+    Simulate.click(findOne(comp, ".array-item-add button"));
+    Simulate.change(findAll(comp, "input[type=text]")[0], {
+      target: {value: "sampleTitle1"}
+    });
+
+    return pause()
       .then(() => {
-        return SimulateAsync().change(findAll(comp, "input[type=text]")[0], {
-          target: {value: "sampleTitle1"}
-        });
-      })
-      .then(() => {
-        return SimulateAsync().click(findOne(comp, ".array-item-add button"));
-      })
-      .then(() => {
-        return SimulateAsync().change(findAll(comp, "input[type=text]")[1], {
+        Simulate.click(findOne(comp, ".array-item-add button"));
+        Simulate.change(findAll(comp, "input[type=text]")[1], {
           target: {value: "sampleTitle2"}
         });
+        return pause();
       })
       .then(() => {
-        return SimulateAsync().submit(findOne(comp, "form"));
-      })
-      .then(() => {
+        Simulate.submit(findOne(comp, "form"));
+
         sinon.assert.calledTwice(create);
         sinon.assert.calledWith(create, {
           done: false,
