@@ -18,7 +18,7 @@ describe("Sidebar container", () => {
     expect(nodeTexts(comp, "a")).eql([
       "Home",
       "Settings",
-      "tasks",
+      "Todo tasks",
     ]);
   });
 
@@ -41,7 +41,7 @@ describe("Sidebar container", () => {
     const comp = setupContainer(<Sidebar {...props} />);
     comp.store.dispatch(CollectionsActions.collectionsListReceived(collections));
 
-    expect(nodeText(comp, "a.active")).eql("tasks");
+    expect(nodeText(comp, "a.active")).eql("Todo tasks");
   });
 
   it("should denote an unsynced collection", () => {
