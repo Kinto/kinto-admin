@@ -28,3 +28,9 @@ var Form = require("react-jsonschema-form").default;
 Form.defaultProps = Object.assign({}, Form.defaultProps, {
   safeRenderCompletion: true
 });
+
+// HTML debugging helper
+global.d = function d(comp) {
+  const node = require("react-dom").findDOMNode(comp);
+  console.log(require("html").prettyPrint(node.outerHTML, {indent_size: 2}));
+};

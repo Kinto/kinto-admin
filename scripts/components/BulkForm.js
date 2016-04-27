@@ -18,7 +18,7 @@ export default class BulkForm extends Component {
   render() {
     const {name, schema, uiSchema, config} = this.props;
     const {liveValidate} = config;
-    const bulkSchema = {type: "array", items: schema};
+    const bulkSchema = {type: "array", definitions: schema.definitions, items: schema};
     const bulkUiSchema = {items: uiSchema};
     return (
       <div>
