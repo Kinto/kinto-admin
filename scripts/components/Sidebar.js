@@ -29,9 +29,10 @@ export default class Sidebar extends Component {
                 "list-group-item",
                 params.name === name ? "active" : "",
               ].join(" ");
+              const label = collections[name].name || name;
               return (
                 <Link key={i} to={`/collections/${name}`} className={classes}>
-                  {name + (!collections[name].synced ? "*" : "")}
+                  {label + (!collections[name].synced ? "*" : "")}
                 </Link>
               );
             })
