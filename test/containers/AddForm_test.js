@@ -2,9 +2,14 @@ import { expect } from "chai";
 import sinon from "sinon";
 import React from "react";
 import KintoCollection from "kinto/lib/collection";
-import { Simulate } from "react-addons-test-utils";
 
-import { setupContainer, findOne, nodeText, nodeExists } from "../test-utils";
+import {
+  setupContainer,
+  findOne,
+  nodeText,
+  nodeExists,
+  SimulateAsync
+} from "../test-utils";
 import AddFormPage from "../../scripts/containers/AddFormPage";
 import * as CollectionsActions from "../../scripts/actions/collections";
 import * as CollectionActions from "../../scripts/actions/collection";
@@ -38,13 +43,18 @@ describe("AddFormPage container", () => {
   it("should submit record", () => {
     const create = sandbox.stub(KintoCollection.prototype, "create");
 
-    Simulate.change(findOne(comp, "input[type=text]"), {
+    return SimulateAsync().change(findOne(comp, "input[type=text]"), {
       target: {value: "sampleTitle"}
-    });
-    Simulate.submit(findOne(comp, "form"));
-
-    sinon.assert.calledWith(
-      create,
-      {done: false, title: "sampleTitle", description: ""});
+    })
+      .then(() => {
+        return SimulateAsync().submit(findOne(comp, "form"));
+      })
+      .then(() => {
+        sinon.assert.calledWith(create, {
+          done: false,
+          title: "sampleTitle",
+          description: "",
+        });
+      });
   });
 });

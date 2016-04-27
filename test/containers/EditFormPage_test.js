@@ -2,9 +2,14 @@ import { expect } from "chai";
 import sinon from "sinon";
 import React from "react";
 import KintoCollection from "kinto/lib/collection";
-import { Simulate } from "react-addons-test-utils";
 
-import { setupContainer, findOne, nodeText, nodeExists } from "../test-utils";
+import {
+  setupContainer,
+  findOne,
+  nodeText,
+  nodeExists,
+  SimulateAsync
+} from "../test-utils";
 import EditFormPage from "../../scripts/containers/EditFormPage";
 import * as CollectionActions from "../../scripts/actions/collection";
 import * as FormActions from "../../scripts/actions/form";
@@ -43,13 +48,18 @@ describe("EditFormPage container", () => {
   it("should submit record", () => {
     const update = sandbox.stub(KintoCollection.prototype, "update");
 
-    Simulate.change(findOne(comp, "input[type=text]"), {
+    return SimulateAsync().change(findOne(comp, "input[type=text]"), {
       target: {value: "modifiedTitle"}
-    });
-    Simulate.submit(findOne(comp, "form"));
-
-    sinon.assert.calledWith(
-      update,
-      {title: "modifiedTitle", done: false, description: ""});
+    })
+      .then(() => {
+        return SimulateAsync().submit(findOne(comp, "form"));
+      })
+      .then(() => {
+        sinon.assert.calledWith(update, {
+          title: "modifiedTitle",
+          done: false,
+          description: ""
+        });
+      });
   });
 });

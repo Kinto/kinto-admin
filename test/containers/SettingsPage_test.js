@@ -1,7 +1,6 @@
 import { expect } from "chai";
 import sinon from "sinon";
 import React from "react";
-import { Simulate } from "react-addons-test-utils";
 
 import {
   setupContainer,
@@ -9,7 +8,8 @@ import {
   findAll,
   nodeText,
   mapNodesProp,
-  nodeExists
+  nodeExists,
+  SimulateAsync
 } from "../test-utils";
 import SettingsPage from "../../scripts/containers/SettingsPage";
 
@@ -46,6 +46,7 @@ describe("SettingsPage container", () => {
 
   it("should save settings", () => {
     const setItem = sandbox.stub(localStorage, "setItem");
+    const inputs = findAll(comp, "input[type=text]");
     const newValues = [
       "http://other.server/v1",
       "otherBucket",
@@ -53,21 +54,24 @@ describe("SettingsPage container", () => {
       "newPassword",
     ];
 
-    findAll(comp, "input[type=text]").forEach((input, index) => {
-      Simulate.change(input, {
+    return Promise.all(inputs.map((input, index) => {
+      return SimulateAsync().change(input, {
         target: {value: newValues[index]}
       });
-    });
-    Simulate.submit(findOne(comp, "form"));
-
-    const args = setItem.firstCall.args;
-    expect(args[0]).eql("kwac_settings");
-    expect(JSON.parse(args[1])).eql({
-      server: "http://other.server/v1",
-      username: "newUsername",
-      password: "newPassword",
-      bucket: "otherBucket",
-    });
+    }))
+      .then(() => {
+        return SimulateAsync().submit(findOne(comp, "form"));
+      })
+      .then(() => {
+        const args = setItem.firstCall.args;
+        expect(args[0]).eql("kwac_settings");
+        expect(JSON.parse(args[1])).eql({
+          server: "http://other.server/v1",
+          username: "newUsername",
+          password: "newPassword",
+          bucket: "otherBucket",
+        });
+      });
   });
 
   it("should not render server information initially", () => {
@@ -75,17 +79,16 @@ describe("SettingsPage container", () => {
   });
 
   it("should render server information once form is saved", () => {
-    Simulate.submit(findOne(comp, "form"));
-
-    expect(nodeExists(comp, ".server-info")).eql(true);
+    return SimulateAsync().submit(findOne(comp, "form"))
+      .then(() => {
+        expect(nodeExists(comp, ".server-info")).eql(true);
+      });
   });
 
-  it("should render expected server information", (done) => {
-    Simulate.submit(findOne(comp, "form"));
-
-    setImmediate(() => {
-      expect(JSON.parse(nodeText(comp, ".server-info pre"))).eql({a: 1});
-      done();
-    });
+  it("should render expected server information", () => {
+    return SimulateAsync().submit(findOne(comp, "form"))
+      .then(() => {
+        expect(JSON.parse(nodeText(comp, ".server-info pre"))).eql({a: 1});
+      });
   });
 });

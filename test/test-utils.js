@@ -4,7 +4,6 @@ import { Simulate, renderIntoDocument } from "react-addons-test-utils";
 import { Provider } from "react-redux";
 import configureStore from "../scripts/store/configureStore";
 
-
 export function findAll(comp, sel) {
   const node = findDOMNode(comp);
   if (!node) {
@@ -60,4 +59,21 @@ export function click(comp, sel, event) {
     throw new Error("Can't click on missing node: " + sel);
   }
   Simulate.click(node, event);
+}
+
+export function SimulateAsync(delay = 15) {
+  return Object.keys(Simulate).reduce((acc, key) => {
+    const prop = Simulate[key];
+    if (typeof prop === "function") {
+      acc[key] = (...args) => {
+        return new Promise((resolve) => {
+          Simulate[key](...args);
+          setTimeout(resolve, delay);
+        });
+      };
+    } else {
+      acc[key] = prop;
+    }
+    return acc;
+  }, {});
 }
