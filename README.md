@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Kinto/kinto-admin.svg)](https://travis-ci.org/Kinto/kinto-admin)
 
-A Web admin UI to manage [Kinto](https://kinto.readthedocs.org/) collections.
+A Web admin UI to manage [Kinto](https://kinto.readthedocs.io/) collections.
 [Give it a go](http://kinto.github.io/kinto-admin/)!
 
 ## Installation
