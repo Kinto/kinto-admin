@@ -15,6 +15,7 @@ import {
 import BulkFormPage from "../../scripts/containers/BulkFormPage";
 import * as CollectionsActions from "../../scripts/actions/collections";
 import * as CollectionActions from "../../scripts/actions/collection";
+import * as NotificationsActions from "../../scripts/actions/notifications";
 import jsonConfig from "../../config/config.json";
 
 
@@ -32,6 +33,9 @@ describe("BulkFormPage container", () => {
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
+    sandbox.stub(NotificationsActions, "notifyError").returns({
+      type: "NOTIFICATION_ADDED"
+    });
   });
 
   afterEach(() => {
@@ -84,6 +88,14 @@ describe("BulkFormPage container", () => {
             description: ""
           });
         });
+    });
+
+    it("should notify an error when the form is empty", () => {
+      Simulate.submit(findOne(comp, "form"));
+
+      sinon.assert.calledWith(NotificationsActions.notifyError, {
+        message: "The form is empty."
+      });
     });
   });
 

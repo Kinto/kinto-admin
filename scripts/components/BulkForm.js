@@ -11,8 +11,12 @@ export default class BulkForm extends Component {
     return nextProps.name && nextProps.schema;
   }
 
-  onSubmit(data) {
-    this.props.bulkCreate(data.formData);
+  onSubmit({formData}) {
+    if (formData.length > 0) {
+      this.props.bulkCreate(formData);
+    } else {
+      this.props.notifyError({message: "The form is empty."});
+    }
   }
 
   render() {
@@ -20,6 +24,7 @@ export default class BulkForm extends Component {
     const {liveValidate} = config;
     const bulkSchema = {type: "array", definitions: schema.definitions, items: schema};
     const bulkUiSchema = {items: uiSchema};
+    const bulkFormData = [];
     return (
       <div>
         <h1>Bulk {name} creation</h1>
@@ -27,6 +32,7 @@ export default class BulkForm extends Component {
           liveValidate={liveValidate}
           schema={bulkSchema}
           uiSchema={bulkUiSchema}
+          formData={bulkFormData}
           onSubmit={this.onSubmit.bind(this)}>
           <input type="submit" className="btn btn-primary" value="Bulk create" />
           {" or "}
