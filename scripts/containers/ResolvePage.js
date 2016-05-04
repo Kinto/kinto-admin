@@ -1,6 +1,7 @@
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import Resolve from "../components/Resolve";
+import * as CollectionActions from "../actions/collection";
 import * as ConflictsActions from "../actions/conflicts";
 import * as NotificationsActions from "../actions/notifications";
 
@@ -13,6 +14,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(Object.assign({},
+    CollectionActions,
     ConflictsActions,
     NotificationsActions
   ), dispatch);

@@ -40,12 +40,12 @@ export default function Resolve(props) {
       <h1>Resolve {type} conflict</h1>
       <div className="row">
         <div className="col-sm-6">
-          <VersionPicker heading="Local" type="local"
-            record={local} pick={props.resolveConflict} />
+          <VersionPicker heading="Local" type="local" record={local}
+            pick={(record) => props.resolve(conflict, record)} />
         </div>
         <div className="col-sm-6">
-          <VersionPicker heading="Remote" type="remote"
-            record={remote} pick={props.resolveConflict} />
+          <VersionPicker heading="Remote" type="remote" record={remote}
+            pick={(record) => props.resolve(conflict, record)} />
         </div>
       </div>
     </div>
