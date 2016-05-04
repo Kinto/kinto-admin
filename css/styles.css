@@ -24,7 +24,7 @@ body {
 }
 
 .content.with-notifications {
-  padding-top: 6.5em;
+  padding-top: 8em;
 }
 
 .content-header .server-info {
@@ -46,13 +46,23 @@ body {
   margin-left: .5em;
 }
 
-table.record-list tbody tr.unsynced {
+table.record-list tr.unsynced {
   background: repeating-linear-gradient(
     45deg,
     #fcf8e3,
     #fcf8e3 10px,
     #eee 10px,
     #eee 20px
+  );
+}
+
+table.record-list tr.conflicting {
+  background: repeating-linear-gradient(
+    45deg,
+    #fcf8e3,
+    #fcf8e3 10px,
+    #FFC8C7 10px,
+    #FFC8C7 20px
   );
 }
 
@@ -74,8 +84,8 @@ table.record-list td.status {
 }
 
 table.record-list td.actions {
-  min-width: 120px;
-  width: 120px;
+  min-width: 180px;
+  width: 180px;
   white-space: nowrap;
 }
 
