@@ -100,3 +100,7 @@ table.record-list td.actions {
   padding-left: 2em;
   padding-top: 1em;
 }
+
+.json-record {
+  min-height: 300px;
+}
