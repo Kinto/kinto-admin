@@ -5,6 +5,7 @@ import settings from "./settings";
 import collection from "./collection";
 import collections from "./collections";
 import notifications from "./notifications";
+import conflicts from "./conflicts";
 import form from "./form";
 import serverInfo from "./serverInfo";
 
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   collection,
   collections,
   notifications,
+  conflicts,
   form,
   serverInfo,
   routing: routeReducer,

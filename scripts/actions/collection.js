@@ -3,6 +3,7 @@ import btoa from "btoa";
 
 import * as CollectionsActions from "./collections";
 import * as NotificationsActions from "./notifications";
+import * as ConflictsActions from "./conflicts";
 import * as FormActions from "./form";
 import { updatePath } from "redux-simple-router";
 
@@ -205,12 +206,18 @@ export function deleteRecord(id) {
 export function sync(options) {
   return withCollection((dispatch, collection) => {
     const syncPromise = collection.sync(options)
-      .then(res => {
-        if (res.ok) {
-          return res;
+      .then(syncResult => {
+        if (syncResult.ok) {
+          return syncResult;
         }
+        // Report encountered conflicts, if any
+        const {conflicts} = syncResult;
+        if (conflicts.length > 0) {
+          dispatch(ConflictsActions.reportConflicts(conflicts));
+        }
+        // Generate and throw a detailed error
         const err = new Error("Synchronization failed.");
-        err.details = formatSyncErrorDetails(res);
+        err.details = formatSyncErrorDetails(syncResult);
         throw err;
       });
     execute(dispatch, syncPromise, {
