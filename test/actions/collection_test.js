@@ -7,18 +7,20 @@ import collectionReducer from "../../scripts/reducers/collection";
 import collectionsReducer from "../../scripts/reducers/collections";
 import settingsReducer from "../../scripts/reducers/settings";
 import * as actions from "../../scripts/actions/collection";
+import * as ConflictsActions from "../../scripts/actions/conflicts";
 import * as NotificationsActions from "../../scripts/actions/notifications";
 import * as ReduxRouter from "redux-simple-router";
 import jsonConfig from "../../config/config.json";
 
 describe("collection actions", () => {
-  var sandbox, notifyError;
+  var sandbox, notifyError, markResolved;
 
   const settings = settingsReducer(undefined, {type: null});
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
     notifyError = sandbox.stub(NotificationsActions, "notifyError");
+    markResolved = sandbox.stub(ConflictsActions, "markResolved");
   });
 
   afterEach(() => {
@@ -332,6 +334,71 @@ describe("collection actions", () => {
         Promise.resolve());
 
       actions.create({foo: "bar"})(dispatch, getState);
+
+      setImmediate(() => {
+        sinon.assert.calledWithMatch(dispatch, {
+          type: ReduxRouter.UPDATE_PATH,
+          path: "/collections/tasks",
+        });
+        done();
+      });
+    });
+  });
+
+  describe("resolve()", () => {
+    var dispatch, getState;
+
+    beforeEach(() => {
+      const collections = collectionsReducer(undefined, {type: null});
+      const collection = collectionReducer({name: "tasks"}, {type: null});
+      dispatch = sandbox.spy();
+      getState = () => ({
+        collections,
+        collection,
+      });
+    });
+
+    it("should resolve the conflict", () => {
+      const resolve = sandbox.stub(KintoCollection.prototype, "resolve").returns(
+        Promise.resolve());
+      const conflict = {local: {}, remote: {}};
+
+      actions.resolve(conflict, {foo: "bar"})(dispatch, getState);
+
+      sinon.assert.calledWith(resolve, conflict, {foo: "bar"});
+    });
+
+    it("should clear notifications", () => {
+      sandbox.stub(KintoCollection.prototype, "resolve").returns(
+        Promise.resolve());
+      const conflict = {local: {}, remote: {}};
+
+      actions.resolve(conflict, {foo: "bar"})(dispatch, getState);
+
+      sinon.assert.calledWith(dispatch, {
+        type: NotificationsActions.NOTIFICATION_CLEAR,
+      });
+    });
+
+    it("should mark the conflict as resolved", (done) => {
+      sandbox.stub(KintoCollection.prototype, "resolve").returns(
+        Promise.resolve());
+      const conflict = {local: {}, remote: {}};
+
+      actions.resolve(conflict, {id: 42, foo: "bar"})(dispatch, getState);
+
+      setImmediate(() => {
+        sinon.assert.calledWith(markResolved, 42);
+        done();
+      });
+    });
+
+    it("should redirect to collection URL", (done) => {
+      sandbox.stub(KintoCollection.prototype, "resolve").returns(
+        Promise.resolve());
+      const conflict = {local: {}, remote: {}};
+
+      actions.resolve(conflict, {foo: "bar"})(dispatch, getState);
 
       setImmediate(() => {
         sinon.assert.calledWithMatch(dispatch, {
