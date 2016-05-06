@@ -1,16 +1,13 @@
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import CollectionList from "../components/CollectionList";
+import Resolve from "../components/Resolve";
 import * as CollectionActions from "../actions/collection";
 import * as ConflictsActions from "../actions/conflicts";
 import * as NotificationsActions from "../actions/notifications";
-import { updatePath } from "redux-simple-router";
 
 function mapStateToProps(state) {
   return {
-    collection: state.collection,
-    collections: state.collections,
-    settings: state.settings,
+    notifications: state.notifications,
     conflicts: state.conflicts,
   };
 }
@@ -18,14 +15,12 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(Object.assign({},
     CollectionActions,
-    NotificationsActions,
     ConflictsActions,
-    {updatePath}
+    NotificationsActions
   ), dispatch);
 }
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(CollectionList);
-
+)(Resolve);

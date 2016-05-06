@@ -78,14 +78,14 @@ describe("CollectionListPage container", () => {
         "false",
         "1970-01-02 03:46:40",
         "synced",
-        "EditDelete",
+        "EditResolveDelete",
       ]);
       expect(rowTexts(2)).eql([
         "task#2",
         "true",
         "1970-01-03 07:33:20",
         "updated",
-        "EditDelete",
+        "EditResolveDelete",
       ]);
     });
 

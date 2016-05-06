@@ -77,8 +77,13 @@ class Row extends Component {
   }
 
   render() {
-    const { name, record, config } = this.props;
-    return <tr className={record._status !== "synced" ? "unsynced" : ""}
+    const { name, record, config, conflict } = this.props;
+    const classes = [
+      record._status !== "synced" ? "unsynced" : "",
+      conflict ? "conflicting" : ""
+    ].join(" ").trim();
+
+    return <tr className={classes}
       onDoubleClick={this.onDoubleClick.bind(this)}>
       {
         config.displayFields.map((displayField, index) => {
@@ -91,6 +96,13 @@ class Row extends Component {
         <div className="btn-group">
           <Link to={`/collections/${name}/edit/${record.id}`}
             className="btn btn-sm btn-info">Edit</Link>
+          {
+            conflict ?
+              <Link to={`/collections/${name}/resolve/${conflict.local.id}`}
+                className="btn btn-sm btn-warning">Resolve</Link> :
+              <button type="button" className="btn btn-sm btn-warning"
+                disabled>Resolve</button>
+          }
           <button type="button" className="btn btn-sm btn-danger"
             onClick={this.onDeleteClick.bind(this)}>Delete</button>
         </div>
@@ -101,7 +113,15 @@ class Row extends Component {
 
 class Table extends Component {
   render() {
-    const {name, records, schema, config, deleteRecord, updatePath} = this.props;
+    const {
+      name,
+      records,
+      schema,
+      config,
+      conflicts,
+      deleteRecord,
+      updatePath
+    } = this.props;
     if (records.length === 0) {
       return <p>This collection is empty.</p>;
     }
@@ -111,9 +131,11 @@ class Table extends Component {
           <tr>
             {
               config.displayFields.map((field, index) => {
-                return <th key={index}>{
-                  schema.properties[field].title
-                }</th>;
+                return (
+                  <th key={index}>{
+                    schema.properties[field].title
+                  }</th>
+                );
               })
             }
             <th>Last mod.</th>
@@ -123,13 +145,16 @@ class Table extends Component {
         </thead>
         <tbody>{
           records.map((record, index) => {
-            return <Row key={index}
-              name={name}
-              record={record}
-              schema={schema}
-              config={config}
-              deleteRecord={deleteRecord}
-              updatePath={updatePath} />;
+            return (
+              <Row key={index}
+                name={name}
+                record={record}
+                conflict={conflicts[record.id]}
+                schema={schema}
+                config={config}
+                deleteRecord={deleteRecord}
+                updatePath={updatePath} />
+            );
           })
         }</tbody>
       </table>
@@ -165,7 +190,7 @@ export default class CollectionList extends Component {
   render() {
     const {name, busy, schema, records, config} = this.props.collection;
     const {server} = this.props.settings;
-    const {deleteRecord} = this.props;
+    const {deleteRecord, conflicts} = this.props;
     if (!name) {
       return <p>Loading...</p>;
     }
@@ -184,6 +209,7 @@ export default class CollectionList extends Component {
         <Table
           name={name}
           records={records}
+          conflicts={conflicts}
           schema={schema}
           config={config}
           deleteRecord={deleteRecord}

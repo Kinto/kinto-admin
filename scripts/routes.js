@@ -9,6 +9,8 @@ import AddFormPage from "./containers/AddFormPage";
 import BulkFormPage from "./containers/BulkFormPage";
 import EditFormPage from "./containers/EditFormPage";
 import SettingsPage from "./containers/SettingsPage";
+import ResolvePage from "./containers/ResolvePage";
+
 
 const LinkBack = (props) => {
   const {name} = props.params;
@@ -39,6 +41,8 @@ export default (
       components={{...common, content: BulkFormPage, linkBack: LinkBack}} />
     <Route path="/collections/:name/edit/:id"
       components={{...common, content: EditFormPage, linkBack: LinkBack}} />
+    <Route path="/collections/:name/resolve/:id"
+      components={{...common, content: ResolvePage, linkBack: LinkBack}} />
     <Route path="/settings"
       components={{...common, content: SettingsPage}} />
     <Route path="*" components={{
