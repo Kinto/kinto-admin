@@ -5,6 +5,10 @@
 A Web admin UI to manage [Kinto](https://kinto.readthedocs.io/) collections.
 [Give it a go](http://kinto.github.io/kinto-admin/)!
 
+`kinto-admin` wants to be the [pgAdmin](http://pgadmin.org/) for
+Kinto. You can also use it to build administration interfaces for
+Kinto-based systems.
+
 ## Installation
 
 NodeJS v4+ and npm 2.14+ should be installed and available on your machine.
@@ -112,8 +116,12 @@ After installation of packages, run the development server.
 
 ## Development server
 
-The development server should only be used when working on the kinto-admin
-codebase itself:
+The development server should only be used when working on the
+kinto-admin codebase itself. If you're evaluating kinto-admin, or
+building a system that relies on kinto-admin to administer, you should
+install kinto-admin using npm and use it as above.
+
+To run in development mode:
 
 ```
 $ npm start
