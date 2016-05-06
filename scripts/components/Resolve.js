@@ -13,7 +13,7 @@ function NotFound(props) {
 function VersionPicker(props) {
   const {heading, type, record, pick} = props;
   return (
-    <div className="panel panel-default">
+    <div className={`panel panel-default picker-${type}`}>
       <div className="panel-heading">{heading}</div>
       <div className="panel-body">
         <pre className="json-record">{JSON.stringify(record, null, 2)}</pre>
