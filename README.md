@@ -25,7 +25,7 @@ The Web admin UI can be served locally using the `kinto-admin` executable,
 provided you pass it a valid JSON configuration file:
 
 ```bash
-$ kinto-admin --config myconfig.json
+$ kinto-admin serve --config myconfig.json
 Using config at myconfig.json
 Listening at http://0.0.0.0:3000
 ```
@@ -33,7 +33,7 @@ Listening at http://0.0.0.0:3000
 You can specify the port to listen to using the `--port` or `-p` options:
 
 ```bash
-$ kinto-admin --config myconfig.json -p 4000
+$ kinto-admin serve --config myconfig.json -p 4000
 Using config at myconfig.json
 Listening at http://0.0.0.0:4000
 ```
