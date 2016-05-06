@@ -122,6 +122,19 @@ $ npm start
 The application is served at [localhost:3000](http://localhost:3000/), and any
 React component update will trigger a hot reload.
 
+## FAQ
+
+### I get an ENOENT when I go to localhost:3000
+
+Did you run `bin/kinto-admin` from this repository?
+
+You can only run `kinto-admin` if you get `kinto-admin` with npm. The
+version of `kinto-admin` uploaded to npm contains an
+automatically-built `dist` directory with the artifacts that the
+browser needs.
+
+Instead, run the development server, as above.
+
 ## License
 
 Apache Licence Version 2.0
