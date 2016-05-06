@@ -7,7 +7,7 @@ A Web admin UI to manage [Kinto](https://kinto.readthedocs.io/) collections.
 
 ## Installation
 
-NodeJS v4+ and npm 2.14+ should be instaled and available on your machine.
+NodeJS v4+ and npm 2.14+ should be installed and available on your machine.
 
 ```bash
 $ npm install -g kinto-admin
@@ -108,7 +108,7 @@ Install packages:
 $ cd kinto-admin && npm install
 ```
 
-After installation  of packages, run the development server.
+After installation of packages, run the development server.
 
 ## Development server
 
