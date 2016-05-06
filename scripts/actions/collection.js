@@ -199,7 +199,6 @@ export function resolve(conflict, resolution) {
   return withCollection((dispatch, collection) => {
     const resolvePromise = collection.resolve(conflict, resolution)
       .then((res) => {
-        console.log("updated", res);
         dispatch(ConflictsActions.markResolved(resolution.id));
         return res;
       });

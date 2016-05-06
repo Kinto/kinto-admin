@@ -84,8 +84,8 @@ table.record-list td.status {
 }
 
 table.record-list td.actions {
-  min-width: 180px;
-  width: 180px;
+  min-width: 200px;
+  width: 200px;
   white-space: nowrap;
 }
 
