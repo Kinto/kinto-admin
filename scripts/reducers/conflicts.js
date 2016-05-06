@@ -19,7 +19,7 @@ export default function collections(state = INITIAL_STATE, action) {
   case CONFLICT_RESOLVED: {
     return Object.keys(state).reduce((acc, id) => {
       return id !== action.id ? Object.assign({}, acc, {[id]: state[id]}) : acc;
-    });
+    }, {});
   }
   default:
     return state;
