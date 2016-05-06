@@ -544,8 +544,7 @@ describe("collection actions", () => {
       actions.sync()(dispatch, getState);
 
       setImmediate(() => {
-        sinon.assert.calledWithMatch(
-          ConflictsActions.reportConflicts, conflicts);
+        sinon.assert.calledWithMatch(reportConflicts, conflicts);
         done();
       });
     });
