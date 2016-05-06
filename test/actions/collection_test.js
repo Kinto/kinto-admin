@@ -13,7 +13,7 @@ import * as ReduxRouter from "redux-simple-router";
 import jsonConfig from "../../config/config.json";
 
 describe("collection actions", () => {
-  var sandbox, notifyError, markResolved;
+  var sandbox, notifyError, markResolved, reportConflicts;
 
   const settings = settingsReducer(undefined, {type: null});
 
@@ -21,6 +21,7 @@ describe("collection actions", () => {
     sandbox = sinon.sandbox.create();
     notifyError = sandbox.stub(NotificationsActions, "notifyError");
     markResolved = sandbox.stub(ConflictsActions, "markResolved");
+    reportConflicts = sandbox.stub(ConflictsActions, "reportConflicts");
   });
 
   afterEach(() => {
@@ -524,6 +525,27 @@ describe("collection actions", () => {
           message: "Synchronization failed.",
           details: ["incoming conflict: 1", "incoming conflict: 2"]
         });
+        done();
+      });
+    });
+
+    it("should report synchronization conflicts", (done) => {
+      const conflicts = [
+        {type: "incoming", local: {id: 1}, remote: {id: 1}},
+        {type: "incoming", local: {id: 2}, remote: {id: 2}},
+      ];
+      sandbox.stub(KintoCollection.prototype, "sync")
+        .returns(Promise.resolve({
+          ok: false,
+          conflicts,
+          errors: [],
+        }));
+
+      actions.sync()(dispatch, getState);
+
+      setImmediate(() => {
+        sinon.assert.calledWithMatch(
+          ConflictsActions.reportConflicts, conflicts);
         done();
       });
     });
