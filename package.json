@@ -1,6 +1,6 @@
 {
   "name": "kinto-admin",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "description": "Kinto Web Administration Console in React.js",
   "scripts": {
     "dist": "NODE_ENV=production webpack --optimize-minimize --config webpack.prod.js && cp index.prod.html dist/index.html",
