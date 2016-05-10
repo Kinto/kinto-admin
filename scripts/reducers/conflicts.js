@@ -10,7 +10,8 @@ export default function collections(state = INITIAL_STATE, action) {
   switch(action.type) {
   case CONFLICTS_REPORTED: {
     return action.conflicts.reduce((acc, conflict) =>  {
-      acc[conflict.local.id] = {...conflict,
+      acc[conflict.local.id] = {
+        ...conflict,
         local: cleanRecord(conflict.local, ["_status"])
       };
       return acc;
