@@ -58,15 +58,15 @@ class VersionPicker extends Component {
 }
 
 function DiffView({source, target}) {
-  const diff = diffJson(source, target);
+  const diff = diffJson(target, source);
   return (
     <pre className="json-record">{
       diff.map((chunk, i) => {
-        const color = chunk.added ? "red" : chunk.removed ? "green" : "inherit";
+        const color = chunk.added ? "green" : chunk.removed ? "red" : "inherit";
         const prefixedChunk = chunk.value.split("\n")
           .filter(part => part !== "")
           .map((part) => {
-            const prefix = chunk.added ? "+ " : chunk.removed ? "- " : "";
+            const prefix = chunk.added ? "+ " : chunk.removed ? "- " : "  ";
             return prefix + part;
           })
           .join("\n");
