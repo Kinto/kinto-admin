@@ -18,7 +18,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
-    Object.assign({}, CollectionActions, NotificationsActions, {updatePath}),
+    {...CollectionActions, ...NotificationsActions, updatePath},
     dispatch);
 }
 

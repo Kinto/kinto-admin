@@ -10,15 +10,16 @@ export default function collections(state = INITIAL_STATE, action) {
   switch(action.type) {
   case CONFLICTS_REPORTED: {
     return action.conflicts.reduce((acc, conflict) =>  {
-      acc[conflict.local.id] = Object.assign({}, conflict, {
+      acc[conflict.local.id] = {
+        ...conflict,
         local: cleanRecord(conflict.local, ["_status"])
-      });
+      };
       return acc;
     }, {});
   }
   case CONFLICT_RESOLVED: {
     return Object.keys(state).reduce((acc, id) => {
-      return id !== action.id ? Object.assign({}, acc, {[id]: state[id]}) : acc;
+      return id !== action.id ? {...acc, [id]: state[id]} : acc;
     }, {});
   }
   default:

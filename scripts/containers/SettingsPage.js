@@ -15,7 +15,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
-    Object.assign({}, SettingsActions, NotificationsActions, ServerInfoActions),
+    {...SettingsActions, ...NotificationsActions, ...ServerInfoActions},
     dispatch);
 }
 
