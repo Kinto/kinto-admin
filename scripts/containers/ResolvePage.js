@@ -13,11 +13,11 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(Object.assign({},
-    CollectionActions,
-    ConflictsActions,
-    NotificationsActions
-  ), dispatch);
+  return bindActionCreators({
+    ...CollectionActions,
+    ...ConflictsActions,
+    ...NotificationsActions
+  }, dispatch);
 }
 
 export default connect(

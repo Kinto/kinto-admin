@@ -17,10 +17,11 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  const combinedActions = Object.assign({},
-    CollectionActions,
-    FormActions,
-    NotificationsActions);
+  const combinedActions = {
+    ...CollectionActions,
+    ...FormActions,
+    ...NotificationsActions
+  };
   return bindActionCreators(combinedActions, dispatch);
 }
 

@@ -16,12 +16,12 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(Object.assign({},
-    CollectionActions,
-    NotificationsActions,
-    ConflictsActions,
-    {updatePath}
-  ), dispatch);
+  return bindActionCreators({
+    ...CollectionActions,
+    ...NotificationsActions,
+    ...ConflictsActions,
+    updatePath
+  }, dispatch);
 }
 
 export default connect(

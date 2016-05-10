@@ -24,6 +24,6 @@ export function submitForm() {
   return (dispatch, getState) => {
     const {record, formData} = getState().form;
     const cleanFormData = cleanRecord(formData, FORMDATA_IGNORE_FIELDS);
-    dispatch(update(Object.assign({}, record, cleanFormData)));
+    dispatch(update({...record, ...cleanFormData}));
   };
 }
