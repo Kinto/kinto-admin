@@ -93,7 +93,7 @@ yargs
   // serve command
   .command("serve", "Serves the Kinto Web admin UI.", function(yargs) {
     var argv = baseCommand(yargs)
-      .example("$ kinto-admin serve -c config.json -d build")
+      .example("$ kinto-admin serve -c config.json")
       .option("p", {
         alias: "port",
         describe: "Server port to use",
@@ -107,7 +107,7 @@ yargs
   // build command
   .command("build", "Builds the Web admin assets for static hosting.", function(yargs) {
     var argv = baseCommand(yargs)
-      .example("$ kinto-admin build -c config.json")
+      .example("$ kinto-admin build -c config.json -d build")
       .option("d", {
         alias: "destination",
         describe: "Target build directory.",
