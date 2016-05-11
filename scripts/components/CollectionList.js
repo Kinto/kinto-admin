@@ -5,7 +5,7 @@ import Kinto from "kinto";
 import BusyIndicator from "./BusyIndicator";
 
 
-const {CLIENT_WINS, SERVER_WINS} = Kinto.syncStrategy;
+const {MANUAL, CLIENT_WINS, SERVER_WINS} = Kinto.syncStrategy;
 
 class AdvancedActions extends React.Component {
   constructor(props) {
@@ -170,43 +170,45 @@ class Table extends Component {
 class SyncButton extends Component {
   constructor(props) {
     super(props);
-    this.state = {open: false};
+    this.state = {open: false, strategy: MANUAL};
   }
 
-  // menu state handlers
   openMenu = () => this.setState({open: true});
   closeMenu = () => this.setState({open: false});
 
-  // sync action handlers
-  processSyncClick = (event, syncOptions) => {
-    event.preventDefault();
-    this.props.sync(syncOptions);
+  doSync = () => {
+    this.props.sync({strategy: this.state.strategy});
     this.setState({open: false});
+  };
+
+  selectStrategy = (strategy) => {
+    return (event) => {
+      event.preventDefault();
+      this.setState({strategy, open: false});
+    };
   }
-  manualSync = (event) => this.processSyncClick(event)
-  clientWinsSync = (event) => this.processSyncClick(event, {
-    strategy: CLIENT_WINS
-  });
-  serverWinsSync = (event) => this.processSyncClick(event, {
-    strategy: SERVER_WINS
-  });
 
   render() {
-    const {sync} = this.props;
-    const {open} = this.state;
+    const {open, strategy} = this.state;
     return (
       <div className={`btn-group ${open ? "open" : ""}`}>
         <button type="button" className="btn btn-info btn-sync"
-          onClick={sync.bind(null, "manual")}>Synchronize</button>
+          onClick={this.doSync}>Synchronize ({strategy.toUpperCase()})</button>
         <button type="button" className="btn btn-info dropdown-toggle"
           title="Select alternative strategy"
           onClick={open ? this.closeMenu : this.openMenu}>
           <span className="caret"></span>
         </button>
         <ul className="dropdown-menu">
-          <li onClick={this.manualSync}><a href="#">Manual</a></li>
-          <li onClick={this.clientWinsSync}><a href="#">Client wins</a></li>
-          <li onClick={this.serverWinsSync}><a href="#">Server wins</a></li>
+          <li onClick={this.selectStrategy(MANUAL)}>
+            <a href="#">Manual</a>
+          </li>
+          <li onClick={this.selectStrategy(CLIENT_WINS)}>
+            <a href="#">Client wins</a>
+          </li>
+          <li onClick={this.selectStrategy(SERVER_WINS)}>
+            <a href="#">Server wins</a>
+          </li>
         </ul>
       </div>
     );
