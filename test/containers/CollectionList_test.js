@@ -1,7 +1,11 @@
 import { expect } from "chai";
 import sinon from "sinon";
 import React from "react";
+import Kinto from "kinto";
 import KintoCollection from "kinto/lib/collection";
+
+
+const {MANUAL, CLIENT_WINS, SERVER_WINS} = Kinto.syncStrategy;
 
 import { setupContainer, nodeText, nodeTexts, click } from "../test-utils";
 import CollectionListPage from "../../scripts/containers/CollectionListPage";
@@ -90,18 +94,36 @@ describe("CollectionListPage container", () => {
     });
 
     describe("Collection action buttons", () => {
+      let sync;
+
+      beforeEach(() => {
+        sync = sandbox.stub(KintoCollection.prototype, "sync")
+          .returns(Promise.resolve({ok: true}));
+      });
+
       it("should render collection action buttons", () => {
         expect(nodeTexts(comp, ".list-actions .btn-sync")).eql(
             ["Synchronize (MANUAL)", "Synchronize (MANUAL)"]);
       });
 
       it("should call kinto collection sync()", () => {
-        const sync = sandbox.stub(KintoCollection.prototype, "sync")
-          .returns(Promise.resolve({ok: true}));
+        click(comp, ".list-actions .btn-sync");
 
-        click(comp, ".list-actions button.btn-sync");
+        sinon.assert.calledWithMatch(sync, {strategy: MANUAL});
+      });
 
-        sinon.assert.called(sync);
+      it("should allow selecting the CLIENT_WINS sync strategy", () => {
+        click(comp, ".list-actions .sync_client_wins");
+        click(comp, ".list-actions .btn-sync");
+
+        sinon.assert.calledWithMatch(sync, {strategy: CLIENT_WINS});
+      });
+
+      it("should allow selecting the SERVER_WINS sync strategy", () => {
+        click(comp, ".list-actions .sync_server_wins");
+        click(comp, ".list-actions .btn-sync");
+
+        sinon.assert.calledWithMatch(sync, {strategy: SERVER_WINS});
       });
     });
   });

@@ -173,6 +173,12 @@ class SyncButton extends Component {
     this.state = {open: false};
   }
 
+  static strategies = {
+    [MANUAL]: "MANUAL resolution",
+    [CLIENT_WINS]: "CLIENT_WINS resolution",
+    [SERVER_WINS]: "SERVER_WINS resolution",
+  }
+
   openMenu = () => this.setState({open: true});
   closeMenu = () => this.setState({open: false});
 
@@ -201,17 +207,17 @@ class SyncButton extends Component {
           onClick={open ? this.closeMenu : this.openMenu}>
           <span className="caret"></span>
         </button>
-        <ul className="dropdown-menu">
-          <li onClick={this.selectStrategy(MANUAL)}>
-            <a href="#">MANUAL resolution</a>
-          </li>
-          <li onClick={this.selectStrategy(CLIENT_WINS)}>
-            <a href="#">CLIENT_WINS</a>
-          </li>
-          <li onClick={this.selectStrategy(SERVER_WINS)}>
-            <a href="#">SERVER_WINS</a>
-          </li>
-        </ul>
+        <ul className="dropdown-menu">{
+          Object.keys(SyncButton.strategies).map((strat, i) => {
+            const classes = strategy === strat ? "active" : "";
+            return (
+              <li className={classes} onClick={this.selectStrategy(strat)}>
+                <a className={`sync_${strat}`} href="#">
+                  {SyncButton.strategies[strat]}</a>
+              </li>
+            );
+          })
+        }</ul>
       </div>
     );
   }
