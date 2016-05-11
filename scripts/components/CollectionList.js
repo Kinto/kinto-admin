@@ -178,20 +178,18 @@ class SyncButton extends Component {
   closeMenu = () => this.setState({open: false});
 
   // sync action handlers
-  manualSync = (event) => {
+  processSyncClick = (event, syncOptions) => {
     event.preventDefault();
-    this.props.sync();
+    this.props.sync(syncOptions);
+    this.setState({open: false});
   }
-
-  clientWinsSync = (event) => {
-    event.preventDefault();
-    this.props.sync({strategy: CLIENT_WINS});
-  }
-
-  serverWinsSync = (event) => {
-    event.preventDefault();
-    this.props.sync({strategy: SERVER_WINS});
-  }
+  manualSync = (event) => this.processSyncClick(event)
+  clientWinsSync = (event) => this.processSyncClick(event, {
+    strategy: CLIENT_WINS
+  });
+  serverWinsSync = (event) => this.processSyncClick(event, {
+    strategy: SERVER_WINS
+  });
 
   render() {
     const {sync} = this.props;
