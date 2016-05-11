@@ -43,12 +43,12 @@ class VersionPicker extends Component {
         }</div>
         <div className="panel-footer text-center">
           <div className="btn-group">
-            <button type="button" className="btn btn-success"
+            <button type="button" className="btn btn-success btn-pick"
               onClick={() => pick(record)}>Pick {type} version</button>
             {diff ?
-              <button className="btn btn-info"
+              <button className="btn btn-info btn-diff"
                 onClick={this.hideDiff}>Hide diff</button> :
-              <button className="btn btn-info"
+              <button className="btn btn-info btn-diff"
                 onClick={this.showDiff}>Show diff</button>}
           </div>
         </div>
