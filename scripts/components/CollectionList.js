@@ -170,26 +170,28 @@ class Table extends Component {
 class SyncButton extends Component {
   constructor(props) {
     super(props);
-    this.state = {open: false, strategy: MANUAL};
+    this.state = {open: false};
   }
 
   openMenu = () => this.setState({open: true});
   closeMenu = () => this.setState({open: false});
 
   doSync = () => {
-    this.props.sync({strategy: this.state.strategy});
+    this.props.sync();
     this.setState({open: false});
   };
 
   selectStrategy = (strategy) => {
     return (event) => {
       event.preventDefault();
-      this.setState({strategy, open: false});
+      this.props.selectStrategy(strategy);
+      this.setState({open: false});
     };
   }
 
   render() {
-    const {open, strategy} = this.state;
+    const {strategy} = this.props;
+    const {open} = this.state;
     return (
       <div className={`btn-group ${open ? "open" : ""}`}>
         <button type="button" className="btn btn-info btn-sync"
@@ -216,10 +218,13 @@ class SyncButton extends Component {
 }
 
 function ListActions(props) {
-  const {name, sync, reset} = props;
+  const {name, sync, reset, strategy, selectStrategy} = props;
   return (
     <div className="list-actions">
-      <SyncButton sync={sync} />
+      <SyncButton
+        sync={sync}
+        selectStrategy={selectStrategy}
+        strategy={strategy} />
       <Link to={`/collections/${name}/add`} className="btn btn-info">Add</Link>
       <AdvancedActions collection={name} resetSync={reset} />
     </div>
@@ -227,7 +232,16 @@ function ListActions(props) {
 }
 
 export default class CollectionList extends Component {
-  onResetSyncClick() {
+  constructor(props) {
+    super(props);
+    this.state = {strategy: MANUAL};
+  }
+
+  selectStrategy = (strategy) => this.setState({strategy});
+
+  sync = () => this.props.sync({strategy: this.state.strategy});
+
+  onResetSyncClick = () => {
     if (confirm("Are you sure?")) {
       this.props.resetSync();
     }
@@ -236,15 +250,18 @@ export default class CollectionList extends Component {
   render() {
     const {name, busy, schema, records, config} = this.props.collection;
     const {server} = this.props.settings;
-    const {deleteRecord, conflicts, sync} = this.props;
+    const {deleteRecord, conflicts} = this.props;
+    const {strategy} = this.state;
     if (!name) {
       return <p>Loading...</p>;
     }
     const listActions = (
       <ListActions
         name={name}
-        sync={sync}
-        reset={this.onResetSyncClick.bind(this)} />
+        strategy={strategy}
+        selectStrategy={this.selectStrategy}
+        sync={this.sync}
+        reset={this.onResetSyncClick} />
     );
     return (
       <div className="collection-page">
