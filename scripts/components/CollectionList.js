@@ -201,13 +201,13 @@ class SyncButton extends Component {
         </button>
         <ul className="dropdown-menu">
           <li onClick={this.selectStrategy(MANUAL)}>
-            <a href="#">Manual</a>
+            <a href="#">MANUAL resolution</a>
           </li>
           <li onClick={this.selectStrategy(CLIENT_WINS)}>
-            <a href="#">Client wins</a>
+            <a href="#">CLIENT_WINS</a>
           </li>
           <li onClick={this.selectStrategy(SERVER_WINS)}>
-            <a href="#">Server wins</a>
+            <a href="#">SERVER_WINS</a>
           </li>
         </ul>
       </div>
