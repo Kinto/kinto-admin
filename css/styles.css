@@ -104,3 +104,7 @@ table.record-list td.actions {
 .json-record {
   min-height: 300px;
 }
+
+.list-actions .label {
+  margin-left: 1em;
+}

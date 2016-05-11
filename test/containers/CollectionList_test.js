@@ -102,8 +102,10 @@ describe("CollectionListPage container", () => {
       });
 
       it("should render collection action buttons", () => {
-        expect(nodeTexts(comp, ".list-actions .btn-sync")).eql(
-            ["Synchronize (MANUAL)", "Synchronize (MANUAL)"]);
+        expect(nodeTexts(comp, ".list-actions .btn-sync .caption")).eql(
+            ["Synchronize", "Synchronize"]);
+        expect(nodeTexts(comp, ".list-actions .btn-sync .label")).eql(
+            ["MANUAL", "MANUAL"]);
       });
 
       it("should call kinto collection sync()", () => {
@@ -114,6 +116,10 @@ describe("CollectionListPage container", () => {
 
       it("should allow selecting the CLIENT_WINS sync strategy", () => {
         click(comp, ".list-actions .sync_client_wins");
+
+        expect(nodeText(comp, ".list-actions .btn-sync .label"))
+          .eql("CLIENT_WINS");
+
         click(comp, ".list-actions .btn-sync");
 
         sinon.assert.calledWithMatch(sync, {strategy: CLIENT_WINS});
@@ -121,6 +127,10 @@ describe("CollectionListPage container", () => {
 
       it("should allow selecting the SERVER_WINS sync strategy", () => {
         click(comp, ".list-actions .sync_server_wins");
+
+        expect(nodeText(comp, ".list-actions .btn-sync .label"))
+          .eql("SERVER_WINS");
+
         click(comp, ".list-actions .btn-sync");
 
         sinon.assert.calledWithMatch(sync, {strategy: SERVER_WINS});

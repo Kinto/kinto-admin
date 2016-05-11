@@ -201,7 +201,10 @@ class SyncButton extends Component {
     return (
       <div className={`btn-group ${open ? "open" : ""}`}>
         <button type="button" className="btn btn-info btn-sync"
-          onClick={this.doSync}>Synchronize ({strategy.toUpperCase()})</button>
+          onClick={this.doSync}>
+          <span className="caption">Synchronize</span>
+          <span className="label label-primary">{strategy.toUpperCase()}</span>
+        </button>
         <button type="button" className="btn btn-info dropdown-toggle"
           title="Select alternative strategy"
           onClick={open ? this.closeMenu : this.openMenu}>
