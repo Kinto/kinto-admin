@@ -24,8 +24,10 @@
   },
   "dependencies": {
     "btoa": "^1.1.2",
+    "diff": "^2.2.2",
     "express": "^4.13.3",
     "extract-text-webpack-plugin": "^1.0.1",
+    "json-stable-stringify": "^1.0.1",
     "jsonschema": "^1.0.2",
     "kinto": "^2.0.4",
     "node-fs-extra": "^0.8.1",

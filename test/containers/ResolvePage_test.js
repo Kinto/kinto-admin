@@ -2,6 +2,7 @@ import { expect } from "chai";
 import sinon from "sinon";
 import KintoCollection from "kinto/lib/collection";
 import React from "react";
+import stringify from "json-stable-stringify";
 
 import { setupContainer, nodeText, nodeExists, click } from "../test-utils";
 import ResolvePage from "../../scripts/containers/ResolvePage";
@@ -42,12 +43,16 @@ describe("ResolvePage container", () => {
     });
 
     it("should render a pick button", () => {
-      expect(nodeText(comp, ".picker-local button")).eql("Pick local version");
+      expect(nodeText(comp, ".picker-local .btn-pick")).eql("Pick local version");
+    });
+
+    it("should render a diff button", () => {
+      expect(nodeText(comp, ".picker-local .btn-diff")).eql("Show diff");
     });
 
     it("should render the record version as JSON", () => {
       expect(nodeText(comp, ".picker-local pre"))
-        .eql(JSON.stringify(conflicts[0].local, null, 2));
+        .eql(stringify(conflicts[0].local, {space: "  "}));
     });
 
     it("should resolve the conflict with the local version", () => {
@@ -57,6 +62,29 @@ describe("ResolvePage container", () => {
       click(comp, ".picker-local button");
 
       sinon.assert.calledWith(resolve, conflicts[0], conflicts[0].local);
+    });
+
+    describe("Diff view", () => {
+      beforeEach(() => {
+        click(comp, ".picker-local .btn-diff");
+      });
+
+      it("should render render a diff view", () => {
+        expect(nodeText(comp, ".picker-local pre"))
+          .to.contain("-   \"foo\": 3,");
+        expect(nodeText(comp, ".picker-local pre"))
+          .to.contain("+   \"foo\": 2,");
+      });
+
+      it("should update the diff button", () => {
+        expect(nodeText(comp, ".picker-local .btn-diff")).eql("Hide diff");
+      });
+
+      it("should toggle the diff button back when pressed", () => {
+        click(comp, ".picker-local .btn-diff");
+
+        expect(nodeText(comp, ".picker-local .btn-diff")).eql("Show diff");
+      });
     });
   });
 
@@ -69,9 +97,13 @@ describe("ResolvePage container", () => {
       expect(nodeText(comp, ".picker-remote button")).eql("Pick remote version");
     });
 
+    it("should render a diff button", () => {
+      expect(nodeText(comp, ".picker-remote .btn-diff")).eql("Show diff");
+    });
+
     it("should render the record version as JSON", () => {
       expect(nodeText(comp, ".picker-remote pre"))
-        .eql(JSON.stringify(conflicts[0].remote, null, 2));
+        .eql(stringify(conflicts[0].remote, {space: "  "}));
     });
 
     it("should resolve the conflict with the remote version", () => {
@@ -81,6 +113,29 @@ describe("ResolvePage container", () => {
       click(comp, ".picker-remote button");
 
       sinon.assert.calledWith(resolve, conflicts[0], conflicts[0].remote);
+    });
+
+    describe("Diff view", () => {
+      beforeEach(() => {
+        click(comp, ".picker-remote .btn-diff");
+      });
+
+      it("should render render a diff view", () => {
+        expect(nodeText(comp, ".picker-remote pre"))
+          .to.contain("-   \"foo\": 2,");
+        expect(nodeText(comp, ".picker-remote pre"))
+          .to.contain("+   \"foo\": 3,");
+      });
+
+      it("should update the diff button", () => {
+        expect(nodeText(comp, ".picker-remote .btn-diff")).eql("Hide diff");
+      });
+
+      it("should toggle the diff button back when pressed", () => {
+        click(comp, ".picker-remote .btn-diff");
+
+        expect(nodeText(comp, ".picker-remote .btn-diff")).eql("Show diff");
+      });
     });
   });
 });
