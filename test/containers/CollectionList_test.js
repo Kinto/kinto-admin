@@ -91,15 +91,15 @@ describe("CollectionListPage container", () => {
 
     describe("Collection action buttons", () => {
       it("should render collection action buttons", () => {
-        expect(nodeTexts(comp, "p.list-actions button")).eql(
-            ["Synchronize", "Synchronize"]);
+        expect(nodeTexts(comp, ".list-actions .btn-sync")).eql(
+            ["Synchronize (MANUAL)", "Synchronize (MANUAL)"]);
       });
 
       it("should call kinto collection sync()", () => {
         const sync = sandbox.stub(KintoCollection.prototype, "sync")
           .returns(Promise.resolve({ok: true}));
 
-        click(comp, "p.list-actions button.btn-sync");
+        click(comp, ".list-actions button.btn-sync");
 
         sinon.assert.called(sync);
       });
