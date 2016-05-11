@@ -1,6 +1,11 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
+import Kinto from "kinto";
+
 import BusyIndicator from "./BusyIndicator";
+
+
+const {CLIENT_WINS, SERVER_WINS} = Kinto.syncStrategy;
 
 class AdvancedActions extends React.Component {
   constructor(props) {
@@ -162,25 +167,66 @@ class Table extends Component {
   }
 }
 
-function ListActions(props) {
-  const { name, onSyncClick, onResetSyncClick } = props;
+class SyncButton extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {open: false};
+  }
 
+  // menu state handlers
+  openMenu = () => this.setState({open: true});
+  closeMenu = () => this.setState({open: false});
+
+  // sync action handlers
+  manualSync = (event) => {
+    event.preventDefault();
+    this.props.sync();
+  }
+
+  clientWinsSync = (event) => {
+    event.preventDefault();
+    this.props.sync({strategy: CLIENT_WINS});
+  }
+
+  serverWinsSync = (event) => {
+    event.preventDefault();
+    this.props.sync({strategy: SERVER_WINS});
+  }
+
+  render() {
+    const {sync} = this.props;
+    const {open} = this.state;
+    return (
+      <div className={`btn-group ${open ? "open" : ""}`}>
+        <button type="button" className="btn btn-info btn-sync"
+          onClick={sync.bind(null, "manual")}>Synchronize</button>
+        <button type="button" className="btn btn-info dropdown-toggle"
+          title="Select alternative strategy"
+          onClick={open ? this.closeMenu : this.openMenu}>
+          <span className="caret"></span>
+        </button>
+        <ul className="dropdown-menu">
+          <li onClick={this.manualSync}><a href="#">Manual</a></li>
+          <li onClick={this.clientWinsSync}><a href="#">Client wins</a></li>
+          <li onClick={this.serverWinsSync}><a href="#">Server wins</a></li>
+        </ul>
+      </div>
+    );
+  }
+}
+
+function ListActions(props) {
+  const {name, sync, reset} = props;
   return (
-    <p className="list-actions">
-      <button type="button"
-        className="btn-sync btn btn-info"
-        onClick={onSyncClick}>Synchronize</button>
+    <div className="list-actions">
+      <SyncButton sync={sync} />
       <Link to={`/collections/${name}/add`} className="btn btn-info">Add</Link>
-      <AdvancedActions collection={name} resetSync={onResetSyncClick} />
-    </p>
+      <AdvancedActions collection={name} resetSync={reset} />
+    </div>
   );
 }
 
 export default class CollectionList extends Component {
-  onSyncClick() {
-    this.props.sync();
-  }
-
   onResetSyncClick() {
     if (confirm("Are you sure?")) {
       this.props.resetSync();
@@ -190,10 +236,16 @@ export default class CollectionList extends Component {
   render() {
     const {name, busy, schema, records, config} = this.props.collection;
     const {server} = this.props.settings;
-    const {deleteRecord, conflicts} = this.props;
+    const {deleteRecord, conflicts, sync} = this.props;
     if (!name) {
       return <p>Loading...</p>;
     }
+    const listActions = (
+      <ListActions
+        name={name}
+        sync={sync}
+        reset={this.onResetSyncClick.bind(this)} />
+    );
     return (
       <div className="collection-page">
         <div className="row content-header">
@@ -202,10 +254,7 @@ export default class CollectionList extends Component {
             <em>{busy ? <BusyIndicator/> : null}{server}</em>
           </div>
         </div>
-        <ListActions
-          name={name}
-          onSyncClick={this.onSyncClick.bind(this)}
-          onResetSyncClick={this.onResetSyncClick.bind(this)} />
+        {listActions}
         <Table
           name={name}
           records={records}
@@ -214,10 +263,7 @@ export default class CollectionList extends Component {
           config={config}
           deleteRecord={deleteRecord}
           updatePath={this.props.updatePath} />
-        <ListActions
-          name={name}
-          onSyncClick={this.onSyncClick.bind(this)}
-          onResetSyncClick={this.onResetSyncClick.bind(this)} />
+        {listActions}
       </div>
     );
   }
