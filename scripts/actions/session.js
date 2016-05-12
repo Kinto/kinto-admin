@@ -4,6 +4,7 @@ import KintoClient from "kinto-client";
 export const SESSION_SETUP_COMPLETE = "SESSION_SETUP_COMPLETE";
 export const SESSION_LOGOUT = "SESSION_LOGOUT";
 export const SESSION_BUCKETS = "SESSION_BUCKETS";
+export const SESSION_SERVER_INFO = "SESSION_SERVER_INFO";
 
 let client;
 
@@ -33,6 +34,10 @@ export function listBuckets() {
     client.listBuckets()
       .then(({data}) => {
         dispatch(bucketListReceived(data));
+        return client.serverInfo;
+      })
+      .then((serverInfo) => {
+        dispatch(updateServerInfo(serverInfo));
       });
   };
 }
@@ -49,6 +54,13 @@ export function bucketListReceived(buckets) {
           buckets,
         });
       });
+  };
+}
+
+export function updateServerInfo(serverInfo) {
+  return {
+    type: SESSION_SERVER_INFO,
+    serverInfo,
   };
 }
 
