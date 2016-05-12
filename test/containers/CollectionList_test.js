@@ -118,7 +118,7 @@ describe("CollectionListPage container", () => {
         click(comp, ".list-actions .sync_client_wins");
 
         expect(nodeText(comp, ".list-actions .btn-sync .label"))
-          .eql("CLIENT_WINS");
+          .eql("CLIENT WINS");
 
         click(comp, ".list-actions .btn-sync");
 
@@ -129,7 +129,7 @@ describe("CollectionListPage container", () => {
         click(comp, ".list-actions .sync_server_wins");
 
         expect(nodeText(comp, ".list-actions .btn-sync .label"))
-          .eql("SERVER_WINS");
+          .eql("SERVER WINS");
 
         click(comp, ".list-actions .btn-sync");
 

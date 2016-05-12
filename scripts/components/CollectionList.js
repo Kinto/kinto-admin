@@ -175,15 +175,15 @@ class SyncButton extends Component {
 
   static strategies = {
     [MANUAL]: {
-      label: "MANUAL resolution",
-      help: "Do not automatically resolve conflicts.",
+      label: "Manual resolution",
+      help: "Prompt when a conflict occurs.",
     },
     [CLIENT_WINS]: {
-      label: "CLIENT_WINS resolution",
+      label: "Client wins",
       help: "Overwrite remote conflicting records with local data.",
     },
     [SERVER_WINS]: {
-      label: "SERVER_WINS resolution",
+      label: "Server wins",
       help: "Overwrite local conflicting records with remote data.",
     },
   }
@@ -193,14 +193,14 @@ class SyncButton extends Component {
 
   doSync = () => {
     this.props.sync();
-    this.setState({open: false});
+    this.closeMenu();
   };
 
   selectStrategy = (strategy) => {
     return (event) => {
       event.preventDefault();
       this.props.selectStrategy(strategy);
-      this.setState({open: false});
+      this.closeMenu();
     };
   }
 
@@ -212,10 +212,12 @@ class SyncButton extends Component {
         <button type="button" className="btn btn-info btn-sync"
           onClick={this.doSync}>
           <span className="caption">Synchronize</span>
-          <span className="label label-primary">{strategy.toUpperCase()}</span>
+          <span className="label label-primary">
+            {strategy.toUpperCase().replace("_", " ")}
+          </span>
         </button>
         <button type="button" className="btn btn-info dropdown-toggle"
-          title="Select alternative strategy"
+          title="Select conflict resolution strategy"
           onClick={open ? this.closeMenu : this.openMenu}>
           <span className="caret"></span>
         </button>
