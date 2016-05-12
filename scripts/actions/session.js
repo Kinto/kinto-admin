@@ -33,11 +33,8 @@ export function listBuckets() {
   return (dispatch) => {
     client.listBuckets()
       .then(({data}) => {
+        dispatch(updateServerInfo(client.serverInfo));
         dispatch(bucketListReceived(data));
-        return client.serverInfo;
-      })
-      .then((serverInfo) => {
-        dispatch(updateServerInfo(serverInfo));
       });
   };
 }

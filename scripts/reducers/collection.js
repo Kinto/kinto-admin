@@ -14,21 +14,21 @@ const INITIAL_STATE = {
 
 export function collection(state = INITIAL_STATE, action) {
   switch (action.type) {
-  case COLLECTION_READY:
-    return {
-      ...state,
-      name: action.name,
-      schema: action.schema,
-      uiSchema: action.uiSchema,
-      config: action.config,
-      message: null,
-    };
-  case COLLECTION_BUSY:
-    return {...state, busy: action.flag};
-  case COLLECTION_LOADED:
-    return {...state, busy: false, records: action.records};
-  default:
-    return state;
+    case COLLECTION_READY:
+      return {
+        ...state,
+        name: action.name,
+        schema: action.schema,
+        uiSchema: action.uiSchema,
+        config: action.config,
+        message: null,
+      };
+    case COLLECTION_BUSY:
+      return {...state, busy: action.flag};
+    case COLLECTION_LOADED:
+      return {...state, busy: false, records: action.records};
+    default:
+      return state;
   }
 }
 

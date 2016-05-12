@@ -44,7 +44,8 @@ function SetupForm(props) {
 }
 
 function SessionInfo(props) {
-  const {username, logout, serverInfo} = props.session;
+  const {logout, session} = props;
+  const {username, serverInfo} = session;
   return (
     <div>
       <p>Welcome back, <strong>{username}</strong> (

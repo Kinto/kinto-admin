@@ -50,7 +50,7 @@ function BucketsMenu(props) {
         const {id, collections} = bucket;
         return (
           <div key={i} className="panel panel-default">
-            <div className="panel-heading">Bucket {id}</div>
+            <div className="panel-heading"><strong>{id}</strong> bucket</div>
             <BucketCollectionsMenu
               bucket={bucket}
               collections={collections} />
@@ -69,18 +69,6 @@ export default function Sidebar(props) {
 
   const {collections, params, session} = props;
   const {buckets} = session;
-  // [
-  //   {
-  //     "last_modified": 1463037907920,
-  //     "id": "e4736f03-61fd-a4a2-7734-89fe98742acb",
-  //     "collections": [
-  //       {
-  //         "last_modified": 1463037907922,
-  //         "id": "tasks"
-  //       }
-  //     ]
-  //   }
-  // ]
   return (
     <div>
       <div className="panel panel-default">

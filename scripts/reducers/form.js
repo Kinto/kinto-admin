@@ -15,17 +15,17 @@ const INITIAL_STATE = {
 
 export default function form(state = INITIAL_STATE, action) {
   switch (action.type) {
-  case FORM_RECORD_LOADED:
-    return {
-      ...state,
-      record: action.record,
-      formData: cleanRecord(action.record, FORMDATA_IGNORE_FIELDS),
-    };
-  case FORM_RECORD_UNLOADED:
-    return {...state, record: null, formData: null};
-  case FORM_DATA_RECEIVED:
-    return {...state, formData: action.formData};
-  default:
-    return state;
+    case FORM_RECORD_LOADED:
+      return {
+        ...state,
+        record: action.record,
+        formData: cleanRecord(action.record, FORMDATA_IGNORE_FIELDS),
+      };
+    case FORM_RECORD_UNLOADED:
+      return {...state, record: null, formData: null};
+    case FORM_DATA_RECEIVED:
+      return {...state, formData: action.formData};
+    default:
+      return state;
   }
 }
