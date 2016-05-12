@@ -1,6 +1,11 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
+import Kinto from "kinto";
+
 import BusyIndicator from "./BusyIndicator";
+
+
+const {MANUAL, CLIENT_WINS, SERVER_WINS} = Kinto.syncStrategy;
 
 class AdvancedActions extends React.Component {
   constructor(props) {
@@ -162,26 +167,103 @@ class Table extends Component {
   }
 }
 
-function ListActions(props) {
-  const { name, onSyncClick, onResetSyncClick } = props;
+class SyncButton extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {open: false};
+  }
 
+  static strategies = {
+    [MANUAL]: {
+      label: "Manual resolution",
+      help: "Prompt when a conflict occurs.",
+    },
+    [CLIENT_WINS]: {
+      label: "Client wins",
+      help: "Overwrite remote conflicting records with local data.",
+    },
+    [SERVER_WINS]: {
+      label: "Server wins",
+      help: "Overwrite local conflicting records with remote data.",
+    },
+  }
+
+  openMenu = () => this.setState({open: true});
+  closeMenu = () => this.setState({open: false});
+
+  doSync = () => {
+    this.props.sync();
+    this.closeMenu();
+  };
+
+  selectStrategy = (strategy) => {
+    return (event) => {
+      event.preventDefault();
+      this.props.selectStrategy(strategy);
+      this.closeMenu();
+    };
+  }
+
+  render() {
+    const {strategy} = this.props;
+    const {open} = this.state;
+    return (
+      <div className={`sync-btn-group btn-group ${open ? "open" : ""}`}>
+        <button type="button" className="btn btn-info btn-sync"
+          onClick={this.doSync}>
+          <span className="caption">Synchronize</span>
+          <span className="label label-primary">
+            {strategy.toUpperCase().replace("_", " ")}
+          </span>
+        </button>
+        <button type="button" className="btn btn-info dropdown-toggle"
+          title="Select conflict resolution strategy"
+          onClick={open ? this.closeMenu : this.openMenu}>
+          <span className="caret"></span>
+        </button>
+        <ul className="dropdown-menu">{
+          Object.keys(SyncButton.strategies).map((strat, i) => {
+            const {label, help} = SyncButton.strategies[strat];
+            const cls = strategy === strat ? "active" : "";
+            return (
+              <li key={i} className={cls} onClick={this.selectStrategy(strat)}>
+                <a className={`sync_${strat}`} title={help} href="#">
+                  <i className="glyphicon glyphicon-info-sign" />
+                  {label}</a>
+              </li>
+            );
+          })
+        }</ul>
+      </div>
+    );
+  }
+}
+
+function ListActions(props) {
+  const {name, sync, reset, strategy, selectStrategy} = props;
   return (
-    <p className="list-actions">
-      <button type="button"
-        className="btn-sync btn btn-info"
-        onClick={onSyncClick}>Synchronize</button>
+    <div className="list-actions">
+      <SyncButton
+        sync={sync}
+        selectStrategy={selectStrategy}
+        strategy={strategy} />
       <Link to={`/collections/${name}/add`} className="btn btn-info">Add</Link>
-      <AdvancedActions collection={name} resetSync={onResetSyncClick} />
-    </p>
+      <AdvancedActions collection={name} resetSync={reset} />
+    </div>
   );
 }
 
 export default class CollectionList extends Component {
-  onSyncClick() {
-    this.props.sync();
+  constructor(props) {
+    super(props);
+    this.state = {strategy: MANUAL};
   }
 
-  onResetSyncClick() {
+  selectStrategy = (strategy) => this.setState({strategy});
+
+  sync = () => this.props.sync({strategy: this.state.strategy});
+
+  onResetSyncClick = () => {
     if (confirm("Are you sure?")) {
       this.props.resetSync();
     }
@@ -191,9 +273,18 @@ export default class CollectionList extends Component {
     const {name, busy, schema, records, config} = this.props.collection;
     const {server} = this.props.settings;
     const {deleteRecord, conflicts} = this.props;
+    const {strategy} = this.state;
     if (!name) {
       return <p>Loading...</p>;
     }
+    const listActions = (
+      <ListActions
+        name={name}
+        strategy={strategy}
+        selectStrategy={this.selectStrategy}
+        sync={this.sync}
+        reset={this.onResetSyncClick} />
+    );
     return (
       <div className="collection-page">
         <div className="row content-header">
@@ -202,10 +293,7 @@ export default class CollectionList extends Component {
             <em>{busy ? <BusyIndicator/> : null}{server}</em>
           </div>
         </div>
-        <ListActions
-          name={name}
-          onSyncClick={this.onSyncClick.bind(this)}
-          onResetSyncClick={this.onResetSyncClick.bind(this)} />
+        {listActions}
         <Table
           name={name}
           records={records}
@@ -214,10 +302,7 @@ export default class CollectionList extends Component {
           config={config}
           deleteRecord={deleteRecord}
           updatePath={this.props.updatePath} />
-        <ListActions
-          name={name}
-          onSyncClick={this.onSyncClick.bind(this)}
-          onResetSyncClick={this.onResetSyncClick.bind(this)} />
+        {listActions}
       </div>
     );
   }
