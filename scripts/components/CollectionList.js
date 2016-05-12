@@ -174,9 +174,18 @@ class SyncButton extends Component {
   }
 
   static strategies = {
-    [MANUAL]: "MANUAL resolution",
-    [CLIENT_WINS]: "CLIENT_WINS resolution",
-    [SERVER_WINS]: "SERVER_WINS resolution",
+    [MANUAL]: {
+      label: "MANUAL resolution",
+      help: "Do not automatically resolve conflicts.",
+    },
+    [CLIENT_WINS]: {
+      label: "CLIENT_WINS resolution",
+      help: "Overwrite remote conflicting records with local data.",
+    },
+    [SERVER_WINS]: {
+      label: "SERVER_WINS resolution",
+      help: "Overwrite local conflicting records with remote data.",
+    },
   }
 
   openMenu = () => this.setState({open: true});
@@ -199,7 +208,7 @@ class SyncButton extends Component {
     const {strategy} = this.props;
     const {open} = this.state;
     return (
-      <div className={`btn-group ${open ? "open" : ""}`}>
+      <div className={`sync-btn-group btn-group ${open ? "open" : ""}`}>
         <button type="button" className="btn btn-info btn-sync"
           onClick={this.doSync}>
           <span className="caption">Synchronize</span>
@@ -212,11 +221,13 @@ class SyncButton extends Component {
         </button>
         <ul className="dropdown-menu">{
           Object.keys(SyncButton.strategies).map((strat, i) => {
-            const classes = strategy === strat ? "active" : "";
+            const {label, help} = SyncButton.strategies[strat];
+            const cls = strategy === strat ? "active" : "";
             return (
-              <li className={classes} onClick={this.selectStrategy(strat)}>
-                <a className={`sync_${strat}`} href="#">
-                  {SyncButton.strategies[strat]}</a>
+              <li key={i} className={cls} onClick={this.selectStrategy(strat)}>
+                <a className={`sync_${strat}`} title={help} href="#">
+                  <i className="glyphicon glyphicon-info-sign" />
+                  {label}</a>
               </li>
             );
           })

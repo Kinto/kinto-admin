@@ -108,3 +108,18 @@ table.record-list td.actions {
 .list-actions .label {
   margin-left: 1em;
 }
+
+.sync-btn-group .dropdown-menu a {
+  padding-left: 1em;
+  padding-right: 2em;
+}
+
+.sync-btn-group .dropdown-menu .glyphicon {
+  float: right;
+  margin: .15em -1.5em 0 0;
+  color: #888;
+}
+
+.sync-btn-group .dropdown-menu .active .glyphicon {
+  color: #fff;
+}
