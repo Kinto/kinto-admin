@@ -8,6 +8,7 @@ import notifications from "./notifications";
 import conflicts from "./conflicts";
 import form from "./form";
 import serverInfo from "./serverInfo";
+import session from "./session";
 
 const rootReducer = combineReducers({
   settings,
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   conflicts,
   form,
   serverInfo,
+  session,
   routing: routeReducer,
 });
 

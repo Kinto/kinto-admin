@@ -2,15 +2,17 @@ import React from "react";
 import { render } from "react-dom";
 import { Provider } from "react-redux";
 import { Router } from "react-router";
+import { syncReduxAndRouter } from "redux-simple-router";
+import createHashHistory from "history/lib/createHashHistory";
+
 import routes from "./routes";
 import configureStore from "./store/configureStore";
-const createHashHistory = require("history/lib/createHashHistory");
-import { syncReduxAndRouter } from "redux-simple-router";
-import { loadCollections } from "./actions/collections";
 import * as CollectionActions from "./actions/collection";
+import { loadCollections } from "./actions/collections";
 
 import "../css/styles.css";
 import "bootstrap/dist/css/bootstrap.css";
+
 
 const history = createHashHistory();
 const store = configureStore();
@@ -31,7 +33,7 @@ function onRouteUpdate() {
   }
 }
 
-// Trigger loading the list of collections
+// XXX this was how we loaded the list of configutred collection
 store.dispatch(loadCollections());
 
 render((

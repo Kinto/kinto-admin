@@ -19,6 +19,10 @@ export default class App extends Component {
             {content || <p>Default.</p>}
           </div>
         </div>
+        <hr/>
+        <p className="text-center">
+          <a href="https://github.com/Kinto/kinto-admin">Powered by kinto-admin</a>
+        </p>
       </div>
     );
   }
