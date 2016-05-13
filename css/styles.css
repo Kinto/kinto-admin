@@ -142,3 +142,9 @@ table.record-list td.actions {
   margin: .15em -1em 0 0;
   color: #888;
 }
+
+.CodeMirror {
+  border: 1px solid #ccc;
+  height: auto;
+  border-radius: .3em;
+}
