@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-
 import Form from "react-jsonschema-form";
+
+import JSONEditor from "./JSONEditor";
 
 
 const schema = {
@@ -33,11 +34,11 @@ const schema = {
 
 const uiSchema = {
   schema: {
-    "ui:widget": "textarea",
+    "ui:widget": JSONEditor,
   },
   uiSchema: {
-    "ui:widget": "textarea",
-  },
+    "ui:widget": JSONEditor,
+  }
 };
 
 function validJSON(string) {
@@ -63,15 +64,23 @@ export default class CollectionForm extends Component {
   render() {
     const {onSubmit, formData} = this.props;
     // Disable edition of the collection name
-    const _uiSchema = formData ?
-      {...uiSchema, name: {"ui:readonly": true}} : uiSchema;
+    const _uiSchema = !formData ? uiSchema : {
+      ...uiSchema,
+      name: {
+        "ui:readonly": true,
+      }
+    };
     return (
-      <Form
-        schema={schema}
-        formData={formData}
-        uiSchema={_uiSchema}
-        validate={validate}
-        onSubmit={onSubmit} />
+      <div className="panel panel-default">
+        <div className="panel-body">
+          <Form
+            schema={schema}
+            formData={formData}
+            uiSchema={_uiSchema}
+            validate={validate}
+            onSubmit={onSubmit} />
+        </div>
+      </div>
     );
   }
 }

@@ -1,4 +1,5 @@
 import KintoClient from "kinto-client";
+import { updatePath } from "redux-simple-router";
 
 import { notifyError, notifySuccess } from "./notifications";
 
@@ -83,6 +84,18 @@ export function createCollection(bid, collectionData) {
         dispatch(notifySuccess("Collection created."));
         dispatch(collectionCreated(data));
         dispatch(listBuckets());
+      });
+  };
+}
+
+export function deleteCollection(bid, cid) {
+  return (dispatch, getState) => {
+    const client = getClient(getState);
+    execute(dispatch, client.bucket(bid).deleteCollection(cid))
+      .then(() => {
+        dispatch(listBuckets());
+        dispatch(updatePath(""));
+        dispatch(notifySuccess("Collection deleted."));
       });
   };
 }

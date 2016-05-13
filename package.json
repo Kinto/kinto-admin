@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "btoa": "^1.1.2",
+    "codemirror": "^5.13.2",
     "diff": "^2.2.2",
     "express": "^4.13.3",
     "extract-text-webpack-plugin": "^1.0.1",
@@ -33,6 +34,7 @@
     "kinto-client": "^0.6.0",
     "node-fs-extra": "^0.8.1",
     "react": "^15.0.1",
+    "react-codemirror": "^0.2.3",
     "react-dom": "^15.0.1",
     "react-jsonschema-form": "^0.30.0",
     "react-redux": "^4.0.0",

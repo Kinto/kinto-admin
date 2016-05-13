@@ -15,6 +15,14 @@ export default class CollectionEdit extends Component {
     });
   };
 
+  onDeleteClick = () => {
+    const {deleteCollection, params} = this.props;
+    const {bid, cid} = params;
+    if (confirm("This will delete the collection and all the records it contains. Are you sure?")) {
+      deleteCollection(bid, cid);
+    }
+  };
+
   render() {
     const {params, collection} = this.props;
     const {bid, cid} = params;
@@ -35,6 +43,19 @@ export default class CollectionEdit extends Component {
         <CollectionForm
           formData={formData}
           onSubmit={this.onSubmit} />
+        <hr/>
+        <div className="panel panel-danger">
+          <div className="panel-heading">
+            <strong>Danger Zone</strong>
+          </div>
+          <div className="panel-body">
+            <p>
+              Delete the collection and all the records it contains.
+            </p>
+            <button className="btn btn-danger"
+              onClick={this.onDeleteClick}>Delete collection</button>
+          </div>
+        </div>
       </div>
     );
   }
