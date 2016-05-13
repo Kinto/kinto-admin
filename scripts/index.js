@@ -7,8 +7,9 @@ import createHashHistory from "history/lib/createHashHistory";
 
 import routes from "./routes";
 import configureStore from "./store/configureStore";
+import * as ClientActions from "./actions/client";
 import * as CollectionActions from "./actions/collection";
-import { loadCollections } from "./actions/collections";
+import { clearNotifications } from "./actions/notifications";
 
 import "../css/styles.css";
 import "bootstrap/dist/css/bootstrap.css";
@@ -20,21 +21,24 @@ const store = configureStore();
 syncReduxAndRouter(history, store);
 
 function onRouteUpdate() {
-  // This will transparently select and load a collection when the :name param
-  // changes in the URL.
-  const currentCollectionName = store.getState().collection.name;
-  const newCollectionName = this.state.params.name;
-  if (newCollectionName && currentCollectionName !== newCollectionName) {
-    if (newCollectionName in store.getState().collections) {
-      store.dispatch(CollectionActions.selectAndLoad(newCollectionName));
-    } else {
-      store.dispatch(CollectionActions.select(newCollectionName));
+  const {params} = this.state;
+  const {bid, cid} = params;
+  const {collection} = store.getState();
+
+  // If bid/cid has changed, reset collection store and load coll properties
+  if (bid !== collection.bucket || cid !== collection.name) {
+    store.dispatch(CollectionActions.reset());
+    if (bid && cid) {
+      store.dispatch(ClientActions.loadCollectionProperties(bid, cid));
     }
   }
+
+  // Clear current notification list on each route update
+  store.dispatch(clearNotifications());
 }
 
-// XXX this was how we loaded the list of configutred collection
-store.dispatch(loadCollections());
+// XXX this was how we initially loaded the list of configured collection
+// store.dispatch(loadCollections());
 
 render((
   <Provider store={store}>

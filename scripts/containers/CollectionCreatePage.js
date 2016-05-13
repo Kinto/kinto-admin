@@ -2,7 +2,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
 import CollectionCreate from "../components/CollectionCreate";
-import * as SessionActions from "../actions/session";
+import * as ClientActions from "../actions/client";
 
 
 function mapStateToProps(state) {
@@ -12,7 +12,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(SessionActions, dispatch);
+  return bindActionCreators(ClientActions, dispatch);
 }
 
 export default connect(

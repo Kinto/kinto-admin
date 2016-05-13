@@ -11,6 +11,8 @@ export const COLLECTION_LOADED = "COLLECTION_LOADED";
 export const COLLECTION_BUSY = "COLLECTION_BUSY";
 export const COLLECTION_READY = "COLLECTION_READY";
 export const COLLECTION_SYNCED = "COLLECTION_SYNCED";
+export const COLLECTION_RESET = "COLLECTION_RESET";
+
 
 export var kinto;
 
@@ -60,6 +62,10 @@ export function configure(name, config) {
 
 export function loaded(records) {
   return {type: COLLECTION_LOADED, records};
+}
+
+export function reset() {
+  return {type: COLLECTION_RESET};
 }
 
 function busy(flag) {

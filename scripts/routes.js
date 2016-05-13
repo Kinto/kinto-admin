@@ -35,11 +35,11 @@ const common = {
 export default (
   <Route path="/" component={App}>
     <IndexRoute components={{...common, content: HomePage}} />
-    <Route path="/buckets/:bucket/create-collection"
+    <Route path="/buckets/:bid/create-collection"
       components={{...common, content: CollectionCreatePage}} />
-    <Route path="/buckets/:bucket/collections/:collection/edit"
+    <Route path="/buckets/:bid/collections/:cid/edit"
       components={{...common, content: CollectionEditPage}} />
-    <Route path="/buckets/:bucket/collections/:collection"
+    <Route path="/buckets/:bid/collections/:cid"
       components={{...common, content: CollectionListPage}} />
     {/* Obsolete kinto.js routes */}
     <Route path="/collections/:name"

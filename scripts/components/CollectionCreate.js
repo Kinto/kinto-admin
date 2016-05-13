@@ -6,12 +6,12 @@ import CollectionForm from "./CollectionForm";
 export default class CollectionCreate extends Component {
   render() {
     const {params, createCollection} = this.props;
-    const {bucket} = params;
+    const {bid} = params;
     return (
       <div>
-        <h1>Create a new collection in <code>{bucket}</code></h1>
+        <h1>Create a new collection in <code>{bid}</code></h1>
         <CollectionForm
-          onSubmit={({formData}) => createCollection(bucket, formData)} />
+          onSubmit={({formData}) => createCollection(bid, formData)} />
       </div>
     );
   }

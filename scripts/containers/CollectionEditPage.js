@@ -2,17 +2,18 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
 import CollectionEdit from "../components/CollectionEdit";
-import * as SessionActions from "../actions/session";
+import * as ClientActions from "../actions/client";
 
 
 function mapStateToProps(state) {
   return {
-    session: state.session
+    session: state.session,
+    collection: state.collection,
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(SessionActions, dispatch);
+  return bindActionCreators(ClientActions, dispatch);
 }
 
 export default connect(

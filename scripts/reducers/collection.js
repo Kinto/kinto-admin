@@ -1,11 +1,16 @@
 import {
+  CLIENT_COLLECTION_PROPERTIES_LOADED
+} from "../actions/client";
+import {
   COLLECTION_BUSY,
   COLLECTION_LOADED,
   COLLECTION_READY,
-  COLLECTION_PROPERTIES_LOADED,
+  COLLECTION_RESET,
 } from "../actions/collection";
 
+
 const INITIAL_STATE = {
+  bucket: "default",
   name: null,
   busy: false,
   schema: {},
@@ -16,16 +21,22 @@ const INITIAL_STATE = {
 
 export function collection(state = INITIAL_STATE, action) {
   switch (action.type) {
-    case COLLECTION_PROPERTIES_LOADED: {
+    case COLLECTION_RESET: {
+      return {...INITIAL_STATE};
+    }
+    case CLIENT_COLLECTION_PROPERTIES_LOADED: {
+      const {properties} = action;
       return {
         ...state,
         busy: false,
-        schema: action.schema,
-        uiSchema: action.uiSchema,
-        displayFields: action.displayFields,
+        bucket: properties.bucket,
+        name: properties.id,
+        schema: properties.schema,
+        uiSchema: properties.uiSchema,
+        displayFields: properties.displayFields,
       };
     }
-    case COLLECTION_READY:
+    case COLLECTION_READY: {
       return {
         ...state,
         name: action.name,
@@ -34,12 +45,16 @@ export function collection(state = INITIAL_STATE, action) {
         config: action.config,
         message: null,
       };
-    case COLLECTION_BUSY:
+    }
+    case COLLECTION_BUSY: {
       return {...state, busy: action.flag};
-    case COLLECTION_LOADED:
+    }
+    case COLLECTION_LOADED: {
       return {...state, busy: false, records: action.records};
-    default:
+    }
+    default: {
       return state;
+    }
   }
 }
 

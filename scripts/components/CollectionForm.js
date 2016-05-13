@@ -15,10 +15,12 @@ const schema = {
     schema: {
       type: "string",
       title: "JSON schema",
+      default: "{}",
     },
     uiSchema: {
       type: "string",
       title: "UI schema",
+      default: "{}",
     },
     displayFields: {
       type: "array",
@@ -59,11 +61,15 @@ function validate({schema, uiSchema}, errors) {
 
 export default class CollectionForm extends Component {
   render() {
-    const {onSubmit} = this.props;
+    const {onSubmit, formData} = this.props;
+    // Disable edition of the collection name
+    const _uiSchema = formData ?
+      {...uiSchema, name: {"ui:readonly": true}} : uiSchema;
     return (
       <Form
         schema={schema}
-        uiSchema={uiSchema}
+        formData={formData}
+        uiSchema={_uiSchema}
         validate={validate}
         onSubmit={onSubmit} />
     );
