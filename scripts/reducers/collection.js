@@ -1,5 +1,6 @@
 import {
-  CLIENT_COLLECTION_PROPERTIES_LOADED
+  CLIENT_COLLECTION_PROPERTIES_LOADED,
+  CLIENT_COLLECTION_RECORDS_LOADED,
 } from "../actions/client";
 import {
   COLLECTION_BUSY,
@@ -36,6 +37,10 @@ export function collection(state = INITIAL_STATE, action) {
         displayFields: properties.displayFields,
       };
     }
+    case CLIENT_COLLECTION_RECORDS_LOADED: {
+      return {...state, records: action.records};
+    }
+    /* Obsolete, to be removed*/
     case COLLECTION_READY: {
       return {
         ...state,

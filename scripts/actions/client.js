@@ -8,6 +8,7 @@ export const CLIENT_SERVER_INFO_LOADED = "CLIENT_SERVER_INFO_LOADED";
 export const CLIENT_BUCKETS_LIST_LOADED = "CLIENT_BUCKETS_LIST_LOADED";
 export const CLIENT_COLLECTION_PROPERTIES_LOADED = "CLIENT_COLLECTION_PROPERTIES_LOADED";
 export const CLIENT_COLLECTION_CREATED = "CLIENT_COLLECTION_CREATED";
+export const CLIENT_COLLECTION_RECORDS_LOADED = "CLIENT_COLLECTION_RECORDS_LOADED";
 
 
 export function serverInfoLoaded(serverInfo) {
@@ -35,6 +36,13 @@ export function collectionPropertiesLoaded(properties) {
   return {
     type: CLIENT_COLLECTION_PROPERTIES_LOADED,
     properties,
+  };
+}
+
+export function collectionRecordsLoaded(records) {
+  return {
+    type: CLIENT_COLLECTION_RECORDS_LOADED,
+    records,
   };
 }
 
@@ -122,6 +130,17 @@ export function updateCollectionProperties(bid, cid, {schema, uiSchema, displayF
       .then(([_, {data}]) => {
         dispatch(collectionPropertiesLoaded({...data, bucket: bid}));
         dispatch(notifySuccess("Collection properties updated."));
+      });
+  };
+}
+
+export function listRecords(bid, cid) {
+  return (dispatch, getState) => {
+    const client = getClient(getState);
+    const coll = client.bucket(bid).collection(cid);
+    execute(dispatch, coll.listRecords())
+      .then(({data}) => {
+        dispatch(collectionRecordsLoaded(data));
       });
   };
 }

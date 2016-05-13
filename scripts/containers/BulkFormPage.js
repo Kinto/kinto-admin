@@ -13,6 +13,7 @@ function mapStateToProps(state) {
     uiSchema: state.collection.uiSchema,
     form: state.form,
     liveValidate: state.liveValidate,
+    collection: state.collection,
   };
 }
 

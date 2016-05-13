@@ -12,6 +12,7 @@ function mapStateToProps(state) {
     collections: state.collections,
     settings: state.settings,
     conflicts: state.conflicts,
+    session: state.session,
   };
 }
 

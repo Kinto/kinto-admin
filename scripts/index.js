@@ -30,6 +30,9 @@ function onRouteUpdate() {
     store.dispatch(CollectionActions.reset());
     if (bid && cid) {
       store.dispatch(ClientActions.loadCollectionProperties(bid, cid));
+      // XXX this is overkill in many situations, we should detect if we're
+      // in a collection list route.
+      store.dispatch(ClientActions.listRecords(bid, cid));
     }
   }
 
