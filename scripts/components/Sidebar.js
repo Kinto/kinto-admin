@@ -1,25 +1,6 @@
 import React from "react";
 import { Link } from "react-router";
 
-// <div className="panel panel-default">
-//   <div className="panel-heading">
-//     Collections
-//   </div>
-//   <div className="list-group">{
-//     Object.keys(collections).map((name, i) => {
-//       const classes = [
-//         "list-group-item",
-//         params.name === name ? "active" : "",
-//       ].join(" ");
-//       const label = collections[name].name || name;
-//       return (
-//         <Link key={i} to={`/collections/${name}`} className={classes}>
-//           {label + (!collections[name].synced ? "*" : "")}
-//         </Link>
-//       );
-//     })
-//   }</div>
-// </div>
 
 function BucketCollectionsMenu(props) {
   const {bucket, collections} = props;
@@ -33,9 +14,8 @@ function BucketCollectionsMenu(props) {
           active ? "active" : "",
         ].join(" ");
         return (
-          <Link key={i} to={`/collections/${id}`} className={classes}>
-            {id/* + (!collections[name].synced ? "*" : "")*/}
-          </Link>
+          <Link key={i} to={`/buckets/${bucket.id}/collections/${id}`}
+            className={classes}>{id}</Link>
         );
       })
     }</div>

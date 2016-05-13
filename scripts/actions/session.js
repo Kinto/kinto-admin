@@ -1,5 +1,7 @@
 import KintoClient from "kinto-client";
 
+import { notifyError, clearNotifications } from "./notifications";
+
 
 export const SESSION_SETUP_COMPLETE = "SESSION_SETUP_COMPLETE";
 export const SESSION_LOGOUT = "SESSION_LOGOUT";
@@ -20,12 +22,14 @@ export function setup(session) {
   const {server, username, password} = session;
   // Load buckets for this user
   return (dispatch) => {
-    configureClient(server, username, password);
-    dispatch(listBuckets());
-    dispatch({
-      type: SESSION_SETUP_COMPLETE,
-      session,
-    });
+    dispatch(clearNotifications());
+    try {
+      configureClient(server, username, password);
+      dispatch(listBuckets());
+      dispatch({type: SESSION_SETUP_COMPLETE, session});
+    } catch(err) {
+      dispatch(notifyError(err));
+    }
   };
 }
 
@@ -35,6 +39,9 @@ export function listBuckets() {
       .then(({data}) => {
         dispatch(updateServerInfo(client.serverInfo));
         dispatch(bucketListReceived(data));
+      })
+      .catch(err => {
+        dispatch(notifyError(err));
       });
   };
 }
@@ -46,10 +53,10 @@ export function bucketListReceived(buckets) {
         .then(({data}) => ({...bucket, collections: data}));
     }))
       .then((buckets) => {
-        dispatch({
-          type: SESSION_BUCKETS,
-          buckets,
-        });
+        dispatch({type: SESSION_BUCKETS, buckets});
+      })
+      .catch(err => {
+        dispatch(notifyError(err));
       });
   };
 }
@@ -63,7 +70,6 @@ export function updateServerInfo(serverInfo) {
 
 export function logout() {
   client = null;
-  // XXX Actually we should clear everything loaded for the previous session
   return {
     type: SESSION_LOGOUT,
   };
