@@ -18,6 +18,10 @@ export function notifyInfo(message) {
   return notify("info", message);
 }
 
+export function notifySuccess(message) {
+  return notify("success", message);
+}
+
 export function notifyError(error) {
   return notify("danger", error.message, error.details);
 }

@@ -1,6 +1,6 @@
 import KintoClient from "kinto-client";
 
-import { notifyError, clearNotifications } from "./notifications";
+import { notifyError, notifySuccess, clearNotifications } from "./notifications";
 
 
 export const SESSION_SETUP_COMPLETE = "SESSION_SETUP_COMPLETE";
@@ -54,6 +54,21 @@ export function bucketListReceived(buckets) {
     }))
       .then((buckets) => {
         dispatch({type: SESSION_BUCKETS, buckets});
+      })
+      .catch(err => {
+        dispatch(notifyError(err));
+      });
+  };
+}
+
+export function createCollection(bucket, collectionData) {
+  const {name} = collectionData;
+  return (dispatch) => {
+    dispatch(clearNotifications());
+    client.bucket(bucket).createCollection(name)
+      .then(() => {
+        dispatch(notifySuccess("Collection created."));
+        dispatch(listBuckets());
       })
       .catch(err => {
         dispatch(notifyError(err));

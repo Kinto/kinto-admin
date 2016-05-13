@@ -5,20 +5,27 @@ import { Link } from "react-router";
 function BucketCollectionsMenu(props) {
   const {bucket, collections} = props;
   return (
-    <div className="list-group">{
-      collections.map((collection, i) => {
-        const {id} = collection;
-        const active = false; // selectedBucket === bucket.id && selectedCollection === id
-        const classes = [
-          "list-group-item",
-          active ? "active" : "",
-        ].join(" ");
-        return (
-          <Link key={i} to={`/buckets/${bucket.id}/collections/${id}`}
-            className={classes}>{id}</Link>
-        );
-      })
-    }</div>
+    <div className="list-group">
+      {
+        collections.map((collection, i) => {
+          const {id} = collection;
+          const active = false; // selectedBucket === bucket.id && selectedCollection === id
+          const classes = [
+            "list-group-item",
+            active ? "active" : "",
+          ].join(" ");
+          return (
+            <Link key={i} to={`/buckets/${bucket.id}/collections/${id}`}
+              className={classes}>{id}</Link>
+          );
+        })
+      }
+      <Link to={`/buckets/${bucket.id}/create-collection`}
+        className="list-group-item">
+        <i className="glyphicon glyphicon-plus"/>
+        Create collection
+      </Link>
+    </div>
   );
 }
 

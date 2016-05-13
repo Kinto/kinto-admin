@@ -123,3 +123,7 @@ table.record-list td.actions {
 .sync-btn-group .dropdown-menu .active .glyphicon {
   color: #fff;
 }
+
+.list-group-item .glyphicon {
+  margin-right: .4em;
+}
