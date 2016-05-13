@@ -6,6 +6,7 @@ import Sidebar from "./containers/Sidebar";
 import Notifications from "./containers/Notifications";
 import CollectionListPage from "./containers/CollectionListPage";
 import CollectionCreatePage from "./containers/CollectionCreatePage";
+import CollectionEditPage from "./containers/CollectionEditPage";
 import AddFormPage from "./containers/AddFormPage";
 import BulkFormPage from "./containers/BulkFormPage";
 import EditFormPage from "./containers/EditFormPage";
@@ -36,6 +37,8 @@ export default (
     <IndexRoute components={{...common, content: HomePage}} />
     <Route path="/buckets/:bucket/create-collection"
       components={{...common, content: CollectionCreatePage}} />
+    <Route path="/buckets/:bucket/collections/:collection/edit"
+      components={{...common, content: CollectionEditPage}} />
     <Route path="/buckets/:bucket/collections/:collection"
       components={{...common, content: CollectionListPage}} />
     {/* Obsolete kinto.js routes */}

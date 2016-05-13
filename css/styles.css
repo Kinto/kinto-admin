@@ -125,5 +125,20 @@ table.record-list td.actions {
 }
 
 .list-group-item .glyphicon {
-  margin-right: .4em;
+  margin-right: .5em;
+}
+
+.panel-heading .glyphicon {
+  margin-right: .5em;
+}
+
+.collections-menu-entry a {
+  color: #555;
+  text-decoration: none;
+}
+
+.collections-menu-entry-edit {
+  float: right;
+  margin: .15em -1em 0 0;
+  color: #888;
 }

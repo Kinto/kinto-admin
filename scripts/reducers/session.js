@@ -1,9 +1,11 @@
 import {
   SESSION_SETUP_COMPLETE,
-  SESSION_BUCKETS,
   SESSION_LOGOUT,
-  SESSION_SERVER_INFO,
 } from "../actions/session";
+import {
+  CLIENT_SERVER_INFO_LOADED,
+  CLIENT_BUCKETS_LIST_LOADED,
+} from "../actions/client";
 
 
 const DEFAULT = {authenticated: false, buckets: [], serverInfo: {}};
@@ -13,7 +15,7 @@ export default function session(state = DEFAULT, action) {
     case SESSION_SETUP_COMPLETE: {
       return {...state, ...action.session, authenticated: true};
     }
-    case SESSION_BUCKETS: {
+    case CLIENT_BUCKETS_LIST_LOADED: {
       return {
         ...state,
         // replace default user bucket id with "default"
@@ -26,7 +28,7 @@ export default function session(state = DEFAULT, action) {
         })
       };
     }
-    case SESSION_SERVER_INFO: {
+    case CLIENT_SERVER_INFO_LOADED: {
       return {...state, serverInfo: action.serverInfo};
     }
     case SESSION_LOGOUT: {

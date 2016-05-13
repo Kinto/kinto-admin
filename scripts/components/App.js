@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 
+
 export default class App extends Component {
   render() {
     const {sidebar, notifications, content, notificationList, linkBack} = this.props;

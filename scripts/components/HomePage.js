@@ -1,6 +1,6 @@
-import Form from "react-jsonschema-form";
+import React, { Component } from "react";
 
-import React from "react";
+import Form from "react-jsonschema-form";
 
 
 // XXX: remove defaults
@@ -58,13 +58,15 @@ function SessionInfo(props) {
   );
 }
 
-export default function HomePage(props) {
-  const {session, setup, logout} = props;
-  const {authenticated} = session;
-  return <div>
-    <h1>Kinto Web Administration Console</h1>
-    {authenticated ?
-      <SessionInfo session={session} logout={logout} /> :
-      <SetupForm setup={setup} />}
-  </div>;
+export default class HomePage extends Component {
+  render() {
+    const {session, setup, logout} = this.props;
+    const {authenticated} = session;
+    return <div>
+      <h1>Kinto Web Administration Console</h1>
+      {authenticated ?
+        <SessionInfo session={session} logout={logout} /> :
+        <SetupForm setup={setup} />}
+    </div>;
+  }
 }

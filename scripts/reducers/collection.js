@@ -2,18 +2,29 @@ import {
   COLLECTION_BUSY,
   COLLECTION_LOADED,
   COLLECTION_READY,
+  COLLECTION_PROPERTIES_LOADED,
 } from "../actions/collection";
 
 const INITIAL_STATE = {
   name: null,
   busy: false,
   schema: {},
+  uiSchema: {},
+  displayFields: [],
   records: [],
-  config: {displayFields: []},
 };
 
 export function collection(state = INITIAL_STATE, action) {
   switch (action.type) {
+    case COLLECTION_PROPERTIES_LOADED: {
+      return {
+        ...state,
+        busy: false,
+        schema: action.schema,
+        uiSchema: action.uiSchema,
+        displayFields: action.displayFields,
+      };
+    }
     case COLLECTION_READY:
       return {
         ...state,
