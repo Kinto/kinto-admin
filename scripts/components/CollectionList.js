@@ -1,11 +1,8 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
-import Kinto from "kinto";
 
 import BusyIndicator from "./BusyIndicator";
-
-
-const {MANUAL, CLIENT_WINS, SERVER_WINS} = Kinto.syncStrategy;
+import Spinner from "./Spinner";
 
 
 class Row extends Component {
@@ -149,7 +146,7 @@ export default class CollectionList extends Component {
     const {name, busy, schema, displayFields, records} = collection;
     const {deleteRecord, conflicts} = this.props;
     if (!name) {
-      return <p>Loading...</p>;
+      return <Spinner />;
     }
     const listActions = (
       <ListActions cid={name} />

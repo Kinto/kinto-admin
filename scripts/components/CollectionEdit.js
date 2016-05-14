@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import CollectionForm from "./CollectionForm";
+import Spinner from "./Spinner";
 
 
 export default class CollectionEdit extends Component {
@@ -22,8 +23,7 @@ export default class CollectionEdit extends Component {
     const {params, collection} = this.props;
     const {bid, cid} = params;
     if (!collection.name) {
-      // XXX loading spinner
-      return null;
+      return <Spinner />;
     }
     const formData = {
       name: collection.name,
