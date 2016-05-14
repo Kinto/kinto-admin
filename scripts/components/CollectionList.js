@@ -62,8 +62,8 @@ class Row extends Component {
       <td className="actions text-right">
         <div className="btn-group">
           <Link to={`/collections/${name}/edit/${record.id}`}
-            className="btn btn-sm btn-info">Edit</Link>
-          <button type="button" className="btn btn-sm btn-danger"
+            className="btn btn-xs btn-info">Edit</Link>
+          <button type="button" className="btn btn-xs btn-danger"
             onClick={this.onDeleteClick.bind(this)}>Delete</button>
         </div>
       </td>
@@ -155,9 +155,10 @@ export default class CollectionList extends Component {
     return (
       <div className="collection-page">
         <div className="row content-header">
-          <h1 className="col-md-8">{name}</h1>
+          <h1 className="col-md-8">{bid}/{name}</h1>
           <div className="edit-coll-props col-md-4 text-right">
-            <Link to={`/buckets/${bid}/collections/${name}/edit`}>
+            <Link to={`/buckets/${bid}/collections/${name}/edit`}
+              className="btn btn-sm btn-default">
               <i className="glyphicon glyphicon-cog"/>
               Edit collection properties
             </Link>

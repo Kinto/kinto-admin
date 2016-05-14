@@ -33,7 +33,7 @@ body {
 }
 
 .content-header .edit-coll-props {
-  padding-top: 2.5em;
+  padding-top: 1.5em;
 }
 
 .content-header .edit-coll-props i {
@@ -46,7 +46,7 @@ body {
   left: 0;
   right: 0;
   background: #D1CCB8;
-  padding: .2em .5em;
+  padding: .2em 1.15em;
   z-index: 999;
 }
 
