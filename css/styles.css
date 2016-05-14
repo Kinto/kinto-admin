@@ -12,11 +12,12 @@ body {
 }
 
 .sidebar {
+  padding-top: 1em;
 }
 
 .content {
   background: #F6F4EC;
-  padding: .5em 1vw 1em 21vw;
+  padding: 1em 1vw 1em 21vw;
 }
 
 .content .list-actions {
@@ -31,8 +32,26 @@ body {
   padding-top: 8em;
 }
 
-.content-header .server-info {
+.content-header .edit-coll-props {
   padding-top: 2.5em;
+}
+
+.content-header .edit-coll-props i {
+  margin-right: .3em;
+}
+
+.session-info-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #D1CCB8;
+  padding: .2em .5em;
+  z-index: 999;
+}
+
+.session-info-bar > a {
+  margin-left: .5em;
 }
 
 .server-info pre {
@@ -95,10 +114,9 @@ table.record-list td.actions {
 
 .notifications {
   z-index: 99;
-  background: #F6F4EC;
   margin-bottom: 1em;
   position: fixed;
-  top: 0;
+  top: 1em;
   right: 1em;
   width: inherit;
   padding-left: 2em;

@@ -142,7 +142,8 @@ function ListActions(props) {
 
 export default class CollectionList extends Component {
   render() {
-    const {session, collection} = this.props;
+    const {collection, params} = this.props;
+    const {bid} = params;
     const {name, busy, schema, displayFields, records} = collection;
     const {deleteRecord, conflicts} = this.props;
     if (!name) {
@@ -155,8 +156,11 @@ export default class CollectionList extends Component {
       <div className="collection-page">
         <div className="row content-header">
           <h1 className="col-md-8">{name}</h1>
-          <div className="server-info col-md-4 text-right">
-            <em>{busy ? <BusyIndicator/> : null}{session.server}</em>
+          <div className="edit-coll-props col-md-4 text-right">
+            <Link to={`/buckets/${bid}/collections/${name}/edit`}>
+              <i className="glyphicon glyphicon-cog"/>
+              Edit collection properties
+            </Link>
           </div>
         </div>
         {listActions}
