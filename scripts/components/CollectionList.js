@@ -86,7 +86,11 @@ class Table extends Component {
       updatePath
     } = this.props;
     if (records.length === 0) {
-      return <p>This collection is empty.</p>;
+      return (
+        <div className="alert alert-info">
+          <p>This collection is empty.</p>
+        </div>
+      );
     }
     return (
       <table className="table table-striped record-list">

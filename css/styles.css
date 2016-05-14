@@ -19,7 +19,11 @@ body {
   padding: .5em 1vw 1em 21vw;
 }
 
-.content .list-actions > * {
+.content .list-actions {
+  margin-bottom: 1.4em;
+}
+
+.content .list-actions > a {
   margin-right: .5em;
 }
 
