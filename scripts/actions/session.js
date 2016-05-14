@@ -1,8 +1,10 @@
+import { updatePath } from "redux-simple-router";
+
 import * as ClientActions from "./client";
+
 
 export const SESSION_SETUP_COMPLETE = "SESSION_SETUP_COMPLETE";
 export const SESSION_LOGOUT = "SESSION_LOGOUT";
-
 
 export function setup(session) {
   return (dispatch) => {
@@ -14,5 +16,8 @@ export function setup(session) {
 }
 
 export function logout() {
-  return {type: SESSION_LOGOUT};
+  return (dispatch) => {
+    dispatch({type: SESSION_LOGOUT});
+    dispatch(updatePath("/"));
+  };
 }
