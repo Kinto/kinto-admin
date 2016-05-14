@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-
 import Form from "react-jsonschema-form";
+
+import Spinner from "./Spinner";
 
 
 // XXX: remove defaults
@@ -49,7 +50,7 @@ function SetupForm(props) {
 
 function SessionInfo(props) {
   const {logout, session} = props;
-  const {username, serverInfo} = session;
+  const {busy, username, serverInfo} = session;
   return (
     <div>
       <p>Welcome back, <strong>{username}</strong> (
@@ -57,7 +58,8 @@ function SessionInfo(props) {
           onClick={(event) => event.preventDefault() || logout()}>logout</a>
       ).</p>
       <h3>Server information</h3>
-      <pre>{JSON.stringify(serverInfo, null, 2)}</pre>
+      {busy ? <Spinner /> :
+        <pre>{JSON.stringify(serverInfo, null, 2)}</pre>}
     </div>
   );
 }

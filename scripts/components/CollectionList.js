@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
 
-import BusyIndicator from "./BusyIndicator";
 import Spinner from "./Spinner";
 
 
@@ -142,22 +141,17 @@ function ListActions(props) {
 
 export default class CollectionList extends Component {
   render() {
-    const {collection, params} = this.props;
-    const {bid} = params;
-    const {name, busy, schema, displayFields, records} = collection;
+    const {params, collection} = this.props;
+    const {bid, cid} = params;
+    const {busy, schema, displayFields, records} = collection;
     const {deleteRecord, conflicts} = this.props;
-    if (!name) {
-      return <Spinner />;
-    }
-    const listActions = (
-      <ListActions cid={name} />
-    );
+    const listActions = <ListActions cid={cid} />;
     return (
       <div className="collection-page">
         <div className="row content-header">
-          <h1 className="col-md-8">{bid}/{name}</h1>
+          <h1 className="col-md-8">{bid}/{cid}</h1>
           <div className="edit-coll-props col-md-4 text-right">
-            <Link to={`/buckets/${bid}/collections/${name}/edit`}
+            <Link to={`/buckets/${bid}/collections/${cid}/edit`}
               className="btn btn-sm btn-default">
               <i className="glyphicon glyphicon-cog"/>
               Edit collection properties
@@ -165,14 +159,15 @@ export default class CollectionList extends Component {
           </div>
         </div>
         {listActions}
-        <Table
-          name={name}
-          records={records}
-          conflicts={conflicts}
-          schema={schema}
-          displayFields={displayFields}
-          deleteRecord={deleteRecord}
-          updatePath={this.props.updatePath} />
+        {busy ? <Spinner /> :
+          <Table
+            name={cid}
+            records={records}
+            conflicts={conflicts}
+            schema={schema}
+            displayFields={displayFields}
+            deleteRecord={deleteRecord}
+            updatePath={this.props.updatePath} />}
         {listActions}
       </div>
     );

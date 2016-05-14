@@ -3,15 +3,19 @@ import {
   SESSION_LOGOUT,
 } from "../actions/session";
 import {
+  CLIENT_BUSY,
   CLIENT_SERVER_INFO_LOADED,
   CLIENT_BUCKETS_LIST_LOADED,
 } from "../actions/client";
 
 
-const DEFAULT = {authenticated: false, buckets: [], serverInfo: {}};
+const DEFAULT = {busy: false, authenticated: false, buckets: [], serverInfo: {}};
 
 export default function session(state = DEFAULT, action) {
   switch (action.type) {
+    case CLIENT_BUSY: {
+      return {...state, busy: action.busy};
+    }
     case SESSION_SETUP_COMPLETE: {
       return {...state, ...action.session, authenticated: true};
     }
