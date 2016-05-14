@@ -77,7 +77,6 @@ class Table extends Component {
       records,
       schema,
       displayFields,
-      conflicts,
       deleteRecord,
       updatePath
     } = this.props;
@@ -112,7 +111,6 @@ class Table extends Component {
               <Row key={index}
                 name={name}
                 record={record}
-                conflict={conflicts[record.id]}
                 schema={schema}
                 displayFields={displayFields}
                 deleteRecord={deleteRecord}
@@ -144,7 +142,7 @@ export default class CollectionList extends Component {
     const {params, collection} = this.props;
     const {bid, cid} = params;
     const {busy, schema, displayFields, records} = collection;
-    const {deleteRecord, conflicts} = this.props;
+    const {deleteRecord} = this.props;
     const listActions = <ListActions cid={cid} />;
     return (
       <div className="collection-page">
@@ -163,7 +161,6 @@ export default class CollectionList extends Component {
           <Table
             name={cid}
             records={records}
-            conflicts={conflicts}
             schema={schema}
             displayFields={displayFields}
             deleteRecord={deleteRecord}

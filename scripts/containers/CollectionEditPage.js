@@ -7,8 +7,8 @@ import * as ClientActions from "../actions/client";
 
 function mapStateToProps(state) {
   return {
-    session: state.session,
     collection: state.collection,
+    session: state.session,
   };
 }
 

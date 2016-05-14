@@ -7,13 +7,8 @@ import { updatePath } from "redux-simple-router";
 
 function mapStateToProps(state) {
   return {
-    name: state.collection.name,
-    config: state.collection.config,
-    schema: state.collection.schema,
-    uiSchema: state.collection.uiSchema,
-    form: state.form,
-    liveValidate: state.liveValidate,
     collection: state.collection,
+    session: state.session,
   };
 }
 

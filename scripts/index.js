@@ -40,9 +40,6 @@ function onRouteUpdate() {
   store.dispatch(clearNotifications());
 }
 
-// XXX this was how we initially loaded the list of configured collection
-// store.dispatch(loadCollections());
-
 render((
   <Provider store={store}>
     <Router history={history} onUpdate={onRouteUpdate}>
