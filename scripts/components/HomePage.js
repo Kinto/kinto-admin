@@ -48,6 +48,30 @@ function SetupForm(props) {
   );
 }
 
+function ServerProps({serverInfo}) {
+  return (
+    <table className="table table-condensed">
+      <tbody>{
+        Object.keys(serverInfo).map((prop, i) => {
+          const serverProp = serverInfo[prop];
+          return (
+            <tr key={i}>
+              <th>{prop}</th>
+              <td style={{width: "100%"}}>{
+                typeof serverProp === "object" ?
+                  <ServerProps serverInfo={serverProp} /> :
+                  typeof serverProp === "string" && serverProp.startsWith("http") ?
+                    <a href={serverProp} target="_blank">{serverProp}</a> :
+                    String(serverProp)
+              }</td>
+            </tr>
+          );
+        })
+      }</tbody>
+    </table>
+  );
+}
+
 function SessionInfo(props) {
   const {logout, session} = props;
   const {busy, username, serverInfo} = session;
@@ -57,9 +81,13 @@ function SessionInfo(props) {
         <a href="#"
           onClick={(event) => event.preventDefault() || logout()}>logout</a>
       ).</p>
-      <h3>Server information</h3>
       {busy ? <Spinner /> :
-        <pre>{JSON.stringify(serverInfo, null, 2)}</pre>}
+        <div className="panel server-info-panel panel-default">
+          <div className="panel-heading"><b>Server information</b></div>
+          <div className="panel-body">
+            <ServerProps serverInfo={serverInfo} />
+          </div>
+        </div>}
     </div>
   );
 }

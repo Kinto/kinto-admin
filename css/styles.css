@@ -54,15 +54,18 @@ body {
   margin-left: .5em;
 }
 
-.server-info pre {
-  background: #ddd;
-  padding: 1em;
-  border-radius: 4px;
+.server-info-panel table {
+  margin: 0;
 }
 
-.server-info pre.error {
-  background: #C13832;
-  color: #F6F4EC;
+.server-info-panel .table-condensed > tbody > tr > th,
+.server-info-panel .table-condensed > tbody > tr > td {
+  padding: .3em;
+}
+
+.server-info-panel tr:first-child th,
+.server-info-panel tr:first-child td {
+  border: none;
 }
 
 .alert h4 small {
