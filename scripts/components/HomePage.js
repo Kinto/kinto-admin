@@ -36,10 +36,14 @@ const uiSchema = {
 function SetupForm(props) {
   const {setup} = props;
   return (
-    <Form
-      schema={schema}
-      uiSchema={uiSchema}
-      onSubmit={({formData}) => setup(formData)} />
+    <div className="panel panel-default">
+      <div className="panel-body">
+        <Form
+          schema={schema}
+          uiSchema={uiSchema}
+          onSubmit={({formData}) => setup(formData)} />
+      </div>
+    </div>
   );
 }
 

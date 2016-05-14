@@ -14,15 +14,13 @@ import SettingsPage from "./containers/SettingsPage";
 import ResolvePage from "./containers/ResolvePage";
 
 
-const LinkBack = (props) => {
-  const {name} = props.params;
-  const to = name ? `/collections/${name}` : "/";
+const LinkBack = () => {
   return (
     <div className="list-group">
-      <Link className="list-group-item" to={to}>
+      <a className="list-group-item" href="javascript:history.go(-1)">
         <i className="glyphicon glyphicon-chevron-left" />
         {" Back"}
-      </Link>
+      </a>
     </div>
   );
 };
@@ -36,9 +34,9 @@ export default (
   <Route path="/" component={App}>
     <IndexRoute components={{...common, content: HomePage}} />
     <Route path="/buckets/:bid/create-collection"
-      components={{...common, content: CollectionCreatePage}} />
+      components={{...common, content: CollectionCreatePage, linkBack: LinkBack}} />
     <Route path="/buckets/:bid/collections/:cid/edit"
-      components={{...common, content: CollectionEditPage}} />
+      components={{...common, content: CollectionEditPage, linkBack: LinkBack}} />
     <Route path="/buckets/:bid/collections/:cid"
       components={{...common, content: CollectionListPage}} />
     {/* Obsolete kinto.js routes */}

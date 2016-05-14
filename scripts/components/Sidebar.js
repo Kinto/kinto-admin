@@ -3,17 +3,16 @@ import { Link } from "react-router";
 
 
 function BucketCollectionsMenu(props) {
-  const {bucket, collections} = props;
+  const {bucket, collections, bid, cid} = props;
   return (
     <div className="collections-menu list-group">
       {
         collections.map((collection, i) => {
           const {id} = collection;
-          const active = false; // selectedBucket === bucket.id && selectedCollection === id
           const classes = [
             "list-group-item",
             "collections-menu-entry",
-            active ? "active" : "",
+            bid === bucket.id && cid === id ? "active" : "",
           ].join(" ");
           return (
             <div key={i} className={classes}>
@@ -38,20 +37,23 @@ function BucketCollectionsMenu(props) {
 }
 
 function BucketsMenu(props) {
-  const {buckets} = props;
+  const {buckets, bid, cid} = props;
   return (
     <div>{
       buckets.map((bucket, i) => {
         const {id, collections} = bucket;
+        const current = bid === id;
         return (
           <div key={i} className="panel panel-default">
             <div className="panel-heading">
-              <i className="glyphicon glyphicon-folder-open"/>
+              <i className={`glyphicon glyphicon-folder-${current ? "open" : "close"}`} />
               <strong>{id}</strong> bucket
             </div>
             <BucketCollectionsMenu
               bucket={bucket}
-              collections={collections} />
+              collections={collections}
+              bid={bid}
+              cid={cid} />
           </div>
         );
       })
@@ -61,7 +63,8 @@ function BucketsMenu(props) {
 
 export default class Sidebar extends Component {
   render() {
-    const {session, location} = this.props;
+    const {session, params, location} = this.props;
+    const {bid, cid} = params;
 
     function activeIfPathname(pathname) {
       const active = location.pathname === pathname ? "active" : "";
@@ -74,12 +77,10 @@ export default class Sidebar extends Component {
         <div className="panel panel-default">
           <div className="list-group">
             <Link to="/" className={activeIfPathname("/")}>Home</Link>
-            <Link to="/settings"
-              className={activeIfPathname("/settings")}>Settings</Link>
           </div>
         </div>
 
-        <BucketsMenu buckets={buckets} />
+        <BucketsMenu buckets={buckets} bid={bid} cid={cid} />
       </div>
     );
   }

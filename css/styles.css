@@ -137,6 +137,10 @@ table.record-list td.actions {
   text-decoration: none;
 }
 
+.collections-menu-entry.active a {
+  color: #fff;
+}
+
 .collections-menu-entry-edit {
   float: right;
   margin: .15em -1em 0 0;
