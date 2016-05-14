@@ -8,6 +8,7 @@ export const CLIENT_SERVER_INFO_LOADED = "CLIENT_SERVER_INFO_LOADED";
 export const CLIENT_BUCKETS_LIST_LOADED = "CLIENT_BUCKETS_LIST_LOADED";
 export const CLIENT_COLLECTION_PROPERTIES_LOADED = "CLIENT_COLLECTION_PROPERTIES_LOADED";
 export const CLIENT_COLLECTION_CREATED = "CLIENT_COLLECTION_CREATED";
+export const CLIENT_COLLECTION_DELETED = "CLIENT_COLLECTION_DELETED";
 export const CLIENT_COLLECTION_RECORDS_LOADED = "CLIENT_COLLECTION_RECORDS_LOADED";
 
 
@@ -43,6 +44,13 @@ export function collectionRecordsLoaded(records) {
   return {
     type: CLIENT_COLLECTION_RECORDS_LOADED,
     records,
+  };
+}
+
+export function collectionDeleted(cid) {
+  return {
+    type: CLIENT_COLLECTION_DELETED,
+    cid,
   };
 }
 
@@ -85,8 +93,7 @@ export function createCollection(bid, collectionData) {
   return (dispatch, getState) => {
     const client = getClient(getState);
     execute(dispatch, client.bucket(bid).createCollection(name, {
-      data: {uiSchema, displayFields},
-      schema,
+      data: {uiSchema, schema, displayFields},
     }))
       .then(({data}) => {
         dispatch(notifySuccess("Collection created."));
@@ -100,10 +107,11 @@ export function deleteCollection(bid, cid) {
   return (dispatch, getState) => {
     const client = getClient(getState);
     execute(dispatch, client.bucket(bid).deleteCollection(cid))
-      .then(() => {
+      .then(({data}) => {
+        dispatch(notifySuccess("Collection deleted."));
+        dispatch(collectionDeleted(data));
         dispatch(listBuckets());
         dispatch(updatePath(""));
-        dispatch(notifySuccess("Collection deleted."));
       });
   };
 }

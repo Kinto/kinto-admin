@@ -4,15 +4,10 @@ import CollectionForm from "./CollectionForm";
 
 
 export default class CollectionEdit extends Component {
-  onSubmit = ({formData}) => {
+  onSubmit = (formData) => {
     const {params} = this.props;
     const {bid, cid} = params;
-    this.props.updateCollectionProperties(bid, cid, {
-      ...formData,
-      // Parse JSON fields so they can be sent to the server
-      schema: JSON.parse(formData.schema),
-      uiSchema: JSON.parse(formData.uiSchema),
-    });
+    this.props.updateCollectionProperties(bid, cid, formData);
   };
 
   onDeleteClick = () => {

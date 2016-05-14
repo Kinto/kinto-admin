@@ -61,8 +61,17 @@ function validate({schema, uiSchema}, errors) {
 }
 
 export default class CollectionForm extends Component {
+  onSubmit = ({formData}) => {
+    this.props.onSubmit({
+      ...formData,
+      // Parse JSON fields so they can be sent to the server
+      schema: JSON.parse(formData.schema),
+      uiSchema: JSON.parse(formData.uiSchema),
+    });
+  }
+
   render() {
-    const {onSubmit, formData} = this.props;
+    const {formData} = this.props;
     // Disable edition of the collection name
     const _uiSchema = !formData ? uiSchema : {
       ...uiSchema,
@@ -78,7 +87,7 @@ export default class CollectionForm extends Component {
             formData={formData}
             uiSchema={_uiSchema}
             validate={validate}
-            onSubmit={onSubmit} />
+            onSubmit={this.onSubmit} />
         </div>
       </div>
     );

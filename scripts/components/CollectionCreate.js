@@ -11,7 +11,7 @@ export default class CollectionCreate extends Component {
       <div>
         <h1>Create a new collection in <code>{bid}</code></h1>
         <CollectionForm
-          onSubmit={({formData}) => createCollection(bid, formData)} />
+          onSubmit={(formData) => createCollection(bid, formData)} />
       </div>
     );
   }
