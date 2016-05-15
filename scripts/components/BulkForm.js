@@ -2,38 +2,45 @@ import React, { Component } from "react";
 import { Link } from "react-router";
 import Form from "react-jsonschema-form";
 
+import Spinner from "./Spinner";
+
 
 export default class BulkForm extends Component {
-  shouldComponentUpdate(nextProps) {
-    return nextProps.name && nextProps.schema;
-  }
-
-  onSubmit({formData}) {
+  onSubmit = ({formData}) => {
+    const {params, notifyError, bulkCreateRecords} = this.props;
+    const {bid, cid} = params;
     if (formData.length > 0) {
-      this.props.bulkCreate(formData);
+      bulkCreateRecords(bid, cid, formData);
     } else {
-      this.props.notifyError({message: "The form is empty."});
+      notifyError({message: "The form is empty."});
     }
   }
 
   render() {
-    const {collection} = this.props;
-    const {name, schema, uiSchema} = collection;
-    const bulkSchema = {type: "array", definitions: schema.definitions, items: schema};
+    const {params, collection} = this.props;
+    const {schema, uiSchema, busy} = collection;
+    const {bid, cid} = params;
+    const bulkSchema = {
+      type: "array",
+      definitions: schema.definitions,
+      items: schema
+    };
     const bulkUiSchema = {items: uiSchema};
-    const bulkFormData = [];
+    const bulkFormData = [{}, {}];
     return (
       <div>
-        <h1>Bulk {name} creation</h1>
-        <Form
-          schema={bulkSchema}
-          uiSchema={bulkUiSchema}
-          formData={bulkFormData}
-          onSubmit={this.onSubmit.bind(this)}>
-          <input type="submit" className="btn btn-primary" value="Bulk create" />
-          {" or "}
-          <Link to={`/collections/${name}`}>Cancel</Link>
-        </Form>
+        <h1>Bulk {bid}/{cid} creation</h1>
+        {busy ? <Spinner /> :
+          <Form
+            schema={bulkSchema}
+            uiSchema={bulkUiSchema}
+            formData={bulkFormData}
+            onSubmit={this.onSubmit}>
+            <input type="submit" className="btn btn-primary"
+              value="Bulk create" />
+            {" or "}
+            <Link to={`/collections/${name}`}>Cancel</Link>
+          </Form>}
       </div>
     );
   }

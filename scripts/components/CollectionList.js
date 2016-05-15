@@ -24,8 +24,8 @@ class Row extends Component {
 
   onDoubleClick(event) {
     event.preventDefault();
-    const {name, record} = this.props;
-    this.props.updatePath(`/collections/${name}/edit/${record.id}`);
+    const {bid, name, record} = this.props;
+    this.props.updatePath(`/buckets/${bid}/collections/${name}/edit/${record.id}`);
   }
 
   onDeleteClick(event) {

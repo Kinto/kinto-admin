@@ -204,3 +204,27 @@ export function updateRecord(bid, cid, rid, record) {
     execute(dispatch, prom);
   };
 }
+
+export function bulkCreateRecords(bid, cid, records) {
+  return (dispatch, getState) => {
+    const client = getClient(getState);
+    const coll = client.bucket(bid).collection(cid);
+    const prom = coll.batch((batch) => {
+      for (const record of records) {
+        batch.createRecord(record);
+      }
+    }, {aggregate: true})
+      .then((res) => {
+        if (res.errors.length > 0) {
+          const err = new Error("Some records could not be created.");
+          err.details = res.errors.map(err => err.error.message);
+          throw err;
+        } else {
+          dispatch(listRecords(bid, cid));
+          dispatch(updatePath(`/buckets/${bid}/collections/${cid}`));
+          dispatch(notifySuccess("Records created."));
+        }
+      });
+    execute(dispatch, prom);
+  };
+}
