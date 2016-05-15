@@ -3,27 +3,26 @@ import { Link } from "react-router";
 import Form from "react-jsonschema-form";
 
 export default class AddForm extends Component {
-  shouldComponentUpdate(nextProps) {
-    return nextProps.name && nextProps.schema;
-  }
-
-  onSubmit(data) {
-    this.props.create(data.formData);
+  onSubmit = ({formData}) => {
+    const {params, createRecord} = this.props;
+    const {bid, cid} = params;
+    createRecord(bid, cid, formData);
   }
 
   render() {
-    const {collection} = this.props;
-    const {name, schema, uiSchema} = collection;
+    const {params, collection} = this.props;
+    const {schema, uiSchema} = collection;
+    const {bid, cid} = params;
     return (
       <div>
-        <h1>{name}</h1>
+        <h1>Add a new record in {bid}/{cid}</h1>
         <Form
           schema={schema}
           uiSchema={uiSchema}
-          onSubmit={this.onSubmit.bind(this)}>
+          onSubmit={this.onSubmit}>
           <input type="submit" className="btn btn-primary" value="Create" />
           {" or "}
-          <Link to={`/collections/${name}`}>Cancel</Link>
+          <Link to={`/buckets/${bid}/collections/${cid}`}>Cancel</Link>
         </Form>
       </div>
     );

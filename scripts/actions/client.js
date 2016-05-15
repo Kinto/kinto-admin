@@ -17,8 +17,10 @@ function getClient(getState) {
     return client;
   }
   const {session} = getState();
-  // XXX error handling if no session info is available
   const {server, username, password} = session;
+  if (!server) {
+    return null;
+  }
   client = new KintoClient(server, {
     headers: {
       Authorization: "Basic " + btoa([username, password].join(":"))
@@ -155,6 +157,21 @@ export function listRecords(bid, cid) {
     const prom = coll.listRecords()
       .then(({data}) => {
         dispatch(CollectionActions.collectionRecordsLoaded(data));
+      });
+    execute(dispatch, prom);
+  };
+}
+
+export function createRecord(bid, cid, record) {
+  return (dispatch, getState) => {
+    const client = getClient(getState);
+    const coll = client.bucket(bid).collection(cid);
+    const prom = coll.createRecord(record)
+      .then((data) => {
+        dispatch(CollectionActions.collectionRecordCreated(data));
+        dispatch(listRecords(bid, cid));
+        dispatch(updatePath(`/buckets/${bid}/collections/${cid}`));
+        dispatch(notifySuccess("Record added."));
       });
     execute(dispatch, prom);
   };

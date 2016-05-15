@@ -124,15 +124,13 @@ class Table extends Component {
 }
 
 function ListActions(props) {
-  const {cid} = props;
+  const {bid, cid} = props;
   return (
     <div className="list-actions">
-      <Link to={`/collections/${cid}/add`} className="btn btn-info">
-        Add
-      </Link>
-      <Link className="btn btn-info" to={`/collections/${cid}/bulk`}>
-        Bulk add
-      </Link>
+      <Link to={`/buckets/${bid}/collections/${cid}/add`}
+        className="btn btn-info">Add</Link>
+      <Link to={`/buckets/${bid}/collections/${cid}/bulk`}
+        className="btn btn-info">Bulk add</Link>
     </div>
   );
 }
@@ -143,7 +141,7 @@ export default class CollectionList extends Component {
     const {bid, cid} = params;
     const {busy, schema, displayFields, records} = collection;
     const {deleteRecord} = this.props;
-    const listActions = <ListActions cid={cid} />;
+    const listActions = <ListActions bid={bid} cid={cid} />;
     return (
       <div className="collection-page">
         <div className="row content-header">

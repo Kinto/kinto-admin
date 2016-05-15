@@ -3,9 +3,13 @@ export const COLLECTION_PROPERTIES_LOADED = "COLLECTION_PROPERTIES_LOADED";
 export const COLLECTION_CREATED = "COLLECTION_CREATED";
 export const COLLECTION_DELETED = "COLLECTION_DELETED";
 export const COLLECTION_RECORDS_LOADED = "COLLECTION_RECORDS_LOADED";
+export const COLLECTION_RECORD_CREATED = "COLLECTION_RECORD_CREATED";
+
 
 export function reset() {
-  return {type: COLLECTION_RESET};
+  return {
+    type: COLLECTION_RESET
+  };
 }
 
 export function collectionCreated(data) {
@@ -33,6 +37,13 @@ export function collectionDeleted(cid) {
   return {
     type: COLLECTION_DELETED,
     cid,
+  };
+}
+
+export function collectionRecordCreated(data) {
+  return {
+    type: COLLECTION_RECORD_CREATED,
+    data,
   };
 }
 
