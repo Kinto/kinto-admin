@@ -15,3 +15,12 @@ export function omit(obj, keys=[]) {
     return keys.includes(key) ? acc : {...acc, [key]: obj[key]};
   }, {});
 }
+
+export function validJSON(string) {
+  try {
+    JSON.parse(string);
+    return true;
+  } catch(err) {
+    return false;
+  }
+}

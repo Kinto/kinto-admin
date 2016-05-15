@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Form from "react-jsonschema-form";
 
 import JSONEditor from "./JSONEditor";
+import { validJSON } from "./../utils";
 
 
 const schema = {
@@ -40,15 +41,6 @@ const uiSchema = {
     "ui:widget": JSONEditor,
   }
 };
-
-function validJSON(string) {
-  try {
-    JSON.parse(string);
-    return true;
-  } catch(err) {
-    return false;
-  }
-}
 
 function validate({schema, uiSchema}, errors) {
   if (!validJSON(schema)) {
