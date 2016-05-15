@@ -1,5 +1,6 @@
 import React, { Component} from "react";
 
+
 class ErrorDetails extends Component {
   static defaultProps = {
     details: []

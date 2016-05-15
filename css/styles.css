@@ -61,6 +61,9 @@ body {
 .server-info-panel .table-condensed > tbody > tr > th,
 .server-info-panel .table-condensed > tbody > tr > td {
   padding: .3em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 300px;
 }
 
 .server-info-panel tr:first-child th,
