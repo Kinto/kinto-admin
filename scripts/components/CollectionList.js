@@ -49,7 +49,7 @@ class Row extends Component {
   }
 
   render() {
-    const { name, record, displayFields} = this.props;
+    const { bid, name, record, displayFields} = this.props;
     return <tr onDoubleClick={this.onDoubleClick.bind(this)}>
       {
         displayFields.map((displayField, index) => {
@@ -60,7 +60,7 @@ class Row extends Component {
       <td className="status">{record._status}</td>
       <td className="actions text-right">
         <div className="btn-group">
-          <Link to={`/collections/${name}/edit/${record.id}`}
+          <Link to={`/buckets/${bid}/collections/${name}/edit/${record.id}`}
             className="btn btn-xs btn-info">Edit</Link>
           <button type="button" className="btn btn-xs btn-danger"
             onClick={this.onDeleteClick.bind(this)}>Delete</button>
@@ -73,6 +73,7 @@ class Row extends Component {
 class Table extends Component {
   render() {
     const {
+      bid,
       name,
       records,
       schema,
@@ -109,6 +110,7 @@ class Table extends Component {
           records.map((record, index) => {
             return (
               <Row key={index}
+                bid={bid}
                 name={name}
                 record={record}
                 schema={schema}
@@ -157,6 +159,7 @@ export default class CollectionList extends Component {
         {listActions}
         {busy ? <Spinner /> :
           <Table
+            bid={bid}
             name={cid}
             records={records}
             schema={schema}

@@ -3,6 +3,7 @@ import { updatePath } from "redux-simple-router";
 
 import { notifyError, notifySuccess } from "./notifications";
 import * as CollectionActions from "./collection";
+import * as RecordActions from "./record";
 
 
 export const CLIENT_BUSY = "CLIENT_BUSY";
@@ -172,6 +173,33 @@ export function createRecord(bid, cid, record) {
         dispatch(listRecords(bid, cid));
         dispatch(updatePath(`/buckets/${bid}/collections/${cid}`));
         dispatch(notifySuccess("Record added."));
+      });
+    execute(dispatch, prom);
+  };
+}
+
+export function loadRecord(bid, cid, rid) {
+  return (dispatch, getState) => {
+    const client = getClient(getState);
+    const coll = client.bucket(bid).collection(cid);
+    const prom = coll.getRecord(rid)
+      .then(({data}) => {
+        dispatch(RecordActions.recordLoaded(data));
+      });
+    execute(dispatch, prom);
+  };
+}
+
+export function updateRecord(bid, cid, rid, record) {
+  return (dispatch, getState) => {
+    const client = getClient(getState);
+    const coll = client.bucket(bid).collection(cid);
+    const prom = coll.updateRecord({...record, id: rid})
+      .then(({data}) => {
+        dispatch(RecordActions.resetRecord(data));
+        dispatch(listRecords(bid, cid));
+        dispatch(updatePath(`/buckets/${bid}/collections/${cid}`));
+        dispatch(notifySuccess("Record updated."));
       });
     execute(dispatch, prom);
   };

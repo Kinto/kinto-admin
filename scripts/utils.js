@@ -9,3 +9,9 @@ export function loadSettings() {
     return null;
   }
 }
+
+export function omit(obj, keys=[]) {
+  return Object.keys(obj).reduce((acc, key) => {
+    return keys.includes(key) ? acc : {...acc, [key]: obj[key]};
+  }, {});
+}

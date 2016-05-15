@@ -2,45 +2,37 @@ import React, { Component } from "react";
 import { Link } from "react-router";
 import Form from "react-jsonschema-form";
 
+import Spinner from "./Spinner";
+import { omit } from "../utils";
+
+
+function recordToFormData(record) {
+  return omit(record, ["id", "last_modified", "schema"]);
+}
+
 export default class EditForm extends Component {
-  defaultProps = {
-    liveValidate: false
-  };
-
-  componentDidMount() {
-    this.props.select(this.props.params.name);
-    this.props.loadRecord(this.props.params.id);
-  }
-
-  onSubmit(data) {
-    this.props.formDataReceived(data.formData);
-    this.props.submitForm();
-  }
-
-  shouldComponentUpdate(nextProps) {
-    return nextProps.name && nextProps.schema && nextProps.form;
-  }
-
-  componentWillUnmount() {
-    this.props.unloadRecord();
+  onSubmit = ({formData}) => {
+    const {params, updateRecord} = this.props;
+    const {bid, cid, rid} = params;
+    updateRecord(bid, cid, rid, formData);
   }
 
   render() {
-    const {name, form, schema, uiSchema, config} = this.props;
-    const {liveValidate} = config;
+    const {params, collection, record} = this.props;
+    const {schema, uiSchema, busy} = collection;
+    const {bid, cid, rid} = params;
     return (
       <div>
-        <h1>{name}</h1>
-        {form.record &&
+        <h1>{bid}/{cid}/{rid}</h1>
+        {busy ? <Spinner /> :
           <Form
-            liveValidate={liveValidate}
-            formData={form.formData}
+            formData={recordToFormData(record)}
             schema={schema}
             uiSchema={uiSchema}
-            onSubmit={this.onSubmit.bind(this)}>
+            onSubmit={this.onSubmit}>
             <input type="submit" className="btn btn-primary" value="Update" />
             {" or "}
-            <Link to={`/collections/${name}`}>Cancel</Link>
+            <Link to={`/buckets/${bid}/collections/${cid}`}>Cancel</Link>
           </Form>}
       </div>
     );

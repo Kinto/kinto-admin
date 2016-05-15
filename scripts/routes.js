@@ -40,11 +40,11 @@ export default (
       components={{...common, content: CollectionListPage}} />
     <Route path="/buckets/:bid/collections/:cid/add"
       components={{...common, content: AddFormPage, linkBack: LinkBack}} />
+    <Route path="/buckets/:bid/collections/:cid/edit/:rid"
+      components={{...common, content: EditFormPage, linkBack: LinkBack}} />
     {/* Obsolete kinto.js routes */}
     <Route path="/collections/:name/bulk"
       components={{...common, content: BulkFormPage, linkBack: LinkBack}} />
-    <Route path="/collections/:name/edit/:id"
-      components={{...common, content: EditFormPage, linkBack: LinkBack}} />
     <Route path="/collections/:name/resolve/:id"
       components={{...common, content: ResolvePage, linkBack: LinkBack}} />
     <Route path="*" components={{

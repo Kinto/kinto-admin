@@ -1,15 +1,18 @@
 import { combineReducers } from "redux";
 import { routeReducer } from "redux-simple-router";
 
-import collection from "./collection";
-import notifications from "./notifications";
 import session from "./session";
+import collection from "./collection";
+import record from "./record";
+import notifications from "./notifications";
+
 
 const rootReducer = combineReducers({
-  collection,
-  notifications,
-  session,
   routing: routeReducer,
+  session,
+  collection,
+  record,
+  notifications,
 });
 
 export default rootReducer;

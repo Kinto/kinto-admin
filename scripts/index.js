@@ -22,7 +22,7 @@ syncReduxAndRouter(history, store);
 
 function onRouteUpdate() {
   const {params} = this.state;
-  const {bid, cid} = params;
+  const {bid, cid, rid} = params;
   const {collection} = store.getState();
 
   // If bid/cid has changed, reset collection store and load coll properties
@@ -34,6 +34,11 @@ function onRouteUpdate() {
       // in a collection list route.
       store.dispatch(ClientActions.listRecords(bid, cid));
     }
+  }
+
+  // If a record id is part of the url, load it
+  if (bid && cid && rid) {
+    store.dispatch(ClientActions.loadRecord(bid, cid, rid));
   }
 
   // Clear current notification list on each route update
