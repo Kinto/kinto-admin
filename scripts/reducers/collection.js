@@ -1,10 +1,9 @@
-import {
-  CLIENT_BUSY,
-  CLIENT_COLLECTION_PROPERTIES_LOADED,
-  CLIENT_COLLECTION_RECORDS_LOADED,
-} from "../actions/client";
+import {CLIENT_BUSY} from "../actions/client";
 import {
   COLLECTION_RESET,
+  COLLECTION_PROPERTIES_LOADED,
+  COLLECTION_RECORDS_LOADED,
+  COLLECTION_CREATED,
 } from "../actions/collection";
 
 
@@ -26,7 +25,7 @@ export function collection(state = INITIAL_STATE, action) {
     case COLLECTION_RESET: {
       return {...INITIAL_STATE};
     }
-    case CLIENT_COLLECTION_PROPERTIES_LOADED: {
+    case COLLECTION_PROPERTIES_LOADED: {
       const {properties} = action;
       return {
         ...state,
@@ -37,8 +36,12 @@ export function collection(state = INITIAL_STATE, action) {
         displayFields: properties.displayFields,
       };
     }
-    case CLIENT_COLLECTION_RECORDS_LOADED: {
+    case COLLECTION_RECORDS_LOADED: {
       return {...state, records: action.records};
+    }
+    case COLLECTION_CREATED: {
+      // XXX load created collection data?
+      return state;
     }
     default: {
       return state;

@@ -2,15 +2,12 @@ import KintoClient from "kinto-client";
 import { updatePath } from "redux-simple-router";
 
 import { notifyError, notifySuccess } from "./notifications";
+import * as CollectionActions from "./collection";
 
 
 export const CLIENT_BUSY = "CLIENT_BUSY";
 export const CLIENT_SERVER_INFO_LOADED = "CLIENT_SERVER_INFO_LOADED";
 export const CLIENT_BUCKETS_LIST_LOADED = "CLIENT_BUCKETS_LIST_LOADED";
-export const CLIENT_COLLECTION_PROPERTIES_LOADED = "CLIENT_COLLECTION_PROPERTIES_LOADED";
-export const CLIENT_COLLECTION_CREATED = "CLIENT_COLLECTION_CREATED";
-export const CLIENT_COLLECTION_DELETED = "CLIENT_COLLECTION_DELETED";
-export const CLIENT_COLLECTION_RECORDS_LOADED = "CLIENT_COLLECTION_RECORDS_LOADED";
 
 
 let client;
@@ -55,34 +52,6 @@ export function bucketListLoaded(buckets) {
   };
 }
 
-export function collectionCreated(data) {
-  return {
-    type: CLIENT_COLLECTION_CREATED,
-    data,
-  };
-}
-
-export function collectionPropertiesLoaded(properties) {
-  return {
-    type: CLIENT_COLLECTION_PROPERTIES_LOADED,
-    properties,
-  };
-}
-
-export function collectionRecordsLoaded(records) {
-  return {
-    type: CLIENT_COLLECTION_RECORDS_LOADED,
-    records,
-  };
-}
-
-export function collectionDeleted(cid) {
-  return {
-    type: CLIENT_COLLECTION_DELETED,
-    cid,
-  };
-}
-
 function execute(dispatch, promise) {
   dispatch(clientBusy(true));
   return promise
@@ -97,7 +66,11 @@ function execute(dispatch, promise) {
 export function listBuckets() {
   return (dispatch, getState) => {
     const client = getClient(getState);
-    const prom = client.listBuckets()
+    // We need to first issue a request to the default bucket in order to create
+    // it so we can retrieve the list of buckets.
+    // https://github.com/Kinto/kinto/issues/454
+    const prom = client.bucket("default").getAttributes()
+      .then(() => client.listBuckets())
       .then(({data}) => {
         dispatch(serverInfoLoaded(client.serverInfo));
         return Promise.all(data.map((bucket) => {
@@ -121,7 +94,7 @@ export function createCollection(bid, collectionData) {
     })
       .then(({data}) => {
         dispatch(notifySuccess("Collection created."));
-        dispatch(collectionCreated(data));
+        dispatch(CollectionActions.collectionCreated(data));
         dispatch(listBuckets());
       });
     execute(dispatch, prom);
@@ -134,7 +107,7 @@ export function deleteCollection(bid, cid) {
     const prom = client.bucket(bid).deleteCollection(cid)
       .then(({data}) => {
         dispatch(notifySuccess("Collection deleted."));
-        dispatch(collectionDeleted(data));
+        dispatch(CollectionActions.collectionDeleted(data));
         dispatch(listBuckets());
         dispatch(updatePath(""));
       });
@@ -147,7 +120,10 @@ export function loadCollectionProperties(bid, cid) {
     const client = getClient(getState);
     const prom = client.bucket(bid).collection(cid).getAttributes()
       .then(({data}) => {
-        dispatch(collectionPropertiesLoaded({...data, bucket: bid}));
+        dispatch(CollectionActions.collectionPropertiesLoaded({
+          ...data,
+          bucket: bid
+        }));
       });
     execute(dispatch, prom);
   };
@@ -162,7 +138,10 @@ export function updateCollectionProperties(bid, cid, {schema, uiSchema, displayF
       coll.setMetadata({uiSchema, displayFields}),
     ])
       .then(([_, {data}]) => {
-        dispatch(collectionPropertiesLoaded({...data, bucket: bid}));
+        dispatch(CollectionActions.collectionPropertiesLoaded({
+          ...data,
+          bucket: bid
+        }));
         dispatch(notifySuccess("Collection properties updated."));
       });
     execute(dispatch, prom);
@@ -175,7 +154,7 @@ export function listRecords(bid, cid) {
     const coll = client.bucket(bid).collection(cid);
     const prom = coll.listRecords()
       .then(({data}) => {
-        dispatch(collectionRecordsLoaded(data));
+        dispatch(CollectionActions.collectionRecordsLoaded(data));
       });
     execute(dispatch, prom);
   };
