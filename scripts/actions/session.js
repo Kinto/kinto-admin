@@ -17,6 +17,7 @@ export function setup(session) {
 
 export function logout() {
   return (dispatch) => {
+    ClientActions.resetClient();
     dispatch({type: SESSION_LOGOUT});
     dispatch(updatePath("/"));
   };

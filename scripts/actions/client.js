@@ -13,6 +13,27 @@ export const CLIENT_COLLECTION_DELETED = "CLIENT_COLLECTION_DELETED";
 export const CLIENT_COLLECTION_RECORDS_LOADED = "CLIENT_COLLECTION_RECORDS_LOADED";
 
 
+let client;
+
+function getClient(getState) {
+  if (client) {
+    return client;
+  }
+  const {session} = getState();
+  // XXX error handling if no session info is available
+  const {server, username, password} = session;
+  client = new KintoClient(server, {
+    headers: {
+      Authorization: "Basic " + btoa([username, password].join(":"))
+    }
+  });
+  return client;
+}
+
+export function resetClient() {
+  client = null;
+}
+
 export function clientBusy(busy) {
   return {
     type: CLIENT_BUSY,
@@ -60,17 +81,6 @@ export function collectionDeleted(cid) {
     type: CLIENT_COLLECTION_DELETED,
     cid,
   };
-}
-
-function getClient(getState) {
-  const {session} = getState();
-  // XXX error handling if no session info is available
-  const {server, username, password} = session;
-  return new KintoClient(server, {
-    headers: {
-      Authorization: "Basic " + btoa([username, password].join(":"))
-    }
-  });
 }
 
 function execute(dispatch, promise) {
