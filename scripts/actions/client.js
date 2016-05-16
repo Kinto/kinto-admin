@@ -136,11 +136,8 @@ export function updateCollectionProperties(bid, cid, {schema, uiSchema, displayF
   return (dispatch, getState) => {
     const client = getClient(getState);
     const coll = client.bucket(bid).collection(cid);
-    const prom = Promise.all([
-      coll.setSchema(schema),
-      coll.setMetadata({uiSchema, displayFields}),
-    ])
-      .then(([_, {data}]) => {
+    const prom = coll.setMetadata({schema, uiSchema, displayFields})
+      .then(({data}) => {
         dispatch(CollectionActions.collectionPropertiesLoaded({
           ...data,
           bucket: bid

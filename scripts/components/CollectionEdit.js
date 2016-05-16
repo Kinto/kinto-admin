@@ -22,15 +22,16 @@ export default class CollectionEdit extends Component {
   render() {
     const {params, collection} = this.props;
     const {bid, cid} = params;
-    if (collection.busy) {
+    const {schema, uiSchema, displayFields, busy} = collection;
+    if (busy) {
       return <Spinner />;
     }
     const formData = {
-      name: collection.name,
-      displayFields: collection.displayFields,
+      name,
+      displayFields,
       // Stringify JSON fields so they're editable in a text field
-      schema: JSON.stringify(collection.schema, null, 2),
-      uiSchema: JSON.stringify(collection.uiSchema, null, 2),
+      schema: JSON.stringify(schema, null, 2),
+      uiSchema: JSON.stringify(uiSchema, null, 2),
     };
     return (
       <div>
