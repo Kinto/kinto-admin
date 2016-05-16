@@ -141,6 +141,10 @@ table.record-list td.actions {
   margin-left: 1em;
 }
 
+.panel-heading > .glyphicon {
+  margin-right: .5em;
+}
+
 .list-group-item .glyphicon {
   margin-right: .5em;
 }
