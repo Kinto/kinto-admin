@@ -29,7 +29,7 @@ export default class JSONRecordForm extends Component {
   }
 
   render() {
-    const {formData} = this.props;
+    const {record, children} = this.props;
     return (
       <div>
         <div className="alert alert-warning">
@@ -38,10 +38,12 @@ export default class JSONRecordForm extends Component {
         </div>
         <Form
           schema={schema}
-          formData={formData}
+          formData={record}
           uiSchema={uiSchema}
           validate={validate}
-          onSubmit={this.onSubmit} />
+          onSubmit={this.onSubmit}>
+          {children}
+        </Form>
       </div>
     );
   }
