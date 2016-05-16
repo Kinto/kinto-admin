@@ -73,14 +73,10 @@ function ServerProps({serverInfo}) {
 }
 
 function SessionInfo(props) {
-  const {logout, session} = props;
-  const {busy, username, serverInfo} = session;
+  const {session} = props;
+  const {busy, serverInfo} = session;
   return (
     <div>
-      <p>Welcome back, <strong>{username}</strong> (
-        <a href="#"
-          onClick={(event) => event.preventDefault() || logout()}>logout</a>
-      ).</p>
       {busy ? <Spinner /> :
         <div className="panel server-info-panel panel-default">
           <div className="panel-heading"><b>Server information</b></div>
@@ -95,12 +91,12 @@ function SessionInfo(props) {
 export default class HomePage extends Component {
   render() {
     const {session, setup, logout} = this.props;
-    const {authenticated} = session;
+    const {authenticated, busy} = session;
     return <div>
       <h1>Kinto Web Administration Console</h1>
       {authenticated ?
         <SessionInfo session={session} logout={logout} /> :
-        <SetupForm setup={setup} />}
+        busy ? <Spinner /> : <SetupForm setup={setup} />}
     </div>;
   }
 }

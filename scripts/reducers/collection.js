@@ -8,7 +8,7 @@ import {
 
 
 const INITIAL_STATE = {
-  bucket: "default",
+  bucket: null,
   name: null,
   busy: false,
   schema: {},
@@ -23,7 +23,7 @@ export function collection(state = INITIAL_STATE, action) {
       return {...state, busy: action.busy};
     }
     case COLLECTION_RESET: {
-      return {...INITIAL_STATE};
+      return INITIAL_STATE;
     }
     case COLLECTION_PROPERTIES_LOADED: {
       const {properties} = action;

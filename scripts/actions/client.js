@@ -72,10 +72,17 @@ export function listBuckets() {
     // We need to first issue a request to the default bucket in order to create
     // it so we can retrieve the list of buckets.
     // https://github.com/Kinto/kinto/issues/454
-    const prom = client.bucket("default").getAttributes()
-      .then(() => client.listBuckets())
+    const prom = client.fetchServerInfo()
+      .then((serverInfo) => {
+        dispatch(serverInfoLoaded(serverInfo));
+        return client.bucket(serverInfo.user.bucket).getAttributes({
+          headers: {"Pragma": "no-cache"}
+        });
+      })
+      .then(() => {
+        return client.listBuckets({headers: {"Pragma": "no-cache"}});
+      })
       .then(({data}) => {
-        dispatch(serverInfoLoaded(client.serverInfo));
         return Promise.all(data.map((bucket) => {
           return client.bucket(bucket.id).listCollections()
             .then(({data}) => ({...bucket, collections: data}));

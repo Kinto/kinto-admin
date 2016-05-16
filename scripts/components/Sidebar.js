@@ -37,7 +37,7 @@ function BucketCollectionsMenu(props) {
 }
 
 function BucketsMenu(props) {
-  const {buckets, bid, cid} = props;
+  const {buckets, userBucket, bid, cid} = props;
   return (
     <div>{
       buckets.map((bucket, i) => {
@@ -47,7 +47,7 @@ function BucketsMenu(props) {
           <div key={i} className="panel panel-default">
             <div className="panel-heading">
               <i className={`glyphicon glyphicon-folder-${current ? "open" : "close"}`} />
-              <strong>{id}</strong> bucket
+              <strong>{id === userBucket ? "default" : id}</strong> bucket
             </div>
             <BucketCollectionsMenu
               bucket={bucket}
@@ -79,8 +79,12 @@ export default class Sidebar extends Component {
             <Link to="/" className={activeIfPathname("/")}>Home</Link>
           </div>
         </div>
-
-        <BucketsMenu buckets={buckets} bid={bid} cid={cid} />
+        {session.authenticated ?
+          <BucketsMenu
+            buckets={buckets}
+            userBucket={session.serverInfo.user.bucket}
+            bid={bid}
+            cid={cid} /> : null}
       </div>
     );
   }

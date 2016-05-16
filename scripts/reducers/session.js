@@ -17,23 +17,14 @@ export default function session(state = DEFAULT, action) {
       return {...state, busy: action.busy};
     }
     case SESSION_SETUP_COMPLETE: {
-      return {...state, ...action.session, authenticated: true};
+      return {...state, ...action.session};
     }
     case CLIENT_BUCKETS_LIST_LOADED: {
-      return {
-        ...state,
-        // replace default user bucket id with "default"
-        buckets: action.buckets.map((bucket) => {
-          if (bucket.id === state.serverInfo.user.bucket) {
-            return {...bucket, id: "default"};
-          } else {
-            return bucket;
-          }
-        })
-      };
+      return {...state, buckets: action.buckets};
     }
     case CLIENT_SERVER_INFO_LOADED: {
-      return {...state, serverInfo: action.serverInfo};
+      const {serverInfo} = action;
+      return {...state, serverInfo, authenticated: !!serverInfo.user};
     }
     case SESSION_LOGOUT: {
       return DEFAULT;
