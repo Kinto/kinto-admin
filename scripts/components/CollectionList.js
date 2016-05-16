@@ -146,11 +146,20 @@ class Table extends Component {
 function ListActions(props) {
   const {bid, cid} = props;
   return (
-    <div className="list-actions">
-      <Link to={`/buckets/${bid}/collections/${cid}/add`}
-        className="btn btn-info">Add</Link>
-      <Link to={`/buckets/${bid}/collections/${cid}/bulk`}
-        className="btn btn-info">Bulk add</Link>
+    <div className="row list-actions">
+      <div className="col-xs-8">
+        <Link to={`/buckets/${bid}/collections/${cid}/add`}
+          className="btn btn-info">Add</Link>
+        <Link to={`/buckets/${bid}/collections/${cid}/bulk`}
+          className="btn btn-info">Bulk add</Link>
+      </div>
+      <div className="edit-coll-props col-xs-4 text-right">
+        <Link to={`/buckets/${bid}/collections/${cid}/edit`}
+          className="btn btn-default">
+          <i className="glyphicon glyphicon-cog"/>
+          Collection settings
+        </Link>
+      </div>
     </div>
   );
 }
@@ -166,14 +175,7 @@ export default class CollectionList extends Component {
     return (
       <div className="collection-page">
         <div className="row content-header">
-          <h1 className="col-md-8">{bid}/{cid}</h1>
-          <div className="edit-coll-props col-md-4 text-right">
-            <Link to={`/buckets/${bid}/collections/${cid}/edit`}
-              className="btn btn-sm btn-default">
-              <i className="glyphicon glyphicon-cog"/>
-              Edit collection properties
-            </Link>
-          </div>
+          <h1>{bid}/{cid}</h1>
         </div>
         {listActions}
         {busy ? <Spinner /> :

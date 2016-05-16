@@ -21,11 +21,15 @@ body {
 }
 
 .content .list-actions {
-  margin-bottom: 1.4em;
+  margin-bottom: .4em;
 }
 
-.content .list-actions > a {
+.content .list-actions a {
   margin-right: .5em;
+}
+
+.content .list-actions a > .glyphicon {
+  margin-right: .3em;
 }
 
 .content.with-notifications {
@@ -137,26 +141,7 @@ table.record-list td.actions {
   margin-left: 1em;
 }
 
-.sync-btn-group .dropdown-menu a {
-  padding-left: 1em;
-  padding-right: 2em;
-}
-
-.sync-btn-group .dropdown-menu .glyphicon {
-  float: right;
-  margin: .15em -1.5em 0 0;
-  color: #888;
-}
-
-.sync-btn-group .dropdown-menu .active .glyphicon {
-  color: #fff;
-}
-
 .list-group-item .glyphicon {
-  margin-right: .5em;
-}
-
-.panel-heading .glyphicon {
   margin-right: .5em;
 }
 
