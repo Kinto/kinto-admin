@@ -196,10 +196,25 @@ export function updateRecord(bid, cid, rid, record) {
     const coll = client.bucket(bid).collection(cid);
     const prom = coll.updateRecord({...record, id: rid})
       .then(({data}) => {
-        dispatch(RecordActions.resetRecord(data));
+        dispatch(RecordActions.resetRecord());
         dispatch(listRecords(bid, cid));
         dispatch(updatePath(`/buckets/${bid}/collections/${cid}`));
         dispatch(notifySuccess("Record updated."));
+      });
+    execute(dispatch, prom);
+  };
+}
+
+export function deleteRecord(bid, cid, rid) {
+  return (dispatch, getState) => {
+    const client = getClient(getState);
+    const coll = client.bucket(bid).collection(cid);
+    const prom = coll.deleteRecord(rid)
+      .then(({data}) => {
+        dispatch(RecordActions.resetRecord());
+        dispatch(listRecords(bid, cid));
+        dispatch(updatePath(`/buckets/${bid}/collections/${cid}`));
+        dispatch(notifySuccess("Record deleted."));
       });
     execute(dispatch, prom);
   };

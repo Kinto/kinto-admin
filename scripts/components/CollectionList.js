@@ -22,13 +22,14 @@ class Row extends Component {
 
   onDoubleClick(event) {
     event.preventDefault();
-    const {bid, name, record} = this.props;
-    this.props.updatePath(`/buckets/${bid}/collections/${name}/edit/${record.id}`);
+    const {bid, cid, record} = this.props;
+    this.props.updatePath(`/buckets/${bid}/collections/${cid}/edit/${record.id}`);
   }
 
   onDeleteClick(event) {
+    const {bid, cid, record, deleteRecord} = this.props;
     if (confirm("Are you sure?")) {
-      this.props.deleteRecord(this.props.record.id);
+      deleteRecord(bid, cid, record.id);
     }
   }
 
@@ -50,7 +51,7 @@ class Row extends Component {
   }
 
   render() {
-    const { bid, name, record, displayFields} = this.props;
+    const {bid, cid, record, displayFields} = this.props;
     return <tr onDoubleClick={this.onDoubleClick.bind(this)}>
       {
         displayFields.map((displayField, index) => {
@@ -60,7 +61,7 @@ class Row extends Component {
       <td className="lastmod">{this.lastModified}</td>
       <td className="actions text-right">
         <div className="btn-group">
-          <Link to={`/buckets/${bid}/collections/${name}/edit/${record.id}`}
+          <Link to={`/buckets/${bid}/collections/${cid}/edit/${record.id}`}
             className="btn btn-xs btn-info">Edit</Link>
           <button type="button" className="btn btn-xs btn-danger"
             onClick={this.onDeleteClick.bind(this)}>Delete</button>
@@ -92,7 +93,7 @@ class Table extends Component {
   render() {
     const {
       bid,
-      name,
+      cid,
       records,
       schema,
       displayFields,
@@ -128,7 +129,7 @@ class Table extends Component {
             return (
               <Row key={index}
                 bid={bid}
-                name={name}
+                cid={cid}
                 record={record}
                 schema={schema}
                 displayFields={displayFields}
@@ -178,7 +179,7 @@ export default class CollectionList extends Component {
         {busy ? <Spinner /> :
           <Table
             bid={bid}
-            name={cid}
+            cid={cid}
             records={records}
             schema={schema}
             displayFields={displayFields}
