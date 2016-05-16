@@ -7,7 +7,7 @@ import Spinner from "./Spinner";
 class Row extends Component {
   static defaultProps = {
     schema: {},
-    displayFields: [],
+    displayFields: ["__json"],
     record: {},
   }
 
@@ -33,8 +33,9 @@ class Row extends Component {
   }
 
   recordField(displayField) {
-    if (this.props.record.hasOwnProperty(displayField)) {
-      const field = this.props.record[displayField];
+    const {record} = this.props;
+    if (record.hasOwnProperty(displayField)) {
+      const field = record[displayField];
       if (typeof field === "string") {
         return field;
       } else if (typeof field === "object") {
@@ -42,6 +43,8 @@ class Row extends Component {
       } else {
         return String(field);
       }
+    } else if (displayField === "__json") {
+      return JSON.stringify(record);
     }
     return "<unknown>";
   }
@@ -55,7 +58,6 @@ class Row extends Component {
         })
       }
       <td className="lastmod">{this.lastModified}</td>
-      <td className="status">{record._status}</td>
       <td className="actions text-right">
         <div className="btn-group">
           <Link to={`/buckets/${bid}/collections/${name}/edit/${record.id}`}
@@ -70,19 +72,21 @@ class Row extends Component {
 
 class Table extends Component {
   static defaultProps = {
-    displayFields: []
+    displayFields: ["__json"]
   }
 
   getFieldTitle(displayField) {
     const {schema} = this.props;
+    if (displayField === "__json") {
+      return "JSON";
+    }
     if (schema &&
         schema.properties &&
         displayField in schema.properties &&
         "title" in schema.properties[displayField]) {
       return schema.properties[displayField].title;
-    } else {
-      return displayField;
     }
+    return displayField;
   }
 
   render() {
@@ -104,21 +108,18 @@ class Table extends Component {
       );
     }
 
-    const _displayFields = displayFields.length === 0 ? ["id"] : displayFields;
-
     return (
       <table className="table table-striped record-list">
         <thead>
           <tr>
             {
-              _displayFields.map((displayField, index) => {
+              displayFields.map((displayField, index) => {
                 return (
                   <th key={index}>{this.getFieldTitle(displayField)}</th>
                 );
               })
             }
             <th>Last mod.</th>
-            <th>Status</th>
             <th></th>
           </tr>
         </thead>
@@ -130,7 +131,7 @@ class Table extends Component {
                 name={name}
                 record={record}
                 schema={schema}
-                displayFields={_displayFields}
+                displayFields={displayFields}
                 deleteRecord={deleteRecord}
                 updatePath={updatePath} />
             );
