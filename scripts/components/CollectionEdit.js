@@ -22,7 +22,7 @@ export default class CollectionEdit extends Component {
   render() {
     const {params, collection} = this.props;
     const {bid, cid} = params;
-    if (!collection.name) {
+    if (collection.busy) {
       return <Spinner />;
     }
     const formData = {
