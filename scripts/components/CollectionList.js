@@ -5,12 +5,10 @@ import Spinner from "./Spinner";
 
 
 class Row extends Component {
-  static get defaultProps() {
-    return {
-      schema: {},
-      displayFields: [],
-      record: {},
-    };
+  static defaultProps = {
+    schema: {},
+    displayFields: [],
+    record: {},
   }
 
   get lastModified() {
@@ -71,6 +69,22 @@ class Row extends Component {
 }
 
 class Table extends Component {
+  static defaultProps = {
+    displayFields: []
+  }
+
+  getFieldTitle(displayField) {
+    const {schema} = this.props;
+    if (schema &&
+        schema.properties &&
+        displayField in schema.properties &&
+        "title" in schema.properties[displayField]) {
+      return schema.properties[displayField].title;
+    } else {
+      return displayField;
+    }
+  }
+
   render() {
     const {
       bid,
@@ -81,6 +95,7 @@ class Table extends Component {
       deleteRecord,
       updatePath
     } = this.props;
+
     if (records.length === 0) {
       return (
         <div className="alert alert-info">
@@ -88,16 +103,17 @@ class Table extends Component {
         </div>
       );
     }
+
+    const _displayFields = displayFields.length === 0 ? ["id"] : displayFields;
+
     return (
       <table className="table table-striped record-list">
         <thead>
           <tr>
             {
-              displayFields.map((field, index) => {
+              _displayFields.map((displayField, index) => {
                 return (
-                  <th key={index}>{
-                    schema.properties[field].title
-                  }</th>
+                  <th key={index}>{this.getFieldTitle(displayField)}</th>
                 );
               })
             }
@@ -114,7 +130,7 @@ class Table extends Component {
                 name={name}
                 record={record}
                 schema={schema}
-                displayFields={displayFields}
+                displayFields={_displayFields}
                 deleteRecord={deleteRecord}
                 updatePath={updatePath} />
             );
@@ -143,6 +159,7 @@ export default class CollectionList extends Component {
     const {bid, cid} = params;
     const {busy, schema, displayFields, records} = collection;
     const {deleteRecord} = this.props;
+
     const listActions = <ListActions bid={bid} cid={cid} />;
     return (
       <div className="collection-page">
