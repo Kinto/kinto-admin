@@ -51,7 +51,11 @@ export default class AddForm extends Component {
     return (
       <div>
         <h1>Add a new record in {bid}/{cid}</h1>
-        {this.getContent()}
+        <div className="panel panel-default">
+          <div className="panel-body">
+            {this.getContent()}
+          </div>
+        </div>
       </div>
     );
   }

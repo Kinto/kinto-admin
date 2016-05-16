@@ -39,7 +39,7 @@ export default class BulkForm extends Component {
             <input type="submit" className="btn btn-primary"
               value="Bulk create" />
             {" or "}
-            <Link to={`/collections/${name}`}>Cancel</Link>
+            <Link to={`/buckets/${bid}/collections/${cid}`}>Cancel</Link>
           </Form>}
       </div>
     );

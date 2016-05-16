@@ -44,7 +44,7 @@ class Row extends Component {
         return String(field);
       }
     } else if (displayField === "__json") {
-      return JSON.stringify(record);
+      return <code>{JSON.stringify(record)}</code>;
     }
     return "<unknown>";
   }
