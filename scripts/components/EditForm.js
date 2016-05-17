@@ -1,12 +1,8 @@
 import React, { Component } from "react";
 
 import RecordForm from "./RecordForm";
-import { omit } from "../utils";
+import { cleanRecord } from "../utils";
 
-
-function recordToFormData(record) {
-  return omit(record, ["id", "last_modified", "schema"]);
-}
 
 export default class EditForm extends Component {
   onSubmit = (record) => {
@@ -25,7 +21,7 @@ export default class EditForm extends Component {
           bid={bid}
           cid={cid}
           collection={collection}
-          record={recordToFormData(record)}
+          record={cleanRecord(record)}
           onSubmit={this.onSubmit} />
       </div>
     );

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
 
+import { cleanRecord } from "../utils";
 import Spinner from "./Spinner";
 
 
@@ -45,7 +46,7 @@ class Row extends Component {
         return String(field);
       }
     } else if (displayField === "__json") {
-      return <code>{JSON.stringify(record)}</code>;
+      return <code>{JSON.stringify(cleanRecord(record))}</code>;
     }
     return "<unknown>";
   }

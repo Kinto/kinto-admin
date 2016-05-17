@@ -24,3 +24,7 @@ export function validJSON(string) {
     return false;
   }
 }
+
+export function cleanRecord(record) {
+  return omit(record, ["id", "schema", "last_modified"]);
+}
