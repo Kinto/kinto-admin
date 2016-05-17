@@ -1,12 +1,10 @@
+import { CLIENT_BUSY } from "../actions/client";
 import {
   SESSION_SETUP_COMPLETE,
+  SESSION_SERVER_INFO_LOADED,
+  SESSION_BUCKETS_LIST_LOADED,
   SESSION_LOGOUT,
 } from "../actions/session";
-import {
-  CLIENT_BUSY,
-  CLIENT_SERVER_INFO_LOADED,
-  CLIENT_BUCKETS_LIST_LOADED,
-} from "../actions/client";
 
 
 const DEFAULT = {busy: false, authenticated: false, buckets: [], serverInfo: {}};
@@ -19,10 +17,10 @@ export default function session(state = DEFAULT, action) {
     case SESSION_SETUP_COMPLETE: {
       return {...state, ...action.session};
     }
-    case CLIENT_BUCKETS_LIST_LOADED: {
+    case SESSION_BUCKETS_LIST_LOADED: {
       return {...state, buckets: action.buckets};
     }
-    case CLIENT_SERVER_INFO_LOADED: {
+    case SESSION_SERVER_INFO_LOADED: {
       const {serverInfo} = action;
       return {...state, serverInfo, authenticated: !!serverInfo.user};
     }

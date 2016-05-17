@@ -2,6 +2,7 @@ import KintoClient from "kinto-client";
 import { updatePath } from "redux-simple-router";
 
 import { notifyError, notifySuccess } from "./notifications";
+import * as SessionActions from "./session";
 import * as CollectionActions from "./collection";
 import * as RecordActions from "./record";
 
@@ -10,19 +11,10 @@ export const CLIENT_BUSY = "CLIENT_BUSY";
 export const CLIENT_SERVER_INFO_LOADED = "CLIENT_SERVER_INFO_LOADED";
 export const CLIENT_BUCKETS_LIST_LOADED = "CLIENT_BUCKETS_LIST_LOADED";
 
+export let client;
 
-let client;
-
-function getClient(getState) {
-  if (client) {
-    return client;
-  }
-  const {session} = getState();
-  const {server, username, password} = session;
-  if (!server) {
-    return null;
-  }
-  client = new KintoClient(server, {
+function getClient({session: {server, username, password}}) {
+  return client || new KintoClient(server, {
     headers: {
       Authorization: "Basic " + btoa([username, password].join(":")),
       // XXX by default we must avoid caching authentication-dependent resources
@@ -32,7 +24,6 @@ function getClient(getState) {
       Pragma: "no-cache",
     }
   });
-  return client;
 }
 
 export function resetClient() {
@@ -46,37 +37,25 @@ export function clientBusy(busy) {
   };
 }
 
-export function serverInfoLoaded(serverInfo) {
-  return {
-    type: CLIENT_SERVER_INFO_LOADED,
-    serverInfo,
+function execute(fn) {
+  return (dispatch, getState) => {
+    dispatch(clientBusy(true));
+    const client = getClient(getState());
+    fn(client, dispatch, getState)
+      .catch((err) => {
+        dispatch(notifyError(err));
+      })
+      .then(() => {
+        dispatch(clientBusy(false));
+      });
   };
-}
-
-export function bucketListLoaded(buckets) {
-  return {
-    type: CLIENT_BUCKETS_LIST_LOADED,
-    buckets,
-  };
-}
-
-function execute(dispatch, promise) {
-  dispatch(clientBusy(true));
-  return promise
-    .catch((err) => {
-      dispatch(notifyError(err));
-    })
-    .then(() => {
-      dispatch(clientBusy(false));
-    });
 }
 
 export function listBuckets() {
-  return (dispatch, getState) => {
-    const client = getClient(getState);
-    const prom = client.fetchServerInfo()
+  return execute((client, dispatch, getState) => {
+    return client.fetchServerInfo()
       .then((serverInfo) => {
-        dispatch(serverInfoLoaded(serverInfo));
+        dispatch(SessionActions.serverInfoLoaded(serverInfo));
         // XXX We need to first issue a request to the default bucket in order
         // to create it so we can retrieve the list of buckets.
         // ref https://github.com/Kinto/kinto/issues/454
@@ -92,17 +71,15 @@ export function listBuckets() {
         }));
       })
       .then((buckets) => {
-        dispatch(bucketListLoaded(buckets));
+        dispatch(SessionActions.bucketListLoaded(buckets));
       });
-    execute(dispatch, prom);
-  };
+  });
 }
 
 export function createCollection(bid, collectionData) {
   const {name, schema, uiSchema, displayFields} = collectionData;
-  return (dispatch, getState) => {
-    const client = getClient(getState);
-    const prom = client.bucket(bid).createCollection(name, {
+  return execute((client, dispatch, getState) => {
+    return client.bucket(bid).createCollection(name, {
       data: {uiSchema, schema, displayFields},
     })
       .then(({data}) => {
@@ -110,43 +87,37 @@ export function createCollection(bid, collectionData) {
         dispatch(CollectionActions.collectionCreated(data));
         dispatch(listBuckets());
       });
-    execute(dispatch, prom);
-  };
+  });
 }
 
 export function deleteCollection(bid, cid) {
-  return (dispatch, getState) => {
-    const client = getClient(getState);
-    const prom = client.bucket(bid).deleteCollection(cid)
+  return execute((client, dispatch, getState) => {
+    return client.bucket(bid).deleteCollection(cid)
       .then(({data}) => {
         dispatch(notifySuccess("Collection deleted."));
         dispatch(CollectionActions.collectionDeleted(data));
         dispatch(listBuckets());
         dispatch(updatePath(""));
       });
-    execute(dispatch, prom);
-  };
+  });
 }
 
 export function loadCollectionProperties(bid, cid) {
-  return (dispatch, getState) => {
-    const client = getClient(getState);
-    const prom = client.bucket(bid).collection(cid).getAttributes()
+  return execute((client, dispatch, getState) => {
+    return client.bucket(bid).collection(cid).getAttributes()
       .then(({data}) => {
         dispatch(CollectionActions.collectionPropertiesLoaded({
           ...data,
           bucket: bid
         }));
       });
-    execute(dispatch, prom);
-  };
+  });
 }
 
 export function updateCollectionProperties(bid, cid, {schema, uiSchema, displayFields}) {
-  return (dispatch, getState) => {
-    const client = getClient(getState);
+  return execute((client, dispatch, getState) => {
     const coll = client.bucket(bid).collection(cid);
-    const prom = coll.setMetadata({schema, uiSchema, displayFields})
+    return coll.setMetadata({schema, uiSchema, displayFields})
       .then(({data}) => {
         dispatch(CollectionActions.collectionPropertiesLoaded({
           ...data,
@@ -154,84 +125,72 @@ export function updateCollectionProperties(bid, cid, {schema, uiSchema, displayF
         }));
         dispatch(notifySuccess("Collection properties updated."));
       });
-    execute(dispatch, prom);
-  };
+  });
 }
 
 export function listRecords(bid, cid) {
-  return (dispatch, getState) => {
-    const client = getClient(getState);
+  return execute((client, dispatch, getState) => {
     const coll = client.bucket(bid).collection(cid);
-    const prom = coll.listRecords()
+    return coll.listRecords()
       .then(({data}) => {
         dispatch(CollectionActions.collectionRecordsLoaded(data));
       });
-    execute(dispatch, prom);
-  };
+  });
 }
 
 export function createRecord(bid, cid, record) {
-  return (dispatch, getState) => {
-    const client = getClient(getState);
+  return execute((client, dispatch, getState) => {
     const coll = client.bucket(bid).collection(cid);
-    const prom = coll.createRecord(record)
+    return coll.createRecord(record)
       .then((data) => {
         dispatch(CollectionActions.collectionRecordCreated(data));
         dispatch(listRecords(bid, cid));
         dispatch(updatePath(`/buckets/${bid}/collections/${cid}`));
         dispatch(notifySuccess("Record added."));
       });
-    execute(dispatch, prom);
-  };
+  });
 }
 
 export function loadRecord(bid, cid, rid) {
-  return (dispatch, getState) => {
-    const client = getClient(getState);
+  return execute((client, dispatch, getState) => {
     const coll = client.bucket(bid).collection(cid);
-    const prom = coll.getRecord(rid)
+    return coll.getRecord(rid)
       .then(({data}) => {
         dispatch(RecordActions.recordLoaded(data));
       });
-    execute(dispatch, prom);
-  };
+  });
 }
 
 export function updateRecord(bid, cid, rid, record) {
-  return (dispatch, getState) => {
-    const client = getClient(getState);
+  return execute((client, dispatch, getState) => {
     const coll = client.bucket(bid).collection(cid);
-    const prom = coll.updateRecord({...record, id: rid})
+    return coll.updateRecord({...record, id: rid})
       .then(({data}) => {
         dispatch(RecordActions.resetRecord());
         dispatch(listRecords(bid, cid));
         dispatch(updatePath(`/buckets/${bid}/collections/${cid}`));
         dispatch(notifySuccess("Record updated."));
       });
-    execute(dispatch, prom);
-  };
+  });
 }
 
 export function deleteRecord(bid, cid, rid) {
-  return (dispatch, getState) => {
-    const client = getClient(getState);
+  return execute((client, dispatch, getState) => {
     const coll = client.bucket(bid).collection(cid);
-    const prom = coll.deleteRecord(rid)
+    return coll.deleteRecord(rid)
       .then(({data}) => {
         dispatch(RecordActions.resetRecord());
         dispatch(listRecords(bid, cid));
         dispatch(updatePath(`/buckets/${bid}/collections/${cid}`));
         dispatch(notifySuccess("Record deleted."));
       });
-    execute(dispatch, prom);
-  };
+  });
 }
 
 export function bulkCreateRecords(bid, cid, records) {
-  return (dispatch, getState) => {
-    const client = getClient(getState);
+  return execute((client, dispatch, getState) => {
     const coll = client.bucket(bid).collection(cid);
-    const prom = coll.batch((batch) => {
+    return coll.batch((batch) => {
       for (const record of records) {
         batch.createRecord(record);
       }
@@ -247,6 +206,5 @@ export function bulkCreateRecords(bid, cid, records) {
           dispatch(notifySuccess("Records created."));
         }
       });
-    execute(dispatch, prom);
-  };
+  });
 }
