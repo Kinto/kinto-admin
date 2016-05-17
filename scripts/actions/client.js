@@ -24,7 +24,12 @@ function getClient(getState) {
   }
   client = new KintoClient(server, {
     headers: {
-      Authorization: "Basic " + btoa([username, password].join(":"))
+      Authorization: "Basic " + btoa([username, password].join(":")),
+      // XXX by default we must avoid caching authentication-dependent resources
+      // as they could leak private information to different users. Here we
+      // simply discard caching entirely, waiting for a Kinto server fix.
+      // ref https://github.com/Kinto/kinto/issues/593
+      Pragma: "no-cache",
     }
   });
   return client;
@@ -69,18 +74,16 @@ function execute(dispatch, promise) {
 export function listBuckets() {
   return (dispatch, getState) => {
     const client = getClient(getState);
-    // We need to first issue a request to the default bucket in order to create
-    // it so we can retrieve the list of buckets.
-    // https://github.com/Kinto/kinto/issues/454
     const prom = client.fetchServerInfo()
       .then((serverInfo) => {
         dispatch(serverInfoLoaded(serverInfo));
-        return client.bucket(serverInfo.user.bucket).getAttributes({
-          headers: {"Pragma": "no-cache"}
-        });
+        // XXX We need to first issue a request to the default bucket in order
+        // to create it so we can retrieve the list of buckets.
+        // ref https://github.com/Kinto/kinto/issues/454
+        return client.bucket(serverInfo.user.bucket).getAttributes();
       })
       .then(() => {
-        return client.listBuckets({headers: {"Pragma": "no-cache"}});
+        return client.listBuckets();
       })
       .then(({data}) => {
         return Promise.all(data.map((bucket) => {
