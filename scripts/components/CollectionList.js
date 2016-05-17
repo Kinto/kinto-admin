@@ -174,10 +174,8 @@ export default class CollectionList extends Component {
 
     const listActions = <ListActions bid={bid} cid={cid} />;
     return (
-      <div className="collection-page">
-        <div className="row content-header">
-          <h1>{bid}/{cid}</h1>
-        </div>
+      <div className="row collection-page">
+        <h1>{bid}/{cid}</h1>
         {listActions}
         {busy ? <Spinner /> :
           <Table

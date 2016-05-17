@@ -7,6 +7,11 @@ body {
   background: #F6F4EC;
 }
 
+h1 {
+  font-family: "Ubuntu";
+  font-size: 2.2em;
+}
+
 .main {
   background: #F6F4EC;
 }
@@ -17,7 +22,7 @@ body {
 
 .content {
   background: #F6F4EC;
-  padding: 1em 1vw 1em 21vw;
+  padding-top: 1em;
 }
 
 .content .list-actions {
@@ -34,10 +39,6 @@ body {
 
 .content.with-notifications {
   padding-top: 8em;
-}
-
-.content-header .edit-coll-props {
-  padding-top: 1.5em;
 }
 
 .content-header .edit-coll-props i {
@@ -135,10 +136,6 @@ table.record-list td.actions {
 
 .json-record {
   min-height: 300px;
-}
-
-.list-actions .label {
-  margin-left: 1em;
 }
 
 .panel-heading > .glyphicon {

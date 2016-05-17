@@ -11,8 +11,8 @@ import * as ClientActions from "./actions/client";
 import * as CollectionActions from "./actions/collection";
 import { clearNotifications } from "./actions/notifications";
 
-import "../css/styles.css";
 import "bootstrap/dist/css/bootstrap.css";
+import "../css/styles.css";
 
 
 const history = createHashHistory();
