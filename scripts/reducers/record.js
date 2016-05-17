@@ -1,4 +1,7 @@
-import { RECORD_LOADED, RECORD_RESET } from "../actions/record";
+import {
+  RECORD_LOADED,
+  RECORD_RESET,
+} from "../constants";
 
 
 const INITIAL_STATE = {};

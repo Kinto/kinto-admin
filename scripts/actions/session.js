@@ -2,11 +2,13 @@ import { updatePath } from "redux-simple-router";
 
 import * as ClientActions from "./client";
 
+import {
+  SESSION_SETUP_COMPLETE,
+  SESSION_SERVER_INFO_LOADED,
+  SESSION_BUCKETS_LIST_LOADED,
+  SESSION_LOGOUT,
+} from "../constants";
 
-export const SESSION_SETUP_COMPLETE = "SESSION_SETUP_COMPLETE";
-export const SESSION_SERVER_INFO_LOADED = "SESSION_SERVER_INFO_LOADED";
-export const SESSION_BUCKETS_LIST_LOADED = "SESSION_BUCKETS_LIST_LOADED";
-export const SESSION_LOGOUT = "SESSION_LOGOUT";
 
 export function setup(session) {
   return (dispatch) => {

@@ -1,10 +1,10 @@
-import {CLIENT_BUSY} from "../actions/client";
 import {
+  CLIENT_BUSY,
   COLLECTION_RESET,
   COLLECTION_PROPERTIES_LOADED,
   COLLECTION_RECORDS_LOADED,
   COLLECTION_CREATED,
-} from "../actions/collection";
+} from "../constants";
 
 
 const INITIAL_STATE = {

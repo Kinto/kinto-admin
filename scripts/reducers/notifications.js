@@ -3,7 +3,8 @@ import {
   NOTIFICATION_ADDED,
   NOTIFICATION_REMOVED,
   NOTIFICATION_CLEAR,
-} from "../actions/notifications";
+} from "../constants";
+
 
 const INITIAL_STATE = [];
 

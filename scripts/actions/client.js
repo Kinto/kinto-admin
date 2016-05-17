@@ -5,11 +5,8 @@ import { notifyError, notifySuccess } from "./notifications";
 import * as SessionActions from "./session";
 import * as CollectionActions from "./collection";
 import * as RecordActions from "./record";
+import { CLIENT_BUSY } from "../constants";
 
-
-export const CLIENT_BUSY = "CLIENT_BUSY";
-export const CLIENT_SERVER_INFO_LOADED = "CLIENT_SERVER_INFO_LOADED";
-export const CLIENT_BUCKETS_LIST_LOADED = "CLIENT_BUCKETS_LIST_LOADED";
 
 export let client;
 

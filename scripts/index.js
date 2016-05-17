@@ -12,8 +12,8 @@ import * as CollectionActions from "./actions/collection";
 import { clearNotifications } from "./actions/notifications";
 
 import "bootstrap/dist/css/bootstrap.css";
-import "../css/styles.css";
 import "codemirror/lib/codemirror.css";
+import "../css/styles.css";
 
 
 const history = createHashHistory();

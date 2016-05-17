@@ -1,5 +1,7 @@
-export const RECORD_LOADED = "RECORD_LOADED";
-export const RECORD_RESET = "RECORD_RESET";
+import {
+  RECORD_LOADED,
+  RECORD_RESET,
+} from "../constants";
 
 
 export function resetRecord() {

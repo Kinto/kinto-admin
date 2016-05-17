@@ -1,6 +1,9 @@
-export const NOTIFICATION_ADDED = "NOTIFICATION_ADDED";
-export const NOTIFICATION_REMOVED = "NOTIFICATION_REMOVED";
-export const NOTIFICATION_CLEAR = "NOTIFICATION_CLEAR";
+import {
+  NOTIFICATION_ADDED,
+  NOTIFICATION_REMOVED,
+  NOTIFICATION_CLEAR,
+} from "../constants";
+
 
 function notify(type, message, details=[]) {
   return {
