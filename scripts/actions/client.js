@@ -41,7 +41,7 @@ function execute(fn) {
   return (dispatch, getState) => {
     dispatch(clientBusy(true));
     const client = getClient(getState());
-    fn(client, dispatch, getState)
+    return fn(client, dispatch, getState)
       .catch((err) => {
         dispatch(notifyError(err));
       })
@@ -86,6 +86,7 @@ export function createCollection(bid, collectionData) {
         dispatch(notifySuccess("Collection created."));
         dispatch(CollectionActions.collectionCreated(data));
         dispatch(listBuckets());
+        // XXX redirect to created collection view?
       });
   });
 }

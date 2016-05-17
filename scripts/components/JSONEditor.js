@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import Codemirror from "react-codemirror";
 import "codemirror/mode/javascript/javascript";
 
-import "codemirror/lib/codemirror.css";
-
 
 // Patching CodeMirror#componentWillReceiveProps so it's executed synchronously
 // Ref https://github.com/mozilla-services/react-jsonschema-form/issues/174

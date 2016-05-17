@@ -13,6 +13,7 @@ import { clearNotifications } from "./actions/notifications";
 
 import "bootstrap/dist/css/bootstrap.css";
 import "../css/styles.css";
+import "codemirror/lib/codemirror.css";
 
 
 const history = createHashHistory();
