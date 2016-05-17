@@ -27,7 +27,7 @@ export default class CollectionEdit extends Component {
       return <Spinner />;
     }
     const formData = {
-      name,
+      name: collection.name,
       displayFields,
       // Stringify JSON fields so they're editable in a text field
       schema: JSON.stringify(schema, null, 2),
