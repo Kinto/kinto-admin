@@ -6,8 +6,8 @@ function SessionInfoBar({session, logout}) {
   return (
     <div className="session-info-bar text-right">
       Connected as <strong>{username}</strong> on <strong>{server}</strong>
-      <a href="" className="btn btn-xs btn-success"
-          onClick={(event) => event.preventDefault() || logout()}>logout</a>
+      <a href="" className="btn btn-xs btn-success btn-logout"
+        onClick={(event) => event.preventDefault() || logout()}>logout</a>
     </div>
   );
 }
