@@ -7,14 +7,10 @@ var yargs = require("yargs");
 var root = path.join(__dirname, "..");
 var distRoot = path.join(root, "dist");
 
-function serve(port, config) {
+function serve(port) {
   var app = express();
 
   app.use(express.static(distRoot));
-
-  app.get("/config.json", function(req, res) {
-    res.sendFile(config);
-  });
 
   app.get("*", function(req, res) {
     res.sendFile(path.join(distRoot, "index.html"));
@@ -26,19 +22,16 @@ function serve(port, config) {
       return;
     }
 
-    console.log("Using config at " + config);
     console.log("Listening at http://0.0.0.0:" + port);
   });
 }
 
-function build(destination, config) {
+function build(destination) {
   try {
     // create the destination folder
     fs.mkdirpSync(destination);
     // copy dist folder to destination
     fs.copySync(distRoot, destination);
-    // copy config file to destination
-    fs.copySync(config, path.join(destination, "config.json"));
   } catch(err) {
     console.error(err);
     return process.exit(1);
@@ -48,36 +41,7 @@ function build(destination, config) {
 function baseCommand(yargs) {
   return yargs
     .help("h")
-    .alias("h", "help")
-    .option("c", {
-      alias: "config",
-      describe: "Path to the Kinto admin JSON configuration file.",
-    })
-    .demand(["config"])
-    .check(function(argv) {
-      var customConfigPath;
-      if (argv.config) {
-        // Extend relative paths to absolute ones.
-        if (argv.config[0] === "/") {
-          customConfigPath = argv.config;
-        } else {
-          customConfigPath = path.join(process.cwd(), argv.config);
-        }
-      }
-      if (!fs.existsSync(customConfigPath)) {
-        throw new Error("File not found: " + customConfigPath);
-      }
-      if (!fs.statSync(customConfigPath).isFile()) {
-        throw new Error(customConfigPath + " is not a file");
-      }
-      try {
-        JSON.parse(fs.readFileSync(customConfigPath));
-      } catch(err) {
-        throw new Error(customConfigPath + " is not a valid JSON file");
-      }
-      argv.config = customConfigPath;
-      return true;
-    });
+    .alias("h", "help");
 }
 
 // Command line controller setup
@@ -93,7 +57,7 @@ yargs
   // serve command
   .command("serve", "Serves the Kinto Web admin UI.", function(yargs) {
     var argv = baseCommand(yargs)
-      .example("$ kinto-admin serve -c config.json")
+      .example("$ kinto-admin serve")
       .option("p", {
         alias: "port",
         describe: "Server port to use",
@@ -107,7 +71,7 @@ yargs
   // build command
   .command("build", "Builds the Web admin assets for static hosting.", function(yargs) {
     var argv = baseCommand(yargs)
-      .example("$ kinto-admin build -c config.json -d build")
+      .example("$ kinto-admin build -d build")
       .option("d", {
         alias: "destination",
         describe: "Target build directory.",
@@ -115,6 +79,6 @@ yargs
       .demand(["destination"])
       .argv;
 
-    build(argv.destination, argv.config);
+    build(argv.destination);
   })
   .argv;
