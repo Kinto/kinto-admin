@@ -31,8 +31,7 @@ Form.defaultProps = {
 };
 
 // HTML debugging helper
-global.d = function d(comp) {
-  const node = require("react-dom").findDOMNode(comp);
+global.d = function d(node) {
   console.log(require("html").prettyPrint(node.outerHTML, {indent_size: 2}));
 };
 

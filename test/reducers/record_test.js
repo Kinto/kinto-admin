@@ -7,7 +7,7 @@ import {
 } from "../../scripts/constants";
 
 
-describe("notifications reducer", () => {
+describe("record reducer", () => {
   it("RECORD_LOADED", () => {
     expect(record(undefined, {
       type: RECORD_LOADED,
