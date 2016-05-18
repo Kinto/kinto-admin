@@ -140,7 +140,7 @@ export function createRecord(bid, cid, record) {
   return execute((client, dispatch, getState) => {
     const coll = client.bucket(bid).collection(cid);
     return coll.createRecord(record)
-      .then((data) => {
+      .then(({data}) => {
         dispatch(CollectionActions.collectionRecordCreated(data));
         dispatch(listRecords(bid, cid));
         dispatch(updatePath(`/buckets/${bid}/collections/${cid}`));
@@ -177,7 +177,6 @@ export function deleteRecord(bid, cid, rid) {
     const coll = client.bucket(bid).collection(cid);
     return coll.deleteRecord(rid)
       .then(({data}) => {
-        dispatch(RecordActions.resetRecord());
         dispatch(listRecords(bid, cid));
         dispatch(updatePath(`/buckets/${bid}/collections/${cid}`));
         dispatch(notifySuccess("Record deleted."));

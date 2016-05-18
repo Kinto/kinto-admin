@@ -35,10 +35,10 @@ export function collectionRecordsLoaded(records) {
   };
 }
 
-export function collectionDeleted(cid) {
+export function collectionDeleted(data) {
   return {
     type: COLLECTION_DELETED,
-    cid,
+    data,
   };
 }
 
