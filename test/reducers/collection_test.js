@@ -22,7 +22,7 @@ describe("collection reducer", () => {
       .eql(initial);
   });
 
-  it("should update state when collection is busy", () => {
+  it("COLLECTION_PROPERTIES_LOADED", () => {
     expect(collection(undefined, {
       type: COLLECTION_PROPERTIES_LOADED,
       properties: {
@@ -43,7 +43,7 @@ describe("collection reducer", () => {
     });
   });
 
-  it("should update state when collection is loaded", () => {
+  it("COLLECTION_RECORDS_LOADED", () => {
     expect(collection(undefined, {
       type: COLLECTION_RECORDS_LOADED,
       records: [1, 2, 3]

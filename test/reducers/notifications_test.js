@@ -10,27 +10,27 @@ import {
 
 
 describe("notifications reducer", () => {
-  it("should add a notification", () => {
+  it("NOTIFICATION_ADDED", () => {
     expect(notifications([1, 2], {
       type: NOTIFICATION_ADDED,
       notification: 3,
     })).eql([1, 2, 3]);
   });
 
-  it("should remove a notification", () => {
+  it("NOTIFICATION_REMOVED", () => {
     expect(notifications([1, 2, 3], {
       type: NOTIFICATION_REMOVED,
       index: 1,
     })).eql([1, 3]);
   });
 
-  it("should clear notifications on clear action received", () => {
+  it("NOTIFICATION_CLEAR", () => {
     expect(notifications([1, 2, 3], {
       type: NOTIFICATION_CLEAR,
     })).eql([]);
   });
 
-  it("should clear notifications on url changed", () => {
+  it("UPDATE_PATH", () => {
     expect(notifications([1, 2, 3], {
       type: UPDATE_PATH,
     })).eql([]);
