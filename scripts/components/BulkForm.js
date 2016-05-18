@@ -17,7 +17,6 @@ export default class BulkForm extends Component {
     }
 
     if (Object.keys(schema).length === 0) {
-      console.log("yooo");
       return bulkCreateRecords(bid, cid, formData.map(json => JSON.parse(json)));
     }
 
