@@ -6,7 +6,7 @@ import { createSandbox, createComponent } from "../test_utils";
 import Notifications from "../../scripts/components/Notifications";
 
 
-describe("Notifications container", () => {
+describe("Notifications component", () => {
   let sandbox, removeNotification;
 
   beforeEach(() => {

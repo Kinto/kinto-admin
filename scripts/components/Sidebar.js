@@ -44,7 +44,7 @@ function BucketsMenu(props) {
         const {id, collections} = bucket;
         const current = bid === id;
         return (
-          <div key={i} className="panel panel-default">
+          <div key={i} className="panel panel-default bucket-menu">
             <div className="panel-heading">
               <i className={`glyphicon glyphicon-folder-${current ? "open" : "close"}`} />
               <strong>{id === userBucket ? "default" : id}</strong> bucket
