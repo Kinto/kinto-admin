@@ -45,6 +45,7 @@ export default class BulkForm extends Component {
         type: "array",
         items: {
           type: "string",
+          title: "JSON record",
           default: "{}"
         }
       };
