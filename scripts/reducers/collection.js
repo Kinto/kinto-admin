@@ -10,6 +10,7 @@ import {
 const INITIAL_STATE = {
   bucket: null,
   name: null,
+  label: null,
   busy: false,
   schema: {},
   uiSchema: {},
@@ -31,6 +32,7 @@ export function collection(state = INITIAL_STATE, action) {
         ...state,
         bucket: properties.bucket,
         name: properties.id,
+        label: properties.label,
         schema: properties.schema,
         uiSchema: properties.uiSchema,
         displayFields: properties.displayFields,

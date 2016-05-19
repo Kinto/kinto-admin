@@ -169,13 +169,13 @@ export default class CollectionList extends Component {
   render() {
     const {params, collection} = this.props;
     const {bid, cid} = params;
-    const {busy, schema, displayFields, records} = collection;
+    const {busy, label, schema, displayFields, records} = collection;
     const {deleteRecord} = this.props;
 
     const listActions = <ListActions bid={bid} cid={cid} />;
     return (
-      <div className="row collection-page">
-        <h1>{bid}/{cid}</h1>
+      <div className="collection-page">
+        <h1>List of records in <b>{label}</b></h1>
         {listActions}
         {busy ? <Spinner /> :
           <Table

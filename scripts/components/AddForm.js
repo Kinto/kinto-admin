@@ -12,10 +12,11 @@ export default class AddForm extends Component {
 
   render() {
     const {params, collection} = this.props;
+    const {label} = collection;
     const {bid, cid} = params;
     return (
       <div>
-        <h1>Add a new record in {bid}/{cid}</h1>
+        <h1>Add a new record in <b>{label}</b></h1>
         <RecordForm
           bid={bid}
           cid={cid}

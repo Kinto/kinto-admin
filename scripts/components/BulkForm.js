@@ -25,7 +25,7 @@ export default class BulkForm extends Component {
 
   render() {
     const {params, collection} = this.props;
-    const {schema, uiSchema, busy} = collection;
+    const {busy, label, schema, uiSchema} = collection;
     const {bid, cid} = params;
 
     let bulkSchema, bulkUiSchema, bulkFormData;
@@ -58,7 +58,7 @@ export default class BulkForm extends Component {
 
     return (
       <div>
-        <h1>Bulk {bid}/{cid} creation</h1>
+        <h1>Bulk <b>{label}</b> creation</h1>
         {busy ? <Spinner /> :
           <Form
             schema={bulkSchema}

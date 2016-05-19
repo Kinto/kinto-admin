@@ -20,9 +20,8 @@ export default class CollectionEdit extends Component {
   };
 
   render() {
-    const {params, collection} = this.props;
-    const {bid, cid} = params;
-    const {schema, uiSchema, displayFields, busy} = collection;
+    const {collection} = this.props;
+    const {label, schema, uiSchema, displayFields, busy} = collection;
     if (busy) {
       return <Spinner />;
     }
@@ -35,7 +34,7 @@ export default class CollectionEdit extends Component {
     };
     return (
       <div>
-        <h1>Update <code>{bid}/{cid}</code> collection properties</h1>
+        <h1>Edit <b>{label}</b> collection properties</h1>
         <CollectionForm
           formData={formData}
           onSubmit={this.onSubmit} />

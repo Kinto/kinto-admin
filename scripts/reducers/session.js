@@ -18,7 +18,16 @@ export default function session(state = DEFAULT, action) {
       return {...state, ...action.session};
     }
     case SESSION_BUCKETS_LIST_LOADED: {
-      return {...state, buckets: action.buckets};
+      const {serverInfo} = state;
+      return {
+        ...state,
+        buckets: action.buckets.map((bucket) => {
+          return {
+            ...bucket,
+            id: bucket.id === serverInfo.user.bucket ? "default" : bucket.id
+          };
+        }),
+      };
     }
     case SESSION_SERVER_INFO_LOADED: {
       const {serverInfo} = action;

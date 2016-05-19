@@ -14,11 +14,6 @@ function getClient({session: {server, username, password}}) {
   return client || new KintoClient(server, {
     headers: {
       Authorization: "Basic " + btoa([username, password].join(":")),
-      // XXX by default we must avoid caching authentication-dependent resources
-      // as they could leak private information to different users. Here we
-      // simply discard caching entirely, waiting for a Kinto server fix.
-      // ref https://github.com/Kinto/kinto/issues/593
-      Pragma: "no-cache",
     }
   });
 }
@@ -53,10 +48,11 @@ export function listBuckets() {
     return client.fetchServerInfo()
       .then((serverInfo) => {
         dispatch(SessionActions.serverInfoLoaded(serverInfo));
-        // XXX We need to first issue a request to the default bucket in order
-        // to create it so we can retrieve the list of buckets.
+        // XXX We need to first issue a request to the "default" bucket in order
+        // to create user associated permissions, so we can access the list of
+        // buckets.
         // ref https://github.com/Kinto/kinto/issues/454
-        return client.bucket(serverInfo.user.bucket).getAttributes();
+        return client.bucket("default").getAttributes();
       })
       .then(() => {
         return client.listBuckets();
@@ -106,7 +102,8 @@ export function loadCollectionProperties(bid, cid) {
       .then(({data}) => {
         dispatch(CollectionActions.collectionPropertiesLoaded({
           ...data,
-          bucket: bid
+          bucket: bid,
+          label: `${bid}/${data.id}`,
         }));
       });
   });
@@ -119,7 +116,8 @@ export function updateCollectionProperties(bid, cid, {schema, uiSchema, displayF
       .then(({data}) => {
         dispatch(CollectionActions.collectionPropertiesLoaded({
           ...data,
-          bucket: bid
+          bucket: bid,
+          label: `${bid}/${data.id}`,
         }));
         dispatch(notifySuccess("Collection properties updated."));
       });

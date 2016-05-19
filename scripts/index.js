@@ -26,6 +26,10 @@ function onRouteUpdate() {
   const {bid, cid, rid} = params;
   const {collection} = store.getState();
 
+  // XXX check for an authenticated session; if we're requesting anything other
+  // than the homepage, we should redirect to the homepage with a notification
+  // that auth is required.
+
   // If bid/cid has changed, reset collection store and load coll properties
   if (bid !== collection.bucket || cid !== collection.name) {
     store.dispatch(CollectionActions.reset());

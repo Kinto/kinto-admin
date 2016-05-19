@@ -28,6 +28,7 @@ describe("collection reducer", () => {
       properties: {
         bucket: "bucket",
         id: "id",
+        label: "bucket/id",
         schema: "schema",
         uiSchema: "uiSchema",
         displayFields: "displayFields",
@@ -35,6 +36,7 @@ describe("collection reducer", () => {
     })).eql({
       bucket: "bucket",
       name: "id",
+      label: "bucket/id",
       schema: "schema",
       uiSchema: "uiSchema",
       displayFields: "displayFields",

@@ -13,10 +13,11 @@ export default class EditForm extends Component {
 
   render() {
     const {params, collection, record} = this.props;
-    const {bid, cid} = params;
+    const {label} = collection;
+    const {bid, cid, rid} = params;
     return (
       <div>
-        <h1>Add a new record in {bid}/{cid}</h1>
+        <h1>Edit <b>{label}/{rid}</b></h1>
         <RecordForm
           bid={bid}
           cid={cid}

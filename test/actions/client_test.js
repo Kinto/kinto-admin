@@ -189,7 +189,7 @@ describe("client actions", () => {
     it("should dispatch a COLLECTION_PROPERTIES_LOADED action", () => {
       expect(store.getActions()).to.include({
         type: COLLECTION_PROPERTIES_LOADED,
-        properties: {...data, bucket: "bucket"}
+        properties: {...data, bucket: "bucket", label: "bucket/1"}
       });
     });
   });
@@ -222,7 +222,8 @@ describe("client actions", () => {
         properties: {
           id: 1,
           bucket: "bucket",
-          ...sampleCollectionMeta
+          label: "bucket/1",
+          ...sampleCollectionMeta,
         }
       });
     });

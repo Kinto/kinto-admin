@@ -8,7 +8,7 @@ body {
 }
 
 h1 {
-  font-family: "Ubuntu";
+  font-family: Ubuntu, Calibri, Arial, sans-serif;
   font-size: 2.2em;
 }
 
@@ -78,6 +78,11 @@ h1 {
 
 .alert h4 small {
   margin-left: .5em;
+}
+
+.collection-page .alert {
+  margin-top: 1.5em;
+  margin-right: .5em;
 }
 
 table.record-list tr.unsynced {
