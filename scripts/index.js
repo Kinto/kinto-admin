@@ -40,7 +40,7 @@ function onRouteUpdate() {
   if (bid !== collection.bucket || cid !== collection.name) {
     store.dispatch(CollectionActions.reset());
     if (bid && cid) {
-      store.dispatch(ClientActions.loadCollectionProperties(bid, cid));
+      store.dispatch(ClientActions.loadCollection(bid, cid));
       // XXX this is overkill in many situations, we should detect if we're
       // in a collection list route.
       store.dispatch(ClientActions.listRecords(bid, cid));

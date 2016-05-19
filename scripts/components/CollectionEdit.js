@@ -8,7 +8,7 @@ export default class CollectionEdit extends Component {
   onSubmit = (formData) => {
     const {params} = this.props;
     const {bid, cid} = params;
-    this.props.updateCollectionProperties(bid, cid, formData);
+    this.props.updateCollection(bid, cid, formData);
   };
 
   onDeleteClick = () => {

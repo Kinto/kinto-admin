@@ -165,7 +165,7 @@ describe("client actions", () => {
     });
   });
 
-  describe("loadCollectionProperties()", () => {
+  describe("loadCollection()", () => {
     let kintoCollectionGetAttributes;
 
     const data = {
@@ -179,10 +179,10 @@ describe("client actions", () => {
           .returns(Promise.resolve({data}));
 
       return store.dispatch(
-        actions.loadCollectionProperties("bucket", "mycoll"));
+        actions.loadCollection("bucket", "mycoll"));
     });
 
-    it("should call client loadCollectionProperties with expected arg", () => {
+    it("should call client loadCollection with expected arg", () => {
       sinon.assert.calledOnce(kintoCollectionGetAttributes);
     });
 
@@ -194,7 +194,7 @@ describe("client actions", () => {
     });
   });
 
-  describe("updateCollectionProperties()", () => {
+  describe("updateCollection()", () => {
     let kintoCollectionSetMetadata;
 
     beforeEach(() => {
@@ -208,7 +208,7 @@ describe("client actions", () => {
           }));
 
       return store.dispatch(
-        actions.updateCollectionProperties(
+        actions.updateCollection(
           "bucket", "mycoll", sampleCollectionMeta));
     });
 
@@ -387,7 +387,8 @@ describe("client actions", () => {
       kintoCollectionBatch = sandbox.stub(
         KintoClientCollection.prototype, "batch")
           .returns(Promise.resolve({
-            errors: []
+            errors: [],
+            published: records
           }));
       actions.__set__("listRecords", sandbox.spy());
 

@@ -96,7 +96,7 @@ export function deleteCollection(bid, cid) {
   });
 }
 
-export function loadCollectionProperties(bid, cid) {
+export function loadCollection(bid, cid) {
   return execute((client, dispatch, getState) => {
     return client.bucket(bid).collection(cid).getAttributes()
       .then(({data}) => {
@@ -109,7 +109,8 @@ export function loadCollectionProperties(bid, cid) {
   });
 }
 
-export function updateCollectionProperties(bid, cid, {schema, uiSchema, displayFields}) {
+export function updateCollection(bid, cid, collectionData) {
+  const {schema, uiSchema, displayFields} = collectionData;
   return execute((client, dispatch, getState) => {
     const coll = client.bucket(bid).collection(cid);
     return coll.setMetadata({schema, uiSchema, displayFields})
@@ -196,9 +197,10 @@ export function bulkCreateRecords(bid, cid, records) {
           err.details = res.errors.map(err => err.error.message);
           throw err;
         } else {
+          const num = res.published.length;
           dispatch(listRecords(bid, cid));
           dispatch(updatePath(`/buckets/${bid}/collections/${cid}`));
-          dispatch(notifySuccess("Records created."));
+          dispatch(notifySuccess(`${num} records created.`));
         }
       });
   });
