@@ -1,5 +1,6 @@
 import { updatePath } from "redux-simple-router";
 
+import * as NotificationsActions from "./notifications";
 import * as ClientActions from "./client";
 
 import {
@@ -12,6 +13,8 @@ import {
 
 export function setup(session) {
   return (dispatch) => {
+    // Clear all pending notifications
+    dispatch(NotificationsActions.clearNotifications({force: true}));
     // First reflect server info to state
     dispatch({type: SESSION_SETUP_COMPLETE, session});
     // Then trigger buckets list retrieval

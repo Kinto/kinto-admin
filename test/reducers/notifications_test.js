@@ -33,5 +33,14 @@ describe("notifications reducer", () => {
     })).eql([
       {persistent: true}
     ]);
+
+    expect(notifications([
+      {persistent: false},
+      {persistent: true},
+      {persistent: false}
+    ], {
+      type: NOTIFICATION_CLEAR,
+      force: true
+    })).eql([]);
   });
 });

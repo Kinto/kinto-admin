@@ -38,8 +38,9 @@ export function removeNotification(index) {
   };
 }
 
-export function clearNotifications() {
+export function clearNotifications(options={}) {
   return {
     type: NOTIFICATION_CLEAR,
+    force: !!options.force
   };
 }
