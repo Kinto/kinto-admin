@@ -2,8 +2,13 @@ import React, { Component } from "react";
 import { Link } from "react-router";
 
 
+function activeIfPathname(location, pathname) {
+  const active = location.pathname === pathname ? "active" : "";
+  return `list-group-item ${active}`;
+}
+
 function BucketCollectionsMenu(props) {
-  const {bucket, collections, bid, cid} = props;
+  const {active, bucket, collections, bid, cid} = props;
   return (
     <div className="collections-menu list-group">
       {
@@ -27,7 +32,7 @@ function BucketCollectionsMenu(props) {
           );
         })
       }
-      <Link className="list-group-item"
+      <Link className={active(`/buckets/${bucket.id}/create-collection`)}
         to={`/buckets/${bucket.id}/create-collection`}>
         <i className="glyphicon glyphicon-plus"/>
         Create collection
@@ -37,7 +42,7 @@ function BucketCollectionsMenu(props) {
 }
 
 function BucketsMenu(props) {
-  const {buckets, userBucket, bid, cid} = props;
+  const {active, buckets, userBucket, bid, cid} = props;
   return (
     <div>{
       buckets.map((bucket, i) => {
@@ -52,6 +57,7 @@ function BucketsMenu(props) {
             <BucketCollectionsMenu
               bucket={bucket}
               collections={collections}
+              active={active}
               bid={bid}
               cid={cid} />
           </div>
@@ -65,24 +71,20 @@ export default class Sidebar extends Component {
   render() {
     const {session, params, location} = this.props;
     const {bid, cid} = params;
-
-    function activeIfPathname(pathname) {
-      const active = location.pathname === pathname ? "active" : "";
-      return `list-group-item ${active}`;
-    }
-
     const {buckets} = session;
+    const active = activeIfPathname.bind(null, location);
     return (
       <div>
         <div className="panel panel-default">
           <div className="list-group">
-            <Link to="/" className={activeIfPathname("/")}>Home</Link>
+            <Link to="/" className={active("/")}>Home</Link>
           </div>
         </div>
         {session.authenticated ?
           <BucketsMenu
             buckets={buckets}
             userBucket={session.serverInfo.user.bucket}
+            active={active}
             bid={bid}
             cid={cid} /> : null}
       </div>
