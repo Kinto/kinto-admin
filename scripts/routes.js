@@ -13,17 +13,6 @@ import EditFormPage from "./containers/EditFormPage";
 import ResolvePage from "./containers/ResolvePage";
 
 
-const LinkBack = () => {
-  return (
-    <div className="list-group">
-      <a className="list-group-item" href="javascript:history.go(-1)">
-        <i className="glyphicon glyphicon-chevron-left" />
-        {" Back"}
-      </a>
-    </div>
-  );
-};
-
 const common = {
   notifications: Notifications,
   sidebar: Sidebar,
@@ -33,20 +22,20 @@ export default (
   <Route path="/" component={App}>
     <IndexRoute components={{...common, content: HomePage}} />
     <Route path="/buckets/:bid/create-collection"
-      components={{...common, content: CollectionCreatePage, linkBack: LinkBack}} />
+      components={{...common, content: CollectionCreatePage}} />
     <Route path="/buckets/:bid/collections/:cid/edit"
-      components={{...common, content: CollectionEditPage, linkBack: LinkBack}} />
+      components={{...common, content: CollectionEditPage}} />
     <Route path="/buckets/:bid/collections/:cid"
       components={{...common, content: CollectionListPage}} />
     <Route path="/buckets/:bid/collections/:cid/add"
-      components={{...common, content: AddFormPage, linkBack: LinkBack}} />
+      components={{...common, content: AddFormPage}} />
     <Route path="/buckets/:bid/collections/:cid/edit/:rid"
-      components={{...common, content: EditFormPage, linkBack: LinkBack}} />
+      components={{...common, content: EditFormPage}} />
     <Route path="/buckets/:bid/collections/:cid/bulk"
-      components={{...common, content: BulkFormPage, linkBack: LinkBack}} />
+      components={{...common, content: BulkFormPage}} />
     {/* Obsolete kinto.js routes */}
     <Route path="/collections/:name/resolve/:id"
-      components={{...common, content: ResolvePage, linkBack: LinkBack}} />
+      components={{...common, content: ResolvePage}} />
     <Route path="*" components={{
       sidebar: Sidebar,
       content: _ => <h1>Page not found.</h1>
