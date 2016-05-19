@@ -1,5 +1,4 @@
 import { expect } from "chai";
-import { UPDATE_PATH } from "redux-simple-router";
 
 import notifications from "../../scripts/reducers/notifications";
 import {
@@ -25,14 +24,14 @@ describe("notifications reducer", () => {
   });
 
   it("NOTIFICATION_CLEAR", () => {
-    expect(notifications([1, 2, 3], {
+    expect(notifications([
+      {persistent: false},
+      {persistent: true},
+      {persistent: false}
+    ], {
       type: NOTIFICATION_CLEAR,
-    })).eql([]);
-  });
-
-  it("UPDATE_PATH", () => {
-    expect(notifications([1, 2, 3], {
-      type: UPDATE_PATH,
-    })).eql([]);
+    })).eql([
+      {persistent: true}
+    ]);
   });
 });

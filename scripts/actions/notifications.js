@@ -5,11 +5,13 @@ import {
 } from "../constants";
 
 
-function notify(type, message, details=[]) {
+function notify(type, message, details=[], options={persistent: false}) {
+  const {persistent} = options;
   return {
     type: NOTIFICATION_ADDED,
     notification: {
       type,
+      persistent,
       message,
       details,
       time: new Date().getTime(),
@@ -17,16 +19,16 @@ function notify(type, message, details=[]) {
   };
 }
 
-export function notifyInfo(message) {
-  return notify("info", message);
+export function notifyInfo(message, options) {
+  return notify("info", message, [], options);
 }
 
-export function notifySuccess(message) {
-  return notify("success", message);
+export function notifySuccess(message, options) {
+  return notify("success", message, [], options);
 }
 
-export function notifyError(error) {
-  return notify("danger", error.message, error.details);
+export function notifyError(error, options) {
+  return notify("danger", error.message, error.details, options);
 }
 
 export function removeNotification(index) {
