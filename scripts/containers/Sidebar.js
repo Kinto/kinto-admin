@@ -3,7 +3,8 @@ import Sidebar from "../components/Sidebar";
 
 function mapStateToProps(state) {
   return {
-    collections: state.collections
+    collections: state.collections,
+    session: state.session,
   };
 }
 

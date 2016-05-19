@@ -1,35 +1,27 @@
-import React,{ Component } from "react";
-import { Link } from "react-router";
-import Form from "react-jsonschema-form";
+import React, { Component } from "react";
+
+import RecordForm from "./RecordForm";
+
 
 export default class AddForm extends Component {
-  defaultProps = {
-    liveValidate: false
-  };
-
-  shouldComponentUpdate(nextProps) {
-    return nextProps.name && nextProps.schema;
-  }
-
-  onSubmit(data) {
-    this.props.create(data.formData);
+  onSubmit = (record) => {
+    const {params, createRecord} = this.props;
+    const {bid, cid} = params;
+    createRecord(bid, cid, record);
   }
 
   render() {
-    const {name, schema, uiSchema, config} = this.props;
-    const {liveValidate} = config;
+    const {params, collection} = this.props;
+    const {label} = collection;
+    const {bid, cid} = params;
     return (
       <div>
-        <h1>{name}</h1>
-        <Form
-          liveValidate={liveValidate}
-          schema={schema}
-          uiSchema={uiSchema}
-          onSubmit={this.onSubmit.bind(this)}>
-          <input type="submit" className="btn btn-primary" value="Create" />
-          {" or "}
-          <Link to={`/collections/${name}`}>Cancel</Link>
-        </Form>
+        <h1>Add a new record in <b>{label}</b></h1>
+        <RecordForm
+          bid={bid}
+          cid={cid}
+          collection={collection}
+          onSubmit={this.onSubmit} />
       </div>
     );
   }

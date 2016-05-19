@@ -7,43 +7,82 @@ body {
   background: #F6F4EC;
 }
 
+h1 {
+  font-family: Ubuntu, Calibri, Arial, sans-serif;
+  font-size: 2.2em;
+}
+
 .main {
   background: #F6F4EC;
 }
 
 .sidebar {
+  padding-top: 1em;
 }
 
 .content {
   background: #F6F4EC;
-  padding: .5em 1vw 1em 21vw;
+  padding-top: 1em;
 }
 
-.content .list-actions > * {
+.content .list-actions {
+  margin-bottom: .4em;
+}
+
+.content .list-actions a {
   margin-right: .5em;
+}
+
+.content .list-actions a > .glyphicon {
+  margin-right: .3em;
 }
 
 .content.with-notifications {
   padding-top: 8em;
 }
 
-.content-header .server-info {
-  padding-top: 2.5em;
+.content-header .edit-coll-props i {
+  margin-right: .3em;
 }
 
-.server-info pre {
-  background: #ddd;
-  padding: 1em;
-  border-radius: 4px;
+.session-info-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #D1CCB8;
+  padding: .2em 1.15em;
+  z-index: 999;
 }
 
-.server-info pre.error {
-  background: #C13832;
-  color: #F6F4EC;
+.session-info-bar > a {
+  margin-left: .5em;
+}
+
+.server-info-panel table {
+  margin: 0;
+}
+
+.server-info-panel .table-condensed > tbody > tr > th,
+.server-info-panel .table-condensed > tbody > tr > td {
+  padding: .3em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 300px;
+}
+
+.server-info-panel tr:first-child th,
+.server-info-panel tr:first-child td {
+  border: none;
 }
 
 .alert h4 small {
   margin-left: .5em;
+}
+
+.collection-page .alert {
+  margin-top: 1.5em;
+  margin-right: .5em;
 }
 
 table.record-list tr.unsynced {
@@ -91,10 +130,9 @@ table.record-list td.actions {
 
 .notifications {
   z-index: 99;
-  background: #F6F4EC;
   margin-bottom: 1em;
   position: fixed;
-  top: 0;
+  top: 1em;
   right: 1em;
   width: inherit;
   padding-left: 2em;
@@ -105,21 +143,74 @@ table.record-list td.actions {
   min-height: 300px;
 }
 
-.list-actions .label {
-  margin-left: 1em;
+.panel-heading > .glyphicon {
+  margin-right: .5em;
 }
 
-.sync-btn-group .dropdown-menu a {
-  padding-left: 1em;
-  padding-right: 2em;
+.list-group-item .glyphicon {
+  margin-right: .5em;
 }
 
-.sync-btn-group .dropdown-menu .glyphicon {
+.collections-menu-entry a {
+  color: #555;
+  text-decoration: none;
+}
+
+.collections-menu-entry.active a {
+  color: #fff;
+}
+
+.collections-menu-entry-edit {
   float: right;
-  margin: .15em -1.5em 0 0;
+  margin: .15em -1em 0 0;
   color: #888;
 }
 
-.sync-btn-group .dropdown-menu .active .glyphicon {
-  color: #fff;
+.CodeMirror {
+  border: 1px solid #ccc;
+  height: auto;
+  border-radius: .3em;
+}
+
+/* Spinner http://tobiasahlin.com/spinkit/ */
+.spinner {
+  margin: 30px auto 0;
+  width: 70px;
+  text-align: center;
+}
+
+.spinner > div {
+  width: 18px;
+  height: 18px;
+  background-color: #337ab7;
+
+  border-radius: 100%;
+  display: inline-block;
+  -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+  animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+.spinner .bounce1 {
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
+}
+
+.spinner .bounce2 {
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
+}
+
+@-webkit-keyframes sk-bouncedelay {
+  0%, 80%, 100% { -webkit-transform: scale(0) }
+  40% { -webkit-transform: scale(1.0) }
+}
+
+@keyframes sk-bouncedelay {
+  0%, 80%, 100% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  } 40% {
+    -webkit-transform: scale(1.0);
+    transform: scale(1.0);
+  }
 }

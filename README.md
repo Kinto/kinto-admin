@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Kinto/kinto-admin.svg)](https://travis-ci.org/Kinto/kinto-admin)
 
-A Web admin UI to manage [Kinto](https://kinto.readthedocs.io/) collections.
+A Web admin UI to manage data from a [Kinto](https://kinto.readthedocs.io/) server.
 [Give it a go](http://kinto.github.io/kinto-admin/)!
 
 `kinto-admin` wants to be the [pgAdmin](http://pgadmin.org/) for
@@ -25,73 +25,24 @@ $ npm install kinto-admin --save
 
 ## Standalone local server
 
-The Web admin UI can be served locally using the `kinto-admin` executable,
-provided you pass it a valid JSON configuration file:
+The Web admin UI can be served locally using the `kinto-admin` executable:
 
 ```bash
-$ kinto-admin serve --config myconfig.json
-Using config at myconfig.json
+$ kinto-admin serve
 Listening at http://0.0.0.0:3000
 ```
 
 You can specify the port to listen to using the `--port` or `-p` options:
 
 ```bash
-$ kinto-admin serve --config myconfig.json -p 4000
-Using config at myconfig.json
+$ kinto-admin serve -p 4000
 Listening at http://0.0.0.0:4000
 ```
-
-## Configuration
-
-The required JSON configuration lists the collections to manage through the Web
-UI as well as their own individual configuration:
-
-```js
-// config.json
-{
-  // Optional: The default Kinto server settings to use
-  "settings": {
-    "server": "http://my.kinto.server.tld/v1",
-    "bucket": "mybucketname",
-    "username": "myusername",
-    "password": "mypassword"
-  },
-  // Required: The collection definitions
-  "collections": {
-    // The name of a collection to manage
-    "tasks": {
-      // Human readable name
-      "name": "Todo tasks",
-      // Collection configuration object
-      "config": {
-        // The fields to render in list view
-        "displayFields": ["title", "done"],
-        // Live forms validation
-        "liveValidate": false,
-        // The JSON schema for this collection
-        "schema": {
-          "title": "Todo Tasks",
-          ...
-        }
-      }
-    },
-    // Another collection to manage
-    "articles": {
-      // ...
-    }
-  }
-}
-```
-
-*Note: The [JSONSchema](http://jsonschema.net/) provided for a collection must
-match the records stored in the target Kinto server instance. You can generate
-your JSON schemas online [here](http://jsonschema.net/).*
 
 ## Building static assets for production hosting
 
 ```
-$ kinto-admin build -c config.json -d static-build
+$ kinto-admin build -d static-build
 ```
 
 Here, production-ready assets are generated into the `static-build/` directory,

@@ -14,10 +14,6 @@ app.use(require("webpack-dev-middleware")(compiler, {
 
 app.use(require("webpack-hot-middleware")(compiler));
 
-app.get("/config.json", function(req, res) {
-  res.sendFile(path.join(__dirname, "config", "config.json"));
-});
-
 app.get("*", function(req, res) {
   res.sendFile(path.join(__dirname, "index.dev.html"));
 });

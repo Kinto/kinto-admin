@@ -1,49 +1,15 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
-import Kinto from "kinto";
 
-import BusyIndicator from "./BusyIndicator";
+import { cleanRecord } from "../utils";
+import Spinner from "./Spinner";
 
-
-const {MANUAL, CLIENT_WINS, SERVER_WINS} = Kinto.syncStrategy;
-
-class AdvancedActions extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {enabled: false};
-  }
-
-  onAdvancedLinkClick(event) {
-    event.preventDefault();
-    this.setState({enabled: true});
-  }
-
-  render() {
-    const {collection} = this.props;
-    if (this.state.enabled) {
-      return (
-        <span className="btn-group" role="group">
-          <Link className="btn btn-info" to={`/collections/${collection}/bulk`}>
-            Bulk add
-          </Link>
-          <button type="button" className="btn btn-warning"
-            onClick={this.props.resetSync}>Reset Sync Status</button>
-        </span>
-      );
-    }
-    return <a href="" onClick={this.onAdvancedLinkClick.bind(this)}>
-      &raquo; Show advanced actions
-    </a>;
-  }
-}
 
 class Row extends Component {
-  static get defaultProps() {
-    return {
-      schema: {},
-      displayFields: [],
-      record: {},
-    };
+  static defaultProps = {
+    schema: {},
+    displayFields: ["__json"],
+    record: {},
   }
 
   get lastModified() {
@@ -57,19 +23,21 @@ class Row extends Component {
 
   onDoubleClick(event) {
     event.preventDefault();
-    const {name, record} = this.props;
-    this.props.updatePath(`/collections/${name}/edit/${record.id}`);
+    const {bid, cid, record} = this.props;
+    this.props.updatePath(`/buckets/${bid}/collections/${cid}/edit/${record.id}`);
   }
 
   onDeleteClick(event) {
+    const {bid, cid, record, deleteRecord} = this.props;
     if (confirm("Are you sure?")) {
-      this.props.deleteRecord(this.props.record.id);
+      deleteRecord(bid, cid, record.id);
     }
   }
 
   recordField(displayField) {
-    if (this.props.record.hasOwnProperty(displayField)) {
-      const field = this.props.record[displayField];
+    const {record} = this.props;
+    if (record.hasOwnProperty(displayField)) {
+      const field = record[displayField];
       if (typeof field === "string") {
         return field;
       } else if (typeof field === "object") {
@@ -77,38 +45,26 @@ class Row extends Component {
       } else {
         return String(field);
       }
+    } else if (displayField === "__json") {
+      return <code>{JSON.stringify(cleanRecord(record))}</code>;
     }
     return "<unknown>";
   }
 
   render() {
-    const { name, record, config, conflict } = this.props;
-    const classes = [
-      record._status !== "synced" ? "unsynced" : "",
-      conflict ? "conflicting" : ""
-    ].join(" ").trim();
-
-    return <tr className={classes}
-      onDoubleClick={this.onDoubleClick.bind(this)}>
+    const {bid, cid, record, displayFields} = this.props;
+    return <tr onDoubleClick={this.onDoubleClick.bind(this)}>
       {
-        config.displayFields.map((displayField, index) => {
+        displayFields.map((displayField, index) => {
           return <td key={index}>{this.recordField(displayField)}</td>;
         })
       }
       <td className="lastmod">{this.lastModified}</td>
-      <td className="status">{record._status}</td>
       <td className="actions text-right">
         <div className="btn-group">
-          <Link to={`/collections/${name}/edit/${record.id}`}
-            className="btn btn-sm btn-info">Edit</Link>
-          {
-            conflict ?
-              <Link to={`/collections/${name}/resolve/${conflict.local.id}`}
-                className="btn btn-sm btn-warning">Resolve</Link> :
-              <button type="button" className="btn btn-sm btn-warning"
-                disabled>Resolve</button>
-          }
-          <button type="button" className="btn btn-sm btn-danger"
+          <Link to={`/buckets/${bid}/collections/${cid}/edit/${record.id}`}
+            className="btn btn-xs btn-info">Edit</Link>
+          <button type="button" className="btn btn-xs btn-danger"
             onClick={this.onDeleteClick.bind(this)}>Delete</button>
         </div>
       </td>
@@ -117,34 +73,55 @@ class Row extends Component {
 }
 
 class Table extends Component {
+  static defaultProps = {
+    displayFields: ["__json"]
+  }
+
+  getFieldTitle(displayField) {
+    const {schema} = this.props;
+    if (displayField === "__json") {
+      return "JSON";
+    }
+    if (schema &&
+        schema.properties &&
+        displayField in schema.properties &&
+        "title" in schema.properties[displayField]) {
+      return schema.properties[displayField].title;
+    }
+    return displayField;
+  }
+
   render() {
     const {
-      name,
+      bid,
+      cid,
       records,
       schema,
-      config,
-      conflicts,
+      displayFields,
       deleteRecord,
       updatePath
     } = this.props;
+
     if (records.length === 0) {
-      return <p>This collection is empty.</p>;
+      return (
+        <div className="alert alert-info">
+          <p>This collection is empty.</p>
+        </div>
+      );
     }
+
     return (
       <table className="table table-striped record-list">
         <thead>
           <tr>
             {
-              config.displayFields.map((field, index) => {
+              displayFields.map((displayField, index) => {
                 return (
-                  <th key={index}>{
-                    schema.properties[field].title
-                  }</th>
+                  <th key={index}>{this.getFieldTitle(displayField)}</th>
                 );
               })
             }
             <th>Last mod.</th>
-            <th>Status</th>
             <th></th>
           </tr>
         </thead>
@@ -152,11 +129,11 @@ class Table extends Component {
           records.map((record, index) => {
             return (
               <Row key={index}
-                name={name}
+                bid={bid}
+                cid={cid}
                 record={record}
-                conflict={conflicts[record.id]}
                 schema={schema}
-                config={config}
+                displayFields={displayFields}
                 deleteRecord={deleteRecord}
                 updatePath={updatePath} />
             );
@@ -167,141 +144,48 @@ class Table extends Component {
   }
 }
 
-class SyncButton extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {open: false};
-  }
-
-  static strategies = {
-    [MANUAL]: {
-      label: "Manual resolution",
-      help: "Prompt when a conflict occurs.",
-    },
-    [CLIENT_WINS]: {
-      label: "Client wins",
-      help: "Overwrite remote conflicting records with local data.",
-    },
-    [SERVER_WINS]: {
-      label: "Server wins",
-      help: "Overwrite local conflicting records with remote data.",
-    },
-  }
-
-  openMenu = () => this.setState({open: true});
-  closeMenu = () => this.setState({open: false});
-
-  doSync = () => {
-    this.props.sync();
-    this.closeMenu();
-  };
-
-  selectStrategy = (strategy) => {
-    return (event) => {
-      event.preventDefault();
-      this.props.selectStrategy(strategy);
-      this.closeMenu();
-    };
-  }
-
-  render() {
-    const {strategy} = this.props;
-    const {open} = this.state;
-    return (
-      <div className={`sync-btn-group btn-group ${open ? "open" : ""}`}>
-        <button type="button" className="btn btn-info btn-sync"
-          onClick={this.doSync}>
-          <span className="caption">Synchronize</span>
-          <span className="label label-primary">
-            {strategy.toUpperCase().replace("_", " ")}
-          </span>
-        </button>
-        <button type="button" className="btn btn-info dropdown-toggle"
-          title="Select conflict resolution strategy"
-          onClick={open ? this.closeMenu : this.openMenu}>
-          <span className="caret"></span>
-        </button>
-        <ul className="dropdown-menu">{
-          Object.keys(SyncButton.strategies).map((strat, i) => {
-            const {label, help} = SyncButton.strategies[strat];
-            const cls = strategy === strat ? "active" : "";
-            return (
-              <li key={i} className={cls} onClick={this.selectStrategy(strat)}>
-                <a className={`sync_${strat}`} title={help} href="#">
-                  <i className="glyphicon glyphicon-info-sign" />
-                  {label}</a>
-              </li>
-            );
-          })
-        }</ul>
-      </div>
-    );
-  }
-}
-
 function ListActions(props) {
-  const {name, sync, reset, strategy, selectStrategy} = props;
+  const {bid, cid} = props;
   return (
-    <div className="list-actions">
-      <SyncButton
-        sync={sync}
-        selectStrategy={selectStrategy}
-        strategy={strategy} />
-      <Link to={`/collections/${name}/add`} className="btn btn-info">Add</Link>
-      <AdvancedActions collection={name} resetSync={reset} />
+    <div className="row list-actions">
+      <div className="col-xs-8">
+        <Link to={`/buckets/${bid}/collections/${cid}/add`}
+          className="btn btn-info">Add</Link>
+        <Link to={`/buckets/${bid}/collections/${cid}/bulk`}
+          className="btn btn-info">Bulk add</Link>
+      </div>
+      <div className="edit-coll-props col-xs-4 text-right">
+        <Link to={`/buckets/${bid}/collections/${cid}/edit`}
+          className="btn btn-default">
+          <i className="glyphicon glyphicon-cog"/>
+          Collection settings
+        </Link>
+      </div>
     </div>
   );
 }
 
 export default class CollectionList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {strategy: MANUAL};
-  }
-
-  selectStrategy = (strategy) => this.setState({strategy});
-
-  sync = () => this.props.sync({strategy: this.state.strategy});
-
-  onResetSyncClick = () => {
-    if (confirm("Are you sure?")) {
-      this.props.resetSync();
-    }
-  }
-
   render() {
-    const {name, busy, schema, records, config} = this.props.collection;
-    const {server} = this.props.settings;
-    const {deleteRecord, conflicts} = this.props;
-    const {strategy} = this.state;
-    if (!name) {
-      return <p>Loading...</p>;
-    }
-    const listActions = (
-      <ListActions
-        name={name}
-        strategy={strategy}
-        selectStrategy={this.selectStrategy}
-        sync={this.sync}
-        reset={this.onResetSyncClick} />
-    );
+    const {params, collection} = this.props;
+    const {bid, cid} = params;
+    const {busy, label, schema, displayFields, records} = collection;
+    const {deleteRecord} = this.props;
+
+    const listActions = <ListActions bid={bid} cid={cid} />;
     return (
       <div className="collection-page">
-        <div className="row content-header">
-          <h1 className="col-md-8">{name}</h1>
-          <div className="server-info col-md-4 text-right">
-            <em>{busy ? <BusyIndicator/> : null}{server}</em>
-          </div>
-        </div>
+        <h1>List of records in <b>{label}</b></h1>
         {listActions}
-        <Table
-          name={name}
-          records={records}
-          conflicts={conflicts}
-          schema={schema}
-          config={config}
-          deleteRecord={deleteRecord}
-          updatePath={this.props.updatePath} />
+        {busy ? <Spinner /> :
+          <Table
+            bid={bid}
+            cid={cid}
+            records={records}
+            schema={schema}
+            displayFields={displayFields}
+            deleteRecord={deleteRecord}
+            updatePath={this.props.updatePath} />}
         {listActions}
       </div>
     );

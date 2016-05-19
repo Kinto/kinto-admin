@@ -1,47 +1,29 @@
-import React,{ Component } from "react";
-import { Link } from "react-router";
-import Form from "react-jsonschema-form";
+import React, { Component } from "react";
+
+import RecordForm from "./RecordForm";
+import { cleanRecord } from "../utils";
+
 
 export default class EditForm extends Component {
-  defaultProps = {
-    liveValidate: false
-  };
-
-  componentDidMount() {
-    this.props.select(this.props.params.name);
-    this.props.loadRecord(this.props.params.id);
-  }
-
-  onSubmit(data) {
-    this.props.formDataReceived(data.formData);
-    this.props.submitForm();
-  }
-
-  shouldComponentUpdate(nextProps) {
-    return nextProps.name && nextProps.schema && nextProps.form;
-  }
-
-  componentWillUnmount() {
-    this.props.unloadRecord();
+  onSubmit = (record) => {
+    const {params, updateRecord} = this.props;
+    const {bid, cid, rid} = params;
+    updateRecord(bid, cid, rid, record);
   }
 
   render() {
-    const {name, form, schema, uiSchema, config} = this.props;
-    const {liveValidate} = config;
+    const {params, collection, record} = this.props;
+    const {label} = collection;
+    const {bid, cid, rid} = params;
     return (
       <div>
-        <h1>{name}</h1>
-        {form.record &&
-          <Form
-            liveValidate={liveValidate}
-            formData={form.formData}
-            schema={schema}
-            uiSchema={uiSchema}
-            onSubmit={this.onSubmit.bind(this)}>
-            <input type="submit" className="btn btn-primary" value="Update" />
-            {" or "}
-            <Link to={`/collections/${name}`}>Cancel</Link>
-          </Form>}
+        <h1>Edit <b>{label}/{rid}</b></h1>
+        <RecordForm
+          bid={bid}
+          cid={cid}
+          collection={collection}
+          record={cleanRecord(record)}
+          onSubmit={this.onSubmit} />
       </div>
     );
   }

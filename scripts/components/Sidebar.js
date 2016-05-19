@@ -1,43 +1,90 @@
-import React, { Component} from "react";
+import React, { Component } from "react";
 import { Link } from "react-router";
 
-export default class Sidebar extends Component {
-  activeIfPathname(pathname) {
-    const active = this.props.location.pathname === pathname ? "active" : "";
-    return `list-group-item ${active}`;
-  }
 
+function BucketCollectionsMenu(props) {
+  const {bucket, collections, bid, cid} = props;
+  return (
+    <div className="collections-menu list-group">
+      {
+        collections.map((collection, i) => {
+          const {id} = collection;
+          const classes = [
+            "list-group-item",
+            "collections-menu-entry",
+            bid === bucket.id && cid === id ? "active" : "",
+          ].join(" ");
+          return (
+            <div key={i} className={classes}>
+              <i className="glyphicon glyphicon-align-justify"/>
+              <Link to={`/buckets/${bucket.id}/collections/${id}`}>{id}</Link>
+              <Link to={`/buckets/${bucket.id}/collections/${id}/edit`}
+                className="collections-menu-entry-edit"
+                title="Edit collection properties">
+                <i className="glyphicon glyphicon-cog"/>
+              </Link>
+            </div>
+          );
+        })
+      }
+      <Link className="list-group-item"
+        to={`/buckets/${bucket.id}/create-collection`}>
+        <i className="glyphicon glyphicon-plus"/>
+        Create collection
+      </Link>
+    </div>
+  );
+}
+
+function BucketsMenu(props) {
+  const {buckets, userBucket, bid, cid} = props;
+  return (
+    <div>{
+      buckets.map((bucket, i) => {
+        const {id, collections} = bucket;
+        const current = bid === id;
+        return (
+          <div key={i} className="panel panel-default bucket-menu">
+            <div className="panel-heading">
+              <i className={`glyphicon glyphicon-folder-${current ? "open" : "close"}`} />
+              <strong>{id === userBucket ? "default" : id}</strong> bucket
+            </div>
+            <BucketCollectionsMenu
+              bucket={bucket}
+              collections={collections}
+              bid={bid}
+              cid={cid} />
+          </div>
+        );
+      })
+    }</div>
+  );
+}
+
+export default class Sidebar extends Component {
   render() {
-    const {collections, params} = this.props;
+    const {session, params, location} = this.props;
+    const {bid, cid} = params;
+
+    function activeIfPathname(pathname) {
+      const active = location.pathname === pathname ? "active" : "";
+      return `list-group-item ${active}`;
+    }
+
+    const {buckets} = session;
     return (
       <div>
         <div className="panel panel-default">
           <div className="list-group">
-            <Link to="/" className={this.activeIfPathname("/")}>Home</Link>
-            <Link to="/settings"
-              className={this.activeIfPathname("/settings")}>Settings</Link>
+            <Link to="/" className={activeIfPathname("/")}>Home</Link>
           </div>
         </div>
-
-        <div className="panel panel-default">
-        <div className="panel-heading">
-          Collections
-        </div>
-          <div className="list-group">{
-            Object.keys(collections).map((name, i) => {
-              const classes = [
-                "list-group-item",
-                params.name === name ? "active" : "",
-              ].join(" ");
-              const label = collections[name].name || name;
-              return (
-                <Link key={i} to={`/collections/${name}`} className={classes}>
-                  {label + (!collections[name].synced ? "*" : "")}
-                </Link>
-              );
-            })
-          }</div>
-        </div>
+        {session.authenticated ?
+          <BucketsMenu
+            buckets={buckets}
+            userBucket={session.serverInfo.user.bucket}
+            bid={bid}
+            cid={cid} /> : null}
       </div>
     );
   }

@@ -1,12 +1,17 @@
-export const NOTIFICATION_ADDED = "NOTIFICATION_ADDED";
-export const NOTIFICATION_REMOVED = "NOTIFICATION_REMOVED";
-export const NOTIFICATION_CLEAR = "NOTIFICATION_CLEAR";
+import {
+  NOTIFICATION_ADDED,
+  NOTIFICATION_REMOVED,
+  NOTIFICATION_CLEAR,
+} from "../constants";
 
-function notify(type, message, details=[]) {
+
+function notify(type, message, details=[], options={persistent: false}) {
+  const {persistent} = options;
   return {
     type: NOTIFICATION_ADDED,
     notification: {
       type,
+      persistent,
       message,
       details,
       time: new Date().getTime(),
@@ -14,12 +19,16 @@ function notify(type, message, details=[]) {
   };
 }
 
-export function notifyInfo(message) {
-  return notify("info", message);
+export function notifyInfo(message, options) {
+  return notify("info", message, [], options);
 }
 
-export function notifyError(error) {
-  return notify("danger", error.message, error.details);
+export function notifySuccess(message, options) {
+  return notify("success", message, [], options);
+}
+
+export function notifyError(error, options) {
+  return notify("danger", error.message, error.details, options);
 }
 
 export function removeNotification(index) {
@@ -29,8 +38,9 @@ export function removeNotification(index) {
   };
 }
 
-export function clearNotifications() {
+export function clearNotifications(options={}) {
   return {
     type: NOTIFICATION_CLEAR,
+    force: !!options.force
   };
 }

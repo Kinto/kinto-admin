@@ -1,43 +1,75 @@
-import React,{ Component } from "react";
+import React, { Component } from "react";
 import { Link } from "react-router";
 import Form from "react-jsonschema-form";
 
+import Spinner from "./Spinner";
+import JSONEditor from "./JSONEditor";
+
+
 export default class BulkForm extends Component {
-  defaultProps = {
-    liveValidate: false
-  };
+  onSubmit = ({formData}) => {
+    const {params, collection, notifyError, bulkCreateRecords} = this.props;
+    const {bid, cid} = params;
+    const {schema} = collection;
 
-  shouldComponentUpdate(nextProps) {
-    return nextProps.name && nextProps.schema;
-  }
-
-  onSubmit({formData}) {
-    if (formData.length > 0) {
-      this.props.bulkCreate(formData);
-    } else {
-      this.props.notifyError({message: "The form is empty."});
+    if (formData.length === 0) {
+      return notifyError({message: "The form is empty."});
     }
+
+    if (Object.keys(schema).length === 0) {
+      return bulkCreateRecords(bid, cid, formData.map(json => JSON.parse(json)));
+    }
+
+    bulkCreateRecords(bid, cid, formData);
   }
 
   render() {
-    const {name, schema, uiSchema, config} = this.props;
-    const {liveValidate} = config;
-    const bulkSchema = {type: "array", definitions: schema.definitions, items: schema};
-    const bulkUiSchema = {items: uiSchema};
-    const bulkFormData = [];
+    const {params, collection} = this.props;
+    const {busy, label, schema, uiSchema} = collection;
+    const {bid, cid} = params;
+
+    let bulkSchema, bulkUiSchema, bulkFormData;
+
+    if (Object.keys(schema).length !== 0) {
+      bulkSchema = {
+        type: "array",
+        definitions: schema.definitions,
+        items: schema
+      };
+      bulkUiSchema = {
+        items: uiSchema
+      };
+      bulkFormData = [{}, {}];
+    } else {
+      bulkSchema = {
+        type: "array",
+        items: {
+          type: "string",
+          default: "{}"
+        }
+      };
+      bulkUiSchema = {
+        items: {
+          "ui:widget": JSONEditor
+        }
+      };
+      bulkFormData = ["{}", "{}"];
+    }
+
     return (
       <div>
-        <h1>Bulk {name} creation</h1>
-        <Form
-          liveValidate={liveValidate}
-          schema={bulkSchema}
-          uiSchema={bulkUiSchema}
-          formData={bulkFormData}
-          onSubmit={this.onSubmit.bind(this)}>
-          <input type="submit" className="btn btn-primary" value="Bulk create" />
-          {" or "}
-          <Link to={`/collections/${name}`}>Cancel</Link>
-        </Form>
+        <h1>Bulk <b>{label}</b> creation</h1>
+        {busy ? <Spinner /> :
+          <Form
+            schema={bulkSchema}
+            uiSchema={bulkUiSchema}
+            formData={bulkFormData}
+            onSubmit={this.onSubmit}>
+            <input type="submit" className="btn btn-primary"
+              value="Bulk create" />
+            {" or "}
+            <Link to={`/buckets/${bid}/collections/${cid}`}>Cancel</Link>
+          </Form>}
       </div>
     );
   }

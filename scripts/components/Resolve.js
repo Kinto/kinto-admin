@@ -80,36 +80,38 @@ function DiffView({source, target}) {
   );
 }
 
-export default function Resolve(props) {
-  const {params, conflicts} = props;
-  const conflict = conflicts[params.id];
+export default class Resolve extends Component {
+  render() {
+    const {params, conflicts, resolve} = this.props;
+    const conflict = conflicts[params.id];
 
-  if (!conflict) {
-    return <NotFound collection={params.name} />;
-  }
+    if (!conflict) {
+      return <NotFound collection={params.name} />;
+    }
 
-  const {type, local, remote} = conflict;
-  return (
-    <div>
-      <h1>Resolve {type} conflict</h1>
-      <div className="row">
-        <div className="col-sm-6">
-          <VersionPicker
-            heading="Local"
-            type="local"
-            record={local}
-            compare={remote}
-            pick={(record) => props.resolve(conflict, record)} />
-        </div>
-        <div className="col-sm-6">
-          <VersionPicker
-            heading="Remote"
-            type="remote"
-            record={remote}
-            compare={local}
-            pick={(record) => props.resolve(conflict, record)} />
+    const {type, local, remote} = conflict;
+    return (
+      <div>
+        <h1>Resolve {type} conflict</h1>
+        <div className="row">
+          <div className="col-sm-6">
+            <VersionPicker
+              heading="Local"
+              type="local"
+              record={local}
+              compare={remote}
+              pick={(record) => resolve(conflict, record)} />
+          </div>
+          <div className="col-sm-6">
+            <VersionPicker
+              heading="Remote"
+              type="remote"
+              record={remote}
+              compare={local}
+              pick={(record) => resolve(conflict, record)} />
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
