@@ -61,16 +61,20 @@ export default class BulkForm extends Component {
       <div>
         <h1>Bulk <b>{label}</b> creation</h1>
         {busy ? <Spinner /> :
-          <Form
-            schema={bulkSchema}
-            uiSchema={bulkUiSchema}
-            formData={bulkFormData}
-            onSubmit={this.onSubmit}>
-            <input type="submit" className="btn btn-primary"
-              value="Bulk create" />
-            {" or "}
-            <Link to={`/buckets/${bid}/collections/${cid}`}>Cancel</Link>
-          </Form>}
+          <div className="panel panel-default">
+            <div className="panel-body">
+            <Form
+              schema={bulkSchema}
+              uiSchema={bulkUiSchema}
+              formData={bulkFormData}
+              onSubmit={this.onSubmit}>
+              <input type="submit" className="btn btn-primary"
+                value="Bulk create" />
+              {" or "}
+              <Link to={`/buckets/${bid}/collections/${cid}`}>Cancel</Link>
+            </Form>
+          </div>
+        </div>}
       </div>
     );
   }
