@@ -44,29 +44,33 @@ function execute(fn) {
 }
 
 export function listBuckets() {
-  return execute((client, dispatch, getState) => {
-    return client.fetchServerInfo()
-      .then((serverInfo) => {
-        dispatch(SessionActions.serverInfoLoaded(serverInfo));
-        // XXX We need to first issue a request to the "default" bucket in order
-        // to create user associated permissions, so we can access the list of
-        // buckets.
-        // ref https://github.com/Kinto/kinto/issues/454
-        return client.bucket("default").getAttributes();
-      })
-      .then(() => {
-        return client.listBuckets();
-      })
-      .then(({data}) => {
-        return Promise.all(data.map((bucket) => {
-          return client.bucket(bucket.id).listCollections()
-            .then(({data}) => ({...bucket, collections: data}));
-        }));
-      })
-      .then((buckets) => {
-        dispatch(SessionActions.bucketListLoaded(buckets));
-      });
-  });
+  return (dispatch) => {
+    console.log("yo");
+    dispatch({type: "SESSION_LIST_BUCKETS"});
+  };
+  // return execute((client, dispatch, getState) => {
+  //   return client.fetchServerInfo()
+  //     .then((serverInfo) => {
+  //       dispatch(SessionActions.serverInfoLoaded(serverInfo));
+  //       // XXX We need to first issue a request to the "default" bucket in order
+  //       // to create user associated permissions, so we can access the list of
+  //       // buckets.
+  //       // ref https://github.com/Kinto/kinto/issues/454
+  //       return client.bucket("default").getAttributes();
+  //     })
+  //     .then(() => {
+  //       return client.listBuckets();
+  //     })
+  //     .then(({data}) => {
+  //       return Promise.all(data.map((bucket) => {
+  //         return client.bucket(bucket.id).listCollections()
+  //           .then(({data}) => ({...bucket, collections: data}));
+  //       }));
+  //     })
+  //     .then((buckets) => {
+  //       dispatch(SessionActions.bucketListLoaded(buckets));
+  //     });
+  // });
 }
 
 export function createCollection(bid, collectionData) {
