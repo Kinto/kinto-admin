@@ -1,4 +1,3 @@
-import KintoClient from "kinto-client";
 import { updatePath } from "redux-simple-router";
 import { call, take, fork, put } from "redux-saga/effects";
 
@@ -7,20 +6,10 @@ import {
   SESSION_BUCKETS_REQUEST,
   SESSION_LOGOUT
 } from "../constants";
-
 import * as notificationActions from "../actions/notifications";
 import * as sessionActions from "../actions/session";
+import { getClient, setupClient, resetClient } from "./client";
 
-
-let client;
-
-function setupClient({server, username, password}) {
-  client = new KintoClient(server, {
-    headers: {
-      Authorization: "Basic " + btoa([username, password].join(":")),
-    }
-  });
-}
 
 export function* setupSession(session) {
   yield put(notificationActions.clearNotifications({force: true}));
@@ -33,12 +22,13 @@ export function* setupSession(session) {
 }
 
 export function* sessionLogout() {
-  client = null;
+  resetClient();
   yield put(updatePath("/"));
   yield put(notificationActions.notifySuccess("Logged out.", {persistent: true}));
 }
 
 export function* fetchServerInfo() {
+  const client = getClient();
   try {
     const serverInfo = yield call([client, client.fetchServerInfo]);
     yield put(sessionActions.serverInfoSuccess(serverInfo));
@@ -49,6 +39,7 @@ export function* fetchServerInfo() {
 }
 
 export function* listBuckets() {
+  const client = getClient();
   try {
     // XXX We need to first issue a request to the "default" bucket in order
     // to create user associated permissions, so we can access the list of
