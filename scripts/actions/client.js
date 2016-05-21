@@ -44,10 +44,7 @@ function execute(fn) {
 }
 
 export function listBuckets() {
-  return (dispatch) => {
-    console.log("yo");
-    dispatch({type: "SESSION_LIST_BUCKETS"});
-  };
+  return {type: "SESSION_LIST_BUCKETS_REQUEST"};
   // return execute((client, dispatch, getState) => {
   //   return client.fetchServerInfo()
   //     .then((serverInfo) => {

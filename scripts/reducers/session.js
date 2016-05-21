@@ -17,7 +17,7 @@ export default function session(state = DEFAULT, action) {
     case SESSION_SETUP_COMPLETE: {
       return {...state, ...action.session};
     }
-    case SESSION_BUCKETS_LIST_LOADED: {
+    case "SESSION_LIST_BUCKETS_SUCCESS": {
       const {serverInfo} = state;
       return {
         ...state,
@@ -29,7 +29,7 @@ export default function session(state = DEFAULT, action) {
         }),
       };
     }
-    case SESSION_SERVER_INFO_LOADED: {
+    case "SESSION_SERVERINFO_SUCCESS": {
       const {serverInfo} = action;
       return {...state, serverInfo, authenticated: !!serverInfo.user};
     }

@@ -12,14 +12,15 @@ import {
 
 
 export function setup(session) {
-  return (dispatch) => {
-    // Clear all pending notifications
-    dispatch(NotificationsActions.clearNotifications({force: true}));
-    // First reflect server info to state
-    dispatch({type: SESSION_SETUP_COMPLETE, session});
-    // Then trigger buckets list retrieval
-    dispatch(ClientActions.listBuckets());
-  };
+  return {type: "SESSION_SETUP", session};
+  // return (dispatch) => {
+  //   // Clear all pending notifications
+  //   dispatch(NotificationsActions.clearNotifications({force: true}));
+  //   // First reflect server info to state
+  //   dispatch({type: SESSION_SETUP_COMPLETE, session});
+  //   // Then trigger buckets list retrieval
+  //   dispatch(ClientActions.listBuckets());
+  // };
 }
 
 export function serverInfoLoaded(serverInfo) {
