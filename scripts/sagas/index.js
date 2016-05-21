@@ -2,6 +2,12 @@ import KintoClient from "kinto-client";
 import { updatePath } from "redux-simple-router";
 import { call, take, fork, put } from "redux-saga/effects";
 
+import {
+  SESSION_SETUP,
+  SESSION_BUCKETS_REQUEST,
+  SESSION_LOGOUT
+} from "../constants";
+
 import * as notificationActions from "../actions/notifications";
 import * as sessionActions from "../actions/session";
 
@@ -69,19 +75,19 @@ export function* listBuckets() {
 
 export function* watchSessionSetup() {
   while(true) {
-    const {session} = yield take("SESSION_SETUP");
+    const {session} = yield take(SESSION_SETUP);
     yield fork(setupSession, session);
   }
 }
 
 export function* watchSessionBuckets() {
-  while(yield take("SESSION_BUCKETS_REQUEST")) {
+  while(yield take(SESSION_BUCKETS_REQUEST)) {
     yield fork(listBuckets);
   }
 }
 
 export function* watchSessionLogout() {
-  while(yield take("SESSION_LOGOUT")) {
+  while(yield take(SESSION_LOGOUT)) {
     yield fork(sessionLogout);
   }
 }

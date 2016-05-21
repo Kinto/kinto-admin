@@ -1,5 +1,8 @@
 import {
+  SESSION_BUSY,
   SESSION_SETUP_COMPLETE,
+  SESSION_SERVERINFO_SUCCESS,
+  SESSION_BUCKETS_SUCCESS,
   SESSION_LOGOUT,
 } from "../constants";
 
@@ -11,10 +14,10 @@ export default function session(state = DEFAULT, action) {
     case SESSION_SETUP_COMPLETE: {
       return {...state, ...action.session};
     }
-    case "SESSION_BUSY": {
+    case SESSION_BUSY: {
       return {...state, busy: action.busy};
     }
-    case "SESSION_BUCKETS_SUCCESS": {
+    case SESSION_BUCKETS_SUCCESS: {
       const {serverInfo} = state;
       return {
         ...state,
@@ -27,7 +30,7 @@ export default function session(state = DEFAULT, action) {
         }),
       };
     }
-    case "SESSION_SERVERINFO_SUCCESS": {
+    case SESSION_SERVERINFO_SUCCESS: {
       return {...state, serverInfo: action.serverInfo};
     }
     case SESSION_LOGOUT: {
