@@ -2,7 +2,8 @@ import KintoClient from "kinto-client";
 import { updatePath } from "redux-simple-router";
 import { call, take, fork, put } from "redux-saga/effects";
 
-import { notifySuccess } from "../actions/notifications";
+import * as notificationActions from "../actions/notifications";
+import * as sessionActions from "../actions/session";
 
 
 let client;
@@ -16,25 +17,28 @@ function setupClient({server, username, password}) {
 }
 
 export function* setupSession(session) {
-  yield put({type: "NOTIFICATION_CLEAR", force: true});
+  yield put(notificationActions.clearNotifications({force: true}));
   setupClient(session);
+  yield put(sessionActions.busy(true));
   yield fetchServerInfo();
   yield listBuckets();
-  yield put({type: "SESSION_SETUP_COMPLETE", session});
+  yield put(sessionActions.setupComplete(session));
+  yield put(sessionActions.busy(false));
 }
 
 export function* sessionLogout() {
   client = null;
   yield put(updatePath("/"));
-  yield put(notifySuccess("Logged out.", {persistent: true}));
+  yield put(notificationActions.notifySuccess("Logged out.", {persistent: true}));
 }
 
 export function* fetchServerInfo() {
   try {
     const serverInfo = yield call([client, client.fetchServerInfo]);
-    yield put({type: "SESSION_SERVERINFO_SUCCESS", serverInfo});
+    yield put(sessionActions.serverInfoSuccess(serverInfo));
   } catch(error) {
-    yield put({type: "SESSION_SERVERINFO_FAILURE", error});
+    yield put(sessionActions.serverInfoFailure(error));
+    yield put(notificationActions.notifyError(error));
   }
 }
 
@@ -54,9 +58,10 @@ export function* listBuckets() {
       const {data} = yield call([bucket, bucket.listCollections], id);
       buckets.push({id, collections: data});
     }
-    yield put({type: "SESSION_LIST_BUCKETS_SUCCESS", buckets});
+    yield put(sessionActions.bucketsSuccess(buckets));
   } catch(error) {
-    yield put({type: "SESSION_LIST_BUCKETS_FAILURE", error});
+    yield put(sessionActions.bucketsFailure(error));
+    yield put(notificationActions.notifyError(error));
   }
 }
 
@@ -70,7 +75,7 @@ export function* watchSessionSetup() {
 }
 
 export function* watchSessionBuckets() {
-  while(yield take("SESSION_LIST_BUCKETS_REQUEST")) {
+  while(yield take("SESSION_BUCKETS_REQUEST")) {
     yield fork(listBuckets);
   }
 }
