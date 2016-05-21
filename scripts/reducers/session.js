@@ -19,13 +19,14 @@ export default function session(state = DEFAULT, action) {
     }
     case SESSION_BUCKETS_SUCCESS: {
       const {serverInfo} = state;
+      const userBucket = serverInfo.user && serverInfo.user.bucket;
       return {
         ...state,
         authenticated: true,
         buckets: action.buckets.map((bucket) => {
           return {
             ...bucket,
-            id: bucket.id === serverInfo.user.bucket ? "default" : bucket.id
+            id: bucket.id === userBucket ? "default" : bucket.id
           };
         }),
       };
