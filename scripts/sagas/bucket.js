@@ -9,7 +9,7 @@ import {
 } from "../constants";
 import { getClient } from "../client";
 import { notifySuccess, notifyError } from "../actions/notifications";
-import { collectionLoadSuccess } from "../actions/collection";
+import { collectionBusy, collectionLoadSuccess } from "../actions/collection";
 import { listBuckets } from "./session";
 
 
@@ -22,6 +22,7 @@ function getCollection(bid, cid) {
 }
 
 export function* loadCollection(bid, cid) {
+  yield put(collectionBusy(true));
   const coll = getCollection(bid, cid);
   try {
     const {data} = yield call([coll, coll.getAttributes]);
@@ -32,6 +33,8 @@ export function* loadCollection(bid, cid) {
     }));
   } catch(error) {
     yield put(notifyError(error));
+  } finally {
+    yield put(collectionBusy(false));
   }
 }
 

@@ -1,4 +1,5 @@
 import {
+  COLLECTION_BUSY,
   COLLECTION_RESET,
   COLLECTION_LOAD_SUCCESS,
   COLLECTION_RECORDS_REQUEST,
@@ -10,6 +11,10 @@ import {
   RECORD_BULK_CREATE_REQUEST,
 } from "../constants";
 
+
+export function collectionBusy(busy) {
+  return {type: COLLECTION_BUSY, busy};
+}
 
 export function reset() {
   return {type: COLLECTION_RESET};

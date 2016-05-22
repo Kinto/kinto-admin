@@ -1,8 +1,8 @@
 import {
+  COLLECTION_BUSY,
   COLLECTION_RESET,
   COLLECTION_LOAD_SUCCESS,
   COLLECTION_RECORDS_SUCCESS,
-  COLLECTION_CREATED,
 } from "../constants";
 
 
@@ -19,6 +19,9 @@ const INITIAL_STATE = {
 
 export function collection(state = INITIAL_STATE, action) {
   switch (action.type) {
+    case COLLECTION_BUSY: {
+      return {...state, busy: action.busy};
+    }
     case COLLECTION_RESET: {
       return INITIAL_STATE;
     }
@@ -36,10 +39,6 @@ export function collection(state = INITIAL_STATE, action) {
     }
     case COLLECTION_RECORDS_SUCCESS: {
       return {...state, records: action.records};
-    }
-    case COLLECTION_CREATED: {
-      // XXX load created collection data?
-      return state;
     }
     default: {
       return state;
