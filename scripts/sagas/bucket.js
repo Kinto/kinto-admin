@@ -5,6 +5,7 @@ import {
   COLLECTION_CREATE_REQUEST,
   COLLECTION_DELETE_REQUEST,
   COLLECTION_LOAD_REQUEST,
+  COLLECTION_UPDATE_REQUEST,
 } from "../constants";
 import { getClient } from "./client";
 import { notifySuccess, notifyError } from "../actions/notifications";
@@ -18,6 +19,20 @@ function getBucket(bid) {
 
 function getCollection(bid, cid) {
   return getBucket(bid).collection(cid);
+}
+
+export function* loadCollection(bid, cid) {
+  const coll = getCollection(bid, cid);
+  try {
+    const {data} = yield call([coll, coll.getAttributes]);
+    yield put(collectionLoadSuccess({
+      ...data,
+      bucket: bid,
+      label: `${bid}/${data.id}`,
+    }));
+  } catch(error) {
+    yield put(notifyError(error));
+  }
 }
 
 export function* createCollection(bid, collectionData) {
@@ -36,6 +51,21 @@ export function* createCollection(bid, collectionData) {
   yield listBuckets();
 }
 
+export function* updateCollection(bid, cid, collectionData) {
+  try {
+    const coll = getCollection(bid, cid);
+    const {data} = yield call([coll, coll.setMetadata], collectionData);
+    yield put(collectionLoadSuccess({
+      ...data,
+      bucket: bid,
+      label: `${bid}/${data.id}`,
+    }));
+    yield put(notifySuccess("Collection properties updated."));
+  } catch(error) {
+    yield put(notifyError(error));
+  }
+}
+
 export function* deleteCollection(bid, cid) {
   const bucket = getBucket(bid);
   try {
@@ -49,21 +79,14 @@ export function* deleteCollection(bid, cid) {
   yield listBuckets();
 }
 
-export function* loadCollection(bid, cid) {
-  const coll = getCollection(bid, cid);
-  try {
-    const {data} = yield call([coll, coll.getAttributes]);
-    yield put(collectionLoadSuccess({
-      ...data,
-      bucket: bid,
-      label: `${bid}/${data.id}`,
-    }));
-  } catch(error) {
-    yield put(notifyError(error));
+// Watchers
+
+export function* watchCollectionLoad() {
+  while(true) {
+    const {bid, cid} = yield take(COLLECTION_LOAD_REQUEST);
+    yield fork(loadCollection, bid, cid);
   }
 }
-
-// Watchers
 
 export function* watchCollectionCreate() {
   while(true) {
@@ -72,16 +95,16 @@ export function* watchCollectionCreate() {
   }
 }
 
+export function* watchCollectionUpdate() {
+  while(true) {
+    const {bid, cid, collectionData} = yield take(COLLECTION_UPDATE_REQUEST);
+    yield fork(updateCollection, bid, cid, collectionData);
+  }
+}
+
 export function* watchCollectionDelete() {
   while(true) {
     const {bid, cid} = yield take(COLLECTION_DELETE_REQUEST);
     yield fork(deleteCollection, bid, cid);
-  }
-}
-
-export function* watchCollectionLoad() {
-  while(true) {
-    const {bid, cid} = yield take(COLLECTION_LOAD_REQUEST);
-    yield fork(loadCollection, bid, cid);
   }
 }

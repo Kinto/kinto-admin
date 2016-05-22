@@ -10,6 +10,7 @@ import {
   COLLECTION_CREATE_REQUEST,
   COLLECTION_DELETE_REQUEST,
   COLLECTION_LOAD_REQUEST,
+  COLLECTION_UPDATE_REQUEST,
 } from "../constants";
 
 
@@ -65,19 +66,7 @@ export function loadCollection(bid, cid) {
 }
 
 export function updateCollection(bid, cid, collectionData) {
-  const {schema, uiSchema, displayFields} = collectionData;
-  return execute((client, dispatch, getState) => {
-    const coll = client.bucket(bid).collection(cid);
-    return coll.setMetadata({schema, uiSchema, displayFields})
-      .then(({data}) => {
-        dispatch(CollectionActions.collectionLoadSuccess({
-          ...data,
-          bucket: bid,
-          label: `${bid}/${data.id}`,
-        }));
-        dispatch(notifySuccess("Collection properties updated."));
-      });
-  });
+  return {type: COLLECTION_UPDATE_REQUEST, bid, cid, collectionData};
 }
 
 export function listRecords(bid, cid) {
