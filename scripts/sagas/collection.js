@@ -38,18 +38,20 @@ export function* listRecords(bid, cid) {
 
 export function* loadRecord(bid, cid, rid) {
   const coll = getCollection(bid, cid);
-  // XXX mark collection and record as busy
+  yield put(collectionActions.collectionBusy(true));
   try {
     const {data} = yield call([coll, coll.getRecord], rid);
     yield put(recordLoadSuccess(data));
   } catch(error) {
     yield put(notifyError(error));
+  } finally {
+    yield put(collectionActions.collectionBusy(false));
   }
 }
 
 export function* createRecord(bid, cid, record) {
   const coll = getCollection(bid, cid);
-  // XXX mark collection and record as busy
+  yield put(collectionActions.collectionBusy(true));
   try {
     yield call([coll, coll.createRecord], record);
     yield put(collectionActions.listRecords(bid, cid));
@@ -57,12 +59,14 @@ export function* createRecord(bid, cid, record) {
     yield put(notifySuccess("Record added."));
   } catch(error) {
     yield put(notifyError(error));
+  } finally {
+    yield put(collectionActions.collectionBusy(false));
   }
 }
 
 export function* updateRecord(bid, cid, rid, record) {
   const coll = getCollection(bid, cid);
-  // XXX mark collection and record as busy
+  yield put(collectionActions.collectionBusy(true));
   try {
     yield call([coll, coll.updateRecord], {...record, id: rid});
     yield put(resetRecord());
@@ -71,12 +75,14 @@ export function* updateRecord(bid, cid, rid, record) {
     yield put(notifySuccess("Record added."));
   } catch(error) {
     yield put(notifyError(error));
+  } finally {
+    yield put(collectionActions.collectionBusy(false));
   }
 }
 
 export function* deleteRecord(bid, cid, rid) {
   const coll = getCollection(bid, cid);
-  // XXX mark collection and record as busy
+  yield put(collectionActions.collectionBusy(true));
   try {
     yield call([coll, coll.deleteRecord], rid);
     yield put(collectionActions.listRecords(bid, cid));
@@ -84,12 +90,14 @@ export function* deleteRecord(bid, cid, rid) {
     yield put(notifySuccess("Record deleted."));
   } catch(error) {
     yield put(notifyError(error));
+  } finally {
+    yield put(collectionActions.collectionBusy(false));
   }
 }
 
 export function* bulkCreateRecords(bid, cid, records) {
   const coll = getCollection(bid, cid);
-  // XXX mark collection and record as busy
+  yield put(collectionActions.collectionBusy(true));
   try {
     const {errors, published} = yield call([coll, coll.batch], (batch) => {
       for (const record of records) {
@@ -107,6 +115,8 @@ export function* bulkCreateRecords(bid, cid, records) {
     }
   } catch(error) {
     yield put(notifyError(error));
+  } finally {
+    yield put(collectionActions.collectionBusy(false));
   }
 }
 
