@@ -11,12 +11,13 @@ export default function* rootSaga() {
     fork(sessionSagas.watchSessionSetup),
     fork(sessionSagas.watchSessionLogout),
     fork(sessionSagas.watchSessionBuckets),
-    // bucket
+    // bucket/collections
     fork(bucketSagas.watchCollectionLoad),
     fork(bucketSagas.watchCollectionCreate),
     fork(bucketSagas.watchCollectionUpdate),
     fork(bucketSagas.watchCollectionDelete),
-    // collection
+    // collection/records
     fork(collectionSagas.watchCollectionRecords),
+    fork(collectionSagas.watchRecordLoad),
   ];
 }

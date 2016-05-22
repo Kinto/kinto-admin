@@ -11,6 +11,7 @@ import {
 import { getClient } from "./client";
 import { notifySuccess, notifyError } from "../actions/notifications";
 import { collectionRecordsSuccess } from "../actions/collection";
+import { recordLoaded } from "../actions/record";
 
 
 function getBucket(bid) {
@@ -31,11 +32,29 @@ export function* listRecords(bid, cid) {
   }
 }
 
+export function* loadRecord(bid, cid, rid) {
+  const coll = getCollection(bid, cid);
+  // XXX mark record as busy
+  try {
+    const {data} = yield call([coll, coll.getRecord], rid);
+    yield put(recordLoaded(data));
+  } catch(error) {
+    yield put(notifyError(error));
+  }
+}
+
 // Watchers
 
 export function* watchCollectionRecords() {
   while(true) {
     const {bid, cid} = yield take(COLLECTION_RECORDS_REQUEST);
     yield fork(listRecords, bid, cid);
+  }
+}
+
+export function* watchRecordLoad() {
+  while(true) {
+    const {bid, cid, rid} = yield take(RECORD_LOAD_REQUEST);
+    yield fork(loadRecord, bid, cid, rid);
   }
 }

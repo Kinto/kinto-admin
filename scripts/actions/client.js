@@ -12,6 +12,7 @@ import {
   COLLECTION_LOAD_REQUEST,
   COLLECTION_UPDATE_REQUEST,
   COLLECTION_RECORDS_REQUEST,
+  RECORD_LOAD_REQUEST,
 } from "../constants";
 
 
@@ -75,13 +76,7 @@ export function listRecords(bid, cid) {
 }
 
 export function loadRecord(bid, cid, rid) {
-  return execute((client, dispatch, getState) => {
-    const coll = client.bucket(bid).collection(cid);
-    return coll.getRecord(rid)
-      .then(({data}) => {
-        dispatch(RecordActions.recordLoaded(data));
-      });
-  });
+  return {type: RECORD_LOAD_REQUEST, bid, cid, rid};
 }
 
 export function createRecord(bid, cid, record) {
