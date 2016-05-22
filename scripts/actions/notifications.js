@@ -14,7 +14,6 @@ function notify(type, message, details=[], options={persistent: false}) {
       persistent,
       message,
       details,
-      time: new Date().getTime(),
     },
   };
 }

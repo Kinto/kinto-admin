@@ -43,10 +43,7 @@ export class Notification extends Component {
       <div className={`alert notification alert-${this.props.type}`}>
         <a className="close" href=""
           onClick={this.onCloseClick.bind(this)}>✖</a>
-        <h4>
-          {this.getHeading()}
-          <small>[{new Date(this.props.time).toLocaleString()}]</small>
-        </h4>
+        <h4>{this.getHeading()}</h4>
         <p>{this.props.message}</p>
         <ErrorDetails details={this.props.details} />
       </div>
