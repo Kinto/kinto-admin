@@ -11,6 +11,7 @@ import {
   COLLECTION_DELETE_REQUEST,
   COLLECTION_LOAD_REQUEST,
   COLLECTION_UPDATE_REQUEST,
+  COLLECTION_RECORDS_REQUEST,
 } from "../constants";
 
 
@@ -53,28 +54,32 @@ export function listBuckets() {
   return {type: SESSION_LIST_BUCKETS_REQUEST};
 }
 
-export function createCollection(bid, collectionData) {
-  return {type: COLLECTION_CREATE_REQUEST, bid, collectionData};
-}
-
-export function deleteCollection(bid, cid) {
-  return {type: COLLECTION_DELETE_REQUEST, bid, cid};
-}
-
 export function loadCollection(bid, cid) {
   return {type: COLLECTION_LOAD_REQUEST, bid, cid};
+}
+
+export function createCollection(bid, collectionData) {
+  return {type: COLLECTION_CREATE_REQUEST, bid, collectionData};
 }
 
 export function updateCollection(bid, cid, collectionData) {
   return {type: COLLECTION_UPDATE_REQUEST, bid, cid, collectionData};
 }
 
+export function deleteCollection(bid, cid) {
+  return {type: COLLECTION_DELETE_REQUEST, bid, cid};
+}
+
 export function listRecords(bid, cid) {
+  return {type: COLLECTION_RECORDS_REQUEST, bid, cid};
+}
+
+export function loadRecord(bid, cid, rid) {
   return execute((client, dispatch, getState) => {
     const coll = client.bucket(bid).collection(cid);
-    return coll.listRecords()
+    return coll.getRecord(rid)
       .then(({data}) => {
-        dispatch(CollectionActions.collectionRecordsLoaded(data));
+        dispatch(RecordActions.recordLoaded(data));
       });
   });
 }
@@ -88,16 +93,6 @@ export function createRecord(bid, cid, record) {
         dispatch(listRecords(bid, cid));
         dispatch(updatePath(`/buckets/${bid}/collections/${cid}`));
         dispatch(notifySuccess("Record added."));
-      });
-  });
-}
-
-export function loadRecord(bid, cid, rid) {
-  return execute((client, dispatch, getState) => {
-    const coll = client.bucket(bid).collection(cid);
-    return coll.getRecord(rid)
-      .then(({data}) => {
-        dispatch(RecordActions.recordLoaded(data));
       });
   });
 }

@@ -2,7 +2,7 @@ import {
   COLLECTION_RESET,
   COLLECTION_LOAD_SUCCESS,
   COLLECTION_CREATED,
-  COLLECTION_RECORDS_LOADED,
+  COLLECTION_RECORDS_SUCCESS,
   COLLECTION_RECORD_CREATED,
 } from "../constants";
 
@@ -19,8 +19,8 @@ export function collectionLoadSuccess(properties) {
   return {type: COLLECTION_LOAD_SUCCESS, properties};
 }
 
-export function collectionRecordsLoaded(records) {
-  return {type: COLLECTION_RECORDS_LOADED, records};
+export function collectionRecordsSuccess(records) {
+  return {type: COLLECTION_RECORDS_SUCCESS, records};
 }
 
 export function collectionRecordCreated(data) {

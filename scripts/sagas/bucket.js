@@ -2,10 +2,10 @@ import { updatePath } from "redux-simple-router";
 import { call, take, fork, put } from "redux-saga/effects";
 
 import {
-  COLLECTION_CREATE_REQUEST,
-  COLLECTION_DELETE_REQUEST,
   COLLECTION_LOAD_REQUEST,
+  COLLECTION_CREATE_REQUEST,
   COLLECTION_UPDATE_REQUEST,
+  COLLECTION_DELETE_REQUEST,
 } from "../constants";
 import { getClient } from "./client";
 import { notifySuccess, notifyError } from "../actions/notifications";

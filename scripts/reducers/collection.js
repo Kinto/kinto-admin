@@ -2,7 +2,7 @@ import {
   CLIENT_BUSY,
   COLLECTION_RESET,
   COLLECTION_LOAD_SUCCESS,
-  COLLECTION_RECORDS_LOADED,
+  COLLECTION_RECORDS_SUCCESS,
   COLLECTION_CREATED,
 } from "../constants";
 
@@ -38,7 +38,7 @@ export function collection(state = INITIAL_STATE, action) {
         displayFields: properties.displayFields,
       };
     }
-    case COLLECTION_RECORDS_LOADED: {
+    case COLLECTION_RECORDS_SUCCESS: {
       return {...state, records: action.records};
     }
     case COLLECTION_CREATED: {
