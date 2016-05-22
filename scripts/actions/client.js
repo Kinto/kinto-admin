@@ -1,9 +1,3 @@
-import KintoClient from "kinto-client";
-import { updatePath } from "redux-simple-router";
-
-import { notifyError, notifySuccess } from "./notifications";
-import * as CollectionActions from "./collection";
-import * as RecordActions from "./record";
 import {
   CLIENT_BUSY,
   SESSION_LIST_BUCKETS_REQUEST,
@@ -15,41 +9,15 @@ import {
   RECORD_LOAD_REQUEST,
   RECORD_CREATE_REQUEST,
   RECORD_UPDATE_REQUEST,
+  RECORD_DELETE_REQUEST,
+  RECORD_BULK_CREATE_REQUEST,
 } from "../constants";
 
-
-export let client;
-
-function getClient({session: {server, username, password}}) {
-  return client || new KintoClient(server, {
-    headers: {
-      Authorization: "Basic " + btoa([username, password].join(":")),
-    }
-  });
-}
-
-export function resetClient() {
-  client = null;
-}
 
 export function clientBusy(busy) {
   return {
     type: CLIENT_BUSY,
     busy,
-  };
-}
-
-function execute(fn) {
-  return (dispatch, getState) => {
-    dispatch(clientBusy(true));
-    const client = getClient(getState());
-    return fn(client, dispatch, getState)
-      .catch((err) => {
-        dispatch(notifyError(err));
-      })
-      .then(() => {
-        dispatch(clientBusy(false));
-      });
   };
 }
 
@@ -90,36 +58,9 @@ export function updateRecord(bid, cid, rid, record) {
 }
 
 export function deleteRecord(bid, cid, rid) {
-  return execute((client, dispatch, getState) => {
-    const coll = client.bucket(bid).collection(cid);
-    return coll.deleteRecord(rid)
-      .then(({data}) => {
-        dispatch(listRecords(bid, cid));
-        dispatch(updatePath(`/buckets/${bid}/collections/${cid}`));
-        dispatch(notifySuccess("Record deleted."));
-      });
-  });
+  return {type: RECORD_DELETE_REQUEST, bid, cid, rid};
 }
 
 export function bulkCreateRecords(bid, cid, records) {
-  return execute((client, dispatch, getState) => {
-    const coll = client.bucket(bid).collection(cid);
-    return coll.batch((batch) => {
-      for (const record of records) {
-        batch.createRecord(record);
-      }
-    }, {aggregate: true})
-      .then((res) => {
-        if (res.errors.length > 0) {
-          const err = new Error("Some records could not be created.");
-          err.details = res.errors.map(err => err.error.message);
-          throw err;
-        } else {
-          const num = res.published.length;
-          dispatch(listRecords(bid, cid));
-          dispatch(updatePath(`/buckets/${bid}/collections/${cid}`));
-          dispatch(notifySuccess(`${num} records created.`));
-        }
-      });
-  });
+  return {type: RECORD_BULK_CREATE_REQUEST, bid, cid, records};
 }

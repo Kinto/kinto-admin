@@ -7,6 +7,7 @@ import {
   RECORD_CREATE_REQUEST,
   RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
+  RECORD_BULK_CREATE_REQUEST,
 } from "../constants";
 import { getClient } from "./client";
 import { notifySuccess, notifyError } from "../actions/notifications";
@@ -70,6 +71,42 @@ export function* updateRecord(bid, cid, rid, record) {
   }
 }
 
+export function* deleteRecord(bid, cid, rid) {
+  const coll = getCollection(bid, cid);
+  // XXX mark collection and record as busy
+  try {
+    yield call([coll, coll.deleteRecord], rid);
+    yield listRecords(bid, cid); // XXX put action instead
+    yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
+    yield put(notifySuccess("Record deleted."));
+  } catch(error) {
+    yield put(notifyError(error));
+  }
+}
+
+export function* bulkCreateRecords(bid, cid, records) {
+  const coll = getCollection(bid, cid);
+  // XXX mark collection and record as busy
+  try {
+    const {errors, published} = yield call([coll, coll.batch], (batch) => {
+      for (const record of records) {
+        batch.createRecord(record);
+      }
+    }, {aggregate: true});
+    if (errors.length > 0) {
+      const err = new Error("Some records could not be created.");
+      err.details = errors.map(err => err.error.message);
+      throw err;
+    } else {
+      listRecords(bid, cid); // XXX dispatch action instead
+      yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
+      yield put(notifySuccess(`${published.length} records created.`));
+    }
+  } catch(error) {
+    yield put(notifyError(error));
+  }
+}
+
 // Watchers
 
 export function* watchCollectionRecords() {
@@ -97,5 +134,19 @@ export function* watchRecordUpdate() {
   while(true) {
     const {bid, cid, rid, record} = yield take(RECORD_UPDATE_REQUEST);
     yield fork(updateRecord, bid, cid, rid, record);
+  }
+}
+
+export function* watchRecordDelete() {
+  while(true) {
+    const {bid, cid, rid} = yield take(RECORD_DELETE_REQUEST);
+    yield fork(deleteRecord, bid, cid, rid);
+  }
+}
+
+export function* watchBulkCreateRecords() {
+  while(true) {
+    const {bid, cid, records} = yield take(RECORD_BULK_CREATE_REQUEST);
+    yield fork(bulkCreateRecords, bid, cid, records);
   }
 }
