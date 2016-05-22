@@ -7,7 +7,9 @@ import * as RecordActions from "./record";
 import {
   CLIENT_BUSY,
   SESSION_LIST_BUCKETS_REQUEST,
-  COLLECTION_CREATE,
+  COLLECTION_CREATE_REQUEST,
+  COLLECTION_DELETE_REQUEST,
+  COLLECTION_LOAD_REQUEST,
 } from "../constants";
 
 
@@ -51,32 +53,15 @@ export function listBuckets() {
 }
 
 export function createCollection(bid, collectionData) {
-  return {type: COLLECTION_CREATE, bid, collectionData};
+  return {type: COLLECTION_CREATE_REQUEST, bid, collectionData};
 }
 
 export function deleteCollection(bid, cid) {
-  return execute((client, dispatch, getState) => {
-    return client.bucket(bid).deleteCollection(cid)
-      .then(({data}) => {
-        dispatch(notifySuccess("Collection deleted."));
-        dispatch(CollectionActions.collectionDeleted(data));
-        dispatch(listBuckets());
-        dispatch(updatePath(""));
-      });
-  });
+  return {type: COLLECTION_DELETE_REQUEST, bid, cid};
 }
 
 export function loadCollection(bid, cid) {
-  return execute((client, dispatch, getState) => {
-    return client.bucket(bid).collection(cid).getAttributes()
-      .then(({data}) => {
-        dispatch(CollectionActions.collectionPropertiesLoaded({
-          ...data,
-          bucket: bid,
-          label: `${bid}/${data.id}`,
-        }));
-      });
-  });
+  return {type: COLLECTION_LOAD_REQUEST, bid, cid};
 }
 
 export function updateCollection(bid, cid, collectionData) {
@@ -85,7 +70,7 @@ export function updateCollection(bid, cid, collectionData) {
     const coll = client.bucket(bid).collection(cid);
     return coll.setMetadata({schema, uiSchema, displayFields})
       .then(({data}) => {
-        dispatch(CollectionActions.collectionPropertiesLoaded({
+        dispatch(CollectionActions.collectionLoadSuccess({
           ...data,
           bucket: bid,
           label: `${bid}/${data.id}`,

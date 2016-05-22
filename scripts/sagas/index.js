@@ -12,5 +12,7 @@ export default function* rootSaga() {
     fork(sessionSagas.watchSessionBuckets),
     // bucket
     fork(bucketSagas.watchCollectionCreate),
+    fork(bucketSagas.watchCollectionDelete),
+    fork(bucketSagas.watchCollectionLoad),
   ];
 }

@@ -36,7 +36,7 @@ describe("session sagas", () => {
       expect(listBuckets.next({data: [{id: "b1"}, {id: "b2"}]}).value)
         .eql(call([bucket, bucket.listCollections], "b1"));
 
-      expect(listBuckets.next({data: [{id: "b1c1"}]}).value)
+      expect(listBuckets.next({data: [{id: "b1c1"}, {id: "b1c2"}]}).value)
         .eql(call([bucket, bucket.listCollections], "b2"));
     });
 
@@ -45,7 +45,7 @@ describe("session sagas", () => {
         .eql(put(actions.bucketsSuccess([
           {
             id: "b1",
-            collections: [{id: "b1c1"}]
+            collections: [{id: "b1c1"}, {id: "b1c2"}]
           },
           {
             id: "b2",

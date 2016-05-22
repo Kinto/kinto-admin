@@ -12,8 +12,8 @@ import { getClient, setupClient, resetClient } from "./client";
 
 
 export function* setupSession(session) {
-  yield put(notificationActions.clearNotifications({force: true}));
   setupClient(session);
+  yield put(notificationActions.clearNotifications({force: true}));
   yield put(sessionActions.busy(true));
   yield fetchServerInfo();
   yield listBuckets();
