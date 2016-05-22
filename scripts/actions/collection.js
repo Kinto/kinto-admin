@@ -1,18 +1,18 @@
 import {
   COLLECTION_RESET,
   COLLECTION_LOAD_SUCCESS,
-  COLLECTION_CREATED,
+  COLLECTION_RECORDS_REQUEST,
   COLLECTION_RECORDS_SUCCESS,
-  COLLECTION_RECORD_CREATED,
+  RECORD_LOAD_REQUEST,
+  RECORD_CREATE_REQUEST,
+  RECORD_UPDATE_REQUEST,
+  RECORD_DELETE_REQUEST,
+  RECORD_BULK_CREATE_REQUEST,
 } from "../constants";
 
 
 export function reset() {
   return {type: COLLECTION_RESET};
-}
-
-export function collectionCreated(data) {
-  return {type: COLLECTION_CREATED, data};
 }
 
 export function collectionLoadSuccess(properties) {
@@ -23,6 +23,26 @@ export function collectionRecordsSuccess(records) {
   return {type: COLLECTION_RECORDS_SUCCESS, records};
 }
 
-export function collectionRecordCreated(data) {
-  return {type: COLLECTION_RECORD_CREATED, data};
+export function listRecords(bid, cid) {
+  return {type: COLLECTION_RECORDS_REQUEST, bid, cid};
+}
+
+export function loadRecord(bid, cid, rid) {
+  return {type: RECORD_LOAD_REQUEST, bid, cid, rid};
+}
+
+export function createRecord(bid, cid, record) {
+  return {type: RECORD_CREATE_REQUEST, bid, cid, record};
+}
+
+export function updateRecord(bid, cid, rid, record) {
+  return {type: RECORD_UPDATE_REQUEST, bid, cid, rid, record};
+}
+
+export function deleteRecord(bid, cid, rid) {
+  return {type: RECORD_DELETE_REQUEST, bid, cid, rid};
+}
+
+export function bulkCreateRecords(bid, cid, records) {
+  return {type: RECORD_BULK_CREATE_REQUEST, bid, cid, records};
 }

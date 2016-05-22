@@ -1,5 +1,4 @@
 import {
-  CLIENT_BUSY,
   COLLECTION_RESET,
   COLLECTION_LOAD_SUCCESS,
   COLLECTION_RECORDS_SUCCESS,
@@ -20,9 +19,6 @@ const INITIAL_STATE = {
 
 export function collection(state = INITIAL_STATE, action) {
   switch (action.type) {
-    case CLIENT_BUSY: {
-      return {...state, busy: action.busy};
-    }
     case COLLECTION_RESET: {
       return INITIAL_STATE;
     }
