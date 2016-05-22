@@ -16,8 +16,8 @@ export function* setupSession(session) {
   setupClient(session);
   yield put(notificationActions.clearNotifications({force: true}));
   yield put(sessionActions.sessionBusy(true));
-  yield put(sessionActions.fetchServerInfo());
-  yield put(sessionActions.listBuckets());
+  yield call(fetchServerInfo);
+  yield call(listBuckets);
   yield put(sessionActions.setupComplete(session));
   yield put(sessionActions.sessionBusy(false));
 }

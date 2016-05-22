@@ -41,12 +41,12 @@ describe("session sagas", () => {
 
     it("should fetch server information", () => {
       expect(setupSession.next().value)
-        .eql(put(actions.fetchServerInfo()));
+        .eql(call(saga.fetchServerInfo));
     });
 
     it("should retrieve buckets hierarchy", () => {
       expect(setupSession.next().value)
-        .eql(put(actions.listBuckets()));
+        .eql(call(saga.listBuckets));
     });
 
     it("should mark the session setup as completed", () => {
