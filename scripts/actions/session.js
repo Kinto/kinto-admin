@@ -2,6 +2,7 @@ import {
   SESSION_BUSY,
   SESSION_SETUP,
   SESSION_SETUP_COMPLETE,
+  SESSION_SERVERINFO_REQUEST,
   SESSION_SERVERINFO_SUCCESS,
   SESSION_BUCKETS_REQUEST,
   SESSION_BUCKETS_SUCCESS,
@@ -9,7 +10,7 @@ import {
 } from "../constants";
 
 
-export function busy(busy) {
+export function sessionBusy(busy) {
   return {type: SESSION_BUSY, busy};
 }
 
@@ -19,6 +20,10 @@ export function setup(session) {
 
 export function setupComplete(session) {
   return {type: SESSION_SETUP_COMPLETE, session};
+}
+
+export function fetchServerInfo() {
+  return {type: SESSION_SERVERINFO_REQUEST};
 }
 
 export function serverInfoSuccess(serverInfo) {

@@ -3,6 +3,7 @@ import { call, take, fork, put } from "redux-saga/effects";
 
 import {
   SESSION_SETUP,
+  SESSION_SERVERINFO_REQUEST,
   SESSION_BUCKETS_REQUEST,
   SESSION_LOGOUT
 } from "../constants";
@@ -14,11 +15,11 @@ import { getClient, setupClient, resetClient } from "../client";
 export function* setupSession(session) {
   setupClient(session);
   yield put(notificationActions.clearNotifications({force: true}));
-  yield put(sessionActions.busy(true));
-  yield fetchServerInfo();
-  yield listBuckets();
+  yield put(sessionActions.sessionBusy(true));
+  yield put(sessionActions.fetchServerInfo());
+  yield put(sessionActions.listBuckets());
   yield put(sessionActions.setupComplete(session));
-  yield put(sessionActions.busy(false));
+  yield put(sessionActions.sessionBusy(false));
 }
 
 export function* sessionLogout() {
@@ -66,6 +67,12 @@ export function* watchSessionSetup() {
   while(true) {
     const {session} = yield take(SESSION_SETUP);
     yield fork(setupSession, session);
+  }
+}
+
+export function* watchServerInfo() {
+  while(yield take(SESSION_SERVERINFO_REQUEST)) {
+    yield fork(fetchServerInfo);
   }
 }
 
