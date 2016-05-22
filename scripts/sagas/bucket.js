@@ -22,14 +22,14 @@ function getCollection(bid, cid) {
 }
 
 export function* loadCollection(bid, cid) {
-  yield put(collectionBusy(true));
-  const coll = getCollection(bid, cid);
   try {
+    const coll = getCollection(bid, cid);
+    yield put(collectionBusy(true));
     const {data} = yield call([coll, coll.getAttributes]);
     yield put(collectionLoadSuccess({
       ...data,
       bucket: bid,
-      label: `${bid}/${data.id}`,
+      label: `${bid}/${cid}`,
     }));
   } catch(error) {
     yield put(notifyError(error));
@@ -39,19 +39,18 @@ export function* loadCollection(bid, cid) {
 }
 
 export function* createCollection(bid, collectionData) {
-  const {name, schema, uiSchema, displayFields} = collectionData;
-  const bucket = getBucket(bid);
   try {
+    const {name, schema, uiSchema, displayFields} = collectionData;
+    const bucket = getBucket(bid);
     yield call([bucket, bucket.createCollection], name, {
       data: {uiSchema, schema, displayFields},
     });
     yield put(updatePath(`/buckets/${bid}/collections/${name}`));
     yield put(notifySuccess("Collection created."));
+    yield call(listBuckets);
   } catch(error) {
     yield put(notifyError(error));
   }
-  // Reload the list of buckets
-  yield listBuckets();
 }
 
 export function* updateCollection(bid, cid, collectionData) {
@@ -61,7 +60,7 @@ export function* updateCollection(bid, cid, collectionData) {
     yield put(collectionLoadSuccess({
       ...data,
       bucket: bid,
-      label: `${bid}/${data.id}`,
+      label: `${bid}/${cid}`,
     }));
     yield put(notifySuccess("Collection properties updated."));
   } catch(error) {
@@ -70,16 +69,15 @@ export function* updateCollection(bid, cid, collectionData) {
 }
 
 export function* deleteCollection(bid, cid) {
-  const bucket = getBucket(bid);
   try {
+    const bucket = getBucket(bid);
     yield call([bucket, bucket.deleteCollection], cid);
     yield put(updatePath(""));
     yield put(notifySuccess("Collection deleted."));
+    yield call(listBuckets);
   } catch(error) {
     yield put(notifyError(error));
   }
-  // Reload the list of buckets
-  yield listBuckets();
 }
 
 // Watchers
