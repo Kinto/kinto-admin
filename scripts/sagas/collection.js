@@ -11,7 +11,7 @@ import {
 } from "../constants";
 import { getClient } from "../client";
 import { notifySuccess, notifyError } from "../actions/notifications";
-import { collectionBusy, collectionRecordsSuccess } from "../actions/collection";
+import { collectionBusy, listRecordsSuccess } from "../actions/collection";
 import { recordLoadSuccess, resetRecord } from "../actions/record";
 
 
@@ -28,7 +28,7 @@ export function* listRecords(bid, cid) {
   try {
     yield put(collectionBusy(true));
     const {data} = yield call([coll, coll.listRecords]);
-    yield put(collectionRecordsSuccess(data));
+    yield put(listRecordsSuccess(data));
   } catch(error) {
     yield put(notifyError(error));
   } finally {

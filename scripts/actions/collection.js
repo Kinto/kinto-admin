@@ -16,7 +16,7 @@ export function collectionBusy(busy) {
   return {type: COLLECTION_BUSY, busy};
 }
 
-export function reset() {
+export function resetCollection() {
   return {type: COLLECTION_RESET};
 }
 
@@ -24,7 +24,7 @@ export function collectionLoadSuccess(properties) {
   return {type: COLLECTION_LOAD_SUCCESS, properties};
 }
 
-export function collectionRecordsSuccess(records) {
+export function listRecordsSuccess(records) {
   return {type: COLLECTION_RECORDS_SUCCESS, records};
 }
 

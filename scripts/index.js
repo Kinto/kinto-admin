@@ -39,7 +39,7 @@ function onRouteUpdate() {
 
   // If bid/cid has changed, reset collection store and load coll properties
   if (bid !== collection.bucket || cid !== collection.name) {
-    store.dispatch(CollectionActions.reset());
+    store.dispatch(CollectionActions.resetCollection());
     if (bid && cid) {
       store.dispatch(BucketActions.loadCollection(bid, cid));
       // XXX this is overkill in many situations, we should detect if we're
