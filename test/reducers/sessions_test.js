@@ -2,18 +2,18 @@ import { expect } from "chai";
 
 import session from "../../scripts/reducers/session";
 import {
-  CLIENT_BUSY,
+  SESSION_BUSY,
   SESSION_SETUP_COMPLETE,
-  SESSION_SERVER_INFO_LOADED,
-  SESSION_BUCKETS_LIST_LOADED,
+  SESSION_SERVERINFO_SUCCESS,
+  SESSION_BUCKETS_SUCCESS,
   SESSION_LOGOUT,
 } from "../../scripts/constants";
 
 
 describe("session reducer", () => {
-  it("CLIENT_BUSY", () => {
+  it("SESSION_BUSY", () => {
     expect(session(undefined, {
-      type: CLIENT_BUSY,
+      type: SESSION_BUSY,
       busy: true,
     })).to.have.property("busy").eql(true);
   });
@@ -37,7 +37,7 @@ describe("session reducer", () => {
     });
   });
 
-  it("SESSION_SERVER_INFO_LOADED", () => {
+  it("SESSION_SERVERINFO_SUCCESS", () => {
     const serverInfo = {
       user: {
         bucket: "foo"
@@ -45,21 +45,23 @@ describe("session reducer", () => {
     };
 
     const state = session(undefined, {
-      type: SESSION_SERVER_INFO_LOADED,
+      type: SESSION_SERVERINFO_SUCCESS,
       serverInfo
     });
 
     expect(state).to.have.property("serverInfo").eql(serverInfo);
-    expect(state).to.have.property("authenticated").eql(true);
   });
 
-  it("SESSION_BUCKETS_LIST_LOADED", () => {
+  it("SESSION_BUCKETS_SUCCESS", () => {
     const buckets = [];
 
-    expect(session(undefined, {
-      type: SESSION_BUCKETS_LIST_LOADED,
+    const state = session(undefined, {
+      type: SESSION_BUCKETS_SUCCESS,
       buckets
-    })).to.have.property("buckets").eql(buckets);
+    });
+
+    expect(state).to.have.property("buckets").eql(buckets);
+    expect(state).to.have.property("authenticated").eql(true);
   });
 
   it("SESSION_LOGOUT", () => {

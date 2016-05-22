@@ -3,7 +3,7 @@ import { put, call } from "redux-saga/effects";
 
 import * as actions from "../../scripts/actions/session";
 import * as saga from "../../scripts/sagas/session";
-import { setClient } from "../../scripts/sagas/client";
+import { setClient } from "../../scripts/client";
 
 
 describe("session sagas", () => {
