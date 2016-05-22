@@ -33,7 +33,6 @@ export function* fetchServerInfo() {
     const serverInfo = yield call([client, client.fetchServerInfo]);
     yield put(sessionActions.serverInfoSuccess(serverInfo));
   } catch(error) {
-    yield put(sessionActions.serverInfoFailure(error));
     yield put(notificationActions.notifyError(error));
   }
 }
@@ -57,7 +56,6 @@ export function* listBuckets() {
     }
     yield put(sessionActions.bucketsSuccess(buckets));
   } catch(error) {
-    yield put(sessionActions.bucketsFailure(error));
     yield put(notificationActions.notifyError(error));
   }
 }
