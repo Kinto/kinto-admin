@@ -13,6 +13,8 @@ import {
   COLLECTION_UPDATE_REQUEST,
   COLLECTION_RECORDS_REQUEST,
   RECORD_LOAD_REQUEST,
+  RECORD_CREATE_REQUEST,
+  RECORD_UPDATE_REQUEST,
 } from "../constants";
 
 
@@ -80,29 +82,11 @@ export function loadRecord(bid, cid, rid) {
 }
 
 export function createRecord(bid, cid, record) {
-  return execute((client, dispatch, getState) => {
-    const coll = client.bucket(bid).collection(cid);
-    return coll.createRecord(record)
-      .then(({data}) => {
-        dispatch(CollectionActions.collectionRecordCreated(data));
-        dispatch(listRecords(bid, cid));
-        dispatch(updatePath(`/buckets/${bid}/collections/${cid}`));
-        dispatch(notifySuccess("Record added."));
-      });
-  });
+  return {type: RECORD_CREATE_REQUEST, bid, cid, record};
 }
 
 export function updateRecord(bid, cid, rid, record) {
-  return execute((client, dispatch, getState) => {
-    const coll = client.bucket(bid).collection(cid);
-    return coll.updateRecord({...record, id: rid})
-      .then(({data}) => {
-        dispatch(RecordActions.resetRecord());
-        dispatch(listRecords(bid, cid));
-        dispatch(updatePath(`/buckets/${bid}/collections/${cid}`));
-        dispatch(notifySuccess("Record updated."));
-      });
-  });
+  return {type: RECORD_UPDATE_REQUEST, bid, cid, rid, record};
 }
 
 export function deleteRecord(bid, cid, rid) {

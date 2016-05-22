@@ -19,5 +19,7 @@ export default function* rootSaga() {
     // collection/records
     fork(collectionSagas.watchCollectionRecords),
     fork(collectionSagas.watchRecordLoad),
+    fork(collectionSagas.watchRecordCreate),
+    fork(collectionSagas.watchRecordUpdate),
   ];
 }

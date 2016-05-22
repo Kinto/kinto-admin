@@ -8,6 +8,6 @@ export function resetRecord() {
   return {type: RECORD_RESET};
 }
 
-export function recordLoaded(record) {
+export function recordLoadSuccess(record) {
   return {type: RECORD_LOAD_SUCCESS, record};
 }
