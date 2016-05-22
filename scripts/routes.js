@@ -10,7 +10,6 @@ import CollectionEditPage from "./containers/CollectionEditPage";
 import AddFormPage from "./containers/AddFormPage";
 import BulkFormPage from "./containers/BulkFormPage";
 import EditFormPage from "./containers/EditFormPage";
-import ResolvePage from "./containers/ResolvePage";
 
 
 const common = {
@@ -33,9 +32,6 @@ export default (
       components={{...common, content: EditFormPage}} />
     <Route path="/buckets/:bid/collections/:cid/bulk"
       components={{...common, content: BulkFormPage}} />
-    {/* Obsolete kinto.js routes */}
-    <Route path="/collections/:name/resolve/:id"
-      components={{...common, content: ResolvePage}} />
     <Route path="*" components={{
       sidebar: Sidebar,
       content: _ => <h1>Page not found.</h1>
