@@ -21,7 +21,7 @@ export default class CollectionEdit extends Component {
 
   render() {
     const {collection} = this.props;
-    const {label, schema, uiSchema, displayFields, busy} = collection;
+    const {schema={}, uiSchema={}, displayFields=[], label, busy} = collection;
     if (busy) {
       return <Spinner />;
     }
