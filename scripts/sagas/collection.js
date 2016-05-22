@@ -9,7 +9,7 @@ import {
   RECORD_DELETE_REQUEST,
   RECORD_BULK_CREATE_REQUEST,
 } from "../constants";
-import { getClient } from "./client";
+import { getClient } from "../client";
 import { notifySuccess, notifyError } from "../actions/notifications";
 import { collectionRecordsSuccess } from "../actions/collection";
 import { recordLoadSuccess, resetRecord } from "../actions/record";
@@ -98,7 +98,7 @@ export function* bulkCreateRecords(bid, cid, records) {
       err.details = errors.map(err => err.error.message);
       throw err;
     } else {
-      listRecords(bid, cid); // XXX dispatch action instead
+      yield listRecords(bid, cid); // XXX dispatch action instead
       yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
       yield put(notifySuccess(`${published.length} records created.`));
     }

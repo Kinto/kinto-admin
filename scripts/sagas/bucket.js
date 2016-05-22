@@ -7,7 +7,7 @@ import {
   COLLECTION_UPDATE_REQUEST,
   COLLECTION_DELETE_REQUEST,
 } from "../constants";
-import { getClient } from "./client";
+import { getClient } from "../client";
 import { notifySuccess, notifyError } from "../actions/notifications";
 import { collectionLoadSuccess } from "../actions/collection";
 import { listBuckets } from "./session";

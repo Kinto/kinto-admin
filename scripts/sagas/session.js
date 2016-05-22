@@ -8,7 +8,7 @@ import {
 } from "../constants";
 import * as notificationActions from "../actions/notifications";
 import * as sessionActions from "../actions/session";
-import { getClient, setupClient, resetClient } from "./client";
+import { getClient, setupClient, resetClient } from "../client";
 
 
 export function* setupSession(session) {
