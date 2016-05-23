@@ -74,67 +74,127 @@ describe("session sagas", () => {
 
   describe("listBuckets()", () => {
     describe("Success", () => {
-      let client, bucket, listBuckets;
+      describe("Default bucket enabled", () => {
+        let client, bucket, listBuckets;
 
-      const serverInfo = {
-        user: {
-          bucket: "defaultBucketId"
-        }
-      };
-
-      before(() => {
-        bucket = {
-          getAttributes() {},
-          listCollections() {}
+        const serverInfo = {
+          user: {
+            bucket: "defaultBucketId"
+          }
         };
-        client = setClient({
-          bucket() {return bucket;},
-          fetchServerInfo() {},
-          listBuckets() {}
+
+        before(() => {
+          bucket = {
+            getAttributes() {},
+            listCollections() {}
+          };
+          client = setClient({
+            bucket() {return bucket;},
+            fetchServerInfo() {},
+            listBuckets() {}
+          });
+          listBuckets = saga.listBuckets();
         });
-        listBuckets = saga.listBuckets();
+
+        it("should fetch server information", () => {
+          expect(listBuckets.next().value)
+            .eql(call([client, client.fetchServerInfo]));
+        });
+
+        it("should dispatch the server information action", () => {
+          expect(listBuckets.next(serverInfo).value)
+            .eql(put(actions.serverInfoSuccess(serverInfo)));
+        });
+
+        it("should ping the default bucket", () => {
+          expect(listBuckets.next().value)
+            .eql(call([bucket, bucket.getAttributes]));
+        });
+
+        it("should fetch the list of buckets", () => {
+          expect(listBuckets.next().value)
+            .eql(call([client, client.listBuckets]));
+        });
+
+        it("should list collections for each bucket", () => {
+          expect(listBuckets.next({data: [{id: "b1"}, {id: "b2"}]}).value)
+            .eql(call([bucket, bucket.listCollections], "b1"));
+
+          expect(listBuckets.next({data: [{id: "b1c1"}, {id: "b1c2"}]}).value)
+            .eql(call([bucket, bucket.listCollections], "b2"));
+        });
+
+        it("should dispatch the list of buckets", () => {
+          expect(listBuckets.next({data: [{id: "b2c1"}]}).value)
+            .eql(put(actions.bucketsSuccess([
+              {
+                id: "b1",
+                collections: [{id: "b1c1"}, {id: "b1c2"}]
+              },
+              {
+                id: "b2",
+                collections: [{id: "b2c1"}]
+              }
+            ])));
+        });
       });
 
-      it("should fetch server information", () => {
-        expect(listBuckets.next().value)
-          .eql(call([client, client.fetchServerInfo]));
-      });
+      describe("Default bucket disabled", () => {
+        let client, bucket, listBuckets;
 
-      it("should dispatch the server information action", () => {
-        expect(listBuckets.next(serverInfo).value)
-          .eql(put(actions.serverInfoSuccess(serverInfo)));
-      });
+        const serverInfo = {
+          user: {}
+        };
 
-      it("should ping the default bucket", () => {
-        expect(listBuckets.next().value)
-          .eql(call([bucket, bucket.getAttributes]));
-      });
+        before(() => {
+          bucket = {
+            getAttributes() {},
+            listCollections() {}
+          };
+          client = setClient({
+            bucket() {return bucket;},
+            fetchServerInfo() {},
+            listBuckets() {}
+          });
+          listBuckets = saga.listBuckets();
+        });
 
-      it("should fetch the list of buckets", () => {
-        expect(listBuckets.next().value)
-          .eql(call([client, client.listBuckets]));
-      });
+        it("should fetch server information", () => {
+          expect(listBuckets.next().value)
+            .eql(call([client, client.fetchServerInfo]));
+        });
 
-      it("should list collections for each bucket", () => {
-        expect(listBuckets.next({data: [{id: "b1"}, {id: "b2"}]}).value)
-          .eql(call([bucket, bucket.listCollections], "b1"));
+        it("should dispatch the server information action", () => {
+          expect(listBuckets.next(serverInfo).value)
+            .eql(put(actions.serverInfoSuccess(serverInfo)));
+        });
 
-        expect(listBuckets.next({data: [{id: "b1c1"}, {id: "b1c2"}]}).value)
-          .eql(call([bucket, bucket.listCollections], "b2"));
-      });
+        it("should fetch the list of buckets", () => {
+          expect(listBuckets.next().value)
+            .eql(call([client, client.listBuckets]));
+        });
 
-      it("should dispatch the list of buckets", () => {
-        expect(listBuckets.next({data: [{id: "b2c1"}]}).value)
-          .eql(put(actions.bucketsSuccess([
-            {
-              id: "b1",
-              collections: [{id: "b1c1"}, {id: "b1c2"}]
-            },
-            {
-              id: "b2",
-              collections: [{id: "b2c1"}]
-            }
-          ])));
+        it("should list collections for each bucket", () => {
+          expect(listBuckets.next({data: [{id: "b1"}, {id: "b2"}]}).value)
+            .eql(call([bucket, bucket.listCollections], "b1"));
+
+          expect(listBuckets.next({data: [{id: "b1c1"}, {id: "b1c2"}]}).value)
+            .eql(call([bucket, bucket.listCollections], "b2"));
+        });
+
+        it("should dispatch the list of buckets", () => {
+          expect(listBuckets.next({data: [{id: "b2c1"}]}).value)
+            .eql(put(actions.bucketsSuccess([
+              {
+                id: "b1",
+                collections: [{id: "b1c1"}, {id: "b1c2"}]
+              },
+              {
+                id: "b2",
+                collections: [{id: "b2c1"}]
+              }
+            ])));
+        });
       });
     });
 
