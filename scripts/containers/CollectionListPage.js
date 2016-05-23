@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import CollectionList from "../components/CollectionList";
 import * as CollectionActions from "../actions/collection";
 import * as NotificationsActions from "../actions/notifications";
-import { updatePath } from "redux-simple-router";
+import { push as updatePath } from "react-router-redux";
 
 function mapStateToProps(state) {
   return {

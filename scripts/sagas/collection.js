@@ -1,4 +1,4 @@
-import { updatePath } from "redux-simple-router";
+import { push as updatePath } from "react-router-redux";
 import { call, take, fork, put } from "redux-saga/effects";
 
 import {
