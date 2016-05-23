@@ -71,7 +71,8 @@ export default class Sidebar extends Component {
   render() {
     const {session, params, location} = this.props;
     const {bid, cid} = params;
-    const {buckets} = session;
+    const {buckets=[], serverInfo={}} = session;
+    const userBucket = serverInfo.user && serverInfo.bucket;
     const active = activeIfPathname.bind(null, location);
     return (
       <div>
@@ -83,7 +84,7 @@ export default class Sidebar extends Component {
         {session.authenticated ?
           <BucketsMenu
             buckets={buckets}
-            userBucket={session.serverInfo.user.bucket}
+            userBucket={userBucket}
             active={active}
             bid={bid}
             cid={cid} /> : null}

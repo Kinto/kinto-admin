@@ -2,29 +2,29 @@ import { expect } from "chai";
 
 import collection from "../../scripts/reducers/collection";
 import {
-  CLIENT_BUSY,
+  COLLECTION_BUSY,
   COLLECTION_RESET,
-  COLLECTION_PROPERTIES_LOADED,
-  COLLECTION_RECORDS_LOADED,
+  COLLECTION_LOAD_SUCCESS,
+  COLLECTION_RECORDS_SUCCESS,
 } from "../../scripts/constants";
 
 
 describe("collection reducer", () => {
-  it("CLIENT_BUSY", () => {
-    expect(collection(undefined, {type: CLIENT_BUSY, busy: true}))
+  it("COLLECTION_BUSY", () => {
+    expect(collection(undefined, {type: COLLECTION_BUSY, busy: true}))
       .to.have.property("busy").eql(true);
   });
 
   it("COLLECTION_RESET", () => {
     const initial = collection(undefined, {type: null});
-    const altered = collection(initial, {type: CLIENT_BUSY, busy: true});
+    const altered = collection(initial, {type: COLLECTION_BUSY, busy: true});
     expect(collection(altered, {type: COLLECTION_RESET}))
       .eql(initial);
   });
 
-  it("COLLECTION_PROPERTIES_LOADED", () => {
+  it("COLLECTION_LOAD_SUCCESS", () => {
     expect(collection(undefined, {
-      type: COLLECTION_PROPERTIES_LOADED,
+      type: COLLECTION_LOAD_SUCCESS,
       properties: {
         bucket: "bucket",
         id: "id",
@@ -45,9 +45,9 @@ describe("collection reducer", () => {
     });
   });
 
-  it("COLLECTION_RECORDS_LOADED", () => {
+  it("COLLECTION_RECORDS_SUCCESS", () => {
     expect(collection(undefined, {
-      type: COLLECTION_RECORDS_LOADED,
+      type: COLLECTION_RECORDS_SUCCESS,
       records: [1, 2, 3]
     }).records).to.have.length.of(3);
   });

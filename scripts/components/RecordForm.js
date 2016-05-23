@@ -13,7 +13,7 @@ export default class RecordForm extends Component {
 
   getForm() {
     const {bid, cid, collection, record} = this.props;
-    const {schema, uiSchema, busy} = collection;
+    const {schema={}, uiSchema={}, busy} = collection;
 
     if (busy) {
       return <Spinner />;

@@ -1,45 +1,38 @@
-import { updatePath } from "redux-simple-router";
-
-import * as NotificationsActions from "./notifications";
-import * as ClientActions from "./client";
-
 import {
+  SESSION_BUSY,
+  SESSION_SETUP,
   SESSION_SETUP_COMPLETE,
-  SESSION_SERVER_INFO_LOADED,
-  SESSION_BUCKETS_LIST_LOADED,
+  SESSION_SERVERINFO_SUCCESS,
+  SESSION_BUCKETS_REQUEST,
+  SESSION_BUCKETS_SUCCESS,
   SESSION_LOGOUT,
 } from "../constants";
 
 
+export function sessionBusy(busy) {
+  return {type: SESSION_BUSY, busy};
+}
+
 export function setup(session) {
-  return (dispatch) => {
-    // Clear all pending notifications
-    dispatch(NotificationsActions.clearNotifications({force: true}));
-    // First reflect server info to state
-    dispatch({type: SESSION_SETUP_COMPLETE, session});
-    // Then trigger buckets list retrieval
-    dispatch(ClientActions.listBuckets());
-  };
+  return {type: SESSION_SETUP, session};
 }
 
-export function serverInfoLoaded(serverInfo) {
-  return {
-    type: SESSION_SERVER_INFO_LOADED,
-    serverInfo,
-  };
+export function setupComplete(session) {
+  return {type: SESSION_SETUP_COMPLETE, session};
 }
 
-export function bucketListLoaded(buckets) {
-  return {
-    type: SESSION_BUCKETS_LIST_LOADED,
-    buckets,
-  };
+export function serverInfoSuccess(serverInfo) {
+  return {type: SESSION_SERVERINFO_SUCCESS, serverInfo};
+}
+
+export function listBuckets() {
+  return {type: SESSION_BUCKETS_REQUEST};
+}
+
+export function bucketsSuccess(buckets) {
+  return {type: SESSION_BUCKETS_SUCCESS, buckets};
 }
 
 export function logout() {
-  return (dispatch) => {
-    ClientActions.resetClient();
-    dispatch({type: SESSION_LOGOUT});
-    dispatch(updatePath("/"));
-  };
+  return {type: SESSION_LOGOUT};
 }

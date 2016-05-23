@@ -1,73 +1,53 @@
 import {
+  COLLECTION_BUSY,
   COLLECTION_RESET,
-  COLLECTION_PROPERTIES_LOADED,
-  COLLECTION_CREATED,
-  COLLECTION_DELETED,
-  COLLECTION_RECORDS_LOADED,
-  COLLECTION_RECORD_CREATED,
+  COLLECTION_LOAD_SUCCESS,
+  COLLECTION_RECORDS_REQUEST,
+  COLLECTION_RECORDS_SUCCESS,
+  RECORD_LOAD_REQUEST,
+  RECORD_CREATE_REQUEST,
+  RECORD_UPDATE_REQUEST,
+  RECORD_DELETE_REQUEST,
+  RECORD_BULK_CREATE_REQUEST,
 } from "../constants";
 
 
-export function reset() {
-  return {
-    type: COLLECTION_RESET
-  };
+export function collectionBusy(busy) {
+  return {type: COLLECTION_BUSY, busy};
 }
 
-export function collectionCreated(data) {
-  return {
-    type: COLLECTION_CREATED,
-    data,
-  };
+export function resetCollection() {
+  return {type: COLLECTION_RESET};
 }
 
-export function collectionPropertiesLoaded(properties) {
-  return {
-    type: COLLECTION_PROPERTIES_LOADED,
-    properties,
-  };
+export function collectionLoadSuccess(properties) {
+  return {type: COLLECTION_LOAD_SUCCESS, properties};
 }
 
-export function collectionRecordsLoaded(records) {
-  return {
-    type: COLLECTION_RECORDS_LOADED,
-    records,
-  };
+export function listRecordsSuccess(records) {
+  return {type: COLLECTION_RECORDS_SUCCESS, records};
 }
 
-export function collectionDeleted(data) {
-  return {
-    type: COLLECTION_DELETED,
-    data,
-  };
+export function listRecords(bid, cid) {
+  return {type: COLLECTION_RECORDS_REQUEST, bid, cid};
 }
 
-export function collectionRecordCreated(data) {
-  return {
-    type: COLLECTION_RECORD_CREATED,
-    data,
-  };
+export function loadRecord(bid, cid, rid) {
+  return {type: RECORD_LOAD_REQUEST, bid, cid, rid};
 }
 
-// XXX left here this may be reused later
-export function formatSyncErrorDetails(syncResult) {
-  let details = [];
-  if (syncResult.errors.length > 0) {
-    details = details.concat(syncResult.errors.map(_error => {
-      var _message;
-      if (_error.type === "outgoing") {
-        const {error, message, code, errno} = _error.error;
-        _message = `errno ${errno}, ${message}: ${code} ${error}`;
-      } else {
-        _message = _error.message;
-      }
-      return `${_error.type} error: ${_message}`;
-    }));
-  }
-  if (syncResult.conflicts.length > 0) {
-    details = details.concat(syncResult.conflicts.map(conflict => {
-      return `${conflict.type} conflict: ${conflict.remote.id}`;
-    }));
-  }
-  return details;
+export function createRecord(bid, cid, record) {
+  return {type: RECORD_CREATE_REQUEST, bid, cid, record};
+}
+
+export function updateRecord(bid, cid, rid, record) {
+  return {type: RECORD_UPDATE_REQUEST, bid, cid, rid, record};
+}
+
+export function deleteRecord(bid, cid, rid) {
+  return {type: RECORD_DELETE_REQUEST, bid, cid, rid};
+}
+
+export function bulkCreateRecords(bid, cid, records) {
+  return {type: RECORD_BULK_CREATE_REQUEST, bid, cid, records};
 }

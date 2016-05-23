@@ -2,15 +2,15 @@ import { expect } from "chai";
 
 import record from "../../scripts/reducers/record";
 import {
-  RECORD_LOADED,
+  RECORD_LOAD_SUCCESS,
   RECORD_RESET,
 } from "../../scripts/constants";
 
 
 describe("record reducer", () => {
-  it("RECORD_LOADED", () => {
+  it("RECORD_LOAD_SUCCESS", () => {
     expect(record(undefined, {
-      type: RECORD_LOADED,
+      type: RECORD_LOAD_SUCCESS,
       record: {foo: "bar"}
     })).eql({foo: "bar"});
   });

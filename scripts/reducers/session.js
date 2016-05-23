@@ -1,8 +1,8 @@
 import {
-  CLIENT_BUSY,
+  SESSION_BUSY,
   SESSION_SETUP_COMPLETE,
-  SESSION_SERVER_INFO_LOADED,
-  SESSION_BUCKETS_LIST_LOADED,
+  SESSION_SERVERINFO_SUCCESS,
+  SESSION_BUCKETS_SUCCESS,
   SESSION_LOGOUT,
 } from "../constants";
 
@@ -11,27 +11,28 @@ const DEFAULT = {busy: false, authenticated: false, buckets: [], serverInfo: {}}
 
 export default function session(state = DEFAULT, action) {
   switch (action.type) {
-    case CLIENT_BUSY: {
+    case SESSION_BUSY: {
       return {...state, busy: action.busy};
     }
     case SESSION_SETUP_COMPLETE: {
       return {...state, ...action.session};
     }
-    case SESSION_BUCKETS_LIST_LOADED: {
+    case SESSION_BUCKETS_SUCCESS: {
       const {serverInfo} = state;
+      const userBucket = serverInfo.user && serverInfo.user.bucket;
       return {
         ...state,
+        authenticated: true,
         buckets: action.buckets.map((bucket) => {
           return {
             ...bucket,
-            id: bucket.id === serverInfo.user.bucket ? "default" : bucket.id
+            id: bucket.id === userBucket ? "default" : bucket.id
           };
         }),
       };
     }
-    case SESSION_SERVER_INFO_LOADED: {
-      const {serverInfo} = action;
-      return {...state, serverInfo, authenticated: !!serverInfo.user};
+    case SESSION_SERVERINFO_SUCCESS: {
+      return {...state, serverInfo: action.serverInfo};
     }
     case SESSION_LOGOUT: {
       return DEFAULT;

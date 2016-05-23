@@ -92,11 +92,13 @@ export default class HomePage extends Component {
   render() {
     const {session, setup} = this.props;
     const {authenticated, busy} = session;
-    return <div>
-      <h1>Kinto Web Administration Console</h1>
-      {authenticated ?
-        <SessionInfo session={session} /> :
-        busy ? <Spinner /> : <SetupForm setup={setup} />}
-    </div>;
+    return (
+      <div>
+        <h1>Kinto Web Administration Console</h1>
+        {busy ? <Spinner /> :
+          authenticated ? <SessionInfo session={session} /> :
+                          <SetupForm setup={setup} />}
+      </div>
+    );
   }
 }

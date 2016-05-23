@@ -7,7 +7,7 @@ import createHashHistory from "history/lib/createHashHistory";
 
 import routes from "./routes";
 import configureStore from "./store/configureStore";
-import * as ClientActions from "./actions/client";
+import * as BucketActions from "./actions/bucket";
 import * as CollectionActions from "./actions/collection";
 import { notifyInfo } from "./actions/notifications";
 import { clearNotifications } from "./actions/notifications";
@@ -38,18 +38,18 @@ function onRouteUpdate() {
 
   // If bid/cid has changed, reset collection store and load coll properties
   if (bid !== collection.bucket || cid !== collection.name) {
-    store.dispatch(CollectionActions.reset());
+    store.dispatch(CollectionActions.resetCollection());
     if (bid && cid) {
-      store.dispatch(ClientActions.loadCollection(bid, cid));
+      store.dispatch(BucketActions.loadCollection(bid, cid));
       // XXX this is overkill in many situations, we should detect if we're
       // in a collection list route.
-      store.dispatch(ClientActions.listRecords(bid, cid));
+      store.dispatch(CollectionActions.listRecords(bid, cid));
     }
   }
 
   // If a record id is part of the url, load it
   if (bid && cid && rid) {
-    store.dispatch(ClientActions.loadRecord(bid, cid, rid));
+    store.dispatch(CollectionActions.loadRecord(bid, cid, rid));
   }
 
   // Clear current notification list on each route update
