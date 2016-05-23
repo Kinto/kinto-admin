@@ -123,42 +123,42 @@ export function* bulkCreateRecords(bid, cid, records) {
 // Watchers
 
 export function* watchCollectionRecords() {
-  while(true) {
+  while(true) { // eslint-disable-line
     const {bid, cid} = yield take(COLLECTION_RECORDS_REQUEST);
     yield fork(listRecords, bid, cid);
   }
 }
 
 export function* watchRecordLoad() {
-  while(true) {
+  while(true) { // eslint-disable-line
     const {bid, cid, rid} = yield take(RECORD_LOAD_REQUEST);
     yield fork(loadRecord, bid, cid, rid);
   }
 }
 
 export function* watchRecordCreate() {
-  while(true) {
+  while(true) { // eslint-disable-line
     const {bid, cid, record} = yield take(RECORD_CREATE_REQUEST);
     yield fork(createRecord, bid, cid, record);
   }
 }
 
 export function* watchRecordUpdate() {
-  while(true) {
+  while(true) { // eslint-disable-line
     const {bid, cid, rid, record} = yield take(RECORD_UPDATE_REQUEST);
     yield fork(updateRecord, bid, cid, rid, record);
   }
 }
 
 export function* watchRecordDelete() {
-  while(true) {
+  while(true) { // eslint-disable-line
     const {bid, cid, rid} = yield take(RECORD_DELETE_REQUEST);
     yield fork(deleteRecord, bid, cid, rid);
   }
 }
 
 export function* watchBulkCreateRecords() {
-  while(true) {
+  while(true) { // eslint-disable-line
     const {bid, cid, records} = yield take(RECORD_BULK_CREATE_REQUEST);
     yield fork(bulkCreateRecords, bid, cid, records);
   }

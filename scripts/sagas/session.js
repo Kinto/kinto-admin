@@ -64,7 +64,7 @@ export function* listBuckets() {
 // Watchers
 
 export function* watchSessionSetup() {
-  while(true) {
+  while(true) { // eslint-disable-line
     const {session} = yield take(SESSION_SETUP);
     yield fork(setupSession, session);
   }

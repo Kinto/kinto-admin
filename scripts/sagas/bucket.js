@@ -83,28 +83,28 @@ export function* deleteCollection(bid, cid) {
 // Watchers
 
 export function* watchCollectionLoad() {
-  while(true) {
+  while(true) { // eslint-disable-line
     const {bid, cid} = yield take(COLLECTION_LOAD_REQUEST);
     yield fork(loadCollection, bid, cid);
   }
 }
 
 export function* watchCollectionCreate() {
-  while(true) {
+  while(true) { // eslint-disable-line
     const {bid, collectionData} = yield take(COLLECTION_CREATE_REQUEST);
     yield fork(createCollection, bid, collectionData);
   }
 }
 
 export function* watchCollectionUpdate() {
-  while(true) {
+  while(true) { // eslint-disable-line
     const {bid, cid, collectionData} = yield take(COLLECTION_UPDATE_REQUEST);
     yield fork(updateCollection, bid, cid, collectionData);
   }
 }
 
 export function* watchCollectionDelete() {
-  while(true) {
+  while(true) { // eslint-disable-line
     const {bid, cid} = yield take(COLLECTION_DELETE_REQUEST);
     yield fork(deleteCollection, bid, cid);
   }
