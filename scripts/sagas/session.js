@@ -12,12 +12,17 @@ import { getClient, setupClient, resetClient } from "../client";
 
 
 export function* setupSession(session) {
-  setupClient(session);
-  yield put(notificationActions.clearNotifications({force: true}));
-  yield put(sessionActions.sessionBusy(true));
-  yield call(listBuckets);
-  yield put(sessionActions.setupComplete(session));
-  yield put(sessionActions.sessionBusy(false));
+  try {
+    setupClient(session);
+    yield put(notificationActions.clearNotifications({force: true}));
+    yield put(sessionActions.sessionBusy(true));
+    yield call(listBuckets);
+    yield put(sessionActions.setupComplete(session));
+  } catch(error) {
+    yield put(notificationActions.notifyError(error));
+  } finally {
+    yield put(sessionActions.sessionBusy(false));
+  }
 }
 
 export function* sessionLogout() {
