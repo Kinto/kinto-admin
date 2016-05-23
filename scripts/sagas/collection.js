@@ -24,8 +24,8 @@ function getCollection(bid, cid) {
 }
 
 export function* listRecords(bid, cid) {
-  const coll = getCollection(bid, cid);
   try {
+    const coll = getCollection(bid, cid);
     yield put(collectionActions.collectionBusy(true));
     const {data} = yield call([coll, coll.listRecords]);
     yield put(collectionActions.listRecordsSuccess(data));
@@ -37,9 +37,9 @@ export function* listRecords(bid, cid) {
 }
 
 export function* loadRecord(bid, cid, rid) {
-  const coll = getCollection(bid, cid);
-  yield put(collectionActions.collectionBusy(true));
   try {
+    const coll = getCollection(bid, cid);
+    yield put(collectionActions.collectionBusy(true));
     const {data} = yield call([coll, coll.getRecord], rid);
     yield put(recordLoadSuccess(data));
   } catch(error) {
@@ -50,9 +50,9 @@ export function* loadRecord(bid, cid, rid) {
 }
 
 export function* createRecord(bid, cid, record) {
-  const coll = getCollection(bid, cid);
-  yield put(collectionActions.collectionBusy(true));
   try {
+    const coll = getCollection(bid, cid);
+    yield put(collectionActions.collectionBusy(true));
     yield call([coll, coll.createRecord], record);
     yield put(collectionActions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
@@ -65,9 +65,9 @@ export function* createRecord(bid, cid, record) {
 }
 
 export function* updateRecord(bid, cid, rid, record) {
-  const coll = getCollection(bid, cid);
-  yield put(collectionActions.collectionBusy(true));
   try {
+    const coll = getCollection(bid, cid);
+    yield put(collectionActions.collectionBusy(true));
     yield call([coll, coll.updateRecord], {...record, id: rid});
     yield put(resetRecord());
     yield put(collectionActions.listRecords(bid, cid));
@@ -81,9 +81,9 @@ export function* updateRecord(bid, cid, rid, record) {
 }
 
 export function* deleteRecord(bid, cid, rid) {
-  const coll = getCollection(bid, cid);
-  yield put(collectionActions.collectionBusy(true));
   try {
+    const coll = getCollection(bid, cid);
+    yield put(collectionActions.collectionBusy(true));
     yield call([coll, coll.deleteRecord], rid);
     yield put(collectionActions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
@@ -96,9 +96,9 @@ export function* deleteRecord(bid, cid, rid) {
 }
 
 export function* bulkCreateRecords(bid, cid, records) {
-  const coll = getCollection(bid, cid);
-  yield put(collectionActions.collectionBusy(true));
   try {
+    const coll = getCollection(bid, cid);
+    yield put(collectionActions.collectionBusy(true));
     const {errors, published} = yield call([coll, coll.batch], (batch) => {
       for (const record of records) {
         batch.createRecord(record);
