@@ -4,7 +4,6 @@ import { take, fork, put, call } from "redux-saga/effects";
 
 import {
   SESSION_SETUP,
-  SESSION_SERVERINFO_REQUEST,
   SESSION_BUCKETS_REQUEST,
   SESSION_LOGOUT,
 } from "../../scripts/constants";
@@ -37,11 +36,6 @@ describe("session sagas", () => {
     it("should mark the session as busy", () => {
       expect(setupSession.next().value)
         .eql(put(actions.sessionBusy(true)));
-    });
-
-    it("should fetch server information", () => {
-      expect(setupSession.next().value)
-        .eql(call(saga.fetchServerInfo));
     });
 
     it("should retrieve buckets hierarchy", () => {
@@ -78,40 +72,15 @@ describe("session sagas", () => {
     });
   });
 
-  describe("fetchServerInfo()", () => {
-    describe("Success", () => {
-      let client, fetchServerInfo;
-
-      before(() => {
-        client = setClient({fetchServerInfo() {}});
-        fetchServerInfo = saga.fetchServerInfo();
-      });
-
-      it("should fetch server information", () => {
-        expect(fetchServerInfo.next().value)
-          .eql(call([client, client.fetchServerInfo]));
-      });
-
-      it("should dispatch the server information action", () => {
-        expect(fetchServerInfo.next({serverInfo: true}).value)
-          .eql(put(actions.serverInfoSuccess({serverInfo: true})));
-      });
-    });
-
-    describe("Failure", () => {
-      it("should dispatch an error notification action", () => {
-        const fetchServerInfo = saga.fetchServerInfo();
-        fetchServerInfo.next();
-
-        expect(fetchServerInfo.throw("error").value)
-          .eql(put(notifyError("error")));
-      });
-    });
-  });
-
   describe("listBuckets()", () => {
     describe("Success", () => {
       let client, bucket, listBuckets;
+
+      const serverInfo = {
+        user: {
+          bucket: "defaultBucketId"
+        }
+      };
 
       before(() => {
         bucket = {
@@ -120,9 +89,20 @@ describe("session sagas", () => {
         };
         client = setClient({
           bucket() {return bucket;},
+          fetchServerInfo() {},
           listBuckets() {}
         });
         listBuckets = saga.listBuckets();
+      });
+
+      it("should fetch server information", () => {
+        expect(listBuckets.next().value)
+          .eql(call([client, client.fetchServerInfo]));
+      });
+
+      it("should dispatch the server information action", () => {
+        expect(listBuckets.next(serverInfo).value)
+          .eql(put(actions.serverInfoSuccess(serverInfo)));
       });
 
       it("should ping the default bucket", () => {
@@ -179,18 +159,6 @@ describe("session sagas", () => {
 
         expect(watchSessionSetup.next(actions.setup(session)).value)
           .eql(fork(saga.setupSession, session));
-      });
-    });
-
-    describe("watchServerInfo()", () => {
-      it("should watch for the fetchServerInfo action", () => {
-        const watchServerInfo = saga.watchServerInfo();
-
-        expect(watchServerInfo.next().value)
-          .eql(take(SESSION_SERVERINFO_REQUEST));
-
-        expect(watchServerInfo.next(actions.fetchServerInfo()).value)
-          .eql(fork(saga.fetchServerInfo));
       });
     });
 

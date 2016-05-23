@@ -3,7 +3,6 @@ import { call, take, fork, put } from "redux-saga/effects";
 
 import {
   SESSION_SETUP,
-  SESSION_SERVERINFO_REQUEST,
   SESSION_BUCKETS_REQUEST,
   SESSION_LOGOUT
 } from "../constants";
@@ -16,7 +15,6 @@ export function* setupSession(session) {
   setupClient(session);
   yield put(notificationActions.clearNotifications({force: true}));
   yield put(sessionActions.sessionBusy(true));
-  yield call(fetchServerInfo);
   yield call(listBuckets);
   yield put(sessionActions.setupComplete(session));
   yield put(sessionActions.sessionBusy(false));
@@ -28,25 +26,22 @@ export function* sessionLogout() {
   yield put(notificationActions.notifySuccess("Logged out.", {persistent: true}));
 }
 
-export function* fetchServerInfo() {
+export function* listBuckets(serverInfo) {
   const client = getClient();
   try {
+    // Fetch server information
     const serverInfo = yield call([client, client.fetchServerInfo]);
+    // Notify they're received
     yield put(sessionActions.serverInfoSuccess(serverInfo));
-  } catch(error) {
-    yield put(notificationActions.notifyError(error));
-  }
-}
-
-export function* listBuckets() {
-  const client = getClient();
-  try {
-    // XXX We need to first issue a request to the "default" bucket in order
-    // to create user associated permissions, so we can access the list of
-    // buckets.
-    // ref https://github.com/Kinto/kinto/issues/454
-    const buck = client.bucket("default");
-    yield call([buck, buck.getAttributes]);
+    // If we have default bucket information
+    if (serverInfo.user && serverInfo.user.bucket) {
+      // XXX We need to first issue a request to the "default" bucket in order
+      // to create user associated permissions, so we can access the list of
+      // buckets.
+      // ref https://github.com/Kinto/kinto/issues/454
+      const buck = client.bucket("default");
+      yield call([buck, buck.getAttributes]);
+    }
     // Retrieve and build the list of buckets
     let buckets = [];
     const {data} = yield call([client, client.listBuckets]);
@@ -67,12 +62,6 @@ export function* watchSessionSetup() {
   while(true) { // eslint-disable-line
     const {session} = yield take(SESSION_SETUP);
     yield fork(setupSession, session);
-  }
-}
-
-export function* watchServerInfo() {
-  while(yield take(SESSION_SERVERINFO_REQUEST)) {
-    yield fork(fetchServerInfo);
   }
 }
 

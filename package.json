@@ -63,7 +63,7 @@
     "html": "0.0.10",
     "jsdom": "^8.3.0",
     "json-loader": "^0.5.4",
-    "mocha": "^2.3.0",
+    "mocha": "^2.5.1",
     "react-addons-test-utils": "^15.0.1",
     "react-transform-catch-errors": "^1.0.0",
     "react-transform-hmr": "^1.0.1",
@@ -71,7 +71,6 @@
     "rimraf": "^2.4.4",
     "sinon": "^1.17.2",
     "style-loader": "^0.13.1",
-    "to-iso-string": "0.0.2",
     "url-loader": "^0.5.7",
     "webpack-dev-middleware": "^1.6.1",
     "webpack-hot-middleware": "^2.6.0"
