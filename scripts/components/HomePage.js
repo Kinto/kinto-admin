@@ -1,52 +1,8 @@
 import React, { Component } from "react";
-import Form from "react-jsonschema-form";
 
 import Spinner from "./Spinner";
+import AuthForm from "./AuthForm";
 
-
-// XXX: remove defaults
-const schema = {
-  type: "object",
-  title: "Setup",
-  required: ["server", "username", "password"],
-  properties: {
-    server:   {
-      type: "string",
-      title: "Server",
-      format: "uri",
-      description: "http://",
-      default: "https://kinto.dev.mozaws.net/v1/"
-    },
-    username: {
-      type: "string",
-      title: "Username",
-      default: "test",
-    },
-    password: {
-      type: "string",
-      title: "Password",
-      default: "test",
-    }
-  }
-};
-
-const uiSchema = {
-  password: {"ui:widget": "password"}
-};
-
-function SetupForm(props) {
-  const {setup} = props;
-  return (
-    <div className="panel panel-default">
-      <div className="panel-body">
-        <Form
-          schema={schema}
-          uiSchema={uiSchema}
-          onSubmit={({formData}) => setup(formData)} />
-      </div>
-    </div>
-  );
-}
 
 function ServerProps({serverInfo}) {
   return (
@@ -97,7 +53,7 @@ export default class HomePage extends Component {
         <h1>Kinto Web Administration Console</h1>
         {busy ? <Spinner /> :
           authenticated ? <SessionInfo session={session} /> :
-                          <SetupForm setup={setup} />}
+                          <AuthForm setup={setup} />}
       </div>
     );
   }
