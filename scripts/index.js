@@ -5,7 +5,7 @@ import { Router } from "react-router";
 import { syncReduxAndRouter, updatePath } from "redux-simple-router";
 import createHashHistory from "history/lib/createHashHistory";
 
-import routes from "./routes";
+import getRoutes from "./routes";
 import configureStore from "./store/configureStore";
 import * as BucketActions from "./actions/bucket";
 import * as CollectionActions from "./actions/collection";
@@ -30,7 +30,7 @@ function onRouteUpdate() {
 
   // Check for an authenticated session; if we're requesting anything other
   // than the homepage, redirect to the homepage.
-  if (!authenticated && location.pathname !== "/") {
+  if (!authenticated && !params.token && location.pathname !== "/") {
     store.dispatch(updatePath(""));
     store.dispatch(notifyInfo("Authentication required.", {persistent: true}));
     return;
@@ -59,7 +59,7 @@ function onRouteUpdate() {
 render((
   <Provider store={store}>
     <Router history={history} onUpdate={onRouteUpdate}>
-      {routes}
+      {getRoutes(store)}
     </Router>
   </Provider>
 ), document.getElementById("app"));

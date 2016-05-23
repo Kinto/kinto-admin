@@ -3,11 +3,41 @@ import KintoClient from "kinto-client";
 
 let client;
 
-export function setupClient({server, username, password}) {
-  return setClient(new KintoClient(server, {
-    headers: {
-      Authorization: "Basic " + btoa([username, password].join(":")),
+// {
+//   server: "http://server/v1",
+//   credentials: {
+//     authType: "basicauth",
+//     username: "user",
+//     password: "pass"
+//   }
+// }
+
+// {
+//   server: "http://server/v1",
+//   credentials: {
+//     authType: "fxa",
+//     token: "grotoken"
+//   }
+// }
+
+function getAuthHeader(session) {
+  const {authType, credentials} = session;
+  switch(authType) {
+    case "fxa": {
+      const {token} = credentials;
+      return "Bearer " + token;
     }
+    case "basicauth": {
+      const {username, password} = credentials;
+      return "Basic " + btoa([username, password].join(":"));
+    }
+  }
+}
+
+export function setupClient(session) {
+  const {server} = session;
+  return setClient(new KintoClient(server, {
+    headers: {Authorization: getAuthHeader(session)}
   }));
 }
 
