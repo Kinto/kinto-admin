@@ -64,9 +64,9 @@ const fxaUISchema = {
   authType: {
     "ui:help": (
       <span>
-        <b>Note:</b> The{" "}
-        <a href="https://github.com/mozilla-services/kinto-fxa">kinto-fxa</a>
-        {" "}plugin must be installed in the target server.
+        <b>Note:</b> The
+        <a href="https://github.com/mozilla-services/kinto-fxa">{" kinto-fxa "}</a>
+        plugin must be installed on the target server.
       </span>
     )
   }
