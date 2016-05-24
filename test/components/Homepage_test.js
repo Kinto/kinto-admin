@@ -65,7 +65,7 @@ describe("HomePage component", () => {
         Simulate.change(node.querySelector("#root_server"), {
           target: {value: "http://test.server/v1"}
         });
-        Simulate.change(node.querySelector("#root_authType"), {
+        Simulate.change(node.querySelectorAll("[type=radio]")[1], {
           target: {value: "fxa"}
         });
 

@@ -56,12 +56,20 @@ const fxaSchema = {
   }
 };
 
+const baseUISchema = {
+  authType: {
+    "ui:widget": "radio",
+  }
+};
+
 const basicAuthUISchema = {
+  ...baseUISchema,
   password: {"ui:widget": "password"}
 };
 
 const fxaUISchema = {
   authType: {
+    ...baseUISchema.authType,
     "ui:help": (
       <span>
         <b>Note:</b> The
