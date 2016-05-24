@@ -32,8 +32,10 @@ describe("App component", () => {
       const session = {
         authenticated: true,
         server: "http://test.server/v1",
-        username: "user",
-        password: "pass",
+        credentials: {
+          username: "user",
+          password: "pass",
+        }
       };
       const logout = sandbox.spy();
       const node = createComponent(App, {
@@ -47,8 +49,8 @@ describe("App component", () => {
 
       const content = infoBar.textContent;
       expect(content).to.contain(session.server);
-      expect(content).to.contain(session.username);
-      expect(content).to.not.contain(session.password);
+      expect(content).to.contain(session.credentials.username);
+      expect(content).to.not.contain(session.credentials.password);
 
       Simulate.click(node.querySelector(".btn-logout"));
 

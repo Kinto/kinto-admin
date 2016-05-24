@@ -2,10 +2,12 @@ import React, { Component } from "react";
 
 
 function SessionInfoBar({session, logout}) {
-  const {server, username} = session;
+  const {server, credentials={}} = session;
+  const {username} = credentials;
+  const userInfo = username ? <span>as <strong>{username}</strong></span> : "";
   return (
     <div className="session-info-bar text-right">
-      Connected as <strong>{username}</strong> on <strong>{server}</strong>
+      Connected {userInfo} on <strong>{server}</strong>
       <a href="" className="btn btn-xs btn-success btn-logout"
         onClick={(event) => event.preventDefault() || logout()}>logout</a>
     </div>
