@@ -64,7 +64,9 @@ const baseUISchema = {
 
 const basicAuthUISchema = {
   ...baseUISchema,
-  password: {"ui:widget": "password"}
+  credentials: {
+    password: {"ui:widget": "password"}
+  }
 };
 
 const fxaUISchema = {
