@@ -46,14 +46,16 @@ function SessionInfo(props) {
 
 export default class HomePage extends Component {
   render() {
-    const {session, setup} = this.props;
+    const {session, setup, navigateToExternalAuth} = this.props;
     const {authenticated, busy} = session;
     return (
       <div>
         <h1>Kinto Web Administration Console</h1>
         {busy ? <Spinner /> :
-          authenticated ? <SessionInfo session={session} /> :
-                          <AuthForm setup={setup} />}
+          authenticated ?
+            <SessionInfo session={session} /> :
+            <AuthForm setup={setup}
+                      navigateToExternalAuth={navigateToExternalAuth} />}
       </div>
     );
   }

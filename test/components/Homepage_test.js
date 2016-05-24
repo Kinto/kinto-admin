@@ -18,12 +18,14 @@ describe("HomePage component", () => {
   });
 
   describe("Not authenticated", () => {
-    let node, setup;
+    let node, setup, navigateToExternalAuth;
 
     beforeEach(() => {
       setup = sandbox.spy();
+      navigateToExternalAuth = sandbox.spy();
       node = createComponent(HomePage, {
         setup,
+        navigateToExternalAuth,
         session: {authenticated: false},
       });
     });
@@ -32,23 +34,48 @@ describe("HomePage component", () => {
       expect(node.querySelector("form")).to.exist;
     });
 
-    it("should submit setup data", () => {
-      Simulate.change(node.querySelector("#root_server"), {
-        target: {value: "http://test.server/v1"}
-      });
-      Simulate.change(node.querySelector("#root_username"), {
-        target: {value: "user"}
-      });
-      Simulate.change(node.querySelector("#root_password"), {
-        target: {value: "pass"}
-      });
+    describe("Basic Auth", () => {
+      it("should submit setup data", () => {
+        Simulate.change(node.querySelector("#root_server"), {
+          target: {value: "http://test.server/v1"}
+        });
+        Simulate.change(node.querySelector("#root_credentials_username"), {
+          target: {value: "user"}
+        });
+        Simulate.change(node.querySelector("#root_credentials_password"), {
+          target: {value: "pass"}
+        });
 
-      Simulate.submit(node.querySelector("form"));
+        return new Promise(setImmediate).then(() => {
+          Simulate.submit(node.querySelector("form"));
+          sinon.assert.calledWithExactly(setup, {
+            server: "http://test.server/v1",
+            authType: "basicauth",
+            credentials: {
+              username: "user",
+              password: "pass",
+            }
+          });
+        });
+      });
+    });
 
-      sinon.assert.calledWithExactly(setup, {
-        server: "http://test.server/v1",
-        username: "user",
-        password: "pass",
+    describe("FxA", () => {
+      it("should navigate to external auth URL", () => {
+        Simulate.change(node.querySelector("#root_server"), {
+          target: {value: "http://test.server/v1"}
+        });
+        Simulate.change(node.querySelector("#root_authType"), {
+          target: {value: "fxa"}
+        });
+
+        return new Promise(setImmediate).then(() => {
+          Simulate.submit(node.querySelector("form"));
+          sinon.assert.calledWithExactly(navigateToExternalAuth, {
+            server: "http://test.server/v1",
+            authType: "fxa",
+          });
+        });
       });
     });
   });

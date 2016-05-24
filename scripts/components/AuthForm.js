@@ -67,32 +67,30 @@ export default class AuthForm extends Component {
   }
 
   onChange = ({formData}) => {
-    const {authType} = formData;
+    const {server, authType, credentials} = formData;
     switch(authType) {
       case "fxa": {
-        return this.setState({schema: fxaSchema, formData});
+        return this.setState({
+          schema: fxaSchema,
+          formData: {authType, server},
+        });
       }
       default:
       case "basicauth": {
-        return this.setState({schema: basicAuthSchema, formData});
+        return this.setState({
+          schema: basicAuthSchema,
+          formData: {authType, server, credentials},
+        });
       }
     }
   }
 
   onSubmit = ({formData}) => {
-    const {setup} = this.props;
-    const {authType, server} = formData;
+    const {setup, navigateToExternalAuth} = this.props;
+    const {authType} = formData;
     switch(authType) {
       case "fxa": {
-        const {origin, pathname} = document.location;
-        try {
-          const payload = btoa(JSON.stringify(formData));
-          const redirect = encodeURIComponent(`${origin}${pathname}#/auth/${payload}/`);
-          document.location = `${server}/fxa-oauth/login?redirect=${redirect}`;
-        } catch(error) {
-          // XXX Notify
-        }
-        return;
+        return navigateToExternalAuth(formData);
       }
       default:
       case "basicauth": {
