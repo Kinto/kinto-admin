@@ -2,6 +2,7 @@ import { push as updatePath } from "react-router-redux";
 import { call, take, fork, put } from "redux-saga/effects";
 
 import {
+  BUCKET_CREATE_REQUEST,
   COLLECTION_LOAD_REQUEST,
   COLLECTION_CREATE_REQUEST,
   COLLECTION_UPDATE_REQUEST,
@@ -9,6 +10,7 @@ import {
 } from "../constants";
 import { getClient } from "../client";
 import { notifySuccess, notifyError } from "../actions/notifications";
+import { sessionBusy } from "../actions/session";
 import { collectionBusy, collectionLoadSuccess } from "../actions/collection";
 import { listBuckets } from "./session";
 
@@ -19,6 +21,21 @@ function getBucket(bid) {
 
 function getCollection(bid, cid) {
   return getBucket(bid).collection(cid);
+}
+
+export function* createBucket(bid) {
+  try {
+    const client = getClient();
+    yield put(sessionBusy(true));
+    yield call([client, client.createBucket], bid);
+    yield call(listBuckets);
+    yield put(updatePath("/"));
+    yield put(notifySuccess("Bucket created."));
+  } catch(error) {
+    yield put(notifyError(error));
+  } finally {
+    yield put(sessionBusy(false));
+  }
 }
 
 export function* loadCollection(bid, cid) {
@@ -81,6 +98,13 @@ export function* deleteCollection(bid, cid) {
 }
 
 // Watchers
+
+export function* watchBucketCreate() {
+  while(true) { // eslint-disable-line
+    const {bid} = yield take(BUCKET_CREATE_REQUEST);
+    yield fork(createBucket, bid);
+  }
+}
 
 export function* watchCollectionLoad() {
   while(true) { // eslint-disable-line

@@ -1,4 +1,5 @@
 import {
+  BUCKET_CREATE_REQUEST,
   COLLECTION_LOAD_REQUEST,
   COLLECTION_CREATE_REQUEST,
   COLLECTION_UPDATE_REQUEST,
@@ -6,6 +7,10 @@ import {
 } from "../constants";
 
 
+
+export function createBucket(bid) {
+  return {type: BUCKET_CREATE_REQUEST, bid};
+}
 
 export function loadCollection(bid, cid) {
   return {type: COLLECTION_LOAD_REQUEST, bid, cid};

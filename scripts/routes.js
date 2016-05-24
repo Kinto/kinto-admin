@@ -4,6 +4,7 @@ import App from "./containers/App";
 import HomePage from "./containers/HomePage";
 import Sidebar from "./containers/Sidebar";
 import Notifications from "./containers/Notifications";
+import BucketCreatePage from "./containers/BucketCreatePage";
 import CollectionListPage from "./containers/CollectionListPage";
 import CollectionCreatePage from "./containers/CollectionCreatePage";
 import CollectionEditPage from "./containers/CollectionEditPage";
@@ -42,6 +43,8 @@ export default function getRoutes(store) {
       <IndexRoute components={{...common, content: HomePage}} />
       <Route path="/auth/:payload/:token" onEnter={onAuthEnter.bind(null, store)}
         components={{...common, content: HomePage}} />
+      <Route path="/buckets/create-bucket"
+        components={{...common, content: BucketCreatePage}} />
       <Route path="/buckets/:bid/create-collection"
         components={{...common, content: CollectionCreatePage}} />
       <Route path="/buckets/:bid/collections/:cid/edit"

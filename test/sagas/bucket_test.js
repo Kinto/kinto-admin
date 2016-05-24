@@ -3,12 +3,14 @@ import { push as updatePath } from "react-router-redux";
 import { take, fork, put, call } from "redux-saga/effects";
 
 import {
+  BUCKET_CREATE_REQUEST,
   COLLECTION_LOAD_REQUEST,
   COLLECTION_CREATE_REQUEST,
   COLLECTION_UPDATE_REQUEST,
   COLLECTION_DELETE_REQUEST,
 } from "../../scripts/constants";
 import { notifyError, notifySuccess } from "../../scripts/actions/notifications";
+import * as sessionActions from "../../scripts/actions/session";
 import * as collectionActions from "../../scripts/actions/collection";
 import * as actions from "../../scripts/actions/bucket";
 import { listBuckets } from "../../scripts/sagas/session";
@@ -23,6 +25,67 @@ const collectionData = {
 };
 
 describe("bucket sagas", () => {
+  describe("createBucket()", () => {
+    describe("Success", () => {
+      let client, createBucket;
+
+      before(() => {
+        client = setClient({createBucket() {}});
+        createBucket = saga.createBucket("bucket");
+      });
+
+      it("should mark the current session as busy", () => {
+        expect(createBucket.next().value)
+          .eql(put(sessionActions.sessionBusy(true)));
+      });
+
+      it("should fetch collection attributes", () => {
+        expect(createBucket.next().value)
+          .eql(call([client, client.createBucket], "bucket"));
+      });
+
+      it("should reload the list of buckets/collections", () => {
+        expect(createBucket.next().value)
+          .eql(call(listBuckets));
+      });
+
+      it("should update the route path", () => {
+        expect(createBucket.next().value)
+          .eql(put(updatePath("/")));
+      });
+
+      it("should dispatch a notification", () => {
+        expect(createBucket.next().value)
+          .eql(put(notifySuccess("Bucket created.")));
+      });
+
+      it("should unmark the current collection as busy", () => {
+        expect(createBucket.next().value)
+          .eql(put(sessionActions.sessionBusy(false)));
+      });
+    });
+
+    describe("Failure", () => {
+      let createBucket;
+
+      before(() => {
+        createBucket = saga.createBucket("bucket");
+        createBucket.next();
+        createBucket.next();
+      });
+
+      it("should dispatch an error notification action", () => {
+        expect(createBucket.throw("error").value)
+          .eql(put(notifyError("error")));
+      });
+
+      it("should unmark the current collection as busy", () => {
+        expect(createBucket.next().value)
+          .eql(put(sessionActions.sessionBusy(false)));
+      });
+    });
+  });
+
   describe("loadCollection()", () => {
     describe("Success", () => {
       let bucket, collection, loadCollection;
@@ -227,6 +290,18 @@ describe("bucket sagas", () => {
   });
 
   describe("Watchers", () => {
+    describe("watchBucketCreate()", () => {
+      it("should watch for the createBucket action", () => {
+        const watchBucketCreate = saga.watchBucketCreate();
+
+        expect(watchBucketCreate.next().value)
+          .eql(take(BUCKET_CREATE_REQUEST));
+
+        expect(watchBucketCreate.next(actions.createBucket("a")).value)
+          .eql(fork(saga.createBucket, "a"));
+      });
+    });
+
     describe("watchCollectionLoad()", () => {
       it("should watch for the loadCollection action", () => {
         const watchCollectionLoad = saga.watchCollectionLoad();
