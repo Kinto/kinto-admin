@@ -56,8 +56,20 @@ const fxaSchema = {
   }
 };
 
-const uiSchema = {
+const basicAuthUISchema = {
   password: {"ui:widget": "password"}
+};
+
+const fxaUISchema = {
+  authType: {
+    "ui:help": (
+      <span>
+        <b>Note:</b> The{" "}
+        <a href="https://github.com/mozilla-services/kinto-fxa">kinto-fxa</a>
+        {" "}plugin must be installed in the target server.
+      </span>
+    )
+  }
 };
 
 const btnLabels = {
@@ -70,6 +82,7 @@ export default class AuthForm extends Component {
     super(props);
     this.state = {
       schema: basicAuthSchema,
+      uiSchema: basicAuthUISchema,
       formData: {authType: "basicauth"},
     };
   }
@@ -80,6 +93,7 @@ export default class AuthForm extends Component {
       case "fxa": {
         return this.setState({
           schema: fxaSchema,
+          uiSchema: fxaUISchema,
           formData: {authType, server},
         });
       }
@@ -87,6 +101,7 @@ export default class AuthForm extends Component {
       case "basicauth": {
         return this.setState({
           schema: basicAuthSchema,
+          uiSchema: basicAuthUISchema,
           formData: {authType, server, credentials},
         });
       }
@@ -108,7 +123,7 @@ export default class AuthForm extends Component {
   };
 
   render() {
-    const {schema, formData} = this.state;
+    const {schema, uiSchema, formData} = this.state;
     return (
       <div className="panel panel-default">
         <div className="panel-body">
