@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { updatePath } from "redux-simple-router";
+import { push as updatePath } from "react-router-redux";
 import { take, fork, put, call } from "redux-saga/effects";
 
 import {

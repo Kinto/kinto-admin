@@ -7,7 +7,14 @@ import {
 } from "../constants";
 
 
-const DEFAULT = {busy: false, authenticated: false, buckets: [], serverInfo: {}};
+const DEFAULT = {
+  busy: false,
+  authenticated: false,
+  server: null,
+  credentials: {},
+  buckets: [],
+  serverInfo: {},
+};
 
 export default function session(state = DEFAULT, action) {
   switch (action.type) {

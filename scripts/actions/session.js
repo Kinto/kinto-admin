@@ -1,3 +1,4 @@
+import { notifyError } from "./notifications";
 import {
   SESSION_BUSY,
   SESSION_SETUP,
@@ -35,4 +36,20 @@ export function bucketsSuccess(buckets) {
 
 export function logout() {
   return {type: SESSION_LOGOUT};
+}
+
+/**
+ * Massive side effect: this will navigate away from the current page to perform
+ * authentication to a third-party service, like FxA.
+ */
+export function navigateToExternalAuth(authFormData) {
+  const {origin, pathname} = document.location;
+  const {server} = authFormData;
+  try {
+    const payload = btoa(JSON.stringify(authFormData));
+    const redirect = encodeURIComponent(`${origin}${pathname}#/auth/${payload}/`);
+    document.location = `${server}/fxa-oauth/login?redirect=${redirect}`;
+  } catch(error) {
+    return notifyError(error);
+  }
 }

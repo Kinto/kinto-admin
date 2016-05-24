@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import { routeReducer } from "redux-simple-router";
+import { routerReducer } from "react-router-redux";
 
 import session from "./session";
 import collection from "./collection";
@@ -8,7 +8,7 @@ import notifications from "./notifications";
 
 
 const rootReducer = combineReducers({
-  routing: routeReducer,
+  routing: routerReducer,
   session,
   collection,
   record,

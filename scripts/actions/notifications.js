@@ -27,6 +27,9 @@ export function notifySuccess(message, options) {
 }
 
 export function notifyError(error, options) {
+  if (process.env.NODE_ENV !== "production") {
+    console.error(error);
+  }
   return notify("danger", error.message, error.details, options);
 }
 
