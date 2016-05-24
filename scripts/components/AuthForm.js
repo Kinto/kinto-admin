@@ -60,10 +60,18 @@ const uiSchema = {
   password: {"ui:widget": "password"}
 };
 
+const btnLabels = {
+  "basicauth": "Sign in using Basic Auth",
+  "fxa": "Sign in using your Firefox Account",
+};
+
 export default class AuthForm extends Component {
   constructor(props) {
     super(props);
-    this.state = {schema: basicAuthSchema, formData: {}};
+    this.state = {
+      schema: basicAuthSchema,
+      formData: {authType: "basicauth"},
+    };
   }
 
   onChange = ({formData}) => {
@@ -109,7 +117,11 @@ export default class AuthForm extends Component {
             formData={formData}
             onChange={this.onChange}
             uiSchema={uiSchema}
-            onSubmit={this.onSubmit} />
+            onSubmit={this.onSubmit}>
+            <button type="submit" className="btn btn-info">
+              {btnLabels[formData.authType]}
+            </button>
+          </Form>
         </div>
       </div>
     );
