@@ -44,26 +44,41 @@ function BucketCollectionsMenu(props) {
 function BucketsMenu(props) {
   const {active, buckets, userBucket, bid, cid} = props;
   return (
-    <div>{
-      buckets.map((bucket, i) => {
-        const {id, collections} = bucket;
-        const current = bid === id;
-        return (
-          <div key={i} className="panel panel-default bucket-menu">
-            <div className="panel-heading">
-              <i className={`glyphicon glyphicon-folder-${current ? "open" : "close"}`} />
-              <strong>{id === userBucket ? "default" : id}</strong> bucket
+    <div>
+      {
+        buckets.map((bucket, i) => {
+          const {id, collections} = bucket;
+          const current = bid === id;
+          return (
+            <div key={i} className="panel panel-default bucket-menu">
+              <div className="panel-heading">
+                <i className={`glyphicon glyphicon-folder-${current ? "open" : "close"}`} />
+                <strong>{id === userBucket ? "default" : id}</strong> bucket
+                <Link to={`/buckets/${id}/edit`}
+                  className="bucket-menu-entry-edit"
+                  title="Manage bucket">
+                  <i className="glyphicon glyphicon-cog"/>
+                </Link>
+              </div>
+              <BucketCollectionsMenu
+                bucket={bucket}
+                collections={collections}
+                active={active}
+                bid={bid}
+                cid={cid} />
             </div>
-            <BucketCollectionsMenu
-              bucket={bucket}
-              collections={collections}
-              active={active}
-              bid={bid}
-              cid={cid} />
-          </div>
-        );
-      })
-    }</div>
+          );
+        })
+      }
+      <div className="panel panel-default">
+        <div className="list-group">
+          <Link to="/buckets/create-bucket" className={active("/buckets/create-bucket")}>
+            <i className="glyphicon glyphicon-plus"/>
+            Create bucket
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 }
 

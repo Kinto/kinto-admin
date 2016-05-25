@@ -38,15 +38,6 @@ export function* listBuckets(serverInfo) {
     const serverInfo = yield call([client, client.fetchServerInfo]);
     // Notify they're received
     yield put(sessionActions.serverInfoSuccess(serverInfo));
-    // If we have default bucket information
-    if (serverInfo.user && serverInfo.user.bucket) {
-      // XXX We need to first issue a request to the "default" bucket in order
-      // to create user associated permissions, so we can access the list of
-      // buckets.
-      // ref https://github.com/Kinto/kinto/issues/454
-      const buck = client.bucket("default");
-      yield call([buck, buck.getAttributes]);
-    }
     // Retrieve and build the list of buckets
     let buckets = [];
     const {data} = yield call([client, client.listBuckets]);
