@@ -8,6 +8,7 @@ import * as BucketActions from "../actions/bucket";
 function mapStateToProps(state) {
   return {
     session: state.session,
+    bucket: state.bucket,
   };
 }
 

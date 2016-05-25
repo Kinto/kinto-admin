@@ -22,7 +22,7 @@ syncHistoryWithStore(hashHistory, store);
 function onRouteUpdate() {
   const {params, location} = this.state;
   const {bid, cid, rid} = params;
-  const {session, collection} = store.getState();
+  const {session, bucket, collection} = store.getState();
   const {authenticated} = session;
 
   // Check for an authenticated session; if we're requesting anything other
@@ -31,6 +31,12 @@ function onRouteUpdate() {
     store.dispatch(updatePath(""));
     store.dispatch(notifyInfo("Authentication required.", {persistent: true}));
     return;
+  }
+
+  // If bid has changed, load its data
+  if (bid && bid !== bucket.name) {
+    store.dispatch(BucketActions.resetBucket());
+    store.dispatch(BucketActions.loadBucket(bid));
   }
 
   // If bid/cid has changed, reset collection store and load coll properties
