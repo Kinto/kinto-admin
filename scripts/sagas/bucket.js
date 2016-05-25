@@ -3,6 +3,7 @@ import { call, take, fork, put } from "redux-saga/effects";
 
 import {
   BUCKET_CREATE_REQUEST,
+  BUCKET_DELETE_REQUEST,
   COLLECTION_LOAD_REQUEST,
   COLLECTION_CREATE_REQUEST,
   COLLECTION_UPDATE_REQUEST,
@@ -31,6 +32,21 @@ export function* createBucket(bid) {
     yield call(listBuckets);
     yield put(updatePath("/"));
     yield put(notifySuccess("Bucket created."));
+  } catch(error) {
+    yield put(notifyError(error));
+  } finally {
+    yield put(sessionBusy(false));
+  }
+}
+
+export function* deleteBucket(bid) {
+  try {
+    const client = getClient();
+    yield put(sessionBusy(true));
+    yield call([client, client.deleteBucket], bid);
+    yield call(listBuckets);
+    yield put(updatePath("/"));
+    yield put(notifySuccess("Bucket deleted."));
   } catch(error) {
     yield put(notifyError(error));
   } finally {
@@ -103,6 +119,13 @@ export function* watchBucketCreate() {
   while(true) { // eslint-disable-line
     const {bid} = yield take(BUCKET_CREATE_REQUEST);
     yield fork(createBucket, bid);
+  }
+}
+
+export function* watchBucketDelete() {
+  while(true) { // eslint-disable-line
+    const {bid} = yield take(BUCKET_DELETE_REQUEST);
+    yield fork(deleteBucket, bid);
   }
 }
 

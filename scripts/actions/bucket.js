@@ -1,5 +1,6 @@
 import {
   BUCKET_CREATE_REQUEST,
+  BUCKET_DELETE_REQUEST,
   COLLECTION_LOAD_REQUEST,
   COLLECTION_CREATE_REQUEST,
   COLLECTION_UPDATE_REQUEST,
@@ -10,6 +11,10 @@ import {
 
 export function createBucket(bid) {
   return {type: BUCKET_CREATE_REQUEST, bid};
+}
+
+export function deleteBucket(bid) {
+  return {type: BUCKET_DELETE_REQUEST, bid};
 }
 
 export function loadCollection(bid, cid) {

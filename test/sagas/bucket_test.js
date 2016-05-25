@@ -4,6 +4,7 @@ import { take, fork, put, call } from "redux-saga/effects";
 
 import {
   BUCKET_CREATE_REQUEST,
+  BUCKET_DELETE_REQUEST,
   COLLECTION_LOAD_REQUEST,
   COLLECTION_CREATE_REQUEST,
   COLLECTION_UPDATE_REQUEST,
@@ -81,6 +82,66 @@ describe("bucket sagas", () => {
 
       it("should unmark the current collection as busy", () => {
         expect(createBucket.next().value)
+          .eql(put(sessionActions.sessionBusy(false)));
+      });
+    });
+  });
+
+  describe("deleteBucket()", () => {
+    describe("Success", () => {
+      let client, deleteBucket;
+
+      before(() => {
+        client = setClient({deleteBucket() {}});
+        deleteBucket = saga.deleteBucket("bucket");
+      });
+
+      it("should mark the current session as busy", () => {
+        expect(deleteBucket.next().value)
+          .eql(put(sessionActions.sessionBusy(true)));
+      });
+
+      it("should fetch collection attributes", () => {
+        expect(deleteBucket.next().value)
+          .eql(call([client, client.deleteBucket], "bucket"));
+      });
+
+      it("should reload the list of buckets/collections", () => {
+        expect(deleteBucket.next().value)
+          .eql(call(listBuckets));
+      });
+
+      it("should update the route path", () => {
+        expect(deleteBucket.next().value)
+          .eql(put(updatePath("/")));
+      });
+
+      it("should dispatch a notification", () => {
+        expect(deleteBucket.next().value)
+          .eql(put(notifySuccess("Bucket deleted.")));
+      });
+
+      it("should unmark the current collection as busy", () => {
+        expect(deleteBucket.next().value)
+          .eql(put(sessionActions.sessionBusy(false)));
+      });
+    });
+
+    describe("Failure", () => {
+      let deleteBucket;
+
+      before(() => {
+        deleteBucket = saga.deleteBucket("bucket");
+        deleteBucket.next();
+      });
+
+      it("should dispatch an error notification action", () => {
+        expect(deleteBucket.throw("error").value)
+          .eql(put(notifyError("error")));
+      });
+
+      it("should unmark the current collection as busy", () => {
+        expect(deleteBucket.next().value)
           .eql(put(sessionActions.sessionBusy(false)));
       });
     });
@@ -299,6 +360,18 @@ describe("bucket sagas", () => {
 
         expect(watchBucketCreate.next(actions.createBucket("a")).value)
           .eql(fork(saga.createBucket, "a"));
+      });
+    });
+
+    describe("watchBucketDelete()", () => {
+      it("should watch for the deleteBucket action", () => {
+        const watchBucketDelete = saga.watchBucketDelete();
+
+        expect(watchBucketDelete.next().value)
+          .eql(take(BUCKET_DELETE_REQUEST));
+
+        expect(watchBucketDelete.next(actions.deleteBucket("a")).value)
+          .eql(fork(saga.deleteBucket, "a"));
       });
     });
 

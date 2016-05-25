@@ -54,6 +54,11 @@ function BucketsMenu(props) {
               <div className="panel-heading">
                 <i className={`glyphicon glyphicon-folder-${current ? "open" : "close"}`} />
                 <strong>{id === userBucket ? "default" : id}</strong> bucket
+                <Link to={`/buckets/${id}/edit`}
+                  className="bucket-menu-entry-edit"
+                  title="Manage bucket">
+                  <i className="glyphicon glyphicon-cog"/>
+                </Link>
               </div>
               <BucketCollectionsMenu
                 bucket={bucket}

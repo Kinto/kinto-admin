@@ -160,10 +160,25 @@ table.record-list td.actions {
   color: #fff;
 }
 
+.bucket-menu-entry-edit {
+  float: right;
+  margin: .15em -.5em 0 0;
+  color: #555;
+  text-decoration: none;
+}
+
+.bucket-menu-entry-edit:hover {
+  color: inherit;
+}
+
 .collections-menu-entry-edit {
   float: right;
   margin: .15em -1em 0 0;
   color: #888;
+}
+
+.collections-menu-entry-edit:hover {
+  color: inherit;
 }
 
 .CodeMirror {

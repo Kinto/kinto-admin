@@ -85,7 +85,6 @@ describe("session sagas", () => {
 
         before(() => {
           bucket = {
-            getAttributes() {},
             listCollections() {}
           };
           client = setClient({
@@ -104,11 +103,6 @@ describe("session sagas", () => {
         it("should dispatch the server information action", () => {
           expect(listBuckets.next(serverInfo).value)
             .eql(put(actions.serverInfoSuccess(serverInfo)));
-        });
-
-        it("should ping the default bucket", () => {
-          expect(listBuckets.next().value)
-            .eql(call([bucket, bucket.getAttributes]));
         });
 
         it("should fetch the list of buckets", () => {
