@@ -12,7 +12,7 @@ const INITIAL_STATE = {
   data: {},
 };
 
-export function collection(state = INITIAL_STATE, action) {
+export function bucket(state = INITIAL_STATE, action) {
   switch (action.type) {
     case BUCKET_BUSY: {
       return {...state, busy: action.busy};
@@ -34,4 +34,4 @@ export function collection(state = INITIAL_STATE, action) {
   }
 }
 
-export default collection;
+export default bucket;
