@@ -4,6 +4,7 @@ import { take, fork, put, call } from "redux-saga/effects";
 
 import {
   BUCKET_CREATE_REQUEST,
+  BUCKET_UPDATE_REQUEST,
   BUCKET_DELETE_REQUEST,
   COLLECTION_LOAD_REQUEST,
   COLLECTION_CREATE_REQUEST,
@@ -60,7 +61,7 @@ describe("bucket sagas", () => {
           .eql(put(notifySuccess("Bucket created.")));
       });
 
-      it("should unmark the current collection as busy", () => {
+      it("should unmark the current session as busy", () => {
         expect(createBucket.next().value)
           .eql(put(sessionActions.sessionBusy(false)));
       });
@@ -80,8 +81,65 @@ describe("bucket sagas", () => {
           .eql(put(notifyError("error")));
       });
 
-      it("should unmark the current collection as busy", () => {
+      it("should unmark the current session as busy", () => {
         expect(createBucket.next().value)
+          .eql(put(sessionActions.sessionBusy(false)));
+      });
+    });
+  });
+
+  describe("updateBucket()", () => {
+    describe("Success", () => {
+      let bucket, updateBucket;
+
+      before(() => {
+        bucket = {setData(){}};
+        setClient({bucket(){return bucket;}});
+        updateBucket = saga.updateBucket("bucket", {a: 1});
+      });
+
+      it("should mark the current session as busy", () => {
+        expect(updateBucket.next().value)
+          .eql(put(sessionActions.sessionBusy(true)));
+      });
+
+      it("should fetch bucket attributes", () => {
+        expect(updateBucket.next().value)
+          .eql(call([bucket, bucket.setData], {a: 1}));
+      });
+
+      it("should reload the list of buckets/collections", () => {
+        expect(updateBucket.next().value)
+          .eql(call(saga.loadBucket, "bucket"));
+      });
+
+      it("should dispatch a notification", () => {
+        expect(updateBucket.next().value)
+          .eql(put(notifySuccess("Bucket updated.")));
+      });
+
+      it("should unmark the current session as busy", () => {
+        expect(updateBucket.next().value)
+          .eql(put(sessionActions.sessionBusy(false)));
+      });
+    });
+
+    describe("Failure", () => {
+      let updateBucket;
+
+      before(() => {
+        updateBucket = saga.updateBucket("bucket");
+        updateBucket.next();
+        updateBucket.next();
+      });
+
+      it("should dispatch an error notification action", () => {
+        expect(updateBucket.throw("error").value)
+          .eql(put(notifyError("error")));
+      });
+
+      it("should unmark the current session as busy", () => {
+        expect(updateBucket.next().value)
           .eql(put(sessionActions.sessionBusy(false)));
       });
     });
@@ -360,6 +418,18 @@ describe("bucket sagas", () => {
 
         expect(watchBucketCreate.next(actions.createBucket("a", "b")).value)
           .eql(fork(saga.createBucket, "a", "b"));
+      });
+    });
+
+    describe("watchBucketUpdate()", () => {
+      it("should watch for the updateBucket action", () => {
+        const watchBucketUpdate = saga.watchBucketUpdate();
+
+        expect(watchBucketUpdate.next().value)
+          .eql(take(BUCKET_UPDATE_REQUEST));
+
+        expect(watchBucketUpdate.next(actions.updateBucket("a", "b")).value)
+          .eql(fork(saga.updateBucket, "a", "b"));
       });
     });
 

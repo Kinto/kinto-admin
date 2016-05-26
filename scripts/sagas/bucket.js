@@ -55,11 +55,11 @@ export function* createBucket(bid, data) {
   }
 }
 
-export function* updateBucket(bid, bucketData) {
+export function* updateBucket(bid, data) {
   try {
     const bucket = getBucket(bid);
     yield put(sessionBusy(true));
-    yield call([bucket, bucket.setData], bucketData);
+    yield call([bucket, bucket.setData], data);
     yield call(loadBucket, bid);
     yield put(notifySuccess("Bucket updated."));
   } catch(error) {
