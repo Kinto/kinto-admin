@@ -32,7 +32,7 @@ describe("bucket sagas", () => {
 
       before(() => {
         client = setClient({createBucket() {}});
-        createBucket = saga.createBucket("bucket");
+        createBucket = saga.createBucket("bucket", {a: 1});
       });
 
       it("should mark the current session as busy", () => {
@@ -42,7 +42,7 @@ describe("bucket sagas", () => {
 
       it("should fetch collection attributes", () => {
         expect(createBucket.next().value)
-          .eql(call([client, client.createBucket], "bucket"));
+          .eql(call([client, client.createBucket], "bucket", {data: {a: 1}}));
       });
 
       it("should reload the list of buckets/collections", () => {
@@ -52,7 +52,7 @@ describe("bucket sagas", () => {
 
       it("should update the route path", () => {
         expect(createBucket.next().value)
-          .eql(put(updatePath("/")));
+          .eql(put(updatePath("/buckets/bucket/edit")));
       });
 
       it("should dispatch a notification", () => {
@@ -358,8 +358,8 @@ describe("bucket sagas", () => {
         expect(watchBucketCreate.next().value)
           .eql(take(BUCKET_CREATE_REQUEST));
 
-        expect(watchBucketCreate.next(actions.createBucket("a")).value)
-          .eql(fork(saga.createBucket, "a"));
+        expect(watchBucketCreate.next(actions.createBucket("a", "b")).value)
+          .eql(fork(saga.createBucket, "a", "b"));
       });
     });
 
