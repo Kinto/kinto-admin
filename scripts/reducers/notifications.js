@@ -10,7 +10,11 @@ const INITIAL_STATE = [];
 export default function notifications(state = INITIAL_STATE, action) {
   switch(action.type) {
     case NOTIFICATION_ADDED: {
-      return [...state, action.notification];
+      if (action.clear) {
+        return [action.notification];
+      } else {
+        return [...state, action.notification];
+      }
     }
     case NOTIFICATION_REMOVED: {
       return [...state.slice(0, action.index),

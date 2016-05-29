@@ -5,12 +5,16 @@ import {
 } from "../constants";
 
 
-function notify(type, message, details=[], options={persistent: false}) {
-  const {persistent} = options;
+function notify(type, message, details=[], options={
+  clear: false,
+  persistent: false
+}) {
+  const {clear, persistent} = options;
   return {
     type: NOTIFICATION_ADDED,
     notification: {
       type,
+      clear,
       persistent,
       message,
       details,

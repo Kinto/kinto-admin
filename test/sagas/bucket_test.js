@@ -11,7 +11,11 @@ import {
   COLLECTION_UPDATE_REQUEST,
   COLLECTION_DELETE_REQUEST,
 } from "../../scripts/constants";
-import { notifyError, notifySuccess } from "../../scripts/actions/notifications";
+import {
+  notifyError,
+  notifySuccess,
+  clearNotifications
+} from "../../scripts/actions/notifications";
 import * as sessionActions from "../../scripts/actions/session";
 import * as collectionActions from "../../scripts/actions/collection";
 import * as actions from "../../scripts/actions/bucket";
@@ -78,7 +82,7 @@ describe("bucket sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(createBucket.throw("error").value)
-          .eql(put(notifyError("error")));
+          .eql(put(notifyError("error", {clear: true})));
       });
 
       it("should unmark the current session as busy", () => {
@@ -135,7 +139,7 @@ describe("bucket sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(updateBucket.throw("error").value)
-          .eql(put(notifyError("error")));
+          .eql(put(notifyError("error", {clear: true})));
       });
 
       it("should unmark the current session as busy", () => {
@@ -195,7 +199,7 @@ describe("bucket sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(deleteBucket.throw("error").value)
-          .eql(put(notifyError("error")));
+          .eql(put(notifyError("error", {clear: true})));
       });
 
       it("should unmark the current collection as busy", () => {
@@ -252,7 +256,7 @@ describe("bucket sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(loadCollection.throw("error").value)
-          .eql(put(notifyError("error")));
+          .eql(put(notifyError("error", {clear: true})));
       });
 
       it("should unmark the current collection as busy", () => {
@@ -313,7 +317,7 @@ describe("bucket sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(createCollection.throw("error").value)
-          .eql(put(notifyError("error")));
+          .eql(put(notifyError("error", {clear: true})));
       });
     });
   });
@@ -357,7 +361,7 @@ describe("bucket sagas", () => {
         updateCollection.next();
 
         expect(updateCollection.throw("error").value)
-          .eql(put(notifyError("error")));
+          .eql(put(notifyError("error", {clear: true})));
       });
     });
   });
@@ -403,7 +407,7 @@ describe("bucket sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(deleteCollection.throw("error").value)
-          .eql(put(notifyError("error")));
+          .eql(put(notifyError("error", {clear: true})));
       });
     });
   });

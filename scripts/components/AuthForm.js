@@ -13,7 +13,8 @@ const baseAuthSchema = {
       title: "Server",
       format: "uri",
       description: "http://",
-      default: "https://kinto.dev.mozaws.net/v1/"
+      default: "http://0.0.0.0:8888/v1/"
+      // default: "https://kinto.dev.mozaws.net/v1/"
     },
     authType: {
       type: "string",
