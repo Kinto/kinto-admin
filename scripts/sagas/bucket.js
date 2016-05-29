@@ -12,11 +12,7 @@ import {
   COLLECTION_DELETE_REQUEST,
 } from "../constants";
 import { getClient } from "../client";
-import {
-  notifySuccess,
-  notifyError,
-  clearNotifications
-} from "../actions/notifications";
+import { notifySuccess, notifyError } from "../actions/notifications";
 import { sessionBusy } from "../actions/session";
 import { bucketBusy, bucketLoadSuccess } from "../actions/bucket";
 import { collectionBusy, collectionLoadSuccess } from "../actions/collection";

@@ -27,7 +27,7 @@
     "codemirror": "^5.13.2",
     "express": "^4.13.3",
     "extract-text-webpack-plugin": "^1.0.1",
-    "kinto-client": "^0.7.0",
+    "kinto-client": "^0.8.0",
     "node-fs-extra": "^0.8.1",
     "react": "^15.0.1",
     "react-codemirror": "^0.2.3",

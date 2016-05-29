@@ -1,6 +1,7 @@
 import { fork } from "redux-saga/effects";
 
 import * as sessionSagas from "./session";
+import * as routeSagas from "./route";
 import * as bucketSagas from "./bucket";
 import * as collectionSagas from "./collection";
 
@@ -11,6 +12,8 @@ export default function* rootSaga() {
     fork(sessionSagas.watchSessionSetup),
     fork(sessionSagas.watchSessionLogout),
     fork(sessionSagas.watchSessionBuckets),
+    // route
+    fork(routeSagas.watchLoadRoute),
     // bucket/collections
     fork(bucketSagas.watchBucketLoad),
     fork(bucketSagas.watchBucketCreate),
