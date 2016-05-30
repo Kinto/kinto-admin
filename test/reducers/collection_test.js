@@ -25,7 +25,7 @@ describe("collection reducer", () => {
   it("COLLECTION_LOAD_SUCCESS", () => {
     expect(collection(undefined, {
       type: COLLECTION_LOAD_SUCCESS,
-      properties: {
+      data: {
         bucket: "bucket",
         id: "id",
         schema: "schema",

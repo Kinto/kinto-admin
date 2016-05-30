@@ -26,8 +26,8 @@ export function collection(state = INITIAL_STATE, action) {
       return INITIAL_STATE;
     }
     case COLLECTION_LOAD_SUCCESS: {
-      const {properties} = action;
-      const {bucket, id, schema, uiSchema, displayFields} = properties;
+      const {data} = action;
+      const {bucket, id, schema, uiSchema, displayFields} = data;
       return {
         ...state,
         name: id,

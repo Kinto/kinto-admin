@@ -20,8 +20,8 @@ export function resetCollection() {
   return {type: COLLECTION_RESET};
 }
 
-export function collectionLoadSuccess(properties) {
-  return {type: COLLECTION_LOAD_SUCCESS, properties};
+export function collectionLoadSuccess(data) {
+  return {type: COLLECTION_LOAD_SUCCESS, data};
 }
 
 export function listRecordsSuccess(records) {
