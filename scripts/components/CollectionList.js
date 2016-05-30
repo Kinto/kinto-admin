@@ -35,9 +35,6 @@ class Row extends Component {
   }
 
   recordField(displayField, record) {
-    if (typeOf(record) === "undefined") {
-      const {record} = this.props;
-    }
     if (record.hasOwnProperty(displayField)) {
       const field = record[displayField];
       if (typeof field === "string") {
@@ -53,28 +50,7 @@ class Row extends Component {
       const fields = displayField.split('.');
 
       if (record.hasOwnProperty(fields[0])) {
-        return recordField(fields.splice(1).join('.'), record[fields[0]]);
-      } else {
-        let biggestCandidate = [];
-        let nextCandidate = [];
-        let candidates = Object.keys(record).filter((key) => {
-          return key.indexOf(fields[0]) === 0;
-        });
-
-        for (let key in candidates) {
-          let nextCandidate = [];
-          for (let part in field) {
-            if (key.indexOf(nextCandidate.concat([part]).join('.'))) {
-              nextCandidate.push(part);
-            }
-          }
-          if (nextCandidate.length > biggestCandidate.length) {
-            biggestCandidate = nextCandidate;
-          }
-        }
-
-        return recordField(fields.splice(biggestCandidate.length).join('.'),
-                           record[biggestCandidate.join('.')]);
+        return this.recordField(fields.splice(1).join('.'), record[fields[0]]);
       }
     }
     return "<unknown>";
@@ -85,7 +61,7 @@ class Row extends Component {
     return <tr onDoubleClick={this.onDoubleClick.bind(this)}>
       {
         displayFields.map((displayField, index) => {
-          return <td key={index}>{this.recordField(displayField)}</td>;
+          return <td key={index}>{this.recordField(displayField, this.props.record)}</td>;
         })
       }
       <td className="lastmod">{this.lastModified}</td>
