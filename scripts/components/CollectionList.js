@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
 
-import { cleanRecord } from "../utils";
+import { renderDisplayField } from "../utils";
 import Spinner from "./Spinner";
 
 
@@ -34,29 +34,12 @@ class Row extends Component {
     }
   }
 
-  recordField(displayField) {
-    const {record} = this.props;
-    if (record.hasOwnProperty(displayField)) {
-      const field = record[displayField];
-      if (typeof field === "string") {
-        return field;
-      } else if (typeof field === "object") {
-        return JSON.stringify(field);
-      } else {
-        return String(field);
-      }
-    } else if (displayField === "__json") {
-      return <code>{JSON.stringify(cleanRecord(record))}</code>;
-    }
-    return "<unknown>";
-  }
-
   render() {
     const {bid, cid, record, displayFields} = this.props;
     return <tr onDoubleClick={this.onDoubleClick.bind(this)}>
       {
         displayFields.map((displayField, index) => {
-          return <td key={index}>{this.recordField(displayField)}</td>;
+          return <td key={index}>{renderDisplayField(record, displayField)}</td>;
         })
       }
       <td className="lastmod">{this.lastModified}</td>
