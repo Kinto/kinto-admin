@@ -40,12 +40,8 @@ function onAuthEnter(store, {params}) {
 }
 
 function onCollectionListEnter(store, {params}) {
-  const {collection} = store.getState();
   const {bid, cid} = params;
-  // Ensure loading records only if we've changed bid/cid
-  if (bid !== collection.bucket || cid !== collection.name) {
-    store.dispatch(collectionActions.listRecords(bid, cid));
-  }
+  store.dispatch(collectionActions.listRecords(bid, cid));
 }
 
 export default function getRoutes(store) {
