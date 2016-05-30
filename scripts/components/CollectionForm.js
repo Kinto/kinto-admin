@@ -13,6 +13,7 @@ const schema = {
     name: {
       type: "string",
       title: "Collection name",
+      pattern: "^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
     },
     schema: {
       type: "string",

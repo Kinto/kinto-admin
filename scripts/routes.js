@@ -13,8 +13,9 @@ import AddFormPage from "./containers/AddFormPage";
 import BulkFormPage from "./containers/BulkFormPage";
 import EditFormPage from "./containers/EditFormPage";
 
-import * as notificationActions from "./actions/notifications";
 import * as sessionActions from "./actions/session";
+import * as collectionActions from "./actions/collection";
+import * as notificationActions from "./actions/notifications";
 
 
 const common = {
@@ -38,12 +39,22 @@ function onAuthEnter(store, {params}) {
   }
 }
 
+function onCollectionListEnter(store, {params}) {
+  const {collection} = store.getState();
+  const {bid, cid} = params;
+  // Ensure loading records only if we've changed bid/cid
+  if (bid !== collection.bucket || cid !== collection.name) {
+    store.dispatch(collectionActions.listRecords(bid, cid));
+  }
+}
+
 export default function getRoutes(store) {
   return (
     <Route path="/" component={App}>
       <IndexRoute components={{...common, content: HomePage}} />
-      <Route path="/auth/:payload/:token" onEnter={onAuthEnter.bind(null, store)}
-        components={{...common, content: HomePage}} />
+      <Route path="/auth/:payload/:token"
+        components={{...common, content: HomePage}}
+        onEnter={onAuthEnter.bind(null, store)} />
       <Route path="/buckets/create-bucket"
         components={{...common, content: BucketCreatePage}} />
       <Route path="/buckets/:bid/edit"
@@ -53,7 +64,8 @@ export default function getRoutes(store) {
       <Route path="/buckets/:bid/collections/:cid/edit"
         components={{...common, content: CollectionEditPage}} />
       <Route path="/buckets/:bid/collections/:cid"
-        components={{...common, content: CollectionListPage}} />
+        components={{...common, content: CollectionListPage}}
+        onEnter={onCollectionListEnter.bind(null, store)}  />
       <Route path="/buckets/:bid/collections/:cid/add"
         components={{...common, content: AddFormPage}} />
       <Route path="/buckets/:bid/collections/:cid/edit/:rid"

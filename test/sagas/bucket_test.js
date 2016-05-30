@@ -4,6 +4,7 @@ import { take, fork, put, call } from "redux-saga/effects";
 
 import {
   BUCKET_CREATE_REQUEST,
+  BUCKET_UPDATE_REQUEST,
   BUCKET_DELETE_REQUEST,
   COLLECTION_LOAD_REQUEST,
   COLLECTION_CREATE_REQUEST,
@@ -32,7 +33,7 @@ describe("bucket sagas", () => {
 
       before(() => {
         client = setClient({createBucket() {}});
-        createBucket = saga.createBucket("bucket");
+        createBucket = saga.createBucket("bucket", {a: 1});
       });
 
       it("should mark the current session as busy", () => {
@@ -42,7 +43,7 @@ describe("bucket sagas", () => {
 
       it("should fetch collection attributes", () => {
         expect(createBucket.next().value)
-          .eql(call([client, client.createBucket], "bucket"));
+          .eql(call([client, client.createBucket], "bucket", {data: {a: 1}}));
       });
 
       it("should reload the list of buckets/collections", () => {
@@ -52,7 +53,7 @@ describe("bucket sagas", () => {
 
       it("should update the route path", () => {
         expect(createBucket.next().value)
-          .eql(put(updatePath("/")));
+          .eql(put(updatePath("/buckets/bucket/edit")));
       });
 
       it("should dispatch a notification", () => {
@@ -60,7 +61,7 @@ describe("bucket sagas", () => {
           .eql(put(notifySuccess("Bucket created.")));
       });
 
-      it("should unmark the current collection as busy", () => {
+      it("should unmark the current session as busy", () => {
         expect(createBucket.next().value)
           .eql(put(sessionActions.sessionBusy(false)));
       });
@@ -77,11 +78,68 @@ describe("bucket sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(createBucket.throw("error").value)
-          .eql(put(notifyError("error")));
+          .eql(put(notifyError("error", {clear: true})));
       });
 
-      it("should unmark the current collection as busy", () => {
+      it("should unmark the current session as busy", () => {
         expect(createBucket.next().value)
+          .eql(put(sessionActions.sessionBusy(false)));
+      });
+    });
+  });
+
+  describe("updateBucket()", () => {
+    describe("Success", () => {
+      let bucket, updateBucket;
+
+      before(() => {
+        bucket = {setData(){}};
+        setClient({bucket(){return bucket;}});
+        updateBucket = saga.updateBucket("bucket", {a: 1});
+      });
+
+      it("should mark the current session as busy", () => {
+        expect(updateBucket.next().value)
+          .eql(put(sessionActions.sessionBusy(true)));
+      });
+
+      it("should fetch bucket attributes", () => {
+        expect(updateBucket.next().value)
+          .eql(call([bucket, bucket.setData], {a: 1}));
+      });
+
+      it("should reload the list of buckets/collections", () => {
+        expect(updateBucket.next().value)
+          .eql(call(saga.loadBucket, "bucket"));
+      });
+
+      it("should dispatch a notification", () => {
+        expect(updateBucket.next().value)
+          .eql(put(notifySuccess("Bucket updated.")));
+      });
+
+      it("should unmark the current session as busy", () => {
+        expect(updateBucket.next().value)
+          .eql(put(sessionActions.sessionBusy(false)));
+      });
+    });
+
+    describe("Failure", () => {
+      let updateBucket;
+
+      before(() => {
+        updateBucket = saga.updateBucket("bucket");
+        updateBucket.next();
+        updateBucket.next();
+      });
+
+      it("should dispatch an error notification action", () => {
+        expect(updateBucket.throw("error").value)
+          .eql(put(notifyError("error", {clear: true})));
+      });
+
+      it("should unmark the current session as busy", () => {
+        expect(updateBucket.next().value)
           .eql(put(sessionActions.sessionBusy(false)));
       });
     });
@@ -137,7 +195,7 @@ describe("bucket sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(deleteBucket.throw("error").value)
-          .eql(put(notifyError("error")));
+          .eql(put(notifyError("error", {clear: true})));
       });
 
       it("should unmark the current collection as busy", () => {
@@ -152,7 +210,7 @@ describe("bucket sagas", () => {
       let bucket, collection, loadCollection;
 
       before(() => {
-        collection = {getAttributes() {}};
+        collection = {getData() {}};
         bucket = {collection() {return collection;}};
         setClient({bucket() {return bucket;}});
         loadCollection = saga.loadCollection("bucket", "collection");
@@ -165,15 +223,14 @@ describe("bucket sagas", () => {
 
       it("should fetch collection attributes", () => {
         expect(loadCollection.next().value)
-          .eql(call([collection, collection.getAttributes]));
+          .eql(call([collection, collection.getData]));
       });
 
       it("should dispatch the collectionLoadSuccess action", () => {
-        expect(loadCollection.next({data: collectionData}).value)
+        expect(loadCollection.next(collectionData).value)
           .eql(put(collectionActions.collectionLoadSuccess({
             ...collectionData,
             bucket: "bucket",
-            label: "bucket/collection",
           })));
       });
 
@@ -194,7 +251,7 @@ describe("bucket sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(loadCollection.throw("error").value)
-          .eql(put(notifyError("error")));
+          .eql(put(notifyError("error", {clear: true})));
       });
 
       it("should unmark the current collection as busy", () => {
@@ -255,7 +312,7 @@ describe("bucket sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(createCollection.throw("error").value)
-          .eql(put(notifyError("error")));
+          .eql(put(notifyError("error", {clear: true})));
       });
     });
   });
@@ -265,7 +322,7 @@ describe("bucket sagas", () => {
       let bucket, collection, updateCollection;
 
       before(() => {
-        collection = {setMetadata() {}};
+        collection = {setData() {}};
         bucket = {collection() {return collection;}};
         setClient({bucket() {return bucket;}});
         updateCollection = saga.updateCollection(
@@ -274,7 +331,7 @@ describe("bucket sagas", () => {
 
       it("should post the collection data", () => {
         expect(updateCollection.next().value)
-          .eql(call([collection, collection.setMetadata], collectionData));
+          .eql(call([collection, collection.setData], collectionData));
       });
 
       it("should dispatch the collectionLoadSuccess action", () => {
@@ -282,7 +339,6 @@ describe("bucket sagas", () => {
           .eql(put(collectionActions.collectionLoadSuccess({
             ...collectionData,
             bucket: "bucket",
-            label: "bucket/collection",
           })));
       });
 
@@ -299,7 +355,7 @@ describe("bucket sagas", () => {
         updateCollection.next();
 
         expect(updateCollection.throw("error").value)
-          .eql(put(notifyError("error")));
+          .eql(put(notifyError("error", {clear: true})));
       });
     });
   });
@@ -345,7 +401,7 @@ describe("bucket sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(deleteCollection.throw("error").value)
-          .eql(put(notifyError("error")));
+          .eql(put(notifyError("error", {clear: true})));
       });
     });
   });
@@ -358,8 +414,20 @@ describe("bucket sagas", () => {
         expect(watchBucketCreate.next().value)
           .eql(take(BUCKET_CREATE_REQUEST));
 
-        expect(watchBucketCreate.next(actions.createBucket("a")).value)
-          .eql(fork(saga.createBucket, "a"));
+        expect(watchBucketCreate.next(actions.createBucket("a", "b")).value)
+          .eql(fork(saga.createBucket, "a", "b"));
+      });
+    });
+
+    describe("watchBucketUpdate()", () => {
+      it("should watch for the updateBucket action", () => {
+        const watchBucketUpdate = saga.watchBucketUpdate();
+
+        expect(watchBucketUpdate.next().value)
+          .eql(take(BUCKET_UPDATE_REQUEST));
+
+        expect(watchBucketUpdate.next(actions.updateBucket("a", "b")).value)
+          .eql(fork(saga.updateBucket, "a", "b"));
       });
     });
 

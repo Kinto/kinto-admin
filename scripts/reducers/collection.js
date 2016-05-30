@@ -27,14 +27,15 @@ export function collection(state = INITIAL_STATE, action) {
     }
     case COLLECTION_LOAD_SUCCESS: {
       const {properties} = action;
+      const {bucket, id, schema, uiSchema, displayFields} = properties;
       return {
         ...state,
-        bucket: properties.bucket,
-        name: properties.id,
-        label: properties.label,
-        schema: properties.schema,
-        uiSchema: properties.uiSchema,
-        displayFields: properties.displayFields,
+        name: id,
+        label: `${bucket}/${id}`,
+        bucket,
+        schema,
+        uiSchema,
+        displayFields,
       };
     }
     case COLLECTION_RECORDS_SUCCESS: {

@@ -28,7 +28,6 @@ describe("collection reducer", () => {
       properties: {
         bucket: "bucket",
         id: "id",
-        label: "bucket/id",
         schema: "schema",
         uiSchema: "uiSchema",
         displayFields: "displayFields",

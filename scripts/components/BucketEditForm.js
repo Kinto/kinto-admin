@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Form from "react-jsonschema-form";
 
 import Spinner from "./Spinner";
+import BucketForm from "./BucketForm";
 
 
 const deleteSchema = {
@@ -35,16 +36,30 @@ export default class BucketEditForm extends Component {
     }
   };
 
+  onSubmit = ({name, data}) => {
+    const {params, updateBucket} = this.props;
+    const {bid} = params;
+    updateBucket(bid, data);
+  }
+
   render() {
-    const {params, session} = this.props;
+    const {params, session, bucket} = this.props;
     const {bid} = params;
     const {busy} = session;
     if (busy) {
       return <Spinner />;
     }
+    const formData = {
+      name: bid,
+      // Stringify JSON fields so they're editable in a text field
+      data: JSON.stringify(bucket && bucket.data || {}, null, 2),
+    };
     return (
       <div>
         <h1>Manage <b>{bid}</b> bucket</h1>
+        <BucketForm
+          formData={formData}
+          onSubmit={this.onSubmit} />
         <div className="panel panel-danger">
           <div className="panel-heading">
             <strong>Danger Zone</strong>
@@ -53,7 +68,9 @@ export default class BucketEditForm extends Component {
             <p>
               Delete the <b>{bid}</b> bucket and all the collections and records it contains.
             </p>
-            <DeleteForm bid={bid} onSubmit={this.deleteBucket} />
+            <DeleteForm
+              bid={bid}
+              onSubmit={this.deleteBucket} />
           </div>
         </div>
       </div>
