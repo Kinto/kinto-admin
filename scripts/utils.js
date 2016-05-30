@@ -46,6 +46,29 @@ export function recordField(displayField, record) {
 
     if (record.hasOwnProperty(fields[0])) {
       return recordField(fields.splice(1).join('.'), record[fields[0]]);
+    } else {
+      let biggestCandidate = [];
+      let nextCandidate = [];
+      let candidates = Object.keys(record).filter((key) => {
+        return key.indexOf(fields[0]) === 0;
+      });
+
+      for (let key in candidates) {
+        let nextCandidate = [];
+        for (let part of fields) {
+          var candidate = nextCandidate.concat([part]).join('.');
+          if (candidates[key].indexOf(nextCandidate.concat([part]).join('.')) !== -1) {
+            nextCandidate.push(part);
+          }
+        }
+        if (nextCandidate.length > biggestCandidate.length) {
+          biggestCandidate = nextCandidate;
+        }
+      }
+
+      const key = biggestCandidate.join('.');
+      return recordField(fields.splice(biggestCandidate.length).join('.'),
+                         record[key]);
     }
   }
   return "<unknown>";

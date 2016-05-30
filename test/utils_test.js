@@ -26,7 +26,7 @@ describe("recordField", () => {
         title: "I am a title",
         extras: {foo: "bar", foobar: "foo"},
         "faux.ami": "Yes I am",
-        "unsupported.nested": {"tree": "foobar"}
+        "supported.strange.nested": {"tree": "foobar"}
       };
   });
   
@@ -54,7 +54,7 @@ describe("recordField", () => {
     expect(recordField("unknown", record)).to.eql("<unknown>");
   });
 
-  it("should return unknown for unsupported nested tree..", () => {
-    expect(recordField("unsupported.nested.tree", record)).to.eql("<unknown>");
+  it("should return support strange nested tree.", () => {
+    expect(recordField("supported.strange.nested.tree", record)).to.eql("foobar");
   });
 });
