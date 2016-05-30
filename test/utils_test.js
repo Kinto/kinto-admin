@@ -34,7 +34,8 @@ describe("renderDisplayField", () => {
   });
 
   it("should return the extras field as a JSON string", () => {
-    expect(renderDisplayField(record, "extras")).to.eql('{"foo":"bar","foobar":"foo"}');
+    expect(renderDisplayField(record, "extras")).to.eql(
+      JSON.stringify({"foo": "bar", "foobar": "foo"}));
   });
 
   it("should return the extras.foo field as a string", () => {
