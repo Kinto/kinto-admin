@@ -52,7 +52,6 @@ export default class BucketEditForm extends Component {
     const formData = {
       name: bid,
       // Stringify JSON fields so they're editable in a text field
-      // XXX where do we store bucket data?
       data: JSON.stringify(bucket && bucket.data || {}, null, 2),
     };
     return (

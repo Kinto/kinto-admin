@@ -13,6 +13,7 @@ const schema = {
     name: {
       type: "string",
       title: "Bucket name",
+      pattern: "^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
     },
     data: {
       type: "string",
