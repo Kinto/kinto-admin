@@ -43,6 +43,11 @@ describe("route sagas", () => {
         loadRoute = saga.loadRoute("bucket");
       });
 
+      it("should reset the selected bucket", () => {
+        expect(loadRoute.next().value)
+          .eql(put(bucketActions.resetBucket()));
+      });
+
       it("should mark the selected bucket as busy", () => {
         expect(loadRoute.next().value)
           .eql(put(bucketActions.bucketBusy(true)));
@@ -76,9 +81,19 @@ describe("route sagas", () => {
         loadRoute = saga.loadRoute("bucket", "collection");
       });
 
+      it("should reset the selected bucket", () => {
+        expect(loadRoute.next().value)
+          .eql(put(bucketActions.resetBucket()));
+      });
+
       it("should mark the selected bucket as busy", () => {
         expect(loadRoute.next().value)
           .eql(put(bucketActions.bucketBusy(true)));
+      });
+
+      it("should reset the selected collection", () => {
+        expect(loadRoute.next().value)
+          .eql(put(collectionActions.resetCollection()));
       });
 
       it("should mark the selected collection as busy", () => {
@@ -124,9 +139,19 @@ describe("route sagas", () => {
         loadRoute = saga.loadRoute("bucket", "collection", "record");
       });
 
+      it("should reset the selected bucket", () => {
+        expect(loadRoute.next().value)
+          .eql(put(bucketActions.resetBucket()));
+      });
+
       it("should mark the selected bucket as busy", () => {
         expect(loadRoute.next().value)
           .eql(put(bucketActions.bucketBusy(true)));
+      });
+
+      it("should reset the selected collection", () => {
+        expect(loadRoute.next().value)
+          .eql(put(collectionActions.resetCollection()));
       });
 
       it("should mark the selected collection as busy", () => {

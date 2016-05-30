@@ -2,8 +2,9 @@ import { call, take, fork, put } from "redux-saga/effects";
 
 import { SESSION_SETUP_COMPLETE, ROUTE_LOAD_REQUEST } from "../constants";
 import { getClient } from "../client";
-import { bucketBusy, bucketLoadSuccess } from "../actions/bucket";
-import { collectionBusy, collectionLoadSuccess } from "../actions/collection";
+import { resetBucket, bucketBusy, bucketLoadSuccess } from "../actions/bucket";
+import { routeLoadSuccess } from "../actions/route";
+import { resetCollection, collectionBusy, collectionLoadSuccess } from "../actions/collection";
 import { recordLoadSuccess } from "../actions/record";
 import { notifyError } from "../actions/notifications";
 
@@ -34,13 +35,14 @@ export function* loadRoute(bid, cid, rid) {
     const client = getClient();
 
     // Mark bucket and collection as busy if we are loading them
-    if (bid) {
-      yield put(bucketBusy(true));
-    }
+    yield put(resetBucket(bid));
+    yield put(bucketBusy(true));
 
     if (cid) {
+      yield put(resetCollection());
       yield put(collectionBusy(true));
     }
+
     // Fetch all currently selected resource data in a single batch request
     const res = yield call([client, client.batch], getBatchLoadFn(bid, cid, rid));
 
@@ -48,15 +50,14 @@ export function* loadRoute(bid, cid, rid) {
     const [bucket, collection, record] = res.map(({body}) => {
       return body.data;
     });
-    if (bucket) {
-      yield put(bucketLoadSuccess(bid, bucket));
-      if (collection) {
-        yield put(collectionLoadSuccess({...collection, bucket: bucket.id}));
-        if (record) {
-          yield put(recordLoadSuccess(record));
-        }
+    yield put(bucketLoadSuccess(bid, bucket));
+    if (collection) {
+      yield put(collectionLoadSuccess({...collection, bucket: bucket.id}));
+      if (record) {
+        yield put(recordLoadSuccess(record));
       }
     }
+    yield put(routeLoadSuccess(bucket, collection, rid));
   } catch(error) {
     yield put(notifyError(error));
   } finally {

@@ -40,14 +40,19 @@ describe("collection reducer", () => {
       uiSchema: "uiSchema",
       displayFields: "displayFields",
       records: [],
+      recordsLoaded: false,
       busy: false,
     });
   });
 
   it("COLLECTION_RECORDS_SUCCESS", () => {
-    expect(collection(undefined, {
+    const records = [1, 2, 3];
+    const state = collection(undefined, {
       type: COLLECTION_RECORDS_SUCCESS,
-      records: [1, 2, 3]
-    }).records).to.have.length.of(3);
+      records
+    });
+
+    expect(state.records).eql(records);
+    expect(state.recordsLoaded).eql(true);
   });
 });

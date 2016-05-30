@@ -15,6 +15,7 @@ const INITIAL_STATE = {
   uiSchema: {},
   displayFields: [],
   records: [],
+  recordsLoaded: false,
 };
 
 export function collection(state = INITIAL_STATE, action) {
@@ -39,7 +40,7 @@ export function collection(state = INITIAL_STATE, action) {
       };
     }
     case COLLECTION_RECORDS_SUCCESS: {
-      return {...state, records: action.records};
+      return {...state, records: action.records, recordsLoaded: true};
     }
     default: {
       return state;

@@ -9,6 +9,7 @@ import {
   RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
   RECORD_BULK_CREATE_REQUEST,
+  ROUTE_LOAD_SUCCESS,
 } from "../../scripts/constants";
 import { notifyError, notifySuccess } from "../../scripts/actions/notifications";
 import * as collectionActions from "../../scripts/actions/collection";
@@ -32,6 +33,11 @@ describe("collection sagas", () => {
         const bucket = {collection() {return collection;}};
         setClient({bucket() {return bucket;}});
         listRecords = saga.listRecords("bucket", "collection");
+      });
+
+      it("should wait for the ROUTE_LOAD_SUCCESS action", () => {
+        expect(listRecords.next().value)
+          .eql(take(ROUTE_LOAD_SUCCESS));
       });
 
       it("should mark the current collection as busy", () => {
@@ -61,6 +67,7 @@ describe("collection sagas", () => {
       before(() => {
         listRecords = saga.listRecords("bucket", "collection");
         listRecords.next();
+        listRecords.next(); // take(ROUTE_LOAD_SUCCESS)
       });
 
       it("should dispatch an error notification action", () => {

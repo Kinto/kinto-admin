@@ -8,6 +8,7 @@ import {
   RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
   RECORD_BULK_CREATE_REQUEST,
+  ROUTE_LOAD_SUCCESS,
 } from "../constants";
 import { getClient } from "../client";
 import { notifySuccess, notifyError } from "../actions/notifications";
@@ -24,6 +25,8 @@ function getCollection(bid, cid) {
 }
 
 export function* listRecords(bid, cid) {
+  // Wait for the collection data to be loaded before loading its records
+  yield take(ROUTE_LOAD_SUCCESS);
   try {
     const coll = getCollection(bid, cid);
     yield put(collectionActions.collectionBusy(true));

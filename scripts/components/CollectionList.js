@@ -23,8 +23,8 @@ class Row extends Component {
 
   onDoubleClick(event) {
     event.preventDefault();
-    const {bid, cid, record} = this.props;
-    this.props.updatePath(`/buckets/${bid}/collections/${cid}/edit/${record.id}`);
+    const {bid, cid, record, updatePath} = this.props;
+    updatePath(`/buckets/${bid}/collections/${cid}/edit/${record.id}`);
   }
 
   onDeleteClick(event) {
@@ -76,16 +76,20 @@ class Table extends Component {
 
   render() {
     const {
+      busy,
       bid,
       cid,
       records,
+      recordsLoaded,
       schema,
       displayFields,
       deleteRecord,
       updatePath
     } = this.props;
 
-    if (records.length === 0) {
+    if (busy || !recordsLoaded) {
+      return <Spinner />;
+    } else if (records.length === 0) {
       return (
         <div className="alert alert-info">
           <p>This collection is empty.</p>
@@ -150,14 +154,16 @@ function ListActions(props) {
 
 export default class CollectionList extends Component {
   render() {
-    const {params, collection} = this.props;
+    const {params, collection, deleteRecord, updatePath} = this.props;
     const {bid, cid} = params;
-    const {busy, label, schema, displayFields, records} = collection;
-    const {deleteRecord} = this.props;
-
-    if (busy) {
-      return <Spinner />;
-    }
+    const {
+      busy,
+      label,
+      schema,
+      displayFields,
+      records,
+      recordsLoaded,
+    } = collection;
 
     const listActions = <ListActions bid={bid} cid={cid} />;
     return (
@@ -165,13 +171,15 @@ export default class CollectionList extends Component {
         <h1>List of records in <b>{label}</b></h1>
         {listActions}
         <Table
+          busy={busy}
           bid={bid}
           cid={cid}
           records={records}
+          recordsLoaded={recordsLoaded}
           schema={schema}
           displayFields={displayFields}
           deleteRecord={deleteRecord}
-          updatePath={this.props.updatePath} />
+          updatePath={updatePath} />
         {listActions}
       </div>
     );
