@@ -1,5 +1,4 @@
 import { expect } from "chai";
-import sinon from "sinon";
 
 import {cleanRecord, recordField} from "../scripts/utils";
 
@@ -22,12 +21,12 @@ describe("recordField", () => {
   let record;
 
   beforeEach(() => {
-      record = {
-        title: "I am a title",
-        extras: {foo: "bar", foobar: "foo"},
-        "faux.ami": "Yes I am",
-        "supported.strange.nested": {"tree": "foobar"}
-      };
+    record = {
+      title: "I am a title",
+      extras: {foo: "bar", foobar: "foo"},
+      "faux.ami": "Yes I am",
+      "supported.strange.nested": {"tree": "foobar"}
+    };
   });
   
   it("should return the title field as a string", () => {

@@ -1,3 +1,5 @@
+import React from "react";
+
 export function saveSettings(data) {
   localStorage.setItem("kwac_settings", JSON.stringify(data));
 }
@@ -41,14 +43,13 @@ export function recordField(displayField, record) {
     }
   } else if (displayField === "__json") {
     return <code>{JSON.stringify(cleanRecord(record))}</code>;
-  } else if (displayField.indexOf('.') !== -1) {
-    const fields = displayField.split('.');
+  } else if (displayField.indexOf(".") !== -1) {
+    const fields = displayField.split(".");
 
     if (record.hasOwnProperty(fields[0])) {
-      return recordField(fields.splice(1).join('.'), record[fields[0]]);
+      return recordField(fields.splice(1).join("."), record[fields[0]]);
     } else {
       let biggestCandidate = [];
-      let nextCandidate = [];
       let candidates = Object.keys(record).filter((key) => {
         return key.indexOf(fields[0]) === 0;
       });
@@ -56,8 +57,8 @@ export function recordField(displayField, record) {
       for (let key in candidates) {
         let nextCandidate = [];
         for (let part of fields) {
-          var candidate = nextCandidate.concat([part]).join('.');
-          if (candidates[key].indexOf(nextCandidate.concat([part]).join('.')) !== -1) {
+          let candidate = nextCandidate.concat([part]).join(".");
+          if (candidates[key].indexOf(candidate) !== -1) {
             nextCandidate.push(part);
           }
         }
@@ -66,8 +67,8 @@ export function recordField(displayField, record) {
         }
       }
 
-      const key = biggestCandidate.join('.');
-      return recordField(fields.splice(biggestCandidate.length).join('.'),
+      const key = biggestCandidate.join(".");
+      return recordField(fields.splice(biggestCandidate.length).join("."),
                          record[key]);
     }
   }

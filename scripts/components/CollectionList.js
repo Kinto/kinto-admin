@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
 
-import { cleanRecord, recordField } from "../utils";
+import { recordField } from "../utils";
 import Spinner from "./Spinner";
 
 
