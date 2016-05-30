@@ -155,20 +155,23 @@ export default class CollectionList extends Component {
     const {busy, label, schema, displayFields, records} = collection;
     const {deleteRecord} = this.props;
 
+    if (busy) {
+      return <Spinner />;
+    }
+
     const listActions = <ListActions bid={bid} cid={cid} />;
     return (
       <div className="collection-page">
         <h1>List of records in <b>{label}</b></h1>
         {listActions}
-        {busy ? <Spinner /> :
-          <Table
-            bid={bid}
-            cid={cid}
-            records={records}
-            schema={schema}
-            displayFields={displayFields}
-            deleteRecord={deleteRecord}
-            updatePath={this.props.updatePath} />}
+        <Table
+          bid={bid}
+          cid={cid}
+          records={records}
+          schema={schema}
+          displayFields={displayFields}
+          deleteRecord={deleteRecord}
+          updatePath={this.props.updatePath} />
         {listActions}
       </div>
     );

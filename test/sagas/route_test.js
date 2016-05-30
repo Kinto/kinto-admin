@@ -43,21 +43,6 @@ describe("route sagas", () => {
         loadRoute = saga.loadRoute("bucket");
       });
 
-      it("should reset the currently selected bucket", () => {
-        expect(loadRoute.next().value)
-          .eql(put(bucketActions.resetBucket()));
-      });
-
-      it("should reset the currently selected collection", () => {
-        expect(loadRoute.next().value)
-          .eql(put(collectionActions.resetCollection()));
-      });
-
-      it("should reset the currently selected record", () => {
-        expect(loadRoute.next().value)
-          .eql(put(recordActions.resetRecord()));
-      });
-
       it("should mark the selected bucket as busy", () => {
         expect(loadRoute.next().value)
           .eql(put(bucketActions.bucketBusy(true)));
@@ -89,21 +74,6 @@ describe("route sagas", () => {
         batch = () => {};
         setClient({batch});
         loadRoute = saga.loadRoute("bucket", "collection");
-      });
-
-      it("should reset the currently selected bucket", () => {
-        expect(loadRoute.next().value)
-          .eql(put(bucketActions.resetBucket()));
-      });
-
-      it("should reset the currently selected collection", () => {
-        expect(loadRoute.next().value)
-          .eql(put(collectionActions.resetCollection()));
-      });
-
-      it("should reset the currently selected record", () => {
-        expect(loadRoute.next().value)
-          .eql(put(recordActions.resetRecord()));
       });
 
       it("should mark the selected bucket as busy", () => {
@@ -139,6 +109,7 @@ describe("route sagas", () => {
         expect(loadRoute.next().value)
           .eql(put(collectionActions.collectionLoadSuccess({
             id: "collection",
+            bucket: "bucket",
             a: 2
           })));
       });
@@ -151,21 +122,6 @@ describe("route sagas", () => {
         batch = () => {};
         setClient({batch});
         loadRoute = saga.loadRoute("bucket", "collection", "record");
-      });
-
-      it("should reset the currently selected bucket", () => {
-        expect(loadRoute.next().value)
-          .eql(put(bucketActions.resetBucket()));
-      });
-
-      it("should reset the currently selected collection", () => {
-        expect(loadRoute.next().value)
-          .eql(put(collectionActions.resetCollection()));
-      });
-
-      it("should reset the currently selected record", () => {
-        expect(loadRoute.next().value)
-          .eql(put(recordActions.resetRecord()));
       });
 
       it("should mark the selected bucket as busy", () => {
@@ -202,6 +158,7 @@ describe("route sagas", () => {
         expect(loadRoute.next().value)
           .eql(put(collectionActions.collectionLoadSuccess({
             id: "collection",
+            bucket: "bucket",
             a: 2
           })));
       });

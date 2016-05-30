@@ -33,11 +33,6 @@ export function* loadRoute(bid, cid, rid) {
   try {
     const client = getClient();
 
-    // Reset all currently selected resources
-    yield put(resetBucket());
-    yield put(resetCollection());
-    yield put(resetRecord());
-
     // Mark bucket and collection as busy if we are loading them
     if (bid) {
       yield put(bucketBusy(true));
@@ -55,12 +50,12 @@ export function* loadRoute(bid, cid, rid) {
     });
     if (bucket) {
       yield put(bucketLoadSuccess(bid, bucket));
-    }
-    if (collection) {
-      yield put(collectionLoadSuccess(collection));
-    }
-    if (record) {
-      yield put(recordLoadSuccess(record));
+      if (collection) {
+        yield put(collectionLoadSuccess({...collection, bucket: bucket.id}));
+        if (record) {
+          yield put(recordLoadSuccess(record));
+        }
+      }
     }
   } catch(error) {
     yield put(notifyError(error));
