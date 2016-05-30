@@ -96,7 +96,7 @@ Instead, run the development server, as above.
 
 ### How to display a nested field value using the collection displayFields property?
 
-Use the pointed notation.
+Use the *dot* notation.
 
 For example, if you have the following record:
 
@@ -110,7 +110,7 @@ For example, if you have the following record:
 }
 ```
 
-You can use ``attachment.filename``.
+You can use `attachment.filename`.
 
 We tried our best to make it work with properties having dots in their name.
 
@@ -121,7 +121,7 @@ For instance:
   "data": {
     "target": {
       "proof.hash": "abcd",
-    "merkle.tree": {
+      "merkle.tree": {
          "file.name": "foobar"
       }
     }
@@ -130,8 +130,8 @@ For instance:
 
 ```
 
-If you use ``target.merkle.tree.file.name`` it will render the string
-``foobar`` and ``target.proof.hash`` will render ``abcd``.
+If you use `target.merkle.tree.file.name` it will render the string
+`foobar` and `target.proof.hash` will render `abcd`.
 
 ## License
 

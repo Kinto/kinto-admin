@@ -10,7 +10,7 @@ describe("cleanRecord", () => {
       schema: 5638,
       foo: "bar",
       foobar: "foo"
-    })).to.eql({
+    })).eql({
       foo: "bar",
       foobar: "foo"
     });
@@ -30,39 +30,47 @@ describe("renderDisplayField", () => {
   });
   
   it("should return the title field as a string", () => {
-    expect(renderDisplayField(record, "title")).to.eql("I am a title");
+    expect(renderDisplayField(record, "title"))
+      .eql("I am a title");
   });
 
   it("should return the extras field as a JSON string", () => {
-    expect(renderDisplayField(record, "extras")).to.eql(
-      JSON.stringify({"foo": "bar", "foobar": "foo"}));
+    expect(renderDisplayField(record, "extras"))
+      .eql(JSON.stringify({"foo": "bar", "foobar": "foo"}));
   });
 
   it("should return the extras.foo field as a string", () => {
-    expect(renderDisplayField(record, "extras.foo")).to.eql("bar");
+    expect(renderDisplayField(record, "extras.foo"))
+      .eql("bar");
   });
 
   it("should return the faux.ami field as a string", () => {
-    expect(renderDisplayField(record, "faux.ami")).to.eql("Yes I am");
+    expect(renderDisplayField(record, "faux.ami"))
+      .eql("Yes I am");
   });
 
   it("should return unknown if the nested field wasn't found.", () => {
-    expect(renderDisplayField(record, "extras.unknown")).to.eql("<unknown>");
+    expect(renderDisplayField(record, "extras.unknown"))
+      .eql("<unknown>");
   });
 
   it("should return unknown if the field wasn't found.", () => {
-    expect(renderDisplayField(record, "unknown")).to.eql("<unknown>");
+    expect(renderDisplayField(record, "unknown"))
+      .eql("<unknown>");
   });
 
   it("should return support strange nested tree.", () => {
-    expect(renderDisplayField(record, "supported.strange.nested.tree")).to.eql("foobar");
+    expect(renderDisplayField(record, "supported.strange.nested.tree"))
+      .eql("foobar");
   });
 
   it("should return support strange nested tree value.", () => {
-    expect(renderDisplayField(record, "supported.strange.nested.tree.value")).to.eql("bar");
+    expect(renderDisplayField(record, "supported.strange.nested.tree.value"))
+      .eql("bar");
   });
 
   it("should return support strange nested tree value missing.", () => {
-    expect(renderDisplayField(record, "supported.strange.nested.tree.missing")).to.eql("<unknown>");
+    expect(renderDisplayField(record, "supported.strange.nested.tree.missing"))
+      .eql("<unknown>");
   });
 });
