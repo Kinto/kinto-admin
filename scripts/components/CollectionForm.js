@@ -27,7 +27,8 @@ const schema = {
     displayFields: {
       type: "array",
       items: {
-        type: "string"
+        type: "string",
+        description: "Enter a field name. i.e: name, attachment.filename"
       }
     },
   }
