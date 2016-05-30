@@ -25,7 +25,7 @@ describe("renderDisplayField", () => {
       title: "I am a title",
       extras: {foo: "bar", foobar: "foo"},
       "faux.ami": "Yes I am",
-      "supported.strange.nested": {"tree": "foobar"}
+      "supported.strange.nested": {"tree": "foobar", "tree.value": "bar"}
     };
   });
   
@@ -56,5 +56,13 @@ describe("renderDisplayField", () => {
 
   it("should return support strange nested tree.", () => {
     expect(renderDisplayField(record, "supported.strange.nested.tree")).to.eql("foobar");
+  });
+
+  it("should return support strange nested tree value.", () => {
+    expect(renderDisplayField(record, "supported.strange.nested.tree.value")).to.eql("bar");
+  });
+
+  it("should return support strange nested tree value missing.", () => {
+    expect(renderDisplayField(record, "supported.strange.nested.tree.missing")).to.eql("<unknown>");
   });
 });
