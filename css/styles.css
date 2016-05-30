@@ -139,6 +139,16 @@ table.record-list td.actions {
   padding-top: 1em;
 }
 
+@keyframes fadeIn {
+  from { opacity: 0.5 }
+  to   { opacity: 1 }
+}
+
+.notification {
+  animation-name: fadeIn;
+  animation-duration: 1s;
+}
+
 .json-record {
   min-height: 300px;
 }

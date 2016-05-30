@@ -34,7 +34,7 @@ export function* loadBucket(bid) {
     const data = yield call([bucket, bucket.getData]);
     yield put(bucketLoadSuccess(bid, data));
   } catch(error) {
-    yield put(notifyError(error, {clear: true}));
+    yield put(notifyError(error));
   } finally {
     yield put(bucketBusy(false));
   }
@@ -49,7 +49,7 @@ export function* createBucket(bid, data) {
     yield put(updatePath(`/buckets/${bid}/edit`));
     yield put(notifySuccess("Bucket created."));
   } catch(error) {
-    yield put(notifyError(error, {clear: true}));
+    yield put(notifyError(error));
   } finally {
     yield put(sessionBusy(false));
   }
@@ -63,7 +63,7 @@ export function* updateBucket(bid, data) {
     yield call(loadBucket, bid);
     yield put(notifySuccess("Bucket updated."));
   } catch(error) {
-    yield put(notifyError(error, {clear: true}));
+    yield put(notifyError(error));
   } finally {
     yield put(sessionBusy(false));
   }
@@ -78,7 +78,7 @@ export function* deleteBucket(bid) {
     yield put(updatePath("/"));
     yield put(notifySuccess("Bucket deleted."));
   } catch(error) {
-    yield put(notifyError(error, {clear: true}));
+    yield put(notifyError(error));
   } finally {
     yield put(sessionBusy(false));
   }
@@ -91,7 +91,7 @@ export function* loadCollection(bid, cid) {
     const data = yield call([coll, coll.getData]);
     yield put(collectionLoadSuccess({...data, bucket: bid}));
   } catch(error) {
-    yield put(notifyError(error, {clear: true}));
+    yield put(notifyError(error));
   } finally {
     yield put(collectionBusy(false));
   }
@@ -108,7 +108,7 @@ export function* createCollection(bid, collectionData) {
     yield put(notifySuccess("Collection created."));
     yield call(listBuckets);
   } catch(error) {
-    yield put(notifyError(error, {clear: true}));
+    yield put(notifyError(error));
   }
 }
 
@@ -119,7 +119,7 @@ export function* updateCollection(bid, cid, collectionData) {
     yield put(collectionLoadSuccess({...data, bucket: bid}));
     yield put(notifySuccess("Collection properties updated."));
   } catch(error) {
-    yield put(notifyError(error, {clear: true}));
+    yield put(notifyError(error));
   }
 }
 
@@ -131,7 +131,7 @@ export function* deleteCollection(bid, cid) {
     yield put(notifySuccess("Collection deleted."));
     yield call(listBuckets);
   } catch(error) {
-    yield put(notifyError(error, {clear: true}));
+    yield put(notifyError(error));
   }
 }
 
