@@ -55,11 +55,11 @@ export function renderDisplayField(record, displayField) {
       return key.indexOf(fields[0]) === 0;
     });
 
-    for (let key in candidates) {
+    for (let key of candidates) {
       let nextCandidate = [];
       for (let part of fields) {
         let candidate = nextCandidate.concat([part]).join(".");
-        if (candidates[key].indexOf(candidate) !== -1) {
+        if (key.indexOf(candidate) !== -1) {
           nextCandidate.push(part);
         }
       }
