@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
 
-import { recordField } from "../utils";
+import { renderDisplayField } from "../utils";
 import Spinner from "./Spinner";
 
 
@@ -39,7 +39,7 @@ class Row extends Component {
     return <tr onDoubleClick={this.onDoubleClick.bind(this)}>
       {
         displayFields.map((displayField, index) => {
-          return <td key={index}>{recordField(displayField, this.props.record)}</td>;
+          return <td key={index}>{renderDisplayField(record, displayField)}</td>;
         })
       }
       <td className="lastmod">{this.lastModified}</td>

@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import {cleanRecord, recordField} from "../scripts/utils";
+import {cleanRecord, renderDisplayField} from "../scripts/utils";
 
 describe("cleanRecord", () => {
   it("should remove id, schema and last_modified from properties", () => {
@@ -17,7 +17,7 @@ describe("cleanRecord", () => {
   });
 });
 
-describe("recordField", () => {
+describe("renderDisplayField", () => {
   let record;
 
   beforeEach(() => {
@@ -30,30 +30,30 @@ describe("recordField", () => {
   });
   
   it("should return the title field as a string", () => {
-    expect(recordField("title", record)).to.eql("I am a title");
+    expect(renderDisplayField(record, "title")).to.eql("I am a title");
   });
 
   it("should return the extras field as a JSON string", () => {
-    expect(recordField("extras", record)).to.eql('{"foo":"bar","foobar":"foo"}');
+    expect(renderDisplayField(record, "extras")).to.eql('{"foo":"bar","foobar":"foo"}');
   });
 
   it("should return the extras.foo field as a string", () => {
-    expect(recordField("extras.foo", record)).to.eql("bar");
+    expect(renderDisplayField(record, "extras.foo")).to.eql("bar");
   });
 
   it("should return the faux.ami field as a string", () => {
-    expect(recordField("faux.ami", record)).to.eql("Yes I am");
+    expect(renderDisplayField(record, "faux.ami")).to.eql("Yes I am");
   });
 
   it("should return unknown if the nested field wasn't found.", () => {
-    expect(recordField("extras.unknown", record)).to.eql("<unknown>");
+    expect(renderDisplayField(record, "extras.unknown")).to.eql("<unknown>");
   });
 
   it("should return unknown if the field wasn't found.", () => {
-    expect(recordField("unknown", record)).to.eql("<unknown>");
+    expect(renderDisplayField(record, "unknown")).to.eql("<unknown>");
   });
 
   it("should return support strange nested tree.", () => {
-    expect(recordField("supported.strange.nested.tree", record)).to.eql("foobar");
+    expect(renderDisplayField(record, "supported.strange.nested.tree")).to.eql("foobar");
   });
 });

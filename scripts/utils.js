@@ -31,7 +31,7 @@ export function cleanRecord(record) {
   return omit(record, ["id", "schema", "last_modified"]);
 }
 
-export function recordField(displayField, record) {
+export function renderDisplayField(record, displayField) {
   if (record.hasOwnProperty(displayField)) {
     const field = record[displayField];
     if (typeof field === "string") {
@@ -47,30 +47,32 @@ export function recordField(displayField, record) {
     const fields = displayField.split(".");
 
     if (record.hasOwnProperty(fields[0])) {
-      return recordField(fields.splice(1).join("."), record[fields[0]]);
-    } else {
-      let biggestCandidate = [];
-      let candidates = Object.keys(record).filter((key) => {
-        return key.indexOf(fields[0]) === 0;
-      });
+      return renderDisplayField(record[fields[0]], fields.splice(1).join("."));
+    }
 
-      for (let key in candidates) {
-        let nextCandidate = [];
-        for (let part of fields) {
-          let candidate = nextCandidate.concat([part]).join(".");
-          if (candidates[key].indexOf(candidate) !== -1) {
-            nextCandidate.push(part);
-          }
-        }
-        if (nextCandidate.length > biggestCandidate.length) {
-          biggestCandidate = nextCandidate;
+    let biggestCandidate = [];
+    let candidates = Object.keys(record).filter((key) => {
+      return key.indexOf(fields[0]) === 0;
+    });
+
+    for (let key in candidates) {
+      let nextCandidate = [];
+      for (let part of fields) {
+        let candidate = nextCandidate.concat([part]).join(".");
+        if (candidates[key].indexOf(candidate) !== -1) {
+          nextCandidate.push(part);
         }
       }
-
-      const key = biggestCandidate.join(".");
-      return recordField(fields.splice(biggestCandidate.length).join("."),
-                         record[key]);
+      if (nextCandidate.length > biggestCandidate.length) {
+        biggestCandidate = nextCandidate;
+      }
     }
+
+    const key = biggestCandidate.join(".");
+    return renderDisplayField(
+      record[key],
+      fields.splice(biggestCandidate.length).join(".")
+    );
   }
   return "<unknown>";
 }
