@@ -2,9 +2,9 @@ import { call, take, fork, put } from "redux-saga/effects";
 
 import { SESSION_SETUP_COMPLETE, ROUTE_LOAD_REQUEST } from "../constants";
 import { getClient } from "../client";
-import { resetBucket, bucketBusy, bucketLoadSuccess } from "../actions/bucket";
-import { resetCollection, collectionBusy, collectionLoadSuccess } from "../actions/collection";
-import { resetRecord, recordLoadSuccess } from "../actions/record";
+import { bucketBusy, bucketLoadSuccess } from "../actions/bucket";
+import { collectionBusy, collectionLoadSuccess } from "../actions/collection";
+import { recordLoadSuccess } from "../actions/record";
 import { notifyError } from "../actions/notifications";
 
 
