@@ -47,7 +47,7 @@ export function renderDisplayField(record, displayField) {
     const fields = displayField.split(".");
 
     if (record.hasOwnProperty(fields[0])) {
-      return renderDisplayField(record[fields[0]], fields.splice(1).join("."));
+      return renderDisplayField(record[fields[0]], fields.slice(1).join("."));
     }
 
     let biggestCandidate = [];
@@ -71,7 +71,7 @@ export function renderDisplayField(record, displayField) {
     const key = biggestCandidate.join(".");
     return renderDisplayField(
       record[key],
-      fields.splice(biggestCandidate.length).join(".")
+      fields.slice(biggestCandidate.length).join(".")
     );
   }
   return "<unknown>";
