@@ -34,8 +34,10 @@ class Row extends Component {
     }
   }
 
-  recordField(displayField) {
-    const {record} = this.props;
+  recordField(displayField, record) {
+    if (typeOf(record) === "undefined") {
+      const {record} = this.props;
+    }
     if (record.hasOwnProperty(displayField)) {
       const field = record[displayField];
       if (typeof field === "string") {
@@ -47,6 +49,33 @@ class Row extends Component {
       }
     } else if (displayField === "__json") {
       return <code>{JSON.stringify(cleanRecord(record))}</code>;
+    } else if (displayField.indexOf('.') !== -1) {
+      const fields = displayField.split('.');
+
+      if (record.hasOwnProperty(fields[0])) {
+        return recordField(fields.splice(1).join('.'), record[fields[0]]);
+      } else {
+        let biggestCandidate = [];
+        let nextCandidate = [];
+        let candidates = Object.keys(record).filter((key) => {
+          return key.indexOf(fields[0]) === 0;
+        });
+
+        for (let key in candidates) {
+          let nextCandidate = [];
+          for (let part in field) {
+            if (key.indexOf(nextCandidate.concat([part]).join('.'))) {
+              nextCandidate.push(part);
+            }
+          }
+          if (nextCandidate.length > biggestCandidate.length) {
+            biggestCandidate = nextCandidate;
+          }
+        }
+
+        return recordField(fields.splice(biggestCandidate.length).join('.'),
+                           record[biggestCandidate.join('.')]);
+      }
     }
     return "<unknown>";
   }
