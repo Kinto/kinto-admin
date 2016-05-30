@@ -11,11 +11,7 @@ import {
   COLLECTION_UPDATE_REQUEST,
   COLLECTION_DELETE_REQUEST,
 } from "../../scripts/constants";
-import {
-  notifyError,
-  notifySuccess,
-  clearNotifications
-} from "../../scripts/actions/notifications";
+import { notifyError, notifySuccess } from "../../scripts/actions/notifications";
 import * as sessionActions from "../../scripts/actions/session";
 import * as collectionActions from "../../scripts/actions/collection";
 import * as actions from "../../scripts/actions/bucket";
@@ -214,7 +210,7 @@ describe("bucket sagas", () => {
       let bucket, collection, loadCollection;
 
       before(() => {
-        collection = {getAttributes() {}};
+        collection = {getData() {}};
         bucket = {collection() {return collection;}};
         setClient({bucket() {return bucket;}});
         loadCollection = saga.loadCollection("bucket", "collection");
@@ -227,15 +223,14 @@ describe("bucket sagas", () => {
 
       it("should fetch collection attributes", () => {
         expect(loadCollection.next().value)
-          .eql(call([collection, collection.getAttributes]));
+          .eql(call([collection, collection.getData]));
       });
 
       it("should dispatch the collectionLoadSuccess action", () => {
-        expect(loadCollection.next({data: collectionData}).value)
+        expect(loadCollection.next(collectionData).value)
           .eql(put(collectionActions.collectionLoadSuccess({
             ...collectionData,
             bucket: "bucket",
-            label: "bucket/collection",
           })));
       });
 
@@ -327,7 +322,7 @@ describe("bucket sagas", () => {
       let bucket, collection, updateCollection;
 
       before(() => {
-        collection = {setMetadata() {}};
+        collection = {setData() {}};
         bucket = {collection() {return collection;}};
         setClient({bucket() {return bucket;}});
         updateCollection = saga.updateCollection(
@@ -336,7 +331,7 @@ describe("bucket sagas", () => {
 
       it("should post the collection data", () => {
         expect(updateCollection.next().value)
-          .eql(call([collection, collection.setMetadata], collectionData));
+          .eql(call([collection, collection.setData], collectionData));
       });
 
       it("should dispatch the collectionLoadSuccess action", () => {
@@ -344,7 +339,6 @@ describe("bucket sagas", () => {
           .eql(put(collectionActions.collectionLoadSuccess({
             ...collectionData,
             bucket: "bucket",
-            label: "bucket/collection",
           })));
       });
 

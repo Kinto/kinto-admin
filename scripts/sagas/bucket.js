@@ -31,7 +31,7 @@ export function* loadBucket(bid) {
   try {
     const bucket = getBucket(bid);
     yield put(bucketBusy(true));
-    const {data} = yield call([bucket, bucket.getAttributes]);
+    const data = yield call([bucket, bucket.getData]);
     yield put(bucketLoadSuccess(bid, data));
   } catch(error) {
     yield put(notifyError(error, {clear: true}));
@@ -88,12 +88,8 @@ export function* loadCollection(bid, cid) {
   try {
     const coll = getCollection(bid, cid);
     yield put(collectionBusy(true));
-    const {data} = yield call([coll, coll.getAttributes]);
-    yield put(collectionLoadSuccess({
-      ...data,
-      bucket: bid,
-      label: `${bid}/${cid}`,
-    }));
+    const data = yield call([coll, coll.getData]);
+    yield put(collectionLoadSuccess({...data, bucket: bid}));
   } catch(error) {
     yield put(notifyError(error, {clear: true}));
   } finally {
@@ -119,12 +115,8 @@ export function* createCollection(bid, collectionData) {
 export function* updateCollection(bid, cid, collectionData) {
   try {
     const coll = getCollection(bid, cid);
-    const {data} = yield call([coll, coll.setMetadata], collectionData);
-    yield put(collectionLoadSuccess({
-      ...data,
-      bucket: bid,
-      label: `${bid}/${cid}`,
-    }));
+    const {data} = yield call([coll, coll.setData], collectionData);
+    yield put(collectionLoadSuccess({...data, bucket: bid}));
     yield put(notifySuccess("Collection properties updated."));
   } catch(error) {
     yield put(notifyError(error, {clear: true}));

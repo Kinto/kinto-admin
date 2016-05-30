@@ -10,9 +10,9 @@ import { notifyError } from "../actions/notifications";
 
 export function* loadRoute(bid, cid, rid) {
   try {
-    yield resetBucket();
-    yield resetCollection();
-    yield resetRecord();
+    // yield put(resetBucket());
+    // yield put(resetCollection());
+    // yield put(resetRecord());
     const res = yield getClient().batch(batch => {
       if (bid) {
         const bucket = batch.bucket(bid);
