@@ -1,6 +1,11 @@
 import { expect } from "chai";
 
-import {cleanRecord, renderDisplayField} from "../scripts/utils";
+import {
+  cleanRecord,
+  renderDisplayField,
+  validateSchema,
+} from "../scripts/utils";
+
 
 describe("cleanRecord", () => {
   it("should remove id, schema and last_modified from properties", () => {
@@ -28,7 +33,7 @@ describe("renderDisplayField", () => {
       "supported.strange.nested": {"tree": "foobar", "tree.value": "bar"}
     };
   });
-  
+
   it("should return the title field as a string", () => {
     expect(renderDisplayField(record, "title"))
       .eql("I am a title");
@@ -72,5 +77,42 @@ describe("renderDisplayField", () => {
   it("should return support strange nested tree value missing.", () => {
     expect(renderDisplayField(record, "supported.strange.nested.tree.missing"))
       .eql("<unknown>");
+  });
+});
+
+describe("validateSchema()", () => {
+  it("should validate that the schema is valid JSON", () => {
+    expect(() => validateSchema("invalid"))
+      .to.Throw("The schema is not valid JSON");
+  });
+
+  it("should validate that the schema is an object", () => {
+    expect(() => validateSchema("[]"))
+      .to.Throw("The schema is not an object");
+  });
+
+  it("should validate that the schema has a type property", () => {
+    expect(() => validateSchema("{}"))
+      .to.Throw("The schema has no type");
+  });
+
+  it("should validate that the schema has an 'object' type", () => {
+    expect(() => validateSchema(JSON.stringify({type: "string"})))
+      .to.Throw("The schema type is not 'object'");
+  });
+
+  it("should validate that the schema declare properties", () => {
+    expect(() => validateSchema(JSON.stringify({type: "object"})))
+      .to.Throw("The schema has no 'properties' property");
+  });
+
+  it("should validate that the schema properties are an object", () => {
+    expect(() => validateSchema(JSON.stringify({type: "object", properties: 2})))
+      .to.Throw("The 'properties' property is not an object");
+  });
+
+  it("should validate that the schema properties has properties", () => {
+    expect(() => validateSchema(JSON.stringify({type: "object", properties: {}})))
+      .to.Throw("The 'properties' property object has no properties");
   });
 });
