@@ -39,13 +39,16 @@ export function* listBuckets(serverInfo) {
     // Notify they're received
     yield put(sessionActions.serverInfoSuccess(serverInfo));
     // Retrieve and build the list of buckets
-    let buckets = [];
     const {data} = yield call([client, client.listBuckets]);
-    for (const {id} of data) {
-      const bucket = client.bucket(id);
-      const {data} = yield call([bucket, bucket.listCollections], id);
-      buckets.push({id, collections: data});
-    }
+    const responses = yield call([client, client.batch], (batch) => {
+      for (const {id} of data) {
+        batch.bucket(id).listCollections();
+      }
+    });
+    const buckets = data.map((bucket, index) => {
+      const collections = responses[index].body.data;
+      return {id: bucket.id, collections};
+    });
     yield put(sessionActions.bucketsSuccess(buckets));
   } catch(error) {
     yield put(notificationActions.notifyError(error));
