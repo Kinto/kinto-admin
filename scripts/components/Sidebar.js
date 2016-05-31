@@ -8,7 +8,7 @@ function activeIfPathname(location, pathname) {
 }
 
 function BucketCollectionsMenu(props) {
-  const {active, bucket, collections, bid, cid} = props;
+  const {active, currentPath, bucket, collections, bid, cid} = props;
   return (
     <div className="collections-menu list-group">
       {
@@ -19,10 +19,13 @@ function BucketCollectionsMenu(props) {
             "collections-menu-entry",
             bid === bucket.id && cid === id ? "active" : "",
           ].join(" ");
+          const listPath = `/buckets/${bucket.id}/collections/${id}`;
           return (
             <div key={i} className={classes}>
               <i className="glyphicon glyphicon-align-justify"/>
-              <Link to={`/buckets/${bucket.id}/collections/${id}`}>{id}</Link>
+              {
+                currentPath === listPath ? id : <Link to={listPath}>{id}</Link>
+              }
               <Link to={`/buckets/${bucket.id}/collections/${id}/edit`}
                 className="collections-menu-entry-edit"
                 title="Edit collection properties">
@@ -42,7 +45,7 @@ function BucketCollectionsMenu(props) {
 }
 
 function BucketsMenu(props) {
-  const {active, buckets, userBucket, bid, cid} = props;
+  const {active, currentPath, buckets, userBucket, bid, cid} = props;
   return (
     <div>
       {
@@ -64,6 +67,7 @@ function BucketsMenu(props) {
                 bucket={bucket}
                 collections={collections}
                 active={active}
+                currentPath={currentPath}
                 bid={bid}
                 cid={cid} />
             </div>
@@ -101,6 +105,7 @@ export default class Sidebar extends Component {
             buckets={buckets}
             userBucket={userBucket}
             active={active}
+            currentPath={location.pathname}
             bid={bid}
             cid={cid} /> : null}
       </div>
