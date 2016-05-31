@@ -48,6 +48,14 @@ function BucketsMenu(props) {
   const {active, currentPath, buckets, userBucket, bid, cid} = props;
   return (
     <div>
+      <div className="panel panel-default">
+        <div className="list-group">
+          <Link to="/buckets/create-bucket" className={active("/buckets/create-bucket")}>
+            <i className="glyphicon glyphicon-plus"/>
+            Create bucket
+          </Link>
+        </div>
+      </div>
       {
         buckets.map((bucket, i) => {
           const {id, collections} = bucket;
@@ -74,14 +82,6 @@ function BucketsMenu(props) {
           );
         })
       }
-      <div className="panel panel-default">
-        <div className="list-group">
-          <Link to="/buckets/create-bucket" className={active("/buckets/create-bucket")}>
-            <i className="glyphicon glyphicon-plus"/>
-            Create bucket
-          </Link>
-        </div>
-      </div>
     </div>
   );
 }
