@@ -72,6 +72,16 @@ export function validateSchema(jsonSchema) {
   return schema;
 }
 
+export function validateDisplayFields(schema, displayFields) {
+  const {properties} = JSON.parse(schema);
+  const fieldRoots = displayFields.map((field) => field.split(".")[0]);
+  fieldRoots.forEach((root) => {
+    if (!properties.hasOwnProperty(root)) {
+      throw `The JSON schema does not define a ${root} field`;
+    }
+  });
+}
+
 export function cleanRecord(record) {
   return omit(record, ["id", "schema", "last_modified"]);
 }

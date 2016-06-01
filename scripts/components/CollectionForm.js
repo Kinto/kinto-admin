@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Form from "react-jsonschema-form";
 
 import JSONEditor from "./JSONEditor";
-import { validJSON, validateSchema } from "./../utils";
+import { validJSON, validateSchema, validateDisplayFields } from "./../utils";
 
 
 const defaultSchema = JSON.stringify({
@@ -98,6 +98,11 @@ function validate({schema, uiSchema, displayFields}, errors) {
   }
   if (!validJSON(uiSchema)) {
     errors.uiSchema.addError("Invalid JSON.");
+  }
+  try {
+    validateDisplayFields(schema, displayFields);
+  } catch(error) {
+    errors.displayFields.addError(error);
   }
   return errors;
 }
