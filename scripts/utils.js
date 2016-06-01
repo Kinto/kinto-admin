@@ -69,6 +69,7 @@ export function validateSchema(jsonSchema) {
       throw error;
     }
   });
+  return schema;
 }
 
 export function cleanRecord(record) {

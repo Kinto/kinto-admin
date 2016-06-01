@@ -43,6 +43,7 @@ const schema = {
     displayFields: {
       type: "array",
       default: ["field1", "field2"],
+      minItems: 1,
       items: {
         type: "string",
         description: "Enter a field name. i.e: name, attachment.filename",
@@ -79,12 +80,17 @@ const uiSchema = {
     )
   },
   displayFields: {
-    "ui:help": "This field allows defining the record object properties " +
-               "to display as columns in the main records list table."
+    "ui:help": (
+      <p>
+        This field allows defining the record object properties to display as
+        columns in the main records list table. You must define at least one
+        display field.
+      </p>
+    )
   }
 };
 
-function validate({schema, uiSchema}, errors) {
+function validate({schema, uiSchema, displayFields}, errors) {
   try {
     validateSchema(schema);
   } catch(error) {
