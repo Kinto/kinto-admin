@@ -18,6 +18,10 @@ export function omit(obj, keys=[]) {
   }, {});
 }
 
+export function isObject(thing) {
+  return typeof thing === "object" && thing !== null && !Array.isArray(thing);
+}
+
 export function validJSON(string) {
   try {
     JSON.parse(string);
@@ -25,6 +29,46 @@ export function validJSON(string) {
   } catch(err) {
     return false;
   }
+}
+
+export function validateSchema(jsonSchema) {
+  let schema;
+  try {
+    schema = JSON.parse(jsonSchema);
+  } catch(err) {
+    throw "The schema is not valid JSON";
+  }
+  const checks = [
+    {
+      test: () => isObject(schema),
+      error: "The schema is not an object",
+    },
+    {
+      test: () => schema.hasOwnProperty("type"),
+      error: "The schema has no type",
+    },
+    {
+      test: () => schema.type === "object",
+      error: "The schema type is not 'object'",
+    },
+    {
+      test: () => schema.hasOwnProperty("properties"),
+      error: "The schema has no 'properties' property",
+    },
+    {
+      test: () => isObject(schema.properties),
+      error: "The 'properties' property is not an object",
+    },
+    {
+      test: () => Object.keys(schema.properties).length > 0,
+      error: "The 'properties' property object has no properties",
+    },
+  ];
+  checks.forEach(({test, error}) => {
+    if (!test()) {
+      throw error;
+    }
+  });
 }
 
 export function cleanRecord(record) {
