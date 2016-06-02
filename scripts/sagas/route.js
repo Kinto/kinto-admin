@@ -48,7 +48,7 @@ export function* loadRoute(bid, cid, rid) {
 
     // Map them to state
     const [bucket, collection, record] = res.map(({body}) => {
-      return body.data;
+      return body.data || {};
     });
     yield put(bucketLoadSuccess(bid, bucket));
     if (collection) {
