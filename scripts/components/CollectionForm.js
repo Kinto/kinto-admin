@@ -91,18 +91,22 @@ const uiSchema = {
 };
 
 function validate({schema, uiSchema, displayFields}, errors) {
+  let _schema;
   try {
-    validateSchema(schema);
+    _schema = validateSchema(schema);
   } catch(error) {
     errors.schema.addError(error);
   }
   if (!validJSON(uiSchema)) {
     errors.uiSchema.addError("Invalid JSON.");
   }
-  try {
-    validateDisplayFields(schema, displayFields);
-  } catch(error) {
-    errors.displayFields.addError(error);
+  const displayFieldsErrors = validateDisplayFields(_schema, displayFields);
+  if (displayFieldsErrors.length > 0) {
+    // XXX would be nice to attach the errors to their respective array items
+    // https://github.com/mozilla-services/react-jsonschema-form/issues/223
+    for (const error of displayFieldsErrors) {
+      errors.displayFields.addError(error);
+    }
   }
   return errors;
 }

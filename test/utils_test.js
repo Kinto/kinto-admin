@@ -4,6 +4,7 @@ import {
   cleanRecord,
   renderDisplayField,
   validateSchema,
+  validateDisplayFields,
 } from "../scripts/utils";
 
 
@@ -114,5 +115,53 @@ describe("validateSchema()", () => {
   it("should validate that the schema properties has properties", () => {
     expect(() => validateSchema(JSON.stringify({type: "object", properties: {}})))
       .to.Throw("The 'properties' property object has no properties");
+  });
+});
+
+describe("validateDisplayFields", () => {
+  const schema = {
+    type: "object",
+    properties: {
+      foo: {type: "string"},
+      bar: {
+        type: "object",
+        properties: {
+          baz: {
+            type: "object",
+            properties: {
+              qux: {type: "string"}
+            }
+          }
+        }
+      }
+    }
+  };
+
+  it("should return no errors fields are in the schema", () => {
+    expect(validateDisplayFields(schema, ["foo", "bar"]))
+      .eql([]);
+  });
+
+  it("should return an error if a field is not in the schema", () => {
+    expect(validateDisplayFields(schema, ["xxx"]))
+      .eql(["The JSON schema does not define a xxx field"]);
+  });
+
+  it("should return multiple errors if fields are not in the schema", () => {
+    expect(validateDisplayFields(schema, ["xxx", "yyy"]))
+      .eql([
+        "The JSON schema does not define a xxx field",
+        "The JSON schema does not define a yyy field"
+      ]);
+  });
+
+  it("should return an error if deeply nested field is not in schema", () => {
+    expect(validateDisplayFields(schema, ["bar.baz.nope"]))
+      .eql(["The JSON schema does not define a bar.baz.nope field"]);
+  });
+
+  it("should return no error if deeply nested field is in the schema", () => {
+    expect(validateDisplayFields(schema, ["bar.baz.qux"]))
+      .eql([]);
   });
 });

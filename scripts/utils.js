@@ -72,14 +72,26 @@ export function validateSchema(jsonSchema) {
   return schema;
 }
 
+function extractSchemaPaths(schema, prefix="") {
+  const paths = [];
+  if (!schema.hasOwnProperty("properties")) {
+    return paths;
+  }
+  return Object.keys(schema.properties).reduce((paths, key) => {
+    const path = (prefix ? prefix + "." : prefix) + key;
+    return paths.concat(path, extractSchemaPaths(schema.properties[key], path));
+  }, paths);
+}
+
 export function validateDisplayFields(schema, displayFields) {
-  const {properties} = JSON.parse(schema);
-  const fieldRoots = displayFields.map((field) => field.split(".")[0]);
-  fieldRoots.forEach((root) => {
-    if (!properties.hasOwnProperty(root)) {
-      throw `The JSON schema does not define a ${root} field`;
+  const paths = extractSchemaPaths(schema);
+  const errors = [];
+  for (const displayField of displayFields) {
+    if (paths.indexOf(displayField) === -1) {
+      errors.push(`The JSON schema does not define a ${displayField} field`);
     }
-  });
+  }
+  return errors;
 }
 
 export function cleanRecord(record) {
