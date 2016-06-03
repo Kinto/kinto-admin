@@ -120,11 +120,18 @@ function handleNestedDisplayField(record, displayField) {
   return "<unknown>";
 }
 
+function linkify(string) {
+  if (/https?:\/\//.test(string)) {
+    return <a href={string} title={string} target="_blank">{string}</a>;
+  }
+  return string;
+}
+
 export function renderDisplayField(record, displayField) {
   if (record.hasOwnProperty(displayField)) {
     const field = record[displayField];
     if (typeof field === "string") {
-      return field;
+      return linkify(field);
     } else if (typeof field === "object") {
       return JSON.stringify(field);
     } else {
