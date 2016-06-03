@@ -4,6 +4,7 @@ import {
   cleanRecord,
   renderDisplayField,
   validateSchema,
+  parseDataURL,
 } from "../scripts/utils";
 
 
@@ -114,5 +115,16 @@ describe("validateSchema()", () => {
   it("should validate that the schema properties has properties", () => {
     expect(() => validateSchema(JSON.stringify({type: "object", properties: {}})))
       .to.Throw("The 'properties' property object has no properties");
+  });
+});
+
+describe("parseDataURL()", () => {
+  it("should extract expected properties", () => {
+    expect(parseDataURL("data:image/png;name=toto.png;base64,XXX"))
+      .eql({
+        name: "toto.png",
+        type: "image/png",
+        base64: "XXX"
+      });
   });
 });

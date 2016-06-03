@@ -6,6 +6,20 @@ import Spinner from "./Spinner";
 import JSONRecordForm from "./JSONRecordForm";
 
 
+function extendSchemaWithAttachment(schema) {
+  return {
+    ...schema,
+    properties: {
+      ...schema.properties,
+      __attachment__: {
+        type: "string",
+        format: "data-url",
+        title: "File attachment",
+      }
+    }
+  };
+}
+
 export default class RecordForm extends Component {
   onSubmit = ({formData}) => {
     this.props.onSubmit(formData);
@@ -13,7 +27,7 @@ export default class RecordForm extends Component {
 
   getForm() {
     const {bid, cid, collection, record} = this.props;
-    const {schema={}, uiSchema={}, busy} = collection;
+    const {schema={}, uiSchema={}, attachment=false, busy} = collection;
 
     if (busy) {
       return <Spinner />;
@@ -40,7 +54,7 @@ export default class RecordForm extends Component {
 
     return (
       <Form
-        schema={schema}
+        schema={attachment ? extendSchemaWithAttachment(schema) : schema}
         uiSchema={uiSchema}
         formData={record}
         onSubmit={this.onSubmit}>

@@ -1,5 +1,8 @@
 import { push as updatePath } from "react-router-redux";
 import { call, take, fork, put } from "redux-saga/effects";
+import endpoint from "kinto-client/lib/endpoint";
+import { v4 as uuid } from "uuid";
+import { omit, extractFileInfo } from "../utils";
 
 import {
   COLLECTION_RECORDS_REQUEST,
@@ -45,6 +48,45 @@ export function* loadRecord(bid, cid, rid) {
     yield put(collectionActions.collectionBusy(true));
     const {data} = yield call([coll, coll.getRecord], rid);
     yield put(recordLoadSuccess(data));
+  } catch(error) {
+    yield put(notifyError(error));
+  } finally {
+    yield put(collectionActions.collectionBusy(false));
+  }
+}
+
+export function* createRecordWithAttachment(bid, cid, record) {
+  try {
+    const {FormData} = window;
+    const attachment = record.__attachment__; // data-url
+    yield put(collectionActions.collectionBusy(true));
+
+    // Retrieve attachment information
+    const {blob, name} = extractFileInfo(attachment);
+
+    // Build form data
+    var formData = new FormData();
+    formData.append("attachment", blob, name);
+    formData.append("data", JSON.stringify(omit(record, "__attachment__")));
+
+    // We need to forge a dedicated request to the attachment endpoint
+    const {remote, defaultReqOptions} = getClient();
+    const path = endpoint("record", bid, cid, uuid()) + "/attachment";
+    const {status} = yield fetch(remote + path, {
+      method: "POST",
+      body: formData,
+      headers: defaultReqOptions.headers
+    });
+
+    // Raise if the request has failed
+    if ([200, 201, 202].indexOf(status) === -1) {
+      // XXX detailed error
+      throw new Error("Unable to post attachment.");
+    }
+
+    yield put(collectionActions.listRecords(bid, cid));
+    yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
+    yield put(notifySuccess("Record added."));
   } catch(error) {
     yield put(notifyError(error));
   } finally {
@@ -142,7 +184,12 @@ export function* watchRecordLoad() {
 export function* watchRecordCreate() {
   while(true) { // eslint-disable-line
     const {bid, cid, record} = yield take(RECORD_CREATE_REQUEST);
-    yield fork(createRecord, bid, cid, record);
+    // Check if we have to deal with attachments
+    if (record.hasOwnProperty("__attachment__")) {
+      yield fork(createRecordWithAttachment, bid, cid, record);
+    } else {
+      yield fork(createRecord, bid, cid, record);
+    }
   }
 }
 

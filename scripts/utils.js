@@ -137,3 +137,29 @@ export function renderDisplayField(record, displayField) {
   }
   return "<unknown>";
 }
+
+export function parseDataURL(dataURL) {
+  const regex = /data:(.*);base64,(.*)/;
+  const match = dataURL.match(regex);
+  const props = match[1];
+  const base64 = match[2];
+  const [type, ...rawParams] = props.split(";");
+  const params = rawParams.reduce((acc, param) => {
+    const [key, value] = param.split("=");
+    return {...acc, [key]: value};
+  }, {});
+  const {name} = params;
+  return {name, type, base64};
+}
+
+export function extractFileInfo(dataURL) {
+  const {Blob, Uint8Array} = window;
+  const {name, type, base64} = parseDataURL(dataURL);
+  const binary = atob(base64);
+  const array = [];
+  for(let i = 0; i < binary.length; i++) {
+    array.push(binary.charCodeAt(i));
+  }
+  const blob = new Blob([new Uint8Array(array)], {type});
+  return {name, blob};
+}

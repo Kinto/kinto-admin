@@ -45,17 +45,28 @@ export default class CollectionEdit extends Component {
   render() {
     const {params, collection} = this.props;
     const {cid} = params;
-    const {schema={}, uiSchema={}, displayFields=[], label, busy} = collection;
+    const {
+      schema = {},
+      uiSchema = {},
+      attachment = false,
+      displayFields = [],
+      label,
+      busy
+    } = collection;
+
     if (busy) {
       return <Spinner />;
     }
+
     const formData = {
       name: collection.name,
       displayFields,
+      attachment,
       // Stringify JSON fields so they're editable in a text field
       schema: JSON.stringify(schema, null, 2),
       uiSchema: JSON.stringify(uiSchema, null, 2),
     };
+
     return (
       <div>
         <h1>Edit <b>{label}</b> collection properties</h1>

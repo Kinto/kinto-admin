@@ -37,3 +37,4 @@ global.d = function d(node) {
 
 // btoa polyfill for tests
 global.btoa = require("btoa");
+global.atob = require("atob");

@@ -51,6 +51,11 @@ const schema = {
       title: "JSON schema",
       default: defaultSchema,
     },
+    attachment: {
+      type: "boolean",
+      title: "Enable file attachment",
+      default: false,
+    },
     uiSchema: {
       type: "string",
       title: "UI schema",
@@ -69,6 +74,7 @@ const schema = {
 };
 
 const uiSchema = {
+  "ui:order": ["name", "schema", "attachment", "uiSchema", "displayFields"],
   name: {
     "ui:help": "The name should only contain letters, numbers, dashes or underscores."
   },
@@ -84,6 +90,9 @@ const uiSchema = {
         useful to create your own.
       </p>
     )
+  },
+  attachment: {
+    "ui:help": "Enable a single file upload per record.",
   },
   uiSchema: {
     "ui:widget": JSONEditor,
