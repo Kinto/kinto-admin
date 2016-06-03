@@ -27,6 +27,34 @@ function getCollection(bid, cid) {
   return getBucket(bid).collection(cid);
 }
 
+function* postRecordAttachment(bid, cid, rid, record) {
+  const {FormData} = window;
+  const attachment = record.__attachment__; // data-url
+
+  // Retrieve attachment information
+  const {blob, name} = extractFileInfo(attachment);
+
+  // Build form data
+  var formData = new FormData();
+  formData.append("attachment", blob, name);
+  formData.append("data", JSON.stringify(omit(record, "__attachment__")));
+
+  // We need to forge a dedicated request to the attachment endpoint
+  const {remote, defaultReqOptions} = getClient();
+  const path = endpoint("record", bid, cid, rid) + "/attachment";
+  const {status} = yield fetch(remote + path, {
+    method: "POST",
+    body: formData,
+    headers: defaultReqOptions.headers
+  });
+
+  // Raise if the request has failed
+  if ([200, 201, 202].indexOf(status) === -1) {
+    // XXX detailed error
+    throw new Error("Unable to post attachment.");
+  }
+}
+
 export function* listRecords(bid, cid) {
   // Wait for the collection data to be loaded before loading its records
   yield take(ROUTE_LOAD_SUCCESS);
@@ -57,33 +85,8 @@ export function* loadRecord(bid, cid, rid) {
 
 export function* createRecordWithAttachment(bid, cid, record) {
   try {
-    const {FormData} = window;
-    const attachment = record.__attachment__; // data-url
     yield put(collectionActions.collectionBusy(true));
-
-    // Retrieve attachment information
-    const {blob, name} = extractFileInfo(attachment);
-
-    // Build form data
-    var formData = new FormData();
-    formData.append("attachment", blob, name);
-    formData.append("data", JSON.stringify(omit(record, "__attachment__")));
-
-    // We need to forge a dedicated request to the attachment endpoint
-    const {remote, defaultReqOptions} = getClient();
-    const path = endpoint("record", bid, cid, uuid()) + "/attachment";
-    const {status} = yield fetch(remote + path, {
-      method: "POST",
-      body: formData,
-      headers: defaultReqOptions.headers
-    });
-
-    // Raise if the request has failed
-    if ([200, 201, 202].indexOf(status) === -1) {
-      // XXX detailed error
-      throw new Error("Unable to post attachment.");
-    }
-
+    yield call(postRecordAttachment, bid, cid, uuid(), record);
     yield put(collectionActions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess("Record added."));
@@ -109,6 +112,21 @@ export function* createRecord(bid, cid, record) {
   }
 }
 
+export function* updateRecordWithAttachment(bid, cid, rid, record) {
+  try {
+    yield put(collectionActions.collectionBusy(true));
+    yield call(postRecordAttachment, bid, cid, rid, record);
+    yield put(resetRecord());
+    yield put(collectionActions.listRecords(bid, cid));
+    yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
+    yield put(notifySuccess("Record updated."));
+  } catch(error) {
+    yield put(notifyError(error));
+  } finally {
+    yield put(collectionActions.collectionBusy(false));
+  }
+}
+
 export function* updateRecord(bid, cid, rid, record) {
   try {
     const coll = getCollection(bid, cid);
@@ -117,7 +135,7 @@ export function* updateRecord(bid, cid, rid, record) {
     yield put(resetRecord());
     yield put(collectionActions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
-    yield put(notifySuccess("Record added."));
+    yield put(notifySuccess("Record updated."));
   } catch(error) {
     yield put(notifyError(error));
   } finally {
@@ -185,7 +203,7 @@ export function* watchRecordCreate() {
   while(true) { // eslint-disable-line
     const {bid, cid, record} = yield take(RECORD_CREATE_REQUEST);
     // Check if we have to deal with attachments
-    if (record.hasOwnProperty("__attachment__")) {
+    if (record.__attachment__) {
       yield fork(createRecordWithAttachment, bid, cid, record);
     } else {
       yield fork(createRecord, bid, cid, record);
@@ -196,7 +214,11 @@ export function* watchRecordCreate() {
 export function* watchRecordUpdate() {
   while(true) { // eslint-disable-line
     const {bid, cid, rid, record} = yield take(RECORD_UPDATE_REQUEST);
-    yield fork(updateRecord, bid, cid, rid, record);
+    if (record.__attachment__) {
+      yield fork(updateRecordWithAttachment, bid, cid, rid, record);
+    } else {
+      yield fork(updateRecord, bid, cid, rid, record);
+    }
   }
 }
 

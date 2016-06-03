@@ -120,11 +120,11 @@ describe("validateSchema()", () => {
 
 describe("parseDataURL()", () => {
   it("should extract expected properties", () => {
-    expect(parseDataURL("data:image/png;name=toto.png;base64,XXX"))
+    expect(parseDataURL("data:image/png;encoding=utf-8;name=a.png;base64,b"))
       .eql({
-        name: "toto.png",
         type: "image/png",
-        base64: "XXX"
+        name: "a.png",
+        base64: "b",
       });
   });
 });

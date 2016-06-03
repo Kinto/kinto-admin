@@ -182,7 +182,7 @@ describe("collection sagas", () => {
 
       it("should dispatch a notification", () => {
         expect(updateRecord.next().value)
-          .eql(put(notifySuccess("Record added.")));
+          .eql(put(notifySuccess("Record updated.")));
       });
 
       it("should unmark the current collection as busy", () => {
