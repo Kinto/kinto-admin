@@ -36,6 +36,9 @@ function onRouteUpdate() {
 
   // Clear current notification list on each route update
   store.dispatch(clearNotifications());
+
+  // Side effect: scroll to page top on each route change
+  window.scrollTo(0, 0);
 }
 
 render((
