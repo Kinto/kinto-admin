@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router";
 import Form from "react-jsonschema-form";
 
 import JSONEditor from "./JSONEditor";
@@ -54,6 +55,16 @@ export default class BucketForm extends Component {
         "ui:readonly": true,
       }
     };
+
+    const buttons = (
+      <div>
+        <input type="submit" className="btn btn-primary"
+          value={`${formData ? "Update" : "Create"} bucket`} />
+        {" or "}
+        <Link to="/">Cancel</Link>
+      </div>
+    );
+
     return (
       <div className="panel panel-default">
         <div className="panel-body">
@@ -62,7 +73,9 @@ export default class BucketForm extends Component {
             uiSchema={_uiSchema}
             formData={formData}
             validate={validate}
-            onSubmit={this.onSubmit} />
+            onSubmit={this.onSubmit}>
+            {buttons}
+          </Form>
         </div>
       </div>
     );

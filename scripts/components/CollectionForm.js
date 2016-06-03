@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router";
 import Form from "react-jsonschema-form";
 
 import JSONEditor from "./JSONEditor";
@@ -121,6 +122,16 @@ export default class CollectionForm extends Component {
         "ui:readonly": true,
       }
     };
+
+    const buttons = (
+      <div>
+        <input type="submit" className="btn btn-primary"
+          value={`${formData ? "Update" : "Create"} collection`} />
+        {" or "}
+        <Link to="/">Cancel</Link>
+      </div>
+    );
+
     return (
       <div className="panel panel-default">
         <div className="panel-body">
@@ -129,7 +140,9 @@ export default class CollectionForm extends Component {
             formData={formData}
             uiSchema={_uiSchema}
             validate={validate}
-            onSubmit={this.onSubmit} />
+            onSubmit={this.onSubmit}>
+            {buttons}
+          </Form>
         </div>
       </div>
     );
