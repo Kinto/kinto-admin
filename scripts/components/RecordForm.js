@@ -145,7 +145,7 @@ export default class RecordForm extends Component {
 
   render() {
     const {record, collection} = this.props;
-    const {attachment} = collection;
+    const {attachment={}} = collection;
     return (
       <div className="panel panel-default">
         <div className="panel-body">
