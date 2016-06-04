@@ -227,8 +227,8 @@ export function* watchRecordLoad() {
 }
 
 export function* watchRecordCreate() {
+  const {serverInfo} = yield take(SESSION_SERVERINFO_SUCCESS);
   while(true) { // eslint-disable-line
-    const {serverInfo} = yield take(SESSION_SERVERINFO_SUCCESS);
     const {bid, cid, record} = yield take(RECORD_CREATE_REQUEST);
     // Check if we have to deal with attachments
     if (shouldProcessAttachment(serverInfo, record)) {
@@ -240,8 +240,8 @@ export function* watchRecordCreate() {
 }
 
 export function* watchRecordUpdate() {
+  const {serverInfo} = yield take(SESSION_SERVERINFO_SUCCESS);
   while(true) { // eslint-disable-line
-    const {serverInfo} = yield take(SESSION_SERVERINFO_SUCCESS);
     const {bid, cid, rid, record} = yield take(RECORD_UPDATE_REQUEST);
     if (shouldProcessAttachment(serverInfo, record)) {
       yield fork(updateRecordWithAttachment, bid, cid, rid, record);
