@@ -29,31 +29,27 @@ function getCollection(bid, cid) {
   return getBucket(bid).collection(cid);
 }
 
-function* postRecordAttachment(bid, cid, rid, record) {
+function createFormData(record) {
   const {FormData} = window;
   const attachment = record.__attachment__; // data-url
-
-  // Retrieve attachment information
   const {blob, name} = extractFileInfo(attachment);
-
-  // Build form data
-  var formData = new FormData();
+  const formData = new FormData();
   formData.append("attachment", blob, name);
-  // Note: The data-url is removed from the record
+  // Removed the data-url field from the record
   formData.append("data", JSON.stringify(omit(record, "__attachment__")));
+  return formData;
+}
 
-  // We need to forge a dedicated request to the attachment endpoint
+export function* postRecordAttachment(bid, cid, rid, record) {
+  const formData = yield call(createFormData, record);
   const {remote, defaultReqOptions} = getClient();
   const path = endpoint("record", bid, cid, rid) + "/attachment";
-  const {status} = yield fetch(remote + path, {
+  const {status} = yield call(fetch, remote + path, {
     method: "POST",
     body: formData,
     headers: defaultReqOptions.headers
   });
-
-  // Raise if the request has failed
   if ([200, 201, 202].indexOf(status) === -1) {
-    // XXX detailed error
     throw new Error("Unable to post attachment.");
   }
 }
