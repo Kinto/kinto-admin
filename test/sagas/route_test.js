@@ -159,6 +159,11 @@ describe("route sagas", () => {
           .eql(put(collectionActions.collectionBusy(true)));
       });
 
+      it("should reset the selected record", () => {
+        expect(loadRoute.next().value)
+          .eql(put(recordActions.resetRecord()));
+      });
+
       it("should batch fetch resources data", () => {
         expect(loadRoute.next().value)
           .to.have.property("CALL")

@@ -5,6 +5,7 @@ import { getClient } from "../client";
 import { resetBucket, bucketBusy, bucketLoadSuccess } from "../actions/bucket";
 import { routeLoadSuccess } from "../actions/route";
 import { resetCollection, collectionBusy, collectionLoadSuccess } from "../actions/collection";
+import { resetRecord } from "../actions/record";
 import { recordLoadSuccess } from "../actions/record";
 import { notifyError } from "../actions/notifications";
 
@@ -41,6 +42,10 @@ export function* loadRoute(bid, cid, rid) {
     if (cid) {
       yield put(resetCollection());
       yield put(collectionBusy(true));
+    }
+
+    if (rid) {
+      yield put(resetRecord());
     }
 
     // Fetch all currently selected resource data in a single batch request
