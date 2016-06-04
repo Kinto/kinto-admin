@@ -13,7 +13,7 @@ const INITIAL_STATE = {
   busy: false,
   schema: {},
   uiSchema: {},
-  attachment: false,
+  attachment: {enabled: false, required: false},
   displayFields: [],
   records: [],
   recordsLoaded: false,

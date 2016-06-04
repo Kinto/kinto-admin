@@ -6,9 +6,17 @@ import Spinner from "./Spinner";
 import JSONRecordForm from "./JSONRecordForm";
 
 
-function extendSchemaWithAttachment(schema) {
+function extendSchemaWithAttachment(schema, attachment) {
+  if (!attachment.enabled) {
+    return schema;
+  }
+  const schemaRequired = schema.required || [];
+  const required = attachment.required ?
+                   schemaRequired.concat("__attachment__") :
+                   schemaRequired;
   return {
     ...schema,
+    required,
     properties: {
       ...schema.properties,
       __attachment__: {
@@ -20,8 +28,8 @@ function extendSchemaWithAttachment(schema) {
   };
 }
 
-function extendUiSchemaWithAttachment(uiSchema) {
-  if (!uiSchema.hasOwnProperty("ui:order")) {
+function extendUiSchemaWithAttachment(uiSchema, attachment) {
+  if (!attachment.enabled || !uiSchema.hasOwnProperty("ui:order")) {
     return uiSchema;
   }
   return {
@@ -37,7 +45,7 @@ export default class RecordForm extends Component {
 
   getForm() {
     const {bid, cid, collection, record} = this.props;
-    const {schema={}, uiSchema={}, attachment=false, busy} = collection;
+    const {schema={}, uiSchema={}, attachment={}, busy} = collection;
 
     if (busy) {
       return <Spinner />;
@@ -64,8 +72,8 @@ export default class RecordForm extends Component {
 
     return (
       <Form
-        schema={attachment ? extendSchemaWithAttachment(schema) : schema}
-        uiSchema={attachment ? extendUiSchemaWithAttachment(uiSchema) : uiSchema}
+        schema={extendSchemaWithAttachment(schema, attachment)}
+        uiSchema={extendUiSchemaWithAttachment(uiSchema, attachment)}
         formData={record}
         onSubmit={this.onSubmit}>
         {buttons}

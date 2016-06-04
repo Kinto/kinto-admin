@@ -52,11 +52,6 @@ const schema = {
       title: "JSON schema",
       default: defaultSchema,
     },
-    attachment: {
-      type: "boolean",
-      title: "Enable file attachment",
-      default: false,
-    },
     uiSchema: {
       type: "string",
       title: "UI schema",
@@ -71,11 +66,33 @@ const schema = {
         description: "Enter a field name. i.e: name, attachment.filename",
       }
     },
+    attachment: {
+      type: "object",
+      title: "File attachment",
+      description: (
+        <p>
+          Please note this requires the <code>attachments</code> capability
+          to be available on the server.
+        </p>
+      ),
+      properties: {
+        enabled: {
+          type: "boolean",
+          title: "Enable file attachment",
+          default: false,
+        },
+        required: {
+          type: "boolean",
+          title: "Attachment required",
+          default: false,
+        }
+      }
+    },
   }
 };
 
 const uiSchema = {
-  "ui:order": ["name", "schema", "attachment", "uiSchema", "displayFields"],
+  "ui:order": ["name", "schema", "uiSchema", "displayFields", "attachment"],
   name: {
     "ui:help": "The name should only contain letters, numbers, dashes or underscores."
   },
@@ -93,7 +110,12 @@ const uiSchema = {
     )
   },
   attachment: {
-    "ui:help": "Enable a single file upload per record.",
+    enabled: {
+      "ui:help": "Enable attachment of a single file to records.",
+    },
+    required: {
+      "ui:help": "Require a file to be attached to each record in the collection.",
+    }
   },
   uiSchema: {
     "ui:widget": JSONEditor,

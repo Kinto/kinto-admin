@@ -48,7 +48,7 @@ export default class CollectionEdit extends Component {
     const {
       schema = {},
       uiSchema = {},
-      attachment = false,
+      attachment = {},
       displayFields = [],
       label,
       busy
