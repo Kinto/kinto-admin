@@ -18,7 +18,10 @@ export function bucket(state = INITIAL_STATE, action) {
       return {...state, busy: action.busy};
     }
     case BUCKET_LOAD_SUCCESS: {
-      const {data} = action;
+      let {bid, data} = action;
+      if (typeof data === "undefined") {
+        data = {id: bid};
+      }
       return {
         ...state,
         data: omit(data, ["id", "last_modified"]),

@@ -31,7 +31,8 @@ export function* loadBucket(bid) {
   try {
     const bucket = getBucket(bid);
     yield put(bucketBusy(true));
-    const data = yield call([bucket, bucket.getData]);
+    let data = yield call([bucket, bucket.getData]);
+    if (typeof data === "undefined") data = {};
     yield put(bucketLoadSuccess(bid, data));
   } catch(error) {
     yield put(notifyError(error));
