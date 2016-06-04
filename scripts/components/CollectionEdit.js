@@ -29,9 +29,9 @@ function DeleteForm({cid, onSubmit}) {
 
 export default class CollectionEdit extends Component {
   onSubmit = (formData) => {
-    const {params} = this.props;
+    const {params, updateCollection} = this.props;
     const {bid, cid} = params;
-    this.props.updateCollection(bid, cid, formData);
+    updateCollection(bid, cid, formData);
   };
 
   deleteCollection = (cid) => {

@@ -5,6 +5,7 @@ import { v4 as uuid } from "uuid";
 import { omit, extractFileInfo } from "../utils";
 
 import {
+  ATTACHMENT_DELETE_REQUEST,
   SESSION_SERVERINFO_SUCCESS,
   COLLECTION_RECORDS_REQUEST,
   RECORD_LOAD_REQUEST,
@@ -160,6 +161,25 @@ export function* deleteRecord(bid, cid, rid) {
   }
 }
 
+export function* deleteAttachment(bid, cid, rid) {
+  // We need to forge a dedicated request to the attachment endpoint
+  const {remote, defaultReqOptions} = getClient();
+  const path = endpoint("record", bid, cid, rid) + "/attachment";
+  const {status} = yield fetch(remote + path, {
+    method: "DELETE",
+    headers: defaultReqOptions.headers
+  });
+
+  // Raise if the request has failed
+  if ([200, 201, 202, 204].indexOf(status) === -1) {
+    // XXX detailed error
+    throw new Error("Unable to delete attachment.");
+  }
+
+  yield put(updatePath(`/buckets/${bid}/collections/${cid}/edit/${rid}`));
+  yield put(notifySuccess("Attachment deleted."));
+}
+
 export function* bulkCreateRecords(bid, cid, records) {
   try {
     const coll = getCollection(bid, cid);
@@ -228,6 +248,13 @@ export function* watchRecordUpdate() {
     } else {
       yield fork(updateRecord, bid, cid, rid, record);
     }
+  }
+}
+
+export function* watchAttachmentDelete() {
+  while(true) { // eslint-disable-line
+    const {bid, cid, rid} = yield take(ATTACHMENT_DELETE_REQUEST);
+    yield fork(deleteAttachment, bid, cid, rid);
   }
 }
 

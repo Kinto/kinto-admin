@@ -30,5 +30,6 @@ export default function* rootSaga() {
     fork(collectionSagas.watchRecordUpdate),
     fork(collectionSagas.watchRecordDelete),
     fork(collectionSagas.watchBulkCreateRecords),
+    fork(collectionSagas.watchAttachmentDelete),
   ];
 }

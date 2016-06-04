@@ -1,4 +1,5 @@
 import {
+  ATTACHMENT_DELETE_REQUEST,
   COLLECTION_BUSY,
   COLLECTION_RESET,
   COLLECTION_LOAD_SUCCESS,
@@ -46,6 +47,10 @@ export function updateRecord(bid, cid, rid, record) {
 
 export function deleteRecord(bid, cid, rid) {
   return {type: RECORD_DELETE_REQUEST, bid, cid, rid};
+}
+
+export function deleteAttachment(bid, cid, rid) {
+  return {type: ATTACHMENT_DELETE_REQUEST, bid, cid, rid};
 }
 
 export function bulkCreateRecords(bid, cid, records) {

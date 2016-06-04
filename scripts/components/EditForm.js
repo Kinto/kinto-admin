@@ -12,7 +12,7 @@ export default class EditForm extends Component {
   }
 
   render() {
-    const {params, collection, record} = this.props;
+    const {params, collection, record, deleteAttachment} = this.props;
     const {label} = collection;
     const {bid, cid, rid} = params;
     return (
@@ -21,8 +21,10 @@ export default class EditForm extends Component {
         <RecordForm
           bid={bid}
           cid={cid}
+          rid={rid}
           collection={collection}
           record={cleanRecord(record)}
+          deleteAttachment={deleteAttachment}
           onSubmit={this.onSubmit} />
       </div>
     );

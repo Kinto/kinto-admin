@@ -197,6 +197,20 @@ table.record-list td.actions {
   border-radius: .3em;
 }
 
+.attachment-action {
+  margin: 0;
+  padding: 0;
+}
+
+.attachment-info table {
+  margin-bottom: 0;
+}
+
+.attachment-action input[type=button] {
+  margin-top: -1em;
+}
+
+
 /* Spinner http://tobiasahlin.com/spinkit/ */
 .spinner {
   margin: 30px auto 0;
