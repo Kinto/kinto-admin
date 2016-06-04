@@ -20,6 +20,16 @@ function extendSchemaWithAttachment(schema) {
   };
 }
 
+function extendUiSchemaWithAttachment(uiSchema) {
+  if (!uiSchema.hasOwnProperty("ui:order")) {
+    return uiSchema;
+  }
+  return {
+    ...uiSchema,
+    "ui:order": [...uiSchema["ui:order"], "__attachment__"]
+  };
+}
+
 export default class RecordForm extends Component {
   onSubmit = ({formData}) => {
     this.props.onSubmit(formData);
@@ -55,7 +65,7 @@ export default class RecordForm extends Component {
     return (
       <Form
         schema={attachment ? extendSchemaWithAttachment(schema) : schema}
-        uiSchema={uiSchema}
+        uiSchema={attachment ? extendUiSchemaWithAttachment(uiSchema) : uiSchema}
         formData={record}
         onSubmit={this.onSubmit}>
         {buttons}
