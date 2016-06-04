@@ -5,6 +5,7 @@ import { v4 as uuid } from "uuid";
 import { omit, extractFileInfo } from "../utils";
 
 import {
+  SESSION_SERVERINFO_SUCCESS,
   COLLECTION_RECORDS_REQUEST,
   RECORD_LOAD_REQUEST,
   RECORD_CREATE_REQUEST,
@@ -37,6 +38,7 @@ function* postRecordAttachment(bid, cid, rid, record) {
   // Build form data
   var formData = new FormData();
   formData.append("attachment", blob, name);
+  // Note: The data-url is removed from the record
   formData.append("data", JSON.stringify(omit(record, "__attachment__")));
 
   // We need to forge a dedicated request to the attachment endpoint
@@ -185,6 +187,11 @@ export function* bulkCreateRecords(bid, cid, records) {
 
 // Watchers
 
+function shouldProcessAttachment(serverInfo, record) {
+  const {capabilities={}} = serverInfo;
+  return capabilities.hasOwnProperty("attachments") && record.__attachment__;
+}
+
 export function* watchCollectionRecords() {
   while(true) { // eslint-disable-line
     const {bid, cid} = yield take(COLLECTION_RECORDS_REQUEST);
@@ -201,9 +208,10 @@ export function* watchRecordLoad() {
 
 export function* watchRecordCreate() {
   while(true) { // eslint-disable-line
+    const {serverInfo} = yield take(SESSION_SERVERINFO_SUCCESS);
     const {bid, cid, record} = yield take(RECORD_CREATE_REQUEST);
     // Check if we have to deal with attachments
-    if (record.__attachment__) {
+    if (shouldProcessAttachment(serverInfo, record)) {
       yield fork(createRecordWithAttachment, bid, cid, record);
     } else {
       yield fork(createRecord, bid, cid, record);
@@ -213,8 +221,9 @@ export function* watchRecordCreate() {
 
 export function* watchRecordUpdate() {
   while(true) { // eslint-disable-line
+    const {serverInfo} = yield take(SESSION_SERVERINFO_SUCCESS);
     const {bid, cid, rid, record} = yield take(RECORD_UPDATE_REQUEST);
-    if (record.__attachment__) {
+    if (shouldProcessAttachment(serverInfo, record)) {
       yield fork(updateRecordWithAttachment, bid, cid, rid, record);
     } else {
       yield fork(updateRecord, bid, cid, rid, record);

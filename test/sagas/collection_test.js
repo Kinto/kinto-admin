@@ -3,6 +3,7 @@ import { push as updatePath } from "react-router-redux";
 import { take, fork, put, call } from "redux-saga/effects";
 
 import {
+  SESSION_SERVERINFO_SUCCESS,
   COLLECTION_RECORDS_REQUEST,
   RECORD_LOAD_REQUEST,
   RECORD_CREATE_REQUEST,
@@ -371,6 +372,11 @@ describe("collection sagas", () => {
         const watchRecordCreate = saga.watchRecordCreate();
 
         expect(watchRecordCreate.next().value)
+          .eql(take(SESSION_SERVERINFO_SUCCESS));
+
+        const serverInfoAction = {serverInfo: {capabilities: {attachments: {}}}};
+
+        expect(watchRecordCreate.next(serverInfoAction).value)
           .eql(take(RECORD_CREATE_REQUEST));
 
         expect(watchRecordCreate.next(
@@ -384,6 +390,11 @@ describe("collection sagas", () => {
         const watchRecordUpdate = saga.watchRecordUpdate();
 
         expect(watchRecordUpdate.next().value)
+          .eql(take(SESSION_SERVERINFO_SUCCESS));
+
+        const serverInfoAction = {serverInfo: {capabilities: {attachments: {}}}};
+
+        expect(watchRecordUpdate.next(serverInfoAction).value)
           .eql(take(RECORD_UPDATE_REQUEST));
 
         expect(watchRecordUpdate.next(
