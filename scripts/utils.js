@@ -146,8 +146,11 @@ export function renderDisplayField(record, displayField) {
 }
 
 export function parseDataURL(dataURL) {
-  const regex = /data:(.*);base64,(.*)/;
+  const regex = /^data:(.*);base64,(.*)/;
   const match = dataURL.match(regex);
+  if (!match) {
+    throw new Error(`Invalid data-url: ${String(dataURL).substr(0, 32)}...`);
+  }
   const props = match[1];
   const base64 = match[2];
   const [type, ...rawParams] = props.split(";");
@@ -155,8 +158,7 @@ export function parseDataURL(dataURL) {
     const [key, value] = param.split("=");
     return {...acc, [key]: value};
   }, {});
-  const {name} = params;
-  return {name, type, base64};
+  return {...params, type, base64};
 }
 
 export function extractFileInfo(dataURL) {

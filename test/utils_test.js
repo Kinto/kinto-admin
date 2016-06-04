@@ -120,11 +120,17 @@ describe("validateSchema()", () => {
 
 describe("parseDataURL()", () => {
   it("should extract expected properties", () => {
-    expect(parseDataURL("data:image/png;encoding=utf-8;name=a.png;base64,b"))
+    expect(parseDataURL("data:image/png;encoding=utf-8;name=a.png;base64,b64"))
       .eql({
         type: "image/png",
         name: "a.png",
-        base64: "b",
+        base64: "b64",
+        encoding: "utf-8",
       });
+  });
+
+  it("should throw an error when the data url is invalid", () => {
+    expect(() => expect(parseDataURL("gni")))
+      .to.Throw(Error, "Invalid data-url: gni...");
   });
 });
