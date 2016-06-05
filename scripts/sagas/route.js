@@ -1,13 +1,14 @@
-import { call, take, fork, put } from "redux-saga/effects";
+import { call, take, put } from "redux-saga/effects";
+import { push as updatePath } from "react-router-redux";
 
-import { SESSION_SETUP_COMPLETE, ROUTE_LOAD_REQUEST } from "../constants";
+import { ROUTE_UPDATED } from "../constants";
 import { getClient } from "../client";
 import { resetBucket, bucketBusy, bucketLoadSuccess } from "../actions/bucket";
 import { routeLoadSuccess } from "../actions/route";
 import { resetCollection, collectionBusy, collectionLoadSuccess } from "../actions/collection";
 import { resetRecord } from "../actions/record";
 import { recordLoadSuccess } from "../actions/record";
-import { notifyError } from "../actions/notifications";
+import { notifyInfo, notifyError, clearNotifications } from "../actions/notifications";
 
 
 function getBatchLoadFn(bid, cid, rid) {
@@ -52,7 +53,12 @@ export function* loadRoute(bid, cid, rid) {
     const res = yield call([client, client.batch], getBatchLoadFn(bid, cid, rid));
 
     // Map them to state
-    const [bucket, collection, record] = res.map(({body}) => {
+    const [bucket, collection, record] = res.map(({status, body}, index) => {
+      if (index === 0 && status === 403) {
+        // We may not have permission to read this resource, though we need to
+        // have its default information propagated to the store.
+        return {id: bid};
+      }
       return body.data;
     });
     yield put(bucketLoadSuccess(bid, bucket));
@@ -71,12 +77,32 @@ export function* loadRoute(bid, cid, rid) {
   }
 }
 
-export function* watchLoadRoute() {
-  // Ensures the session setup is already completed
-  yield take(SESSION_SETUP_COMPLETE);
+export function* routeUpdated(authenticated, params={}, location) {
+  const {bid, cid, rid, token} = params;
 
+  // Clear notifications on each route update
+  yield put(clearNotifications());
+
+  // Check for an authenticated session; if we're requesting anything other
+  // than the homepage, redirect to the homepage with a notification.
+  if (!authenticated && !token && location.pathname !== "/") {
+    yield put(updatePath(""));
+    yield put(notifyInfo("Authentication required.", {persistent: true}));
+    return;
+  }
+
+  // Load route related resources
+  yield call(loadRoute, bid, cid, rid);
+
+  // Side effect: scroll to page top on each route change
+  yield call([window, window.scrollTo], 0, 0);
+}
+
+// Watchers
+
+export function* watchRouteUpdated() {
   while(true) { // eslint-disable-line
-    const {bid, cid, rid} = yield take(ROUTE_LOAD_REQUEST);
-    yield fork(loadRoute, bid, cid, rid);
+    const {authenticated, params, location} = yield take(ROUTE_UPDATED);
+    yield call(routeUpdated, authenticated, params, location);
   }
 }

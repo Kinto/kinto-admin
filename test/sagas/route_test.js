@@ -1,13 +1,12 @@
 import { expect } from "chai";
-import { take, fork, put } from "redux-saga/effects";
+import { push as updatePath } from "react-router-redux";
+import { take, call, put } from "redux-saga/effects";
 
-import {
-  SESSION_SETUP_COMPLETE,
-  ROUTE_LOAD_REQUEST,
-} from "../../scripts/constants";
+import { ROUTE_UPDATED } from "../../scripts/constants";
 import { notifyError } from "../../scripts/actions/notifications";
 import { setClient } from "../../scripts/client";
 import * as actions from "../../scripts/actions/route";
+import * as notificationActions from "../../scripts/actions/notifications";
 import * as collectionActions from "../../scripts/actions/collection";
 import * as bucketActions from "../../scripts/actions/bucket";
 import * as recordActions from "../../scripts/actions/record";
@@ -68,6 +67,43 @@ describe("route sagas", () => {
           .eql(put(bucketActions.bucketLoadSuccess("bucket", {
             id: "bucket",
             a: 1
+          })));
+      });
+    });
+
+    describe("Failed bucket loading", () => {
+      let batch, loadRoute;
+
+      before(() => {
+        batch = () => {};
+        setClient({batch});
+        loadRoute = saga.loadRoute("bucket");
+      });
+
+      it("should reset the selected bucket", () => {
+        expect(loadRoute.next().value)
+          .eql(put(bucketActions.resetBucket()));
+      });
+
+      it("should mark the selected bucket as busy", () => {
+        expect(loadRoute.next().value)
+          .eql(put(bucketActions.bucketBusy(true)));
+      });
+
+      it("should batch fetch resources data", () => {
+        expect(loadRoute.next().value)
+          .to.have.property("CALL")
+          .to.have.property("context")
+          .to.have.property("batch").eql(batch);
+      });
+
+      it("should update bucket state from response data", () => {
+        const responses = [
+          {status: 403, body: {}}
+        ];
+        expect(loadRoute.next(responses).value)
+          .eql(put(bucketActions.bucketLoadSuccess("bucket", {
+            id: "bucket",
           })));
       });
     });
@@ -203,20 +239,68 @@ describe("route sagas", () => {
     });
   });
 
+  describe("routeUpdated()", () => {
+    describe("Not authenticated", () => {
+      let routeUpdated;
+
+      before(() => {
+        routeUpdated = saga.routeUpdated(false, {}, {pathname: "/blah"});
+      });
+
+      it("should clear notification", () => {
+        expect(routeUpdated.next().value)
+          .eql(put(notificationActions.clearNotifications()));
+      });
+
+      it("should redirect to the homepage", () => {
+        expect(routeUpdated.next().value)
+          .eql(put(updatePath("")));
+      });
+
+      it("should dispatch a notification", () => {
+        expect(routeUpdated.next().value)
+          .eql(put(notificationActions.notifyInfo("Authentication required.", {
+            persistent: true
+          })));
+      });
+    });
+
+    describe("Authenticated", () => {
+      let routeUpdated;
+      const params = {bid: "bucket", cid: "collection", rid: "record"};
+
+      before(() => {
+        routeUpdated = saga.routeUpdated(true, params, {pathname: "/"});
+      });
+
+      it("should clear notification", () => {
+        expect(routeUpdated.next().value)
+          .eql(put(notificationActions.clearNotifications()));
+      });
+
+      it("should load route resources", () => {
+        expect(routeUpdated.next().value)
+          .eql(call(saga.loadRoute, params.bid, params.cid, params.rid));
+      });
+
+      it("should scroll window to top", () => {
+        expect(routeUpdated.next().value)
+          .eql(call([window, window.scrollTo], 0, 0));
+      });
+    });
+  });
+
   describe("Watchers", () => {
-    describe("watchLoadRoute()", () => {
+    describe("watchRouteUpdated()", () => {
       it("should watch for the deleteCollection action", () => {
-        const watchLoadRoute = saga.watchLoadRoute();
+        const watchRouteUpdated = saga.watchRouteUpdated();
 
-        expect(watchLoadRoute.next().value)
-          .eql(take(SESSION_SETUP_COMPLETE));
+        expect(watchRouteUpdated.next().value)
+          .eql(take(ROUTE_UPDATED));
 
-        expect(watchLoadRoute.next().value)
-          .eql(take(ROUTE_LOAD_REQUEST));
-
-        expect(watchLoadRoute.next(
-          actions.loadRoute("a", "b", "c")).value)
-          .eql(fork(saga.loadRoute, "a", "b", "c"));
+        expect(watchRouteUpdated.next(
+          actions.routeUpdated("a", "b", "c")).value)
+          .eql(call(saga.routeUpdated, "a", "b", "c"));
       });
     });
   });

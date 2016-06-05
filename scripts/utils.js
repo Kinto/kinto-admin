@@ -31,6 +31,10 @@ export function validJSON(string) {
   }
 }
 
+export function isHTTPok(status) {
+  return [1, 2, 3].some(c => String(status).startsWith(c));
+}
+
 export function validateSchema(jsonSchema) {
   let schema;
   try {

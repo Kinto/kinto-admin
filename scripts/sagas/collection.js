@@ -1,6 +1,5 @@
 import { push as updatePath } from "react-router-redux";
 import { call, take, fork, put } from "redux-saga/effects";
-import endpoint from "kinto-client/lib/endpoint";
 import { v4 as uuid } from "uuid";
 import { omit, extractFileInfo } from "../utils";
 
@@ -15,7 +14,7 @@ import {
   RECORD_BULK_CREATE_REQUEST,
   ROUTE_LOAD_SUCCESS,
 } from "../constants";
-import { getClient } from "../client";
+import { getClient, requestAttachment } from "../client";
 import { notifySuccess, notifyError } from "../actions/notifications";
 import * as collectionActions from "../actions/collection";
 import { recordLoadSuccess, resetRecord } from "../actions/record";
@@ -29,29 +28,22 @@ function getCollection(bid, cid) {
   return getBucket(bid).collection(cid);
 }
 
-function createFormData(record) {
+export function createFormData(record) {
   const {FormData} = window;
   const attachment = record.__attachment__; // data-url
   const {blob, name} = extractFileInfo(attachment);
   const formData = new FormData();
   formData.append("attachment", blob, name);
-  // Removed the data-url field from the record
   formData.append("data", JSON.stringify(omit(record, "__attachment__")));
   return formData;
 }
 
-export function* postRecordAttachment(bid, cid, rid, record) {
-  const formData = yield call(createFormData, record);
-  const {remote, defaultReqOptions} = getClient();
-  const path = endpoint("record", bid, cid, rid) + "/attachment";
-  const {status} = yield call(fetch, remote + path, {
-    method: "POST",
-    body: formData,
-    headers: defaultReqOptions.headers
+export function* deleteAttachment(bid, cid, rid) {
+  yield call(requestAttachment, bid, cid, rid, {
+    method: "delete",
   });
-  if ([200, 201, 202].indexOf(status) === -1) {
-    throw new Error("Unable to post attachment.");
-  }
+  yield put(updatePath(`/buckets/${bid}/collections/${cid}/edit/${rid}`));
+  yield put(notifySuccess("Attachment deleted."));
 }
 
 export function* listRecords(bid, cid) {
@@ -85,9 +77,14 @@ export function* loadRecord(bid, cid, rid) {
 export function* createRecordWithAttachment(bid, cid, record) {
   try {
     yield put(collectionActions.collectionBusy(true));
-    yield call(postRecordAttachment, bid, cid, uuid(), record);
+    const formData = yield call(createFormData, record);
+    yield call(requestAttachment, bid, cid, uuid(), {
+      method: "post",
+      body: formData
+    });
     yield put(collectionActions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
+    yield take(ROUTE_LOAD_SUCCESS);
     yield put(notifySuccess("Record added."));
   } catch(error) {
     yield put(notifyError(error));
@@ -114,7 +111,11 @@ export function* createRecord(bid, cid, record) {
 export function* updateRecordWithAttachment(bid, cid, rid, record) {
   try {
     yield put(collectionActions.collectionBusy(true));
-    yield call(postRecordAttachment, bid, cid, rid, record);
+    const formData = yield call(createFormData, record);
+    yield call(requestAttachment, bid, cid, rid, {
+      method: "post",
+      body: formData
+    });
     yield put(resetRecord());
     yield put(collectionActions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
@@ -157,25 +158,6 @@ export function* deleteRecord(bid, cid, rid) {
   }
 }
 
-export function* deleteAttachment(bid, cid, rid) {
-  // We need to forge a dedicated request to the attachment endpoint
-  const {remote, defaultReqOptions} = getClient();
-  const path = endpoint("record", bid, cid, rid) + "/attachment";
-  const {status} = yield fetch(remote + path, {
-    method: "DELETE",
-    headers: defaultReqOptions.headers
-  });
-
-  // Raise if the request has failed
-  if ([200, 201, 202, 204].indexOf(status) === -1) {
-    // XXX detailed error
-    throw new Error("Unable to delete attachment.");
-  }
-
-  yield put(updatePath(`/buckets/${bid}/collections/${cid}/edit/${rid}`));
-  yield put(notifySuccess("Attachment deleted."));
-}
-
 export function* bulkCreateRecords(bid, cid, records) {
   try {
     const coll = getCollection(bid, cid);
@@ -189,11 +171,10 @@ export function* bulkCreateRecords(bid, cid, records) {
       const err = new Error("Some records could not be created.");
       err.details = errors.map(err => err.error.message);
       throw err;
-    } else {
-      yield put(collectionActions.listRecords(bid, cid));
-      yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
-      yield put(notifySuccess(`${published.length} records created.`));
     }
+    yield put(collectionActions.listRecords(bid, cid));
+    yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
+    yield put(notifySuccess(`${published.length} records created.`));
   } catch(error) {
     yield put(notifyError(error));
   } finally {
@@ -239,6 +220,7 @@ export function* watchRecordUpdate() {
   const {serverInfo} = yield take(SESSION_SERVERINFO_SUCCESS);
   while(true) { // eslint-disable-line
     const {bid, cid, rid, record} = yield take(RECORD_UPDATE_REQUEST);
+    // Check if we have to deal with attachments
     if (shouldProcessAttachment(serverInfo, record)) {
       yield fork(updateRecordWithAttachment, bid, cid, rid, record);
     } else {
