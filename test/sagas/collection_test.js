@@ -166,7 +166,7 @@ describe("collection sagas", () => {
 
       it("should update the record", () => {
         expect(updateRecord.next().value)
-          .eql(call([collection, collection.updateRecord], record));
+          .eql(call([collection, collection.updateRecord], record, {patch: true}));
       });
 
       it("should dispatch the resetRecord action", () => {

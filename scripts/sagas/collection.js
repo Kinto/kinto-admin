@@ -121,7 +121,9 @@ export function* updateRecord(bid, cid, rid, record) {
   try {
     const coll = getCollection(bid, cid);
     yield put(collectionActions.collectionBusy(true));
-    yield call([coll, coll.updateRecord], {...record, id: rid});
+    // Note: We update using PATCH to keep existing record properties possibly
+    // not defined by the JSON schema, if any.
+    yield call([coll, coll.updateRecord], {...record, id: rid}, {patch: true});
     yield put(resetRecord());
     yield put(collectionActions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
