@@ -40,6 +40,18 @@ function extendUiSchemaWithAttachment(uiSchema, attachment) {
   };
 }
 
+function AttachmentPreview({attachment}) {
+  const {mimetype, location} = attachment;
+  if (mimetype.startsWith("image/")) {
+    return (
+      <div className="attachment-img">
+        <a href={location} target="_blank"><img src={location} /></a>
+      </div>
+    );
+  }
+  return null;
+}
+
 function AttachmentInfo(props) {
   const {record, attachmentRequired, deleteAttachment} = props;
   const {attachment} = record;
@@ -61,6 +73,7 @@ function AttachmentInfo(props) {
               below.
             </p>
           </div>}
+        <AttachmentPreview attachment={attachment} />
         <table className="table table-condensed">
           <tbody>
             <tr>
