@@ -77,14 +77,14 @@ export function* loadRecord(bid, cid, rid) {
 export function* createRecordWithAttachment(bid, cid, record) {
   try {
     yield put(collectionActions.collectionBusy(true));
+    const rid = yield call(uuid);
     const formData = yield call(createFormData, record);
-    yield call(requestAttachment, bid, cid, uuid(), {
+    yield call(requestAttachment, bid, cid, rid, {
       method: "post",
       body: formData
     });
     yield put(collectionActions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
-    yield take(ROUTE_LOAD_SUCCESS);
     yield put(notifySuccess("Record added."));
   } catch(error) {
     yield put(notifyError(error));

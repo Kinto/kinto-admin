@@ -13,8 +13,6 @@ import "../css/styles.css";
 
 const store = configureStore();
 
-// Get rid of react-router query string parameter
-// https://github.com/reactjs/react-router/issues/1967#issuecomment-214659714
 syncHistoryWithStore(hashHistory, store);
 
 function onRouteUpdate() {
@@ -22,6 +20,7 @@ function onRouteUpdate() {
   const {session} = store.getState();
   const {authenticated} = session;
 
+  // Process preloading resources attached to current route parameters
   store.dispatch(routeActions.routeUpdated(authenticated, params, location));
 }
 
