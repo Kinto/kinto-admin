@@ -18,6 +18,8 @@ import * as collectionActions from "../../scripts/actions/collection";
 import * as recordActions from "../../scripts/actions/record";
 import * as saga from "../../scripts/sagas/collection";
 import { setClient, requestAttachment } from "../../scripts/client";
+import { createFormData } from "../../scripts/utils";
+
 
 const record = {id: 1, foo: "bar1"};
 const records = [
@@ -296,7 +298,7 @@ describe("collection sagas", () => {
 
       it("should create formData", () => {
         expect(createRecordWithAttachment.next("fake-uuid").value)
-          .eql(call(saga.createFormData, record));
+          .eql(call(createFormData, record));
       });
 
       it("should post the attachment along the record", () => {
@@ -366,7 +368,7 @@ describe("collection sagas", () => {
 
       it("should create formData", () => {
         expect(updateRecordWithAttachment.next().value)
-          .eql(call(saga.createFormData, record));
+          .eql(call(createFormData, record));
       });
 
       it("should update the record", () => {

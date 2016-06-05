@@ -179,3 +179,13 @@ export function extractFileInfo(dataURL) {
   const blob = new Blob([new Uint8Array(array)], {type});
   return {name, blob};
 }
+
+export function createFormData(record) {
+  const {FormData} = window;
+  const attachment = record.__attachment__; // data-url
+  const {blob, name} = extractFileInfo(attachment);
+  const formData = new FormData();
+  formData.append("attachment", blob, name);
+  formData.append("data", JSON.stringify(omit(record, "__attachment__")));
+  return formData;
+}

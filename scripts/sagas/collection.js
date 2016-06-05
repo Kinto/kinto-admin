@@ -1,7 +1,7 @@
 import { push as updatePath } from "react-router-redux";
 import { call, take, fork, put } from "redux-saga/effects";
 import { v4 as uuid } from "uuid";
-import { omit, extractFileInfo } from "../utils";
+import { createFormData } from "../utils";
 
 import {
   ATTACHMENT_DELETE_REQUEST,
@@ -26,16 +26,6 @@ function getBucket(bid) {
 
 function getCollection(bid, cid) {
   return getBucket(bid).collection(cid);
-}
-
-export function createFormData(record) {
-  const {FormData} = window;
-  const attachment = record.__attachment__; // data-url
-  const {blob, name} = extractFileInfo(attachment);
-  const formData = new FormData();
-  formData.append("attachment", blob, name);
-  formData.append("data", JSON.stringify(omit(record, "__attachment__")));
-  return formData;
 }
 
 export function* deleteAttachment(bid, cid, rid) {
