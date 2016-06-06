@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import Form from "react-jsonschema-form";
 
 import JSONEditor from "./JSONEditor";
+import Spinner from "./Spinner";
 import { validJSON } from "./../utils";
 
 
@@ -30,11 +31,44 @@ const uiSchema = {
   },
 };
 
+const deleteSchema = {
+  type: "string",
+  title: "Please enter the bucket name to delete as a confirmation",
+};
+
 function validate({data}, errors) {
   if (!validJSON(data)) {
     errors.data.addError("Invalid JSON.");
   }
   return errors;
+}
+
+function DeleteForm({bid, onSubmit}) {
+  const validate = (formData, errors) => {
+    if (formData !== bid) {
+      errors.addError("The bucket name does not match.");
+    }
+    return errors;
+  };
+  return (
+    <div className="panel panel-danger">
+      <div className="panel-heading">
+        <strong>Danger Zone</strong>
+      </div>
+      <div className="panel-body">
+        <p>
+          Delete the <b>{bid}</b> bucket and all the collections and
+          records it contains.
+        </p>
+        <Form
+          schema={deleteSchema}
+          validate={validate}
+          onSubmit={({formData}) => onSubmit(formData)}>
+          <button type="submit" className="btn btn-danger">Delete bucket</button>
+        </Form>
+      </div>
+    </div>
+  );
 }
 
 export default class BucketForm extends Component {
@@ -46,37 +80,68 @@ export default class BucketForm extends Component {
     });
   }
 
+  get allowEditing() {
+    const {session, bucket} = this.props;
+    try {
+      const bucketWritePermissions = bucket.permissions.write;
+      const currentUserId = session.serverInfo.user.id;
+      return bucketWritePermissions.includes(currentUserId);
+    } catch (err) {
+      // We're waiting for these information to load.
+      return false;
+    }
+  }
+
   render() {
-    const {formData} = this.props;
+    const {bid, bucket, formData, deleteBucket} = this.props;
+    const creation = !formData;
+    const formIsEditable = creation || this.allowEditing;
     // Disable edition of the collection name
-    const _uiSchema = !formData ? uiSchema : {
+    const _uiSchema = creation ? uiSchema : {
       ...uiSchema,
       name: {
         "ui:readonly": true,
       }
     };
+    const alert = formIsEditable || bucket.busy ? null : (
+      <div className="alert alert-warning">
+        You don't have the required permission to edit this bucket.
+      </div>
+    );
 
     const buttons = (
       <div>
-        <input type="submit" className="btn btn-primary"
-          value={`${formData ? "Update" : "Create"} bucket`} />
+        <input type="submit" disabled={!formIsEditable}
+          className="btn btn-primary"
+          value={`${creation ? "Create" : "Update"} bucket`} />
         {" or "}
         <Link to="/">Cancel</Link>
       </div>
     );
 
     return (
-      <div className="panel panel-default">
-        <div className="panel-body">
-          <Form
-            schema={schema}
-            uiSchema={_uiSchema}
-            formData={formData}
-            validate={validate}
-            onSubmit={this.onSubmit}>
-            {buttons}
-          </Form>
+      <div>
+        <div className="panel panel-default">
+          <div className="panel-body">
+            {alert}
+            {bucket.busy ?
+              <Spinner /> :
+              <Form
+                schema={schema}
+                uiSchema={formIsEditable ? _uiSchema :
+                            {..._uiSchema, "ui:readonly": true}}
+                formData={formData}
+                validate={validate}
+                onSubmit={this.onSubmit}>
+                {buttons}
+              </Form>
+            }
+          </div>
         </div>
+        {this.allowEditing ?
+          <DeleteForm
+            bid={bid}
+            onSubmit={deleteBucket} /> : null}
       </div>
     );
   }

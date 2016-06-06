@@ -25,10 +25,18 @@ describe("bucket reducer", () => {
     expect(bucket(undefined, {
       type: BUCKET_LOAD_SUCCESS,
       data: {id: "buck", a: 2, last_modified: 42},
+      permissions: {
+        write: ["twitter:Natim"],
+        read: ["github:n1k0", "github:almet"],
+      }
     })).eql({
       busy: false,
       name: "buck",
       data: {a: 2},
+      permissions: {
+        write: ["twitter:Natim"],
+        read: ["github:n1k0", "github:almet"],
+      }
     });
   });
 });

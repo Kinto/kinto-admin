@@ -55,18 +55,26 @@ export function* loadRoute(bid, cid, rid) {
 
     // Map them to state
     const [bucket, collection, record] = res.map(({status, body}, index) => {
-      if (index === 0 && status === 403) {
+      if (status === 403) {
         // We may not have permission to read this resource, though we need to
         // have its default information propagated to the store.
-        return {id: bid};
+        if (index === 0) { // bucket
+          return {data: {id: bid}};
+        }
+        if (index === 1) { // collection
+          return {data: {id: cid}};
+        }
       }
-      return body.data;
+      return body;
     });
-    yield put(bucketLoadSuccess(bid, bucket));
+    yield put(bucketLoadSuccess(bid, bucket.data, bucket.permissions));
     if (collection) {
-      yield put(collectionLoadSuccess({...collection, bucket: bucket.id}));
+      yield put(collectionLoadSuccess({
+        ...collection.data,
+        bucket: bucket.data.id
+      }, collection.permissions));
       if (record) {
-        yield put(recordLoadSuccess(record));
+        yield put(recordLoadSuccess(record.data, record.permissions));
       }
     }
     yield put(routeLoadSuccess(bucket, collection, rid));

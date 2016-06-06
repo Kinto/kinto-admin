@@ -14,7 +14,10 @@ const DEFAULT = {
   server: null,
   credentials: {},
   buckets: [],
-  serverInfo: {},
+  serverInfo: {
+    capabilities: {},
+    user: {},
+  },
   redirectURL: null,
 };
 
