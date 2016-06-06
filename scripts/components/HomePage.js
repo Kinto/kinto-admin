@@ -55,6 +55,7 @@ export default class HomePage extends Component {
           authenticated ?
             <SessionInfo session={session} /> :
             <AuthForm setup={setup}
+                      session={session}
                       navigateToExternalAuth={navigateToExternalAuth} />}
       </div>
     );

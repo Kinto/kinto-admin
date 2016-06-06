@@ -1,6 +1,7 @@
 import {
   SESSION_BUSY,
   SESSION_SETUP_COMPLETE,
+  SESSION_STORE_REDIRECT_URL,
   SESSION_SERVERINFO_SUCCESS,
   SESSION_BUCKETS_SUCCESS,
   SESSION_LOGOUT,
@@ -14,6 +15,7 @@ const DEFAULT = {
   credentials: {},
   buckets: [],
   serverInfo: {},
+  redirectURL: null,
 };
 
 export default function session(state = DEFAULT, action) {
@@ -23,6 +25,9 @@ export default function session(state = DEFAULT, action) {
     }
     case SESSION_SETUP_COMPLETE: {
       return {...state, ...action.session};
+    }
+    case SESSION_STORE_REDIRECT_URL: {
+      return {...state, redirectURL: action.redirectURL};
     }
     case SESSION_BUCKETS_SUCCESS: {
       const {serverInfo} = state;

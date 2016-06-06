@@ -7,6 +7,7 @@ import { notifyError } from "../../scripts/actions/notifications";
 import { setClient } from "../../scripts/client";
 import * as actions from "../../scripts/actions/route";
 import * as notificationActions from "../../scripts/actions/notifications";
+import * as sessionActions from "../../scripts/actions/session";
 import * as collectionActions from "../../scripts/actions/collection";
 import * as bucketActions from "../../scripts/actions/bucket";
 import * as recordActions from "../../scripts/actions/record";
@@ -250,6 +251,11 @@ describe("route sagas", () => {
       it("should clear notification", () => {
         expect(routeUpdated.next().value)
           .eql(put(notificationActions.clearNotifications()));
+      });
+
+      it("should store the post-auth redirect URL", () => {
+        expect(routeUpdated.next().value)
+          .eql(put(sessionActions.storeRedirectURL("/blah")));
       });
 
       it("should redirect to the homepage", () => {

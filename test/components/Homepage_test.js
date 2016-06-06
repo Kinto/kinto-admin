@@ -54,7 +54,8 @@ describe("HomePage component", () => {
             credentials: {
               username: "user",
               password: "pass",
-            }
+            },
+            redirectURL: undefined,
           });
         });
       });
@@ -74,6 +75,7 @@ describe("HomePage component", () => {
           sinon.assert.calledWithExactly(navigateToExternalAuth, {
             server: "http://test.server/v1",
             authType: "fxa",
+            redirectURL: undefined,
           });
         });
       });

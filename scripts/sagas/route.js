@@ -3,6 +3,7 @@ import { push as updatePath } from "react-router-redux";
 
 import { ROUTE_UPDATED } from "../constants";
 import { getClient } from "../client";
+import { storeRedirectURL } from "../actions/session";
 import { resetBucket, bucketBusy, bucketLoadSuccess } from "../actions/bucket";
 import { routeLoadSuccess } from "../actions/route";
 import { resetCollection, collectionBusy, collectionLoadSuccess } from "../actions/collection";
@@ -86,6 +87,7 @@ export function* routeUpdated(authenticated, params={}, location) {
   // Check for an authenticated session; if we're requesting anything other
   // than the homepage, redirect to the homepage with a notification.
   if (!authenticated && !token && location.pathname !== "/") {
+    yield put(storeRedirectURL(location.pathname));
     yield put(updatePath(""));
     yield put(notifyInfo("Authentication required.", {persistent: true}));
     return;

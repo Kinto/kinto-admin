@@ -3,6 +3,7 @@ import {
   SESSION_BUSY,
   SESSION_SETUP,
   SESSION_SETUP_COMPLETE,
+  SESSION_STORE_REDIRECT_URL,
   SESSION_SERVERINFO_SUCCESS,
   SESSION_BUCKETS_REQUEST,
   SESSION_BUCKETS_SUCCESS,
@@ -20,6 +21,10 @@ export function setup(session) {
 
 export function setupComplete(session) {
   return {type: SESSION_SETUP_COMPLETE, session};
+}
+
+export function storeRedirectURL(redirectURL) {
+  return {type: SESSION_STORE_REDIRECT_URL, redirectURL};
 }
 
 export function serverInfoSuccess(serverInfo) {
