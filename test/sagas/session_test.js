@@ -4,6 +4,7 @@ import { take, fork, put, call } from "redux-saga/effects";
 
 import {
   SESSION_SETUP,
+  SESSION_SETUP_COMPLETE,
   SESSION_BUCKETS_REQUEST,
   SESSION_LOGOUT,
 } from "../../scripts/constants";
@@ -145,6 +146,26 @@ describe("session sagas", () => {
     });
   });
 
+  describe("handleSessionRedirect()", () => {
+    let handleSessionRedirect;
+
+    before(() => {
+      handleSessionRedirect = saga.handleSessionRedirect({redirectURL: "/blah"});
+    });
+
+    it("should redirect to redirectURL", () => {
+      expect(handleSessionRedirect.next().value)
+        .eql(put(updatePath("/blah")));
+    });
+
+    it("should clear the redirectURL", () => {
+      expect(handleSessionRedirect.next().value)
+        .eql(put(actions.storeRedirectURL(null)));
+    });
+  });
+
+  // Watchers
+
   describe("Watchers", () => {
     describe("watchSessionSetup()", () => {
       it("should watch for the setup action", () => {
@@ -155,6 +176,18 @@ describe("session sagas", () => {
 
         expect(watchSessionSetup.next(actions.setup(session)).value)
           .eql(fork(saga.setupSession, session));
+      });
+    });
+
+    describe("watchSessionSetupComplete()", () => {
+      it("should watch for the setupComplete action", () => {
+        const watchSessionSetupComplete = saga.watchSessionSetupComplete();
+
+        expect(watchSessionSetupComplete.next().value)
+          .eql(take(SESSION_SETUP_COMPLETE));
+
+        expect(watchSessionSetupComplete.next({session: {}}).value)
+          .eql(fork(saga.handleSessionRedirect, {}));
       });
     });
 
