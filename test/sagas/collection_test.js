@@ -26,6 +26,9 @@ const records = [
   record,
   {id: 2, foo: "bar2"},
 ];
+const recordsWithAttachment = records.map((record, i) => {
+  return {...record, __attachment__: {n: i + 1}};
+});
 
 describe("collection sagas", () => {
   describe("listRecords()", () => {
@@ -518,6 +521,102 @@ describe("collection sagas", () => {
     });
   });
 
+  describe("bulkCreateRecordsWithAttachment()", () => {
+    describe("Success", () => {
+      let bulkCreateRecordsWithAttachment;
+
+      before(() => {
+        bulkCreateRecordsWithAttachment = saga.bulkCreateRecordsWithAttachment(
+          "bucket", "collection", recordsWithAttachment);
+      });
+
+      it("should mark the current collection as busy", () => {
+        expect(bulkCreateRecordsWithAttachment.next().value)
+          .eql(put(collectionActions.collectionBusy(true)));
+      });
+
+      it("should create the uuid for the first record", () => {
+        expect(bulkCreateRecordsWithAttachment.next().value)
+          .eql(call(uuid));
+      });
+
+      it("should create formData for the first record", () => {
+        expect(bulkCreateRecordsWithAttachment.next("fake-uuid1").value)
+          .eql(call(createFormData, recordsWithAttachment[0]));
+      });
+
+      it("should post the first record with its attachment", () => {
+        const formData = {fake: true};
+        expect(bulkCreateRecordsWithAttachment.next(formData).value)
+          .eql(call(requestAttachment, "bucket", "collection", "fake-uuid1", {
+            method: "post",
+            body: formData
+          }));
+      });
+
+      it("should create the uuid for the second record", () => {
+        expect(bulkCreateRecordsWithAttachment.next().value)
+          .eql(call(uuid));
+      });
+
+      it("should create formData for the second record", () => {
+        expect(bulkCreateRecordsWithAttachment.next("fake-uuid2").value)
+          .eql(call(createFormData, recordsWithAttachment[1]));
+      });
+
+      it("should post the second record with its attachment", () => {
+        const formData = {fake: true};
+        expect(bulkCreateRecordsWithAttachment.next(formData).value)
+          .eql(call(requestAttachment, "bucket", "collection", "fake-uuid2", {
+            method: "post",
+            body: formData
+          }));
+      });
+
+      it("should dispatch the listRecords action", () => {
+        expect(bulkCreateRecordsWithAttachment.next({
+          published: recordsWithAttachment,
+          errors: [],
+        }).value)
+          .eql(put(collectionActions.listRecords("bucket", "collection")));
+      });
+
+      it("should update the route path", () => {
+        expect(bulkCreateRecordsWithAttachment.next().value)
+          .eql(put(updatePath("/buckets/bucket/collections/collection")));
+      });
+
+      it("should dispatch a notification", () => {
+        expect(bulkCreateRecordsWithAttachment.next().value)
+          .eql(put(notifySuccess("2 records created.")));
+      });
+
+      it("should unmark the current collection as busy", () => {
+        expect(bulkCreateRecordsWithAttachment.next().value)
+          .eql(put(collectionActions.collectionBusy(false)));
+      });
+    });
+
+    describe("Failure", () => {
+      let bulkCreateRecordsWithAttachment;
+
+      before(() => {
+        bulkCreateRecordsWithAttachment = saga.bulkCreateRecordsWithAttachment("bucket", "collection", records);
+        bulkCreateRecordsWithAttachment.next();
+      });
+
+      it("should dispatch an error notification action", () => {
+        expect(bulkCreateRecordsWithAttachment.throw("error").value)
+          .eql(put(notifyError("error")));
+      });
+
+      it("should unmark the current collection as busy", () => {
+        expect(bulkCreateRecordsWithAttachment.next().value)
+          .eql(put(collectionActions.collectionBusy(false)));
+      });
+    });
+  });
+
   describe("Watchers", () => {
     describe("watchCollectionRecords()", () => {
       it("should watch for the listRecords action", () => {
@@ -645,15 +744,45 @@ describe("collection sagas", () => {
     });
 
     describe("watchBulkCreateRecords()", () => {
-      it("should watch for the bulkCreateRecords action", () => {
-        const watchBulkCreateRecords = saga.watchBulkCreateRecords();
+      describe("Attachments enabled", () => {
+        it("should watch for the bulkCreateRecords action", () => {
+          const watchBulkCreateRecords = saga.watchBulkCreateRecords();
 
-        expect(watchBulkCreateRecords.next().value)
-          .eql(take(RECORD_BULK_CREATE_REQUEST));
+          expect(watchBulkCreateRecords.next().value)
+            .eql(take(SESSION_SERVERINFO_SUCCESS));
 
-        expect(watchBulkCreateRecords.next(
-          collectionActions.bulkCreateRecords("a", "b", "c")).value)
-          .eql(fork(saga.bulkCreateRecords, "a", "b", "c"));
+          const serverInfoAction = {
+            serverInfo: {capabilities: {attachments: {}}}
+          };
+
+          expect(watchBulkCreateRecords.next(serverInfoAction).value)
+            .eql(take(RECORD_BULK_CREATE_REQUEST));
+
+          const records = [{__attachment__: {}}];
+          expect(watchBulkCreateRecords.next(
+            collectionActions.bulkCreateRecords("a", "b", records)).value)
+            .eql(fork(saga.bulkCreateRecordsWithAttachment, "a", "b", records));
+        });
+      });
+
+      describe("Attachments disabled", () => {
+        it("should watch for the bulkCreateRecords action", () => {
+          const watchBulkCreateRecords = saga.watchBulkCreateRecords();
+
+          expect(watchBulkCreateRecords.next().value)
+            .eql(take(SESSION_SERVERINFO_SUCCESS));
+
+          const serverInfoAction = {
+            serverInfo: {capabilities: {}}
+          };
+
+          expect(watchBulkCreateRecords.next(serverInfoAction).value)
+            .eql(take(RECORD_BULK_CREATE_REQUEST));
+
+          expect(watchBulkCreateRecords.next(
+            collectionActions.bulkCreateRecords("a", "b", "c")).value)
+            .eql(fork(saga.bulkCreateRecords, "a", "b", "c"));
+        });
       });
     });
   });

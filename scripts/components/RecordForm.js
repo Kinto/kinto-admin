@@ -8,7 +8,7 @@ import JSONRecordForm from "./JSONRecordForm";
 import { linkify } from "../utils";
 
 
-function extendSchemaWithAttachment(schema, attachment) {
+export function extendSchemaWithAttachment(schema, attachment) {
   if (!attachment.enabled) {
     return schema;
   }
@@ -30,7 +30,7 @@ function extendSchemaWithAttachment(schema, attachment) {
   };
 }
 
-function extendUiSchemaWithAttachment(uiSchema, attachment) {
+export function extendUiSchemaWithAttachment(uiSchema, attachment) {
   if (!attachment.enabled || !uiSchema.hasOwnProperty("ui:order")) {
     return uiSchema;
   }

@@ -174,11 +174,35 @@ export function* bulkCreateRecords(bid, cid, records) {
   }
 }
 
+export function* bulkCreateRecordsWithAttachment(bid, cid, records) {
+  try {
+    yield put(collectionActions.collectionBusy(true));
+    // XXX We should perform a batch request here
+    for (const record of records) {
+      const rid = yield call(uuid);
+      const formData = yield call(createFormData, record);
+      yield call(requestAttachment, bid, cid, rid, {
+        method: "post",
+        body: formData
+      });
+    }
+    yield put(collectionActions.listRecords(bid, cid));
+    yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
+    yield put(notifySuccess(`${records.length} records created.`));
+  } catch(error) {
+    yield put(notifyError(error));
+  } finally {
+    yield put(collectionActions.collectionBusy(false));
+  }
+}
+
 // Watchers
 
-function shouldProcessAttachment(serverInfo, record) {
+function shouldProcessAttachment(serverInfo, records) {
   const {capabilities={}} = serverInfo;
-  return capabilities.hasOwnProperty("attachments") && record.__attachment__;
+  records = Array.isArray(records) ? records : [records];
+  const hasAttachment = records.some(r => !!r.__attachment__);
+  return capabilities.hasOwnProperty("attachments") && hasAttachment;
 }
 
 export function* watchCollectionRecords() {
@@ -236,8 +260,13 @@ export function* watchRecordDelete() {
 }
 
 export function* watchBulkCreateRecords() {
+  const {serverInfo} = yield take(SESSION_SERVERINFO_SUCCESS);
   while(true) { // eslint-disable-line
     const {bid, cid, records} = yield take(RECORD_BULK_CREATE_REQUEST);
-    yield fork(bulkCreateRecords, bid, cid, records);
+    if (shouldProcessAttachment(serverInfo, records)) {
+      yield fork(bulkCreateRecordsWithAttachment, bid, cid, records);
+    } else {
+      yield fork(bulkCreateRecords, bid, cid, records);
+    }
   }
 }

@@ -4,6 +4,10 @@ import Form from "react-jsonschema-form";
 
 import Spinner from "./Spinner";
 import JSONEditor from "./JSONEditor";
+import {
+  extendSchemaWithAttachment,
+  extendUiSchemaWithAttachment
+} from "./RecordForm";
 
 
 export default class BulkForm extends Component {
@@ -25,7 +29,7 @@ export default class BulkForm extends Component {
 
   render() {
     const {params, collection} = this.props;
-    const {busy, label, schema, uiSchema} = collection;
+    const {busy, label, schema, uiSchema, attachment={}} = collection;
     const {bid, cid} = params;
 
     let bulkSchema, bulkUiSchema, bulkFormData;
@@ -34,10 +38,10 @@ export default class BulkForm extends Component {
       bulkSchema = {
         type: "array",
         definitions: schema.definitions,
-        items: schema
+        items: extendSchemaWithAttachment(schema, attachment),
       };
       bulkUiSchema = {
-        items: uiSchema
+        items: extendUiSchemaWithAttachment(uiSchema, attachment),
       };
       bulkFormData = [{}, {}];
     } else {
