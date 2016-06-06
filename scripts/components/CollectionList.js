@@ -158,7 +158,7 @@ export default class CollectionList extends Component {
     const {bid, cid} = params;
     const {
       busy,
-      label,
+      name,
       schema,
       displayFields,
       records,
@@ -168,7 +168,7 @@ export default class CollectionList extends Component {
     const listActions = <ListActions bid={bid} cid={cid} />;
     return (
       <div className="collection-page">
-        <h1>List of records in <b>{label}</b></h1>
+        <h1>List of records in <b>{bid}/{name}</b></h1>
         {listActions}
         <Table
           busy={busy}
