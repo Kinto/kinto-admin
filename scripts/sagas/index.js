@@ -10,6 +10,7 @@ export default function* rootSaga() {
   yield [
     // session
     fork(sessionSagas.watchSessionSetup),
+    fork(sessionSagas.watchSessionSetupComplete),
     fork(sessionSagas.watchSessionLogout),
     fork(sessionSagas.watchSessionBuckets),
     // route

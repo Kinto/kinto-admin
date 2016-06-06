@@ -30,9 +30,14 @@ function onAuthEnter(store, {params}) {
   // Check for an incoming authentication.
   if (payload && token) {
     try {
-      const {server, authType} = JSON.parse(atob(payload));
+      const {server, redirectURL, authType} = JSON.parse(atob(payload));
       const credentials = {token};
-      store.dispatch(sessionActions.setup({server, authType, credentials}));
+      store.dispatch(sessionActions.setup({
+        server,
+        authType,
+        credentials,
+        redirectURL,
+      }));
     } catch(error) {
       store.dispatch(notificationActions.notifyError(error));
     }

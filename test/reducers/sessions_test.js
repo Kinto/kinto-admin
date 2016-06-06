@@ -38,6 +38,7 @@ describe("session reducer", () => {
       authType: setup.authType,
       credentials: setup.credentials,
       buckets: [],
+      redirectURL: null,
       serverInfo: {},
     });
   });

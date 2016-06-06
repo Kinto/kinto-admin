@@ -120,15 +120,17 @@ export default class AuthForm extends Component {
   }
 
   onSubmit = ({formData}) => {
-    const {setup, navigateToExternalAuth} = this.props;
+    const {session, setup, navigateToExternalAuth} = this.props;
     const {authType} = formData;
+    const {redirectURL} = session;
+    const extendedFormData = {...formData, redirectURL};
     switch(authType) {
       case "fxa": {
-        return navigateToExternalAuth(formData);
+        return navigateToExternalAuth(extendedFormData);
       }
       default:
       case "basicauth": {
-        return setup(formData);
+        return setup(extendedFormData);
       }
     }
   };

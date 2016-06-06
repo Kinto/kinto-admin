@@ -3,8 +3,9 @@ import { call, take, fork, put } from "redux-saga/effects";
 
 import {
   SESSION_SETUP,
+  SESSION_SETUP_COMPLETE,
   SESSION_BUCKETS_REQUEST,
-  SESSION_LOGOUT
+  SESSION_LOGOUT,
 } from "../constants";
 import * as notificationActions from "../actions/notifications";
 import * as sessionActions from "../actions/session";
@@ -22,6 +23,14 @@ export function* setupSession(session) {
     yield put(notificationActions.notifyError(error));
   } finally {
     yield put(sessionActions.sessionBusy(false));
+  }
+}
+
+export function* handleSessionRedirect(session) {
+  const {redirectURL} = session;
+  if (redirectURL) {
+    yield put(updatePath(redirectURL));
+    yield put(sessionActions.storeRedirectURL(null));
   }
 }
 
@@ -61,6 +70,13 @@ export function* watchSessionSetup() {
   while(true) { // eslint-disable-line
     const {session} = yield take(SESSION_SETUP);
     yield fork(setupSession, session);
+  }
+}
+
+export function* watchSessionSetupComplete() {
+  while(true) { // eslint-disable-line
+    const {session} = yield take(SESSION_SETUP_COMPLETE);
+    yield fork(handleSessionRedirect, session);
   }
 }
 
