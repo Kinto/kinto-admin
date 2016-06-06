@@ -8,12 +8,12 @@ import JSONRecordForm from "./JSONRecordForm";
 import { linkify } from "../utils";
 
 
-export function extendSchemaWithAttachment(schema, attachment) {
+export function extendSchemaWithAttachment(schema, attachment, edit=false) {
   if (!attachment.enabled) {
     return schema;
   }
   const schemaRequired = schema.required || [];
-  const required = attachment.required ?
+  const required = attachment.required && !edit ?
                    schemaRequired.concat("__attachment__") :
                    schemaRequired;
   return {
@@ -142,7 +142,7 @@ export default class RecordForm extends Component {
 
     return (
       <Form
-        schema={extendSchemaWithAttachment(schema, attachment)}
+        schema={extendSchemaWithAttachment(schema, attachment, !!record)}
         uiSchema={extendUiSchemaWithAttachment(uiSchema, attachment)}
         formData={record}
         onSubmit={this.onSubmit}>
