@@ -128,6 +128,10 @@ table.record-list td.actions {
   white-space: nowrap;
 }
 
+table.record-list td.actions .btn-group {
+  margin-left: .5em;
+}
+
 .notifications {
   z-index: 99;
   margin-bottom: 1em;
@@ -195,6 +199,10 @@ table.record-list td.actions {
   border: 1px solid #ccc;
   height: auto;
   border-radius: .3em;
+}
+
+.attachment-icon {
+  width: 16px;
 }
 
 .attachment-action {

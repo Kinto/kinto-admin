@@ -44,6 +44,8 @@ class Row extends Component {
       }
       <td className="lastmod">{this.lastModified}</td>
       <td className="actions text-right">
+        {record.attachment && record.attachment.location ?
+          <i className="glyphicon glyphicon-paperclip" /> : null}
         <div className="btn-group">
           <Link to={`/buckets/${bid}/collections/${cid}/edit/${record.id}`}
             className="btn btn-xs btn-info">Edit</Link>
