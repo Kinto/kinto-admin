@@ -32,7 +32,8 @@ export function* loadBucket(bid) {
     const bucket = getBucket(bid);
     yield put(bucketBusy(true));
     const data = yield call([bucket, bucket.getData]);
-    yield put(bucketLoadSuccess(bid, data));
+    const permissions = yield call([bucket, bucket.getPermissions]);
+    yield put(bucketLoadSuccess(bid, data, permissions));
   } catch(error) {
     yield put(notifyError(error));
   } finally {

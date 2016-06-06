@@ -41,9 +41,10 @@ export default class JSONEditor extends Component {
   };
 
   render() {
-    return (
+    const {readonly, value} = this.props;
+    return readonly ? <pre>{value}</pre> : (
       <Codemirror
-        value={this.props.value}
+        value={value}
         onChange={this.onCodeChange}
         options={cmOptions} />
     );

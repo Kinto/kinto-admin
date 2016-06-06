@@ -10,6 +10,10 @@ const INITIAL_STATE = {
   busy: false,
   name: null,
   data: {},
+  permissions: {
+    read: [],
+    write: [],
+  },
 };
 
 export function bucket(state = INITIAL_STATE, action) {
@@ -18,11 +22,15 @@ export function bucket(state = INITIAL_STATE, action) {
       return {...state, busy: action.busy};
     }
     case BUCKET_LOAD_SUCCESS: {
-      const {data} = action;
+      const {data={}, permissions={}} = action;
       return {
         ...state,
         data: omit(data, ["id", "last_modified"]),
         name: data.id,
+        permissions: {
+          read: permissions.read,
+          write: permissions.write,
+        },
       };
     }
     case BUCKET_RESET: {

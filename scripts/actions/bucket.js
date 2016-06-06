@@ -21,8 +21,8 @@ export function loadBucket(bid) {
   return {type: BUCKET_LOAD_REQUEST, bid};
 }
 
-export function bucketLoadSuccess(bid, data) {
-  return {type: BUCKET_LOAD_SUCCESS, bid, data};
+export function bucketLoadSuccess(bid, data, permissions) {
+  return {type: BUCKET_LOAD_SUCCESS, bid, data, permissions};
 }
 
 export function createBucket(bid, data) {

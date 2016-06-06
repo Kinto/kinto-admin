@@ -39,12 +39,18 @@ describe("session reducer", () => {
       credentials: setup.credentials,
       buckets: [],
       redirectURL: null,
-      serverInfo: {},
+      serverInfo: {
+        capabilities: {},
+        user: {},
+      },
     });
   });
 
   it("SESSION_SERVERINFO_SUCCESS", () => {
     const serverInfo = {
+      capabilities: {
+        attachments: {},
+      },
       user: {
         bucket: "foo"
       }

@@ -147,14 +147,15 @@ describe("route sagas", () => {
 
       it("should update bucket state from response data", () => {
         const responses = [
-          {status: 200, body: {data: {id: "bucket", a: 1}}},
+          {status: 200, body: {data: {id: "bucket", a: 1},
+                               permissions: {write: [1], read: [2]}}},
           {status: 200, body: {data: {id: "collection", a: 2}}},
         ];
         expect(loadRoute.next(responses).value)
           .eql(put(bucketActions.bucketLoadSuccess("bucket", {
             id: "bucket",
             a: 1
-          })));
+          }, {write: [1], read: [2]})));
       });
 
       it("should update collection state from response data", () => {
