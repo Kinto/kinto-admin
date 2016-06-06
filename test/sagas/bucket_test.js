@@ -27,6 +27,11 @@ const collectionData = {
   displayFields: [],
 };
 
+const collectionPermissions = {
+  read: [],
+  write: [],
+};
+
 describe("bucket sagas", () => {
   describe("createBucket()", () => {
     describe("Success", () => {
@@ -211,7 +216,7 @@ describe("bucket sagas", () => {
       let bucket, collection, loadCollection;
 
       before(() => {
-        collection = {getData() {}};
+        collection = {getData() {}, getPermissions() {}};
         bucket = {collection() {return collection;}};
         setClient({bucket() {return bucket;}});
         loadCollection = saga.loadCollection("bucket", "collection");
@@ -222,17 +227,22 @@ describe("bucket sagas", () => {
           .eql(put(collectionActions.collectionBusy(true)));
       });
 
-      it("should fetch collection attributes", () => {
+      it("should fetch collection data", () => {
         expect(loadCollection.next().value)
           .eql(call([collection, collection.getData]));
       });
 
-      it("should dispatch the collectionLoadSuccess action", () => {
+      it("should fetch collection permissions", () => {
         expect(loadCollection.next(collectionData).value)
+          .eql(call([collection, collection.getPermissions]));
+      });
+
+      it("should dispatch the collectionLoadSuccess action", () => {
+        expect(loadCollection.next(collectionPermissions).value)
           .eql(put(collectionActions.collectionLoadSuccess({
             ...collectionData,
             bucket: "bucket",
-          })));
+          }, collectionPermissions)));
       });
 
       it("should unmark the current collection as busy", () => {

@@ -21,8 +21,8 @@ export function resetCollection() {
   return {type: COLLECTION_RESET};
 }
 
-export function collectionLoadSuccess(data) {
-  return {type: COLLECTION_LOAD_SUCCESS, data};
+export function collectionLoadSuccess(data, permissions) {
+  return {type: COLLECTION_LOAD_SUCCESS, data, permissions};
 }
 
 export function listRecordsSuccess(records) {

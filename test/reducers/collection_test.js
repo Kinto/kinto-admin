@@ -33,6 +33,7 @@ describe("collection reducer", () => {
         attachment: {enabled: true, required: false},
         displayFields: "displayFields",
       },
+      permissions: {write: [], read: []},
     })).eql({
       bucket: "bucket",
       name: "id",
@@ -44,6 +45,7 @@ describe("collection reducer", () => {
       records: [],
       recordsLoaded: false,
       busy: false,
+      permissions: {write: [], read: []},
     });
   });
 

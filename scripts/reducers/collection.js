@@ -13,10 +13,17 @@ const INITIAL_STATE = {
   busy: false,
   schema: {},
   uiSchema: {},
-  attachment: {enabled: false, required: false},
+  attachment: {
+    enabled: false,
+    required: false
+  },
   displayFields: [],
   records: [],
   recordsLoaded: false,
+  permissions: {
+    read: [],
+    write: [],
+  },
 };
 
 export function collection(state = INITIAL_STATE, action) {
@@ -28,8 +35,16 @@ export function collection(state = INITIAL_STATE, action) {
       return INITIAL_STATE;
     }
     case COLLECTION_LOAD_SUCCESS: {
-      const {data} = action;
-      const {bucket, id, schema, uiSchema, attachment, displayFields} = data;
+      const {data, permissions} = action;
+      const {
+        bucket,
+        id,
+        schema,
+        uiSchema,
+        attachment,
+        displayFields,
+      } = data;
+      const {read=[], write=[]} = permissions;
       return {
         ...state,
         name: id,
@@ -39,6 +54,7 @@ export function collection(state = INITIAL_STATE, action) {
         uiSchema,
         attachment,
         displayFields,
+        permissions: {read, write}
       };
     }
     case COLLECTION_RECORDS_SUCCESS: {
