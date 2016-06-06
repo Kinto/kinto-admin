@@ -25,10 +25,11 @@ function FormInstructions() {
   return (
     <ol>
       <li>First find a good name for your collection.</li>
-      <li>Then create a <em>JSON schema</em> describing the fields the
-          collection records should have</li>
-      <li>If needed, define a <em>uiSchema</em> to customize the way
-          forms for creating and editing records are rendered.</li>
+      <li>Create a <em>JSON schema</em> describing the fields the
+          collection records should have.</li>
+      <li>Decide if you want to enable attaching a file to records.</li>
+      <li>Define a <em>uiSchema</em> to customize the way forms for creating and
+          editing records are rendered.</li>
       <li>List the record fields you want to display in the columns of the
           collection records list.</li>
     </ol>
@@ -65,10 +66,33 @@ const schema = {
         description: "Enter a field name. i.e: name, attachment.filename",
       }
     },
+    attachment: {
+      type: "object",
+      title: "File attachment",
+      description: (
+        <p>
+          Please note this requires the <code>attachments</code> capability
+          to be available on the server.
+        </p>
+      ),
+      properties: {
+        enabled: {
+          type: "boolean",
+          title: "Enable file attachment",
+          default: false,
+        },
+        required: {
+          type: "boolean",
+          title: "Attachment required",
+          default: false,
+        }
+      }
+    },
   }
 };
 
 const uiSchema = {
+  "ui:order": ["name", "schema", "uiSchema", "displayFields", "attachment"],
   name: {
     "ui:help": "The name should only contain letters, numbers, dashes or underscores."
   },
@@ -84,6 +108,14 @@ const uiSchema = {
         useful to create your own.
       </p>
     )
+  },
+  attachment: {
+    enabled: {
+      "ui:help": "Enable attachment of a single file to records.",
+    },
+    required: {
+      "ui:help": "Require a file to be attached to each record in the collection.",
+    }
   },
   uiSchema: {
     "ui:widget": JSONEditor,

@@ -23,6 +23,7 @@ import { setClient } from "../../scripts/client";
 const collectionData = {
   schema: {},
   uiSchema: {},
+  attachment: {enabled: true, required: false},
   displayFields: [],
 };
 

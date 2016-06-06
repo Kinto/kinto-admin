@@ -13,6 +13,7 @@ const INITIAL_STATE = {
   busy: false,
   schema: {},
   uiSchema: {},
+  attachment: {enabled: false, required: false},
   displayFields: [],
   records: [],
   recordsLoaded: false,
@@ -28,7 +29,7 @@ export function collection(state = INITIAL_STATE, action) {
     }
     case COLLECTION_LOAD_SUCCESS: {
       const {data} = action;
-      const {bucket, id, schema, uiSchema, displayFields} = data;
+      const {bucket, id, schema, uiSchema, attachment, displayFields} = data;
       return {
         ...state,
         name: id,
@@ -36,6 +37,7 @@ export function collection(state = INITIAL_STATE, action) {
         bucket,
         schema,
         uiSchema,
+        attachment,
         displayFields,
       };
     }

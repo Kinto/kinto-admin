@@ -128,6 +128,10 @@ table.record-list td.actions {
   white-space: nowrap;
 }
 
+table.record-list td.actions .btn-group {
+  margin-left: .5em;
+}
+
 .notifications {
   z-index: 99;
   margin-bottom: 1em;
@@ -195,6 +199,46 @@ table.record-list td.actions {
   border: 1px solid #ccc;
   height: auto;
   border-radius: .3em;
+}
+
+.attachment-icon {
+  width: 16px;
+}
+
+.attachment-action {
+  margin: 0;
+  padding: 0;
+}
+
+.attachment-info table {
+  margin-bottom: 0;
+}
+
+.attachment-info .table-condensed > tbody > tr > td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.attachment-action input[type=button] {
+  margin-top: -1em;
+}
+
+.attachment-img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  text-align: center;
+  right: 3.2em;
+  width: 125px;
+  height: 125px;
+  background: #fff;
+  border: 1px solid #ddd;
+}
+
+.attachment-img img {
+  max-width: 100%;
+  max-height: 100%;
 }
 
 /* Spinner http://tobiasahlin.com/spinkit/ */

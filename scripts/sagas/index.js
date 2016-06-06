@@ -13,7 +13,7 @@ export default function* rootSaga() {
     fork(sessionSagas.watchSessionLogout),
     fork(sessionSagas.watchSessionBuckets),
     // route
-    fork(routeSagas.watchLoadRoute),
+    fork(routeSagas.watchRouteUpdated),
     // bucket/collections
     fork(bucketSagas.watchBucketLoad),
     fork(bucketSagas.watchBucketCreate),
@@ -30,5 +30,6 @@ export default function* rootSaga() {
     fork(collectionSagas.watchRecordUpdate),
     fork(collectionSagas.watchRecordDelete),
     fork(collectionSagas.watchBulkCreateRecords),
+    fork(collectionSagas.watchAttachmentDelete),
   ];
 }

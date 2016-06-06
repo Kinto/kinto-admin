@@ -31,6 +31,10 @@ export function validJSON(string) {
   }
 }
 
+export function isHTTPok(status) {
+  return [1, 2, 3].some(c => String(status).startsWith(c));
+}
+
 export function validateSchema(jsonSchema) {
   let schema;
   try {
@@ -120,11 +124,21 @@ function handleNestedDisplayField(record, displayField) {
   return "<unknown>";
 }
 
+export function linkify(string) {
+  if (/https?:\/\//.test(string)) {
+    return <a href={string} title={string} target="_blank">{string}</a>;
+  }
+  return string;
+}
+
 export function renderDisplayField(record, displayField) {
+  if (!record) {
+    return "<unknown>";
+  }
   if (record.hasOwnProperty(displayField)) {
     const field = record[displayField];
     if (typeof field === "string") {
-      return field;
+      return linkify(field);
     } else if (typeof field === "object") {
       return JSON.stringify(field);
     } else {
@@ -136,4 +150,42 @@ export function renderDisplayField(record, displayField) {
     return handleNestedDisplayField(record, displayField);
   }
   return "<unknown>";
+}
+
+export function parseDataURL(dataURL) {
+  const regex = /^data:(.*);base64,(.*)/;
+  const match = dataURL.match(regex);
+  if (!match) {
+    throw new Error(`Invalid data-url: ${String(dataURL).substr(0, 32)}...`);
+  }
+  const props = match[1];
+  const base64 = match[2];
+  const [type, ...rawParams] = props.split(";");
+  const params = rawParams.reduce((acc, param) => {
+    const [key, value] = param.split("=");
+    return {...acc, [key]: value};
+  }, {});
+  return {...params, type, base64};
+}
+
+export function extractFileInfo(dataURL) {
+  const {Blob, Uint8Array} = window;
+  const {name, type, base64} = parseDataURL(dataURL);
+  const binary = atob(base64);
+  const array = [];
+  for(let i = 0; i < binary.length; i++) {
+    array.push(binary.charCodeAt(i));
+  }
+  const blob = new Blob([new Uint8Array(array)], {type});
+  return {name, blob};
+}
+
+export function createFormData(record) {
+  const {FormData} = window;
+  const attachment = record.__attachment__; // data-url
+  const {blob, name} = extractFileInfo(attachment);
+  const formData = new FormData();
+  formData.append("attachment", blob, name);
+  formData.append("data", JSON.stringify(omit(record, "__attachment__")));
+  return formData;
 }

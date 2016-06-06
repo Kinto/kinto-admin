@@ -99,10 +99,10 @@ export function* loadCollection(bid, cid) {
 
 export function* createCollection(bid, collectionData) {
   try {
-    const {name, schema, uiSchema, displayFields} = collectionData;
+    const {name, schema, uiSchema, attachment, displayFields} = collectionData;
     const bucket = getBucket(bid);
     yield call([bucket, bucket.createCollection], name, {
-      data: {uiSchema, schema, displayFields},
+      data: {uiSchema, schema, attachment, displayFields},
     });
     yield put(updatePath(`/buckets/${bid}/collections/${name}`));
     yield put(notifySuccess("Collection created."));

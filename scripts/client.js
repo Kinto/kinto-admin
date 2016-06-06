@@ -1,24 +1,9 @@
 import KintoClient from "kinto-client";
+import endpoint from "kinto-client/lib/endpoint";
+import { isHTTPok } from "./utils";
 
 
 let client;
-
-// {
-//   server: "http://server/v1",
-//   credentials: {
-//     authType: "basicauth",
-//     username: "user",
-//     password: "pass"
-//   }
-// }
-
-// {
-//   server: "http://server/v1",
-//   credentials: {
-//     authType: "fxa",
-//     token: "grotoken"
-//   }
-// }
 
 function getAuthHeader(session) {
   const {authType, credentials} = session;
@@ -52,4 +37,28 @@ export function setClient(_client) {
 
 export function resetClient() {
   client = null;
+}
+
+// XXX this should eventually move to kinto-client
+export function requestAttachment(bid, cid, rid, params) {
+  const {remote, defaultReqOptions} = getClient();
+  const path = endpoint("record", bid, cid, rid) + "/attachment";
+  return fetch(remote + path, {
+    headers: defaultReqOptions.headers,
+    ...params
+  })
+    .then(({status}) => {
+      if (!isHTTPok(status)) {
+        throw new Error("HTTP ${status}");
+      }
+    })
+    .catch(({message}) => {
+      const {method} = params;
+      const err = new Error(`Unable to ${method} attachment: ${message}`);
+      err.details = [
+        "URL: " + remote + path,
+        "Status: HTTP " + status,
+      ];
+      throw err;
+    });
 }

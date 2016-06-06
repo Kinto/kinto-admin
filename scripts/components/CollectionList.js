@@ -44,6 +44,8 @@ class Row extends Component {
       }
       <td className="lastmod">{this.lastModified}</td>
       <td className="actions text-right">
+        {record.attachment && record.attachment.location ?
+          <i className="glyphicon glyphicon-paperclip" /> : null}
         <div className="btn-group">
           <Link to={`/buckets/${bid}/collections/${cid}/edit/${record.id}`}
             className="btn btn-xs btn-info">Edit</Link>
@@ -158,7 +160,7 @@ export default class CollectionList extends Component {
     const {bid, cid} = params;
     const {
       busy,
-      label,
+      name,
       schema,
       displayFields,
       records,
@@ -168,7 +170,7 @@ export default class CollectionList extends Component {
     const listActions = <ListActions bid={bid} cid={cid} />;
     return (
       <div className="collection-page">
-        <h1>List of records in <b>{label}</b></h1>
+        <h1>List of records in <b>{bid}/{name}</b></h1>
         {listActions}
         <Table
           busy={busy}
