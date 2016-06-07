@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router";
 
 import { renderDisplayField } from "../utils";
+import { canCreateRecord } from "../permission";
 import Spinner from "./Spinner";
 
 
@@ -134,14 +135,20 @@ class Table extends Component {
 }
 
 function ListActions(props) {
-  const {bid, cid} = props;
+  const {bid, cid, session, collection} = props;
+  if (session.busy || collection.busy) {
+    return null;
+  }
   return (
     <div className="row list-actions">
       <div className="col-xs-8">
-        <Link to={`/buckets/${bid}/collections/${cid}/add`}
-          className="btn btn-info">Add</Link>
-        <Link to={`/buckets/${bid}/collections/${cid}/bulk`}
-          className="btn btn-info">Bulk add</Link>
+        {canCreateRecord(session, collection) ?
+          <div>
+            <Link to={`/buckets/${bid}/collections/${cid}/add`}
+              className="btn btn-info">Add</Link>
+            <Link to={`/buckets/${bid}/collections/${cid}/bulk`}
+              className="btn btn-info">Bulk add</Link>
+          </div> : null}
       </div>
       <div className="edit-coll-props col-xs-4 text-right">
         <Link to={`/buckets/${bid}/collections/${cid}/edit`}
@@ -156,7 +163,7 @@ function ListActions(props) {
 
 export default class CollectionList extends Component {
   render() {
-    const {params, collection, deleteRecord, updatePath} = this.props;
+    const {params, session, collection, deleteRecord, updatePath} = this.props;
     const {bid, cid} = params;
     const {
       busy,
@@ -167,7 +174,14 @@ export default class CollectionList extends Component {
       recordsLoaded,
     } = collection;
 
-    const listActions = <ListActions bid={bid} cid={cid} />;
+    const listActions = (
+      <ListActions
+        bid={bid}
+        cid={cid}
+        session={session}
+        collection={collection} />
+    );
+
     return (
       <div className="collection-page">
         <h1>List of records in <b>{bid}/{name}</b></h1>
