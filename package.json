@@ -4,6 +4,7 @@
   "description": "Kinto Web Administration Console in React.js",
   "scripts": {
     "dist": "NODE_ENV=production webpack --optimize-minimize --config webpack.prod.js && cp index.prod.html dist/index.html",
+    "flow-check": "node_modules/.bin/flow check",
     "lint": "eslint scripts test",
     "publish-to-gh-pages": "rimraf build && KINTO_ADMIN_PUBLIC_PATH='/kinto-admin/' npm run dist && bin/kinto-admin build -d build && gh-pages --dist build/",
     "start": "NODE_ENV=development node devServer.js",
