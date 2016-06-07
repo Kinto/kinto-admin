@@ -1,28 +1,19 @@
+/* @flow */
+
 import React from "react";
 
-export function saveSettings(data) {
-  localStorage.setItem("kwac_settings", JSON.stringify(data));
-}
 
-export function loadSettings() {
-  try {
-    return JSON.parse(localStorage.getItem("kwac_settings"));
-  } catch(err) {
-    return null;
-  }
-}
-
-export function omit(obj, keys=[]) {
-  return Object.keys(obj).reduce((acc, key) => {
+export function omit(obj: Object, keys: Array<string> = []): Object {
+  return Object.keys(obj).reduce((acc:Object, key:string) => {
     return keys.includes(key) ? acc : {...acc, [key]: obj[key]};
   }, {});
 }
 
-export function isObject(thing) {
+export function isObject(thing: any) {
   return typeof thing === "object" && thing !== null && !Array.isArray(thing);
 }
 
-export function validJSON(string) {
+export function validJSON(string: string) {
   try {
     JSON.parse(string);
     return true;
@@ -31,11 +22,11 @@ export function validJSON(string) {
   }
 }
 
-export function isHTTPok(status) {
-  return [1, 2, 3].some(c => String(status).startsWith(c));
+export function isHTTPok(status: number) {
+  return [1, 2, 3].some((c: number) => String(status).startsWith(String(c)));
 }
 
-export function validateSchema(jsonSchema) {
+export function validateSchema(jsonSchema: string) {
   let schema;
   try {
     schema = JSON.parse(jsonSchema);
@@ -76,7 +67,7 @@ export function validateSchema(jsonSchema) {
   return schema;
 }
 
-export function cleanRecord(record) {
+export function cleanRecord(record: Object) {
   return omit(record, ["id", "schema", "last_modified"]);
 }
 
@@ -124,14 +115,14 @@ function handleNestedDisplayField(record, displayField) {
   return "<unknown>";
 }
 
-export function linkify(string) {
+export function linkify(string: string) {
   if (/https?:\/\//.test(string)) {
     return <a href={string} title={string} target="_blank">{string}</a>;
   }
   return string;
 }
 
-export function renderDisplayField(record, displayField) {
+export function renderDisplayField(record: Object, displayField: string) {
   if (!record) {
     return "<unknown>";
   }
@@ -152,7 +143,7 @@ export function renderDisplayField(record, displayField) {
   return "<unknown>";
 }
 
-export function parseDataURL(dataURL) {
+export function parseDataURL(dataURL: string) {
   const regex = /^data:(.*);base64,(.*)/;
   const match = dataURL.match(regex);
   if (!match) {
@@ -168,7 +159,7 @@ export function parseDataURL(dataURL) {
   return {...params, type, base64};
 }
 
-export function extractFileInfo(dataURL) {
+export function extractFileInfo(dataURL: string) {
   const {Blob, Uint8Array} = window;
   const {name, type, base64} = parseDataURL(dataURL);
   const binary = atob(base64);
@@ -180,12 +171,12 @@ export function extractFileInfo(dataURL) {
   return {name, blob};
 }
 
-export function createFormData(record) {
+export function createFormData(record: Object) {
   const {FormData} = window;
   const attachment = record.__attachment__; // data-url
   const {blob, name} = extractFileInfo(attachment);
   const formData = new FormData();
   formData.append("attachment", blob, name);
-  formData.append("data", JSON.stringify(omit(record, "__attachment__")));
+  formData.append("data", JSON.stringify(omit(record, ["__attachment__"])));
   return formData;
 }
