@@ -6,7 +6,6 @@ import { v4 as uuid } from "uuid";
 import {
   SESSION_SERVERINFO_SUCCESS,
   COLLECTION_RECORDS_REQUEST,
-  RECORD_LOAD_REQUEST,
   RECORD_CREATE_REQUEST,
   RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
@@ -628,19 +627,6 @@ describe("collection sagas", () => {
         expect(watchCollectionRecords.next(
           collectionActions.listRecords("a", "b")).value)
           .eql(fork(saga.listRecords, "a", "b"));
-      });
-    });
-
-    describe("watchRecordLoad()", () => {
-      it("should watch for the loadRecord action", () => {
-        const watchRecordLoad = saga.watchRecordLoad();
-
-        expect(watchRecordLoad.next().value)
-          .eql(take(RECORD_LOAD_REQUEST));
-
-        expect(watchRecordLoad.next(
-          collectionActions.loadRecord("a", "b", "c")).value)
-          .eql(fork(saga.loadRecord, "a", "b", "c"));
       });
     });
 

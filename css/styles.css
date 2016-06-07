@@ -241,6 +241,14 @@ table.record-list td.actions .btn-group {
   max-height: 100%;
 }
 
+.instructions {
+  padding-left: 0;
+}
+
+.instructions ol {
+  margin: 0;
+}
+
 /* Spinner http://tobiasahlin.com/spinkit/ */
 .spinner {
   margin: 30px auto 0;

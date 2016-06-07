@@ -5,7 +5,8 @@ import filesize from "filesize";
 
 import Spinner from "./Spinner";
 import JSONRecordForm from "./JSONRecordForm";
-import { linkify } from "../utils";
+import { canCreateRecord, canEditRecord } from "../permission";
+import { cleanRecord, linkify } from "../utils";
 
 
 export function extendSchemaWithAttachment(schema, attachment, edit=false) {
@@ -40,6 +41,10 @@ export function extendUiSchemaWithAttachment(uiSchema, attachment) {
   };
 }
 
+export function extendUiSchemaWhenDisabled(uiSchema, disabled) {
+  return {...uiSchema, "ui:disabled": disabled};
+}
+
 function AttachmentPreview({attachment}) {
   const {mimetype, location} = attachment;
   if (mimetype.startsWith("image/")) {
@@ -54,7 +59,8 @@ function AttachmentPreview({attachment}) {
 
 function AttachmentInfo(props) {
   const {record, attachmentRequired, deleteAttachment} = props;
-  const {attachment} = record;
+  const {data} = record;
+  const {attachment} = data;
   if (!attachment) {
     return null;
   }
@@ -113,9 +119,19 @@ export default class RecordForm extends Component {
     this.props.onSubmit(formData);
   }
 
+  get allowEditing() {
+    const {session, collection, record} = this.props;
+    if (record) {
+      return canEditRecord(session, record);
+    } else {
+      return canCreateRecord(session, collection);
+    }
+  }
+
   getForm() {
     const {bid, cid, collection, record} = this.props;
     const {schema={}, uiSchema={}, attachment={}, busy} = collection;
+    const recordData = record && record.data || {};
 
     if (busy) {
       return <Spinner />;
@@ -124,7 +140,7 @@ export default class RecordForm extends Component {
     const buttons = (
       <div>
         <input type="submit" className="btn btn-primary"
-          value={record ? "Update" : "Create"} />
+          disabled={!this.allowEditing} value={record ? "Update" : "Create"} />
         {" or "}
         <Link to={`/buckets/${bid}/collections/${cid}`}>Cancel</Link>
       </div>
@@ -133,18 +149,23 @@ export default class RecordForm extends Component {
     if (Object.keys(schema).length === 0) {
       return (
         <JSONRecordForm
-          record={JSON.stringify(record, null, 2)}
+          disabled={!this.allowEditing}
+          record={JSON.stringify(cleanRecord(recordData), null, 2)}
           onSubmit={this.onSubmit}>
           {buttons}
         </JSONRecordForm>
       );
     }
 
+    const _schema = extendSchemaWithAttachment(schema, attachment, !!record);
+    let _uiSchema = extendUiSchemaWithAttachment(uiSchema, attachment);
+    _uiSchema = extendUiSchemaWhenDisabled(_uiSchema, !this.allowEditing);
+
     return (
       <Form
-        schema={extendSchemaWithAttachment(schema, attachment, !!record)}
-        uiSchema={extendUiSchemaWithAttachment(uiSchema, attachment)}
-        formData={record}
+        schema={_schema}
+        uiSchema={_uiSchema}
+        formData={cleanRecord(recordData)}
         onSubmit={this.onSubmit}>
         {buttons}
       </Form>
@@ -157,12 +178,22 @@ export default class RecordForm extends Component {
   }
 
   render() {
-    const {record, collection} = this.props;
+    const {collection, record} = this.props;
     const {attachment={}} = collection;
+    const creation = !record;
+
+    const alert = this.allowEditing || collection.busy ? null : (
+      <div className="alert alert-warning">
+        You don't have the required permission to {creation ? "create a" : "edit this"} record.
+      </div>
+    );
+
+
     return (
       <div className="panel panel-default">
         <div className="panel-body">
-          {!record ? null :
+          {alert}
+          {creation ? null :
             <AttachmentInfo
               record={record}
               attachmentRequired={attachment.required}

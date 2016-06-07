@@ -16,17 +16,14 @@ export default function* rootSaga() {
     // route
     fork(routeSagas.watchRouteUpdated),
     // bucket/collections
-    fork(bucketSagas.watchBucketLoad),
     fork(bucketSagas.watchBucketCreate),
     fork(bucketSagas.watchBucketUpdate),
     fork(bucketSagas.watchBucketDelete),
-    fork(bucketSagas.watchCollectionLoad),
     fork(bucketSagas.watchCollectionCreate),
     fork(bucketSagas.watchCollectionUpdate),
     fork(bucketSagas.watchCollectionDelete),
     // collection/records
     fork(collectionSagas.watchCollectionRecords),
-    fork(collectionSagas.watchRecordLoad),
     fork(collectionSagas.watchRecordCreate),
     fork(collectionSagas.watchRecordUpdate),
     fork(collectionSagas.watchRecordDelete),

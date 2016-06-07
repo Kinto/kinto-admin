@@ -11,8 +11,10 @@ const INITIAL_STATE = {
   name: null,
   data: {},
   permissions: {
-    read: [],
-    write: [],
+    "read": [],
+    "write": [],
+    "collection:create": [],
+    "group:create": [],
   },
 };
 

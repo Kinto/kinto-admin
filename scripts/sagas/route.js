@@ -47,6 +47,7 @@ export function* loadRoute(bid, cid, rid) {
     }
 
     if (rid) {
+      // XXX implement recordBusy()
       yield put(resetRecord());
     }
 
@@ -59,15 +60,18 @@ export function* loadRoute(bid, cid, rid) {
         // We may not have permission to read this resource, though we need to
         // have its default information propagated to the store.
         if (index === 0) { // bucket
-          return {data: {id: bid}};
+          return {data: {id: bid}, permissions: {read: [], write: []}};
         }
         if (index === 1) { // collection
-          return {data: {id: cid}};
+          return {data: {id: cid}, permissions: {read: [], write: []}};
+        }
+        if (index === 2) { // record
+          return {data: {id: rid}, permissions: {read: [], write: []}};
         }
       }
       return body;
     });
-    yield put(bucketLoadSuccess(bid, bucket.data, bucket.permissions));
+    yield put(bucketLoadSuccess(bucket.data, bucket.permissions));
     if (collection) {
       yield put(collectionLoadSuccess({
         ...collection.data,

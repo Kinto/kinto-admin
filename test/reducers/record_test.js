@@ -11,12 +11,34 @@ describe("record reducer", () => {
   it("RECORD_LOAD_SUCCESS", () => {
     expect(record(undefined, {
       type: RECORD_LOAD_SUCCESS,
-      record: {foo: "bar"}
-    })).eql({foo: "bar"});
+      data: {foo: "bar"},
+      permissions: {
+        write: [1],
+        read: [2],
+      }
+    })).eql({
+      data: {foo: "bar"},
+      permissions: {
+        write: [1],
+        read: [2],
+      }
+    });
   });
 
   it("RECORD_RESET", () => {
-    expect(record({foo: "bar"}, {type: RECORD_RESET}))
-      .eql({});
+    expect(record({
+      data: {foo: "bar"},
+      permissions: {
+        write: [1],
+        read: [2],
+      }
+    }, {type: RECORD_RESET}))
+      .eql({
+        data: {},
+        permissions: {
+          write: [],
+          read: [],
+        }
+      });
   });
 });

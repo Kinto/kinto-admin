@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import Form from "react-jsonschema-form";
 
 import JSONEditor from "./JSONEditor";
+import { canCreateCollection, canEditCollection } from "../permission";
 import { validJSON, validateSchema } from "./../utils";
 
 
@@ -23,16 +24,50 @@ const defaultUiSchema = JSON.stringify({
 
 function FormInstructions() {
   return (
-    <ol>
-      <li>First find a good name for your collection.</li>
-      <li>Create a <em>JSON schema</em> describing the fields the
-          collection records should have.</li>
-      <li>Decide if you want to enable attaching a file to records.</li>
-      <li>Define a <em>uiSchema</em> to customize the way forms for creating and
-          editing records are rendered.</li>
-      <li>List the record fields you want to display in the columns of the
-          collection records list.</li>
-    </ol>
+    <div className="alert alert-info instructions">
+      <ol>
+        <li>First find a good name for your collection.</li>
+        <li>Create a <em>JSON schema</em> describing the fields the
+            collection records should have.</li>
+        <li>Define a <em>uiSchema</em> to customize the way forms for creating and
+            editing records are rendered.</li>
+        <li>List the record fields you want to display in the columns of the
+            collection records list.</li>
+        <li>Decide if you want to enable attaching a file to records.</li>
+      </ol>
+    </div>
+  );
+}
+
+const deleteSchema = {
+  type: "string",
+  title: "Please enter the collection name to delete as a confirmation",
+};
+
+function DeleteForm({cid, onSubmit}) {
+  const validate = (formData, errors) => {
+    if (formData !== cid) {
+      errors.addError("The collection name does not match.");
+    }
+    return errors;
+  };
+  return (
+    <div className="panel panel-danger">
+      <div className="panel-heading">
+        <strong>Danger Zone</strong>
+      </div>
+      <div className="panel-body">
+        <p>
+          Delete the <b>{cid}</b> collection and all the records it contains.
+        </p>
+        <Form
+          schema={deleteSchema}
+          validate={validate}
+          onSubmit={({formData}) => onSubmit(formData)}>
+          <button type="submit" className="btn btn-danger">Delete collection</button>
+        </Form>
+      </div>
+    </div>
   );
 }
 
@@ -160,8 +195,19 @@ export default class CollectionForm extends Component {
     });
   }
 
+  get allowEditing() {
+    const {formData, session, bucket, collection} = this.props;
+    const creation = !formData;
+    if (creation) {
+      return canCreateCollection(session, bucket);
+    } else {
+      return canEditCollection(session, collection);
+    }
+  }
+
   render() {
-    const {formData} = this.props;
+    const {cid, bucket, collection, formData, deleteCollection} = this.props;
+
     // Disable edition of the collection name
     const _uiSchema = !formData ? uiSchema : {
       ...uiSchema,
@@ -170,9 +216,15 @@ export default class CollectionForm extends Component {
       }
     };
 
+    const alert = this.allowEditing || bucket.busy || collection.busy ? null : (
+      <div className="alert alert-warning">
+        You don't have the required permission to edit this collection.
+      </div>
+    );
+
     const buttons = (
       <div>
-        <input type="submit" className="btn btn-primary"
+        <input type="submit" className="btn btn-primary" disabled={!this.allowEditing}
           value={`${formData ? "Update" : "Create"} collection`} />
         {" or "}
         <Link to="/">Cancel</Link>
@@ -180,17 +232,25 @@ export default class CollectionForm extends Component {
     );
 
     return (
-      <div className="panel panel-default">
-        <div className="panel-body">
-          <Form
-            schema={schema}
-            formData={formData}
-            uiSchema={_uiSchema}
-            validate={validate}
-            onSubmit={this.onSubmit}>
-            {buttons}
-          </Form>
+      <div>
+        <div className="panel panel-default">
+          <div className="panel-body">
+            {alert}
+            <Form
+              schema={schema}
+              formData={formData}
+              uiSchema={this.allowEditing ? _uiSchema :
+                                         {..._uiSchema, "ui:disabled": true}}
+              validate={validate}
+              onSubmit={this.onSubmit}>
+              {buttons}
+            </Form>
+          </div>
         </div>
+        {this.allowEditing ?
+          <DeleteForm
+            cid={cid}
+            onSubmit={deleteCollection} /> : null}
       </div>
     );
   }

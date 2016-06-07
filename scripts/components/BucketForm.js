@@ -4,6 +4,7 @@ import Form from "react-jsonschema-form";
 
 import JSONEditor from "./JSONEditor";
 import Spinner from "./Spinner";
+import { canEditBucket } from "../permission";
 import { validJSON } from "./../utils";
 
 
@@ -80,22 +81,11 @@ export default class BucketForm extends Component {
     });
   }
 
-  get allowEditing() {
-    const {session, bucket} = this.props;
-    try {
-      const bucketWritePermissions = bucket.permissions.write;
-      const currentUserId = session.serverInfo.user.id;
-      return bucketWritePermissions.includes(currentUserId);
-    } catch (err) {
-      // We're waiting for these information to load.
-      return false;
-    }
-  }
-
   render() {
-    const {bid, bucket, formData, deleteBucket} = this.props;
+    const {bid, session, bucket, formData, deleteBucket} = this.props;
     const creation = !formData;
-    const formIsEditable = creation || this.allowEditing;
+    const formIsEditable = creation || canEditBucket(session, bucket);
+
     // Disable edition of the collection name
     const _uiSchema = creation ? uiSchema : {
       ...uiSchema,
@@ -103,6 +93,7 @@ export default class BucketForm extends Component {
         "ui:readonly": true,
       }
     };
+
     const alert = formIsEditable || bucket.busy ? null : (
       <div className="alert alert-warning">
         You don't have the required permission to edit this bucket.

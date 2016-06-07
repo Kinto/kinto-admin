@@ -7,7 +7,6 @@ import {
   ATTACHMENT_DELETE_REQUEST,
   SESSION_SERVERINFO_SUCCESS,
   COLLECTION_RECORDS_REQUEST,
-  RECORD_LOAD_REQUEST,
   RECORD_CREATE_REQUEST,
   RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
@@ -16,8 +15,8 @@ import {
 } from "../constants";
 import { getClient, requestAttachment } from "../client";
 import { notifySuccess, notifyError } from "../actions/notifications";
-import * as collectionActions from "../actions/collection";
-import { recordLoadSuccess, resetRecord } from "../actions/record";
+import { resetRecord } from "../actions/record";
+import * as actions from "../actions/collection";
 
 
 function getBucket(bid) {
@@ -41,119 +40,106 @@ export function* listRecords(bid, cid) {
   yield take(ROUTE_LOAD_SUCCESS);
   try {
     const coll = getCollection(bid, cid);
-    yield put(collectionActions.collectionBusy(true));
+    yield put(actions.collectionBusy(true));
     const {data} = yield call([coll, coll.listRecords]);
-    yield put(collectionActions.listRecordsSuccess(data));
+    yield put(actions.listRecordsSuccess(data));
   } catch(error) {
     yield put(notifyError(error));
   } finally {
-    yield put(collectionActions.collectionBusy(false));
-  }
-}
-
-export function* loadRecord(bid, cid, rid) {
-  try {
-    const coll = getCollection(bid, cid);
-    yield put(collectionActions.collectionBusy(true));
-    const {data} = yield call([coll, coll.getRecord], rid);
-    yield put(recordLoadSuccess(data));
-  } catch(error) {
-    yield put(notifyError(error));
-  } finally {
-    yield put(collectionActions.collectionBusy(false));
+    yield put(actions.collectionBusy(false));
   }
 }
 
 export function* createRecordWithAttachment(bid, cid, record) {
   try {
-    yield put(collectionActions.collectionBusy(true));
+    yield put(actions.collectionBusy(true));
     const rid = yield call(uuid);
     const formData = yield call(createFormData, record);
     yield call(requestAttachment, bid, cid, rid, {
       method: "post",
       body: formData
     });
-    yield put(collectionActions.listRecords(bid, cid));
+    yield put(actions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess("Record added."));
   } catch(error) {
     yield put(notifyError(error));
   } finally {
-    yield put(collectionActions.collectionBusy(false));
+    yield put(actions.collectionBusy(false));
   }
 }
 
 export function* createRecord(bid, cid, record) {
   try {
     const coll = getCollection(bid, cid);
-    yield put(collectionActions.collectionBusy(true));
+    yield put(actions.collectionBusy(true));
     yield call([coll, coll.createRecord], record);
-    yield put(collectionActions.listRecords(bid, cid));
+    yield put(actions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess("Record added."));
   } catch(error) {
     yield put(notifyError(error));
   } finally {
-    yield put(collectionActions.collectionBusy(false));
+    yield put(actions.collectionBusy(false));
   }
 }
 
 export function* updateRecordWithAttachment(bid, cid, rid, record) {
   try {
-    yield put(collectionActions.collectionBusy(true));
+    yield put(actions.collectionBusy(true));
     const formData = yield call(createFormData, record);
     yield call(requestAttachment, bid, cid, rid, {
       method: "post",
       body: formData
     });
     yield put(resetRecord());
-    yield put(collectionActions.listRecords(bid, cid));
+    yield put(actions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess("Record updated."));
   } catch(error) {
     yield put(notifyError(error));
   } finally {
-    yield put(collectionActions.collectionBusy(false));
+    yield put(actions.collectionBusy(false));
   }
 }
 
 export function* updateRecord(bid, cid, rid, record) {
   try {
     const coll = getCollection(bid, cid);
-    yield put(collectionActions.collectionBusy(true));
+    yield put(actions.collectionBusy(true));
     // Note: We update using PATCH to keep existing record properties possibly
     // not defined by the JSON schema, if any.
     yield call([coll, coll.updateRecord], {...record, id: rid}, {patch: true});
     yield put(resetRecord());
-    yield put(collectionActions.listRecords(bid, cid));
+    yield put(actions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess("Record updated."));
   } catch(error) {
     yield put(notifyError(error));
   } finally {
-    yield put(collectionActions.collectionBusy(false));
+    yield put(actions.collectionBusy(false));
   }
 }
 
 export function* deleteRecord(bid, cid, rid) {
   try {
     const coll = getCollection(bid, cid);
-    yield put(collectionActions.collectionBusy(true));
+    yield put(actions.collectionBusy(true));
     yield call([coll, coll.deleteRecord], rid);
-    yield put(collectionActions.listRecords(bid, cid));
+    yield put(actions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess("Record deleted."));
   } catch(error) {
     yield put(notifyError(error));
   } finally {
-    yield put(collectionActions.collectionBusy(false));
+    yield put(actions.collectionBusy(false));
   }
 }
 
 export function* bulkCreateRecords(bid, cid, records) {
   try {
     const coll = getCollection(bid, cid);
-    yield put(collectionActions.collectionBusy(true));
+    yield put(actions.collectionBusy(true));
     const {errors, published} = yield call([coll, coll.batch], (batch) => {
       for (const record of records) {
         batch.createRecord(record);
@@ -164,19 +150,19 @@ export function* bulkCreateRecords(bid, cid, records) {
       err.details = errors.map(err => err.error.message);
       throw err;
     }
-    yield put(collectionActions.listRecords(bid, cid));
+    yield put(actions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess(`${published.length} records created.`));
   } catch(error) {
     yield put(notifyError(error));
   } finally {
-    yield put(collectionActions.collectionBusy(false));
+    yield put(actions.collectionBusy(false));
   }
 }
 
 export function* bulkCreateRecordsWithAttachment(bid, cid, records) {
   try {
-    yield put(collectionActions.collectionBusy(true));
+    yield put(actions.collectionBusy(true));
     // XXX We should perform a batch request here
     for (const record of records) {
       const rid = yield call(uuid);
@@ -186,13 +172,13 @@ export function* bulkCreateRecordsWithAttachment(bid, cid, records) {
         body: formData
       });
     }
-    yield put(collectionActions.listRecords(bid, cid));
+    yield put(actions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess(`${records.length} records created.`));
   } catch(error) {
     yield put(notifyError(error));
   } finally {
-    yield put(collectionActions.collectionBusy(false));
+    yield put(actions.collectionBusy(false));
   }
 }
 
@@ -209,13 +195,6 @@ export function* watchCollectionRecords() {
   while(true) { // eslint-disable-line
     const {bid, cid} = yield take(COLLECTION_RECORDS_REQUEST);
     yield fork(listRecords, bid, cid);
-  }
-}
-
-export function* watchRecordLoad() {
-  while(true) { // eslint-disable-line
-    const {bid, cid, rid} = yield take(RECORD_LOAD_REQUEST);
-    yield fork(loadRecord, bid, cid, rid);
   }
 }
 

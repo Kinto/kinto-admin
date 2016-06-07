@@ -29,17 +29,18 @@ export default class JSONRecordForm extends Component {
   }
 
   render() {
-    const {record, children} = this.props;
+    const {record, disabled, children} = this.props;
     return (
       <div>
-        <div className="alert alert-warning">
-          This collection doesn't have any JSON schema defined, though you can
-          create free-form records entering raw JSON.
-        </div>
+        {disabled ? null :
+          <div className="alert alert-warning">
+            This collection doesn't have any JSON schema defined, though you can
+            create free-form records entering raw JSON.
+          </div>}
         <Form
           schema={schema}
           formData={record}
-          uiSchema={uiSchema}
+          uiSchema={disabled ? {...uiSchema, "ui:disabled": true} : uiSchema}
           validate={validate}
           onSubmit={this.onSubmit}>
           {children}

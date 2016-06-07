@@ -6,7 +6,7 @@ import Spinner from "./Spinner";
 
 export default class CollectionCreate extends Component {
   render() {
-    const {params, session, createCollection} = this.props;
+    const {params, session, bucket, collection, createCollection} = this.props;
     const {bid} = params;
     const {busy} = session;
     if (busy) {
@@ -16,6 +16,9 @@ export default class CollectionCreate extends Component {
       <div>
         <h1>Create a new collection in <b>{bid}</b> bucket</h1>
         <CollectionForm
+          session={session}
+          bucket={bucket}
+          collection={collection}
           onSubmit={(formData) => createCollection(bid, formData)} />
       </div>
     );
