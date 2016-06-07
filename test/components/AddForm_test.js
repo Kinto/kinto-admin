@@ -30,12 +30,14 @@ describe("AddForm component", () => {
         }
       }
     };
+    const record = {data: {}, permissions: {}};
 
     beforeEach(() => {
       createRecord = sinon.spy();
       node = createComponent(AddForm, {
         params: {bid: "bucket", cid: "collection"},
         collection,
+        record,
         createRecord,
       });
     });

@@ -9,8 +9,9 @@ import * as NotificationsActions from "../actions/notifications";
 
 function mapStateToProps(state) {
   return {
-    collection: state.collection,
     session: state.session,
+    collection: state.collection,
+    record: state.record,
   };
 }
 
