@@ -5,7 +5,6 @@ import {
   COLLECTION_LOAD_SUCCESS,
   COLLECTION_RECORDS_REQUEST,
   COLLECTION_RECORDS_SUCCESS,
-  RECORD_LOAD_REQUEST,
   RECORD_CREATE_REQUEST,
   RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
@@ -31,10 +30,6 @@ export function listRecordsSuccess(records) {
 
 export function listRecords(bid, cid) {
   return {type: COLLECTION_RECORDS_REQUEST, bid, cid};
-}
-
-export function loadRecord(bid, cid, rid) {
-  return {type: RECORD_LOAD_REQUEST, bid, cid, rid};
 }
 
 export function createRecord(bid, cid, record) {

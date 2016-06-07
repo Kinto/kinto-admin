@@ -7,7 +7,6 @@ import {
   ATTACHMENT_DELETE_REQUEST,
   SESSION_SERVERINFO_SUCCESS,
   COLLECTION_RECORDS_REQUEST,
-  RECORD_LOAD_REQUEST,
   RECORD_CREATE_REQUEST,
   RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
@@ -17,7 +16,6 @@ import {
 import { getClient, requestAttachment } from "../client";
 import { notifySuccess, notifyError } from "../actions/notifications";
 import * as collectionActions from "../actions/collection";
-import { recordLoadSuccess, resetRecord } from "../actions/record";
 
 
 function getBucket(bid) {
@@ -44,19 +42,6 @@ export function* listRecords(bid, cid) {
     yield put(collectionActions.collectionBusy(true));
     const {data} = yield call([coll, coll.listRecords]);
     yield put(collectionActions.listRecordsSuccess(data));
-  } catch(error) {
-    yield put(notifyError(error));
-  } finally {
-    yield put(collectionActions.collectionBusy(false));
-  }
-}
-
-export function* loadRecord(bid, cid, rid) {
-  try {
-    const coll = getCollection(bid, cid);
-    yield put(collectionActions.collectionBusy(true));
-    const {data, permissions} = yield call([coll, coll.getRecord], rid);
-    yield put(recordLoadSuccess(data, permissions));
   } catch(error) {
     yield put(notifyError(error));
   } finally {
@@ -209,13 +194,6 @@ export function* watchCollectionRecords() {
   while(true) { // eslint-disable-line
     const {bid, cid} = yield take(COLLECTION_RECORDS_REQUEST);
     yield fork(listRecords, bid, cid);
-  }
-}
-
-export function* watchRecordLoad() {
-  while(true) { // eslint-disable-line
-    const {bid, cid, rid} = yield take(RECORD_LOAD_REQUEST);
-    yield fork(loadRecord, bid, cid, rid);
   }
 }
 
