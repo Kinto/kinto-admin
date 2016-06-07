@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import Form from "react-jsonschema-form";
 
 import JSONEditor from "./JSONEditor";
+import { canCreateCollection, canEditCollection } from "../permission";
 import { validJSON, validateSchema } from "./../utils";
 
 
@@ -195,20 +196,17 @@ export default class CollectionForm extends Component {
   }
 
   get allowEditing() {
-    const {session, collection} = this.props;
-    try {
-      const collectionWritePermissions = collection.permissions.write;
-      const currentUserId = session.serverInfo.user.id;
-      return collectionWritePermissions.includes(currentUserId);
-    } catch(err) {
-      return false;
+    const {formData, session, bucket, collection} = this.props;
+    const creation = !formData;
+    if (creation) {
+      return canCreateCollection(session, bucket);
+    } else {
+      return canEditCollection(session, collection);
     }
   }
 
   render() {
-    const {cid, collection, formData, deleteCollection} = this.props;
-    const creation = !formData;
-    const formIsEditable = creation || this.allowEditing;
+    const {cid, bucket, collection, formData, deleteCollection} = this.props;
 
     // Disable edition of the collection name
     const _uiSchema = !formData ? uiSchema : {
@@ -218,7 +216,7 @@ export default class CollectionForm extends Component {
       }
     };
 
-    const alert = formIsEditable || collection.busy ? null : (
+    const alert = this.allowEditing || bucket.busy || collection.busy ? null : (
       <div className="alert alert-warning">
         You don't have the required permission to edit this collection.
       </div>
@@ -226,7 +224,7 @@ export default class CollectionForm extends Component {
 
     const buttons = (
       <div>
-        <input type="submit" className="btn btn-primary" disabled={!formIsEditable}
+        <input type="submit" className="btn btn-primary" disabled={!this.allowEditing}
           value={`${formData ? "Update" : "Create"} collection`} />
         {" or "}
         <Link to="/">Cancel</Link>
@@ -241,7 +239,7 @@ export default class CollectionForm extends Component {
             <Form
               schema={schema}
               formData={formData}
-              uiSchema={formIsEditable ? _uiSchema :
+              uiSchema={this.allowEditing ? _uiSchema :
                                          {..._uiSchema, "ui:disabled": true}}
               validate={validate}
               onSubmit={this.onSubmit}>

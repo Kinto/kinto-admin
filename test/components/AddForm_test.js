@@ -28,6 +28,9 @@ describe("AddForm component", () => {
             type: "string"
           }
         }
+      },
+      permissions: {
+        write: []
       }
     };
     const record = {data: {}, permissions: {}};

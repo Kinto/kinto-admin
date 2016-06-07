@@ -21,8 +21,9 @@ const INITIAL_STATE = {
   records: [],
   recordsLoaded: false,
   permissions: {
-    read: [],
-    write: [],
+    "read": [],
+    "write": [],
+    "record:create": [],
   },
 };
 

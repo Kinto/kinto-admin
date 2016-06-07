@@ -20,7 +20,7 @@ export default class CollectionEdit extends Component {
   };
 
   render() {
-    const {params, session, collection} = this.props;
+    const {params, session, bucket, collection} = this.props;
     const {bid, cid} = params;
     const {
       schema = {},
@@ -50,6 +50,7 @@ export default class CollectionEdit extends Component {
           bid={bid}
           cid={cid}
           session={session}
+          bucket={bucket}
           collection={collection}
           deleteCollection={this.deleteCollection}
           formData={formData}

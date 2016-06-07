@@ -11,7 +11,7 @@ export default class AddForm extends Component {
   }
 
   render() {
-    const {params, collection} = this.props;
+    const {params, session, collection} = this.props;
     const {label} = collection;
     const {bid, cid} = params;
     return (
@@ -20,6 +20,7 @@ export default class AddForm extends Component {
         <RecordForm
           bid={bid}
           cid={cid}
+          session={session}
           collection={collection}
           onSubmit={this.onSubmit} />
       </div>

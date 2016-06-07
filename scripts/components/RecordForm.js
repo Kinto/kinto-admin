@@ -5,6 +5,7 @@ import filesize from "filesize";
 
 import Spinner from "./Spinner";
 import JSONRecordForm from "./JSONRecordForm";
+import { canCreateRecord, canEditRecord } from "../permission";
 import { cleanRecord, linkify } from "../utils";
 
 
@@ -119,17 +120,11 @@ export default class RecordForm extends Component {
   }
 
   get allowEditing() {
-    const {session, record} = this.props;
-    // XXX we need to check for collection permissions
-    if (!record) {
-      return true;
-    }
-    try {
-      const recordWritePermissions = record.permissions.write;
-      const currentUserId = session.serverInfo.user.id;
-      return recordWritePermissions.includes(currentUserId);
-    } catch(err) {
-      return false;
+    const {session, collection, record} = this.props;
+    if (record) {
+      return canEditRecord(session, record);
+    } else {
+      return canCreateRecord(session, collection);
     }
   }
 
