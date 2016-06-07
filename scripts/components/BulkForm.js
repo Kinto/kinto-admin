@@ -29,7 +29,7 @@ export default class BulkForm extends Component {
 
   render() {
     const {params, collection} = this.props;
-    const {busy, label, schema, uiSchema, attachment={}} = collection;
+    const {busy, schema, uiSchema, attachment={}} = collection;
     const {bid, cid} = params;
 
     let bulkSchema, bulkUiSchema, bulkFormData;
@@ -63,7 +63,7 @@ export default class BulkForm extends Component {
 
     return (
       <div>
-        <h1>Bulk <b>{label}</b> creation</h1>
+        <h1>Bulk <b>{bid}/{cid}</b> creation</h1>
         {busy ? <Spinner /> :
           <div className="panel panel-default">
             <div className="panel-body">

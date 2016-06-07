@@ -37,7 +37,6 @@ describe("collection reducer", () => {
     })).eql({
       bucket: "bucket",
       name: "id",
-      label: "bucket/id",
       schema: "schema",
       uiSchema: "uiSchema",
       attachment: {enabled: true, required: false},

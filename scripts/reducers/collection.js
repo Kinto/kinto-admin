@@ -9,7 +9,6 @@ import {
 const INITIAL_STATE = {
   bucket: null,
   name: null,
-  label: null,
   busy: false,
   schema: {},
   uiSchema: {},
@@ -49,7 +48,6 @@ export function collection(state = INITIAL_STATE, action) {
       return {
         ...state,
         name: id,
-        label: `${bucket}/${id}`,
         bucket,
         schema,
         uiSchema,
