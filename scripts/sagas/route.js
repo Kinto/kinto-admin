@@ -64,6 +64,9 @@ export function* loadRoute(bid, cid, rid) {
         if (index === 1) { // collection
           return {data: {id: cid}, permissions: {read: [], write: []}};
         }
+        if (index === 2) { // record
+          return {data: {id: rid}, permissions: {read: [], write: []}};
+        }
       }
       return body;
     });

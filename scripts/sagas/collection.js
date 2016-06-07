@@ -55,8 +55,8 @@ export function* loadRecord(bid, cid, rid) {
   try {
     const coll = getCollection(bid, cid);
     yield put(collectionActions.collectionBusy(true));
-    const {data} = yield call([coll, coll.getRecord], rid);
-    yield put(recordLoadSuccess(data));
+    const {data, permissions} = yield call([coll, coll.getRecord], rid);
+    yield put(recordLoadSuccess(data, permissions));
   } catch(error) {
     yield put(notifyError(error));
   } finally {

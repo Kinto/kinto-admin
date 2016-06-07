@@ -13,17 +13,16 @@ export default class EditForm extends Component {
 
   render() {
     const {params, collection, record, deleteAttachment} = this.props;
-    const {label} = collection;
     const {bid, cid, rid} = params;
     return (
       <div>
-        <h1>Edit <b>{label}/{rid}</b></h1>
+        <h1>Edit <b>{bid}/{cid}/{rid}</b></h1>
         <RecordForm
           bid={bid}
           cid={cid}
           rid={rid}
           collection={collection}
-          record={cleanRecord(record)}
+          record={cleanRecord(record.data)}
           deleteAttachment={deleteAttachment}
           onSubmit={this.onSubmit} />
       </div>

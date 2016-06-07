@@ -217,7 +217,8 @@ describe("route sagas", () => {
         const responses = [
           {status: 200, body: {data: {id: "bucket", a: 1}}},
           {status: 200, body: {data: {id: "collection", a: 2}}},
-          {status: 200, body: {data: {id: "record", a: 3}}},
+          {status: 200, body: {data: {id: "record", a: 3},
+                               permissions: {write: [1], read: [2]}}},
         ];
         expect(loadRoute.next(responses).value)
           .eql(put(bucketActions.bucketLoadSuccess("bucket", {
@@ -240,7 +241,7 @@ describe("route sagas", () => {
           .eql(put(recordActions.recordLoadSuccess({
             id: "record",
             a: 3
-          })));
+          }, {write: [1], read: [2]})));
       });
     });
   });
