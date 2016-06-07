@@ -1,3 +1,5 @@
+/* @flow */
+
 import React from "react";
 import { Route, IndexRoute } from "react-router";
 import App from "./containers/App";
@@ -23,7 +25,7 @@ const common = {
   sidebar: Sidebar,
 };
 
-function onAuthEnter(store, {params}) {
+function onAuthEnter(store: Object, {params}) {
   // XXX there's an odd bug where we enter twice this function while we clearly
   // load it once. Note that the state qs value changes, but I don't know why...
   const {payload, token} = params;
@@ -44,12 +46,12 @@ function onAuthEnter(store, {params}) {
   }
 }
 
-function onCollectionListEnter(store, {params}) {
+function onCollectionListEnter(store: Object, {params}) {
   const {bid, cid} = params;
   store.dispatch(collectionActions.listRecords(bid, cid));
 }
 
-export default function getRoutes(store) {
+export default function getRoutes(store: Object) {
   return (
     <Route path="/" component={App}>
       <IndexRoute components={{...common, content: HomePage}} />
