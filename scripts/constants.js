@@ -1,3 +1,5 @@
+/* @flow */
+
 export const ATTACHMENT_DELETE_REQUEST = "ATTACHMENT_DELETE_REQUEST";
 
 export const BUCKET_BUSY = "BUCKET_BUSY";

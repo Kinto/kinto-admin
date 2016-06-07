@@ -1,10 +1,27 @@
+/* @flow */
+
 import {
   RECORD_LOAD_SUCCESS,
   RECORD_RESET,
 } from "../constants";
 
 
-const INITIAL_STATE = {
+export type RecordData = {
+  id?: string,
+  last_modified?: number
+};
+
+export type RecordPermissions = {
+  read: Array<string>,
+  write: Array<string>,
+};
+
+export type Record = {
+  data: RecordData,
+  permissions: RecordPermissions,
+};
+
+const INITIAL_STATE: Record = {
   data: {},
   permissions: {
     read: [],
@@ -12,10 +29,10 @@ const INITIAL_STATE = {
   }
 };
 
-export default function record(state = INITIAL_STATE, action) {
+export default function record(state: Record = INITIAL_STATE, action: Object): Record {
   switch(action.type) {
     case RECORD_LOAD_SUCCESS: {
-      const {data, permissions={}} = action;
+      const {data, permissions} = action;
       return {...state, data, permissions};
     }
     case RECORD_RESET: {
