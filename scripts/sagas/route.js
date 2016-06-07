@@ -47,6 +47,7 @@ export function* loadRoute(bid, cid, rid) {
     }
 
     if (rid) {
+      // XXX implement recordBusy()
       yield put(resetRecord());
     }
 
@@ -70,7 +71,7 @@ export function* loadRoute(bid, cid, rid) {
       }
       return body;
     });
-    yield put(bucketLoadSuccess(bid, bucket.data, bucket.permissions));
+    yield put(bucketLoadSuccess(bucket.data, bucket.permissions));
     if (collection) {
       yield put(collectionLoadSuccess({
         ...collection.data,

@@ -6,7 +6,6 @@ import {
   BUCKET_CREATE_REQUEST,
   BUCKET_UPDATE_REQUEST,
   BUCKET_DELETE_REQUEST,
-  COLLECTION_LOAD_REQUEST,
   COLLECTION_CREATE_REQUEST,
   COLLECTION_UPDATE_REQUEST,
   COLLECTION_DELETE_REQUEST,
@@ -25,11 +24,6 @@ const collectionData = {
   uiSchema: {},
   attachment: {enabled: true, required: false},
   displayFields: [],
-};
-
-const collectionPermissions = {
-  read: [],
-  write: [],
 };
 
 describe("bucket sagas", () => {
@@ -98,6 +92,11 @@ describe("bucket sagas", () => {
     describe("Success", () => {
       let bucket, updateBucket;
 
+      const response = {
+        data: {a: 1},
+        permissions: {write: [], read: []},
+      };
+
       before(() => {
         bucket = {setData(){}};
         setClient({bucket(){return bucket;}});
@@ -109,14 +108,15 @@ describe("bucket sagas", () => {
           .eql(put(sessionActions.sessionBusy(true)));
       });
 
-      it("should fetch bucket attributes", () => {
+      it("should post new bucket data", () => {
         expect(updateBucket.next().value)
           .eql(call([bucket, bucket.setData], {a: 1}));
       });
 
-      it("should reload the list of buckets/collections", () => {
-        expect(updateBucket.next().value)
-          .eql(call(saga.loadBucket, "bucket"));
+      it("should update current bucket state", () => {
+        const {data, permissions} = response;
+        expect(updateBucket.next(response).value)
+          .eql(put(actions.bucketLoadSuccess(data, permissions)));
       });
 
       it("should dispatch a notification", () => {
@@ -207,67 +207,6 @@ describe("bucket sagas", () => {
       it("should unmark the current collection as busy", () => {
         expect(deleteBucket.next().value)
           .eql(put(sessionActions.sessionBusy(false)));
-      });
-    });
-  });
-
-  describe("loadCollection()", () => {
-    describe("Success", () => {
-      let bucket, collection, loadCollection;
-
-      before(() => {
-        collection = {getData() {}, getPermissions() {}};
-        bucket = {collection() {return collection;}};
-        setClient({bucket() {return bucket;}});
-        loadCollection = saga.loadCollection("bucket", "collection");
-      });
-
-      it("should mark the current collection as busy", () => {
-        expect(loadCollection.next().value)
-          .eql(put(collectionActions.collectionBusy(true)));
-      });
-
-      it("should fetch collection data", () => {
-        expect(loadCollection.next().value)
-          .eql(call([collection, collection.getData]));
-      });
-
-      it("should fetch collection permissions", () => {
-        expect(loadCollection.next(collectionData).value)
-          .eql(call([collection, collection.getPermissions]));
-      });
-
-      it("should dispatch the collectionLoadSuccess action", () => {
-        expect(loadCollection.next(collectionPermissions).value)
-          .eql(put(collectionActions.collectionLoadSuccess({
-            ...collectionData,
-            bucket: "bucket",
-          }, collectionPermissions)));
-      });
-
-      it("should unmark the current collection as busy", () => {
-        expect(loadCollection.next().value)
-          .eql(put(collectionActions.collectionBusy(false)));
-      });
-    });
-
-    describe("Failure", () => {
-      let loadCollection;
-
-      before(() => {
-        loadCollection = saga.loadCollection("bucket", "collection");
-        loadCollection.next();
-        loadCollection.next();
-      });
-
-      it("should dispatch an error notification action", () => {
-        expect(loadCollection.throw("error").value)
-          .eql(put(notifyError("error", {clear: true})));
-      });
-
-      it("should unmark the current collection as busy", () => {
-        expect(loadCollection.next().value)
-          .eql(put(collectionActions.collectionBusy(false)));
       });
     });
   });
@@ -451,18 +390,6 @@ describe("bucket sagas", () => {
 
         expect(watchBucketDelete.next(actions.deleteBucket("a")).value)
           .eql(fork(saga.deleteBucket, "a"));
-      });
-    });
-
-    describe("watchCollectionLoad()", () => {
-      it("should watch for the loadCollection action", () => {
-        const watchCollectionLoad = saga.watchCollectionLoad();
-
-        expect(watchCollectionLoad.next().value)
-          .eql(take(COLLECTION_LOAD_REQUEST));
-
-        expect(watchCollectionLoad.next(actions.loadCollection("a", "b")).value)
-          .eql(fork(saga.loadCollection, "a", "b"));
       });
     });
 

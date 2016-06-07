@@ -62,13 +62,14 @@ describe("route sagas", () => {
 
       it("should update bucket state from response data", () => {
         const responses = [
-          {status: 200, body: {data: {id: "bucket", a: 1}}}
+          {status: 200, body: {data: {id: "bucket", a: 1},
+                               permissions: {write: [1], read: [2]}}}
         ];
         expect(loadRoute.next(responses).value)
-          .eql(put(bucketActions.bucketLoadSuccess("bucket", {
+          .eql(put(bucketActions.bucketLoadSuccess({
             id: "bucket",
             a: 1
-          })));
+          }, {write: [1], read: [2]})));
       });
     });
 
@@ -103,7 +104,7 @@ describe("route sagas", () => {
           {status: 403, body: {}}
         ];
         expect(loadRoute.next(responses).value)
-          .eql(put(bucketActions.bucketLoadSuccess("bucket", {
+          .eql(put(bucketActions.bucketLoadSuccess({
             id: "bucket",
           }, {
             write: [],
@@ -156,7 +157,7 @@ describe("route sagas", () => {
                                permissions: {write: [2], read: [3]}}},
         ];
         expect(loadRoute.next(responses).value)
-          .eql(put(bucketActions.bucketLoadSuccess("bucket", {
+          .eql(put(bucketActions.bucketLoadSuccess({
             id: "bucket",
             a: 1
           }, {write: [1], read: [2]})));
@@ -221,7 +222,7 @@ describe("route sagas", () => {
                                permissions: {write: [1], read: [2]}}},
         ];
         expect(loadRoute.next(responses).value)
-          .eql(put(bucketActions.bucketLoadSuccess("bucket", {
+          .eql(put(bucketActions.bucketLoadSuccess({
             id: "bucket",
             a: 1
           })));

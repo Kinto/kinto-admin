@@ -2,11 +2,9 @@ import { push as updatePath } from "react-router-redux";
 import { call, take, fork, put } from "redux-saga/effects";
 
 import {
-  BUCKET_LOAD_REQUEST,
   BUCKET_CREATE_REQUEST,
   BUCKET_UPDATE_REQUEST,
   BUCKET_DELETE_REQUEST,
-  COLLECTION_LOAD_REQUEST,
   COLLECTION_CREATE_REQUEST,
   COLLECTION_UPDATE_REQUEST,
   COLLECTION_DELETE_REQUEST,
@@ -14,8 +12,8 @@ import {
 import { getClient } from "../client";
 import { notifySuccess, notifyError } from "../actions/notifications";
 import { sessionBusy } from "../actions/session";
-import { bucketBusy, bucketLoadSuccess } from "../actions/bucket";
-import { collectionBusy, collectionLoadSuccess } from "../actions/collection";
+import { bucketLoadSuccess } from "../actions/bucket";
+import { collectionLoadSuccess } from "../actions/collection";
 import { listBuckets } from "./session";
 
 
@@ -25,20 +23,6 @@ function getBucket(bid) {
 
 function getCollection(bid, cid) {
   return getBucket(bid).collection(cid);
-}
-
-export function* loadBucket(bid) {
-  try {
-    const bucket = getBucket(bid);
-    yield put(bucketBusy(true));
-    const data = yield call([bucket, bucket.getData]);
-    const permissions = yield call([bucket, bucket.getPermissions]);
-    yield put(bucketLoadSuccess(bid, data, permissions));
-  } catch(error) {
-    yield put(notifyError(error));
-  } finally {
-    yield put(bucketBusy(false));
-  }
 }
 
 export function* createBucket(bid, data) {
@@ -56,12 +40,12 @@ export function* createBucket(bid, data) {
   }
 }
 
-export function* updateBucket(bid, data) {
+export function* updateBucket(bid, bucketData) {
   try {
     const bucket = getBucket(bid);
     yield put(sessionBusy(true));
-    yield call([bucket, bucket.setData], data);
-    yield call(loadBucket, bid);
+    const {data, permissions} = yield call([bucket, bucket.setData], bucketData);
+    yield put(bucketLoadSuccess(data, permissions));
     yield put(notifySuccess("Bucket updated."));
   } catch(error) {
     yield put(notifyError(error));
@@ -82,20 +66,6 @@ export function* deleteBucket(bid) {
     yield put(notifyError(error));
   } finally {
     yield put(sessionBusy(false));
-  }
-}
-
-export function* loadCollection(bid, cid) {
-  try {
-    const coll = getCollection(bid, cid);
-    yield put(collectionBusy(true));
-    const data = yield call([coll, coll.getData]);
-    const permissions = yield call([coll, coll.getPermissions]);
-    yield put(collectionLoadSuccess({...data, bucket: bid}, permissions));
-  } catch(error) {
-    yield put(notifyError(error));
-  } finally {
-    yield put(collectionBusy(false));
   }
 }
 
@@ -139,13 +109,6 @@ export function* deleteCollection(bid, cid) {
 
 // Watchers
 
-export function* watchBucketLoad() {
-  while(true) { // eslint-disable-line
-    const {bid} = yield take(BUCKET_LOAD_REQUEST);
-    yield fork(loadBucket, bid);
-  }
-}
-
 export function* watchBucketCreate() {
   while(true) { // eslint-disable-line
     const {bid, data} = yield take(BUCKET_CREATE_REQUEST);
@@ -164,13 +127,6 @@ export function* watchBucketDelete() {
   while(true) { // eslint-disable-line
     const {bid} = yield take(BUCKET_DELETE_REQUEST);
     yield fork(deleteBucket, bid);
-  }
-}
-
-export function* watchCollectionLoad() {
-  while(true) { // eslint-disable-line
-    const {bid, cid} = yield take(COLLECTION_LOAD_REQUEST);
-    yield fork(loadCollection, bid, cid);
   }
 }
 
