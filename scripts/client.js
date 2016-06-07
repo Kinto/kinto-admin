@@ -1,11 +1,13 @@
+/* @flow */
+
 import KintoClient from "kinto-client";
 import endpoint from "kinto-client/lib/endpoint";
 import { isHTTPok } from "./utils";
 
 
-let client;
+let client: any; // maybe null|KintoClient
 
-function getAuthHeader(session) {
+function getAuthHeader(session: Object) {
   const {authType, credentials} = session;
   switch(authType) {
     case "fxa": {
@@ -19,18 +21,18 @@ function getAuthHeader(session) {
   }
 }
 
-export function setupClient(session) {
+export function setupClient(session: Object) {
   const {server} = session;
   return setClient(new KintoClient(server, {
     headers: {Authorization: getAuthHeader(session)}
   }));
 }
 
-export function getClient() {
+export function getClient(): KintoClient {
   return client;
 }
 
-export function setClient(_client) {
+export function setClient(_client: KintoClient) {
   client = _client;
   return client;
 }
@@ -40,7 +42,12 @@ export function resetClient() {
 }
 
 // XXX this should eventually move to kinto-client
-export function requestAttachment(bid, cid, rid, params) {
+export function requestAttachment(
+  bid: string,
+  cid: string,
+  rid: string,
+  params: Object
+) {
   const {remote, defaultReqOptions} = getClient();
   const path = endpoint("record", bid, cid, rid) + "/attachment";
   return fetch(remote + path, {
@@ -54,11 +61,12 @@ export function requestAttachment(bid, cid, rid, params) {
     })
     .catch(({message}) => {
       const {method} = params;
-      const err = new Error(`Unable to ${method} attachment: ${message}`);
-      err.details = [
-        "URL: " + remote + path,
-        "Status: HTTP " + status,
-      ];
-      throw err;
+      throw {
+        ...new Error(`Unable to ${method} attachment: ${message}`),
+        details: [
+          "URL: " + remote + path,
+          "Status: HTTP " + status,
+        ]
+      };
     });
 }
