@@ -1,3 +1,7 @@
+/* @flow */
+
+import type { Action } from "../types";
+
 import {
   NOTIFICATION_ADDED,
   NOTIFICATION_REMOVED,
@@ -5,8 +9,16 @@ import {
 } from "../constants";
 
 
-function notify(type, message, details=[], options={}) {
-  const {clear=true, persistent=false} = options;
+function notify(
+  type: string,
+  message: string,
+  options: Object = {}
+): Action {
+  const {
+    clear = true,
+    persistent = false,
+    details = [],
+  } = options;
   return {
     type: NOTIFICATION_ADDED,
     clear,
@@ -19,29 +31,23 @@ function notify(type, message, details=[], options={}) {
   };
 }
 
-export function notifyInfo(message, options) {
-  return notify("info", message, [], options);
+export function notifyInfo(message: string, options: Object={}): Action {
+  return notify("info", message, options);
 }
 
-export function notifySuccess(message, options) {
-  return notify("success", message, [], options);
+export function notifySuccess(message: string, options: Object={}): Action {
+  return notify("success", message, options);
 }
 
-export function notifyError(error, options) {
+export function notifyError(error: Error, options: Object={}): Action {
   console.error(error);
-  return notify("danger", error.message, error.details, options);
+  return notify("danger", error.message, options);
 }
 
-export function removeNotification(index) {
-  return {
-    type: NOTIFICATION_REMOVED,
-    index,
-  };
+export function removeNotification(index: number): Action {
+  return {type: NOTIFICATION_REMOVED, index};
 }
 
-export function clearNotifications(options={}) {
-  return {
-    type: NOTIFICATION_CLEAR,
-    force: !!options.force
-  };
+export function clearNotifications(options: Object={}): Action {
+  return {type: NOTIFICATION_CLEAR, force: !!options.force};
 }

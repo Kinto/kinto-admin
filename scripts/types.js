@@ -1,4 +1,8 @@
-export type Action = Object;
+/* @flow */
+
+export type Action = {
+  type: string
+};
 
 export type Bucket = {
   busy: boolean,

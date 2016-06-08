@@ -1,3 +1,12 @@
+/* @flow */
+
+import type {
+  Action,
+  CollectionData,
+  CollectionPermissions,
+  RecordData,
+} from "../types";
+
 import {
   ATTACHMENT_DELETE_REQUEST,
   COLLECTION_BUSY,
@@ -12,42 +21,45 @@ import {
 } from "../constants";
 
 
-export function collectionBusy(busy) {
+export function collectionBusy(busy: boolean): Action {
   return {type: COLLECTION_BUSY, busy};
 }
 
-export function resetCollection() {
+export function resetCollection(): Action {
   return {type: COLLECTION_RESET};
 }
 
-export function collectionLoadSuccess(data, permissions) {
+export function collectionLoadSuccess(
+  data: CollectionData,
+  permissions: CollectionPermissions
+): Action {
   return {type: COLLECTION_LOAD_SUCCESS, data, permissions};
 }
 
-export function listRecordsSuccess(records) {
+export function listRecordsSuccess(records: RecordData[]): Action {
   return {type: COLLECTION_RECORDS_SUCCESS, records};
 }
 
-export function listRecords(bid, cid) {
+export function listRecords(bid: string, cid: string): Action {
   return {type: COLLECTION_RECORDS_REQUEST, bid, cid};
 }
 
-export function createRecord(bid, cid, record) {
+export function createRecord(bid: string, cid: string, record: RecordData): Action {
   return {type: RECORD_CREATE_REQUEST, bid, cid, record};
 }
 
-export function updateRecord(bid, cid, rid, record) {
+export function updateRecord(bid: string, cid: string, rid: string, record: RecordData): Action {
   return {type: RECORD_UPDATE_REQUEST, bid, cid, rid, record};
 }
 
-export function deleteRecord(bid, cid, rid) {
+export function deleteRecord(bid: string, cid: string, rid: string): Action {
   return {type: RECORD_DELETE_REQUEST, bid, cid, rid};
 }
 
-export function deleteAttachment(bid, cid, rid) {
+export function deleteAttachment(bid: string, cid: string, rid: string): Action {
   return {type: ATTACHMENT_DELETE_REQUEST, bid, cid, rid};
 }
 
-export function bulkCreateRecords(bid, cid, records) {
+export function bulkCreateRecords(bid: string, cid: string, records: RecordData[]): Action {
   return {type: RECORD_BULK_CREATE_REQUEST, bid, cid, records};
 }

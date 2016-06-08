@@ -79,12 +79,6 @@ export function requestAttachment(
     })
     .catch(({message}) => {
       const {method} = params;
-      throw {
-        ...new Error(`Unable to ${method} attachment: ${message}`),
-        details: [
-          "URL: " + remote + path,
-          "Status: HTTP " + status,
-        ]
-      };
+      throw new Error(`Unable to ${method} attachment: ${message}`);
     });
 }
