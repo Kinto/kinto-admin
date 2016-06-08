@@ -5,39 +5,45 @@ import endpoint from "kinto-client/lib/endpoint";
 import { isHTTPok } from "./utils";
 
 
-let client: any; // maybe null|KintoClient
+let client: ?KintoClient;
 
-function getAuthHeader(session: Object) {
-  const {authType, credentials} = session;
+function getAuthHeader(session: Object): ?string {
+  const {authType, credentials}: {
+    authType: string,
+    credentials: Object
+  } = session;
   switch(authType) {
     case "fxa": {
-      const {token} = credentials;
+      const {token}: {token: string} = credentials;
       return "Bearer " + token;
     }
     case "basicauth": {
-      const {username, password} = credentials;
+      const {username, password}: {
+        username: string,
+        password: string,
+      } = credentials;
       return "Basic " + btoa([username, password].join(":"));
     }
   }
 }
 
-export function setupClient(session: Object) {
-  const {server} = session;
+export function setupClient(session: Object): KintoClient {
+  const {server}: {server: string} = session;
   return setClient(new KintoClient(server, {
     headers: {Authorization: getAuthHeader(session)}
   }));
 }
 
-export function getClient(): KintoClient {
+export function getClient(): ?KintoClient {
   return client;
 }
 
-export function setClient(_client: KintoClient) {
+export function setClient(_client: KintoClient): KintoClient {
   client = _client;
   return client;
 }
 
-export function resetClient() {
+export function resetClient(): void {
   client = null;
 }
 
@@ -47,8 +53,17 @@ export function requestAttachment(
   cid: string,
   rid: string,
   params: Object
-) {
-  const {remote, defaultReqOptions} = getClient();
+): Promise {
+  const client: ?KintoClient = getClient();
+  if (!client) {
+    throw new Error("Client is not configured.");
+  }
+  const {remote, defaultReqOptions}: {
+    remote: string,
+    defaultReqOptions: {
+      headers: Object
+    }
+  } = client;
   const path = endpoint("record", bid, cid, rid) + "/attachment";
   return fetch(remote + path, {
     headers: defaultReqOptions.headers,

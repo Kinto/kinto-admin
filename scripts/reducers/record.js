@@ -29,10 +29,16 @@ const INITIAL_STATE: Record = {
   }
 };
 
-export default function record(state: Record = INITIAL_STATE, action: Object): Record {
+export default function record(
+  state: Record = INITIAL_STATE,
+  action: Object // XXX: "type: string" + arbitrary keys
+): Record {
   switch(action.type) {
     case RECORD_LOAD_SUCCESS: {
-      const {data, permissions} = action;
+      const {data, permissions}: {
+        data: RecordData,
+        permissions: RecordPermissions
+      } = action;
       return {...state, data, permissions};
     }
     case RECORD_RESET: {
