@@ -7,11 +7,10 @@ import { isHTTPok } from "./utils";
 
 let client: ?KintoClient;
 
-function getAuthHeader(session: Object): ?string {
-  const {authType, credentials}: {
-    authType: string,
-    credentials: Object
-  } = session;
+function getAuthHeader({authType, credentials}: {
+  authType: string,
+  credentials: Object
+}): ?string {
   switch(authType) {
     case "fxa": {
       const {token}: {token: string} = credentials;
@@ -27,7 +26,9 @@ function getAuthHeader(session: Object): ?string {
   }
 }
 
-export function setupClient(session: Object): KintoClient {
+export function setupClient(
+  session: {server: string, authType: string, credentials: Object}
+): KintoClient {
   const {server}: {server: string} = session;
   return setClient(new KintoClient(server, {
     headers: {Authorization: getAuthHeader(session)}
