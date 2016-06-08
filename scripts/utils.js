@@ -1,7 +1,10 @@
 /* @flow */
 
+import type { RecordData } from "./types";
 import React from "react";
 
+
+const { Blob, FormData, Uint8Array } = window;
 
 export function omit(obj: Object, keys: Array<string> = []): Object {
   return Object.keys(obj).reduce((acc:Object, key:string) => {
@@ -9,11 +12,11 @@ export function omit(obj: Object, keys: Array<string> = []): Object {
   }, {});
 }
 
-export function isObject(thing: any) {
+export function isObject(thing: any): boolean {
   return typeof thing === "object" && thing !== null && !Array.isArray(thing);
 }
 
-export function validJSON(string: string) {
+export function validJSON(string: string): boolean {
   try {
     JSON.parse(string);
     return true;
@@ -22,18 +25,18 @@ export function validJSON(string: string) {
   }
 }
 
-export function isHTTPok(status: number) {
+export function isHTTPok(status: number): boolean {
   return [1, 2, 3].some((c: number) => String(status).startsWith(String(c)));
 }
 
 export function validateSchema(jsonSchema: string) {
-  let schema;
+  let schema: Object;
   try {
     schema = JSON.parse(jsonSchema);
   } catch(err) {
     throw "The schema is not valid JSON";
   }
-  const checks = [
+  const checks: Array<{test: () => boolean, error: string}> = [
     {
       test: () => isObject(schema),
       error: "The schema is not an object",
@@ -67,12 +70,12 @@ export function validateSchema(jsonSchema: string) {
   return schema;
 }
 
-export function cleanRecord(record: Object) {
+export function cleanRecord(record: RecordData): RecordData {
   return omit(record, ["id", "schema", "last_modified"]);
 }
 
 
-function handleNestedDisplayField(record, displayField) {
+function handleNestedDisplayField(record: RecordData, displayField: string): any {
   const fields = displayField.split(".");
 
   // If the first part matches, we try to render its value.
@@ -115,14 +118,14 @@ function handleNestedDisplayField(record, displayField) {
   return "<unknown>";
 }
 
-export function linkify(string: string) {
+export function linkify(string: string): any {
   if (/https?:\/\//.test(string)) {
     return <a href={string} title={string} target="_blank">{string}</a>;
   }
   return string;
 }
 
-export function renderDisplayField(record: Object, displayField: string) {
+export function renderDisplayField(record: Object, displayField: string): any {
   if (!record) {
     return "<unknown>";
   }
@@ -143,7 +146,7 @@ export function renderDisplayField(record: Object, displayField: string) {
   return "<unknown>";
 }
 
-export function parseDataURL(dataURL: string) {
+export function parseDataURL(dataURL: string): Object {
   const regex = /^data:(.*);base64,(.*)/;
   const match = dataURL.match(regex);
   if (!match) {
@@ -159,8 +162,7 @@ export function parseDataURL(dataURL: string) {
   return {...params, type, base64};
 }
 
-export function extractFileInfo(dataURL: string) {
-  const {Blob, Uint8Array} = window;
+export function extractFileInfo(dataURL: string): {name: string, blob: Blob} {
   const {name, type, base64} = parseDataURL(dataURL);
   const binary = atob(base64);
   const array = [];
@@ -171,8 +173,7 @@ export function extractFileInfo(dataURL: string) {
   return {name, blob};
 }
 
-export function createFormData(record: Object) {
-  const {FormData} = window;
+export function createFormData(record: Object): FormData {
   const attachment = record.__attachment__; // data-url
   const {blob, name} = extractFileInfo(attachment);
   const formData = new FormData();

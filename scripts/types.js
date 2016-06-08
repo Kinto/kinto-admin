@@ -69,7 +69,8 @@ export type Record = {
 
 export type RecordData = {
   id?: string,
-  last_modified?: number
+  last_modified?: number,
+  schema?: number
 };
 
 export type RecordPermissions = {
