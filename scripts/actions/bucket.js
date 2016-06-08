@@ -1,3 +1,11 @@
+/* @flow */
+
+import type {
+  Action,
+  BucketData,
+  BucketPermissions,
+  CollectionData,
+} from "../types";
 import {
   BUCKET_BUSY,
   BUCKET_LOAD_SUCCESS,
@@ -11,38 +19,38 @@ import {
 } from "../constants";
 
 
-export function bucketBusy(busy) {
+export function bucketBusy(busy: boolean): Action {
   return {type: BUCKET_BUSY, busy};
 }
 
-export function bucketLoadSuccess(data, permissions) {
+export function bucketLoadSuccess(data: BucketData, permissions: BucketPermissions): Action {
   return {type: BUCKET_LOAD_SUCCESS, data, permissions};
 }
 
-export function createBucket(bid, data) {
+export function createBucket(bid: string, data: BucketData): Action {
   return {type: BUCKET_CREATE_REQUEST, bid, data};
 }
 
-export function updateBucket(bid, bucketData) {
+export function updateBucket(bid: string, bucketData: BucketData): Action {
   return {type: BUCKET_UPDATE_REQUEST, bid, bucketData};
 }
 
-export function deleteBucket(bid) {
+export function deleteBucket(bid: string): Action {
   return {type: BUCKET_DELETE_REQUEST, bid};
 }
 
-export function resetBucket() {
+export function resetBucket(): Action {
   return {type: BUCKET_RESET};
 }
 
-export function createCollection(bid, collectionData) {
+export function createCollection(bid: string, collectionData: CollectionData): Action {
   return {type: COLLECTION_CREATE_REQUEST, bid, collectionData};
 }
 
-export function updateCollection(bid, cid, collectionData) {
+export function updateCollection(bid: string, cid: string, collectionData: CollectionData): Action {
   return {type: COLLECTION_UPDATE_REQUEST, bid, cid, collectionData};
 }
 
-export function deleteCollection(bid, cid) {
+export function deleteCollection(bid: string, cid: string): Action {
   return {type: COLLECTION_DELETE_REQUEST, bid, cid};
 }

@@ -1,7 +1,6 @@
 /* @flow */
 
-import type Record from "./reducers/record";
-import type {Session, SessionServerInfo} from "./reducers/session";
+import type { Session, Bucket, Collection, Record } from "./types";
 
 export const EVERYONE = "System.Everyone";
 export const AUTHENTICATED = "System.Authenticated";
@@ -16,10 +15,7 @@ const permMethodMap = {
 };
 
 export function can(session: Session): Object {
-  const {authenticated, serverInfo}: {
-    authenticated: boolean,
-    serverInfo: SessionServerInfo
-  } = session;
+  const {authenticated, serverInfo} = session;
   const {user={}} = serverInfo;
 
   let api = {};
@@ -38,20 +34,20 @@ export function can(session: Session): Object {
   return api;
 }
 
-export function canEditBucket(session: Session, bucket: Object): boolean {
+export function canEditBucket(session: Session, bucket: Bucket): boolean {
   return can(session).write(bucket);
 }
 
-export function canCreateCollection(session: Session, bucket: Object): boolean {
+export function canCreateCollection(session: Session, bucket: Bucket): boolean {
   const canSession = can(session);
   return canSession.write(bucket) || canSession.createCollection(bucket);
 }
 
-export function canEditCollection(session: Session, collection: Object): boolean {
+export function canEditCollection(session: Session, collection: Collection): boolean {
   return can(session).write(collection);
 }
 
-export function canCreateRecord(session: Session, collection: Object): boolean {
+export function canCreateRecord(session: Session, collection: Collection): boolean {
   const canSession = can(session);
   return canSession.write(collection) || canSession.createRecord(collection);
 }

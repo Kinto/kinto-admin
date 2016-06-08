@@ -1,5 +1,6 @@
 /* @flow */
 
+import type { Session } from "../types";
 import {
   SESSION_BUSY,
   SESSION_SETUP_COMPLETE,
@@ -9,24 +10,6 @@ import {
   SESSION_LOGOUT,
 } from "../constants";
 
-
-export type SessionServerInfo = {
-  capabilities: Object,
-  user: ?{
-    id?: string,
-    bucket?: string,
-  }
-};
-
-export type Session = {
-  busy: boolean,
-  authenticated: boolean,
-  server: ?string,
-  credentials: Object,
-  buckets: Array<Object>,
-  serverInfo: SessionServerInfo,
-  redirectURL: ?string,
-};
 
 const DEFAULT: Session = {
   busy: false,
@@ -73,7 +56,7 @@ export default function session(
       };
     }
     case SESSION_SERVERINFO_SUCCESS: {
-      const {serverInfo}: {serverInfo: SessionServerInfo} = action;
+      const {serverInfo} = action;
       return {...state, serverInfo};
     }
     case SESSION_LOGOUT: {

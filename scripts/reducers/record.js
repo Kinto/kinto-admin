@@ -1,25 +1,11 @@
 /* @flow */
 
+import type { Record, RecordData, RecordPermissions } from "../types";
 import {
   RECORD_LOAD_SUCCESS,
   RECORD_RESET,
 } from "../constants";
 
-
-export type RecordData = {
-  id?: string,
-  last_modified?: number
-};
-
-export type RecordPermissions = {
-  read: Array<string>,
-  write: Array<string>,
-};
-
-export type Record = {
-  data: RecordData,
-  permissions: RecordPermissions,
-};
 
 const INITIAL_STATE: Record = {
   data: {},

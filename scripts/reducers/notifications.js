@@ -1,20 +1,12 @@
 /* @flow */
 
+import type { Notifications, Notification } from "../types";
 import {
   NOTIFICATION_ADDED,
   NOTIFICATION_REMOVED,
   NOTIFICATION_CLEAR,
 } from "../constants";
 
-
-export type Notification = {
-  type: string,
-  persistent: boolean,
-  message: string,
-  details: Array<string>
-};
-
-export type Notifications = Array<Notification>;
 
 const INITIAL_STATE: Notifications = [];
 
