@@ -9,7 +9,8 @@
     "publish-to-gh-pages": "rimraf build && KINTO_ADMIN_PUBLIC_PATH='/kinto-admin/' npm run dist && bin/kinto-admin build -d build && gh-pages --dist build/",
     "start": "NODE_ENV=development node devServer.js",
     "tdd": "NODE_ENV=test babel-node node_modules/.bin/_mocha --require ./test/setup-jsdom.js 'test/**/*_test.js' --watch",
-    "test": "NODE_ENV=test babel-node node_modules/.bin/_mocha --require ./test/setup-jsdom.js 'test/**/*_test.js'"
+    "test": "NODE_ENV=test babel-node node_modules/.bin/_mocha --require ./test/setup-jsdom.js 'test/**/*_test.js'",
+    "test-all": "npm run lint && npm run flow-check && npm run test"
   },
   "bin": {
     "kinto-admin": "bin/kinto-admin"
