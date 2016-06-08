@@ -69,7 +69,7 @@ describe("session sagas", () => {
     });
 
     it("should reset the client", () => {
-      expect(getClient()).to.be.a("null");
+      expect(() => getClient()).to.throw(Error, /not configured/);
     });
   });
 

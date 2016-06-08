@@ -13,6 +13,9 @@
     "no-unused-vars": [2, {"vars": "all", "args": "none"}],
     "no-console": [0]
   },
+  "globals": {
+    "Generator": true
+  },
   "env": {
     "es6": true,
     "browser": true,

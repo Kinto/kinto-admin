@@ -1,47 +1,70 @@
+/* @flow */
+
+import type { AuthData } from "./types";
+
 import KintoClient from "kinto-client";
 import endpoint from "kinto-client/lib/endpoint";
 import { isHTTPok } from "./utils";
 
 
-let client;
+let client: ?KintoClient;
 
-function getAuthHeader(session) {
-  const {authType, credentials} = session;
-  switch(authType) {
+function getAuthHeader(auth: AuthData): ?string {
+  switch(auth.authType) {
     case "fxa": {
-      const {token} = credentials;
+      const {token}: {token: string} = auth.credentials;
       return "Bearer " + token;
     }
     case "basicauth": {
-      const {username, password} = credentials;
+      const {username, password}: {
+        username: string,
+        password: string,
+      } = auth.credentials;
       return "Basic " + btoa([username, password].join(":"));
     }
   }
 }
 
-export function setupClient(session) {
-  const {server} = session;
+export function setupClient(session: AuthData): KintoClient {
+  const {server}: {server: string} = session;
   return setClient(new KintoClient(server, {
     headers: {Authorization: getAuthHeader(session)}
   }));
 }
 
-export function getClient() {
+export function getClient(): KintoClient {
+  if (!client) {
+    throw new Error("Client not configured.");
+  }
   return client;
 }
 
-export function setClient(_client) {
+export function setClient(_client: KintoClient): KintoClient {
   client = _client;
   return client;
 }
 
-export function resetClient() {
+export function resetClient(): void {
   client = null;
 }
 
 // XXX this should eventually move to kinto-client
-export function requestAttachment(bid, cid, rid, params) {
-  const {remote, defaultReqOptions} = getClient();
+export function requestAttachment(
+  bid: string,
+  cid: string,
+  rid: string,
+  params: Object
+): Promise {
+  const client: KintoClient = getClient();
+  if (!client) {
+    throw new Error("Client is not configured.");
+  }
+  const {remote, defaultReqOptions}: {
+    remote: string,
+    defaultReqOptions: {
+      headers: Object
+    }
+  } = client;
   const path = endpoint("record", bid, cid, rid) + "/attachment";
   return fetch(remote + path, {
     headers: defaultReqOptions.headers,
@@ -54,11 +77,6 @@ export function requestAttachment(bid, cid, rid, params) {
     })
     .catch(({message}) => {
       const {method} = params;
-      const err = new Error(`Unable to ${method} attachment: ${message}`);
-      err.details = [
-        "URL: " + remote + path,
-        "Status: HTTP " + status,
-      ];
-      throw err;
+      throw new Error(`Unable to ${method} attachment: ${message}`);
     });
 }

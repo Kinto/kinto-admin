@@ -1,3 +1,6 @@
+/* @flow */
+
+import type { Notifications, Notification } from "../types";
 import {
   NOTIFICATION_ADDED,
   NOTIFICATION_REMOVED,
@@ -5,23 +8,30 @@ import {
 } from "../constants";
 
 
-const INITIAL_STATE = [];
+const INITIAL_STATE: Notifications = [];
 
-export default function notifications(state = INITIAL_STATE, action) {
+export default function notifications(
+  state: Notifications = INITIAL_STATE,
+  action: Object
+): Notifications {
   switch(action.type) {
     case NOTIFICATION_ADDED: {
-      if (action.clear) {
-        return [action.notification];
+      const {clear, notification}: {
+        clear: boolean,
+        notification: Notification
+      } = action;
+      if (clear) {
+        return [notification];
       } else {
-        return [...state, action.notification];
+        return [...state, notification];
       }
     }
     case NOTIFICATION_REMOVED: {
-      return [...state.slice(0, action.index),
-              ...state.slice(action.index + 1)];
+      const {index}: {index: number} = action;
+      return [...state.slice(0, index), ...state.slice(index + 1)];
     }
     case NOTIFICATION_CLEAR: {
-      const {force} = action;
+      const {force}: {force: boolean} = action;
       return force ? INITIAL_STATE : state.filter(notif => notif.persistent);
     }
     default: {

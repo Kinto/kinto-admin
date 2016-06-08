@@ -1,3 +1,7 @@
+/* @flow */
+
+import type { Action, SessionServerInfo } from "../types";
+
 import { notifyError } from "./notifications";
 import {
   SESSION_BUSY,
@@ -11,35 +15,35 @@ import {
 } from "../constants";
 
 
-export function sessionBusy(busy) {
+export function sessionBusy(busy: boolean): Action {
   return {type: SESSION_BUSY, busy};
 }
 
-export function setup(session) {
+export function setup(session: Object): Action {
   return {type: SESSION_SETUP, session};
 }
 
-export function setupComplete(session) {
+export function setupComplete(session: Object): Action {
   return {type: SESSION_SETUP_COMPLETE, session};
 }
 
-export function storeRedirectURL(redirectURL) {
+export function storeRedirectURL(redirectURL: string): Action {
   return {type: SESSION_STORE_REDIRECT_URL, redirectURL};
 }
 
-export function serverInfoSuccess(serverInfo) {
+export function serverInfoSuccess(serverInfo: SessionServerInfo): Action {
   return {type: SESSION_SERVERINFO_SUCCESS, serverInfo};
 }
 
-export function listBuckets() {
+export function listBuckets(): Action {
   return {type: SESSION_BUCKETS_REQUEST};
 }
 
-export function bucketsSuccess(buckets) {
+export function bucketsSuccess(buckets: Object[]): Action {
   return {type: SESSION_BUCKETS_SUCCESS, buckets};
 }
 
-export function logout() {
+export function logout(): Action {
   return {type: SESSION_LOGOUT};
 }
 
@@ -47,13 +51,13 @@ export function logout() {
  * Massive side effect: this will navigate away from the current page to perform
  * authentication to a third-party service, like FxA.
  */
-export function navigateToExternalAuth(authFormData) {
+export function navigateToExternalAuth(authFormData: Object): ?Action {
   const {origin, pathname} = document.location;
   const {server} = authFormData;
   try {
     const payload = btoa(JSON.stringify(authFormData));
     const redirect = encodeURIComponent(`${origin}${pathname}#/auth/${payload}/`);
-    document.location = `${server}/fxa-oauth/login?redirect=${redirect}`;
+    document.location.href = `${server}/fxa-oauth/login?redirect=${redirect}`;
   } catch(error) {
     return notifyError(error);
   }

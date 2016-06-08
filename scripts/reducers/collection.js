@@ -1,3 +1,6 @@
+/* @flow */
+
+import type { Collection, CollectionData, CollectionPermissions } from "../types";
 import {
   COLLECTION_BUSY,
   COLLECTION_RESET,
@@ -6,7 +9,7 @@ import {
 } from "../constants";
 
 
-const INITIAL_STATE = {
+const INITIAL_STATE: Collection = {
   bucket: null,
   name: null,
   busy: false,
@@ -26,16 +29,23 @@ const INITIAL_STATE = {
   },
 };
 
-export function collection(state = INITIAL_STATE, action) {
+export function collection(
+  state: Collection = INITIAL_STATE,
+  action: Object
+): Collection {
   switch (action.type) {
     case COLLECTION_BUSY: {
-      return {...state, busy: action.busy};
+      const {busy}: {busy: boolean} = action;
+      return {...state, busy};
     }
     case COLLECTION_RESET: {
       return INITIAL_STATE;
     }
     case COLLECTION_LOAD_SUCCESS: {
-      const {data, permissions} = action;
+      const {data, permissions}: {
+        data: CollectionData,
+        permissions: CollectionPermissions,
+      } = action;
       const {
         bucket,
         id,

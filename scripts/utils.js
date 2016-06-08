@@ -1,28 +1,22 @@
+/* @flow */
+
+import type { RecordData } from "./types";
 import React from "react";
 
-export function saveSettings(data) {
-  localStorage.setItem("kwac_settings", JSON.stringify(data));
-}
 
-export function loadSettings() {
-  try {
-    return JSON.parse(localStorage.getItem("kwac_settings"));
-  } catch(err) {
-    return null;
-  }
-}
+const { Blob, FormData, Uint8Array } = window;
 
-export function omit(obj, keys=[]) {
-  return Object.keys(obj).reduce((acc, key) => {
+export function omit(obj: Object, keys: string[] = []): Object {
+  return Object.keys(obj).reduce((acc:Object, key:string) => {
     return keys.includes(key) ? acc : {...acc, [key]: obj[key]};
   }, {});
 }
 
-export function isObject(thing) {
+export function isObject(thing: any): boolean {
   return typeof thing === "object" && thing !== null && !Array.isArray(thing);
 }
 
-export function validJSON(string) {
+export function validJSON(string: string): boolean {
   try {
     JSON.parse(string);
     return true;
@@ -31,18 +25,18 @@ export function validJSON(string) {
   }
 }
 
-export function isHTTPok(status) {
-  return [1, 2, 3].some(c => String(status).startsWith(c));
+export function isHTTPok(status: number): boolean {
+  return [1, 2, 3].some((c: number) => String(status).startsWith(String(c)));
 }
 
-export function validateSchema(jsonSchema) {
-  let schema;
+export function validateSchema(jsonSchema: string) {
+  let schema: Object;
   try {
     schema = JSON.parse(jsonSchema);
   } catch(err) {
     throw "The schema is not valid JSON";
   }
-  const checks = [
+  const checks: Array<{test: () => boolean, error: string}> = [
     {
       test: () => isObject(schema),
       error: "The schema is not an object",
@@ -76,12 +70,12 @@ export function validateSchema(jsonSchema) {
   return schema;
 }
 
-export function cleanRecord(record) {
+export function cleanRecord(record: RecordData): RecordData {
   return omit(record, ["id", "schema", "last_modified"]);
 }
 
 
-function handleNestedDisplayField(record, displayField) {
+function handleNestedDisplayField(record: RecordData, displayField: string): any {
   const fields = displayField.split(".");
 
   // If the first part matches, we try to render its value.
@@ -124,14 +118,14 @@ function handleNestedDisplayField(record, displayField) {
   return "<unknown>";
 }
 
-export function linkify(string) {
+export function linkify(string: string): any {
   if (/https?:\/\//.test(string)) {
     return <a href={string} title={string} target="_blank">{string}</a>;
   }
   return string;
 }
 
-export function renderDisplayField(record, displayField) {
+export function renderDisplayField(record: Object, displayField: string): any {
   if (!record) {
     return "<unknown>";
   }
@@ -152,7 +146,7 @@ export function renderDisplayField(record, displayField) {
   return "<unknown>";
 }
 
-export function parseDataURL(dataURL) {
+export function parseDataURL(dataURL: string): Object {
   const regex = /^data:(.*);base64,(.*)/;
   const match = dataURL.match(regex);
   if (!match) {
@@ -168,8 +162,7 @@ export function parseDataURL(dataURL) {
   return {...params, type, base64};
 }
 
-export function extractFileInfo(dataURL) {
-  const {Blob, Uint8Array} = window;
+export function extractFileInfo(dataURL: string): {name: string, blob: Blob} {
   const {name, type, base64} = parseDataURL(dataURL);
   const binary = atob(base64);
   const array = [];
@@ -180,12 +173,11 @@ export function extractFileInfo(dataURL) {
   return {name, blob};
 }
 
-export function createFormData(record) {
-  const {FormData} = window;
+export function createFormData(record: Object): FormData {
   const attachment = record.__attachment__; // data-url
   const {blob, name} = extractFileInfo(attachment);
   const formData = new FormData();
   formData.append("attachment", blob, name);
-  formData.append("data", JSON.stringify(omit(record, "__attachment__")));
+  formData.append("data", JSON.stringify(omit(record, ["__attachment__"])));
   return formData;
 }

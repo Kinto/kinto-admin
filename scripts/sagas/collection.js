@@ -137,6 +137,7 @@ export function* deleteRecord(bid, cid, rid) {
 }
 
 export function* bulkCreateRecords(bid, cid, records) {
+  let errorDetails = [];
   try {
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
@@ -146,15 +147,14 @@ export function* bulkCreateRecords(bid, cid, records) {
       }
     }, {aggregate: true});
     if (errors.length > 0) {
-      const err = new Error("Some records could not be created.");
-      err.details = errors.map(err => err.error.message);
-      throw err;
+      errorDetails = errors.map(err => err.error.message);
+      throw new Error("Some records could not be created.");
     }
     yield put(actions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess(`${published.length} records created.`));
   } catch(error) {
-    yield put(notifyError(error));
+    yield put(notifyError(error, {details: errorDetails}));
   } finally {
     yield put(actions.collectionBusy(false));
   }

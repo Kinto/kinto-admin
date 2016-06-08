@@ -1,8 +1,12 @@
+/* @flow */
+
+import type { Session, Bucket, Collection, Record } from "./types";
+
 export const EVERYONE = "System.Everyone";
 export const AUTHENTICATED = "System.Authenticated";
 
 
-const permissionApi = {
+const permMethodMap = {
   read: "read",
   write: "write",
   createRecord: "record:create",
@@ -10,45 +14,44 @@ const permissionApi = {
   createGroup: "group:create",
 };
 
-export function can(session={}) {
-  const {authenticated=false, serverInfo={}} = session;
+export function can(session: Session): Object {
+  const {authenticated, serverInfo} = session;
   const {user={}} = serverInfo;
-  const {id} = user;
 
   let api = {};
 
-  for (const method in permissionApi) {
+  for (const method: string in permMethodMap) {
     api[method] = (resource) => {
-      const permission = permissionApi[method];
-      const allowed = resource.permissions[permission] || [];
+      const permission: string = permMethodMap[method];
+      const allowed: string[] = resource.permissions[permission] || [];
 
       return allowed.includes(EVERYONE) ||
         (authenticated && allowed.includes(AUTHENTICATED)) ||
-        allowed.includes(id);
+        (user && user.id && allowed.includes(user.id));
     };
   }
 
   return api;
 }
 
-export function canEditBucket(session, bucket) {
+export function canEditBucket(session: Session, bucket: Bucket): boolean {
   return can(session).write(bucket);
 }
 
-export function canCreateCollection(session, bucket) {
+export function canCreateCollection(session: Session, bucket: Bucket): boolean {
   const canSession = can(session);
   return canSession.write(bucket) || canSession.createCollection(bucket);
 }
 
-export function canEditCollection(session, collection) {
+export function canEditCollection(session: Session, collection: Collection): boolean {
   return can(session).write(collection);
 }
 
-export function canCreateRecord(session, collection) {
+export function canCreateRecord(session: Session, collection: Collection): boolean {
   const canSession = can(session);
   return canSession.write(collection) || canSession.createRecord(collection);
 }
 
-export function canEditRecord(session, record) {
+export function canEditRecord(session: Session, record: Record): boolean {
   return can(session).write(record);
 }

@@ -1,3 +1,6 @@
+/* @flow */
+
+import type { Session } from "../types";
 import {
   SESSION_BUSY,
   SESSION_SETUP_COMPLETE,
@@ -8,7 +11,7 @@ import {
 } from "../constants";
 
 
-const DEFAULT = {
+const DEFAULT: Session = {
   busy: false,
   authenticated: false,
   server: null,
@@ -21,16 +24,22 @@ const DEFAULT = {
   redirectURL: null,
 };
 
-export default function session(state = DEFAULT, action) {
+export default function session(
+  state: Session = DEFAULT,
+  action: Object
+): Session {
   switch (action.type) {
     case SESSION_BUSY: {
-      return {...state, busy: action.busy};
+      const {busy}: {busy: boolean} = action;
+      return {...state, busy};
     }
     case SESSION_SETUP_COMPLETE: {
-      return {...state, ...action.session};
+      const {session}: {session: Session} = action;
+      return {...state, ...session};
     }
     case SESSION_STORE_REDIRECT_URL: {
-      return {...state, redirectURL: action.redirectURL};
+      const {redirectURL}: {redirectURL: string} = action;
+      return {...state, redirectURL};
     }
     case SESSION_BUCKETS_SUCCESS: {
       const {serverInfo} = state;
@@ -47,7 +56,8 @@ export default function session(state = DEFAULT, action) {
       };
     }
     case SESSION_SERVERINFO_SUCCESS: {
-      return {...state, serverInfo: action.serverInfo};
+      const {serverInfo} = action;
+      return {...state, serverInfo};
     }
     case SESSION_LOGOUT: {
       return DEFAULT;

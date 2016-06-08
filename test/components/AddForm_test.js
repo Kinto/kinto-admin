@@ -39,6 +39,7 @@ describe("AddForm component", () => {
       createRecord = sinon.spy();
       node = createComponent(AddForm, {
         params: {bid: "bucket", cid: "collection"},
+        session: {authenticated: true, serverInfo: {user: "plop"}},
         collection,
         record,
         createRecord,

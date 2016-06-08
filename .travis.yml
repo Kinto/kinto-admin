@@ -3,8 +3,5 @@ language:
 - node_js
 node_js:
 - "6"
-env:
-- ACTION=test
-- ACTION="run lint"
 script:
-- npm $ACTION
+- npm run test-all
