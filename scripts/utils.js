@@ -6,7 +6,7 @@ import React from "react";
 
 const { Blob, FormData, Uint8Array } = window;
 
-export function omit(obj: Object, keys: Array<string> = []): Object {
+export function omit(obj: Object, keys: string[] = []): Object {
   return Object.keys(obj).reduce((acc:Object, key:string) => {
     return keys.includes(key) ? acc : {...acc, [key]: obj[key]};
   }, {});

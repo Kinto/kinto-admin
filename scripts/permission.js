@@ -23,7 +23,7 @@ export function can(session: Session): Object {
   for (const method: string in permMethodMap) {
     api[method] = (resource) => {
       const permission: string = permMethodMap[method];
-      const allowed: Array<string> = resource.permissions[permission] || [];
+      const allowed: string[] = resource.permissions[permission] || [];
 
       return allowed.includes(EVERYONE) ||
         (authenticated && allowed.includes(AUTHENTICATED)) ||

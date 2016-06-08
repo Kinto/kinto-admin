@@ -13,10 +13,10 @@ export type BucketData = {
 };
 
 export type BucketPermissions = {
-  write: Array<string>,
-  read?: Array<string>,
-  "collection:create"?: Array<string>,
-  "group:create"?: Array<string>,
+  write: string[],
+  read?: string[],
+  "collection:create"?: string[],
+  "group:create"?: string[],
 };
 
 export type Collection = {
@@ -29,7 +29,7 @@ export type Collection = {
     enabled: boolean,
     required: boolean,
   },
-  displayFields: ?Array<string>,
+  displayFields: ?string[],
   records: Array<RecordData>,
   permissions: CollectionPermissions,
 };
@@ -44,12 +44,12 @@ export type CollectionData = {
     enabled: boolean,
     required: boolean,
   },
-  displayFields?: ?Array<string>,
+  displayFields?: ?string[],
 };
 
 export type CollectionPermissions = {
-  write: Array<string>,
-  read?: Array<string>,
+  write: string[],
+  read?: string[],
   "record:create"?: Array<string>,
 };
 

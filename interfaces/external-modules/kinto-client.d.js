@@ -5,6 +5,17 @@ declare module "kinto-client" {
       headers: Object
     };
     constructor(): void;
+    bucket(): Bucket;
+  }
+
+  declare class Bucket {
+    constructor(): void;
+    collection(): Collection;
+    setData(): Promise;
+  }
+
+  declare class Collection {
+    constructor(): void;
   }
 
   declare var exports: typeof KintoClient

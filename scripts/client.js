@@ -34,7 +34,10 @@ export function setupClient(session: Object): KintoClient {
   }));
 }
 
-export function getClient(): ?KintoClient {
+export function getClient(): KintoClient {
+  if (!client) {
+    throw new Error("Client not configured.");
+  }
   return client;
 }
 
@@ -54,7 +57,7 @@ export function requestAttachment(
   rid: string,
   params: Object
 ): Promise {
-  const client: ?KintoClient = getClient();
+  const client: KintoClient = getClient();
   if (!client) {
     throw new Error("Client is not configured.");
   }
