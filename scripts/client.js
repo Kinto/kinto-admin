@@ -1,5 +1,7 @@
 /* @flow */
 
+import type { AuthData } from "./types";
+
 import KintoClient from "kinto-client";
 import endpoint from "kinto-client/lib/endpoint";
 import { isHTTPok } from "./utils";
@@ -7,28 +9,23 @@ import { isHTTPok } from "./utils";
 
 let client: ?KintoClient;
 
-function getAuthHeader({authType, credentials}: {
-  authType: string,
-  credentials: Object
-}): ?string {
-  switch(authType) {
+function getAuthHeader(auth: AuthData): ?string {
+  switch(auth.authType) {
     case "fxa": {
-      const {token}: {token: string} = credentials;
+      const {token}: {token: string} = auth.credentials;
       return "Bearer " + token;
     }
     case "basicauth": {
       const {username, password}: {
         username: string,
         password: string,
-      } = credentials;
+      } = auth.credentials;
       return "Basic " + btoa([username, password].join(":"));
     }
   }
 }
 
-export function setupClient(
-  session: {server: string, authType: string, credentials: Object}
-): KintoClient {
+export function setupClient(session: AuthData): KintoClient {
   const {server}: {server: string} = session;
   return setClient(new KintoClient(server, {
     headers: {Authorization: getAuthHeader(session)}

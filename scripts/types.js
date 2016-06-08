@@ -4,6 +4,17 @@ export type Action = {
   type: string
 };
 
+export type AuthData = BasicAuth | TokenAuth;
+
+export type BasicAuth = {
+  authType: "basicauth",
+  server: string,
+  credentials: {
+    username: string,
+    password: string,
+  }
+};
+
 export type Bucket = {
   busy: boolean,
   name: ?string,
@@ -97,5 +108,13 @@ export type SessionServerInfo = {
   user: {
     id?: string,
     bucket?: string,
+  }
+};
+
+export type TokenAuth = {
+  authType: "fxa",
+  server: string,
+  credentials: {
+    token: string
   }
 };
