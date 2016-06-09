@@ -94,6 +94,15 @@ const schema = {
     },
     displayFields: {
       type: "array",
+      title: "Records list columns",
+      description: (
+        <p>
+          Pick the JSON schema field names you want to see listed in the records
+          list table. <em>Hint: These are the keys of the root
+          <code>properties</code> object, but may also be other existing
+          property names of your records.</em>
+        </p>
+      ),
       default: ["field1", "field2"],
       minItems: 1,
       items: {
