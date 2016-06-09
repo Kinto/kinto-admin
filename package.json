@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Kinto Web Administration Console in React.js",
   "scripts": {
+    "build:readme": "toctoc README.md -w",
     "dist": "NODE_ENV=production webpack --optimize-minimize --config webpack.prod.js && cp index.prod.html dist/index.html",
     "flow-check": "node_modules/.bin/flow check",
     "lint": "eslint scripts test",
@@ -78,6 +79,7 @@
     "rimraf": "^2.4.4",
     "sinon": "^1.17.2",
     "style-loader": "^0.13.1",
+    "toctoc": "^0.2.3",
     "url-loader": "^0.5.7",
     "uuid": "^2.0.2",
     "webpack": "^1.10.5",
