@@ -83,6 +83,13 @@ React component update will trigger a hot reload.
 
 ## FAQ
 
+### Browser support
+
+Let's be honest, we're mainly testing kinto-admin on recent versions of Firefox
+and Chrome, so we can't really guarantee proper compatibility with IE, Safari,
+Opera and others. We're accepting
+[pull requests](https://github.com/Kinto/kinto-admin/pulls) though.
+
 ### I get an ENOENT when I go to localhost:3000
 
 Did you run `bin/kinto-admin` from this repository?
