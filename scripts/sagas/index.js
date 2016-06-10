@@ -1,5 +1,7 @@
+import { takeLatest } from "redux-saga";
 import { fork } from "redux-saga/effects";
 
+import { SESSION_SERVERINFO_SUCCESS } from "../constants";
 import * as sessionSagas from "./session";
 import * as routeSagas from "./route";
 import * as bucketSagas from "./bucket";
@@ -24,10 +26,17 @@ export default function* rootSaga() {
     fork(bucketSagas.watchCollectionDelete),
     // collection/records
     fork(collectionSagas.watchCollectionRecords),
-    fork(collectionSagas.watchRecordCreate),
-    fork(collectionSagas.watchRecordUpdate),
     fork(collectionSagas.watchRecordDelete),
     fork(collectionSagas.watchBulkCreateRecords),
     fork(collectionSagas.watchAttachmentDelete),
+    // Ensure restarting session info dependent watchers when info are updated
+    fork(function* () {
+      yield* takeLatest(SESSION_SERVERINFO_SUCCESS,
+                        collectionSagas.watchRecordCreate);
+    }),
+    fork(function* () {
+      yield* takeLatest(SESSION_SERVERINFO_SUCCESS,
+                        collectionSagas.watchRecordUpdate);
+    }),
   ];
 }

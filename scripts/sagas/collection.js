@@ -198,8 +198,9 @@ export function* watchCollectionRecords() {
   }
 }
 
-export function* watchRecordCreate() {
-  const {serverInfo} = yield take(SESSION_SERVERINFO_SUCCESS);
+export function* watchRecordCreate(serverInfoAction) {
+  // Note: serverInfoAction is provided by takeLatest in the rootSaga
+  const {serverInfo} = serverInfoAction;
   while(true) { // eslint-disable-line
     const {bid, cid, record} = yield take(RECORD_CREATE_REQUEST);
     // Check if we have to deal with attachments
@@ -211,8 +212,9 @@ export function* watchRecordCreate() {
   }
 }
 
-export function* watchRecordUpdate() {
-  const {serverInfo} = yield take(SESSION_SERVERINFO_SUCCESS);
+export function* watchRecordUpdate(serverInfoAction) {
+  // Note: serverInfoAction is provided by takeLatest in the rootSaga
+  const {serverInfo} = serverInfoAction;
   while(true) { // eslint-disable-line
     const {bid, cid, rid, record} = yield take(RECORD_UPDATE_REQUEST);
     // Check if we have to deal with attachments

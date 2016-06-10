@@ -13,6 +13,7 @@ import {
   ROUTE_LOAD_SUCCESS,
 } from "../../scripts/constants";
 import { notifyError, notifySuccess } from "../../scripts/actions/notifications";
+import * as sessionActions from "../../scripts/actions/session";
 import * as collectionActions from "../../scripts/actions/collection";
 import * as recordActions from "../../scripts/actions/record";
 import * as saga from "../../scripts/sagas/collection";
@@ -633,16 +634,12 @@ describe("collection sagas", () => {
     describe("watchRecordCreate()", () => {
       describe("Attachments enabled", () => {
         it("should watch for the createRecordWithAttachment action", () => {
-          const watchRecordCreate = saga.watchRecordCreate();
+          const action = sessionActions.serverInfoSuccess({
+            capabilities: {attachments: {}}
+          });
+          const watchRecordCreate = saga.watchRecordCreate(action);
 
           expect(watchRecordCreate.next().value)
-            .eql(take(SESSION_SERVERINFO_SUCCESS));
-
-          const serverInfoAction = {
-            serverInfo: {capabilities: {attachments: {}}}
-          };
-
-          expect(watchRecordCreate.next(serverInfoAction).value)
             .eql(take(RECORD_CREATE_REQUEST));
 
           const record = {__attachment__: {}};
@@ -654,16 +651,12 @@ describe("collection sagas", () => {
 
       describe("Attachments disabled", () => {
         it("should watch for the createRecord action", () => {
-          const watchRecordCreate = saga.watchRecordCreate();
+          const action = sessionActions.serverInfoSuccess({
+            capabilities: {}
+          });
+          const watchRecordCreate = saga.watchRecordCreate(action);
 
           expect(watchRecordCreate.next().value)
-            .eql(take(SESSION_SERVERINFO_SUCCESS));
-
-          const serverInfoAction = {
-            serverInfo: {capabilities: {}}
-          };
-
-          expect(watchRecordCreate.next(serverInfoAction).value)
             .eql(take(RECORD_CREATE_REQUEST));
 
           expect(watchRecordCreate.next(
@@ -676,16 +669,12 @@ describe("collection sagas", () => {
     describe("watchRecordUpdate()", () => {
       describe("Attachments enabled", () => {
         it("should watch for the updateRecordWithAttachment action", () => {
-          const watchRecordUpdate = saga.watchRecordUpdate();
+          const action = sessionActions.serverInfoSuccess({
+            capabilities: {attachments: {}}
+          });
+          const watchRecordUpdate = saga.watchRecordUpdate(action);
 
           expect(watchRecordUpdate.next().value)
-            .eql(take(SESSION_SERVERINFO_SUCCESS));
-
-          const serverInfoAction = {
-            serverInfo: {capabilities: {attachments: {}}}
-          };
-
-          expect(watchRecordUpdate.next(serverInfoAction).value)
             .eql(take(RECORD_UPDATE_REQUEST));
 
           const record = {__attachment__: {}};
@@ -697,16 +686,12 @@ describe("collection sagas", () => {
 
       describe("Attachments disabled", () => {
         it("should watch for the updateRecord action", () => {
-          const watchRecordUpdate = saga.watchRecordUpdate();
+          const action = sessionActions.serverInfoSuccess({
+            capabilities: {}
+          });
+          const watchRecordUpdate = saga.watchRecordUpdate(action);
 
           expect(watchRecordUpdate.next().value)
-            .eql(take(SESSION_SERVERINFO_SUCCESS));
-
-          const serverInfoAction = {
-            serverInfo: {capabilities: {}}
-          };
-
-          expect(watchRecordUpdate.next(serverInfoAction).value)
             .eql(take(RECORD_UPDATE_REQUEST));
 
           expect(watchRecordUpdate.next(
