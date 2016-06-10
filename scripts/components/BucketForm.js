@@ -84,7 +84,9 @@ export default class BucketForm extends Component {
   render() {
     const {bid, session, bucket, formData, deleteBucket} = this.props;
     const creation = !formData;
-    const formIsEditable = creation || canEditBucket(session, bucket);
+    const hasWriteAccess = canEditBucket(session, bucket);
+    const formIsEditable = creation || hasWriteAccess;
+    const showDeleteForm = !creation && hasWriteAccess;
 
     // Disable edition of the collection name
     const _uiSchema = creation ? uiSchema : {
@@ -129,7 +131,7 @@ export default class BucketForm extends Component {
             }
           </div>
         </div>
-        {this.allowEditing ?
+        {showDeleteForm ?
           <DeleteForm
             bid={bid}
             onSubmit={deleteBucket} /> : null}
