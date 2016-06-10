@@ -9,6 +9,21 @@ A Web admin UI to manage data from a [Kinto](https://kinto.readthedocs.io/) serv
 Kinto. You can also use it to build administration interfaces for
 Kinto-based systems.
 
+## Table of Contents
+
+  - [Installation](#installation)
+  - [Standalone local server](#standalone-local-server)
+  - [Building static assets for production hosting](#building-static-assets-for-production-hosting)
+  - [Build kinto-admin locally](#build-kinto-admin-locally)
+  - [Development server](#development-server)
+  - [FAQ](#faq)
+     - [Browser support](#browser-support)
+     - [I get an ENOENT when I go to localhost:3000](#i-get-an-enoent-when-i-go-to-localhost-3000)
+     - [How to display a nested field value using the collection displayFields property?](#how-to-display-a-nested-field-value-using-the-collection-displayfields-property)
+  - [License](#license)
+
+---
+
 ## Installation
 
 NodeJS v4+ and npm 2.14+ should be installed and available on your machine.
@@ -82,6 +97,13 @@ The application is served at [localhost:3000](http://localhost:3000/), and any
 React component update will trigger a hot reload.
 
 ## FAQ
+
+### Browser support
+
+Let's be honest, we're mainly testing kinto-admin on recent versions of Firefox
+and Chrome, so we can't really guarantee proper compatibility with IE, Safari,
+Opera and others. We're accepting
+[pull requests](https://github.com/Kinto/kinto-admin/pulls) though.
 
 ### I get an ENOENT when I go to localhost:3000
 
