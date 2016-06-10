@@ -70,6 +70,43 @@ export function validateSchema(jsonSchema: string) {
   return schema;
 }
 
+export function validateUiSchema(jsonUiSchema: string, jsonSchema: string) {
+  let uiSchema: Object, schema:Object = JSON.parse(jsonSchema);
+  try {
+    uiSchema = JSON.parse(jsonUiSchema);
+  } catch(err) {
+    throw "The uiSchema is not valid JSON";
+  }
+  const hasOrder: boolean = uiSchema.hasOwnProperty("ui:order");
+  let checks: Array<{test: () => boolean, error: string}> = [
+    {
+      test: () => isObject(uiSchema),
+      error: "The uiSchema is not an object",
+    }
+  ];
+  if (hasOrder) {
+    const order = uiSchema["ui:order"];
+    const properties: string[] = Object.keys(schema.properties);
+    const arrayId = (array: string[]): string => array.slice().sort().toString();
+    checks = checks.concat([
+      {
+        test: () => Array.isArray(order),
+        error: "The uiSchema ui:order directive isn't an array",
+      },
+      {
+        test: () => arrayId(order) === arrayId(properties),
+        error: "The ui:order directive should list all schema properties",
+      }
+    ]);
+  }
+  checks.forEach(({test, error}) => {
+    if (!test()) {
+      throw error;
+    }
+  });
+  return uiSchema;
+}
+
 export function cleanRecord(record: RecordData): RecordData {
   return omit(record, ["id", "schema", "last_modified"]);
 }
