@@ -86,7 +86,10 @@ const schema = {
       type: "string",
       title: "JSON schema",
       default: defaultSchema,
-    },rst
+    },
+    uiSchema: {
+      type: "string",
+      title: "UI schema",
       default: defaultUiSchema,
     },
     displayFields: {

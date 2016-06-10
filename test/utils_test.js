@@ -85,44 +85,74 @@ describe("renderDisplayField", () => {
 describe("validateSchema()", () => {
   it("should validate that the schema is valid JSON", () => {
     expect(() => validateSchema("invalid"))
-      .to.Throw("The schema is not valid JSON");
+      .to.throw("The schema is not valid JSON");
   });
 
   it("should validate that the schema is an object", () => {
     expect(() => validateSchema("[]"))
-      .to.Throw("The schema is not an object");
+      .to.throw("The schema is not an object");
   });
 
   it("should validate that the schema has a type property", () => {
     expect(() => validateSchema("{}"))
-      .to.Throw("The schema has no type");
+      .to.throw("The schema has no type");
   });
 
   it("should validate that the schema has an 'object' type", () => {
     expect(() => validateSchema(JSON.stringify({type: "string"})))
-      .to.Throw("The schema type is not 'object'");
+      .to.throw("The schema type is not 'object'");
   });
 
   it("should validate that the schema declare properties", () => {
     expect(() => validateSchema(JSON.stringify({type: "object"})))
-      .to.Throw("The schema has no 'properties' property");
+      .to.throw("The schema has no 'properties' property");
   });
 
   it("should validate that the schema properties are an object", () => {
     expect(() => validateSchema(JSON.stringify({type: "object", properties: 2})))
-      .to.Throw("The 'properties' property is not an object");
+      .to.throw("The 'properties' property is not an object");
   });
 
   it("should validate that the schema properties has properties", () => {
     expect(() => validateSchema(JSON.stringify({type: "object", properties: {}})))
-      .to.Throw("The 'properties' property object has no properties");
+      .to.throw("The 'properties' property object has no properties");
   });
 });
 
 describe("validateUiSchema()", () => {
-  it("should validate that the uiSchema is valid JSON ", () => {
-    expect(() => validateUiSchema("invalid"))
-      .to.Throw("The uiSchema is not valid JSON");
+  const schema = JSON.stringify({
+    type: "object",
+    properties: {
+      foo: {type: "string"},
+      bar: {type: "number"},
+    }
+  });
+
+  it("should validate that the uiSchema is valid JSON", () => {
+    expect(() => validateUiSchema("invalid", schema))
+      .to.throw("The uiSchema is not valid JSON");
+  });
+
+  it("should validate that the uiSchema is an object", () => {
+    expect(() => validateUiSchema("42", schema))
+      .to.throw("The uiSchema is not an object");
+  });
+
+  it("should validate that a uiSchema 'ui:order' is an array", () => {
+    expect(() => validateUiSchema(JSON.stringify({"ui:order": 42}), schema))
+      .to.throw("The uiSchema ui:order directive isn't an array");
+  });
+
+  it("should validate that a uiSchema 'ui:order' match schema properties", () => {
+    expect(() => validateUiSchema(JSON.stringify({"ui:order": []}), schema))
+      .to.throw("The ui:order list should match schema properties");
+
+    expect(() => validateUiSchema(JSON.stringify({"ui:order": ["foo", "bar", "baz"]}), schema))
+      .to.throw("The ui:order list should match schema properties");
+
+    const validUiSchema = JSON.stringify({"ui:order": ["foo", "bar"]});
+    expect(validateUiSchema(validUiSchema, schema))
+      .eql(JSON.parse(validUiSchema));
   });
 });
 
@@ -139,6 +169,6 @@ describe("parseDataURL()", () => {
 
   it("should throw an error when the data url is invalid", () => {
     expect(() => expect(parseDataURL("gni")))
-      .to.Throw(Error, "Invalid data-url: gni...");
+      .to.throw(Error, "Invalid data-url: gni...");
   });
 });

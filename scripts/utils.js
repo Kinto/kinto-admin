@@ -77,12 +77,28 @@ export function validateUiSchema(jsonUiSchema: string, jsonSchema: string) {
   } catch(err) {
     throw "The uiSchema is not valid JSON";
   }
-  const checks: Array<{test: () => boolean, error: string}> = [
+  const hasOrder: boolean = uiSchema.hasOwnProperty("ui:order");
+  let checks: Array<{test: () => boolean, error: string}> = [
     {
       test: () => isObject(uiSchema),
       error: "The uiSchema is not an object",
-    },
+    }
   ];
+  if (hasOrder) {
+    const order = uiSchema["ui:order"];
+    const properties: string[] = Object.keys(schema.properties);
+    const arrayId = (array: string[]): string => array.slice().sort().toString();
+    checks = checks.concat([
+      {
+        test: () => Array.isArray(order),
+        error: "The uiSchema ui:order directive isn't an array",
+      },
+      {
+        test: () => arrayId(order) === arrayId(properties),
+        error: "The ui:order list should match schema properties",
+      }
+    ]);
+  }
   checks.forEach(({test, error}) => {
     if (!test()) {
       throw error;
