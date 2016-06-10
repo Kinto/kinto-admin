@@ -216,6 +216,8 @@ export default class CollectionForm extends Component {
 
   render() {
     const {cid, bucket, collection, formData, deleteCollection} = this.props;
+    const creation = !formData;
+    const showDeleteForm = !creation && this.allowEditing;
 
     // Disable edition of the collection name
     const _uiSchema = !formData ? uiSchema : {
@@ -256,7 +258,7 @@ export default class CollectionForm extends Component {
             </Form>
           </div>
         </div>
-        {this.allowEditing ?
+        {showDeleteForm ?
           <DeleteForm
             cid={cid}
             onSubmit={deleteCollection} /> : null}
