@@ -145,10 +145,10 @@ describe("validateUiSchema()", () => {
 
   it("should validate that a uiSchema 'ui:order' match schema properties", () => {
     expect(() => validateUiSchema(JSON.stringify({"ui:order": []}), schema))
-      .to.throw("The ui:order list should match schema properties");
+      .to.throw("The ui:order directive should list all schema properties");
 
     expect(() => validateUiSchema(JSON.stringify({"ui:order": ["foo", "bar", "baz"]}), schema))
-      .to.throw("The ui:order list should match schema properties");
+      .to.throw("The ui:order directive should list all schema properties");
 
     const validUiSchema = JSON.stringify({"ui:order": ["foo", "bar"]});
     expect(validateUiSchema(validUiSchema, schema))

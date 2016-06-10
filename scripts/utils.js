@@ -95,7 +95,7 @@ export function validateUiSchema(jsonUiSchema: string, jsonSchema: string) {
       },
       {
         test: () => arrayId(order) === arrayId(properties),
-        error: "The ui:order list should match schema properties",
+        error: "The ui:order directive should list all schema properties",
       }
     ]);
   }
