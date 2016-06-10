@@ -99,13 +99,13 @@ export default class AuthForm extends Component {
   }
 
   onChange = ({formData}) => {
-    const {server, authType, credentials} = formData;
+    const {server, authType, credentials={}} = formData;
     switch(authType) {
       case "fxa": {
         return this.setState({
           schema: fxaSchema,
           uiSchema: fxaUISchema,
-          formData,
+          formData: {authType, server},
         });
       }
       default:
@@ -113,7 +113,7 @@ export default class AuthForm extends Component {
         return this.setState({
           schema: basicAuthSchema,
           uiSchema: basicAuthUISchema,
-          formData,
+          formData: {authType, server, credentials},
         });
       }
     }
