@@ -105,7 +105,7 @@ export default class AuthForm extends Component {
         return this.setState({
           schema: fxaSchema,
           uiSchema: fxaUISchema,
-          formData: {authType, server},
+          formData,
         });
       }
       default:
@@ -113,7 +113,7 @@ export default class AuthForm extends Component {
         return this.setState({
           schema: basicAuthSchema,
           uiSchema: basicAuthUISchema,
-          formData: {authType, server, credentials},
+          formData,
         });
       }
     }
