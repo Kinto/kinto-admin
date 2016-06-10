@@ -4,6 +4,7 @@ import {
   cleanRecord,
   renderDisplayField,
   validateSchema,
+  validateUiSchema,
   parseDataURL,
 } from "../scripts/utils";
 
@@ -115,6 +116,13 @@ describe("validateSchema()", () => {
   it("should validate that the schema properties has properties", () => {
     expect(() => validateSchema(JSON.stringify({type: "object", properties: {}})))
       .to.Throw("The 'properties' property object has no properties");
+  });
+});
+
+describe("validateUiSchema()", () => {
+  it("should validate that the uiSchema is valid JSON ", () => {
+    expect(() => validateUiSchema("invalid"))
+      .to.Throw("The uiSchema is not valid JSON");
   });
 });
 

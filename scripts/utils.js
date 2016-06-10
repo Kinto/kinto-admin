@@ -70,6 +70,27 @@ export function validateSchema(jsonSchema: string) {
   return schema;
 }
 
+export function validateUiSchema(jsonUiSchema: string, jsonSchema: string) {
+  let uiSchema: Object, schema:Object = JSON.parse(jsonSchema);
+  try {
+    uiSchema = JSON.parse(jsonUiSchema);
+  } catch(err) {
+    throw "The uiSchema is not valid JSON";
+  }
+  const checks: Array<{test: () => boolean, error: string}> = [
+    {
+      test: () => isObject(uiSchema),
+      error: "The uiSchema is not an object",
+    },
+  ];
+  checks.forEach(({test, error}) => {
+    if (!test()) {
+      throw error;
+    }
+  });
+  return uiSchema;
+}
+
 export function cleanRecord(record: RecordData): RecordData {
   return omit(record, ["id", "schema", "last_modified"]);
 }
