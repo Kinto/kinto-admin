@@ -45,7 +45,7 @@ export type Collection = {
     required: boolean,
   },
   displayFields: ?string[],
-  records: Array<RecordData>,
+  records: RecordData[],
   permissions: CollectionPermissions,
 };
 
@@ -65,14 +65,14 @@ export type CollectionData = {
 export type CollectionPermissions = {
   write: string[],
   read?: string[],
-  "record:create"?: Array<string>,
+  "record:create"?: string[],
 };
 
 export type Notification = {
   type: string,
   persistent: boolean,
   message: string,
-  details: Array<string>
+  details: string[],
 };
 
 export type Notifications = Array<Notification>;
@@ -89,8 +89,8 @@ export type RecordData = {
 };
 
 export type RecordPermissions = {
-  write: Array<string>,
-  read?: Array<string>,
+  write: string[],
+  read?: string[],
 };
 
 export type Session = {
@@ -98,7 +98,7 @@ export type Session = {
   authenticated: boolean,
   server: ?string,
   credentials: Object,
-  buckets: Array<Object>,
+  buckets: Object[],
   serverInfo: SessionServerInfo,
   redirectURL: ?string,
 };
