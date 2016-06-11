@@ -45,6 +45,11 @@ h1 {
   margin-right: .3em;
 }
 
+.kinto-admin-title {
+  background: transparent url("../images/logo.png") no-repeat right;
+  background-size: contain;
+}
+
 .session-info-bar {
   position: fixed;
   top: 0;

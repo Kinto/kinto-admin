@@ -35,7 +35,7 @@ export default class App extends Component {
         <div className="container-fluid main">
           <div className="row">
             <div className="col-sm-3 sidebar">
-              <h1>Kinto admin</h1>
+              <h1 className="kinto-admin-title">Kinto admin</h1>
               {linkBack}
               {sidebar || <p>Sidebar.</p>}
             </div>
