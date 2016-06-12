@@ -7,6 +7,7 @@ import {
   ATTACHMENT_DELETE_REQUEST,
   SESSION_SERVERINFO_SUCCESS,
   COLLECTION_RECORDS_REQUEST,
+  COLLECTION_SORT_UPDATED,
   RECORD_CREATE_REQUEST,
   RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
@@ -35,9 +36,10 @@ export function* deleteAttachment(bid, cid, rid) {
   yield put(notifySuccess("Attachment deleted."));
 }
 
-export function* listRecords(bid, cid) {
+export function* listRecords(bid, cid, sort) {
   // Wait for the collection data to be loaded before loading its records
-  yield take(ROUTE_LOAD_SUCCESS);
+  const {bucket, collection} = yield take(ROUTE_LOAD_SUCCESS);
+  console.log("I'm loading records !", bucket.data.id, collection.data.id);
   try {
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
@@ -59,7 +61,6 @@ export function* createRecordWithAttachment(bid, cid, record) {
       method: "post",
       body: formData
     });
-    yield put(actions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess("Record added."));
   } catch(error) {
@@ -74,7 +75,6 @@ export function* createRecord(bid, cid, record) {
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
     yield call([coll, coll.createRecord], record);
-    yield put(actions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess("Record added."));
   } catch(error) {
@@ -93,7 +93,6 @@ export function* updateRecordWithAttachment(bid, cid, rid, record) {
       body: formData
     });
     yield put(resetRecord());
-    yield put(actions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess("Record updated."));
   } catch(error) {
@@ -111,7 +110,6 @@ export function* updateRecord(bid, cid, rid, record) {
     // not defined by the JSON schema, if any.
     yield call([coll, coll.updateRecord], {...record, id: rid}, {patch: true});
     yield put(resetRecord());
-    yield put(actions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess("Record updated."));
   } catch(error) {
@@ -126,7 +124,6 @@ export function* deleteRecord(bid, cid, rid) {
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
     yield call([coll, coll.deleteRecord], rid);
-    yield put(actions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess("Record deleted."));
   } catch(error) {
@@ -150,7 +147,6 @@ export function* bulkCreateRecords(bid, cid, records) {
       errorDetails = errors.map(err => err.error.message);
       throw new Error("Some records could not be created.");
     }
-    yield put(actions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess(`${published.length} records created.`));
   } catch(error) {
@@ -172,7 +168,6 @@ export function* bulkCreateRecordsWithAttachment(bid, cid, records) {
         body: formData
       });
     }
-    yield put(actions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess(`${records.length} records created.`));
   } catch(error) {
@@ -195,6 +190,16 @@ export function* watchCollectionRecords() {
   while(true) { // eslint-disable-line
     const {bid, cid} = yield take(COLLECTION_RECORDS_REQUEST);
     yield fork(listRecords, bid, cid);
+  }
+}
+
+export function* watchSortUpdated() {
+  while(true) { // eslint-disable-line
+    const {sort} = yield take(COLLECTION_SORT_UPDATED);
+    // TODO
+    // - make listRecords compatible now we know about current bucket/collection
+    // - register this watcher in the rootSaga
+    yield fork(listRecords, sort);
   }
 }
 

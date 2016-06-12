@@ -5,7 +5,9 @@ import {
   COLLECTION_BUSY,
   COLLECTION_RESET,
   COLLECTION_LOAD_SUCCESS,
+  COLLECTION_RECORDS_REQUEST,
   COLLECTION_RECORDS_SUCCESS,
+  COLLECTION_UPDATE_SORT,
 } from "../constants";
 
 
@@ -22,6 +24,7 @@ const INITIAL_STATE: Collection = {
   displayFields: [],
   records: [],
   recordsLoaded: false,
+  sort: "-last_modified",
   permissions: {
     "read": [],
     "write": [],
@@ -66,8 +69,15 @@ export function collection(
         permissions: {read, write}
       };
     }
+    case COLLECTION_RECORDS_REQUEST: {
+      const {sort} = action;
+      return {...state, sort, recordsLoaded: false};
+    }
     case COLLECTION_RECORDS_SUCCESS: {
       return {...state, records: action.records, recordsLoaded: true};
+    }
+    case COLLECTION_UPDATE_SORT: {
+      return {...state, sort: action.sort};
     }
     default: {
       return state;

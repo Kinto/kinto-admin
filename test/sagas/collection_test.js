@@ -48,7 +48,10 @@ describe("collection sagas", () => {
       });
 
       it("should mark the current collection as busy", () => {
-        expect(listRecords.next().value)
+        expect(listRecords.next({
+          bucket: {data: {id: "bucket"}},
+          collection: {data: {id: "collection"}},
+        }).value)
           .eql(put(collectionActions.collectionBusy(true)));
       });
 
@@ -74,7 +77,10 @@ describe("collection sagas", () => {
       before(() => {
         listRecords = saga.listRecords("bucket", "collection");
         listRecords.next();
-        listRecords.next(); // take(ROUTE_LOAD_SUCCESS)
+        listRecords.next({
+          bucket: {data: {id: "bucket"}},
+          collection: {data: {id: "collection"}},
+        }); // take(ROUTE_LOAD_SUCCESS)
       });
 
       it("should dispatch an error notification action", () => {
@@ -108,11 +114,6 @@ describe("collection sagas", () => {
       it("should create the record", () => {
         expect(createRecord.next().value)
           .eql(call([collection, collection.createRecord], record));
-      });
-
-      it("should dispatch the listRecords action", () => {
-        expect(createRecord.next({data: record}).value)
-          .eql(put(collectionActions.listRecords("bucket", "collection")));
       });
 
       it("should update the route path", () => {
@@ -177,11 +178,6 @@ describe("collection sagas", () => {
           .eql(put(recordActions.resetRecord()));
       });
 
-      it("should dispatch the listRecords action", () => {
-        expect(updateRecord.next({data: record}).value)
-          .eql(put(collectionActions.listRecords("bucket", "collection")));
-      });
-
       it("should update the route path", () => {
         expect(updateRecord.next().value)
           .eql(put(updatePath("/buckets/bucket/collections/collection")));
@@ -237,11 +233,6 @@ describe("collection sagas", () => {
       it("should create the record", () => {
         expect(deleteRecord.next().value)
           .eql(call([collection, collection.deleteRecord], 1));
-      });
-
-      it("should dispatch the listRecords action", () => {
-        expect(deleteRecord.next({data: record}).value)
-          .eql(put(collectionActions.listRecords("bucket", "collection")));
       });
 
       it("should update the route path", () => {
@@ -313,11 +304,6 @@ describe("collection sagas", () => {
           }));
       });
 
-      it("should dispatch the listRecords action", () => {
-        expect(createRecordWithAttachment.next().value)
-          .eql(put(collectionActions.listRecords("bucket", "collection")));
-      });
-
       it("should update the route path", () => {
         expect(createRecordWithAttachment.next().value)
           .eql(put(updatePath("/buckets/bucket/collections/collection")));
@@ -386,11 +372,6 @@ describe("collection sagas", () => {
       it("should dispatch the resetRecord action", () => {
         expect(updateRecordWithAttachment.next({data: record}).value)
           .eql(put(recordActions.resetRecord()));
-      });
-
-      it("should dispatch the listRecords action", () => {
-        expect(updateRecordWithAttachment.next({data: record}).value)
-          .eql(put(collectionActions.listRecords("bucket", "collection")));
       });
 
       it("should update the route path", () => {
@@ -480,13 +461,8 @@ describe("collection sagas", () => {
         expect(v.CALL.args[1]).eql({aggregate: true});
       });
 
-      it("should dispatch the listRecords action", () => {
-        expect(bulkCreateRecords.next({published: records, errors: []}).value)
-          .eql(put(collectionActions.listRecords("bucket", "collection")));
-      });
-
       it("should update the route path", () => {
-        expect(bulkCreateRecords.next().value)
+        expect(bulkCreateRecords.next({published: records, errors: []}).value)
           .eql(put(updatePath("/buckets/bucket/collections/collection")));
       });
 
@@ -573,16 +549,11 @@ describe("collection sagas", () => {
           }));
       });
 
-      it("should dispatch the listRecords action", () => {
+      it("should update the route path", () => {
         expect(bulkCreateRecordsWithAttachment.next({
           published: recordsWithAttachment,
           errors: [],
         }).value)
-          .eql(put(collectionActions.listRecords("bucket", "collection")));
-      });
-
-      it("should update the route path", () => {
-        expect(bulkCreateRecordsWithAttachment.next().value)
           .eql(put(updatePath("/buckets/bucket/collections/collection")));
       });
 

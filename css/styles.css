@@ -90,6 +90,13 @@ h1 {
   margin-right: .5em;
 }
 
+table.record-list {
+  margin-top: 1em;
+}
+
+table.record-list.table-bordered {
+}
+
 table.record-list tr.unsynced {
   background: repeating-linear-gradient(
     45deg,
@@ -128,13 +135,18 @@ table.record-list td.status {
 }
 
 table.record-list td.actions {
-  min-width: 200px;
-  width: 200px;
+  min-width: 110px;
+  width: 110px;
   white-space: nowrap;
+  text-align: center;
 }
 
 table.record-list td.actions .btn-group {
   margin-left: .5em;
+}
+
+.sort-link {
+  float: right;
 }
 
 .notifications {

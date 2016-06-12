@@ -58,6 +58,32 @@ class Row extends Component {
   }
 }
 
+function SortLink(props) {
+  const {dir, column, updateSort} = props;
+  return (
+    <a href="#" className="sort-link" onClick={(event) => {
+      event.preventDefault();
+      updateSort(dir === "up" ? `-${column}` : column);
+    }}>
+      <i className={`glyphicon glyphicon-menu-${dir}`}/>
+    </a>
+  );
+}
+
+function ColumnSortLink(props) {
+  const {column, sort, updateSort} = props;
+  if (!sort || column === "__json") {
+    return null;
+  }
+  if (!(new RegExp(`^-?${column}$`).test(sort))) {
+    return  <SortLink dir="up" column={column} updateSort={updateSort} />;
+  }
+  if (sort.startsWith("-")) {
+    return <SortLink dir="down" column={column} updateSort={updateSort} />;
+  }
+  return <SortLink dir="up" column={column} updateSort={updateSort} />;
+}
+
 class Table extends Component {
   static defaultProps = {
     displayFields: ["__json"]
@@ -84,9 +110,11 @@ class Table extends Component {
       cid,
       records,
       recordsLoaded,
+      sort,
       schema,
       displayFields,
       deleteRecord,
+      updateSort,
       updatePath
     } = this.props;
 
@@ -101,17 +129,29 @@ class Table extends Component {
     }
 
     return (
-      <table className="table table-striped record-list">
+      <table className="table table-striped table-bordered record-list">
         <thead>
           <tr>
             {
               displayFields.map((displayField, index) => {
                 return (
-                  <th key={index}>{this.getFieldTitle(displayField)}</th>
+                  <th key={index}>
+                    {this.getFieldTitle(displayField)}
+                    <ColumnSortLink
+                      sort={sort}
+                      column={displayField}
+                      updateSort={updateSort} />
+                  </th>
                 );
               })
             }
-            <th>Last mod.</th>
+            <th>
+              Last mod.
+              <ColumnSortLink
+                sort={sort}
+                column="last_modified"
+                updateSort={updateSort} />
+            </th>
             <th></th>
           </tr>
         </thead>
@@ -163,7 +203,14 @@ function ListActions(props) {
 
 export default class CollectionList extends Component {
   render() {
-    const {params, session, collection, deleteRecord, updatePath} = this.props;
+    const {
+      params,
+      session,
+      collection,
+      deleteRecord,
+      updatePath,
+      updateSort,
+    } = this.props;
     const {bid, cid} = params;
     const {
       busy,
@@ -172,6 +219,7 @@ export default class CollectionList extends Component {
       displayFields,
       records,
       recordsLoaded,
+      sort,
     } = collection;
 
     const listActions = (
@@ -192,9 +240,11 @@ export default class CollectionList extends Component {
           cid={cid}
           records={records}
           recordsLoaded={recordsLoaded}
+          sort={sort}
           schema={schema}
           displayFields={displayFields}
           deleteRecord={deleteRecord}
+          updateSort={updateSort}
           updatePath={updatePath} />
         {listActions}
       </div>

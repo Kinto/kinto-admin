@@ -46,6 +46,8 @@ export type Collection = {
   },
   displayFields: ?string[],
   records: RecordData[],
+  recordsLoaded: boolean,
+  sort: string,
   permissions: CollectionPermissions,
 };
 
