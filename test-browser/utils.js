@@ -6,10 +6,7 @@ import staticServer from "../testServer";
 let kintoServer;
 
 export function startServers() {
-  kintoServer = new KintoServer("http://0.0.0.0:8888/v1", {
-    kintoConfigPath: __dirname + "/kinto.ini",
-    pservePath: __dirname + "/../.venv/bin/pserve",
-  });
+  kintoServer = new KintoServer("http://0.0.0.0:8888/v1");
   return Promise.all([
     kintoServer.start(),
     staticServer.start(),
@@ -36,6 +33,6 @@ export function authenticate(browser, username, password) {
     .type("#root_credentials_username", username)
     .type("#root_credentials_password", "")
     .type("#root_credentials_password", password)
-    .click(".rjsf button.btn.btn-info")
+    .click(".rjsf button[type=submit]")
     .wait(".session-info-bar");
 }

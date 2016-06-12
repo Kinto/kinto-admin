@@ -12,9 +12,9 @@ describe("Auth tests", function() {
 
   let browser;
 
-  beforeEach(() => {
+  beforeEach(function* () {
     browser = Nightmare({show: !!process.env.NIGHTMARE_SHOW});
-    return startServers();
+    yield startServers();
   });
 
   afterEach(function* () {
@@ -33,15 +33,14 @@ describe("Auth tests", function() {
   });
 
   it("should log a user out", function* () {
-    yield authenticate(browser, "__user__", "__pass__")
+    const result = yield authenticate(browser, "__user__", "__pass__")
       .click(".session-info-bar .btn-logout")
       .wait(".notification.alert-success")
       .evaluate(() => {
         return document.querySelector(".session-info-bar");
-      })
-      .then(res => {
-        expect(res).to.be.null;
       });
+
+    expect(result).to.be.null;
   });
 });
 
