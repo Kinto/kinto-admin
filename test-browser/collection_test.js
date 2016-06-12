@@ -13,7 +13,7 @@ import {
 installGeneratorSupport();
 
 describe("Collection tests", function() {
-  this.timeout(10000);
+  this.timeout(50000);
 
   let browser;
 
