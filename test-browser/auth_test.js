@@ -6,9 +6,10 @@ import {
   start as startStaticTestServer,
   stop as stopStaticTestServer,
 } from "../testServer";
+import { authenticate } from "./utils";
+
 
 installGeneratorSupport();
-
 
 describe("Auth tests", function() {
   this.timeout(50000);
@@ -16,30 +17,37 @@ describe("Auth tests", function() {
   let browser;
 
   beforeEach(() => {
-    browser = Nightmare({show: false});
+    browser = Nightmare({show: !!process.env.NIGHTMARE_SHOW});
     return startStaticTestServer();
   });
 
   afterEach(() => {
-    return stopStaticTestServer();
+    return Promise.all([
+      browser.end(),
+      stopStaticTestServer()
+    ]);
   });
 
-  it("should open the homepage", function* () {
-    const result = yield browser
-      .goto("http://localhost:3000/")
-      .wait(".rjsf")
-      .type("#root_credentials_username", "")
-      .type("#root_credentials_username", "__test__")
-      .type("#root_credentials_password", "")
-      .type("#root_credentials_password", "__test__")
-      .click(".rjsf button.btn.btn-info")
-      .wait(".session-info-bar")
+  it("should authenticate a user", function* () {
+    const result = yield authenticate(browser, "__user__", "__pass__")
       .evaluate(() => {
         return document.querySelector(".session-info-bar strong").textContent;
       })
       .end();
 
-    expect(result).eql("__test__");
+    expect(result).eql("__user__");
+  });
+
+  it("should log a user out", function* () {
+    yield authenticate(browser, "__user__", "__pass__")
+      .click(".session-info-bar .btn-logout")
+      .wait(".notification.alert-success")
+      .evaluate(() => {
+        return document.querySelector(".session-info-bar");
+      })
+      .then(res => {
+        expect(res).to.be.null;
+      });
   });
 });
 
