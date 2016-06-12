@@ -1,3 +1,4 @@
+import Nightmare from "nightmare";
 import KintoServer from "kinto-node-test-server";
 
 import staticServer from "../testServer";
@@ -23,6 +24,20 @@ export function stopServers() {
   ]);
 }
 
+export function createBrowser() {
+  return Nightmare({
+    show: !!process.env.NIGHTMARE_SHOW,
+    openDevTools: true,
+    width: 1600,
+    height: 1024,
+    x: 0,
+    y: 0,
+    center: true,
+    alwaysOnTop: false,
+    skipTaskbar: true,
+  });
+}
+
 export function authenticate(browser, username, password) {
   return browser
     .goto("http://localhost:3000/")
@@ -35,4 +50,12 @@ export function authenticate(browser, username, password) {
     .type("#root_credentials_password", password)
     .click(".rjsf button[type=submit]")
     .wait(".session-info-bar");
+}
+
+export function createBucket(browser, name) {
+  return browser.click("[href='#/buckets/create-bucket']")
+    .wait(".rjsf")
+    .type("#root_name", "MyBucket")
+    .click(".rjsf input[type=submit]")
+    .wait(".notification.alert-success");
 }

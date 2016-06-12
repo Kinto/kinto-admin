@@ -1,8 +1,12 @@
 import { install as installGeneratorSupport } from "mocha-generators";
-import Nightmare from "nightmare";
 import { expect } from "chai";
 
-import { startServers, stopServers, authenticate } from "./utils";
+import {
+  startServers,
+  stopServers,
+  createBrowser,
+  authenticate,
+} from "./utils";
 
 
 installGeneratorSupport();
@@ -13,7 +17,7 @@ describe("Auth tests", function() {
   let browser;
 
   beforeEach(function* () {
-    browser = Nightmare({show: !!process.env.NIGHTMARE_SHOW});
+    browser = createBrowser();
     yield startServers();
   });
 
