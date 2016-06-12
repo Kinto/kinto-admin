@@ -7,7 +7,9 @@ import staticServer from "../testServer";
 let kintoServer;
 
 export function startServers() {
-  kintoServer = new KintoServer("http://0.0.0.0:8888/v1");
+  kintoServer = new KintoServer("http://0.0.0.0:8888/v1", {
+    pservePath: ".venv/bin/pserve"
+  });
   return Promise.all([
     kintoServer.start(),
     staticServer.start(),
