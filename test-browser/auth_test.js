@@ -1,5 +1,6 @@
 import { install as installGeneratorSupport } from "mocha-generators";
 import Nightmare from "nightmare";
+import KintoServer from "kinto-node-test-server";
 import { expect } from "chai";
 
 import {
@@ -14,17 +15,28 @@ installGeneratorSupport();
 describe("Auth tests", function() {
   this.timeout(50000);
 
-  let browser;
+  let browser, kintoTestServer;
 
   beforeEach(() => {
+    kintoTestServer = new KintoServer("http://0.0.0.0:8888/v1", {
+      kintoConfigPath: __dirname + "/kinto.ini",
+      pservePath: __dirname + "/../.venv/bin/pserve",
+    });
     browser = Nightmare({show: !!process.env.NIGHTMARE_SHOW});
-    return startStaticTestServer();
+    return Promise.all([
+      kintoTestServer.start(),
+      startStaticTestServer(),
+    ]);
   });
 
   afterEach(() => {
+    for (const line of kintoTestServer.logs) {
+      console.log(line.toString());
+    }
     return Promise.all([
+      kintoTestServer.killAll(),
       browser.end(),
-      stopStaticTestServer()
+      stopStaticTestServer(),
     ]);
   });
 
