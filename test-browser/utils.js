@@ -32,8 +32,6 @@ export function createBrowser() {
     openDevTools: true,
     width: 1600,
     height: 1024,
-    x: 0,
-    y: 0,
     center: true,
     alwaysOnTop: false,
     skipTaskbar: true,
@@ -54,10 +52,21 @@ export function authenticate(browser, username, password) {
     .wait(".session-info-bar");
 }
 
-export function createBucket(browser, name) {
+export function createBucket(browser, bucket) {
   return browser.click("[href='#/buckets/create-bucket']")
     .wait(".rjsf")
-    .type("#root_name", "MyBucket")
+    .type("#root_name", bucket)
     .click(".rjsf input[type=submit]")
-    .wait(".notification.alert-success");
+    .wait(".notification.alert-success")
+    .wait(`[href='#/buckets/${bucket}/edit']`);
+}
+
+export function createCollection(browser, bucket, collection) {
+  return createBucket(browser, bucket)
+    .click(`[href='#/buckets/${bucket}/create-collection']`)
+    .wait(".rjsf")
+    .type("#root_name", collection)
+    .click(".rjsf input[type=submit]")
+    .wait(".notification.alert-success")
+    .wait(`[href='#/buckets/${bucket}/collections/${collection}/edit']`);
 }
