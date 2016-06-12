@@ -4,7 +4,7 @@
   "description": "Kinto Web Administration Console in React.js",
   "scripts": {
     "build:readme": "toctoc README.md -w",
-    "dist": "NODE_ENV=production webpack --optimize-minimize --config webpack.prod.js && cp index.prod.html dist/index.html",
+    "dist": "NODE_ENV=production webpack --progress --optimize-dedupe --optimize-minimize --config webpack.prod.js && cp index.prod.html dist/index.html",
     "flow-check": "node_modules/.bin/flow check",
     "lint": "eslint scripts test",
     "prepare-gh-pages": "rimraf build && KINTO_ADMIN_PUBLIC_PATH='/kinto-admin/' npm run dist",
@@ -13,8 +13,10 @@
     "publish-to-npm": "KINTO_ADMIN_PUBLIC_PATH='/' npm run dist && npm publish",
     "start": "NODE_ENV=development node devServer.js",
     "tdd": "NODE_ENV=test babel-node node_modules/.bin/_mocha --require ./test/setup-jsdom.js 'test/**/*_test.js' --watch",
+    "tdd-browser": "NODE_ENV=test babel-node node_modules/.bin/_mocha 'test-browser/**/*_test.js' --watch",
     "test": "NODE_ENV=test babel-node node_modules/.bin/_mocha --require ./test/setup-jsdom.js 'test/**/*_test.js'",
-    "test-all": "npm run lint && npm run flow-check && npm run test"
+    "test-browser": "NODE_ENV=test babel-node node_modules/.bin/_mocha 'test-browser/**/*_test.js'",
+    "test-all": "npm run dist && npm run lint && npm run flow-check && npm run test && npm run test-browser"
   },
   "bin": {
     "kinto-admin": "bin/kinto-admin"

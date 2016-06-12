@@ -5,7 +5,7 @@ import { expect } from "chai";
 import {
   start as startStaticTestServer,
   stop as stopStaticTestServer,
-} from "../../testServer";
+} from "../testServer";
 
 installGeneratorSupport();
 
