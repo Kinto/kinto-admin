@@ -3,6 +3,9 @@ var webpack = require("webpack");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
+  devServer: {
+    stats: "errors-only",
+  },
   entry: {
     app: path.resolve(__dirname, "scripts/index.js"),
   },
@@ -18,7 +21,12 @@ module.exports = {
       "process.env": {
         NODE_ENV: JSON.stringify("production")
       }
-    })
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false
+      }
+    }),
   ],
   resolve: {
     extensions: ["", ".js", ".jsx", ".css", ".png"]
@@ -26,17 +34,11 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /\.json$/,
-        loader: "json",
-        exclude: /node_modules/,
-      },
-      {
         test: /\.jsx?$/,
         loaders: ["babel"],
         exclude: /node_modules/,
         include: [
           path.join(__dirname, "scripts"),
-          path.join(__dirname, "schema")
         ]
       },
       {

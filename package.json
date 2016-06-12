@@ -4,7 +4,7 @@
   "description": "Kinto Web Administration Console in React.js",
   "scripts": {
     "build:readme": "toctoc README.md -w",
-    "dist": "NODE_ENV=production webpack --progress --optimize-dedupe --optimize-minimize --config webpack.prod.js && cp index.prod.html dist/index.html",
+    "dist": "NODE_ENV=production webpack --progress --config webpack.prod.js && cp index.prod.html dist/index.html",
     "flow-check": "node_modules/.bin/flow check",
     "lint": "eslint scripts test test-browser",
     "prepare-gh-pages": "rimraf build && KINTO_ADMIN_PUBLIC_PATH='/kinto-admin/' npm run dist",
@@ -64,7 +64,6 @@
     "gh-pages": "^0.11.0",
     "html": "0.0.10",
     "jsdom": "^9.2.1",
-    "json-loader": "^0.5.4",
     "kinto-http": "^1.0.0",
     "kinto-node-test-server": "0.0.1",
     "mocha": "^2.5.3",
