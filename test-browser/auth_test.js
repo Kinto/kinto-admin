@@ -1,13 +1,8 @@
 import { install as installGeneratorSupport } from "mocha-generators";
 import Nightmare from "nightmare";
-import KintoServer from "kinto-node-test-server";
 import { expect } from "chai";
 
-import {
-  start as startStaticTestServer,
-  stop as stopStaticTestServer,
-} from "../testServer";
-import { authenticate } from "./utils";
+import { startServers, stopServers, authenticate } from "./utils";
 
 
 installGeneratorSupport();
@@ -15,29 +10,16 @@ installGeneratorSupport();
 describe("Auth tests", function() {
   this.timeout(50000);
 
-  let browser, kintoTestServer;
+  let browser;
 
   beforeEach(() => {
-    kintoTestServer = new KintoServer("http://0.0.0.0:8888/v1", {
-      kintoConfigPath: __dirname + "/kinto.ini",
-      pservePath: __dirname + "/../.venv/bin/pserve",
-    });
     browser = Nightmare({show: !!process.env.NIGHTMARE_SHOW});
-    return Promise.all([
-      kintoTestServer.start(),
-      startStaticTestServer(),
-    ]);
+    return startServers();
   });
 
-  afterEach(() => {
-    for (const line of kintoTestServer.logs) {
-      console.log(line.toString());
-    }
-    return Promise.all([
-      kintoTestServer.killAll(),
-      browser.end(),
-      stopStaticTestServer(),
-    ]);
+  afterEach(function* () {
+    yield browser.end();
+    yield stopServers();
   });
 
   it("should authenticate a user", function* () {

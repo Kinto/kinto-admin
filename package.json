@@ -6,7 +6,7 @@
     "build:readme": "toctoc README.md -w",
     "dist": "NODE_ENV=production webpack --progress --optimize-dedupe --optimize-minimize --config webpack.prod.js && cp index.prod.html dist/index.html",
     "flow-check": "node_modules/.bin/flow check",
-    "lint": "eslint scripts test",
+    "lint": "eslint scripts test test-browser",
     "prepare-gh-pages": "rimraf build && KINTO_ADMIN_PUBLIC_PATH='/kinto-admin/' npm run dist",
     "publish-to-gh-pages": "npm run prepare-gh-pages && bin/kinto-admin build -d build && gh-pages --add --dist build/",
     "publish-to-gh-pages-tag": "npm run prepare-gh-pages && bin/kinto-admin build -d build/$npm_package_version && gh-pages --add --dist build/",
