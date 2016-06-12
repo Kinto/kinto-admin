@@ -11,7 +11,7 @@ installGeneratorSupport();
 
 
 describe("Auth tests", function() {
-  this.timeout(20000);
+  this.timeout(50000);
 
   let browser;
 
