@@ -6,4 +6,4 @@ node_js:
 before_script:
 - npm run dist
 script:
-- npm run test-all
+- xvfb-run npm run test-all
