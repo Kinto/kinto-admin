@@ -13,7 +13,7 @@ import {
 installGeneratorSupport();
 
 describe("Bucket tests", function() {
-  this.timeout(10000);
+  this.timeout(60000);
 
   let browser;
 

@@ -13,7 +13,7 @@ export function startServers() {
   return Promise.all([
     kintoServer.start(),
     staticServer.start(),
-  ]);
+  ]).then(new Promise(r => setTimeout(r, 200)));
 }
 
 export function stopServers() {
@@ -23,11 +23,12 @@ export function stopServers() {
   return Promise.all([
     kintoServer.killAll(),
     staticServer.stop(),
-  ]);
+  ]).then(new Promise(r => setTimeout(r, 200)));
 }
 
 export function createBrowser() {
   return Nightmare({
+    waitTimeout: 60000,
     show: !!process.env.NIGHTMARE_SHOW,
     openDevTools: true,
     width: 1600,
