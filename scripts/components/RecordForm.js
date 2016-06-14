@@ -115,6 +115,11 @@ function AttachmentInfo(props) {
 }
 
 export default class RecordForm extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {asJSON: false};
+  }
+
   onSubmit = ({formData}) => {
     this.props.onSubmit(formData);
   }
@@ -129,9 +134,11 @@ export default class RecordForm extends Component {
   }
 
   getForm() {
+    const {asJSON} = this.state;
     const {bid, cid, collection, record} = this.props;
     const {schema={}, uiSchema={}, attachment={}, busy} = collection;
     const recordData = record && record.data || {};
+    const emptySchema = Object.keys(schema).length === 0;
 
     if (busy) {
       return <Spinner />;
@@ -143,17 +150,28 @@ export default class RecordForm extends Component {
           disabled={!this.allowEditing} value={record ? "Update" : "Create"} />
         {" or "}
         <Link to={`/buckets/${bid}/collections/${cid}`}>Cancel</Link>
+        {" | "}
+        <a href="#" onClick={this.toggleJSON}>
+          {asJSON ? "Edit form" : "Edit raw JSON"}
+        </a>
       </div>
     );
 
-    if (Object.keys(schema).length === 0) {
+    if (asJSON || emptySchema) {
       return (
-        <JSONRecordForm
-          disabled={!this.allowEditing}
-          record={JSON.stringify(cleanRecord(recordData), null, 2)}
-          onSubmit={this.onSubmit}>
-          {buttons}
-        </JSONRecordForm>
+        <div>
+          {emptySchema ?
+            <div className="alert alert-warning">
+              This collection doesn't have any JSON schema defined, though you can
+              create free-form records entering raw JSON.
+            </div> : null}
+          <JSONRecordForm
+            disabled={!this.allowEditing}
+            record={JSON.stringify(cleanRecord(recordData), null, 2)}
+            onSubmit={this.onSubmit}>
+            {buttons}
+          </JSONRecordForm>
+        </div>
       );
     }
 
@@ -177,6 +195,11 @@ export default class RecordForm extends Component {
     deleteAttachment(bid, cid, rid);
   }
 
+  toggleJSON = (event) => {
+    event.preventDefault();
+    this.setState({asJSON: !this.state.asJSON});
+  }
+
   render() {
     const {collection, record} = this.props;
     const {attachment={}} = collection;
@@ -184,7 +207,8 @@ export default class RecordForm extends Component {
 
     const alert = this.allowEditing || collection.busy ? null : (
       <div className="alert alert-warning">
-        You don't have the required permission to {creation ? "create a" : "edit this"} record.
+        You don't have the required permission to
+        {creation ? "create a" : "edit this"} record.
       </div>
     );
 
