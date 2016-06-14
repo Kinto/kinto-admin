@@ -62,6 +62,7 @@ export type CollectionData = {
     required: boolean,
   },
   displayFields?: ?string[],
+  sort?: string,
 };
 
 export type CollectionPermissions = {

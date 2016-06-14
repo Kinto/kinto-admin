@@ -10,7 +10,7 @@ import {
   COLLECTION_UPDATE_SORT,
 } from "../constants";
 
-
+const DEFAULT_SORT: string = "-last_modified";
 const INITIAL_STATE: Collection = {
   bucket: null,
   name: null,
@@ -24,7 +24,7 @@ const INITIAL_STATE: Collection = {
   displayFields: [],
   records: [],
   recordsLoaded: false,
-  sort: "-last_modified",
+  sort: DEFAULT_SORT,
   permissions: {
     "read": [],
     "write": [],
@@ -56,6 +56,7 @@ export function collection(
         uiSchema,
         attachment,
         displayFields,
+        sort = DEFAULT_SORT,
       } = data;
       const {read=[], write=[]} = permissions;
       return {
@@ -66,12 +67,12 @@ export function collection(
         uiSchema,
         attachment,
         displayFields,
+        sort,
         permissions: {read, write}
       };
     }
     case COLLECTION_RECORDS_REQUEST: {
-      const {sort} = action;
-      return {...state, sort, recordsLoaded: false};
+      return {...state, sort: action.sort, recordsLoaded: false};
     }
     case COLLECTION_RECORDS_SUCCESS: {
       return {...state, records: action.records, recordsLoaded: true};

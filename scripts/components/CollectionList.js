@@ -59,12 +59,15 @@ class Row extends Component {
 }
 
 function SortLink(props) {
-  const {dir, column, updateSort} = props;
+  const {dir, active, column, updateSort} = props;
   return (
-    <a href="#" className="sort-link" onClick={(event) => {
-      event.preventDefault();
-      updateSort(dir === "up" ? `-${column}` : column);
-    }}>
+    <a href="#" className={`sort-link ${active ? "label label-default" : ""}`}
+      onClick={(event) => {
+        event.preventDefault();
+        // Perform the opposite action from current state to make the link act
+        // as a toggler.
+        updateSort(dir === "up" ? `-${column}` : column);
+      }}>
       <i className={`glyphicon glyphicon-menu-${dir}`}/>
     </a>
   );
@@ -75,13 +78,24 @@ function ColumnSortLink(props) {
   if (!sort || column === "__json") {
     return null;
   }
-  if (!(new RegExp(`^-?${column}$`).test(sort))) {
-    return  <SortLink dir="up" column={column} updateSort={updateSort} />;
+  let active, direction;
+  // Check if we're currently sorting on this field.
+  if (new RegExp(`^-?${column}$`).test(sort)) {
+    // We're sorting on this field; check for direction.
+    active = true;
+    direction = sort.startsWith("-") ? "down" : "up";
+  } else {
+    // By default, expose a way to sort down on click.
+    active = false;
+    direction = "up";
   }
-  if (sort.startsWith("-")) {
-    return <SortLink dir="down" column={column} updateSort={updateSort} />;
-  }
-  return <SortLink dir="up" column={column} updateSort={updateSort} />;
+  return (
+    <SortLink
+      active={active}
+      dir={direction}
+      column={column}
+      updateSort={updateSort} />
+  );
 }
 
 class Table extends Component {
@@ -202,6 +216,12 @@ function ListActions(props) {
 }
 
 export default class CollectionList extends Component {
+  updateSort = (sort) => {
+    const {params, updateSort} = this.props;
+    const {bid, cid} = params;
+    updateSort(bid, cid, sort);
+  }
+
   render() {
     const {
       params,
@@ -209,7 +229,6 @@ export default class CollectionList extends Component {
       collection,
       deleteRecord,
       updatePath,
-      updateSort,
     } = this.props;
     const {bid, cid} = params;
     const {
@@ -244,7 +263,7 @@ export default class CollectionList extends Component {
           schema={schema}
           displayFields={displayFields}
           deleteRecord={deleteRecord}
-          updateSort={updateSort}
+          updateSort={this.updateSort}
           updatePath={updatePath} />
         {listActions}
       </div>

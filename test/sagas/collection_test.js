@@ -39,7 +39,7 @@ describe("collection sagas", () => {
         collection = {listRecords() {}};
         const bucket = {collection() {return collection;}};
         setClient({bucket() {return bucket;}});
-        listRecords = saga.listRecords("bucket", "collection");
+        listRecords = saga.listRecords("bucket", "collection", "title");
       });
 
       it("should wait for the ROUTE_LOAD_SUCCESS action", () => {
@@ -57,7 +57,9 @@ describe("collection sagas", () => {
 
       it("should list collection records", () => {
         expect(listRecords.next().value)
-          .eql(call([collection, collection.listRecords]));
+          .eql(call([collection, collection.listRecords], {
+            sort: "title"
+          }));
       });
 
       it("should dispatch the listRecordsSuccess action", () => {
@@ -597,8 +599,8 @@ describe("collection sagas", () => {
           .eql(take(COLLECTION_RECORDS_REQUEST));
 
         expect(watchCollectionRecords.next(
-          collectionActions.listRecords("a", "b")).value)
-          .eql(fork(saga.listRecords, "a", "b"));
+          collectionActions.listRecords("a", "b", "c")).value)
+          .eql(fork(saga.listRecords, "a", "b", "c"));
       });
     });
 

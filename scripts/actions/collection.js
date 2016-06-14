@@ -41,7 +41,7 @@ export function listRecordsSuccess(records: RecordData[]): Action {
   return {type: COLLECTION_RECORDS_SUCCESS, records};
 }
 
-export function listRecords(bid: string, cid: string, sort: ?string): Action {
+export function listRecords(bid: string, cid: string, sort: string): Action {
   return {type: COLLECTION_RECORDS_REQUEST, bid, cid, sort};
 }
 
@@ -65,6 +65,6 @@ export function bulkCreateRecords(bid: string, cid: string, records: RecordData[
   return {type: RECORD_BULK_CREATE_REQUEST, bid, cid, records};
 }
 
-export function updateSort(sort: string) {
-  return {type: COLLECTION_UPDATE_SORT, sort};
+export function updateSort(bid: string, cid: string, sort: string) {
+  return {type: COLLECTION_UPDATE_SORT, bid, cid, sort};
 }

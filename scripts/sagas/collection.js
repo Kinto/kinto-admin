@@ -7,7 +7,7 @@ import {
   ATTACHMENT_DELETE_REQUEST,
   SESSION_SERVERINFO_SUCCESS,
   COLLECTION_RECORDS_REQUEST,
-  COLLECTION_SORT_UPDATED,
+  COLLECTION_UPDATE_SORT,
   RECORD_CREATE_REQUEST,
   RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
@@ -36,14 +36,26 @@ export function* deleteAttachment(bid, cid, rid) {
   yield put(notifySuccess("Attachment deleted."));
 }
 
-export function* listRecords(bid, cid, sort) {
+export function* listRecords(bid, cid, sort="-last_modified") {
   // Wait for the collection data to be loaded before loading its records
-  const {bucket, collection} = yield take(ROUTE_LOAD_SUCCESS);
-  console.log("I'm loading records !", bucket.data.id, collection.data.id);
+  yield take(ROUTE_LOAD_SUCCESS);
   try {
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
-    const {data} = yield call([coll, coll.listRecords]);
+    const {data} = yield call([coll, coll.listRecords], {sort});
+    yield put(actions.listRecordsSuccess(data));
+  } catch(error) {
+    yield put(notifyError(error));
+  } finally {
+    yield put(actions.collectionBusy(false));
+  }
+}
+
+export function* sortRecords(bid, cid, sort) {
+  try {
+    const coll = getCollection(bid, cid);
+    yield put(actions.collectionBusy(true));
+    const {data} = yield call([coll, coll.listRecords], {sort});
     yield put(actions.listRecordsSuccess(data));
   } catch(error) {
     yield put(notifyError(error));
@@ -188,18 +200,15 @@ function shouldProcessAttachment(serverInfo, records) {
 
 export function* watchCollectionRecords() {
   while(true) { // eslint-disable-line
-    const {bid, cid} = yield take(COLLECTION_RECORDS_REQUEST);
-    yield fork(listRecords, bid, cid);
+    const {bid, cid, sort} = yield take(COLLECTION_RECORDS_REQUEST);
+    yield fork(listRecords, bid, cid, sort);
   }
 }
 
-export function* watchSortUpdated() {
+export function* watchSortRecords() {
   while(true) { // eslint-disable-line
-    const {sort} = yield take(COLLECTION_SORT_UPDATED);
-    // TODO
-    // - make listRecords compatible now we know about current bucket/collection
-    // - register this watcher in the rootSaga
-    yield fork(listRecords, sort);
+    const {bid, cid, sort} = yield take(COLLECTION_UPDATE_SORT);
+    yield fork(sortRecords, bid, cid, sort);
   }
 }
 

@@ -48,7 +48,9 @@ function onAuthEnter(store: Object, {params}) {
 
 function onCollectionListEnter(store: Object, {params}) {
   const {bid, cid} = params;
-  store.dispatch(collectionActions.listRecords(bid, cid));
+  const {collection} = store.getState();
+  const {sort} = collection;
+  store.dispatch(collectionActions.listRecords(bid, cid, sort));
 }
 
 export default function getRoutes(store: Object) {
