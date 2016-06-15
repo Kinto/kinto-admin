@@ -16,7 +16,7 @@
     "tdd-browser": "NODE_ENV=test babel-node node_modules/.bin/_mocha 'test-browser/**/*_test.js' --watch",
     "test": "NODE_ENV=test babel-node node_modules/.bin/_mocha --require ./test/setup-jsdom.js 'test/**/*_test.js'",
     "test-browser": "NODE_ENV=test babel-node node_modules/.bin/_mocha 'test-browser/**/*_test.js'",
-    "test-all": "npm run dist && npm run lint && npm run flow-check && npm run test && npm run test-browser"
+    "test-all": "npm run dist && npm run lint && npm run flow-check && npm run test"
   },
   "bin": {
     "kinto-admin": "bin/kinto-admin"
