@@ -1,4 +1,4 @@
-declare module "kinto-client" {
+declare module "kinto-http" {
   declare class KintoClient {
     remote: string;
     defaultReqOptions: {
@@ -21,7 +21,7 @@ declare module "kinto-client" {
   declare var exports: typeof KintoClient
 }
 
-declare module "kinto-client/lib/endpoint" {
+declare module "kinto-http/lib/endpoint" {
   declare function endpoint(): string;
   declare var exports: endpoint;
 }
