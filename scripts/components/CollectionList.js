@@ -145,9 +145,9 @@ function ListActions(props) {
         {canCreateRecord(session, collection) ?
           <div>
             <Link to={`/buckets/${bid}/collections/${cid}/add`}
-              className="btn btn-info">Add</Link>
+              className="btn btn-info btn-record-add">Add</Link>
             <Link to={`/buckets/${bid}/collections/${cid}/bulk`}
-              className="btn btn-info">Bulk add</Link>
+              className="btn btn-info btn-record-bulk-add">Bulk add</Link>
           </div> : null}
       </div>
       <div className="edit-coll-props col-xs-4 text-right">
