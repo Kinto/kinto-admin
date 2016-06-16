@@ -292,6 +292,11 @@ describe("bucket sagas", () => {
           })));
       });
 
+      it("should update the route path", () => {
+        expect(updateCollection.next().value)
+          .eql(put(updatePath("/buckets/bucket/collections/collection")));
+      });
+
       it("should dispatch a notification", () => {
         expect(updateCollection.next().value)
           .eql(put(notifySuccess("Collection properties updated.")));

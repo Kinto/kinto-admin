@@ -89,6 +89,7 @@ export function* updateCollection(bid, cid, collectionData) {
     const coll = getCollection(bid, cid);
     const {data, permissions} = yield call([coll, coll.setData], collectionData);
     yield put(collectionLoadSuccess({...data, bucket: bid}, permissions));
+    yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess("Collection properties updated."));
   } catch(error) {
     yield put(notifyError(error));
