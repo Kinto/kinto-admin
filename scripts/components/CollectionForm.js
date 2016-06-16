@@ -108,6 +108,7 @@ const schema = {
       items: {
         type: "string",
         description: "Enter a field name. i.e: name, attachment.filename",
+        minLength: 1,
       }
     },
     attachment: {
