@@ -2,8 +2,8 @@
 
 import type { AuthData } from "./types";
 
-import KintoClient from "kinto-client";
-import endpoint from "kinto-client/lib/endpoint";
+import KintoClient from "kinto-http";
+import endpoint from "kinto-http/lib/endpoint";
 import { isHTTPok } from "./utils";
 
 
@@ -48,7 +48,7 @@ export function resetClient(): void {
   client = null;
 }
 
-// XXX this should eventually move to kinto-client
+// XXX this should eventually move to kinto-http
 export function requestAttachment(
   bid: string,
   cid: string,
