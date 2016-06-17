@@ -5,5 +5,26 @@ node_js:
 - "6"
 python:
 - "3.5"
-script:
-- npm run test-all
+addons:
+  apt:
+    packages:
+    - xvfb
+before_install:
+- export PATH=$HOME/.local/bin:$PATH
+- pip install --user `whoami` virtualenv
+- virtualenv .venv
+- .venv/bin/pip install https://github.com/Kinto/kinto/zipball/master
+install:
+- export DISPLAY=':99.0'
+- Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+- npm install
+- npm run dist
+matrix:
+  include:
+  - env: ACTION="lint"
+  - env: ACTION="flow-check"
+  - env: ACTION="test"
+  - env: ACTION="test-browser"
+  allow_failures:
+  - env: ACTION="test-browser"
+script: npm run $ACTION

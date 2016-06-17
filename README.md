@@ -96,6 +96,20 @@ $ npm start
 The application is served at [localhost:3000](http://localhost:3000/), and any
 React component update will trigger a hot reload.
 
+## Browser tests
+
+The browser test suite uses Nightmarejs and Electrron. To run browser tests:
+
+```
+$ npm run test-browser
+```
+
+To show the browser interactions while running them, set the `NIGHTMARE_SHOW` env var:
+
+```
+$ NIGHTMARE_SHOW=1 npm run test-browser
+```
+
 ## FAQ
 
 ### Browser support
