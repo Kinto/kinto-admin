@@ -1,5 +1,7 @@
 import Nightmare from "nightmare";
 import KintoServer from "kinto-node-test-server";
+import KintoClient from "kinto-http";
+import btoa from "btoa";
 
 import staticServer from "../testServer";
 
@@ -36,6 +38,14 @@ export function createBrowser() {
     center: true,
     alwaysOnTop: false,
     skipTaskbar: true,
+  });
+}
+
+export function createClient(username, password) {
+  return new KintoClient("http://0.0.0.0:8888/v1", {
+    headers: {
+      Authorization: "Basic " + btoa(`${username}:${password}`),
+    }
   });
 }
 

@@ -5,6 +5,7 @@ import {
   startServers,
   stopServers,
   createBrowser,
+  createClient,
   authenticate,
   createBucket,
 } from "./utils";
@@ -15,12 +16,13 @@ installGeneratorSupport();
 describe("Bucket tests", function() {
   this.timeout(60000);
 
-  let browser;
+  let browser, client;
 
   beforeEach(function* () {
     browser = createBrowser();
     yield startServers();
     yield authenticate(browser, "__test__", "__pass__");
+    client = createClient("__test__", "__pass__");
   });
 
   afterEach(function* () {
@@ -34,8 +36,11 @@ describe("Bucket tests", function() {
         return document.querySelector(".bucket-menu .panel-heading strong").textContent;
       })
       .end();
-
     expect(result).eql("MyBucket");
+
+    const {data} = yield client.listBuckets();
+    expect(data).to.have.length.of(1);
+    expect(data[0].id).eql("MyBucket");
   });
 
   it("should edit a bucket", function* () {
@@ -65,8 +70,10 @@ describe("Bucket tests", function() {
         return document.querySelectorAll(".bucket-menu").length;
       })
       .end();
-
     expect(result).eql(0);
+
+    const {data} = yield client.listBuckets();
+    expect(data).to.have.length.of(0);
   });
 });
 
