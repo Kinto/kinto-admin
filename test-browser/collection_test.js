@@ -5,6 +5,7 @@ import {
   startServers,
   stopServers,
   createBrowser,
+  createClient,
   authenticate,
   createCollection,
 } from "./utils";
@@ -15,12 +16,13 @@ installGeneratorSupport();
 describe("Collection tests", function() {
   this.timeout(60000);
 
-  let browser;
+  let browser, client;
 
   beforeEach(function* () {
     browser = createBrowser();
     yield startServers();
     yield authenticate(browser, "__test__", "__pass__");
+    client = createClient("__test__", "__pass__");
   });
 
   afterEach(function* () {
@@ -35,8 +37,11 @@ describe("Collection tests", function() {
         return document.querySelector(".collections-menu-entry").textContent;
       })
       .end();
-
     expect(result).eql("MyCollection");
+
+    const {data} = yield client.bucket("MyBucket").listCollections();
+    expect(data).to.have.length.of(1);
+    expect(data[0].id).eql("MyCollection");
   });
 
   it("should update a collection", function* () {
@@ -66,8 +71,10 @@ describe("Collection tests", function() {
         return document.querySelectorAll(".collections-menu-entry").length;
       })
       .end();
-
     expect(result).eql(0);
+
+    const {data} = yield client.bucket("MyBucket").listCollections();
+    expect(data).to.have.length.of(0);
   });
 });
 
