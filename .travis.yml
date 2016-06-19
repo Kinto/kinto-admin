@@ -9,6 +9,9 @@ addons:
   apt:
     packages:
     - xvfb
+cache:
+  directories:
+  - node_modules
 before_install:
 - export PATH=$HOME/.local/bin:$PATH
 - pip install --user `whoami` virtualenv
