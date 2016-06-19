@@ -96,6 +96,40 @@ $ npm start
 The application is served at [localhost:3000](http://localhost:3000/), and any
 React component update will trigger a hot reload.
 
+## Tests
+
+To run tests:
+
+```
+$ npm run test-all
+```
+
+> Note: The browser test suite is not included in this command as it takes a
+long time and may result in intermittent failures on Travis
+(see [#146](https://github.com/Kinto/kinto-admin/pull/146)).
+
+## Browser tests
+
+The browser test suite uses [NightmareJS](http://www.nightmarejs.org/) and
+[Electron](http://electron.atom.io/). To run browser tests:
+
+```
+$ npm run dist
+$ npm run test-browser
+```
+
+To show the browser interactions while running them, set the `NIGHTMARE_SHOW` env var:
+
+```
+$ NIGHTMARE_SHOW=1 npm run test-browser
+```
+
+There's also a TDD mode:
+
+```
+$ npm run tdd-browser
+```
+
 ## FAQ
 
 ### Browser support
