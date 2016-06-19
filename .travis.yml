@@ -22,12 +22,10 @@ install:
 - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
 - npm install
 - npm run dist
+env:
+- ACTION="test-all"
+- ACTION="test-browser"
 matrix:
-  include:
-  - env: ACTION="lint"
-  - env: ACTION="flow-check"
-  - env: ACTION="test"
-  - env: ACTION="test-browser"
   allow_failures:
   - env: ACTION="test-browser"
 script: npm run $ACTION
