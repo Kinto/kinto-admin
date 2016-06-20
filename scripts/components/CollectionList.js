@@ -65,9 +65,14 @@ function SortLink(props) {
       className={`sort-link ${active ? "active label label-default" : ""}`}
       onClick={(event) => {
         event.preventDefault();
-        // Perform the opposite action from current state to make the link act
-        // as a toggler.
-        updateSort(dir === "up" ? `-${column}` : column);
+        if (active) {
+          // Perform the opposite action from current state to make the link act
+          // as a toggler.
+          updateSort(dir === "up" ? `-${column}` : column);
+        } else {
+          // by default use ASC order
+          updateSort(column);
+        }
       }}>
       <i className={`glyphicon glyphicon-menu-${dir}`}/>
     </a>
