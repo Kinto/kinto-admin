@@ -1,5 +1,6 @@
 import { expect } from "chai";
 import { push as updatePath } from "react-router-redux";
+import { takeLatest } from "redux-saga";
 import { take, fork, put, call } from "redux-saga/effects";
 import { v4 as uuid } from "uuid";
 
@@ -10,9 +11,11 @@ import {
   RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
   RECORD_BULK_CREATE_REQUEST,
+  ROUTE_LOAD_SUCCESS,
 } from "../../scripts/constants";
 import { notifyError, notifySuccess } from "../../scripts/actions/notifications";
 import * as sessionActions from "../../scripts/actions/session";
+import * as routeActions from "../../scripts/actions/route";
 import * as collectionActions from "../../scripts/actions/collection";
 import * as recordActions from "../../scripts/actions/record";
 import * as saga from "../../scripts/sagas/collection";
@@ -595,6 +598,20 @@ describe("collection sagas", () => {
         expect(watchListRecords.next(
           collectionActions.listRecords("a", "b", "c")).value)
           .eql(fork(saga.listRecords, "a", "b", "c"));
+      });
+    });
+
+    describe("watchResetListRecords()", () => {
+      it("should watch for the ROUTE_LOAD_SUCCESS action", () => {
+        const watchResetListRecords = saga.watchResetListRecords();
+
+        expect(watchResetListRecords.next().value)
+          .eql(take(ROUTE_LOAD_SUCCESS));
+
+        const routeLoadedAction = routeActions.routeLoadSuccess();
+
+        expect(watchResetListRecords.next(routeLoadedAction).value)
+          .eql(fork(saga.watchListRecords, routeLoadedAction));
       });
     });
 
