@@ -180,7 +180,7 @@ const uiSchema = {
   sort: {
     "ui:help": (
       <p>
-        The record field name the list should be sorted by default. Prefix the
+        The record field name the list should be sorted on by default. Prefix the
         field name with <code>-</code> to sort by descending order.
       </p>
     ),
