@@ -143,9 +143,9 @@ class Table extends Component {
       updatePath
     } = this.props;
 
-    if (busy || !recordsLoaded) {
+    if (busy) {
       return <Spinner />;
-    } else if (records.length === 0) {
+    } else if (recordsLoaded && records.length === 0) {
       return (
         <div className="alert alert-info">
           <p>This collection is empty.</p>
@@ -181,7 +181,7 @@ class Table extends Component {
             <th></th>
           </tr>
         </thead>
-        <tbody>{
+        <tbody className={!recordsLoaded ? "loading" : ""}>{
           records.map((record, index) => {
             return (
               <Row key={index}
