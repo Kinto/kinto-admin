@@ -41,8 +41,9 @@ h1 {
   padding-top: 8em;
 }
 
-.content-header .edit-coll-props i {
-  margin-right: .3em;
+.content .edit-coll-props .btn {
+  margin-right: 0;
+  margin-left: .3em;
 }
 
 .kinto-admin-title {
@@ -90,6 +91,14 @@ h1 {
   margin-right: .5em;
 }
 
+table.record-list {
+  margin-top: 1em;
+}
+
+table.record-list th {
+  background: rgba(0, 0, 0, .08);
+}
+
 table.record-list tr.unsynced {
   background: repeating-linear-gradient(
     45deg,
@@ -128,13 +137,24 @@ table.record-list td.status {
 }
 
 table.record-list td.actions {
-  min-width: 200px;
-  width: 200px;
+  min-width: 110px;
+  width: 110px;
   white-space: nowrap;
+  text-align: center;
 }
 
 table.record-list td.actions .btn-group {
   margin-left: .5em;
+}
+
+.sort-link {
+  float: right;
+  margin-top: .1em;
+  color: #444;
+}
+
+.sort-link.active {
+  color: #fff;
 }
 
 .notifications {

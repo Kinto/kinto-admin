@@ -48,7 +48,14 @@ function onAuthEnter(store: Object, {params}) {
 
 function onCollectionListEnter(store: Object, {params}) {
   const {bid, cid} = params;
-  store.dispatch(collectionActions.listRecords(bid, cid));
+  const {session, collection} = store.getState();
+  if (!session.authenticated) {
+    // We're not authneticated, skip requesting the list of records. This likely
+    // occurs when users refresh the page and then lose their session.
+    return;
+  }
+  const {sort} = collection;
+  store.dispatch(collectionActions.listRecords(bid, cid, sort));
 }
 
 export default function getRoutes(store: Object) {

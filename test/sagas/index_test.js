@@ -73,8 +73,8 @@ describe("root saga", () => {
       expect(registered).to.include(fork(bucketSagas.watchCollectionDelete));
     });
 
-    it("should register the watchCollectionRecords watcher", () => {
-      expect(registered).to.include(fork(collectionSagas.watchCollectionRecords));
+    it("should register the watchListRecords watcher", () => {
+      expect(registered).to.include(fork(collectionSagas.watchListRecords));
     });
 
     it("should register the watchRecordDelete watcher", () => {

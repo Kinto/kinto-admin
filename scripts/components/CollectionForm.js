@@ -92,6 +92,11 @@ const schema = {
       title: "UI schema",
       default: defaultUiSchema,
     },
+    sort: {
+      type: "string",
+      title: "Sort",
+      default: "-last_modified",
+    },
     displayFields: {
       type: "array",
       title: "Records list columns",
@@ -137,7 +142,7 @@ const schema = {
 };
 
 const uiSchema = {
-  "ui:order": ["name", "schema", "uiSchema", "displayFields", "attachment"],
+  "ui:order": ["name", "schema", "uiSchema", "sort", "displayFields", "attachment"],
   name: {
     "ui:help": "The name should only contain letters, numbers, dashes or underscores."
   },
@@ -171,6 +176,14 @@ const uiSchema = {
         how to leverage it to enhance how JSON schema forms are rendered in the admin.
       </p>
     )
+  },
+  sort: {
+    "ui:help": (
+      <p>
+        The record field name the list should be sorted by default. Prefix the
+        field name with <code>-</code> to sort by descending order.
+      </p>
+    ),
   },
   displayFields: {
     "ui:help": (

@@ -1,4 +1,5 @@
 import { push as updatePath } from "react-router-redux";
+import { takeLatest } from "redux-saga";
 import { call, take, fork, put } from "redux-saga/effects";
 import { v4 as uuid } from "uuid";
 import { createFormData } from "../utils";
@@ -35,13 +36,11 @@ export function* deleteAttachment(bid, cid, rid) {
   yield put(notifySuccess("Attachment deleted."));
 }
 
-export function* listRecords(bid, cid) {
-  // Wait for the collection data to be loaded before loading its records
-  yield take(ROUTE_LOAD_SUCCESS);
+export function* listRecords(bid, cid, sort="-last_modified") {
   try {
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
-    const {data} = yield call([coll, coll.listRecords]);
+    const {data} = yield call([coll, coll.listRecords], {sort});
     yield put(actions.listRecordsSuccess(data));
   } catch(error) {
     yield put(notifyError(error));
@@ -59,7 +58,6 @@ export function* createRecordWithAttachment(bid, cid, record) {
       method: "post",
       body: formData
     });
-    yield put(actions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess("Record added."));
   } catch(error) {
@@ -74,7 +72,6 @@ export function* createRecord(bid, cid, record) {
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
     yield call([coll, coll.createRecord], record);
-    yield put(actions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess("Record added."));
   } catch(error) {
@@ -93,7 +90,6 @@ export function* updateRecordWithAttachment(bid, cid, rid, record) {
       body: formData
     });
     yield put(resetRecord());
-    yield put(actions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess("Record updated."));
   } catch(error) {
@@ -111,7 +107,6 @@ export function* updateRecord(bid, cid, rid, record) {
     // not defined by the JSON schema, if any.
     yield call([coll, coll.updateRecord], {...record, id: rid}, {patch: true});
     yield put(resetRecord());
-    yield put(actions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess("Record updated."));
   } catch(error) {
@@ -126,7 +121,6 @@ export function* deleteRecord(bid, cid, rid) {
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
     yield call([coll, coll.deleteRecord], rid);
-    yield put(actions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess("Record deleted."));
   } catch(error) {
@@ -150,7 +144,6 @@ export function* bulkCreateRecords(bid, cid, records) {
       errorDetails = errors.map(err => err.error.message);
       throw new Error("Some records could not be created.");
     }
-    yield put(actions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess(`${published.length} records created.`));
   } catch(error) {
@@ -172,7 +165,6 @@ export function* bulkCreateRecordsWithAttachment(bid, cid, records) {
         body: formData
       });
     }
-    yield put(actions.listRecords(bid, cid));
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess(`${records.length} records created.`));
   } catch(error) {
@@ -191,11 +183,19 @@ function shouldProcessAttachment(serverInfo, records) {
   return capabilities.hasOwnProperty("attachments") && hasAttachment;
 }
 
-export function* watchCollectionRecords() {
+export function* watchListRecords() {
+  // XXX: we can optionnaly be passed a ROUTE_LOAD_SUCCESS action payload here,
+  // we may eventually want to extract a default sort value from the provided
+  // collection data.
   while(true) { // eslint-disable-line
-    const {bid, cid} = yield take(COLLECTION_RECORDS_REQUEST);
-    yield fork(listRecords, bid, cid);
+    const {bid, cid, sort} = yield take(COLLECTION_RECORDS_REQUEST);
+    yield fork(listRecords, bid, cid, sort);
   }
+}
+
+export function* watchResetListRecords() {
+  // On each route update, reset the records loader
+  yield* takeLatest(ROUTE_LOAD_SUCCESS, watchListRecords);
 }
 
 export function* watchRecordCreate(serverInfoAction) {

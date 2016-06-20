@@ -5,10 +5,11 @@ import {
   COLLECTION_BUSY,
   COLLECTION_RESET,
   COLLECTION_LOAD_SUCCESS,
+  COLLECTION_RECORDS_REQUEST,
   COLLECTION_RECORDS_SUCCESS,
 } from "../constants";
 
-
+const DEFAULT_SORT: string = "-last_modified";
 const INITIAL_STATE: Collection = {
   bucket: null,
   name: null,
@@ -22,6 +23,7 @@ const INITIAL_STATE: Collection = {
   displayFields: [],
   records: [],
   recordsLoaded: false,
+  sort: DEFAULT_SORT,
   permissions: {
     "read": [],
     "write": [],
@@ -53,6 +55,7 @@ export function collection(
         uiSchema,
         attachment,
         displayFields,
+        sort = DEFAULT_SORT,
       } = data;
       const {read=[], write=[]} = permissions;
       return {
@@ -63,8 +66,12 @@ export function collection(
         uiSchema,
         attachment,
         displayFields,
+        sort,
         permissions: {read, write}
       };
+    }
+    case COLLECTION_RECORDS_REQUEST: {
+      return {...state, sort: action.sort, recordsLoaded: false};
     }
     case COLLECTION_RECORDS_SUCCESS: {
       return {...state, records: action.records, recordsLoaded: true};

@@ -5,6 +5,7 @@ import {
   COLLECTION_BUSY,
   COLLECTION_RESET,
   COLLECTION_LOAD_SUCCESS,
+  COLLECTION_RECORDS_REQUEST,
   COLLECTION_RECORDS_SUCCESS,
 } from "../../scripts/constants";
 
@@ -20,6 +21,13 @@ describe("collection reducer", () => {
     const altered = collection(initial, {type: COLLECTION_BUSY, busy: true});
     expect(collection(altered, {type: COLLECTION_RESET}))
       .eql(initial);
+  });
+
+  it("COLLECTION_RECORDS_REQUEST", () => {
+    expect(collection(undefined, {
+      type: COLLECTION_RECORDS_REQUEST,
+      sort: "title",
+    })).to.have.property("sort").eql("title");
   });
 
   it("COLLECTION_LOAD_SUCCESS", () => {
@@ -43,6 +51,7 @@ describe("collection reducer", () => {
       displayFields: "displayFields",
       records: [],
       recordsLoaded: false,
+      sort: "-last_modified",
       busy: false,
       permissions: {write: [], read: []},
     });

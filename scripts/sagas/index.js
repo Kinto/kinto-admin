@@ -25,11 +25,12 @@ export default function* rootSaga() {
     fork(bucketSagas.watchCollectionUpdate),
     fork(bucketSagas.watchCollectionDelete),
     // collection/records
-    fork(collectionSagas.watchCollectionRecords),
+    fork(collectionSagas.watchListRecords),
+    fork(collectionSagas.watchResetListRecords),
     fork(collectionSagas.watchRecordDelete),
     fork(collectionSagas.watchBulkCreateRecords),
     fork(collectionSagas.watchAttachmentDelete),
-    // Ensure restarting session info dependent watchers when info are updated
+    // Ensure resetting context dependant watchers when context changes
     fork(function* () {
       yield* takeLatest(SESSION_SERVERINFO_SUCCESS,
                         collectionSagas.watchRecordCreate);

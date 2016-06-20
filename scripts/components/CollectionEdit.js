@@ -27,6 +27,7 @@ export default class CollectionEdit extends Component {
       uiSchema = {},
       attachment = {},
       displayFields = [],
+      sort,
       busy
     } = collection;
 
@@ -38,6 +39,7 @@ export default class CollectionEdit extends Component {
       name: collection.name,
       displayFields,
       attachment,
+      sort,
       // Stringify JSON fields so they're editable in a text field
       schema: JSON.stringify(schema, null, 2),
       uiSchema: JSON.stringify(uiSchema, null, 2),

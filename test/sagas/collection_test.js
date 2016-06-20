@@ -14,6 +14,7 @@ import {
 } from "../../scripts/constants";
 import { notifyError, notifySuccess } from "../../scripts/actions/notifications";
 import * as sessionActions from "../../scripts/actions/session";
+import * as routeActions from "../../scripts/actions/route";
 import * as collectionActions from "../../scripts/actions/collection";
 import * as recordActions from "../../scripts/actions/record";
 import * as saga from "../../scripts/sagas/collection";
@@ -39,22 +40,22 @@ describe("collection sagas", () => {
         collection = {listRecords() {}};
         const bucket = {collection() {return collection;}};
         setClient({bucket() {return bucket;}});
-        listRecords = saga.listRecords("bucket", "collection");
-      });
-
-      it("should wait for the ROUTE_LOAD_SUCCESS action", () => {
-        expect(listRecords.next().value)
-          .eql(take(ROUTE_LOAD_SUCCESS));
+        listRecords = saga.listRecords("bucket", "collection", "title");
       });
 
       it("should mark the current collection as busy", () => {
-        expect(listRecords.next().value)
+        expect(listRecords.next({
+          bucket: {data: {id: "bucket"}},
+          collection: {data: {id: "collection"}},
+        }).value)
           .eql(put(collectionActions.collectionBusy(true)));
       });
 
       it("should list collection records", () => {
         expect(listRecords.next().value)
-          .eql(call([collection, collection.listRecords]));
+          .eql(call([collection, collection.listRecords], {
+            sort: "title"
+          }));
       });
 
       it("should dispatch the listRecordsSuccess action", () => {
@@ -74,7 +75,10 @@ describe("collection sagas", () => {
       before(() => {
         listRecords = saga.listRecords("bucket", "collection");
         listRecords.next();
-        listRecords.next(); // take(ROUTE_LOAD_SUCCESS)
+        listRecords.next({
+          bucket: {data: {id: "bucket"}},
+          collection: {data: {id: "collection"}},
+        }); // take(ROUTE_LOAD_SUCCESS)
       });
 
       it("should dispatch an error notification action", () => {
@@ -108,11 +112,6 @@ describe("collection sagas", () => {
       it("should create the record", () => {
         expect(createRecord.next().value)
           .eql(call([collection, collection.createRecord], record));
-      });
-
-      it("should dispatch the listRecords action", () => {
-        expect(createRecord.next({data: record}).value)
-          .eql(put(collectionActions.listRecords("bucket", "collection")));
       });
 
       it("should update the route path", () => {
@@ -177,11 +176,6 @@ describe("collection sagas", () => {
           .eql(put(recordActions.resetRecord()));
       });
 
-      it("should dispatch the listRecords action", () => {
-        expect(updateRecord.next({data: record}).value)
-          .eql(put(collectionActions.listRecords("bucket", "collection")));
-      });
-
       it("should update the route path", () => {
         expect(updateRecord.next().value)
           .eql(put(updatePath("/buckets/bucket/collections/collection")));
@@ -237,11 +231,6 @@ describe("collection sagas", () => {
       it("should create the record", () => {
         expect(deleteRecord.next().value)
           .eql(call([collection, collection.deleteRecord], 1));
-      });
-
-      it("should dispatch the listRecords action", () => {
-        expect(deleteRecord.next({data: record}).value)
-          .eql(put(collectionActions.listRecords("bucket", "collection")));
       });
 
       it("should update the route path", () => {
@@ -313,11 +302,6 @@ describe("collection sagas", () => {
           }));
       });
 
-      it("should dispatch the listRecords action", () => {
-        expect(createRecordWithAttachment.next().value)
-          .eql(put(collectionActions.listRecords("bucket", "collection")));
-      });
-
       it("should update the route path", () => {
         expect(createRecordWithAttachment.next().value)
           .eql(put(updatePath("/buckets/bucket/collections/collection")));
@@ -386,11 +370,6 @@ describe("collection sagas", () => {
       it("should dispatch the resetRecord action", () => {
         expect(updateRecordWithAttachment.next({data: record}).value)
           .eql(put(recordActions.resetRecord()));
-      });
-
-      it("should dispatch the listRecords action", () => {
-        expect(updateRecordWithAttachment.next({data: record}).value)
-          .eql(put(collectionActions.listRecords("bucket", "collection")));
       });
 
       it("should update the route path", () => {
@@ -480,13 +459,8 @@ describe("collection sagas", () => {
         expect(v.CALL.args[1]).eql({aggregate: true});
       });
 
-      it("should dispatch the listRecords action", () => {
-        expect(bulkCreateRecords.next({published: records, errors: []}).value)
-          .eql(put(collectionActions.listRecords("bucket", "collection")));
-      });
-
       it("should update the route path", () => {
-        expect(bulkCreateRecords.next().value)
+        expect(bulkCreateRecords.next({published: records, errors: []}).value)
           .eql(put(updatePath("/buckets/bucket/collections/collection")));
       });
 
@@ -573,16 +547,11 @@ describe("collection sagas", () => {
           }));
       });
 
-      it("should dispatch the listRecords action", () => {
+      it("should update the route path", () => {
         expect(bulkCreateRecordsWithAttachment.next({
           published: recordsWithAttachment,
           errors: [],
         }).value)
-          .eql(put(collectionActions.listRecords("bucket", "collection")));
-      });
-
-      it("should update the route path", () => {
-        expect(bulkCreateRecordsWithAttachment.next().value)
           .eql(put(updatePath("/buckets/bucket/collections/collection")));
       });
 
@@ -618,16 +587,30 @@ describe("collection sagas", () => {
   });
 
   describe("Watchers", () => {
-    describe("watchCollectionRecords()", () => {
+    describe("watchListRecords()", () => {
       it("should watch for the listRecords action", () => {
-        const watchCollectionRecords = saga.watchCollectionRecords();
+        const watchListRecords = saga.watchListRecords();
 
-        expect(watchCollectionRecords.next().value)
+        expect(watchListRecords.next().value)
           .eql(take(COLLECTION_RECORDS_REQUEST));
 
-        expect(watchCollectionRecords.next(
-          collectionActions.listRecords("a", "b")).value)
-          .eql(fork(saga.listRecords, "a", "b"));
+        expect(watchListRecords.next(
+          collectionActions.listRecords("a", "b", "c")).value)
+          .eql(fork(saga.listRecords, "a", "b", "c"));
+      });
+    });
+
+    describe("watchResetListRecords()", () => {
+      it("should watch for the ROUTE_LOAD_SUCCESS action", () => {
+        const watchResetListRecords = saga.watchResetListRecords();
+
+        expect(watchResetListRecords.next().value)
+          .eql(take(ROUTE_LOAD_SUCCESS));
+
+        const routeLoadedAction = routeActions.routeLoadSuccess();
+
+        expect(watchResetListRecords.next(routeLoadedAction).value)
+          .eql(fork(saga.watchListRecords, routeLoadedAction));
       });
     });
 

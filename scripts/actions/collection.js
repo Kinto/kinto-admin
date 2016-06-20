@@ -40,8 +40,8 @@ export function listRecordsSuccess(records: RecordData[]): Action {
   return {type: COLLECTION_RECORDS_SUCCESS, records};
 }
 
-export function listRecords(bid: string, cid: string): Action {
-  return {type: COLLECTION_RECORDS_REQUEST, bid, cid};
+export function listRecords(bid: string, cid: string, sort: string): Action {
+  return {type: COLLECTION_RECORDS_REQUEST, bid, cid, sort};
 }
 
 export function createRecord(bid: string, cid: string, record: RecordData): Action {
