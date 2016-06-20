@@ -91,7 +91,7 @@ function ColumnSortLink(props) {
     active = true;
     direction = sort.startsWith("-") ? "down" : "up";
   } else {
-    // By default, expose a way to sort down on click.
+    // By default, expose links to sort ASC.
     active = false;
     direction = "up";
   }
