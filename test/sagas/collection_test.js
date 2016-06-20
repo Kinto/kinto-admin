@@ -1,6 +1,5 @@
 import { expect } from "chai";
 import { push as updatePath } from "react-router-redux";
-import { takeLatest } from "redux-saga";
 import { take, fork, put, call } from "redux-saga/effects";
 import { v4 as uuid } from "uuid";
 
