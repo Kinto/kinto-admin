@@ -61,7 +61,8 @@ class Row extends Component {
 function SortLink(props) {
   const {dir, active, column, updateSort} = props;
   return (
-    <a href="#" className={`sort-link ${active ? "label label-default" : ""}`}
+    <a href="#"
+      className={`sort-link ${active ? "active label label-default" : ""}`}
       onClick={(event) => {
         event.preventDefault();
         // Perform the opposite action from current state to make the link act

@@ -41,8 +41,9 @@ h1 {
   padding-top: 8em;
 }
 
-.content-header .edit-coll-props i {
-  margin-right: .3em;
+.content .edit-coll-props .btn {
+  margin-right: 0;
+  margin-left: .3em;
 }
 
 .kinto-admin-title {
@@ -94,7 +95,8 @@ table.record-list {
   margin-top: 1em;
 }
 
-table.record-list.table-bordered {
+table.record-list th {
+  background: rgba(0, 0, 0, .08);
 }
 
 table.record-list tr.unsynced {
@@ -147,6 +149,12 @@ table.record-list td.actions .btn-group {
 
 .sort-link {
   float: right;
+  margin-top: .1em;
+  color: #444;
+}
+
+.sort-link.active {
+  color: #fff;
 }
 
 .notifications {
