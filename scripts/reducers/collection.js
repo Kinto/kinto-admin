@@ -7,7 +7,6 @@ import {
   COLLECTION_LOAD_SUCCESS,
   COLLECTION_RECORDS_REQUEST,
   COLLECTION_RECORDS_SUCCESS,
-  COLLECTION_UPDATE_SORT,
 } from "../constants";
 
 const DEFAULT_SORT: string = "-last_modified";
@@ -76,9 +75,6 @@ export function collection(
     }
     case COLLECTION_RECORDS_SUCCESS: {
       return {...state, records: action.records, recordsLoaded: true};
-    }
-    case COLLECTION_UPDATE_SORT: {
-      return {...state, sort: action.sort};
     }
     default: {
       return state;

@@ -25,8 +25,8 @@ export default function* rootSaga() {
     fork(bucketSagas.watchCollectionUpdate),
     fork(bucketSagas.watchCollectionDelete),
     // collection/records
-    fork(collectionSagas.watchCollectionRecords),
-    fork(collectionSagas.watchSortRecords),
+    fork(collectionSagas.watchListRecords),
+    fork(collectionSagas.watchResetListRecords),
     fork(collectionSagas.watchRecordDelete),
     fork(collectionSagas.watchBulkCreateRecords),
     fork(collectionSagas.watchAttachmentDelete),

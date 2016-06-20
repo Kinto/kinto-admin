@@ -1,4 +1,5 @@
 import { push as updatePath } from "react-router-redux";
+import { takeLatest } from "redux-saga";
 import { call, take, fork, put } from "redux-saga/effects";
 import { v4 as uuid } from "uuid";
 import { createFormData } from "../utils";
@@ -7,7 +8,6 @@ import {
   ATTACHMENT_DELETE_REQUEST,
   SESSION_SERVERINFO_SUCCESS,
   COLLECTION_RECORDS_REQUEST,
-  COLLECTION_UPDATE_SORT,
   RECORD_CREATE_REQUEST,
   RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
@@ -37,21 +37,6 @@ export function* deleteAttachment(bid, cid, rid) {
 }
 
 export function* listRecords(bid, cid, sort="-last_modified") {
-  // Wait for the collection data to be loaded before loading its records
-  yield take(ROUTE_LOAD_SUCCESS);
-  try {
-    const coll = getCollection(bid, cid);
-    yield put(actions.collectionBusy(true));
-    const {data} = yield call([coll, coll.listRecords], {sort});
-    yield put(actions.listRecordsSuccess(data));
-  } catch(error) {
-    yield put(notifyError(error));
-  } finally {
-    yield put(actions.collectionBusy(false));
-  }
-}
-
-export function* sortRecords(bid, cid, sort) {
   try {
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
@@ -198,18 +183,19 @@ function shouldProcessAttachment(serverInfo, records) {
   return capabilities.hasOwnProperty("attachments") && hasAttachment;
 }
 
-export function* watchCollectionRecords() {
+export function* watchListRecords() {
+  // XXX: we can optionnaly be passed a ROUTE_LOAD_SUCCESS action payload here,
+  // we may eventually want to extract a default sort value from the provided
+  // collection data.
   while(true) { // eslint-disable-line
     const {bid, cid, sort} = yield take(COLLECTION_RECORDS_REQUEST);
     yield fork(listRecords, bid, cid, sort);
   }
 }
 
-export function* watchSortRecords() {
-  while(true) { // eslint-disable-line
-    const {bid, cid, sort} = yield take(COLLECTION_UPDATE_SORT);
-    yield fork(sortRecords, bid, cid, sort);
-  }
+export function* watchResetListRecords() {
+  // On each route update, reset the records loader
+  yield* takeLatest(ROUTE_LOAD_SUCCESS, watchListRecords);
 }
 
 export function* watchRecordCreate(serverInfoAction) {

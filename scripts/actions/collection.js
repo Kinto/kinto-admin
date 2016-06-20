@@ -14,7 +14,6 @@ import {
   COLLECTION_LOAD_SUCCESS,
   COLLECTION_RECORDS_REQUEST,
   COLLECTION_RECORDS_SUCCESS,
-  COLLECTION_UPDATE_SORT,
   RECORD_CREATE_REQUEST,
   RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
@@ -63,8 +62,4 @@ export function deleteAttachment(bid: string, cid: string, rid: string): Action 
 
 export function bulkCreateRecords(bid: string, cid: string, records: RecordData[]): Action {
   return {type: RECORD_BULK_CREATE_REQUEST, bid, cid, records};
-}
-
-export function updateSort(bid: string, cid: string, sort: string) {
-  return {type: COLLECTION_UPDATE_SORT, bid, cid, sort};
 }

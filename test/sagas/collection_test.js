@@ -10,7 +10,6 @@ import {
   RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
   RECORD_BULK_CREATE_REQUEST,
-  ROUTE_LOAD_SUCCESS,
 } from "../../scripts/constants";
 import { notifyError, notifySuccess } from "../../scripts/actions/notifications";
 import * as sessionActions from "../../scripts/actions/session";
@@ -40,11 +39,6 @@ describe("collection sagas", () => {
         const bucket = {collection() {return collection;}};
         setClient({bucket() {return bucket;}});
         listRecords = saga.listRecords("bucket", "collection", "title");
-      });
-
-      it("should wait for the ROUTE_LOAD_SUCCESS action", () => {
-        expect(listRecords.next().value)
-          .eql(take(ROUTE_LOAD_SUCCESS));
       });
 
       it("should mark the current collection as busy", () => {
@@ -591,14 +585,14 @@ describe("collection sagas", () => {
   });
 
   describe("Watchers", () => {
-    describe("watchCollectionRecords()", () => {
+    describe("watchListRecords()", () => {
       it("should watch for the listRecords action", () => {
-        const watchCollectionRecords = saga.watchCollectionRecords();
+        const watchListRecords = saga.watchListRecords();
 
-        expect(watchCollectionRecords.next().value)
+        expect(watchListRecords.next().value)
           .eql(take(COLLECTION_RECORDS_REQUEST));
 
-        expect(watchCollectionRecords.next(
+        expect(watchListRecords.next(
           collectionActions.listRecords("a", "b", "c")).value)
           .eql(fork(saga.listRecords, "a", "b", "c"));
       });
