@@ -114,13 +114,18 @@ class Table extends Component {
     if (displayField === "__json") {
       return "JSON";
     }
-    if (schema &&
-        schema.properties &&
-        displayField in schema.properties &&
+    if (this.isSchemaProperty(displayField) &&
         "title" in schema.properties[displayField]) {
       return schema.properties[displayField].title;
     }
     return displayField;
+  }
+
+  isSchemaProperty(displayField) {
+    const {schema} = this.props;
+    return schema &&
+           schema.properties &&
+           displayField in schema.properties;
   }
 
   render() {
@@ -157,10 +162,11 @@ class Table extends Component {
                 return (
                   <th key={index}>
                     {this.getFieldTitle(displayField)}
-                    <ColumnSortLink
-                      sort={sort}
-                      column={displayField}
-                      updateSort={updateSort} />
+                    {this.isSchemaProperty(displayField) ?
+                      <ColumnSortLink
+                        sort={sort}
+                        column={displayField}
+                        updateSort={updateSort} /> : null}
                   </th>
                 );
               })
