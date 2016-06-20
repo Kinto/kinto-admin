@@ -59,7 +59,7 @@ class Row extends Component {
 }
 
 function SortLink(props) {
-  const {dir, active, column, listRecords} = props;
+  const {dir, active, column, updateSort} = props;
   return (
     <a href="#"
       className={`sort-link ${active ? "active label label-default" : ""}`}
@@ -67,7 +67,7 @@ function SortLink(props) {
         event.preventDefault();
         // Perform the opposite action from current state to make the link act
         // as a toggler.
-        listRecords(dir === "up" ? `-${column}` : column);
+        updateSort(dir === "up" ? `-${column}` : column);
       }}>
       <i className={`glyphicon glyphicon-menu-${dir}`}/>
     </a>
@@ -75,7 +75,7 @@ function SortLink(props) {
 }
 
 function ColumnSortLink(props) {
-  const {column, sort, listRecords} = props;
+  const {column, sort, updateSort} = props;
   if (!sort || column === "__json") {
     return null;
   }
@@ -95,7 +95,7 @@ function ColumnSortLink(props) {
       active={active}
       dir={direction}
       column={column}
-      listRecords={listRecords} />
+      updateSort={updateSort} />
   );
 }
 
@@ -129,7 +129,7 @@ class Table extends Component {
       schema,
       displayFields,
       deleteRecord,
-      listRecords,
+      updateSort,
       updatePath
     } = this.props;
 
@@ -155,7 +155,7 @@ class Table extends Component {
                     <ColumnSortLink
                       sort={sort}
                       column={displayField}
-                      listRecords={listRecords} />
+                      updateSort={updateSort} />
                   </th>
                 );
               })
@@ -165,7 +165,7 @@ class Table extends Component {
               <ColumnSortLink
                 sort={sort}
                 column="last_modified"
-                listRecords={listRecords} />
+                updateSort={updateSort} />
             </th>
             <th></th>
           </tr>
@@ -217,7 +217,7 @@ function ListActions(props) {
 }
 
 export default class CollectionList extends Component {
-  listRecords = (sort) => {
+  updateSort = (sort) => {
     const {params, listRecords} = this.props;
     const {bid, cid} = params;
     listRecords(bid, cid, sort);
@@ -264,7 +264,7 @@ export default class CollectionList extends Component {
           schema={schema}
           displayFields={displayFields}
           deleteRecord={deleteRecord}
-          listRecords={this.listRecords}
+          updateSort={this.updateSort}
           updatePath={updatePath} />
         {listActions}
       </div>
