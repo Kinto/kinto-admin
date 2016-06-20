@@ -1,4 +1,5 @@
 import { push as updatePath } from "react-router-redux";
+import { takeEvery } from "redux-saga";
 import { call, take, fork, put } from "redux-saga/effects";
 import { v4 as uuid } from "uuid";
 import { createFormData } from "../utils";
@@ -26,15 +27,22 @@ function getCollection(bid, cid) {
   return getBucket(bid).collection(cid);
 }
 
-export function* deleteAttachment(bid, cid, rid) {
-  yield call(requestAttachment, bid, cid, rid, {
-    method: "delete",
-  });
-  yield put(updatePath(`/buckets/${bid}/collections/${cid}/edit/${rid}`));
-  yield put(notifySuccess("Attachment deleted."));
+export function* deleteAttachment(action) {
+  const {bid, cid, rid} = action;
+  try {
+    yield put(actions.collectionBusy(true));
+    yield call(requestAttachment, bid, cid, rid, {method: "delete"});
+    yield put(updatePath(`/buckets/${bid}/collections/${cid}/edit/${rid}`));
+    yield put(notifySuccess("Attachment deleted."));
+  } catch(error) {
+    yield put(notifyError(error));
+  } finally {
+    yield put(actions.collectionBusy(false));
+  }
 }
 
-export function* listRecords(bid, cid, sort="-last_modified") {
+export function* listRecords(action) {
+  const {bid, cid, sort} = action;
   try {
     const coll = getCollection(bid, cid);
     const {data} = yield call([coll, coll.listRecords], {sort});
@@ -111,7 +119,8 @@ export function* updateRecord(bid, cid, rid, record) {
   }
 }
 
-export function* deleteRecord(bid, cid, rid) {
+export function* deleteRecord(action) {
+  const {bid, cid, rid} = action;
   try {
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
@@ -179,10 +188,7 @@ function shouldProcessAttachment(serverInfo, records) {
 }
 
 export function* watchListRecords() {
-  while(true) { // eslint-disable-line
-    const {bid, cid, sort} = yield take(COLLECTION_RECORDS_REQUEST);
-    yield fork(listRecords, bid, cid, sort);
-  }
+  yield* takeEvery(COLLECTION_RECORDS_REQUEST, listRecords);
 }
 
 export function* watchRecordCreate(serverInfoAction) {
@@ -214,17 +220,11 @@ export function* watchRecordUpdate(serverInfoAction) {
 }
 
 export function* watchAttachmentDelete() {
-  while(true) { // eslint-disable-line
-    const {bid, cid, rid} = yield take(ATTACHMENT_DELETE_REQUEST);
-    yield fork(deleteAttachment, bid, cid, rid);
-  }
+  yield* takeEvery(ATTACHMENT_DELETE_REQUEST, deleteAttachment);
 }
 
 export function* watchRecordDelete() {
-  while(true) { // eslint-disable-line
-    const {bid, cid, rid} = yield take(RECORD_DELETE_REQUEST);
-    yield fork(deleteRecord, bid, cid, rid);
-  }
+  yield* takeEvery(RECORD_DELETE_REQUEST, deleteRecord);
 }
 
 export function* watchBulkCreateRecords() {
