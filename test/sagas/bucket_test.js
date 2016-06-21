@@ -23,6 +23,7 @@ const collectionData = {
   schema: {},
   uiSchema: {},
   attachment: {enabled: true, required: false},
+  sort: "-title",
   displayFields: [],
 };
 

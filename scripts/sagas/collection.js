@@ -1,5 +1,4 @@
 import { push as updatePath } from "react-router-redux";
-import { takeLatest } from "redux-saga";
 import { call, take, fork, put } from "redux-saga/effects";
 import { v4 as uuid } from "uuid";
 import { createFormData } from "../utils";
@@ -12,7 +11,6 @@ import {
   RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
   RECORD_BULK_CREATE_REQUEST,
-  ROUTE_LOAD_SUCCESS,
 } from "../constants";
 import { getClient, requestAttachment } from "../client";
 import { notifySuccess, notifyError } from "../actions/notifications";
@@ -39,13 +37,10 @@ export function* deleteAttachment(bid, cid, rid) {
 export function* listRecords(bid, cid, sort="-last_modified") {
   try {
     const coll = getCollection(bid, cid);
-    yield put(actions.collectionBusy(true));
     const {data} = yield call([coll, coll.listRecords], {sort});
     yield put(actions.listRecordsSuccess(data));
   } catch(error) {
     yield put(notifyError(error));
-  } finally {
-    yield put(actions.collectionBusy(false));
   }
 }
 
@@ -184,18 +179,10 @@ function shouldProcessAttachment(serverInfo, records) {
 }
 
 export function* watchListRecords() {
-  // XXX: we can optionnaly be passed a ROUTE_LOAD_SUCCESS action payload here,
-  // we may eventually want to extract a default sort value from the provided
-  // collection data.
   while(true) { // eslint-disable-line
     const {bid, cid, sort} = yield take(COLLECTION_RECORDS_REQUEST);
     yield fork(listRecords, bid, cid, sort);
   }
-}
-
-export function* watchResetListRecords() {
-  // On each route update, reset the records loader
-  yield* takeLatest(ROUTE_LOAD_SUCCESS, watchListRecords);
 }
 
 export function* watchRecordCreate(serverInfoAction) {

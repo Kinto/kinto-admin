@@ -99,6 +99,11 @@ table.record-list th {
   background: rgba(0, 0, 0, .08);
 }
 
+table.record-list tbody.loading td {
+  background: rgba(220, 220, 220, .15);
+  color: #777;
+}
+
 table.record-list tr.unsynced {
   background: repeating-linear-gradient(
     45deg,

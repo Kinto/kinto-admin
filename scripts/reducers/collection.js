@@ -60,6 +60,7 @@ export function collection(
       const {read=[], write=[]} = permissions;
       return {
         ...state,
+        busy: false,
         name: id,
         bucket,
         schema,

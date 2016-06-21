@@ -71,10 +71,17 @@ export function* deleteBucket(bid) {
 
 export function* createCollection(bid, collectionData) {
   try {
-    const {name, schema, uiSchema, attachment, displayFields} = collectionData;
+    const {
+      name,
+      schema,
+      uiSchema,
+      attachment,
+      sort,
+      displayFields,
+    } = collectionData;
     const bucket = getBucket(bid);
     yield call([bucket, bucket.createCollection], name, {
-      data: {uiSchema, schema, attachment, displayFields},
+      data: {uiSchema, schema, attachment, sort, displayFields},
     });
     yield put(updatePath(`/buckets/${bid}/collections/${name}`));
     yield put(notifySuccess("Collection created."));

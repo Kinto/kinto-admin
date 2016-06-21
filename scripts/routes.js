@@ -75,7 +75,8 @@ export default function getRoutes(store: Object) {
         components={{...common, content: CollectionEditPage}} />
       <Route path="/buckets/:bid/collections/:cid"
         components={{...common, content: CollectionListPage}}
-        onEnter={onCollectionListEnter.bind(null, store)}  />
+        onEnter={onCollectionListEnter.bind(null, store)}
+        onChange={onCollectionListEnter.bind(null, store)} />
       <Route path="/buckets/:bid/collections/:cid/add"
         components={{...common, content: AddFormPage}} />
       <Route path="/buckets/:bid/collections/:cid/edit/:rid"
