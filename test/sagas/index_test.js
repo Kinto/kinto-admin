@@ -12,10 +12,11 @@ import configureStore from "../../scripts/store/configureStore";
 
 
 describe("root saga", () => {
-  let sandbox;
+  let sandbox, getState;
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
+    getState = () => {};
   });
 
   afterEach(() => {
@@ -26,7 +27,7 @@ describe("root saga", () => {
     let registered;
 
     beforeEach(() => {
-      registered = rootSaga().next().value;
+      registered = rootSaga(getState).next().value;
     });
 
     it("should register the watchRecordDelete watcher", () => {
@@ -77,6 +78,10 @@ describe("root saga", () => {
       expect(registered).to.include(fork(collectionSagas.watchListRecords));
     });
 
+    it("should register the watchRecordUpdate watcher", () => {
+      expect(registered).to.include(fork(collectionSagas.watchRecordUpdate, getState));
+    });
+
     it("should register the watchRecordDelete watcher", () => {
       expect(registered).to.include(fork(collectionSagas.watchRecordDelete));
     });
@@ -99,16 +104,6 @@ describe("root saga", () => {
       store.dispatch(action);
 
       sinon.assert.calledWithExactly(watchRecordCreate, action);
-    });
-
-    it("should reset the watchRecordUpdate watcher on new session info", () => {
-      const watchRecordUpdate = sandbox.stub(collectionSagas, "watchRecordUpdate");
-      const store = configureStore();
-      const action = {type: SESSION_SERVERINFO_SUCCESS};
-
-      store.dispatch(action);
-
-      sinon.assert.calledWithExactly(watchRecordUpdate, action);
     });
   });
 });

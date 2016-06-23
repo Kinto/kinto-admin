@@ -1,4 +1,5 @@
 import { push as updatePath } from "react-router-redux";
+import { takeEvery } from "redux-saga";
 import { call, take, fork, put } from "redux-saga/effects";
 import { v4 as uuid } from "uuid";
 import { createFormData } from "../utils";
@@ -18,6 +19,13 @@ import { resetRecord } from "../actions/record";
 import * as actions from "../actions/collection";
 
 
+function shouldProcessAttachment(serverInfo, records) {
+  const {capabilities={}} = serverInfo;
+  records = Array.isArray(records) ? records : [records];
+  const hasAttachment = records.some(r => !!r.__attachment__);
+  return capabilities.hasOwnProperty("attachments") && hasAttachment;
+}
+
 function getBucket(bid) {
   return getClient().bucket(bid);
 }
@@ -26,15 +34,22 @@ function getCollection(bid, cid) {
   return getBucket(bid).collection(cid);
 }
 
-export function* deleteAttachment(bid, cid, rid) {
-  yield call(requestAttachment, bid, cid, rid, {
-    method: "delete",
-  });
-  yield put(updatePath(`/buckets/${bid}/collections/${cid}/edit/${rid}`));
-  yield put(notifySuccess("Attachment deleted."));
+export function* deleteAttachment(action) {
+  const {bid, cid, rid} = action;
+  try {
+    yield put(actions.collectionBusy(true));
+    yield call(requestAttachment, bid, cid, rid, {method: "delete"});
+    yield put(updatePath(`/buckets/${bid}/collections/${cid}/edit/${rid}`));
+    yield put(notifySuccess("Attachment deleted."));
+  } catch(error) {
+    yield put(notifyError(error));
+  } finally {
+    yield put(actions.collectionBusy(false));
+  }
 }
 
-export function* listRecords(bid, cid, sort="-last_modified") {
+export function* listRecords(action) {
+  const {bid, cid, sort} = action;
   try {
     const coll = getCollection(bid, cid);
     const {data} = yield call([coll, coll.listRecords], {sort});
@@ -76,31 +91,23 @@ export function* createRecord(bid, cid, record) {
   }
 }
 
-export function* updateRecordWithAttachment(bid, cid, rid, record) {
-  try {
-    yield put(actions.collectionBusy(true));
-    const formData = yield call(createFormData, record);
-    yield call(requestAttachment, bid, cid, rid, {
-      method: "post",
-      body: formData
-    });
-    yield put(resetRecord());
-    yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
-    yield put(notifySuccess("Record updated."));
-  } catch(error) {
-    yield put(notifyError(error));
-  } finally {
-    yield put(actions.collectionBusy(false));
-  }
-}
-
-export function* updateRecord(bid, cid, rid, record) {
+export function* updateRecord(getState, action) {
+  const {session} = getState();
+  const {bid, cid, rid, record} = action;
   try {
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
-    // Note: We update using PATCH to keep existing record properties possibly
-    // not defined by the JSON schema, if any.
-    yield call([coll, coll.updateRecord], {...record, id: rid}, {patch: true});
+    if (shouldProcessAttachment(session.serverInfo, record)) {
+      const formData = yield call(createFormData, record);
+      yield call(requestAttachment, bid, cid, rid, {
+        method: "post",
+        body: formData
+      });
+    } else {
+      // Note: We update using PATCH to keep existing record properties possibly
+      // not defined by the JSON schema, if any.
+      yield call([coll, coll.updateRecord], {...record, id: rid}, {patch: true});
+    }
     yield put(resetRecord());
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess("Record updated."));
@@ -111,7 +118,8 @@ export function* updateRecord(bid, cid, rid, record) {
   }
 }
 
-export function* deleteRecord(bid, cid, rid) {
+export function* deleteRecord(action) {
+  const {bid, cid, rid} = action;
   try {
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
@@ -171,18 +179,8 @@ export function* bulkCreateRecordsWithAttachment(bid, cid, records) {
 
 // Watchers
 
-function shouldProcessAttachment(serverInfo, records) {
-  const {capabilities={}} = serverInfo;
-  records = Array.isArray(records) ? records : [records];
-  const hasAttachment = records.some(r => !!r.__attachment__);
-  return capabilities.hasOwnProperty("attachments") && hasAttachment;
-}
-
 export function* watchListRecords() {
-  while(true) { // eslint-disable-line
-    const {bid, cid, sort} = yield take(COLLECTION_RECORDS_REQUEST);
-    yield fork(listRecords, bid, cid, sort);
-  }
+  yield* takeEvery(COLLECTION_RECORDS_REQUEST, listRecords);
 }
 
 export function* watchRecordCreate(serverInfoAction) {
@@ -199,32 +197,16 @@ export function* watchRecordCreate(serverInfoAction) {
   }
 }
 
-export function* watchRecordUpdate(serverInfoAction) {
-  // Note: serverInfoAction is provided by takeLatest in the rootSaga
-  const {serverInfo} = serverInfoAction;
-  while(true) { // eslint-disable-line
-    const {bid, cid, rid, record} = yield take(RECORD_UPDATE_REQUEST);
-    // Check if we have to deal with attachments
-    if (shouldProcessAttachment(serverInfo, record)) {
-      yield fork(updateRecordWithAttachment, bid, cid, rid, record);
-    } else {
-      yield fork(updateRecord, bid, cid, rid, record);
-    }
-  }
+export function* watchRecordUpdate(getState) {
+  yield* takeEvery(RECORD_UPDATE_REQUEST, updateRecord, getState);
 }
 
 export function* watchAttachmentDelete() {
-  while(true) { // eslint-disable-line
-    const {bid, cid, rid} = yield take(ATTACHMENT_DELETE_REQUEST);
-    yield fork(deleteAttachment, bid, cid, rid);
-  }
+  yield* takeEvery(ATTACHMENT_DELETE_REQUEST, deleteAttachment);
 }
 
 export function* watchRecordDelete() {
-  while(true) { // eslint-disable-line
-    const {bid, cid, rid} = yield take(RECORD_DELETE_REQUEST);
-    yield fork(deleteRecord, bid, cid, rid);
-  }
+  yield* takeEvery(RECORD_DELETE_REQUEST, deleteRecord);
 }
 
 export function* watchBulkCreateRecords() {

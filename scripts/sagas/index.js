@@ -8,7 +8,7 @@ import * as bucketSagas from "./bucket";
 import * as collectionSagas from "./collection";
 
 
-export default function* rootSaga() {
+export default function* rootSaga(getState) {
   yield [
     // session
     fork(sessionSagas.watchSessionSetup),
@@ -29,14 +29,11 @@ export default function* rootSaga() {
     fork(collectionSagas.watchRecordDelete),
     fork(collectionSagas.watchBulkCreateRecords),
     fork(collectionSagas.watchAttachmentDelete),
+    fork(collectionSagas.watchRecordUpdate, getState),
     // Ensure resetting context dependant watchers when context changes
     fork(function* () {
       yield* takeLatest(SESSION_SERVERINFO_SUCCESS,
                         collectionSagas.watchRecordCreate);
-    }),
-    fork(function* () {
-      yield* takeLatest(SESSION_SERVERINFO_SUCCESS,
-                        collectionSagas.watchRecordUpdate);
     }),
   ];
 }
