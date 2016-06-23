@@ -52,10 +52,6 @@ describe("root saga", () => {
       expect(registered).to.include(fork(routeSagas.watchRouteUpdated));
     });
 
-    it("should register the watchBucketDelete watcher", () => {
-      expect(registered).to.include(fork(bucketSagas.watchBucketDelete));
-    });
-
     it("should register the watchCollectionCreate watcher", () => {
       expect(registered).to.include(fork(bucketSagas.watchCollectionCreate));
     });
@@ -110,6 +106,17 @@ describe("root saga", () => {
 
       expect(updateBucket.firstCall.args[0].name).eql("bound getState");
       expect(updateBucket.firstCall.args[1]).eql(action);
+    });
+
+    it("should watch for the deleteBucket action and forward it getState and action", () => {
+      const deleteBucket = sandbox.stub(bucketSagas, "deleteBucket");
+      const store = configureStore();
+      const action = bucketActions.deleteBucket();
+
+      store.dispatch(action);
+
+      expect(deleteBucket.firstCall.args[0].name).eql("bound getState");
+      expect(deleteBucket.firstCall.args[1]).eql(action);
     });
   });
 

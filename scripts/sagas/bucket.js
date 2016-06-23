@@ -54,7 +54,8 @@ export function* updateBucket(getState, action) {
   }
 }
 
-export function* deleteBucket(bid) {
+export function* deleteBucket(getState, action) {
+  const { bid } = action;
   try {
     const client = getClient();
     yield put(sessionBusy(true));
@@ -116,13 +117,6 @@ export function* deleteCollection(bid, cid) {
 }
 
 // Watchers
-
-export function* watchBucketDelete() {
-  while(true) { // eslint-disable-line
-    const {bid} = yield take(BUCKET_DELETE_REQUEST);
-    yield fork(deleteBucket, bid);
-  }
-}
 
 export function* watchCollectionCreate() {
   while(true) { // eslint-disable-line

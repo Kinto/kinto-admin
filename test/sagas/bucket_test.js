@@ -160,7 +160,8 @@ describe("bucket sagas", () => {
 
       before(() => {
         client = setClient({deleteBucket() {}});
-        deleteBucket = saga.deleteBucket("bucket");
+        const action = actions.deleteBucket("bucket");
+        deleteBucket = saga.deleteBucket(() => {}, action);
       });
 
       it("should mark the current session as busy", () => {
@@ -198,7 +199,8 @@ describe("bucket sagas", () => {
       let deleteBucket;
 
       before(() => {
-        deleteBucket = saga.deleteBucket("bucket");
+        const action = actions.deleteBucket("bucket");
+        deleteBucket = saga.deleteBucket(() => {}, action);
         deleteBucket.next();
       });
 
@@ -365,19 +367,6 @@ describe("bucket sagas", () => {
   });
 
   describe("Watchers", () => {
-
-    describe("watchBucketDelete()", () => {
-      it("should watch for the deleteBucket action", () => {
-        const watchBucketDelete = saga.watchBucketDelete();
-
-        expect(watchBucketDelete.next().value)
-          .eql(take(BUCKET_DELETE_REQUEST));
-
-        expect(watchBucketDelete.next(actions.deleteBucket("a")).value)
-          .eql(fork(saga.deleteBucket, "a"));
-      });
-    });
-
     describe("watchCollectionCreate()", () => {
       it("should watch for the createCollection action", () => {
         const watchCollectionCreate = saga.watchCollectionCreate();

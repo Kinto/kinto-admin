@@ -4,7 +4,8 @@ import { fork } from "redux-saga/effects";
 import {
   SESSION_SERVERINFO_SUCCESS,
   BUCKET_CREATE_REQUEST,
-  BUCKET_UPDATE_REQUEST
+  BUCKET_UPDATE_REQUEST,
+  BUCKET_DELETE_REQUEST,
 } from "../constants";
 import * as sessionSagas from "./session";
 import * as routeSagas from "./route";
@@ -28,7 +29,7 @@ export default function* rootSaga(getState) {
     // fork(bucketSagas.watchBucketCreate, getState),
     takeEvery(BUCKET_CREATE_REQUEST, bucketSagas.createBucket, getState),
     takeEvery(BUCKET_UPDATE_REQUEST, bucketSagas.updateBucket, getState),
-    fork(bucketSagas.watchBucketDelete),
+    takeEvery(BUCKET_DELETE_REQUEST, bucketSagas.deleteBucket, getState),
     fork(bucketSagas.watchCollectionCreate),
     fork(bucketSagas.watchCollectionUpdate),
     fork(bucketSagas.watchCollectionDelete),
