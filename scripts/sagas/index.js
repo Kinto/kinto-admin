@@ -29,7 +29,6 @@ export default function* rootSaga(getState) {
     // route
     fork(routeSagas.watchRouteUpdated),
     // bucket/collections
-    // fork(bucketSagas.watchBucketCreate, getState),
     takeEvery(BUCKET_CREATE_REQUEST, bucketSagas.createBucket, getState),
     takeEvery(BUCKET_UPDATE_REQUEST, bucketSagas.updateBucket, getState),
     takeEvery(BUCKET_DELETE_REQUEST, bucketSagas.deleteBucket, getState),
