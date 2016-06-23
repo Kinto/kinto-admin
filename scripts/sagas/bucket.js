@@ -1,9 +1,6 @@
 import { push as updatePath } from "react-router-redux";
-import { call, take, fork, put } from "redux-saga/effects";
+import { call, put } from "redux-saga/effects";
 
-import {
-  COLLECTION_DELETE_REQUEST,
-} from "../constants";
 import { getClient } from "../client";
 import { notifySuccess, notifyError } from "../actions/notifications";
 import { sessionBusy } from "../actions/session";
@@ -103,7 +100,8 @@ export function* updateCollection(getState, action) {
   }
 }
 
-export function* deleteCollection(bid, cid) {
+export function* deleteCollection(getState, action) {
+  const {bid, cid} = action;
   try {
     const bucket = getBucket(bid);
     yield call([bucket, bucket.deleteCollection], cid);
@@ -112,14 +110,5 @@ export function* deleteCollection(bid, cid) {
     yield call(listBuckets);
   } catch(error) {
     yield put(notifyError(error));
-  }
-}
-
-// Watchers
-
-export function* watchCollectionDelete() {
-  while(true) { // eslint-disable-line
-    const {bid, cid} = yield take(COLLECTION_DELETE_REQUEST);
-    yield fork(deleteCollection, bid, cid);
   }
 }

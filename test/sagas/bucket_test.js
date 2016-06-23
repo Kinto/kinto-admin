@@ -1,10 +1,7 @@
 import { expect } from "chai";
 import { push as updatePath } from "react-router-redux";
-import { take, fork, put, call } from "redux-saga/effects";
+import { put, call } from "redux-saga/effects";
 
-import {
-  COLLECTION_DELETE_REQUEST,
-} from "../../scripts/constants";
 import { notifyError, notifySuccess } from "../../scripts/actions/notifications";
 import * as sessionActions from "../../scripts/actions/session";
 import * as collectionActions from "../../scripts/actions/collection";
@@ -327,7 +324,8 @@ describe("bucket sagas", () => {
       before(() => {
         bucket = {deleteCollection() {}};
         setClient({bucket() {return bucket;}});
-        deleteCollection = saga.deleteCollection("bucket", "collection");
+        const action = actions.deleteCollection("bucket", "collection");
+        deleteCollection = saga.deleteCollection(() => {}, action);
       });
 
       it("should delete the collection", () => {
@@ -355,28 +353,14 @@ describe("bucket sagas", () => {
       let deleteCollection;
 
       before(() => {
-        deleteCollection = saga.deleteCollection("bucket", "collection");
+        const action = actions.deleteCollection("bucket", "collection");
+        deleteCollection = saga.deleteCollection(() => {}, action);
         deleteCollection.next();
       });
 
       it("should dispatch an error notification action", () => {
         expect(deleteCollection.throw("error").value)
           .eql(put(notifyError("error", {clear: true})));
-      });
-    });
-  });
-
-  describe("Watchers", () => {
-    describe("watchCollectionDelete()", () => {
-      it("should watch for the deleteCollection action", () => {
-        const watchCollectionDelete = saga.watchCollectionDelete();
-
-        expect(watchCollectionDelete.next().value)
-          .eql(take(COLLECTION_DELETE_REQUEST));
-
-        expect(watchCollectionDelete.next(
-          actions.deleteCollection("a", "b")).value)
-          .eql(fork(saga.deleteCollection, "a", "b"));
       });
     });
   });

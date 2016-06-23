@@ -52,10 +52,6 @@ describe("root saga", () => {
       expect(registered).to.include(fork(routeSagas.watchRouteUpdated));
     });
 
-    it("should register the watchCollectionDelete watcher", () => {
-      expect(registered).to.include(fork(bucketSagas.watchCollectionDelete));
-    });
-
     it("should register the watchListRecords watcher", () => {
       expect(registered).to.include(fork(collectionSagas.watchListRecords));
     });
@@ -109,6 +105,20 @@ describe("root saga", () => {
     it("should watch for the createCollection action", () => {
       const saga = sandbox.stub(bucketSagas, "createCollection");
       const action = bucketActions.createCollection();
+
+      expectSagaCalled(saga, action);
+    });
+
+    it("should watch for the updateCollection action", () => {
+      const saga = sandbox.stub(bucketSagas, "updateCollection");
+      const action = bucketActions.updateCollection();
+
+      expectSagaCalled(saga, action);
+    });
+
+    it("should watch for the deleteCollection action", () => {
+      const saga = sandbox.stub(bucketSagas, "deleteCollection");
+      const action = bucketActions.deleteCollection();
 
       expectSagaCalled(saga, action);
     });
