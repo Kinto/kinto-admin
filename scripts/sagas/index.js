@@ -8,6 +8,9 @@ import * as bucketSagas from "./bucket";
 import * as collectionSagas from "./collection";
 
 
+/**
+ * @param {function} getState Function to obtain the current store state.
+ */
 export default function* rootSaga(getState) {
   yield [
     // session
@@ -18,7 +21,7 @@ export default function* rootSaga(getState) {
     // route
     fork(routeSagas.watchRouteUpdated),
     // bucket/collections
-    fork(bucketSagas.watchBucketCreate),
+    fork(bucketSagas.watchBucketCreate, getState),
     fork(bucketSagas.watchBucketUpdate),
     fork(bucketSagas.watchBucketDelete),
     fork(bucketSagas.watchCollectionCreate),

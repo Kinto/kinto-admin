@@ -51,7 +51,7 @@ describe("root saga", () => {
     });
 
     it("should register the watchBucketCreate watcher", () => {
-      expect(registered).to.include(fork(bucketSagas.watchBucketCreate));
+      expect(registered).to.include(fork(bucketSagas.watchBucketCreate, getState));
     });
 
     it("should register the watchBucketUpdate watcher", () => {

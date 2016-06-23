@@ -14,6 +14,10 @@ const finalCreateStore = compose(
 
 export default function configureStore(initialState) {
   const store = finalCreateStore(rootReducer, initialState);
+  // Every saga will receive the store getState() function as first argument
+  // by default.
+  // This allows sagas to share the same signature and access the state
+  // consistently.
   const getState = store.getState.bind(store);
   sagaMiddleware.run(rootSaga.bind(null, getState));
   return store;

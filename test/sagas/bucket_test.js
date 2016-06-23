@@ -34,7 +34,8 @@ describe("bucket sagas", () => {
 
       before(() => {
         client = setClient({createBucket() {}});
-        createBucket = saga.createBucket("bucket", {a: 1});
+        const action = actions.createBucket("bucket", {a: 1});
+        createBucket = saga.createBucket(() => {}, action);
       });
 
       it("should mark the current session as busy", () => {
@@ -72,7 +73,8 @@ describe("bucket sagas", () => {
       let createBucket;
 
       before(() => {
-        createBucket = saga.createBucket("bucket");
+        const action = actions.createBucket("bucket");
+        createBucket = saga.createBucket(() => {}, action);
         createBucket.next();
         createBucket.next();
       });
@@ -365,13 +367,15 @@ describe("bucket sagas", () => {
   describe("Watchers", () => {
     describe("watchBucketCreate()", () => {
       it("should watch for the createBucket action", () => {
-        const watchBucketCreate = saga.watchBucketCreate();
+        const getState = () => {};
+        const action = actions.createBucket("a", "b");
+        const watchBucketCreate = saga.watchBucketCreate(getState);
 
         expect(watchBucketCreate.next().value)
           .eql(take(BUCKET_CREATE_REQUEST));
 
-        expect(watchBucketCreate.next(actions.createBucket("a", "b")).value)
-          .eql(fork(saga.createBucket, "a", "b"));
+        expect(watchBucketCreate.next(action).value)
+          .eql(fork(saga.createBucket, getState, action));
       });
     });
 
