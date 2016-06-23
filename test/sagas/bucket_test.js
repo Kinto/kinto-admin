@@ -3,7 +3,6 @@ import { push as updatePath } from "react-router-redux";
 import { take, fork, put, call } from "redux-saga/effects";
 
 import {
-  COLLECTION_CREATE_REQUEST,
   COLLECTION_UPDATE_REQUEST,
   COLLECTION_DELETE_REQUEST,
 } from "../../scripts/constants";
@@ -222,10 +221,11 @@ describe("bucket sagas", () => {
       before(() => {
         bucket = {createCollection() {}};
         setClient({bucket() {return bucket;}});
-        createCollection = saga.createCollection("bucket", {
+        const action = actions.createCollection("bucket", {
           ...collectionData,
           name: "collection",
         });
+        createCollection = saga.createCollection(() => {}, action);
       });
 
       it("should post the collection data", () => {
@@ -257,10 +257,11 @@ describe("bucket sagas", () => {
       before(() => {
         const bucket = {createCollection() {}};
         setClient({bucket() {return bucket;}});
-        createCollection = saga.createCollection("bucket", {
+        const action = actions.createCollection("bucket", {
           ...collectionData,
           name: "collection",
         });
+        createCollection = saga.createCollection(() => {}, action);
         createCollection.next();
       });
 
@@ -366,19 +367,6 @@ describe("bucket sagas", () => {
   });
 
   describe("Watchers", () => {
-    describe("watchCollectionCreate()", () => {
-      it("should watch for the createCollection action", () => {
-        const watchCollectionCreate = saga.watchCollectionCreate();
-
-        expect(watchCollectionCreate.next().value)
-          .eql(take(COLLECTION_CREATE_REQUEST));
-
-        expect(watchCollectionCreate.next(
-          actions.createCollection("a", "b")).value)
-          .eql(fork(saga.createCollection, "a", "b"));
-      });
-    });
-
     describe("watchCollectionUpdate()", () => {
       it("should watch for the updateCollection action", () => {
         const watchCollectionUpdate = saga.watchCollectionUpdate();
