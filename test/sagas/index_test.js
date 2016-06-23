@@ -10,6 +10,8 @@ const collectionSagas = require("../../scripts/sagas/collection");
 import rootSaga from "../../scripts/sagas";
 import configureStore from "../../scripts/store/configureStore";
 
+import * as bucketActions from "../../scripts/actions/bucket";
+
 
 describe("root saga", () => {
   let sandbox, getState;
@@ -50,10 +52,6 @@ describe("root saga", () => {
       expect(registered).to.include(fork(routeSagas.watchRouteUpdated));
     });
 
-    it("should register the watchBucketCreate watcher", () => {
-      expect(registered).to.include(fork(bucketSagas.watchBucketCreate, getState));
-    });
-
     it("should register the watchBucketUpdate watcher", () => {
       expect(registered).to.include(fork(bucketSagas.watchBucketUpdate));
     });
@@ -92,6 +90,19 @@ describe("root saga", () => {
 
     it("should register the watchAttachmentDelete watcher", () => {
       expect(registered).to.include(fork(collectionSagas.watchAttachmentDelete));
+    });
+  });
+
+  describe("Bucket watchers registration", () => {
+    it("should watch for the createBucket action and forward it getState and action", () => {
+      const createBucket = sandbox.stub(bucketSagas, "createBucket");
+      const store = configureStore();
+      const action = bucketActions.createBucket();
+
+      store.dispatch(action);
+
+      expect(createBucket.firstCall.args[0].name).eql("bound getState");
+      expect(createBucket.firstCall.args[1]).eql(action);
     });
   });
 

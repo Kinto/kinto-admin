@@ -3,7 +3,6 @@ import { push as updatePath } from "react-router-redux";
 import { take, fork, put, call } from "redux-saga/effects";
 
 import {
-  BUCKET_CREATE_REQUEST,
   BUCKET_UPDATE_REQUEST,
   BUCKET_DELETE_REQUEST,
   COLLECTION_CREATE_REQUEST,
@@ -365,19 +364,6 @@ describe("bucket sagas", () => {
   });
 
   describe("Watchers", () => {
-    describe("watchBucketCreate()", () => {
-      it("should watch for the createBucket action", () => {
-        const getState = () => {};
-        const action = actions.createBucket("a", "b");
-        const watchBucketCreate = saga.watchBucketCreate(getState);
-
-        expect(watchBucketCreate.next().value)
-          .eql(take(BUCKET_CREATE_REQUEST));
-
-        expect(watchBucketCreate.next(action).value)
-          .eql(fork(saga.createBucket, getState, action));
-      });
-    });
 
     describe("watchBucketUpdate()", () => {
       it("should watch for the updateBucket action", () => {

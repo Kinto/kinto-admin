@@ -1,9 +1,7 @@
 import { push as updatePath } from "react-router-redux";
-import { takeEvery } from "redux-saga";
 import { call, take, fork, put } from "redux-saga/effects";
 
 import {
-  BUCKET_CREATE_REQUEST,
   BUCKET_UPDATE_REQUEST,
   BUCKET_DELETE_REQUEST,
   COLLECTION_CREATE_REQUEST,
@@ -118,10 +116,6 @@ export function* deleteCollection(bid, cid) {
 }
 
 // Watchers
-
-export function* watchBucketCreate(getState) {
-  yield* takeEvery(BUCKET_CREATE_REQUEST, createBucket, getState);
-}
 
 export function* watchBucketUpdate() {
   while(true) { // eslint-disable-line

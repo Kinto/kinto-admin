@@ -1,7 +1,10 @@
-import { takeLatest } from "redux-saga";
+import { takeEvery, takeLatest } from "redux-saga";
 import { fork } from "redux-saga/effects";
 
-import { SESSION_SERVERINFO_SUCCESS } from "../constants";
+import {
+  SESSION_SERVERINFO_SUCCESS,
+  BUCKET_CREATE_REQUEST,
+} from "../constants";
 import * as sessionSagas from "./session";
 import * as routeSagas from "./route";
 import * as bucketSagas from "./bucket";
@@ -21,7 +24,8 @@ export default function* rootSaga(getState) {
     // route
     fork(routeSagas.watchRouteUpdated),
     // bucket/collections
-    fork(bucketSagas.watchBucketCreate, getState),
+    // fork(bucketSagas.watchBucketCreate, getState),
+    takeEvery(BUCKET_CREATE_REQUEST, bucketSagas.createBucket, getState),
     fork(bucketSagas.watchBucketUpdate),
     fork(bucketSagas.watchBucketDelete),
     fork(bucketSagas.watchCollectionCreate),
