@@ -1,14 +1,6 @@
 import { push as updatePath } from "react-router-redux";
-import { call, take, fork, put } from "redux-saga/effects";
+import { call, put } from "redux-saga/effects";
 
-import {
-  BUCKET_CREATE_REQUEST,
-  BUCKET_UPDATE_REQUEST,
-  BUCKET_DELETE_REQUEST,
-  COLLECTION_CREATE_REQUEST,
-  COLLECTION_UPDATE_REQUEST,
-  COLLECTION_DELETE_REQUEST,
-} from "../constants";
 import { getClient } from "../client";
 import { notifySuccess, notifyError } from "../actions/notifications";
 import { sessionBusy } from "../actions/session";
@@ -25,7 +17,8 @@ function getCollection(bid, cid) {
   return getBucket(bid).collection(cid);
 }
 
-export function* createBucket(bid, data) {
+export function* createBucket(getState, action) {
+  const {bid, data} = action;
   try {
     const client = getClient();
     yield put(sessionBusy(true));
@@ -40,7 +33,8 @@ export function* createBucket(bid, data) {
   }
 }
 
-export function* updateBucket(bid, bucketData) {
+export function* updateBucket(getState, action) {
+  const {bid, bucketData} = action;
   try {
     const bucket = getBucket(bid);
     yield put(sessionBusy(true));
@@ -54,7 +48,8 @@ export function* updateBucket(bid, bucketData) {
   }
 }
 
-export function* deleteBucket(bid) {
+export function* deleteBucket(getState, action) {
+  const { bid } = action;
   try {
     const client = getClient();
     yield put(sessionBusy(true));
@@ -69,7 +64,8 @@ export function* deleteBucket(bid) {
   }
 }
 
-export function* createCollection(bid, collectionData) {
+export function* createCollection(getState, action) {
+  const {bid, collectionData} = action;
   try {
     const {
       name,
@@ -91,7 +87,8 @@ export function* createCollection(bid, collectionData) {
   }
 }
 
-export function* updateCollection(bid, cid, collectionData) {
+export function* updateCollection(getState, action) {
+  const {bid, cid, collectionData} = action;
   try {
     const coll = getCollection(bid, cid);
     const {data, permissions} = yield call([coll, coll.setData], collectionData);
@@ -103,7 +100,8 @@ export function* updateCollection(bid, cid, collectionData) {
   }
 }
 
-export function* deleteCollection(bid, cid) {
+export function* deleteCollection(getState, action) {
+  const {bid, cid} = action;
   try {
     const bucket = getBucket(bid);
     yield call([bucket, bucket.deleteCollection], cid);
@@ -112,49 +110,5 @@ export function* deleteCollection(bid, cid) {
     yield call(listBuckets);
   } catch(error) {
     yield put(notifyError(error));
-  }
-}
-
-// Watchers
-
-export function* watchBucketCreate() {
-  while(true) { // eslint-disable-line
-    const {bid, data} = yield take(BUCKET_CREATE_REQUEST);
-    yield fork(createBucket, bid, data);
-  }
-}
-
-export function* watchBucketUpdate() {
-  while(true) { // eslint-disable-line
-    const {bid, bucketData} = yield take(BUCKET_UPDATE_REQUEST);
-    yield fork(updateBucket, bid, bucketData);
-  }
-}
-
-export function* watchBucketDelete() {
-  while(true) { // eslint-disable-line
-    const {bid} = yield take(BUCKET_DELETE_REQUEST);
-    yield fork(deleteBucket, bid);
-  }
-}
-
-export function* watchCollectionCreate() {
-  while(true) { // eslint-disable-line
-    const {bid, collectionData} = yield take(COLLECTION_CREATE_REQUEST);
-    yield fork(createCollection, bid, collectionData);
-  }
-}
-
-export function* watchCollectionUpdate() {
-  while(true) { // eslint-disable-line
-    const {bid, cid, collectionData} = yield take(COLLECTION_UPDATE_REQUEST);
-    yield fork(updateCollection, bid, cid, collectionData);
-  }
-}
-
-export function* watchCollectionDelete() {
-  while(true) { // eslint-disable-line
-    const {bid, cid} = yield take(COLLECTION_DELETE_REQUEST);
-    yield fork(deleteCollection, bid, cid);
   }
 }

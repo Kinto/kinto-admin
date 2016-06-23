@@ -10,6 +10,8 @@ const collectionSagas = require("../../scripts/sagas/collection");
 import rootSaga from "../../scripts/sagas";
 import configureStore from "../../scripts/store/configureStore";
 
+import * as bucketActions from "../../scripts/actions/bucket";
+
 
 describe("root saga", () => {
   let sandbox, getState;
@@ -50,30 +52,6 @@ describe("root saga", () => {
       expect(registered).to.include(fork(routeSagas.watchRouteUpdated));
     });
 
-    it("should register the watchBucketCreate watcher", () => {
-      expect(registered).to.include(fork(bucketSagas.watchBucketCreate));
-    });
-
-    it("should register the watchBucketUpdate watcher", () => {
-      expect(registered).to.include(fork(bucketSagas.watchBucketUpdate));
-    });
-
-    it("should register the watchBucketDelete watcher", () => {
-      expect(registered).to.include(fork(bucketSagas.watchBucketDelete));
-    });
-
-    it("should register the watchCollectionCreate watcher", () => {
-      expect(registered).to.include(fork(bucketSagas.watchCollectionCreate));
-    });
-
-    it("should register the watchCollectionUpdate watcher", () => {
-      expect(registered).to.include(fork(bucketSagas.watchCollectionUpdate));
-    });
-
-    it("should register the watchCollectionDelete watcher", () => {
-      expect(registered).to.include(fork(bucketSagas.watchCollectionDelete));
-    });
-
     it("should register the watchListRecords watcher", () => {
       expect(registered).to.include(fork(collectionSagas.watchListRecords));
     });
@@ -92,6 +70,57 @@ describe("root saga", () => {
 
     it("should register the watchAttachmentDelete watcher", () => {
       expect(registered).to.include(fork(collectionSagas.watchAttachmentDelete));
+    });
+  });
+
+  describe("Bucket watchers registration", () => {
+    function expectSagaCalled(saga, action) {
+      configureStore().dispatch(action);
+
+      expect(saga.firstCall.args[0].name).eql("bound getState");
+      expect(saga.firstCall.args[1]).eql(action);
+    }
+
+    it("should watch for the createBucket action", () => {
+      const saga = sandbox.stub(bucketSagas, "createBucket");
+      const action = bucketActions.createBucket();
+
+      expectSagaCalled(saga, action);
+    });
+
+    it("should watch for the updateBucket action", () => {
+      const saga = sandbox.stub(bucketSagas, "updateBucket");
+      const action = bucketActions.updateBucket();
+
+      expectSagaCalled(saga, action);
+    });
+
+    it("should watch for the deleteBucket action", () => {
+      const saga = sandbox.stub(bucketSagas, "deleteBucket");
+      const action = bucketActions.deleteBucket();
+
+      expectSagaCalled(saga, action);
+    });
+
+    it("should watch for the createCollection action", () => {
+      const saga = sandbox.stub(bucketSagas, "createCollection");
+      const action = bucketActions.createCollection();
+
+      expectSagaCalled(saga, action);
+    });
+
+    it("should watch for the updateCollection action", () => {
+      const saga = sandbox.stub(bucketSagas, "updateCollection");
+      const action = bucketActions.updateCollection();
+
+      expectSagaCalled(saga, action);
+    });
+
+    it("should watch for the deleteCollection action", () => {
+      const saga = sandbox.stub(bucketSagas, "deleteCollection");
+      const action = bucketActions.deleteCollection();
+
+      expectSagaCalled(saga, action);
     });
   });
 

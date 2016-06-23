@@ -1,15 +1,7 @@
 import { expect } from "chai";
 import { push as updatePath } from "react-router-redux";
-import { take, fork, put, call } from "redux-saga/effects";
+import { put, call } from "redux-saga/effects";
 
-import {
-  BUCKET_CREATE_REQUEST,
-  BUCKET_UPDATE_REQUEST,
-  BUCKET_DELETE_REQUEST,
-  COLLECTION_CREATE_REQUEST,
-  COLLECTION_UPDATE_REQUEST,
-  COLLECTION_DELETE_REQUEST,
-} from "../../scripts/constants";
 import { notifyError, notifySuccess } from "../../scripts/actions/notifications";
 import * as sessionActions from "../../scripts/actions/session";
 import * as collectionActions from "../../scripts/actions/collection";
@@ -34,7 +26,8 @@ describe("bucket sagas", () => {
 
       before(() => {
         client = setClient({createBucket() {}});
-        createBucket = saga.createBucket("bucket", {a: 1});
+        const action = actions.createBucket("bucket", {a: 1});
+        createBucket = saga.createBucket(() => {}, action);
       });
 
       it("should mark the current session as busy", () => {
@@ -72,7 +65,8 @@ describe("bucket sagas", () => {
       let createBucket;
 
       before(() => {
-        createBucket = saga.createBucket("bucket");
+        const action = actions.createBucket("bucket");
+        createBucket = saga.createBucket(() => {}, action);
         createBucket.next();
         createBucket.next();
       });
@@ -101,7 +95,8 @@ describe("bucket sagas", () => {
       before(() => {
         bucket = {setData(){}};
         setClient({bucket(){return bucket;}});
-        updateBucket = saga.updateBucket("bucket", {a: 1});
+        const action = actions.updateBucket("bucket", {a: 1});
+        updateBucket = saga.updateBucket(()  => {}, action);
       });
 
       it("should mark the current session as busy", () => {
@@ -135,7 +130,8 @@ describe("bucket sagas", () => {
       let updateBucket;
 
       before(() => {
-        updateBucket = saga.updateBucket("bucket");
+        const action = actions.updateBucket("bucket", {});
+        updateBucket = saga.updateBucket(() => {}, action);
         updateBucket.next();
         updateBucket.next();
       });
@@ -158,7 +154,8 @@ describe("bucket sagas", () => {
 
       before(() => {
         client = setClient({deleteBucket() {}});
-        deleteBucket = saga.deleteBucket("bucket");
+        const action = actions.deleteBucket("bucket");
+        deleteBucket = saga.deleteBucket(() => {}, action);
       });
 
       it("should mark the current session as busy", () => {
@@ -196,7 +193,8 @@ describe("bucket sagas", () => {
       let deleteBucket;
 
       before(() => {
-        deleteBucket = saga.deleteBucket("bucket");
+        const action = actions.deleteBucket("bucket");
+        deleteBucket = saga.deleteBucket(() => {}, action);
         deleteBucket.next();
       });
 
@@ -219,10 +217,11 @@ describe("bucket sagas", () => {
       before(() => {
         bucket = {createCollection() {}};
         setClient({bucket() {return bucket;}});
-        createCollection = saga.createCollection("bucket", {
+        const action = actions.createCollection("bucket", {
           ...collectionData,
           name: "collection",
         });
+        createCollection = saga.createCollection(() => {}, action);
       });
 
       it("should post the collection data", () => {
@@ -254,10 +253,11 @@ describe("bucket sagas", () => {
       before(() => {
         const bucket = {createCollection() {}};
         setClient({bucket() {return bucket;}});
-        createCollection = saga.createCollection("bucket", {
+        const action = actions.createCollection("bucket", {
           ...collectionData,
           name: "collection",
         });
+        createCollection = saga.createCollection(() => {}, action);
         createCollection.next();
       });
 
@@ -276,8 +276,9 @@ describe("bucket sagas", () => {
         collection = {setData() {}};
         bucket = {collection() {return collection;}};
         setClient({bucket() {return bucket;}});
-        updateCollection = saga.updateCollection(
+        const action = actions.updateCollection(
           "bucket", "collection", collectionData);
+        updateCollection = saga.updateCollection(() => {}, action);
       });
 
       it("should post the collection data", () => {
@@ -323,7 +324,8 @@ describe("bucket sagas", () => {
       before(() => {
         bucket = {deleteCollection() {}};
         setClient({bucket() {return bucket;}});
-        deleteCollection = saga.deleteCollection("bucket", "collection");
+        const action = actions.deleteCollection("bucket", "collection");
+        deleteCollection = saga.deleteCollection(() => {}, action);
       });
 
       it("should delete the collection", () => {
@@ -351,90 +353,14 @@ describe("bucket sagas", () => {
       let deleteCollection;
 
       before(() => {
-        deleteCollection = saga.deleteCollection("bucket", "collection");
+        const action = actions.deleteCollection("bucket", "collection");
+        deleteCollection = saga.deleteCollection(() => {}, action);
         deleteCollection.next();
       });
 
       it("should dispatch an error notification action", () => {
         expect(deleteCollection.throw("error").value)
           .eql(put(notifyError("error", {clear: true})));
-      });
-    });
-  });
-
-  describe("Watchers", () => {
-    describe("watchBucketCreate()", () => {
-      it("should watch for the createBucket action", () => {
-        const watchBucketCreate = saga.watchBucketCreate();
-
-        expect(watchBucketCreate.next().value)
-          .eql(take(BUCKET_CREATE_REQUEST));
-
-        expect(watchBucketCreate.next(actions.createBucket("a", "b")).value)
-          .eql(fork(saga.createBucket, "a", "b"));
-      });
-    });
-
-    describe("watchBucketUpdate()", () => {
-      it("should watch for the updateBucket action", () => {
-        const watchBucketUpdate = saga.watchBucketUpdate();
-
-        expect(watchBucketUpdate.next().value)
-          .eql(take(BUCKET_UPDATE_REQUEST));
-
-        expect(watchBucketUpdate.next(actions.updateBucket("a", "b")).value)
-          .eql(fork(saga.updateBucket, "a", "b"));
-      });
-    });
-
-    describe("watchBucketDelete()", () => {
-      it("should watch for the deleteBucket action", () => {
-        const watchBucketDelete = saga.watchBucketDelete();
-
-        expect(watchBucketDelete.next().value)
-          .eql(take(BUCKET_DELETE_REQUEST));
-
-        expect(watchBucketDelete.next(actions.deleteBucket("a")).value)
-          .eql(fork(saga.deleteBucket, "a"));
-      });
-    });
-
-    describe("watchCollectionCreate()", () => {
-      it("should watch for the createCollection action", () => {
-        const watchCollectionCreate = saga.watchCollectionCreate();
-
-        expect(watchCollectionCreate.next().value)
-          .eql(take(COLLECTION_CREATE_REQUEST));
-
-        expect(watchCollectionCreate.next(
-          actions.createCollection("a", "b")).value)
-          .eql(fork(saga.createCollection, "a", "b"));
-      });
-    });
-
-    describe("watchCollectionUpdate()", () => {
-      it("should watch for the updateCollection action", () => {
-        const watchCollectionUpdate = saga.watchCollectionUpdate();
-
-        expect(watchCollectionUpdate.next().value)
-          .eql(take(COLLECTION_UPDATE_REQUEST));
-
-        expect(watchCollectionUpdate.next(
-          actions.updateCollection("a", "b", "c")).value)
-          .eql(fork(saga.updateCollection, "a", "b", "c"));
-      });
-    });
-
-    describe("watchCollectionDelete()", () => {
-      it("should watch for the deleteCollection action", () => {
-        const watchCollectionDelete = saga.watchCollectionDelete();
-
-        expect(watchCollectionDelete.next().value)
-          .eql(take(COLLECTION_DELETE_REQUEST));
-
-        expect(watchCollectionDelete.next(
-          actions.deleteCollection("a", "b")).value)
-          .eql(fork(saga.deleteCollection, "a", "b"));
       });
     });
   });
