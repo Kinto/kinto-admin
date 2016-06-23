@@ -7,6 +7,7 @@ import {
   BUCKET_UPDATE_REQUEST,
   BUCKET_DELETE_REQUEST,
   COLLECTION_CREATE_REQUEST,
+  COLLECTION_UPDATE_REQUEST,
 } from "../constants";
 import * as sessionSagas from "./session";
 import * as routeSagas from "./route";
@@ -32,7 +33,7 @@ export default function* rootSaga(getState) {
     takeEvery(BUCKET_UPDATE_REQUEST, bucketSagas.updateBucket, getState),
     takeEvery(BUCKET_DELETE_REQUEST, bucketSagas.deleteBucket, getState),
     takeEvery(COLLECTION_CREATE_REQUEST, bucketSagas.createCollection, getState),
-    fork(bucketSagas.watchCollectionUpdate),
+    takeEvery(COLLECTION_UPDATE_REQUEST, bucketSagas.updateCollection, getState),
     fork(bucketSagas.watchCollectionDelete),
     // collection/records
     fork(collectionSagas.watchListRecords),

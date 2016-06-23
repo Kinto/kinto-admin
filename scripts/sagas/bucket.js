@@ -2,7 +2,6 @@ import { push as updatePath } from "react-router-redux";
 import { call, take, fork, put } from "redux-saga/effects";
 
 import {
-  COLLECTION_UPDATE_REQUEST,
   COLLECTION_DELETE_REQUEST,
 } from "../constants";
 import { getClient } from "../client";
@@ -91,7 +90,8 @@ export function* createCollection(getState, action) {
   }
 }
 
-export function* updateCollection(bid, cid, collectionData) {
+export function* updateCollection(getState, action) {
+  const {bid, cid, collectionData} = action;
   try {
     const coll = getCollection(bid, cid);
     const {data, permissions} = yield call([coll, coll.setData], collectionData);
@@ -116,13 +116,6 @@ export function* deleteCollection(bid, cid) {
 }
 
 // Watchers
-
-export function* watchCollectionUpdate() {
-  while(true) { // eslint-disable-line
-    const {bid, cid, collectionData} = yield take(COLLECTION_UPDATE_REQUEST);
-    yield fork(updateCollection, bid, cid, collectionData);
-  }
-}
 
 export function* watchCollectionDelete() {
   while(true) { // eslint-disable-line

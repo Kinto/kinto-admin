@@ -52,10 +52,6 @@ describe("root saga", () => {
       expect(registered).to.include(fork(routeSagas.watchRouteUpdated));
     });
 
-    it("should register the watchCollectionUpdate watcher", () => {
-      expect(registered).to.include(fork(bucketSagas.watchCollectionUpdate));
-    });
-
     it("should register the watchCollectionDelete watcher", () => {
       expect(registered).to.include(fork(bucketSagas.watchCollectionDelete));
     });

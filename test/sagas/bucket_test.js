@@ -3,7 +3,6 @@ import { push as updatePath } from "react-router-redux";
 import { take, fork, put, call } from "redux-saga/effects";
 
 import {
-  COLLECTION_UPDATE_REQUEST,
   COLLECTION_DELETE_REQUEST,
 } from "../../scripts/constants";
 import { notifyError, notifySuccess } from "../../scripts/actions/notifications";
@@ -280,8 +279,9 @@ describe("bucket sagas", () => {
         collection = {setData() {}};
         bucket = {collection() {return collection;}};
         setClient({bucket() {return bucket;}});
-        updateCollection = saga.updateCollection(
+        const action = actions.updateCollection(
           "bucket", "collection", collectionData);
+        updateCollection = saga.updateCollection(() => {}, action);
       });
 
       it("should post the collection data", () => {
@@ -367,19 +367,6 @@ describe("bucket sagas", () => {
   });
 
   describe("Watchers", () => {
-    describe("watchCollectionUpdate()", () => {
-      it("should watch for the updateCollection action", () => {
-        const watchCollectionUpdate = saga.watchCollectionUpdate();
-
-        expect(watchCollectionUpdate.next().value)
-          .eql(take(COLLECTION_UPDATE_REQUEST));
-
-        expect(watchCollectionUpdate.next(
-          actions.updateCollection("a", "b", "c")).value)
-          .eql(fork(saga.updateCollection, "a", "b", "c"));
-      });
-    });
-
     describe("watchCollectionDelete()", () => {
       it("should watch for the deleteCollection action", () => {
         const watchCollectionDelete = saga.watchCollectionDelete();
