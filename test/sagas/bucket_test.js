@@ -3,7 +3,6 @@ import { push as updatePath } from "react-router-redux";
 import { take, fork, put, call } from "redux-saga/effects";
 
 import {
-  BUCKET_DELETE_REQUEST,
   COLLECTION_CREATE_REQUEST,
   COLLECTION_UPDATE_REQUEST,
   COLLECTION_DELETE_REQUEST,

@@ -86,37 +86,32 @@ describe("root saga", () => {
   });
 
   describe("Bucket watchers registration", () => {
-    it("should watch for the createBucket action and forward it getState and action", () => {
-      const createBucket = sandbox.stub(bucketSagas, "createBucket");
-      const store = configureStore();
+    function expectSagaCalled(saga, action) {
+      configureStore().dispatch(action);
+
+      expect(saga.firstCall.args[0].name).eql("bound getState");
+      expect(saga.firstCall.args[1]).eql(action);
+    }
+
+    it("should watch for the createBucket action", () => {
+      const saga = sandbox.stub(bucketSagas, "createBucket");
       const action = bucketActions.createBucket();
 
-      store.dispatch(action);
-
-      expect(createBucket.firstCall.args[0].name).eql("bound getState");
-      expect(createBucket.firstCall.args[1]).eql(action);
+      expectSagaCalled(saga, action);
     });
 
-    it("should watch for the updateBucket action and forward it getState and action", () => {
-      const updateBucket = sandbox.stub(bucketSagas, "updateBucket");
-      const store = configureStore();
+    it("should watch for the updateBucket action", () => {
+      const saga = sandbox.stub(bucketSagas, "updateBucket");
       const action = bucketActions.updateBucket();
 
-      store.dispatch(action);
-
-      expect(updateBucket.firstCall.args[0].name).eql("bound getState");
-      expect(updateBucket.firstCall.args[1]).eql(action);
+      expectSagaCalled(saga, action);
     });
 
-    it("should watch for the deleteBucket action and forward it getState and action", () => {
-      const deleteBucket = sandbox.stub(bucketSagas, "deleteBucket");
-      const store = configureStore();
+    it("should watch for the deleteBucket action", () => {
+      const saga = sandbox.stub(bucketSagas, "deleteBucket");
       const action = bucketActions.deleteBucket();
 
-      store.dispatch(action);
-
-      expect(deleteBucket.firstCall.args[0].name).eql("bound getState");
-      expect(deleteBucket.firstCall.args[1]).eql(action);
+      expectSagaCalled(saga, action);
     });
   });
 
