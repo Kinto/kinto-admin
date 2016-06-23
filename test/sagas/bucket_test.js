@@ -3,7 +3,6 @@ import { push as updatePath } from "react-router-redux";
 import { take, fork, put, call } from "redux-saga/effects";
 
 import {
-  BUCKET_UPDATE_REQUEST,
   BUCKET_DELETE_REQUEST,
   COLLECTION_CREATE_REQUEST,
   COLLECTION_UPDATE_REQUEST,
@@ -102,7 +101,8 @@ describe("bucket sagas", () => {
       before(() => {
         bucket = {setData(){}};
         setClient({bucket(){return bucket;}});
-        updateBucket = saga.updateBucket("bucket", {a: 1});
+        const action = actions.updateBucket("bucket", {a: 1});
+        updateBucket = saga.updateBucket(()  => {}, action);
       });
 
       it("should mark the current session as busy", () => {
@@ -136,7 +136,8 @@ describe("bucket sagas", () => {
       let updateBucket;
 
       before(() => {
-        updateBucket = saga.updateBucket("bucket");
+        const action = actions.updateBucket("bucket", {});
+        updateBucket = saga.updateBucket(() => {}, action);
         updateBucket.next();
         updateBucket.next();
       });
@@ -364,18 +365,6 @@ describe("bucket sagas", () => {
   });
 
   describe("Watchers", () => {
-
-    describe("watchBucketUpdate()", () => {
-      it("should watch for the updateBucket action", () => {
-        const watchBucketUpdate = saga.watchBucketUpdate();
-
-        expect(watchBucketUpdate.next().value)
-          .eql(take(BUCKET_UPDATE_REQUEST));
-
-        expect(watchBucketUpdate.next(actions.updateBucket("a", "b")).value)
-          .eql(fork(saga.updateBucket, "a", "b"));
-      });
-    });
 
     describe("watchBucketDelete()", () => {
       it("should watch for the deleteBucket action", () => {

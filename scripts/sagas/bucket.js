@@ -2,7 +2,6 @@ import { push as updatePath } from "react-router-redux";
 import { call, take, fork, put } from "redux-saga/effects";
 
 import {
-  BUCKET_UPDATE_REQUEST,
   BUCKET_DELETE_REQUEST,
   COLLECTION_CREATE_REQUEST,
   COLLECTION_UPDATE_REQUEST,
@@ -40,7 +39,8 @@ export function* createBucket(getState, action) {
   }
 }
 
-export function* updateBucket(bid, bucketData) {
+export function* updateBucket(getState, action) {
+  const {bid, bucketData} = action;
   try {
     const bucket = getBucket(bid);
     yield put(sessionBusy(true));
@@ -116,13 +116,6 @@ export function* deleteCollection(bid, cid) {
 }
 
 // Watchers
-
-export function* watchBucketUpdate() {
-  while(true) { // eslint-disable-line
-    const {bid, bucketData} = yield take(BUCKET_UPDATE_REQUEST);
-    yield fork(updateBucket, bid, bucketData);
-  }
-}
 
 export function* watchBucketDelete() {
   while(true) { // eslint-disable-line
