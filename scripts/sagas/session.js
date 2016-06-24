@@ -12,7 +12,8 @@ import * as sessionActions from "../actions/session";
 import { getClient, setupClient, resetClient } from "../client";
 
 
-export function* setupSession(session) {
+export function* setupSession(getState, action) {
+  const {session} = action;
   try {
     setupClient(session);
     yield put(notificationActions.clearNotifications({force: true}));
@@ -26,7 +27,8 @@ export function* setupSession(session) {
   }
 }
 
-export function* handleSessionRedirect(session) {
+export function* handleSessionRedirect(getState, action) {
+  const {session} = action;
   const {redirectURL} = session;
   if (redirectURL) {
     yield put(updatePath(redirectURL));
@@ -34,15 +36,15 @@ export function* handleSessionRedirect(session) {
   }
 }
 
-export function* sessionLogout() {
+export function* sessionLogout(getState, action) {
   resetClient();
   yield put(updatePath("/"));
   yield put(notificationActions.notifySuccess("Logged out.", {persistent: true}));
 }
 
-export function* listBuckets(serverInfo) {
-  const client = getClient();
+export function* listBuckets(getState, action) {
   try {
+    const client = getClient();
     // Fetch server information
     const serverInfo = yield call([client, client.fetchServerInfo]);
     // Notify they're received
@@ -61,33 +63,5 @@ export function* listBuckets(serverInfo) {
     yield put(sessionActions.bucketsSuccess(buckets));
   } catch(error) {
     yield put(notificationActions.notifyError(error));
-  }
-}
-
-// Watchers
-
-export function* watchSessionSetup() {
-  while(true) { // eslint-disable-line
-    const {session} = yield take(SESSION_SETUP);
-    yield fork(setupSession, session);
-  }
-}
-
-export function* watchSessionSetupComplete() {
-  while(true) { // eslint-disable-line
-    const {session} = yield take(SESSION_SETUP_COMPLETE);
-    yield fork(handleSessionRedirect, session);
-  }
-}
-
-export function* watchSessionBuckets() {
-  while(yield take(SESSION_BUCKETS_REQUEST)) {
-    yield fork(listBuckets);
-  }
-}
-
-export function* watchSessionLogout() {
-  while(yield take(SESSION_LOGOUT)) {
-    yield fork(sessionLogout);
   }
 }

@@ -2,6 +2,8 @@ import { takeEvery, takeLatest } from "redux-saga";
 import { fork } from "redux-saga/effects";
 
 import {
+  SESSION_SETUP,
+  SESSION_BUCKETS_REQUEST,
   SESSION_SERVERINFO_SUCCESS,
   BUCKET_CREATE_REQUEST,
   BUCKET_UPDATE_REQUEST,
@@ -22,10 +24,11 @@ import * as collectionSagas from "./collection";
 export default function* rootSaga(getState) {
   yield [
     // session
-    fork(sessionSagas.watchSessionSetup),
-    fork(sessionSagas.watchSessionSetupComplete),
-    fork(sessionSagas.watchSessionLogout),
-    fork(sessionSagas.watchSessionBuckets),
+    takeEvery(SESSION_SETUP, sessionSagas.setupSession, getState),
+    takeEvery(SESSION_BUCKETS_REQUEST, sessionSagas.listBuckets, getState),
+    // fork(sessionSagas.watchSessionSetupComplete),
+    // fork(sessionSagas.watchSessionLogout),
+    // fork(sessionSagas.watchSessionBuckets),
     // route
     fork(routeSagas.watchRouteUpdated),
     // bucket/collections
