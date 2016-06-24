@@ -1,12 +1,6 @@
 import { push as updatePath } from "react-router-redux";
-import { call, take, fork, put } from "redux-saga/effects";
+import { call, put } from "redux-saga/effects";
 
-import {
-  SESSION_SETUP,
-  SESSION_SETUP_COMPLETE,
-  SESSION_BUCKETS_REQUEST,
-  SESSION_LOGOUT,
-} from "../constants";
 import * as notificationActions from "../actions/notifications";
 import * as sessionActions from "../actions/session";
 import { getClient, setupClient, resetClient } from "../client";
@@ -29,9 +23,8 @@ export function* setupSession(getState, action) {
 
 export function* handleSessionRedirect(getState, action) {
   const {session} = action;
-  const {redirectURL} = session;
-  if (redirectURL) {
-    yield put(updatePath(redirectURL));
+  if (session.redirectURL) {
+    yield put(updatePath(session.redirectURL));
     yield put(sessionActions.storeRedirectURL(null));
   }
 }

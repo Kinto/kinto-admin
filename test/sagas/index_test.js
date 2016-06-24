@@ -45,6 +45,13 @@ describe("root saga", () => {
 
       expectSagaCalled(saga, action);
     });
+
+    it("should watch for the setupComplete action", () => {
+      const saga = sandbox.stub(sessionSagas, "handleSessionRedirect");
+      const action = sessionActions.setupComplete();
+
+      expectSagaCalled(saga, action);
+    });
   });
 
   describe("Bucket watchers registration", () => {

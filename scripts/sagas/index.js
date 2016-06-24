@@ -3,8 +3,10 @@ import { fork } from "redux-saga/effects";
 
 import {
   SESSION_SETUP,
+  SESSION_SETUP_COMPLETE,
   SESSION_BUCKETS_REQUEST,
   SESSION_SERVERINFO_SUCCESS,
+  SESSION_LOGOUT,
   BUCKET_CREATE_REQUEST,
   BUCKET_UPDATE_REQUEST,
   BUCKET_DELETE_REQUEST,
@@ -25,10 +27,9 @@ export default function* rootSaga(getState) {
   yield [
     // session
     takeEvery(SESSION_SETUP, sessionSagas.setupSession, getState),
+    takeEvery(SESSION_SETUP_COMPLETE, sessionSagas.handleSessionRedirect, getState),
     takeEvery(SESSION_BUCKETS_REQUEST, sessionSagas.listBuckets, getState),
-    // fork(sessionSagas.watchSessionSetupComplete),
-    // fork(sessionSagas.watchSessionLogout),
-    // fork(sessionSagas.watchSessionBuckets),
+    takeEvery(SESSION_LOGOUT, sessionSagas.sessionLogout, getState),
     // route
     fork(routeSagas.watchRouteUpdated),
     // bucket/collections

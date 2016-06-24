@@ -128,7 +128,7 @@ describe("session sagas", () => {
     let handleSessionRedirect;
 
     before(() => {
-      const action = actions.
+      const action = actions.setupComplete({redirectURL: "/blah"});
       handleSessionRedirect = saga.handleSessionRedirect(() =>  {}, action);
     });
 
