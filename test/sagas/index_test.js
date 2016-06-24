@@ -1,86 +1,60 @@
 import { expect } from "chai";
 import sinon from "sinon";
-import { fork } from "redux-saga/effects";
 
 import { SESSION_SERVERINFO_SUCCESS } from "../../scripts/constants";
-const routeSagas = require("../../scripts/sagas/route");
+// const routeSagas = require("../../scripts/sagas/route");
 const sessionSagas = require("../../scripts/sagas/session");
 const bucketSagas = require("../../scripts/sagas/bucket");
 const collectionSagas = require("../../scripts/sagas/collection");
-import rootSaga from "../../scripts/sagas";
 import configureStore from "../../scripts/store/configureStore";
 
+import * as sessionActions from "../../scripts/actions/session";
 import * as bucketActions from "../../scripts/actions/bucket";
 
 
+function expectSagaCalled(saga, action) {
+  // Note: the rootSaga function is called by configureStore
+  configureStore().dispatch(action);
+
+  expect(saga.firstCall.args[0].name).eql("bound getState");
+  expect(saga.firstCall.args[1]).eql(action);
+}
+
 describe("root saga", () => {
-  let sandbox, getState;
+  let sandbox;
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
-    getState = () => {};
   });
 
   afterEach(() => {
     sandbox.restore();
   });
 
-  describe("Watchers registration", function() {
-    let registered;
+  describe("Session watchers registration", () => {
+    it("should watch for the setup action", () => {
+      const saga = sandbox.stub(sessionSagas, "setupSession");
+      const action = sessionActions.setup();
 
-    beforeEach(() => {
-      registered = rootSaga(getState).next().value;
+      expectSagaCalled(saga, action);
     });
 
-    it("should register the watchRecordDelete watcher", () => {
-      expect(registered).to.include(fork(sessionSagas.watchSessionSetup));
+    it("should watch for the listBuckets action", () => {
+      const saga = sandbox.stub(sessionSagas, "listBuckets");
+      const action = sessionActions.listBuckets();
+
+      expectSagaCalled(saga, action);
     });
 
-    it("should register the watchRecordDelete watcher", () => {
-      expect(registered).to.include(fork(sessionSagas.watchSessionSetupComplete));
-    });
+    it("should watch for the setupComplete action", () => {
+      const saga = sandbox.stub(sessionSagas, "handleSessionRedirect");
+      const action = sessionActions.setupComplete();
 
-    it("should register the watchRecordDelete watcher", () => {
-      expect(registered).to.include(fork(sessionSagas.watchSessionLogout));
-    });
-
-    it("should register the watchRecordDelete watcher", () => {
-      expect(registered).to.include(fork(sessionSagas.watchSessionBuckets));
-    });
-
-    it("should register the watchRouteUpdated watcher", () => {
-      expect(registered).to.include(fork(routeSagas.watchRouteUpdated));
-    });
-
-    it("should register the watchListRecords watcher", () => {
-      expect(registered).to.include(fork(collectionSagas.watchListRecords));
-    });
-
-    it("should register the watchRecordUpdate watcher", () => {
-      expect(registered).to.include(fork(collectionSagas.watchRecordUpdate, getState));
-    });
-
-    it("should register the watchRecordDelete watcher", () => {
-      expect(registered).to.include(fork(collectionSagas.watchRecordDelete));
-    });
-
-    it("should register the watchBulkCreateRecords watcher", () => {
-      expect(registered).to.include(fork(collectionSagas.watchBulkCreateRecords));
-    });
-
-    it("should register the watchAttachmentDelete watcher", () => {
-      expect(registered).to.include(fork(collectionSagas.watchAttachmentDelete));
+      expectSagaCalled(saga, action);
     });
   });
 
   describe("Bucket watchers registration", () => {
-    function expectSagaCalled(saga, action) {
-      configureStore().dispatch(action);
-
-      expect(saga.firstCall.args[0].name).eql("bound getState");
-      expect(saga.firstCall.args[1]).eql(action);
-    }
-
     it("should watch for the createBucket action", () => {
       const saga = sandbox.stub(bucketSagas, "createBucket");
       const action = bucketActions.createBucket();
