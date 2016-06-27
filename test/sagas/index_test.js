@@ -1,7 +1,6 @@
 import { expect } from "chai";
 import sinon from "sinon";
 
-import { SESSION_SERVERINFO_SUCCESS } from "../../scripts/constants";
 import configureStore from "../../scripts/store/configureStore";
 import * as routeSagas from "../../scripts/sagas/route";
 import * as sessionSagas from "../../scripts/sagas/session";
@@ -115,17 +114,12 @@ describe("root saga", () => {
 
       expectSagaCalled(saga, action);
     });
-  });
 
-  describe("Conditional watchers", () => {
-    it("should reset the watchRecordCreate watcher on new session info", () => {
-      const watchRecordCreate = sandbox.stub(collectionSagas, "watchRecordCreate");
-      const store = configureStore();
-      const action = {type: SESSION_SERVERINFO_SUCCESS};
+    it("should watch for the createRecord action", () => {
+      const saga = sandbox.stub(collectionSagas, "createRecord");
+      const action = collectionActions.createRecord();
 
-      store.dispatch(action);
-
-      sinon.assert.calledWithExactly(watchRecordCreate, action);
+      expectSagaCalled(saga, action);
     });
   });
 });

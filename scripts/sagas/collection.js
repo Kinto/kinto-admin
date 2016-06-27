@@ -7,7 +7,6 @@ import { createFormData } from "../utils";
 import {
   ATTACHMENT_DELETE_REQUEST,
   SESSION_SERVERINFO_SUCCESS,
-  RECORD_CREATE_REQUEST,
   RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
   RECORD_BULK_CREATE_REQUEST,
@@ -62,29 +61,22 @@ export function* listRecords(getState, action) {
   }
 }
 
-export function* createRecordWithAttachment(bid, cid, record) {
-  try {
-    yield put(actions.collectionBusy(true));
-    const rid = yield call(uuid);
-    const formData = yield call(createFormData, record);
-    yield call(requestAttachment, bid, cid, rid, {
-      method: "post",
-      body: formData
-    });
-    yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
-    yield put(notifySuccess("Record added."));
-  } catch(error) {
-    yield put(notifyError(error));
-  } finally {
-    yield put(actions.collectionBusy(false));
-  }
-}
-
-export function* createRecord(bid, cid, record) {
+export function* createRecord(getState, action) {
+  const {session} = getState();
+  const {bid, cid, record} = action;
   try {
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
-    yield call([coll, coll.createRecord], record);
+    if (shouldProcessAttachment(session.serverInfo, record)) {
+      const rid = yield call(uuid);
+      const formData = yield call(createFormData, record);
+      yield call(requestAttachment, bid, cid, rid, {
+        method: "post",
+        body: formData
+      });
+    } else {
+      yield call([coll, coll.createRecord], record);
+    }
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess("Record added."));
   } catch(error) {
@@ -181,20 +173,6 @@ export function* bulkCreateRecordsWithAttachment(bid, cid, records) {
 }
 
 // Watchers
-
-export function* watchRecordCreate(serverInfoAction) {
-  // Note: serverInfoAction is provided by takeLatest in the rootSaga
-  const {serverInfo} = serverInfoAction;
-  while(true) { // eslint-disable-line
-    const {bid, cid, record} = yield take(RECORD_CREATE_REQUEST);
-    // Check if we have to deal with attachments
-    if (shouldProcessAttachment(serverInfo, record)) {
-      yield fork(createRecordWithAttachment, bid, cid, record);
-    } else {
-      yield fork(createRecord, bid, cid, record);
-    }
-  }
-}
 
 export function* watchRecordUpdate(getState) {
   yield* takeEvery(RECORD_UPDATE_REQUEST, updateRecord, getState);

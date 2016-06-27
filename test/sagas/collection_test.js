@@ -5,13 +5,11 @@ import { v4 as uuid } from "uuid";
 
 import {
   SESSION_SERVERINFO_SUCCESS,
-  RECORD_CREATE_REQUEST,
   RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
   RECORD_BULK_CREATE_REQUEST,
 } from "../../scripts/constants";
 import { notifyError, notifySuccess } from "../../scripts/actions/notifications";
-import * as sessionActions from "../../scripts/actions/session";
 import * as collectionActions from "../../scripts/actions/collection";
 import * as recordActions from "../../scripts/actions/record";
 import * as saga from "../../scripts/sagas/collection";
@@ -101,14 +99,27 @@ describe("collection sagas", () => {
   });
 
   describe("createRecord()", () => {
-    describe("Success", () => {
-      let collection, createRecord;
+    let collection;
+
+    before(() => {
+      collection = {createRecord() {}};
+      const bucket = {collection() {return collection;}};
+      setClient({bucket() {return bucket;}});
+    });
+
+    describe("Attachments disabled", () => {
+      let createRecord;
 
       before(() => {
-        collection = {createRecord() {}};
-        const bucket = {collection() {return collection;}};
-        setClient({bucket() {return bucket;}});
-        createRecord = saga.createRecord("bucket", "collection", record);
+        const getState = () => ({
+          session: {
+            serverInfo: {
+              capabilities: {}
+            }
+          }
+        });
+        const action = collectionActions.createRecord("bucket", "collection", record);
+        createRecord = saga.createRecord(getState, action);
       });
 
       it("should mark the current collection as busy", () => {
@@ -137,11 +148,71 @@ describe("collection sagas", () => {
       });
     });
 
+    describe("Attachments enabled", () => {
+      let createRecord;
+
+      const recordWithAttachment = {...record, __attachment__: {}};
+
+      before(() => {
+        const getState = () => ({
+          session: {
+            serverInfo: {
+              capabilities: {attachments: {}}
+            }
+          }
+        });
+        const action = collectionActions.createRecord(
+          "bucket", "collection", recordWithAttachment);
+        createRecord = saga.createRecord(getState, action);
+      });
+
+      it("should mark the current collection as busy", () => {
+        expect(createRecord.next().value)
+          .eql(put(collectionActions.collectionBusy(true)));
+      });
+
+      it("should generate a uuid for the record", () => {
+        expect(createRecord.next().value)
+          .eql(call(uuid));
+      });
+
+      it("should create formData", () => {
+        expect(createRecord.next("fake-uuid").value)
+          .eql(call(createFormData, recordWithAttachment));
+      });
+
+      it("should post the attachment along the record", () => {
+        const formData = {fake: true};
+        expect(createRecord.next(formData).value)
+          .eql(call(requestAttachment, "bucket", "collection", "fake-uuid", {
+            method: "post",
+            body: formData
+          }));
+      });
+
+      it("should update the route path", () => {
+        expect(createRecord.next().value)
+          .eql(put(updatePath("/buckets/bucket/collections/collection")));
+      });
+
+      it("should dispatch a notification", () => {
+        expect(createRecord.next().value)
+          .eql(put(notifySuccess("Record added.")));
+      });
+
+      it("should unmark the current collection as busy", () => {
+        expect(createRecord.next().value)
+          .eql(put(collectionActions.collectionBusy(false)));
+      });
+    });
+
     describe("Failure", () => {
       let createRecord;
 
       before(() => {
-        createRecord = saga.createRecord("bucket", "collection", record);
+        const getState = () => ({session: {serverInfo: {capabilities: {}}}});
+        const action = collectionActions.createRecord("bucket", "collection", record);
+        createRecord = saga.createRecord(getState, action);
         createRecord.next();
       });
 
@@ -381,76 +452,6 @@ describe("collection sagas", () => {
     });
   });
 
-  describe("createRecordWithAttachment()", () => {
-    describe("Success", () => {
-      let createRecordWithAttachment;
-
-      before(() => {
-        createRecordWithAttachment = saga.createRecordWithAttachment(
-          "bucket", "collection", record);
-      });
-
-      it("should mark the current collection as busy", () => {
-        expect(createRecordWithAttachment.next().value)
-          .eql(put(collectionActions.collectionBusy(true)));
-      });
-
-      it("should generate a uuid for the record", () => {
-        expect(createRecordWithAttachment.next().value)
-          .eql(call(uuid));
-      });
-
-      it("should create formData", () => {
-        expect(createRecordWithAttachment.next("fake-uuid").value)
-          .eql(call(createFormData, record));
-      });
-
-      it("should post the attachment along the record", () => {
-        const formData = {fake: true};
-        expect(createRecordWithAttachment.next(formData).value)
-          .eql(call(requestAttachment, "bucket", "collection", "fake-uuid", {
-            method: "post",
-            body: formData
-          }));
-      });
-
-      it("should update the route path", () => {
-        expect(createRecordWithAttachment.next().value)
-          .eql(put(updatePath("/buckets/bucket/collections/collection")));
-      });
-
-      it("should dispatch a notification", () => {
-        expect(createRecordWithAttachment.next().value)
-          .eql(put(notifySuccess("Record added.")));
-      });
-
-      it("should unmark the current collection as busy", () => {
-        expect(createRecordWithAttachment.next().value)
-          .eql(put(collectionActions.collectionBusy(false)));
-      });
-    });
-
-    describe("Failure", () => {
-      let createRecordWithAttachment;
-
-      before(() => {
-        createRecordWithAttachment = saga.createRecordWithAttachment(
-          "bucket", "collection", record);
-        createRecordWithAttachment.next();
-      });
-
-      it("should dispatch an error notification action", () => {
-        expect(createRecordWithAttachment.throw("error").value)
-          .eql(put(notifyError("error")));
-      });
-
-      it("should unmark the current collection as busy", () => {
-        expect(createRecordWithAttachment.next().value)
-          .eql(put(collectionActions.collectionBusy(false)));
-      });
-    });
-  });
-
   describe("deleteAttachment()", () => {
     let deleteAttachment;
 
@@ -636,41 +637,6 @@ describe("collection sagas", () => {
   });
 
   describe("Watchers", () => {
-    describe("watchRecordCreate()", () => {
-      describe("Attachments enabled", () => {
-        it("should watch for the createRecordWithAttachment action", () => {
-          const action = sessionActions.serverInfoSuccess({
-            capabilities: {attachments: {}}
-          });
-          const watchRecordCreate = saga.watchRecordCreate(action);
-
-          expect(watchRecordCreate.next().value)
-            .eql(take(RECORD_CREATE_REQUEST));
-
-          const record = {__attachment__: {}};
-          expect(watchRecordCreate.next(
-            collectionActions.createRecord("a", "b", record)).value)
-            .eql(fork(saga.createRecordWithAttachment, "a", "b", record));
-        });
-      });
-
-      describe("Attachments disabled", () => {
-        it("should watch for the createRecord action", () => {
-          const action = sessionActions.serverInfoSuccess({
-            capabilities: {}
-          });
-          const watchRecordCreate = saga.watchRecordCreate(action);
-
-          expect(watchRecordCreate.next().value)
-            .eql(take(RECORD_CREATE_REQUEST));
-
-          expect(watchRecordCreate.next(
-            collectionActions.createRecord("a", "b", "c")).value)
-            .eql(fork(saga.createRecord, "a", "b", "c"));
-        });
-      });
-    });
-
     describe("watchRecordUpdate()", () => {
       it("should watch for the updateRecord action", () => {
         const getState = () => {};

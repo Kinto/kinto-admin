@@ -1,4 +1,4 @@
-import { takeEvery, takeLatest } from "redux-saga";
+import { takeEvery } from "redux-saga";
 import { fork } from "redux-saga/effects";
 
 import {
@@ -6,7 +6,6 @@ import {
   SESSION_SETUP,
   SESSION_SETUP_COMPLETE,
   SESSION_BUCKETS_REQUEST,
-  SESSION_SERVERINFO_SUCCESS,
   SESSION_LOGOUT,
   BUCKET_CREATE_REQUEST,
   BUCKET_UPDATE_REQUEST,
@@ -15,6 +14,7 @@ import {
   COLLECTION_UPDATE_REQUEST,
   COLLECTION_DELETE_REQUEST,
   COLLECTION_RECORDS_REQUEST,
+  RECORD_CREATE_REQUEST,
 } from "../constants";
 import * as sessionSagas from "./session";
 import * as routeSagas from "./route";
@@ -43,14 +43,10 @@ export default function* rootSaga(getState) {
     takeEvery(COLLECTION_DELETE_REQUEST, bucketSagas.deleteCollection, getState),
     // collection/records
     takeEvery(COLLECTION_RECORDS_REQUEST, collectionSagas.listRecords, getState),
+    takeEvery(RECORD_CREATE_REQUEST, collectionSagas.createRecord, getState),
     fork(collectionSagas.watchRecordDelete),
     fork(collectionSagas.watchBulkCreateRecords),
     fork(collectionSagas.watchAttachmentDelete),
     fork(collectionSagas.watchRecordUpdate, getState),
-    // Ensure resetting context dependant watchers when context changes
-    fork(function* () {
-      yield* takeLatest(SESSION_SERVERINFO_SUCCESS,
-                        collectionSagas.watchRecordCreate);
-    }),
   ];
 }
