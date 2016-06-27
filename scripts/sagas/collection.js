@@ -7,8 +7,6 @@ import { createFormData } from "../utils";
 import {
   ATTACHMENT_DELETE_REQUEST,
   SESSION_SERVERINFO_SUCCESS,
-  RECORD_UPDATE_REQUEST,
-  RECORD_DELETE_REQUEST,
   RECORD_BULK_CREATE_REQUEST,
 } from "../constants";
 import { getClient, requestAttachment } from "../client";
@@ -113,7 +111,7 @@ export function* updateRecord(getState, action) {
   }
 }
 
-export function* deleteRecord(action) {
+export function* deleteRecord(getState, action) {
   const {bid, cid, rid} = action;
   try {
     const coll = getCollection(bid, cid);
@@ -174,16 +172,8 @@ export function* bulkCreateRecordsWithAttachment(bid, cid, records) {
 
 // Watchers
 
-export function* watchRecordUpdate(getState) {
-  yield* takeEvery(RECORD_UPDATE_REQUEST, updateRecord, getState);
-}
-
 export function* watchAttachmentDelete() {
   yield* takeEvery(ATTACHMENT_DELETE_REQUEST, deleteAttachment);
-}
-
-export function* watchRecordDelete() {
-  yield* takeEvery(RECORD_DELETE_REQUEST, deleteRecord);
 }
 
 export function* watchBulkCreateRecords() {

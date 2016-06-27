@@ -5,8 +5,6 @@ import { v4 as uuid } from "uuid";
 
 import {
   SESSION_SERVERINFO_SUCCESS,
-  RECORD_UPDATE_REQUEST,
-  RECORD_DELETE_REQUEST,
   RECORD_BULK_CREATE_REQUEST,
 } from "../../scripts/constants";
 import { notifyError, notifySuccess } from "../../scripts/actions/notifications";
@@ -403,7 +401,7 @@ describe("collection sagas", () => {
         const bucket = {collection() {return collection;}};
         setClient({bucket() {return bucket;}});
         const action = collectionActions.deleteRecord("bucket", "collection", 1);
-        deleteRecord = saga.deleteRecord(action);
+        deleteRecord = saga.deleteRecord(() => {}, action);
       });
 
       it("should mark the current collection as busy", () => {
@@ -637,35 +635,6 @@ describe("collection sagas", () => {
   });
 
   describe("Watchers", () => {
-    describe("watchRecordUpdate()", () => {
-      it("should watch for the updateRecord action", () => {
-        const getState = () => {};
-        const watchRecordUpdate = saga.watchRecordUpdate(getState);
-
-        expect(watchRecordUpdate.next().value)
-          .eql(take(RECORD_UPDATE_REQUEST));
-
-        const action = collectionActions.updateRecord("a", "b", "c", "d");
-
-        expect(watchRecordUpdate.next(action).value)
-          .eql(fork(saga.updateRecord, getState, action));
-      });
-    });
-
-    describe("watchRecordDelete()", () => {
-      it("should watch for the deleteRecord action", () => {
-        const watchRecordDelete = saga.watchRecordDelete();
-
-        expect(watchRecordDelete.next().value)
-          .eql(take(RECORD_DELETE_REQUEST));
-
-        const action = collectionActions.deleteRecord("a", "b", "c");
-
-        expect(watchRecordDelete.next(action).value)
-          .eql(fork(saga.deleteRecord, action));
-      });
-    });
-
     describe("watchBulkCreateRecords()", () => {
       describe("Attachments enabled", () => {
         it("should watch for the bulkCreateRecords action", () => {

@@ -121,5 +121,19 @@ describe("root saga", () => {
 
       expectSagaCalled(saga, action);
     });
+
+    it("should watch for the updateRecord action", () => {
+      const saga = sandbox.stub(collectionSagas, "updateRecord");
+      const action = collectionActions.updateRecord();
+
+      expectSagaCalled(saga, action);
+    });
+
+    it("should watch for the deleteRecord action", () => {
+      const saga = sandbox.stub(collectionSagas, "deleteRecord");
+      const action = collectionActions.deleteRecord();
+
+      expectSagaCalled(saga, action);
+    });
   });
 });
