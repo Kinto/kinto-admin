@@ -1,12 +1,8 @@
 import { expect } from "chai";
 import { push as updatePath } from "react-router-redux";
-import { take, fork, put, call } from "redux-saga/effects";
+import { put, call } from "redux-saga/effects";
 import { v4 as uuid } from "uuid";
 
-import {
-  SESSION_SERVERINFO_SUCCESS,
-  RECORD_BULK_CREATE_REQUEST,
-} from "../../scripts/constants";
 import { notifyError, notifySuccess } from "../../scripts/actions/notifications";
 import * as collectionActions from "../../scripts/actions/collection";
 import * as recordActions from "../../scripts/actions/record";
@@ -482,14 +478,27 @@ describe("collection sagas", () => {
   });
 
   describe("bulkCreateRecords()", () => {
-    describe("Success", () => {
-      let collection, bulkCreateRecords;
+    let collection;
+
+    before(() => {
+      collection = {batch() {}};
+      const bucket = {collection() {return collection;}};
+      setClient({bucket() {return bucket;}});
+    });
+
+    describe("Attachments disabled", () => {
+      let bulkCreateRecords;
 
       before(() => {
-        collection = {batch() {}};
-        const bucket = {collection() {return collection;}};
-        setClient({bucket() {return bucket;}});
-        bulkCreateRecords = saga.bulkCreateRecords("bucket", "collection", records);
+        const getState = () => ({
+          session: {
+            serverInfo: {
+              capabilities: {}
+            }
+          }
+        });
+        const action = collectionActions.bulkCreateRecords("bucket", "collection", records);
+        bulkCreateRecords = saga.bulkCreateRecords(getState, action);
       });
 
       it("should mark the current collection as busy", () => {
@@ -522,11 +531,98 @@ describe("collection sagas", () => {
       });
     });
 
+    describe("Attachments enabled", () => {
+      let bulkCreateRecords;
+
+      before(() => {
+        const getState = () => ({
+          session: {
+            serverInfo: {
+              capabilities: {attachments: {}}
+            }
+          }
+        });
+        const action = collectionActions.bulkCreateRecords(
+          "bucket", "collection", recordsWithAttachment);
+        bulkCreateRecords = saga.bulkCreateRecords(getState, action);
+      });
+
+      it("should mark the current collection as busy", () => {
+        expect(bulkCreateRecords.next().value)
+          .eql(put(collectionActions.collectionBusy(true)));
+      });
+
+      it("should create the uuid for the first record", () => {
+        expect(bulkCreateRecords.next().value)
+          .eql(call(uuid));
+      });
+
+      it("should create formData for the first record", () => {
+        expect(bulkCreateRecords.next("fake-uuid1").value)
+          .eql(call(createFormData, recordsWithAttachment[0]));
+      });
+
+      it("should post the first record with its attachment", () => {
+        const formData = {fake: true};
+        expect(bulkCreateRecords.next(formData).value)
+          .eql(call(requestAttachment, "bucket", "collection", "fake-uuid1", {
+            method: "post",
+            body: formData
+          }));
+      });
+
+      it("should create the uuid for the second record", () => {
+        expect(bulkCreateRecords.next().value)
+          .eql(call(uuid));
+      });
+
+      it("should create formData for the second record", () => {
+        expect(bulkCreateRecords.next("fake-uuid2").value)
+          .eql(call(createFormData, recordsWithAttachment[1]));
+      });
+
+      it("should post the second record with its attachment", () => {
+        const formData = {fake: true};
+        expect(bulkCreateRecords.next(formData).value)
+          .eql(call(requestAttachment, "bucket", "collection", "fake-uuid2", {
+            method: "post",
+            body: formData
+          }));
+      });
+
+      it("should update the route path", () => {
+        expect(bulkCreateRecords.next({
+          published: recordsWithAttachment,
+          errors: [],
+        }).value)
+          .eql(put(updatePath("/buckets/bucket/collections/collection")));
+      });
+
+      it("should dispatch a notification", () => {
+        expect(bulkCreateRecords.next().value)
+          .eql(put(notifySuccess("2 records created.")));
+      });
+
+      it("should unmark the current collection as busy", () => {
+        expect(bulkCreateRecords.next().value)
+          .eql(put(collectionActions.collectionBusy(false)));
+      });
+    });
+
     describe("Failure", () => {
       let bulkCreateRecords;
 
       before(() => {
-        bulkCreateRecords = saga.bulkCreateRecords("bucket", "collection", records);
+        const getState = () => ({
+          session: {
+            serverInfo: {
+              capabilities: {}
+            }
+          }
+        });
+        const action = collectionActions.bulkCreateRecords(
+          "bucket", "collection", records);
+        bulkCreateRecords = saga.bulkCreateRecords(getState, action);
         bulkCreateRecords.next();
       });
 
@@ -538,143 +634,6 @@ describe("collection sagas", () => {
       it("should unmark the current collection as busy", () => {
         expect(bulkCreateRecords.next().value)
           .eql(put(collectionActions.collectionBusy(false)));
-      });
-    });
-  });
-
-  describe("bulkCreateRecordsWithAttachment()", () => {
-    describe("Success", () => {
-      let bulkCreateRecordsWithAttachment;
-
-      before(() => {
-        bulkCreateRecordsWithAttachment = saga.bulkCreateRecordsWithAttachment(
-          "bucket", "collection", recordsWithAttachment);
-      });
-
-      it("should mark the current collection as busy", () => {
-        expect(bulkCreateRecordsWithAttachment.next().value)
-          .eql(put(collectionActions.collectionBusy(true)));
-      });
-
-      it("should create the uuid for the first record", () => {
-        expect(bulkCreateRecordsWithAttachment.next().value)
-          .eql(call(uuid));
-      });
-
-      it("should create formData for the first record", () => {
-        expect(bulkCreateRecordsWithAttachment.next("fake-uuid1").value)
-          .eql(call(createFormData, recordsWithAttachment[0]));
-      });
-
-      it("should post the first record with its attachment", () => {
-        const formData = {fake: true};
-        expect(bulkCreateRecordsWithAttachment.next(formData).value)
-          .eql(call(requestAttachment, "bucket", "collection", "fake-uuid1", {
-            method: "post",
-            body: formData
-          }));
-      });
-
-      it("should create the uuid for the second record", () => {
-        expect(bulkCreateRecordsWithAttachment.next().value)
-          .eql(call(uuid));
-      });
-
-      it("should create formData for the second record", () => {
-        expect(bulkCreateRecordsWithAttachment.next("fake-uuid2").value)
-          .eql(call(createFormData, recordsWithAttachment[1]));
-      });
-
-      it("should post the second record with its attachment", () => {
-        const formData = {fake: true};
-        expect(bulkCreateRecordsWithAttachment.next(formData).value)
-          .eql(call(requestAttachment, "bucket", "collection", "fake-uuid2", {
-            method: "post",
-            body: formData
-          }));
-      });
-
-      it("should update the route path", () => {
-        expect(bulkCreateRecordsWithAttachment.next({
-          published: recordsWithAttachment,
-          errors: [],
-        }).value)
-          .eql(put(updatePath("/buckets/bucket/collections/collection")));
-      });
-
-      it("should dispatch a notification", () => {
-        expect(bulkCreateRecordsWithAttachment.next().value)
-          .eql(put(notifySuccess("2 records created.")));
-      });
-
-      it("should unmark the current collection as busy", () => {
-        expect(bulkCreateRecordsWithAttachment.next().value)
-          .eql(put(collectionActions.collectionBusy(false)));
-      });
-    });
-
-    describe("Failure", () => {
-      let bulkCreateRecordsWithAttachment;
-
-      before(() => {
-        bulkCreateRecordsWithAttachment = saga.bulkCreateRecordsWithAttachment(
-          "bucket", "collection", records);
-        bulkCreateRecordsWithAttachment.next();
-      });
-
-      it("should dispatch an error notification action", () => {
-        expect(bulkCreateRecordsWithAttachment.throw("error").value)
-          .eql(put(notifyError("error")));
-      });
-
-      it("should unmark the current collection as busy", () => {
-        expect(bulkCreateRecordsWithAttachment.next().value)
-          .eql(put(collectionActions.collectionBusy(false)));
-      });
-    });
-  });
-
-  describe("Watchers", () => {
-    describe("watchBulkCreateRecords()", () => {
-      describe("Attachments enabled", () => {
-        it("should watch for the bulkCreateRecords action", () => {
-          const watchBulkCreateRecords = saga.watchBulkCreateRecords();
-
-          expect(watchBulkCreateRecords.next().value)
-            .eql(take(SESSION_SERVERINFO_SUCCESS));
-
-          const serverInfoAction = {
-            serverInfo: {capabilities: {attachments: {}}}
-          };
-
-          expect(watchBulkCreateRecords.next(serverInfoAction).value)
-            .eql(take(RECORD_BULK_CREATE_REQUEST));
-
-          const records = [{__attachment__: {}}];
-          expect(watchBulkCreateRecords.next(
-            collectionActions.bulkCreateRecords("a", "b", records)).value)
-            .eql(fork(saga.bulkCreateRecordsWithAttachment, "a", "b", records));
-        });
-      });
-
-      describe("Attachments disabled", () => {
-        it("should watch for the bulkCreateRecords action", () => {
-          const watchBulkCreateRecords = saga.watchBulkCreateRecords();
-
-          expect(watchBulkCreateRecords.next().value)
-            .eql(take(SESSION_SERVERINFO_SUCCESS));
-
-          const serverInfoAction = {
-            serverInfo: {capabilities: {}}
-          };
-
-          expect(watchBulkCreateRecords.next(serverInfoAction).value)
-            .eql(take(RECORD_BULK_CREATE_REQUEST));
-
-          expect(watchBulkCreateRecords.next(
-            collectionActions.bulkCreateRecords("a", "b", "c")).value)
-            .eql(fork(saga.bulkCreateRecords, "a", "b", "c"));
-        });
       });
     });
   });

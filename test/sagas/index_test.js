@@ -142,5 +142,12 @@ describe("root saga", () => {
 
       expectSagaCalled(saga, action);
     });
+
+    it("should watch for the bulkCreateRecords action", () => {
+      const saga = sandbox.stub(collectionSagas, "bulkCreateRecords");
+      const action = collectionActions.bulkCreateRecords();
+
+      expectSagaCalled(saga, action);
+    });
   });
 });

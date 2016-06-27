@@ -1,5 +1,4 @@
 import { takeEvery } from "redux-saga";
-import { fork } from "redux-saga/effects";
 
 import * as c from "../constants";
 import * as sessionSagas from "./session";
@@ -32,7 +31,7 @@ export default function* rootSaga(getState) {
     takeEvery(c.RECORD_CREATE_REQUEST, collectionSagas.createRecord, getState),
     takeEvery(c.RECORD_UPDATE_REQUEST, collectionSagas.updateRecord, getState),
     takeEvery(c.RECORD_DELETE_REQUEST, collectionSagas.deleteRecord, getState),
-    fork(collectionSagas.watchBulkCreateRecords),
+    takeEvery(c.RECORD_BULK_CREATE_REQUEST, collectionSagas.bulkCreateRecords, getState),
     // attachments
     takeEvery(c.ATTACHMENT_DELETE_REQUEST, collectionSagas.deleteAttachment, getState),
   ];

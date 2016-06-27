@@ -1,12 +1,8 @@
 import { push as updatePath } from "react-router-redux";
-import { call, take, fork, put } from "redux-saga/effects";
+import { call, put } from "redux-saga/effects";
 import { v4 as uuid } from "uuid";
 import { createFormData } from "../utils";
 
-import {
-  SESSION_SERVERINFO_SUCCESS,
-  RECORD_BULK_CREATE_REQUEST,
-} from "../constants";
 import { getClient, requestAttachment } from "../client";
 import { notifySuccess, notifyError } from "../actions/notifications";
 import { resetRecord } from "../actions/record";
@@ -124,60 +120,41 @@ export function* deleteRecord(getState, action) {
   }
 }
 
-export function* bulkCreateRecords(bid, cid, records) {
+export function* bulkCreateRecords(getState, action) {
+  const {session} = getState();
+  const {bid, cid, records} = action;
   let errorDetails = [];
   try {
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
-    const {errors, published} = yield call([coll, coll.batch], (batch) => {
+    if (shouldProcessAttachment(session.serverInfo, records)) {
+      // XXX We should perform a batch request here
       for (const record of records) {
-        batch.createRecord(record);
+        const rid = yield call(uuid);
+        const formData = yield call(createFormData, record);
+        yield call(requestAttachment, bid, cid, rid, {
+          method: "post",
+          body: formData
+        });
       }
-    }, {aggregate: true});
-    if (errors.length > 0) {
-      errorDetails = errors.map(err => err.error.message);
-      throw new Error("Some records could not be created.");
+      yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
+      yield put(notifySuccess(`${records.length} records created.`));
+    } else {
+      const {errors, published} = yield call([coll, coll.batch], (batch) => {
+        for (const record of records) {
+          batch.createRecord(record);
+        }
+      }, {aggregate: true});
+      if (errors.length > 0) {
+        errorDetails = errors.map(err => err.error.message);
+        throw new Error("Some records could not be created.");
+      }
+      yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
+      yield put(notifySuccess(`${published.length} records created.`));
     }
-    yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
-    yield put(notifySuccess(`${published.length} records created.`));
   } catch(error) {
     yield put(notifyError(error, {details: errorDetails}));
   } finally {
     yield put(actions.collectionBusy(false));
-  }
-}
-
-export function* bulkCreateRecordsWithAttachment(bid, cid, records) {
-  try {
-    yield put(actions.collectionBusy(true));
-    // XXX We should perform a batch request here
-    for (const record of records) {
-      const rid = yield call(uuid);
-      const formData = yield call(createFormData, record);
-      yield call(requestAttachment, bid, cid, rid, {
-        method: "post",
-        body: formData
-      });
-    }
-    yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
-    yield put(notifySuccess(`${records.length} records created.`));
-  } catch(error) {
-    yield put(notifyError(error));
-  } finally {
-    yield put(actions.collectionBusy(false));
-  }
-}
-
-// Watchers
-
-export function* watchBulkCreateRecords() {
-  const {serverInfo} = yield take(SESSION_SERVERINFO_SUCCESS);
-  while(true) { // eslint-disable-line
-    const {bid, cid, records} = yield take(RECORD_BULK_CREATE_REQUEST);
-    if (shouldProcessAttachment(serverInfo, records)) {
-      yield fork(bulkCreateRecordsWithAttachment, bid, cid, records);
-    } else {
-      yield fork(bulkCreateRecords, bid, cid, records);
-    }
   }
 }
