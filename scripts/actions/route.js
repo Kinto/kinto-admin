@@ -17,9 +17,8 @@ export function routeLoadSuccess(
 }
 
 export function routeUpdated(
-  authenticated: boolean,
   params: Object,
   location: Object
 ): Action {
-  return {type: ROUTE_UPDATED, authenticated, params, location};
+  return {type: ROUTE_UPDATED, params, location};
 }

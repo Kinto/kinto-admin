@@ -2,6 +2,7 @@ import { takeEvery, takeLatest } from "redux-saga";
 import { fork } from "redux-saga/effects";
 
 import {
+  ROUTE_UPDATED,
   SESSION_SETUP,
   SESSION_SETUP_COMPLETE,
   SESSION_BUCKETS_REQUEST,
@@ -31,7 +32,7 @@ export default function* rootSaga(getState) {
     takeEvery(SESSION_BUCKETS_REQUEST, sessionSagas.listBuckets, getState),
     takeEvery(SESSION_LOGOUT, sessionSagas.sessionLogout, getState),
     // route
-    fork(routeSagas.watchRouteUpdated),
+    takeEvery(ROUTE_UPDATED, routeSagas.routeUpdated, getState),
     // bucket/collections
     takeEvery(BUCKET_CREATE_REQUEST, bucketSagas.createBucket, getState),
     takeEvery(BUCKET_UPDATE_REQUEST, bucketSagas.updateBucket, getState),

@@ -2,12 +2,12 @@ import { expect } from "chai";
 import sinon from "sinon";
 
 import { SESSION_SERVERINFO_SUCCESS } from "../../scripts/constants";
-// const routeSagas = require("../../scripts/sagas/route");
-const sessionSagas = require("../../scripts/sagas/session");
-const bucketSagas = require("../../scripts/sagas/bucket");
-const collectionSagas = require("../../scripts/sagas/collection");
 import configureStore from "../../scripts/store/configureStore";
-
+import * as routeSagas from "../../scripts/sagas/route";
+import * as sessionSagas from "../../scripts/sagas/session";
+import * as bucketSagas from "../../scripts/sagas/bucket";
+import * as collectionSagas from "../../scripts/sagas/collection";
+import * as routeActions from "../../scripts/actions/route";
 import * as sessionActions from "../../scripts/actions/session";
 import * as bucketActions from "../../scripts/actions/bucket";
 
@@ -29,6 +29,15 @@ describe("root saga", () => {
 
   afterEach(() => {
     sandbox.restore();
+  });
+
+  describe("Route watchers registration", () => {
+    it("should watch for the setup action", () => {
+      const saga = sandbox.stub(routeSagas, "routeUpdated");
+      const action = routeActions.routeUpdated();
+
+      expectSagaCalled(saga, action);
+    });
   });
 
   describe("Session watchers registration", () => {
