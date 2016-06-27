@@ -7,7 +7,6 @@ import { createFormData } from "../utils";
 import {
   ATTACHMENT_DELETE_REQUEST,
   SESSION_SERVERINFO_SUCCESS,
-  COLLECTION_RECORDS_REQUEST,
   RECORD_CREATE_REQUEST,
   RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
@@ -48,11 +47,15 @@ export function* deleteAttachment(action) {
   }
 }
 
-export function* listRecords(action) {
+export function* listRecords(getState, action) {
+  const {collection} = getState();
+  const defaultSort = collection.sort;
   const {bid, cid, sort} = action;
   try {
     const coll = getCollection(bid, cid);
-    const {data} = yield call([coll, coll.listRecords], {sort});
+    const {data} = yield call([coll, coll.listRecords], {
+      sort: sort || defaultSort
+    });
     yield put(actions.listRecordsSuccess(data));
   } catch(error) {
     yield put(notifyError(error));
@@ -178,10 +181,6 @@ export function* bulkCreateRecordsWithAttachment(bid, cid, records) {
 }
 
 // Watchers
-
-export function* watchListRecords() {
-  yield* takeEvery(COLLECTION_RECORDS_REQUEST, listRecords);
-}
 
 export function* watchRecordCreate(serverInfoAction) {
   // Note: serverInfoAction is provided by takeLatest in the rootSaga

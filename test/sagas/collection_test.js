@@ -5,7 +5,6 @@ import { v4 as uuid } from "uuid";
 
 import {
   SESSION_SERVERINFO_SUCCESS,
-  COLLECTION_RECORDS_REQUEST,
   RECORD_CREATE_REQUEST,
   RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
@@ -32,42 +31,66 @@ const recordsWithAttachment = records.map((record, i) => {
 describe("collection sagas", () => {
   describe("listRecords()", () => {
     describe("Success", () => {
-      let collection, listRecords;
+      let collection;
 
       before(() => {
         collection = {listRecords() {}};
         const bucket = {collection() {return collection;}};
         setClient({bucket() {return bucket;}});
-        const action = collectionActions.listRecords("bucket", "collection", "title");
-        listRecords = saga.listRecords(action);
       });
 
-      it("should list collection records", () => {
-        expect(listRecords.next({
-          bucket: {data: {id: "bucket"}},
-          collection: {data: {id: "collection"}},
-        }).value)
-          .eql(call([collection, collection.listRecords], {
-            sort: "title"
-          }));
+      describe("Default sort", () => {
+        let listRecords;
+
+        before(() => {
+          const action = collectionActions.listRecords("bucket", "collection");
+          const getState = () => ({collection: {sort: "title"}});
+          listRecords = saga.listRecords(getState, action);
+        });
+
+        it("should list collection records", () => {
+          expect(listRecords.next().value)
+            .eql(call([collection, collection.listRecords], {sort: "title"}));
+        });
+
+        it("should dispatch the listRecordsSuccess action", () => {
+          expect(listRecords.next({data: records}).value)
+            .eql(put(collectionActions.listRecordsSuccess(records)));
+        });
       });
 
-      it("should dispatch the listRecordsSuccess action", () => {
-        expect(listRecords.next({data: records}).value)
-          .eql(put(collectionActions.listRecordsSuccess(records)));
+      describe("Custom sort", () => {
+        let listRecords;
+
+        before(() => {
+          const action = collectionActions.listRecords("bucket", "collection", "title");
+          const getState = () => ({collection: {sort: "nope"}});
+          listRecords = saga.listRecords(getState, action);
+        });
+
+        it("should list collection records", () => {
+          expect(listRecords.next().value)
+            .eql(call([collection, collection.listRecords], {sort: "title"}));
+        });
+
+        it("should dispatch the listRecordsSuccess action", () => {
+          expect(listRecords.next({data: records}).value)
+            .eql(put(collectionActions.listRecordsSuccess(records)));
+        });
       });
     });
 
     describe("Failure", () => {
-      let listRecords;
+      let listRecords, collection;
 
       before(() => {
-        listRecords = saga.listRecords("bucket", "collection");
+        collection = {listRecords() {}};
+        const bucket = {collection() {return collection;}};
+        setClient({bucket() {return bucket;}});
+        const getState = () => ({collection: {}});
+        const action = collectionActions.listRecords("bucket", "collection");
+        listRecords = saga.listRecords(getState, action);
         listRecords.next();
-        listRecords.next({
-          bucket: {data: {id: "bucket"}},
-          collection: {data: {id: "collection"}},
-        }); // take(ROUTE_LOAD_SUCCESS)
       });
 
       it("should dispatch an error notification action", () => {
@@ -613,20 +636,6 @@ describe("collection sagas", () => {
   });
 
   describe("Watchers", () => {
-    describe("watchListRecords()", () => {
-      it("should watch for the listRecords action", () => {
-        const watchListRecords = saga.watchListRecords();
-
-        expect(watchListRecords.next().value)
-          .eql(take(COLLECTION_RECORDS_REQUEST));
-
-        const action = collectionActions.listRecords("a", "b", "c");
-
-        expect(watchListRecords.next(action).value)
-          .eql(fork(saga.listRecords, action));
-      });
-    });
-
     describe("watchRecordCreate()", () => {
       describe("Attachments enabled", () => {
         it("should watch for the createRecordWithAttachment action", () => {

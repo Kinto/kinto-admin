@@ -10,6 +10,7 @@ import * as collectionSagas from "../../scripts/sagas/collection";
 import * as routeActions from "../../scripts/actions/route";
 import * as sessionActions from "../../scripts/actions/session";
 import * as bucketActions from "../../scripts/actions/bucket";
+import * as collectionActions from "../../scripts/actions/collection";
 
 
 function expectSagaCalled(saga, action) {
@@ -102,6 +103,15 @@ describe("root saga", () => {
     it("should watch for the deleteCollection action", () => {
       const saga = sandbox.stub(bucketSagas, "deleteCollection");
       const action = bucketActions.deleteCollection();
+
+      expectSagaCalled(saga, action);
+    });
+  });
+
+  describe("Collection watchers registration", () => {
+    it("should watch for the listRecords action", () => {
+      const saga = sandbox.stub(collectionSagas, "listRecords");
+      const action = collectionActions.listRecords();
 
       expectSagaCalled(saga, action);
     });
