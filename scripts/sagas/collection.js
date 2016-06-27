@@ -1,11 +1,9 @@
 import { push as updatePath } from "react-router-redux";
-import { takeEvery } from "redux-saga";
 import { call, take, fork, put } from "redux-saga/effects";
 import { v4 as uuid } from "uuid";
 import { createFormData } from "../utils";
 
 import {
-  ATTACHMENT_DELETE_REQUEST,
   SESSION_SERVERINFO_SUCCESS,
   RECORD_BULK_CREATE_REQUEST,
 } from "../constants";
@@ -30,7 +28,7 @@ function getCollection(bid, cid) {
   return getBucket(bid).collection(cid);
 }
 
-export function* deleteAttachment(action) {
+export function* deleteAttachment(getState, action) {
   const {bid, cid, rid} = action;
   try {
     yield put(actions.collectionBusy(true));
@@ -171,10 +169,6 @@ export function* bulkCreateRecordsWithAttachment(bid, cid, records) {
 }
 
 // Watchers
-
-export function* watchAttachmentDelete() {
-  yield* takeEvery(ATTACHMENT_DELETE_REQUEST, deleteAttachment);
-}
 
 export function* watchBulkCreateRecords() {
   const {serverInfo} = yield take(SESSION_SERVERINFO_SUCCESS);

@@ -455,7 +455,7 @@ describe("collection sagas", () => {
 
     before(() => {
       const action = collectionActions.deleteAttachment("bucket", "collection", "record");
-      deleteAttachment = saga.deleteAttachment(action);
+      deleteAttachment = saga.deleteAttachment(() => {}, action);
     });
 
     it("should mark the current collection as busy", () => {

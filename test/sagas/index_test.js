@@ -135,5 +135,12 @@ describe("root saga", () => {
 
       expectSagaCalled(saga, action);
     });
+
+    it("should watch for the deleteAttachment action", () => {
+      const saga = sandbox.stub(collectionSagas, "deleteAttachment");
+      const action = collectionActions.deleteAttachment();
+
+      expectSagaCalled(saga, action);
+    });
   });
 });

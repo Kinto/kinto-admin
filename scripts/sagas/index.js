@@ -17,6 +17,7 @@ import {
   RECORD_CREATE_REQUEST,
   RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
+  ATTACHMENT_DELETE_REQUEST,
 } from "../constants";
 import * as sessionSagas from "./session";
 import * as routeSagas from "./route";
@@ -49,6 +50,7 @@ export default function* rootSaga(getState) {
     takeEvery(RECORD_UPDATE_REQUEST, collectionSagas.updateRecord, getState),
     takeEvery(RECORD_DELETE_REQUEST, collectionSagas.deleteRecord, getState),
     fork(collectionSagas.watchBulkCreateRecords),
-    fork(collectionSagas.watchAttachmentDelete),
+    // attachments
+    takeEvery(ATTACHMENT_DELETE_REQUEST, collectionSagas.deleteAttachment, getState),
   ];
 }
