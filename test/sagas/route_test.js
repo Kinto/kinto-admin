@@ -1,8 +1,7 @@
 import { expect } from "chai";
 import { push as updatePath } from "react-router-redux";
-import { take, call, put } from "redux-saga/effects";
+import { call, put } from "redux-saga/effects";
 
-import { ROUTE_UPDATED } from "../../scripts/constants";
 import { notifyError } from "../../scripts/actions/notifications";
 import { setClient } from "../../scripts/client";
 import * as actions from "../../scripts/actions/route";
@@ -252,7 +251,9 @@ describe("route sagas", () => {
       let routeUpdated;
 
       before(() => {
-        routeUpdated = saga.routeUpdated(false, {}, {pathname: "/blah"});
+        const getState = () => ({session: {authenticated: false}});
+        const action = actions.routeUpdated({}, {pathname: "/blah"});
+        routeUpdated = saga.routeUpdated(getState, action);
       });
 
       it("should clear notification", () => {
@@ -283,7 +284,9 @@ describe("route sagas", () => {
       const params = {bid: "bucket", cid: "collection", rid: "record"};
 
       before(() => {
-        routeUpdated = saga.routeUpdated(true, params, {pathname: "/"});
+        const getState = () => ({session: {authenticated: true}});
+        const action = actions.routeUpdated(params, {pathname: "/"});
+        routeUpdated = saga.routeUpdated(getState, action);
       });
 
       it("should clear notification", () => {
@@ -299,21 +302,6 @@ describe("route sagas", () => {
       it("should scroll window to top", () => {
         expect(routeUpdated.next().value)
           .eql(call([window, window.scrollTo], 0, 0));
-      });
-    });
-  });
-
-  describe("Watchers", () => {
-    describe("watchRouteUpdated()", () => {
-      it("should watch for the deleteCollection action", () => {
-        const watchRouteUpdated = saga.watchRouteUpdated();
-
-        expect(watchRouteUpdated.next().value)
-          .eql(take(ROUTE_UPDATED));
-
-        expect(watchRouteUpdated.next(
-          actions.routeUpdated("a", "b", "c")).value)
-          .eql(call(saga.routeUpdated, "a", "b", "c"));
       });
     });
   });

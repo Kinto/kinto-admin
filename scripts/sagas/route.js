@@ -1,7 +1,6 @@
-import { call, take, put } from "redux-saga/effects";
+import { call, put } from "redux-saga/effects";
 import { push as updatePath } from "react-router-redux";
 
-import { ROUTE_UPDATED } from "../constants";
 import { getClient } from "../client";
 import { storeRedirectURL } from "../actions/session";
 import { resetBucket, bucketBusy, bucketLoadSuccess } from "../actions/bucket";
@@ -90,7 +89,9 @@ export function* loadRoute(bid, cid, rid) {
   }
 }
 
-export function* routeUpdated(authenticated, params={}, location) {
+export function* routeUpdated(getState, action) {
+  const {session} = getState();
+  const {params, location} = action;
   const {bid, cid, rid, token} = params;
 
   // Clear notifications on each route update
@@ -98,7 +99,7 @@ export function* routeUpdated(authenticated, params={}, location) {
 
   // Check for an authenticated session; if we're requesting anything other
   // than the homepage, redirect to the homepage with a notification.
-  if (!authenticated && !token && location.pathname !== "/") {
+  if (!session.authenticated && !token && location.pathname !== "/") {
     yield put(storeRedirectURL(location.pathname));
     yield put(updatePath(""));
     yield put(notifyInfo("Authentication required.", {persistent: true}));
@@ -110,13 +111,4 @@ export function* routeUpdated(authenticated, params={}, location) {
 
   // Side effect: scroll to page top on each route change
   yield call([window, window.scrollTo], 0, 0);
-}
-
-// Watchers
-
-export function* watchRouteUpdated() {
-  while(true) { // eslint-disable-line
-    const {authenticated, params, location} = yield take(ROUTE_UPDATED);
-    yield call(routeUpdated, authenticated, params, location);
-  }
 }

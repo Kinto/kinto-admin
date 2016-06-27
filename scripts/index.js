@@ -17,11 +17,7 @@ syncHistoryWithStore(hashHistory, store);
 
 function onRouteUpdate() {
   const {params, location} = this.state;
-  const {session} = store.getState();
-  const {authenticated} = session;
-
-  // Process preloading resources attached to current route parameters
-  store.dispatch(routeActions.routeUpdated(authenticated, params, location));
+  store.dispatch(routeActions.routeUpdated(params, location));
 }
 
 render((
