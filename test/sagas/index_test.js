@@ -1,7 +1,6 @@
 import { expect } from "chai";
 import sinon from "sinon";
 
-import { SESSION_SERVERINFO_SUCCESS } from "../../scripts/constants";
 import configureStore from "../../scripts/store/configureStore";
 import * as routeSagas from "../../scripts/sagas/route";
 import * as sessionSagas from "../../scripts/sagas/session";
@@ -10,6 +9,7 @@ import * as collectionSagas from "../../scripts/sagas/collection";
 import * as routeActions from "../../scripts/actions/route";
 import * as sessionActions from "../../scripts/actions/session";
 import * as bucketActions from "../../scripts/actions/bucket";
+import * as collectionActions from "../../scripts/actions/collection";
 
 
 function expectSagaCalled(saga, action) {
@@ -107,15 +107,47 @@ describe("root saga", () => {
     });
   });
 
-  describe("Conditional watchers", () => {
-    it("should reset the watchRecordCreate watcher on new session info", () => {
-      const watchRecordCreate = sandbox.stub(collectionSagas, "watchRecordCreate");
-      const store = configureStore();
-      const action = {type: SESSION_SERVERINFO_SUCCESS};
+  describe("Collection watchers registration", () => {
+    it("should watch for the listRecords action", () => {
+      const saga = sandbox.stub(collectionSagas, "listRecords");
+      const action = collectionActions.listRecords();
 
-      store.dispatch(action);
+      expectSagaCalled(saga, action);
+    });
 
-      sinon.assert.calledWithExactly(watchRecordCreate, action);
+    it("should watch for the createRecord action", () => {
+      const saga = sandbox.stub(collectionSagas, "createRecord");
+      const action = collectionActions.createRecord();
+
+      expectSagaCalled(saga, action);
+    });
+
+    it("should watch for the updateRecord action", () => {
+      const saga = sandbox.stub(collectionSagas, "updateRecord");
+      const action = collectionActions.updateRecord();
+
+      expectSagaCalled(saga, action);
+    });
+
+    it("should watch for the deleteRecord action", () => {
+      const saga = sandbox.stub(collectionSagas, "deleteRecord");
+      const action = collectionActions.deleteRecord();
+
+      expectSagaCalled(saga, action);
+    });
+
+    it("should watch for the deleteAttachment action", () => {
+      const saga = sandbox.stub(collectionSagas, "deleteAttachment");
+      const action = collectionActions.deleteAttachment();
+
+      expectSagaCalled(saga, action);
+    });
+
+    it("should watch for the bulkCreateRecords action", () => {
+      const saga = sandbox.stub(collectionSagas, "bulkCreateRecords");
+      const action = collectionActions.bulkCreateRecords();
+
+      expectSagaCalled(saga, action);
     });
   });
 });
