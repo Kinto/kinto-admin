@@ -50,7 +50,7 @@ export function* listBuckets(getState, action) {
       for (const {id} of data) {
         batch.bucket(id).listCollections();
         // XXX future: query the /permissions endpoint to retrieve the other
-        // collections we may have access to bcause they're shared with us
+        // collections we may have access to because they're shared with us
       }
     });
     const buckets = data.map((bucket, index) => {
@@ -68,7 +68,8 @@ export function* listBuckets(getState, action) {
         bucket = {id: permission.bucket_id, collections: []};
         buckets.push(bucket);
       }
-      // Add any missing collection to the current bucket collections list
+      // Add any missing collection to the current bucket collections list; note
+      // that this will expose collections we have shared records within too.
       if ("collection_id" in permission) {
         const collection = bucket.collections.find(x => x.id === permission.collection_id);
         if (!collection) {
