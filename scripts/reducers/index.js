@@ -8,6 +8,7 @@ import bucket from "./bucket";
 import collection from "./collection";
 import record from "./record";
 import notifications from "./notifications";
+import history from "./history";
 
 
 const rootReducer = combineReducers({
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   collection,
   record,
   notifications,
+  history,
 });
 
 export default rootReducer;

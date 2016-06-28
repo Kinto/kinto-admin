@@ -3,6 +3,7 @@ import { call, put } from "redux-saga/effects";
 
 import * as notificationActions from "../actions/notifications";
 import * as sessionActions from "../actions/session";
+import * as historyActions from "../actions/history";
 import { getClient, setupClient, resetClient } from "../client";
 
 
@@ -21,12 +22,13 @@ export function* setupSession(getState, action) {
   }
 }
 
-export function* handleSessionRedirect(getState, action) {
+export function* sessionSetupComplete(getState, action) {
   const {session} = action;
   if (session.redirectURL) {
     yield put(updatePath(session.redirectURL));
     yield put(sessionActions.storeRedirectURL(null));
   }
+  yield put(historyActions.addHistory(session.server));
 }
 
 export function* sessionLogout(getState, action) {

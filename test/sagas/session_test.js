@@ -124,21 +124,21 @@ describe("session sagas", () => {
     });
   });
 
-  describe("handleSessionRedirect()", () => {
-    let handleSessionRedirect;
+  describe("sessionSetupComplete()", () => {
+    let sessionSetupComplete;
 
     before(() => {
       const action = actions.setupComplete({redirectURL: "/blah"});
-      handleSessionRedirect = saga.handleSessionRedirect(() =>  {}, action);
+      sessionSetupComplete = saga.sessionSetupComplete(() =>  {}, action);
     });
 
     it("should redirect to redirectURL", () => {
-      expect(handleSessionRedirect.next().value)
+      expect(sessionSetupComplete.next().value)
         .eql(put(updatePath("/blah")));
     });
 
     it("should clear the redirectURL", () => {
-      expect(handleSessionRedirect.next().value)
+      expect(sessionSetupComplete.next().value)
         .eql(put(actions.storeRedirectURL(null)));
     });
   });
