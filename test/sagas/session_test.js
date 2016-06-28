@@ -6,7 +6,12 @@ import { notifyError } from "../../scripts/actions/notifications";
 import * as actions from "../../scripts/actions/session";
 import * as historyActions from "../../scripts/actions/history";
 import * as saga from "../../scripts/sagas/session";
-import { getClient, setClient, resetClient } from "../../scripts/client";
+import {
+  getClient,
+  setClient,
+  resetClient,
+  requestPermissions
+} from "../../scripts/client";
 
 
 const session = {
@@ -94,13 +99,27 @@ describe("session sagas", () => {
           .to.have.property("fn").eql(client.batch);
       });
 
-      it("should dispatch the list of buckets", () => {
+      it("should fetch the list of permissions", () => {
         const responses = [
           {body: {data: [{id: "b1c1"}, {id: "b1c2"}]}},
           {body: {data: [{id: "b2c1"}]}},
         ];
 
         expect(listBuckets.next(responses).value)
+          .eql(call(requestPermissions));
+      });
+
+      it("should dispatch the list of buckets", () => {
+        const permissions = {
+          data: [
+            {
+              bucket_id: "Foo",
+              collection_id: "Bar",
+            }
+          ]
+        };
+
+        expect(listBuckets.next(permissions).value)
           .eql(put(actions.bucketsSuccess([
             {
               id: "b1",
@@ -109,6 +128,10 @@ describe("session sagas", () => {
             {
               id: "b2",
               collections: [{id: "b2c1"}]
+            },
+            {
+              id: "Foo",
+              collections: [{id: "Bar"}]
             }
           ])));
       });

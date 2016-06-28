@@ -80,3 +80,28 @@ export function requestAttachment(
       throw new Error(`Unable to ${method} attachment: ${message}`);
     });
 }
+
+export function requestPermissions(): Promise {
+  const client: KintoClient = getClient();
+  if (!client) {
+    throw new Error("Client is not configured.");
+  }
+  const {remote, defaultReqOptions}: {
+    remote: string,
+    defaultReqOptions: {
+      headers: Object
+    }
+  } = client;
+  return fetch(`${remote}/permissions`, {
+    headers: defaultReqOptions.headers,
+  })
+    .then((res) => {
+      if (!isHTTPok(res.status)) {
+        throw new Error("HTTP ${status}");
+      }
+      return res.json();
+    })
+    .catch(({message}) => {
+      throw new Error(`Unable to request the permissions endpoint: ${message}`);
+    });
+}

@@ -208,7 +208,7 @@ export default class RecordForm extends Component {
     const alert = this.allowEditing || collection.busy ? null : (
       <div className="alert alert-warning">
         You don't have the required permission to
-        {creation ? "create a" : "edit this"} record.
+        {creation ? " create a" : " edit this"} record.
       </div>
     );
 
