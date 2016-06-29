@@ -25,3 +25,11 @@ declare module "kinto-http/lib/endpoint" {
   declare function endpoint(): string;
   declare var exports: endpoint;
 }
+
+declare module "kinto-http/lib/utils" {
+  declare function checkVersion(
+    version: string,
+    minVersion: string,
+    maxVersion: string
+  ): boolean;
+}
