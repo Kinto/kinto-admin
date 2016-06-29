@@ -33,7 +33,7 @@ export default function history(
 ): string[] {
   switch(action.type) {
     case HISTORY_ADD: {
-      return save([action.entry, ...state]);
+      return save(Array.from(new Set([action.entry, ...state])));
     }
     default: {
       return state;
