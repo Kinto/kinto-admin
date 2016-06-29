@@ -3,6 +3,54 @@ import React, { Component } from "react";
 import Form from "react-jsonschema-form";
 
 
+let serverHistory = [];
+
+class ServerHistory extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {menuOpened: false};
+  }
+
+  select = (server) => {
+    return (event) => {
+      event.preventDefault();
+      this.props.onChange(server);
+      this.setState({menuOpened: false});
+    };
+  }
+
+  toggleMenu = () => {
+    this.setState({menuOpened: !this.state.menuOpened});
+  }
+
+  render() {
+    const {menuOpened} = this.state;
+    const {id, value, onChange} = this.props;
+    return (
+      <div className="input-group">
+        <input type="text"
+          id={id}
+          className="form-control"
+          value={value}
+          onChange={(event) => onChange(event.target.value)} />
+        <div className={`input-group-btn ${menuOpened ? "open" : ""}`}>
+          <button type="button" className="btn btn-default dropdown-toggle"
+            onClick={this.toggleMenu}>
+            <span className="caret"></span>
+          </button>
+          <ul className="dropdown-menu dropdown-menu-right">{
+            serverHistory.length === 0 ? (
+              <li><a onClick={this.toggleMenu}><em>No server history</em></a></li>
+            ) : serverHistory.map((server, key) => (
+              <li key={key}><a href="#" onClick={this.select(server)}>{server}</a></li>
+            ))
+          }</ul>
+        </div>
+      </div>
+    );
+  }
+}
+
 const baseAuthSchema = {
   type: "object",
   title: "Setup",
@@ -58,6 +106,9 @@ const fxaSchema = {
 };
 
 const baseUISchema = {
+  server: {
+    "ui:widget": ServerHistory,
+  },
   authType: {
     "ui:widget": "radio",
   }
@@ -88,7 +139,27 @@ const btnLabels = {
   "fxa": "Sign in using your Firefox Account",
 };
 
+/**
+ * Use the server history for the default server field value when available.
+ */
+function extendSchemaWithHistory(schema, history) {
+  return {
+    ...schema,
+    properties: {
+      ...schema.properties,
+      server: {
+        ...schema.properties.server,
+        default: history[0] || schema.properties.server.default
+      }
+    }
+  };
+}
+
 export default class AuthForm extends Component {
+  defaultProps = {
+    history: []
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -136,12 +207,17 @@ export default class AuthForm extends Component {
   };
 
   render() {
+    const {history} = this.props;
+    // XXX we should rather pass the history as an option to the custom form
+    // widget when https://github.com/mozilla-services/react-jsonschema-form/issues/250
+    // is implemented in rjsf.
+    serverHistory = history;
     const {schema, uiSchema, formData} = this.state;
     return (
       <div className="panel panel-default">
         <div className="panel-body">
           <Form
-            schema={schema}
+            schema={extendSchemaWithHistory(schema, history)}
             formData={formData}
             onChange={this.onChange}
             uiSchema={uiSchema}
