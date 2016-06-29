@@ -15,7 +15,7 @@ function load(): string[] {
   }
 }
 
-function save(history): string[] {
+function save(history: string[]): string[] {
   try {
     localStorage.setItem("kinto-admin-server-history", JSON.stringify(history));
   } catch(err) {
