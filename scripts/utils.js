@@ -7,6 +7,10 @@ import { checkVersion as clientCheckVersion } from "kinto-http/lib/utils";
 
 const { Blob, FormData, Uint8Array } = window;
 
+export function clone(obj: any) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
 export function omit(obj: Object, keys: string[] = []): Object {
   return Object.keys(obj).reduce((acc:Object, key:string) => {
     return keys.includes(key) ? acc : {...acc, [key]: obj[key]};
