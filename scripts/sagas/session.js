@@ -22,7 +22,7 @@ export function* setupSession(getState, action) {
   }
 }
 
-export function* sessionSetupComplete(getState, action) {
+export function* completeSessionSetup(getState, action) {
   const {session} = action;
   if (session.redirectURL) {
     yield put(updatePath(session.redirectURL));

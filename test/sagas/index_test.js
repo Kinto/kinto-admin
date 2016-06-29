@@ -56,7 +56,7 @@ describe("root saga", () => {
     });
 
     it("should watch for the setupComplete action", () => {
-      const saga = sandbox.stub(sessionSagas, "sessionSetupComplete");
+      const saga = sandbox.stub(sessionSagas, "completeSessionSetup");
       const action = sessionActions.setupComplete();
 
       expectSagaCalled(saga, action);

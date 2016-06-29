@@ -25,6 +25,7 @@ describe("HomePage component", () => {
       navigateToExternalAuth = sandbox.spy();
       node = createComponent(HomePage, {
         setup,
+        history: [],
         navigateToExternalAuth,
         session: {authenticated: false},
       });

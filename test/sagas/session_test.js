@@ -4,6 +4,7 @@ import { put, call } from "redux-saga/effects";
 
 import { notifyError } from "../../scripts/actions/notifications";
 import * as actions from "../../scripts/actions/session";
+import * as historyActions from "../../scripts/actions/history";
 import * as saga from "../../scripts/sagas/session";
 import { getClient, setClient, resetClient } from "../../scripts/client";
 
@@ -124,22 +125,27 @@ describe("session sagas", () => {
     });
   });
 
-  describe("sessionSetupComplete()", () => {
-    let sessionSetupComplete;
+  describe("completeSessionSetup()", () => {
+    let completeSessionSetup;
 
     before(() => {
-      const action = actions.setupComplete({redirectURL: "/blah"});
-      sessionSetupComplete = saga.sessionSetupComplete(() =>  {}, action);
+      const action = actions.setupComplete({server: "server", redirectURL: "/blah"});
+      completeSessionSetup = saga.completeSessionSetup(() =>  {}, action);
     });
 
     it("should redirect to redirectURL", () => {
-      expect(sessionSetupComplete.next().value)
+      expect(completeSessionSetup.next().value)
         .eql(put(updatePath("/blah")));
     });
 
     it("should clear the redirectURL", () => {
-      expect(sessionSetupComplete.next().value)
+      expect(completeSessionSetup.next().value)
         .eql(put(actions.storeRedirectURL(null)));
+    });
+
+    it("should add server to recent history", () => {
+      expect(completeSessionSetup.next().value)
+        .eql(put(historyActions.addHistory("server")));
     });
   });
 
