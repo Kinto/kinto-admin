@@ -219,7 +219,6 @@ export default class AuthForm extends Component {
 
   render() {
     const {history} = this.props;
-    console.log(history);
     const {schema, uiSchema, formData} = this.state;
     return (
       <div className="panel panel-default">
