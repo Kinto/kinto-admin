@@ -3,8 +3,6 @@ import React, { Component } from "react";
 import Form from "react-jsonschema-form";
 
 
-let serverHistory = [];
-
 class ServerHistory extends Component {
   constructor(props) {
     super(props);
@@ -25,7 +23,8 @@ class ServerHistory extends Component {
 
   render() {
     const {menuOpened} = this.state;
-    const {id, value, onChange} = this.props;
+    const {id, value, onChange, options} = this.props;
+    const {history} = options;
     return (
       <div className="input-group">
         <input type="text"
@@ -39,9 +38,9 @@ class ServerHistory extends Component {
             <span className="caret"></span>
           </button>
           <ul className="dropdown-menu dropdown-menu-right">{
-            serverHistory.length === 0 ? (
+            history.length === 0 ? (
               <li><a onClick={this.toggleMenu}><em>No server history</em></a></li>
-            ) : serverHistory.map((server, key) => (
+            ) : history.map((server, key) => (
               <li key={key}><a href="#" onClick={this.select(server)}>{server}</a></li>
             ))
           }</ul>
@@ -106,9 +105,6 @@ const fxaSchema = {
 };
 
 const baseUISchema = {
-  server: {
-    "ui:widget": ServerHistory,
-  },
   authType: {
     "ui:widget": "radio",
   }
@@ -150,6 +146,21 @@ function extendSchemaWithHistory(schema, history) {
       server: {
         ...schema.properties.server,
         default: history[0] || schema.properties.server.default
+      }
+    }
+  };
+}
+
+/**
+ * Use the server history for the default server field value when available.
+ */
+function extendUiSchemaWithHistory(uiSchema, history) {
+  return {
+    ...uiSchema,
+    server: {
+      "ui:widget": {
+        component: ServerHistory,
+        options: {history}
       }
     }
   };
@@ -208,19 +219,15 @@ export default class AuthForm extends Component {
 
   render() {
     const {history} = this.props;
-    // XXX we should rather pass the history as an option to the custom form
-    // widget when https://github.com/mozilla-services/react-jsonschema-form/issues/250
-    // is implemented in rjsf.
-    serverHistory = history;
     const {schema, uiSchema, formData} = this.state;
     return (
       <div className="panel panel-default">
         <div className="panel-body">
           <Form
             schema={extendSchemaWithHistory(schema, history)}
+            uiSchema={extendUiSchemaWithHistory(uiSchema, history)}
             formData={formData}
             onChange={this.onChange}
-            uiSchema={uiSchema}
             onSubmit={this.onSubmit}>
             <button type="submit" className="btn btn-info">
               {btnLabels[formData.authType]}
