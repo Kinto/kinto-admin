@@ -62,6 +62,7 @@ describe("session sagas", () => {
 
       const serverInfo = {
         http_api_version: "1.8",
+        url: "http://server.test/v1",
         user: {
           bucket: "defaultBucketId"
         }
@@ -82,8 +83,13 @@ describe("session sagas", () => {
           .eql(call([client, client.fetchServerInfo]));
       });
 
-      it("should dispatch the server information action", () => {
+      it("should add server to recent history", () => {
         expect(listBuckets.next(serverInfo).value)
+          .eql(put(historyActions.addHistory(serverInfo.url)));
+      });
+
+      it("should dispatch the server information action", () => {
+        expect(listBuckets.next().value)
           .eql(put(actions.serverInfoSuccess(serverInfo)));
       });
 
@@ -165,11 +171,6 @@ describe("session sagas", () => {
     it("should clear the redirectURL", () => {
       expect(completeSessionSetup.next().value)
         .eql(put(actions.storeRedirectURL(null)));
-    });
-
-    it("should add server to recent history", () => {
-      expect(completeSessionSetup.next().value)
-        .eql(put(historyActions.addHistory("server")));
     });
   });
 

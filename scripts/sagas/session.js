@@ -29,7 +29,6 @@ export function* completeSessionSetup(getState, action) {
     yield put(updatePath(session.redirectURL));
     yield put(sessionActions.storeRedirectURL(null));
   }
-  yield put(historyActions.addHistory(session.server));
 }
 
 export function* sessionLogout(getState, action) {
@@ -69,6 +68,7 @@ export function* listBuckets(getState, action) {
     const client = getClient();
     // Fetch server information
     const serverInfo = yield call([client, client.fetchServerInfo]);
+    yield put(historyActions.addHistory(serverInfo.url));
     // Notify they're received
     yield put(sessionActions.serverInfoSuccess(serverInfo));
     // Retrieve and build the list of buckets
