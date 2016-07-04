@@ -9,7 +9,8 @@ import rootSaga from "../sagas";
 const sagaMiddleware = createSagaMiddleware();
 
 const finalCreateStore = compose(
-  applyMiddleware(sagaMiddleware, routerMiddleware(hashHistory))
+  applyMiddleware(sagaMiddleware, routerMiddleware(hashHistory)),
+  window.devToolsExtension ? window.devToolsExtension() : f => f
 )(createStore);
 
 export default function configureStore(initialState) {
