@@ -12,8 +12,11 @@ import history from "./history";
 
 
 export default function createRootReducer(plugins: Object[] = []) {
-  // XXX merge plugin reducers with standard ones
-  // XXX check for name conflicts?
+  // Merge plugin reducers with standard ones
+  const pluginReducers = plugins.reduce((acc, plugin) => {
+    // XXX check for name conflicts?
+    return {...acc, ...plugin.reducers};
+  }, {});
   return combineReducers({
     routing: routerReducer,
     session,
@@ -22,5 +25,6 @@ export default function createRootReducer(plugins: Object[] = []) {
     record,
     notifications,
     history,
+    ...pluginReducers
   });
 }

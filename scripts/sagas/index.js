@@ -6,12 +6,19 @@ import * as routeSagas from "./route";
 import * as bucketSagas from "./bucket";
 import * as collectionSagas from "./collection";
 
+function registerPluginSagas(plugins, getState) {
+  return plugins.reduce((acc, plugin) => {
+    const sagas = plugin.sagas.map(([fn, ...args]) => {
+      return fn(...args, getState);
+    });
+    return [...acc, ...sagas];
+  }, []);
+}
 
 /**
  * @param {function} getState Function to obtain the current store state.
  */
 export default function* rootSaga(getState, plugins=[]) {
-  // XXX concat plugins sagas, if any
   yield [
     // session
     takeEvery(c.SESSION_SETUP, sessionSagas.setupSession, getState),
@@ -35,5 +42,5 @@ export default function* rootSaga(getState, plugins=[]) {
     takeEvery(c.RECORD_BULK_CREATE_REQUEST, collectionSagas.bulkCreateRecords, getState),
     // attachments
     takeEvery(c.ATTACHMENT_DELETE_REQUEST, collectionSagas.deleteAttachment, getState),
-  ];
+  ].concat(registerPluginSagas(plugins, getState));
 }
