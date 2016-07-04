@@ -11,7 +11,7 @@ import notifications from "./notifications";
 import history from "./history";
 
 
-export default function createRootReducer(plugins=[]) {
+export default function createRootReducer(plugins: Object[] = []) {
   // XXX merge plugin reducers with standard ones
   // XXX check for name conflicts?
   return combineReducers({

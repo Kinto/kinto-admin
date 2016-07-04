@@ -58,7 +58,7 @@ function onCollectionListEnter(store: Object, {params}) {
   store.dispatch(collectionActions.listRecords(bid, cid, sort));
 }
 
-function registerPluginRoutes(plugins) {
+function registerPluginRoutes(plugins: Object[]) {
   // Extract routes from plugins
   return plugins.reduce((routes, plugin) => {
     const pluginRoutes = plugin.routes.map((route, key) => {
