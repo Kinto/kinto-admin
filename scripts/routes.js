@@ -58,10 +58,24 @@ function onCollectionListEnter(store: Object, {params}) {
   store.dispatch(collectionActions.listRecords(bid, cid, sort));
 }
 
-export default function getRoutes(store: Object) {
+function registerPluginRoutes(plugins) {
+  // Extract routes from plugins
+  return plugins.reduce((routes, plugin) => {
+    const pluginRoutes = plugin.routes.map((route, key) => {
+      const {components, ...props} = route;
+      return (
+        <Route key={key} components={{...common, ...components}} {...props} />
+      );
+    });
+    return [...routes, ...pluginRoutes];
+  }, []);
+}
+
+export default function getRoutes(store: Object, plugins: Object[] = []) {
   return (
     <Route path="/" component={App}>
       <IndexRoute components={{...common, content: HomePage}} />
+      {registerPluginRoutes(plugins)}
       <Route path="/auth/:payload/:token"
         components={{...common, content: HomePage}}
         onEnter={onAuthEnter.bind(null, store)} />
