@@ -10,7 +10,8 @@ import * as collectionSagas from "./collection";
 /**
  * @param {function} getState Function to obtain the current store state.
  */
-export default function* rootSaga(getState) {
+export default function* rootSaga(getState, plugins=[]) {
+  // XXX concat plugins sagas, if any
   yield [
     // session
     takeEvery(c.SESSION_SETUP, sessionSagas.setupSession, getState),

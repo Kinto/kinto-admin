@@ -11,14 +11,16 @@ import notifications from "./notifications";
 import history from "./history";
 
 
-const rootReducer = combineReducers({
-  routing: routerReducer,
-  session,
-  bucket,
-  collection,
-  record,
-  notifications,
-  history,
-});
-
-export default rootReducer;
+export default function createRootReducer(plugins=[]) {
+  // XXX merge plugin reducers with standard ones
+  // XXX check for name conflicts?
+  return combineReducers({
+    routing: routerReducer,
+    session,
+    bucket,
+    collection,
+    record,
+    notifications,
+    history,
+  });
+}
