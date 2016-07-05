@@ -1,18 +1,11 @@
 import { takeEvery } from "redux-saga";
 
+import { flattenPluginSagas } from "../plugin";
 import * as c from "../constants";
 import * as sessionSagas from "./session";
 import * as routeSagas from "./route";
 import * as bucketSagas from "./bucket";
 import * as collectionSagas from "./collection";
-
-
-function flattenPluginSagas(plugins, getState) {
-  return plugins.reduce((acc, plugin) => {
-    const sagas = plugin.sagas.map(([fn, ...args]) => fn(...args, getState));
-    return [...acc, ...sagas];
-  }, []);
-}
 
 /**
  * Registers saga watchers.
