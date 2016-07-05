@@ -11,6 +11,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "codemirror/lib/codemirror.css";
 import "../css/styles.css";
 
+
 export default function renderAdmin(node, plugins=[]) {
   const store = configureStore({}, plugins);
 

@@ -32,8 +32,8 @@ module.exports = {
         loaders: ["babel"],
         exclude: /node_modules/,
         include: [
-          path.join(__dirname, "schema"),
-          path.join(__dirname, "scripts")
+          path.join(__dirname, "scripts"),
+          path.join(__dirname, "sample"),
         ],
       },
       {
