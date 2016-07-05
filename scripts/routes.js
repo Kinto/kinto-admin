@@ -58,7 +58,7 @@ function onCollectionListEnter(store: Object, {params}) {
   store.dispatch(collectionActions.listRecords(bid, cid, sort));
 }
 
-function registerPluginRoutes(plugins: Object[]) {
+function flattenPluginRoutes(plugins: Object[]) {
   // Extract routes from plugins
   return plugins.reduce((routes, plugin) => {
     const pluginRoutes = plugin.routes.map((route, key) => {
@@ -75,7 +75,7 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
   return (
     <Route path="/" component={App}>
       <IndexRoute components={{...common, content: HomePage}} />
-      {registerPluginRoutes(plugins)}
+      {flattenPluginRoutes(plugins)}
       <Route path="/auth/:payload/:token"
         components={{...common, content: HomePage}}
         onEnter={onAuthEnter.bind(null, store)} />

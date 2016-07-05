@@ -6,20 +6,22 @@ import * as routeSagas from "./route";
 import * as bucketSagas from "./bucket";
 import * as collectionSagas from "./collection";
 
-function registerPluginSagas(plugins, getState) {
+
+function flattenPluginSagas(plugins, getState) {
   return plugins.reduce((acc, plugin) => {
-    const sagas = plugin.sagas.map(([fn, ...args]) => {
-      return fn(...args, getState);
-    });
+    const sagas = plugin.sagas.map(([fn, ...args]) => fn(...args, getState));
     return [...acc, ...sagas];
   }, []);
 }
 
 /**
- * @param {function} getState Function to obtain the current store state.
+ * Registers saga watchers.
+ *
+ * @param {Function} getState Function to obtain the current store state.
+ * @param {Array}    plugins  The list of plugins.
  */
 export default function* rootSaga(getState, plugins=[]) {
-  yield [
+  const standardSagas = [
     // session
     takeEvery(c.SESSION_SETUP, sessionSagas.setupSession, getState),
     takeEvery(c.SESSION_SETUP_COMPLETE, sessionSagas.completeSessionSetup, getState),
@@ -42,5 +44,7 @@ export default function* rootSaga(getState, plugins=[]) {
     takeEvery(c.RECORD_BULK_CREATE_REQUEST, collectionSagas.bulkCreateRecords, getState),
     // attachments
     takeEvery(c.ATTACHMENT_DELETE_REQUEST, collectionSagas.deleteAttachment, getState),
-  ].concat(registerPluginSagas(plugins, getState));
+  ];
+
+  yield [...standardSagas, ...flattenPluginSagas(plugins, getState)];
 }
