@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import history from "../../scripts/reducers/history";
-import { HISTORY_ADD } from "../../scripts/constants";
+import { HISTORY_ADD, HISTORY_CLEAR } from "../../scripts/constants";
 
 
 describe("history reducer", () => {
@@ -14,6 +14,13 @@ describe("history reducer", () => {
     it("should not prepend a duplicate entry", () => {
       expect(history(["first"], {type: HISTORY_ADD, entry: "first"}))
         .eql(["first"]);
+    });
+  });
+
+  describe("HISTORY_CLEAR", () => {
+    it("should clear the stack", () => {
+      expect(history(["first", "second"], {type: HISTORY_CLEAR}))
+        .eql([]);
     });
   });
 });

@@ -1,6 +1,6 @@
 /* @flow */
 
-import { HISTORY_ADD } from "../constants";
+import { HISTORY_ADD, HISTORY_CLEAR } from "../constants";
 
 
 function load(): string[] {
@@ -34,6 +34,9 @@ export default function history(
   switch(action.type) {
     case HISTORY_ADD: {
       return save(Array.from(new Set([action.entry, ...state])));
+    }
+    case HISTORY_CLEAR: {
+      return save([]);
     }
     default: {
       return state;
