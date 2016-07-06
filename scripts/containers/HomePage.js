@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import HomePage from "../components/HomePage";
 import * as NotificationActions from "../actions/notifications";
 import * as SessionActions from "../actions/session";
+import * as HistoryActions from "../actions/history";
 
 
 function mapStateToProps(state) {
@@ -16,7 +17,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     ...SessionActions,
-    ...NotificationActions
+    ...NotificationActions,
+    ...HistoryActions,
   }, dispatch);
 }
 

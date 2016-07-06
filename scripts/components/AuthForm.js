@@ -21,6 +21,13 @@ class ServerHistory extends Component {
     this.setState({menuOpened: !this.state.menuOpened});
   }
 
+  clear = (event) => {
+    event.preventDefault();
+    const {clearHistory} = this.props.options;
+    clearHistory();
+    this.setState({menuOpened: false});
+  }
+
   render() {
     const {menuOpened} = this.state;
     const {id, value, onChange, options} = this.props;
@@ -37,13 +44,17 @@ class ServerHistory extends Component {
             onClick={this.toggleMenu}>
             <span className="caret"></span>
           </button>
-          <ul className="dropdown-menu dropdown-menu-right">{
-            history.length === 0 ? (
-              <li><a onClick={this.toggleMenu}><em>No server history</em></a></li>
-            ) : history.map((server, key) => (
-              <li key={key}><a href="#" onClick={this.select(server)}>{server}</a></li>
-            ))
-          }</ul>
+          <ul className="dropdown-menu dropdown-menu-right">
+            {
+              history.length === 0 ? (
+                <li><a onClick={this.toggleMenu}><em>No server history</em></a></li>
+              ) : history.map((server, key) => (
+                <li key={key}><a href="#" onClick={this.select(server)}>{server}</a></li>
+              ))
+            }
+            <li role="separator" className="divider"></li>
+            <li><a href="#" onClick={this.clear}>Clear</a></li>
+          </ul>
         </div>
       </div>
     );
@@ -154,13 +165,13 @@ function extendSchemaWithHistory(schema, history) {
 /**
  * Use the server history for the default server field value when available.
  */
-function extendUiSchemaWithHistory(uiSchema, history) {
+function extendUiSchemaWithHistory(uiSchema, history, clearHistory) {
   return {
     ...uiSchema,
     server: {
       "ui:widget": {
         component: ServerHistory,
-        options: {history}
+        options: {history, clearHistory}
       }
     }
   };
@@ -218,14 +229,14 @@ export default class AuthForm extends Component {
   };
 
   render() {
-    const {history} = this.props;
+    const {history, clearHistory} = this.props;
     const {schema, uiSchema, formData} = this.state;
     return (
       <div className="panel panel-default">
         <div className="panel-body">
           <Form
             schema={extendSchemaWithHistory(schema, history)}
-            uiSchema={extendUiSchemaWithHistory(uiSchema, history)}
+            uiSchema={extendUiSchemaWithHistory(uiSchema, history, clearHistory)}
             formData={formData}
             onChange={this.onChange}
             onSubmit={this.onSubmit}>

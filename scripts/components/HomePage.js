@@ -46,7 +46,13 @@ function SessionInfo(props) {
 
 export default class HomePage extends Component {
   render() {
-    const {session, history, setup, navigateToExternalAuth} = this.props;
+    const {
+      session,
+      history,
+      clearHistory,
+      setup,
+      navigateToExternalAuth
+    } = this.props;
     const {authenticated, busy} = session;
     return (
       <div>
@@ -57,6 +63,7 @@ export default class HomePage extends Component {
             <AuthForm setup={setup}
                       session={session}
                       history={history}
+                      clearHistory={clearHistory}
                       navigateToExternalAuth={navigateToExternalAuth} />}
       </div>
     );
