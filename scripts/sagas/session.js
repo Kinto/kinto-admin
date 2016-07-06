@@ -14,7 +14,7 @@ export function* setupSession(getState, action) {
     setupClient(session);
     yield put(notificationActions.clearNotifications({force: true}));
     yield put(sessionActions.sessionBusy(true));
-    yield call(listBuckets);
+    yield put(sessionActions.listBuckets());
     yield put(sessionActions.setupComplete(session));
   } catch(error) {
     yield put(notificationActions.notifyError(error));
@@ -68,7 +68,8 @@ export function* listBuckets(getState, action) {
     const client = getClient();
     // Fetch server information
     const serverInfo = yield call([client, client.fetchServerInfo]);
-    yield put(historyActions.addHistory(serverInfo.url));
+    // Store this valid server url in the history
+    yield put(historyActions.addHistory(getState().session.server));
     // Notify they're received
     yield put(sessionActions.serverInfoSuccess(serverInfo));
     // Retrieve and build the list of buckets
@@ -76,8 +77,6 @@ export function* listBuckets(getState, action) {
     const responses = yield call([client, client.batch], (batch) => {
       for (const {id} of data) {
         batch.bucket(id).listCollections();
-        // XXX future: query the /permissions endpoint to retrieve the other
-        // collections we may have access to because they're shared with us
       }
     });
     let buckets = data.map((bucket, index) => {

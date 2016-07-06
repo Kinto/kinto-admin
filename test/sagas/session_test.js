@@ -42,7 +42,7 @@ describe("session sagas", () => {
 
     it("should retrieve buckets hierarchy", () => {
       expect(setupSession.next().value)
-        .eql(call(saga.listBuckets));
+        .eql(put(actions.listBuckets()));
     });
 
     it("should mark the session setup as completed", () => {
@@ -62,7 +62,6 @@ describe("session sagas", () => {
 
       const serverInfo = {
         http_api_version: "1.8",
-        url: "http://server.test/v1",
         user: {
           bucket: "defaultBucketId"
         }
@@ -74,8 +73,13 @@ describe("session sagas", () => {
           fetchServerInfo() {},
           listBuckets() {}
         });
+        const getState = () => ({
+          session: {
+            server: "http://server.test/v1"
+          }
+        });
         const action = actions.listBuckets();
-        listBuckets = saga.listBuckets(() => {}, action);
+        listBuckets = saga.listBuckets(getState, action);
       });
 
       it("should fetch server information", () => {
@@ -85,7 +89,7 @@ describe("session sagas", () => {
 
       it("should add server to recent history", () => {
         expect(listBuckets.next(serverInfo).value)
-          .eql(put(historyActions.addHistory(serverInfo.url)));
+          .eql(put(historyActions.addHistory("http://server.test/v1")));
       });
 
       it("should dispatch the server information action", () => {
