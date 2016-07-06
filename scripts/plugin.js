@@ -8,7 +8,7 @@ import React from "react";
 import { Route } from "react-router";
 
 
-export function flattenPluginRoutes(
+export function flattenPluginsRoutes(
   plugins: Object[],
   defaultComponents: Object
 ): Object[] {
@@ -25,7 +25,7 @@ export function flattenPluginRoutes(
   }, []);
 }
 
-export function flattenPluginSagas(
+export function flattenPluginsSagas(
   plugins: Object[],
   getState: Function
 ): Object[] {
@@ -39,7 +39,7 @@ export function flattenPluginSagas(
 
 // XXX: in the future, we should investigate a way to "hook" into existing
 // standard reducers (eg. to add more switch cases within reducers).
-export function flattenPluginReducers(
+export function flattenPluginsReducers(
   plugins: Object[],
   reserved: string[] = []
 ): Object {

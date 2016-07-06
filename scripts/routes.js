@@ -3,7 +3,7 @@
 import React from "react";
 import { Route, IndexRoute } from "react-router";
 
-import { flattenPluginRoutes } from "./plugin";
+import { flattenPluginsRoutes } from "./plugin";
 import App from "./containers/App";
 import HomePage from "./containers/HomePage";
 import Sidebar from "./containers/Sidebar";
@@ -63,7 +63,7 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
   return (
     <Route path="/" component={App}>
       <IndexRoute components={{...common, content: HomePage}} />
-      {flattenPluginRoutes(plugins, common)}
+      {flattenPluginsRoutes(plugins, common)}
       <Route path="/auth/:payload/:token"
         components={{...common, content: HomePage}}
         onEnter={onAuthEnter.bind(null, store)} />

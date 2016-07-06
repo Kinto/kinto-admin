@@ -1,6 +1,6 @@
 import { takeEvery } from "redux-saga";
 
-import { flattenPluginSagas } from "../plugin";
+import { flattenPluginsSagas } from "../plugin";
 import * as c from "../constants";
 import * as sessionSagas from "./session";
 import * as routeSagas from "./route";
@@ -39,5 +39,5 @@ export default function* rootSaga(getState, plugins=[]) {
     takeEvery(c.ATTACHMENT_DELETE_REQUEST, collectionSagas.deleteAttachment, getState),
   ];
 
-  yield [...standardSagas, ...flattenPluginSagas(plugins, getState)];
+  yield [...standardSagas, ...flattenPluginsSagas(plugins, getState)];
 }
