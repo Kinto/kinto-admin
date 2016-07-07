@@ -3,10 +3,9 @@ import { call, put } from "redux-saga/effects";
 
 import { getClient } from "../client";
 import { notifySuccess, notifyError } from "../actions/notifications";
-import { sessionBusy } from "../actions/session";
+import { sessionBusy, listBuckets } from "../actions/session";
 import { bucketLoadSuccess } from "../actions/bucket";
 import { collectionLoadSuccess } from "../actions/collection";
-import { listBuckets } from "./session";
 
 
 function getBucket(bid) {
@@ -23,7 +22,7 @@ export function* createBucket(getState, action) {
     const client = getClient();
     yield put(sessionBusy(true));
     yield call([client, client.createBucket], bid, {data});
-    yield call(listBuckets);
+    yield put(listBuckets());
     yield put(updatePath(`/buckets/${bid}/edit`));
     yield put(notifySuccess("Bucket created."));
   } catch(error) {
@@ -54,7 +53,7 @@ export function* deleteBucket(getState, action) {
     const client = getClient();
     yield put(sessionBusy(true));
     yield call([client, client.deleteBucket], bid);
-    yield call(listBuckets);
+    yield put(listBuckets());
     yield put(updatePath("/"));
     yield put(notifySuccess("Bucket deleted."));
   } catch(error) {
@@ -81,7 +80,7 @@ export function* createCollection(getState, action) {
     });
     yield put(updatePath(`/buckets/${bid}/collections/${name}`));
     yield put(notifySuccess("Collection created."));
-    yield call(listBuckets);
+    yield put(listBuckets());
   } catch(error) {
     yield put(notifyError(error));
   }
@@ -107,7 +106,7 @@ export function* deleteCollection(getState, action) {
     yield call([bucket, bucket.deleteCollection], cid);
     yield put(updatePath(""));
     yield put(notifySuccess("Collection deleted."));
-    yield call(listBuckets);
+    yield put(listBuckets());
   } catch(error) {
     yield put(notifyError(error));
   }
