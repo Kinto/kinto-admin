@@ -6,7 +6,6 @@ import { notifyError, notifySuccess } from "../../scripts/actions/notifications"
 import * as sessionActions from "../../scripts/actions/session";
 import * as collectionActions from "../../scripts/actions/collection";
 import * as actions from "../../scripts/actions/bucket";
-import { listBuckets } from "../../scripts/sagas/session";
 import * as saga from "../../scripts/sagas/bucket";
 import { setClient } from "../../scripts/client";
 
@@ -42,7 +41,7 @@ describe("bucket sagas", () => {
 
       it("should reload the list of buckets/collections", () => {
         expect(createBucket.next().value)
-          .eql(call(listBuckets));
+          .eql(put(sessionActions.listBuckets()));
       });
 
       it("should update the route path", () => {
@@ -170,7 +169,7 @@ describe("bucket sagas", () => {
 
       it("should reload the list of buckets/collections", () => {
         expect(deleteBucket.next().value)
-          .eql(call(listBuckets));
+          .eql(put(sessionActions.listBuckets()));
       });
 
       it("should update the route path", () => {
@@ -243,7 +242,7 @@ describe("bucket sagas", () => {
 
       it("should reload the list of buckets/collections", () => {
         expect(createCollection.next().value)
-          .eql(call(listBuckets));
+          .eql(put(sessionActions.listBuckets()));
       });
     });
 
@@ -345,7 +344,7 @@ describe("bucket sagas", () => {
 
       it("should reload the list of buckets/collections", () => {
         expect(deleteCollection.next().value)
-          .eql(call(listBuckets));
+          .eql(put(sessionActions.listBuckets()));
       });
     });
 
