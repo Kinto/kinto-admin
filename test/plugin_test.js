@@ -83,6 +83,7 @@ describe("Plugin API", () => {
     it("should append the plugins sagas to the standard watchers", () => {
       const sagas = flattenPluginsSagas(plugins, getState);
 
+      expect(sagas).to.have.length.of(3);
       expect(sagas[0].name).eql("takeEvery(ACTION_1, saga1)");
       expect(sagas[1].name).eql("takeEvery(ACTION_2, saga2)");
       expect(sagas[2].name).eql("takeEvery(ACTION_3, saga3)");
