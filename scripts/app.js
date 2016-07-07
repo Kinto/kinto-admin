@@ -12,7 +12,7 @@ import "codemirror/lib/codemirror.css";
 import "../css/styles.css";
 
 
-export default function renderAdmin(node, plugins=[]) {
+export function createAdmin(plugins=[]) {
   const store = configureStore({}, plugins);
 
   syncHistoryWithStore(hashHistory, store);
@@ -22,11 +22,18 @@ export default function renderAdmin(node, plugins=[]) {
     store.dispatch(routeActions.routeUpdated(params, location));
   }
 
-  render((
+  const component = (
     <Provider store={store}>
       <Router history={hashHistory} onUpdate={onRouteUpdate}>
         {getRoutes(store, plugins)}
       </Router>
     </Provider>
-  ), node);
+  );
+
+  return {store, component};
+}
+
+export default function renderAdmin(node, plugins=[]) {
+  const {component} = createAdmin(plugins);
+  render(component, node);
 }
