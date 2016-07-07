@@ -30,13 +30,14 @@ class ServerHistory extends Component {
 
   render() {
     const {menuOpened} = this.state;
-    const {id, value, onChange, options} = this.props;
+    const {id, value, onChange, placeholder, options} = this.props;
     const {history} = options;
     return (
       <div className="input-group">
         <input type="text"
           id={id}
           className="form-control"
+          placeholder={placeholder}
           value={value}
           onChange={(event) => onChange(event.target.value)} />
         <div className={`input-group-btn ${menuOpened ? "open" : ""}`}>
@@ -70,9 +71,7 @@ const baseAuthSchema = {
       type: "string",
       title: "Server",
       format: "uri",
-      description: "http://",
-      // default: "http://0.0.0.0:8888/v1/"
-      default: "https://kinto.dev.mozaws.net/v1/"
+      default: "https://kinto.dev.mozaws.net/v1/",
     },
     authType: {
       type: "string",
@@ -116,6 +115,9 @@ const fxaSchema = {
 };
 
 const baseUISchema = {
+  server: {
+    "ui:placeholder": "https://",
+  },
   authType: {
     "ui:widget": "radio",
   }
@@ -169,6 +171,7 @@ function extendUiSchemaWithHistory(uiSchema, history, clearHistory) {
   return {
     ...uiSchema,
     server: {
+      ...uiSchema.server,
       "ui:widget": {
         component: ServerHistory,
         options: {history, clearHistory}

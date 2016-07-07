@@ -73,7 +73,7 @@
     "react-addons-test-utils": "^15.2.0",
     "react-codemirror": "^0.2.3",
     "react-dom": "^15.2.0",
-    "react-jsonschema-form": "^0.36.1",
+    "react-jsonschema-form": "^0.37.0",
     "react-redux": "^4.0.0",
     "react-router": "^2.4.1",
     "react-router-redux": "4.0.5",
