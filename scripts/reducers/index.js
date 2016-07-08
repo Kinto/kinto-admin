@@ -25,6 +25,6 @@ const standardReducers = {
 export default function createRootReducer(plugins: Object[] = []) {
   return combineReducers({
     ...standardReducers,
-    ...flattenPluginsReducers(plugins, Object.keys(standardReducers)),
+    ...flattenPluginsReducers(plugins, standardReducers),
   });
 }

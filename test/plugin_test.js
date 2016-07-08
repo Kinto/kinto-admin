@@ -106,7 +106,14 @@ describe("Plugin API", () => {
     ];
 
     it("should flatten reducers", () => {
-      expect(flattenPluginsReducers(plugins))
+      expect(flattenPluginsReducers(plugins, {}))
+        .to.have.keys("foo", "bar", "baz");
+    });
+
+    it("should extend standard reducers", () => {
+      // Note: actual reducer extensibility is tested in configureStore_test.js
+      const foo = () => {};
+      expect(flattenPluginsReducers(plugins, {foo}))
         .to.have.keys("foo", "bar", "baz");
     });
   });

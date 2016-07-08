@@ -6,7 +6,10 @@
  */
 import React from "react";
 import { Route } from "react-router";
+// import { ActionTypes } from "redux/lib/createStore";
 
+
+// const {INIT: REDUX_INIT} = ActionTypes;
 
 export function flattenPluginsRoutes(
   plugins: Object[],
@@ -29,27 +32,37 @@ export function flattenPluginsSagas(
   plugins: Object[],
   getState: Function
 ): Object[] {
-  return plugins.reduce((acc, plugin) => {
+  return plugins.reduce((acc, {sagas:sagaDefs = []}) => {
     // Create the saga watchers for this plugin, passing them the getState
     // function
-    const sagas = plugin.sagas.map(([fn, ...args]) => fn(...args, getState));
+    const sagas = sagaDefs.map(([fn, ...args]) => fn(...args, getState));
     return [...acc, ...sagas];
   }, []);
 }
 
-// XXX: in the future, we should investigate a way to "hook" into existing
-// standard reducers (eg. to add more switch cases within reducers).
+function extendReducer(standard: Function, plugin: Function): Function {
+  return function extendedReducer(state, action) {
+    const standardState = standard(state, action);
+    return plugin(standardState, action);
+  };
+}
+
 export function flattenPluginsReducers(
   plugins: Object[],
-  reserved: string[] = []
+  standardReducers: Object
 ): Object {
   return plugins.reduce((acc, {reducers: pluginReducers}) => {
-    const conflicts = Object.keys(pluginReducers).filter(node => {
-      return reserved.includes(node);
-    });
-    if (conflicts.length !== 0) {
-      throw new Error(`Plugins cannot register reserved reducers: ${conflicts}`);
-    }
-    return {...acc, ...pluginReducers};
+    const finalReducers = Object.keys(pluginReducers).reduce((acc, name) => {
+      const pluginReducer = pluginReducers[name];
+      const standardReducer = standardReducers[name];
+      return {
+        ...acc,
+        [name]: standardReducers.hasOwnProperty(name) ?
+          extendReducer(standardReducer, pluginReducer) :
+          pluginReducer
+      };
+    }, {});
+    return {...acc, ...finalReducers};
   }, {});
 }
+
