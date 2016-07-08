@@ -16,6 +16,12 @@ module.exports = {
     new webpack.IgnorePlugin(/^(buffertools)$/), // unwanted "deeper" dependency
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
+    new webpack.DefinePlugin({
+      "process.env": {
+        NODE_ENV: JSON.stringify("development"),
+        KINTO_ADMIN_PLUGINS: JSON.stringify(process.env.KINTO_ADMIN_PLUGINS),
+      }
+    }),
   ],
   resolve: {
     extensions: ["", ".js", ".jsx", ".css", ".eot", "png", ".woff", ".woff2", ".ttf", ".svg"]
@@ -32,8 +38,8 @@ module.exports = {
         loaders: ["babel"],
         exclude: /node_modules/,
         include: [
-          path.join(__dirname, "schema"),
-          path.join(__dirname, "scripts")
+          path.join(__dirname, "scripts"),
+          path.join(__dirname, "plugins"),
         ],
       },
       {

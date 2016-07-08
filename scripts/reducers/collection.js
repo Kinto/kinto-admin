@@ -10,7 +10,7 @@ import {
 } from "../constants";
 
 const DEFAULT_SORT: string = "-last_modified";
-const INITIAL_STATE: Collection = {
+export const INITIAL_STATE: Collection = {
   bucket: null,
   name: null,
   busy: false,

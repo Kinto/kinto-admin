@@ -3,6 +3,7 @@
 import { combineReducers } from "redux";
 import { routerReducer } from "react-router-redux";
 
+import { flattenPluginsReducers } from "../plugin";
 import session from "./session";
 import bucket from "./bucket";
 import collection from "./collection";
@@ -11,7 +12,7 @@ import notifications from "./notifications";
 import history from "./history";
 
 
-const rootReducer = combineReducers({
+const standardReducers = {
   routing: routerReducer,
   session,
   bucket,
@@ -19,6 +20,11 @@ const rootReducer = combineReducers({
   record,
   notifications,
   history,
-});
+};
 
-export default rootReducer;
+export default function createRootReducer(plugins: Object[] = []) {
+  return combineReducers({
+    ...standardReducers,
+    ...flattenPluginsReducers(plugins, standardReducers),
+  });
+}

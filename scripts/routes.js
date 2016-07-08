@@ -2,6 +2,8 @@
 
 import React from "react";
 import { Route, IndexRoute } from "react-router";
+
+import { flattenPluginsRoutes } from "./plugin";
 import App from "./containers/App";
 import HomePage from "./containers/HomePage";
 import Sidebar from "./containers/Sidebar";
@@ -14,7 +16,6 @@ import CollectionEditPage from "./containers/CollectionEditPage";
 import AddFormPage from "./containers/AddFormPage";
 import BulkFormPage from "./containers/BulkFormPage";
 import EditFormPage from "./containers/EditFormPage";
-
 import * as sessionActions from "./actions/session";
 import * as collectionActions from "./actions/collection";
 import * as notificationActions from "./actions/notifications";
@@ -51,17 +52,18 @@ function onCollectionListEnter(store: Object, {params}) {
   const {session, collection} = store.getState();
   if (!session.authenticated) {
     // We're not authenticated, skip requesting the list of records. This likely
-    // occurs when users refresh the page and then lose their session.
+    // occurs when users refresh the page and lose their session.
     return;
   }
   const {sort} = collection;
   store.dispatch(collectionActions.listRecords(bid, cid, sort));
 }
 
-export default function getRoutes(store: Object) {
+export default function getRoutes(store: Object, plugins: Object[] = []) {
   return (
     <Route path="/" component={App}>
       <IndexRoute components={{...common, content: HomePage}} />
+      {flattenPluginsRoutes(plugins, common)}
       <Route path="/auth/:payload/:token"
         components={{...common, content: HomePage}}
         onEnter={onAuthEnter.bind(null, store)} />

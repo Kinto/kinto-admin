@@ -1,17 +1,20 @@
 import { takeEvery } from "redux-saga";
 
+import { flattenPluginsSagas } from "../plugin";
 import * as c from "../constants";
 import * as sessionSagas from "./session";
 import * as routeSagas from "./route";
 import * as bucketSagas from "./bucket";
 import * as collectionSagas from "./collection";
 
-
 /**
- * @param {function} getState Function to obtain the current store state.
+ * Registers saga watchers.
+ *
+ * @param {Function} getState Function to obtain the current store state.
+ * @param {Array}    plugins  The list of plugins.
  */
-export default function* rootSaga(getState) {
-  yield [
+export default function* rootSaga(getState, plugins=[]) {
+  const standardSagas = [
     // session
     takeEvery(c.SESSION_SETUP, sessionSagas.setupSession, getState),
     takeEvery(c.SESSION_SETUP_COMPLETE, sessionSagas.completeSessionSetup, getState),
@@ -35,4 +38,6 @@ export default function* rootSaga(getState) {
     // attachments
     takeEvery(c.ATTACHMENT_DELETE_REQUEST, collectionSagas.deleteAttachment, getState),
   ];
+
+  yield [...standardSagas, ...flattenPluginsSagas(plugins, getState)];
 }
