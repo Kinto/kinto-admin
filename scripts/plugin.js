@@ -6,10 +6,7 @@
  */
 import React from "react";
 import { Route } from "react-router";
-// import { ActionTypes } from "redux/lib/createStore";
 
-
-// const {INIT: REDUX_INIT} = ActionTypes;
 
 export function flattenPluginsRoutes(
   plugins: Object[],
@@ -40,29 +37,40 @@ export function flattenPluginsSagas(
   }, []);
 }
 
-function extendReducer(standard: Function, plugin: Function): Function {
+function extendReducer(firstReducer: Function, secondReducer: Function): Function {
+  // Create a reducer that executes the first reducer and use its result to call
+  // the second one
   return function extendedReducer(state, action) {
-    const standardState = standard(state, action);
-    return plugin(standardState, action);
+    const firstState = firstReducer(state, action);
+    return secondReducer(firstState, action);
   };
+}
+
+function extendReducers(pluginReducers, standardReducers) {
+  return Object.keys(pluginReducers).reduce((acc, name) => {
+    const pluginReducer = pluginReducers[name];
+    const standardReducer = standardReducers[name];
+    // If the name of the plugin reducer is already registered, then extend the
+    // existing reducer with the plugin one
+    return {
+      ...acc,
+      [name]: standardReducers.hasOwnProperty(name) ?
+        extendReducer(standardReducer, pluginReducer) :
+        pluginReducer
+    };
+  }, {});
 }
 
 export function flattenPluginsReducers(
   plugins: Object[],
   standardReducers: Object
 ): Object {
-  return plugins.reduce((acc, {reducers: pluginReducers}) => {
-    const finalReducers = Object.keys(pluginReducers).reduce((acc, name) => {
-      const pluginReducer = pluginReducers[name];
-      const standardReducer = standardReducers[name];
-      return {
-        ...acc,
-        [name]: standardReducers.hasOwnProperty(name) ?
-          extendReducer(standardReducer, pluginReducer) :
-          pluginReducer
-      };
-    }, {});
-    return {...acc, ...finalReducers};
-  }, {});
+  // standardReducers contain the kinto-admin core reducers; each plugin
+  // will extend their reducers against these, so a plugin will never extend
+  // another plugin reducer.
+  return plugins.reduce((acc, {reducers: pluginReducers}) => ({
+    ...acc,
+    ...extendReducers(pluginReducers, standardReducers)
+  }), {});
 }
 

@@ -12,7 +12,7 @@ describe("configureStore()", () => {
           {
             sagas: [],
             reducers: {
-              count(state = 0, action) {
+              count: (state = 0, action) => {
                 return action.type === "INC" ? state + 1 : state;
               }
             }
@@ -33,7 +33,7 @@ describe("configureStore()", () => {
       });
     });
 
-    describe("Extended reducers", () => {
+    describe("Single extended reducer", () => {
       let store;
 
       beforeEach(() => {
@@ -41,7 +41,7 @@ describe("configureStore()", () => {
           {
             sagas: [],
             reducers: {
-              collection(state, action) {
+              collection: (state, action) => {
                 return action.type === "BUSY" ? {
                   ...state,
                   busy: true,
@@ -64,6 +64,109 @@ describe("configureStore()", () => {
         expect(store.getState())
           .to.have.property("collection")
           .to.have.property("busy").eql(true);
+      });
+    });
+
+    describe("Multiple extended reducers", () => {
+      describe("Same name", () => {
+        let store;
+
+        beforeEach(() => {
+          store = configureStore({}, [
+            {
+              sagas: [],
+              reducers: {
+                collection: (state, action) => {
+                  return action.type === "BUSY" ? {
+                    ...state,
+                    busy: true,
+                  } : state;
+                }
+              }
+            },
+            {
+              sagas: [],
+              reducers: {
+                collection: (state, action) => {
+                  return action.type === "LOADED" ? {
+                    ...state,
+                    recordsLoaded: true,
+                  } : state;
+                }
+              }
+            }
+          ]);
+        });
+
+        it("should extend a standard reducer", () => {
+          expect(store.getState())
+            .to.have.property("collection")
+            .to.have.property("recordsLoaded").eql(false);
+        });
+
+        it("should override previously registered reducer with the same name", () => {
+          store.dispatch({type: "BUSY"});
+          store.dispatch({type: "LOADED"});
+
+          expect(store.getState())
+            .to.have.property("collection")
+            .to.have.property("busy").eql(false);
+          expect(store.getState())
+            .to.have.property("collection")
+            .to.have.property("recordsLoaded").eql(true);
+        });
+      });
+
+      describe("Distinct names", () => {
+        let store;
+
+        beforeEach(() => {
+          store = configureStore({}, [
+            {
+              sagas: [],
+              reducers: {
+                bucket: (state, action) => {
+                  return action.type === "BUSY" ? {
+                    ...state,
+                    busy: true,
+                  } : state;
+                }
+              }
+            },
+            {
+              sagas: [],
+              reducers: {
+                collection: (state, action) => {
+                  return action.type === "LOADED" ? {
+                    ...state,
+                    recordsLoaded: true,
+                  } : state;
+                }
+              }
+            }
+          ]);
+        });
+
+        it("should extend a standard reducer", () => {
+          expect(store.getState())
+            .to.have.property("bucket")
+            .to.have.property("busy").eql(false);
+          expect(store.getState())
+            .to.have.property("collection")
+            .to.have.property("recordsLoaded").eql(false);
+        });
+
+        it("should override previously registered reducer with the same name", () => {
+          store.dispatch({type: "BUSY"});
+          expect(store.getState())
+            .to.have.property("bucket")
+            .to.have.property("busy").eql(true);
+
+          store.dispatch({type: "LOADED"});
+          expect(store.getState())
+            .to.have.property("collection")
+            .to.have.property("recordsLoaded").eql(true);
+        });
       });
     });
   });
