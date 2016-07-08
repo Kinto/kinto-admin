@@ -6,7 +6,13 @@ const plugins = (process.env.KINTO_ADMIN_PLUGINS || "")
   .filter(x => !!x)
   .map(pluginName => {
     try {
-      return require(`../plugins/${pluginName}/index`);
+      // XXX: For now we only support local core plugins
+      if (pluginName === "signoff") {
+        return require("../plugins/signoff/index");
+      } else if (pluginName === "example") {
+        return require("../plugins/example/index");
+      }
+      throw `Unknown plugin ${pluginName}`;
     } catch(err) {
       console.warn(`Couldn't load plugin ${pluginName}: ${err}`);
     }

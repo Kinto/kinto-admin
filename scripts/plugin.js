@@ -68,7 +68,7 @@ export function flattenPluginsReducers(
   // standardReducers contain the kinto-admin core reducers; each plugin
   // will extend their reducers against these, so a plugin will never extend
   // another plugin reducer.
-  return plugins.reduce((acc, {reducers: pluginReducers}) => ({
+  return plugins.reduce((acc, {reducers: pluginReducers = {}}) => ({
     ...acc,
     ...extendReducers(pluginReducers, standardReducers)
   }), {});
