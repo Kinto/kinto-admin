@@ -106,11 +106,13 @@ describe("configureStore()", () => {
 
         it("should override previously registered reducer with the same name", () => {
           store.dispatch({type: "BUSY"});
-          store.dispatch({type: "LOADED"});
 
           expect(store.getState())
             .to.have.property("collection")
             .to.have.property("busy").eql(false);
+
+          store.dispatch({type: "LOADED"});
+
           expect(store.getState())
             .to.have.property("collection")
             .to.have.property("recordsLoaded").eql(true);
@@ -151,6 +153,7 @@ describe("configureStore()", () => {
           expect(store.getState())
             .to.have.property("bucket")
             .to.have.property("busy").eql(false);
+
           expect(store.getState())
             .to.have.property("collection")
             .to.have.property("recordsLoaded").eql(false);
@@ -158,11 +161,13 @@ describe("configureStore()", () => {
 
         it("should override previously registered reducer with the same name", () => {
           store.dispatch({type: "BUSY"});
+
           expect(store.getState())
             .to.have.property("bucket")
             .to.have.property("busy").eql(true);
 
           store.dispatch({type: "LOADED"});
+
           expect(store.getState())
             .to.have.property("collection")
             .to.have.property("recordsLoaded").eql(true);
