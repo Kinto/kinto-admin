@@ -61,9 +61,11 @@ describe("session sagas", () => {
       let client, listBuckets;
 
       const serverInfo = {
-        http_api_version: "1.8",
         user: {
           bucket: "defaultBucketId"
+        },
+        capabilities: {
+          permissions_endpoint: {}
         }
       };
 
