@@ -1,20 +1,19 @@
 import { expect } from "chai";
 import { push as updatePath } from "react-router-redux";
 import { put, call } from "redux-saga/effects";
-import { v4 as uuid } from "uuid";
 
 import { notifyError, notifySuccess } from "../../scripts/actions/notifications";
 import * as collectionActions from "../../scripts/actions/collection";
 import * as recordActions from "../../scripts/actions/record";
 import * as saga from "../../scripts/sagas/collection";
-import { setClient, requestAttachment } from "../../scripts/client";
-import { createFormData } from "../../scripts/utils";
+import { setClient } from "../../scripts/client";
 
 
 const record = {id: 1, foo: "bar1"};
+const record2 = {id: 2, foo: "bar2"};
 const records = [
   record,
-  {id: 2, foo: "bar2"},
+  record2,
 ];
 const recordsWithAttachment = records.map((record, i) => {
   return {...record, __attachment__: {n: i + 1}};
@@ -96,7 +95,10 @@ describe("collection sagas", () => {
     let collection;
 
     before(() => {
-      collection = {createRecord() {}};
+      collection = {
+        createRecord() {},
+        addAttachment() {},
+      };
       const bucket = {collection() {return collection;}};
       setClient({bucket() {return bucket;}});
     });
@@ -145,7 +147,7 @@ describe("collection sagas", () => {
     describe("Attachments enabled", () => {
       let createRecord;
 
-      const recordWithAttachment = {...record, __attachment__: {}};
+      const attachment = "data:test/fake";
 
       before(() => {
         const getState = () => ({
@@ -156,7 +158,7 @@ describe("collection sagas", () => {
           }
         });
         const action = collectionActions.createRecord(
-          "bucket", "collection", recordWithAttachment);
+          "bucket", "collection", record, attachment);
         createRecord = saga.createRecord(getState, action);
       });
 
@@ -165,23 +167,9 @@ describe("collection sagas", () => {
           .eql(put(collectionActions.collectionBusy(true)));
       });
 
-      it("should generate a uuid for the record", () => {
+      it("should post the attachment", () => {
         expect(createRecord.next().value)
-          .eql(call(uuid));
-      });
-
-      it("should create formData", () => {
-        expect(createRecord.next("fake-uuid").value)
-          .eql(call(createFormData, recordWithAttachment));
-      });
-
-      it("should post the attachment along the record", () => {
-        const formData = {fake: true};
-        expect(createRecord.next(formData).value)
-          .eql(call(requestAttachment, "bucket", "collection", "fake-uuid", {
-            method: "post",
-            body: formData
-          }));
+          .eql(call([collection, collection.addAttachment], attachment, record));
       });
 
       it("should update the route path", () => {
@@ -312,16 +300,19 @@ describe("collection sagas", () => {
         };
       };
 
-      const recordWithAttachment = {...record, __attachment__: {}};
+      const attachment = "data:test/fake";
 
       const action = collectionActions.updateRecord(
-        "bucket", "collection", 1, recordWithAttachment);
+        "bucket", "collection", 1, record, attachment);
 
       describe("Success", () => {
         let collection, updateRecord;
 
         before(() => {
-          collection = {updateRecord() {}};
+          collection = {
+            updateRecord() {},
+            addAttachment() {},
+          };
           const bucket = {collection() {return collection;}};
           setClient({bucket() {return bucket;}});
           updateRecord = saga.updateRecord(getState, action);
@@ -332,18 +323,9 @@ describe("collection sagas", () => {
             .eql(put(collectionActions.collectionBusy(true)));
         });
 
-        it("should create formData from the record object", () => {
-          expect(updateRecord.next().value)
-            .eql(call(createFormData, recordWithAttachment));
-        });
-
         it("should update the record with its attachment", () => {
-          const fakeFormData = {fake: true};
-          expect(updateRecord.next(fakeFormData).value)
-            .eql(call(requestAttachment, "bucket", "collection", 1, {
-              method: "post",
-              body: fakeFormData,
-            }));
+          expect(updateRecord.next().value)
+            .eql(call([collection, collection.addAttachment], attachment, record));
         });
 
         it("should dispatch the resetRecord action", () => {
@@ -447,9 +429,12 @@ describe("collection sagas", () => {
   });
 
   describe("deleteAttachment()", () => {
-    let deleteAttachment;
+    let collection, deleteAttachment;
 
     before(() => {
+      collection = {removeAttachment() {}};
+      const bucket = {collection() {return collection;}};
+      setClient({bucket() {return bucket;}});
       const action = collectionActions.deleteAttachment("bucket", "collection", "record");
       deleteAttachment = saga.deleteAttachment(() => {}, action);
     });
@@ -461,9 +446,7 @@ describe("collection sagas", () => {
 
     it("should send a request for deleting the record attachment", () => {
       expect(deleteAttachment.next().value)
-        .eql(call(requestAttachment, "bucket", "collection", "record", {
-          method: "delete"
-        }));
+        .eql(call([collection, collection.removeAttachment], "record"));
     });
 
     it("should update the route path", () => {
@@ -481,7 +464,10 @@ describe("collection sagas", () => {
     let collection;
 
     before(() => {
-      collection = {batch() {}};
+      collection = {
+        batch() {},
+        addAttachment() {},
+      };
       const bucket = {collection() {return collection;}};
       setClient({bucket() {return bucket;}});
     });
@@ -552,42 +538,18 @@ describe("collection sagas", () => {
           .eql(put(collectionActions.collectionBusy(true)));
       });
 
-      it("should create the uuid for the first record", () => {
+      it("should send the first attachment", () => {
         expect(bulkCreateRecords.next().value)
-          .eql(call(uuid));
+          .eql(call([collection, collection.addAttachment],
+                    recordsWithAttachment[0].__attachment__,
+                    record));
       });
 
-      it("should create formData for the first record", () => {
-        expect(bulkCreateRecords.next("fake-uuid1").value)
-          .eql(call(createFormData, recordsWithAttachment[0]));
-      });
-
-      it("should post the first record with its attachment", () => {
-        const formData = {fake: true};
-        expect(bulkCreateRecords.next(formData).value)
-          .eql(call(requestAttachment, "bucket", "collection", "fake-uuid1", {
-            method: "post",
-            body: formData
-          }));
-      });
-
-      it("should create the uuid for the second record", () => {
+      it("should send the second attachment", () => {
         expect(bulkCreateRecords.next().value)
-          .eql(call(uuid));
-      });
-
-      it("should create formData for the second record", () => {
-        expect(bulkCreateRecords.next("fake-uuid2").value)
-          .eql(call(createFormData, recordsWithAttachment[1]));
-      });
-
-      it("should post the second record with its attachment", () => {
-        const formData = {fake: true};
-        expect(bulkCreateRecords.next(formData).value)
-          .eql(call(requestAttachment, "bucket", "collection", "fake-uuid2", {
-            method: "post",
-            body: formData
-          }));
+          .eql(call([collection, collection.addAttachment],
+                    recordsWithAttachment[1].__attachment__,
+                    record2));
       });
 
       it("should update the route path", () => {

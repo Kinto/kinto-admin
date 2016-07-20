@@ -1,20 +1,11 @@
 import { push as updatePath } from "react-router-redux";
 import { call, put } from "redux-saga/effects";
-import { v4 as uuid } from "uuid";
-import { createFormData } from "../utils";
 
-import { getClient, requestAttachment } from "../client";
+import { getClient } from "../client";
 import { notifySuccess, notifyError } from "../actions/notifications";
 import { resetRecord } from "../actions/record";
 import * as actions from "../actions/collection";
 
-
-function shouldProcessAttachment(serverInfo, records) {
-  const {capabilities={}} = serverInfo;
-  records = Array.isArray(records) ? records : [records];
-  const hasAttachment = records.some(r => !!r.__attachment__);
-  return capabilities.hasOwnProperty("attachments") && hasAttachment;
-}
 
 function getBucket(bid) {
   return getClient().bucket(bid);
@@ -27,8 +18,9 @@ function getCollection(bid, cid) {
 export function* deleteAttachment(getState, action) {
   const {bid, cid, rid} = action;
   try {
+    const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
-    yield call(requestAttachment, bid, cid, rid, {method: "delete"});
+    yield call([coll, coll.removeAttachment], rid);
     yield put(updatePath(`/buckets/${bid}/collections/${cid}/edit/${rid}`));
     yield put(notifySuccess("Attachment deleted."));
   } catch(error) {
@@ -55,17 +47,12 @@ export function* listRecords(getState, action) {
 
 export function* createRecord(getState, action) {
   const {session} = getState();
-  const {bid, cid, record} = action;
+  const {bid, cid, record, attachment} = action;
   try {
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
-    if (shouldProcessAttachment(session.serverInfo, record)) {
-      const rid = yield call(uuid);
-      const formData = yield call(createFormData, record);
-      yield call(requestAttachment, bid, cid, rid, {
-        method: "post",
-        body: formData
-      });
+    if ("attachments" in session.serverInfo.capabilities && attachment) {
+      yield call([coll, coll.addAttachment], attachment, record);
     } else {
       yield call([coll, coll.createRecord], record);
     }
@@ -80,16 +67,12 @@ export function* createRecord(getState, action) {
 
 export function* updateRecord(getState, action) {
   const {session} = getState();
-  const {bid, cid, rid, record} = action;
+  const {bid, cid, rid, record, attachment} = action;
   try {
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
-    if (shouldProcessAttachment(session.serverInfo, record)) {
-      const formData = yield call(createFormData, record);
-      yield call(requestAttachment, bid, cid, rid, {
-        method: "post",
-        body: formData
-      });
+    if ("attachments" in session.serverInfo.capabilities && attachment) {
+      yield call([coll, coll.addAttachment], attachment, {...record, id: rid});
     } else {
       // Note: We update using PATCH to keep existing record properties possibly
       // not defined by the JSON schema, if any.
@@ -127,15 +110,12 @@ export function* bulkCreateRecords(getState, action) {
   try {
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
-    if (shouldProcessAttachment(session.serverInfo, records)) {
+    if ("attachments" in session.serverInfo.capabilities) {
       // XXX We should perform a batch request here
-      for (const record of records) {
-        const rid = yield call(uuid);
-        const formData = yield call(createFormData, record);
-        yield call(requestAttachment, bid, cid, rid, {
-          method: "post",
-          body: formData
-        });
+      for (const rawRecord of records) {
+        // Note: data urls are attached to the __attachment__ record property
+        const {__attachment__: dataURL, ...record} = rawRecord;
+        yield call([coll, coll.addAttachment], dataURL, record);
       }
       yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
       yield put(notifySuccess(`${records.length} records created.`));

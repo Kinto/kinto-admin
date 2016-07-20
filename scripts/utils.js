@@ -4,8 +4,6 @@ import type { RecordData } from "./types";
 import React from "react";
 
 
-const { Blob, FormData, Uint8Array } = window;
-
 export function clone(obj: any) {
   return JSON.parse(JSON.stringify(obj));
 }
@@ -185,40 +183,4 @@ export function renderDisplayField(record: Object, displayField: string): any {
     return handleNestedDisplayField(record, displayField);
   }
   return "<unknown>";
-}
-
-export function parseDataURL(dataURL: string): Object {
-  const regex = /^data:(.*);base64,(.*)/;
-  const match = dataURL.match(regex);
-  if (!match) {
-    throw new Error(`Invalid data-url: ${String(dataURL).substr(0, 32)}...`);
-  }
-  const props = match[1];
-  const base64 = match[2];
-  const [type, ...rawParams] = props.split(";");
-  const params = rawParams.reduce((acc, param) => {
-    const [key, value] = param.split("=");
-    return {...acc, [key]: value};
-  }, {});
-  return {...params, type, base64};
-}
-
-export function extractFileInfo(dataURL: string): {name: string, blob: Blob} {
-  const {name, type, base64} = parseDataURL(dataURL);
-  const binary = atob(base64);
-  const array = [];
-  for(let i = 0; i < binary.length; i++) {
-    array.push(binary.charCodeAt(i));
-  }
-  const blob = new Blob([new Uint8Array(array)], {type});
-  return {name, blob};
-}
-
-export function createFormData(record: Object): FormData {
-  const attachment = record.__attachment__; // data-url
-  const {blob, name} = extractFileInfo(attachment);
-  const formData = new FormData();
-  formData.append("attachment", blob, name);
-  formData.append("data", JSON.stringify(omit(record, ["__attachment__"])));
-  return formData;
 }

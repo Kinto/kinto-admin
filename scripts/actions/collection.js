@@ -44,12 +44,12 @@ export function listRecords(bid: string, cid: string, sort: string): Action {
   return {type: COLLECTION_RECORDS_REQUEST, bid, cid, sort};
 }
 
-export function createRecord(bid: string, cid: string, record: RecordData): Action {
-  return {type: RECORD_CREATE_REQUEST, bid, cid, record};
+export function createRecord(bid: string, cid: string, record: RecordData, attachment?: String): Action {
+  return {type: RECORD_CREATE_REQUEST, bid, cid, record, attachment};
 }
 
-export function updateRecord(bid: string, cid: string, rid: string, record: RecordData): Action {
-  return {type: RECORD_UPDATE_REQUEST, bid, cid, rid, record};
+export function updateRecord(bid: string, cid: string, rid: string, record: RecordData, attachment?: String): Action {
+  return {type: RECORD_UPDATE_REQUEST, bid, cid, rid, record, attachment};
 }
 
 export function deleteRecord(bid: string, cid: string, rid: string): Action {

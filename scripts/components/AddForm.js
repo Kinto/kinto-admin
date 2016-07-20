@@ -4,10 +4,10 @@ import RecordForm from "./RecordForm";
 
 
 export default class AddForm extends Component {
-  onSubmit = (record) => {
+  onSubmit = ({__attachment__: attachment, ...record}) => {
     const {params, createRecord} = this.props;
     const {bid, cid} = params;
-    createRecord(bid, cid, record);
+    createRecord(bid, cid, record, attachment);
   }
 
   render() {
