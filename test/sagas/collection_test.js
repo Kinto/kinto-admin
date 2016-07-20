@@ -1,7 +1,6 @@
 import { expect } from "chai";
 import { push as updatePath } from "react-router-redux";
 import { put, call } from "redux-saga/effects";
-import { v4 as uuid } from "uuid";
 
 import { notifyError, notifySuccess } from "../../scripts/actions/notifications";
 import * as collectionActions from "../../scripts/actions/collection";
@@ -168,17 +167,9 @@ describe("collection sagas", () => {
           .eql(put(collectionActions.collectionBusy(true)));
       });
 
-      it("should generate a uuid for the record", () => {
-        expect(createRecord.next().value)
-          .eql(call(uuid));
-      });
-
       it("should post the attachment", () => {
-        expect(createRecord.next("fake-uuid").value)
-          .eql(call([collection, collection.addAttachment], attachment, {
-            ...record,
-            id: "fake-uuid",
-          }));
+        expect(createRecord.next().value)
+          .eql(call([collection, collection.addAttachment], attachment, record));
       });
 
       it("should update the route path", () => {
@@ -547,28 +538,18 @@ describe("collection sagas", () => {
           .eql(put(collectionActions.collectionBusy(true)));
       });
 
-      it("should create the uuid for the first record", () => {
-        expect(bulkCreateRecords.next().value)
-          .eql(call(uuid));
-      });
-
       it("should send the first attachment", () => {
-        expect(bulkCreateRecords.next("fake-uuid1").value)
+        expect(bulkCreateRecords.next().value)
           .eql(call([collection, collection.addAttachment],
                     recordsWithAttachment[0].__attachment__,
-                    {...record, id: "fake-uuid1"}));
-      });
-
-      it("should create the uuid for the second record", () => {
-        expect(bulkCreateRecords.next().value)
-          .eql(call(uuid));
+                    record));
       });
 
       it("should send the second attachment", () => {
-        expect(bulkCreateRecords.next("fake-uuid2").value)
+        expect(bulkCreateRecords.next().value)
           .eql(call([collection, collection.addAttachment],
                     recordsWithAttachment[1].__attachment__,
-                    {...record2, id: "fake-uuid2"}));
+                    record2));
       });
 
       it("should update the route path", () => {

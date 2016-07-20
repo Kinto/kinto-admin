@@ -49,7 +49,6 @@
     "redux": "^3.0.4",
     "redux-saga": "^0.10.5",
     "rimraf": "^2.4.4",
-    "uuid": "^2.0.2",
     "yargs": "^4.4.0"
   },
   "devDependencies": {

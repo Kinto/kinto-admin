@@ -1,6 +1,5 @@
 import { push as updatePath } from "react-router-redux";
 import { call, put } from "redux-saga/effects";
-import { v4 as uuid } from "uuid";
 
 import { getClient } from "../client";
 import { notifySuccess, notifyError } from "../actions/notifications";
@@ -53,8 +52,7 @@ export function* createRecord(getState, action) {
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
     if ("attachments" in session.serverInfo.capabilities && attachment) {
-      const id = yield call(uuid);
-      yield call([coll, coll.addAttachment], attachment, {...record, id});
+      yield call([coll, coll.addAttachment], attachment, record);
     } else {
       yield call([coll, coll.createRecord], record);
     }
@@ -115,9 +113,9 @@ export function* bulkCreateRecords(getState, action) {
     if ("attachments" in session.serverInfo.capabilities) {
       // XXX We should perform a batch request here
       for (const rawRecord of records) {
-        const id = yield call(uuid);
+        // Note: data urls are attached to the __attachment__ record property
         const {__attachment__: dataURL, ...record} = rawRecord;
-        yield call([coll, coll.addAttachment], dataURL, {...record, id});
+        yield call([coll, coll.addAttachment], dataURL, record);
       }
       yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
       yield put(notifySuccess(`${records.length} records created.`));
