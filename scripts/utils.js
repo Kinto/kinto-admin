@@ -2,7 +2,6 @@
 
 import type { RecordData } from "./types";
 import React from "react";
-import { checkVersion as clientCheckVersion } from "kinto-http/lib/utils";
 
 
 const { Blob, FormData, Uint8Array } = window;
@@ -222,13 +221,4 @@ export function createFormData(record: Object): FormData {
   formData.append("attachment", blob, name);
   formData.append("data", JSON.stringify(omit(record, ["__attachment__"])));
   return formData;
-}
-
-export function checkVersion(...args: string[]) {
-  try {
-    clientCheckVersion(...args);
-    return true;
-  } catch(err) {
-    return false;
-  }
 }

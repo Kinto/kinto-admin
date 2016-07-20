@@ -4,7 +4,7 @@ import { call, put } from "redux-saga/effects";
 import * as notificationActions from "../actions/notifications";
 import * as sessionActions from "../actions/session";
 import * as historyActions from "../actions/history";
-import { checkVersion, clone } from "../utils";
+import { clone } from "../utils";
 import { getClient, setupClient, resetClient, requestPermissions } from "../client";
 
 
@@ -85,7 +85,7 @@ export function* listBuckets(getState, action) {
     });
 
     // If the Kinto API version allows it, retrieves all permissions
-    if (checkVersion(serverInfo.http_api_version, "1.8", "2.0")) {
+    if ("permissions_endpoint" in serverInfo.capabilities) {
       const permissions = yield call(requestPermissions);
       buckets = handlePermissions(buckets, permissions);
     }
