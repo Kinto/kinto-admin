@@ -148,7 +148,7 @@ describe("collection sagas", () => {
     describe("Attachments enabled", () => {
       let createRecord;
 
-      const recordWithAttachment = {...record, __attachment__: {}};
+      const attachment = "data:test/fake";
 
       before(() => {
         const getState = () => ({
@@ -159,7 +159,7 @@ describe("collection sagas", () => {
           }
         });
         const action = collectionActions.createRecord(
-          "bucket", "collection", recordWithAttachment);
+          "bucket", "collection", record, attachment);
         createRecord = saga.createRecord(getState, action);
       });
 
@@ -175,7 +175,10 @@ describe("collection sagas", () => {
 
       it("should post the attachment", () => {
         expect(createRecord.next("fake-uuid").value)
-          .eql(call([collection, collection.addAttachment], {}, {...record, id: "fake-uuid"}));
+          .eql(call([collection, collection.addAttachment], attachment, {
+            ...record,
+            id: "fake-uuid",
+          }));
       });
 
       it("should update the route path", () => {
@@ -306,10 +309,10 @@ describe("collection sagas", () => {
         };
       };
 
-      const recordWithAttachment = {...record, __attachment__: {}};
+      const attachment = "data:test/fake";
 
       const action = collectionActions.updateRecord(
-        "bucket", "collection", 1, recordWithAttachment);
+        "bucket", "collection", 1, record, attachment);
 
       describe("Success", () => {
         let collection, updateRecord;
@@ -331,7 +334,7 @@ describe("collection sagas", () => {
 
         it("should update the record with its attachment", () => {
           expect(updateRecord.next().value)
-            .eql(call([collection, collection.addAttachment], {}, record));
+            .eql(call([collection, collection.addAttachment], attachment, record));
         });
 
         it("should dispatch the resetRecord action", () => {

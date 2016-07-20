@@ -58,7 +58,7 @@ describe("AddForm component", () => {
       Simulate.submit(node.querySelector("form"));
 
       sinon.assert.calledWithExactly(
-        createRecord, "bucket", "collection", {foo: "bar"});
+        createRecord, "bucket", "collection", {foo: "bar"}, undefined);
     });
   });
 

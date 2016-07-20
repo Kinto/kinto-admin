@@ -8,13 +8,6 @@ import { resetRecord } from "../actions/record";
 import * as actions from "../actions/collection";
 
 
-function shouldProcessAttachment(serverInfo, records) {
-  const {capabilities={}} = serverInfo;
-  records = Array.isArray(records) ? records : [records];
-  const hasAttachment = records.some(r => !!r.__attachment__);
-  return capabilities.hasOwnProperty("attachments") && hasAttachment;
-}
-
 function getBucket(bid) {
   return getClient().bucket(bid);
 }
@@ -55,16 +48,15 @@ export function* listRecords(getState, action) {
 
 export function* createRecord(getState, action) {
   const {session} = getState();
-  const {bid, cid, record: rawRecord} = action;
+  const {bid, cid, record, attachment} = action;
   try {
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
-    if (shouldProcessAttachment(session.serverInfo, rawRecord)) {
+    if ("attachments" in session.serverInfo.capabilities && attachment) {
       const id = yield call(uuid);
-      const {__attachment__: dataURL, ...record} = rawRecord;
-      yield call([coll, coll.addAttachment], dataURL, {...record, id});
+      yield call([coll, coll.addAttachment], attachment, {...record, id});
     } else {
-      yield call([coll, coll.createRecord], rawRecord);
+      yield call([coll, coll.createRecord], record);
     }
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess("Record added."));
@@ -77,17 +69,16 @@ export function* createRecord(getState, action) {
 
 export function* updateRecord(getState, action) {
   const {session} = getState();
-  const {bid, cid, rid, record: rawRecord} = action;
+  const {bid, cid, rid, record, attachment} = action;
   try {
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
-    if (shouldProcessAttachment(session.serverInfo, rawRecord)) {
-      const {__attachment__: dataURL, ...record} = rawRecord;
-      yield call([coll, coll.addAttachment], dataURL, {...record, id: rid});
+    if ("attachments" in session.serverInfo.capabilities && attachment) {
+      yield call([coll, coll.addAttachment], attachment, {...record, id: rid});
     } else {
       // Note: We update using PATCH to keep existing record properties possibly
       // not defined by the JSON schema, if any.
-      yield call([coll, coll.updateRecord], {...rawRecord, id: rid}, {patch: true});
+      yield call([coll, coll.updateRecord], {...record, id: rid}, {patch: true});
     }
     yield put(resetRecord());
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
@@ -121,7 +112,7 @@ export function* bulkCreateRecords(getState, action) {
   try {
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
-    if (shouldProcessAttachment(session.serverInfo, records)) {
+    if ("attachments" in session.serverInfo.capabilities) {
       // XXX We should perform a batch request here
       for (const rawRecord of records) {
         const id = yield call(uuid);

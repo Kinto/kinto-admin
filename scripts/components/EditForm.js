@@ -4,10 +4,10 @@ import RecordForm from "./RecordForm";
 
 
 export default class EditForm extends Component {
-  onSubmit = (record) => {
+  onSubmit = ({__attachment__: attachment, ...record}) => {
     const {params, updateRecord} = this.props;
     const {bid, cid, rid} = params;
-    updateRecord(bid, cid, rid, record);
+    updateRecord(bid, cid, rid, record, attachment);
   }
 
   render() {
