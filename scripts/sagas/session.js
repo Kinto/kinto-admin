@@ -5,7 +5,7 @@ import * as notificationActions from "../actions/notifications";
 import * as sessionActions from "../actions/session";
 import * as historyActions from "../actions/history";
 import { clone } from "../utils";
-import { getClient, setupClient, resetClient, requestPermissions } from "../client";
+import { getClient, setupClient, resetClient } from "../client";
 
 
 export function* setupSession(getState, action) {
@@ -43,7 +43,7 @@ function handlePermissions(buckets, permissions) {
 
   // Augment the list of bucket and collections with the ones retrieved from
   // the /permissions endpoint
-  for (const permission of permissions.data) {
+  for (const permission of permissions) {
     // Add any missing bucket to the current list
     let bucket = bucketsCopy.find(x => x.id === permission.bucket_id);
     if (!bucket) {
@@ -86,7 +86,7 @@ export function* listBuckets(getState, action) {
 
     // If the Kinto API version allows it, retrieves all permissions
     if ("permissions_endpoint" in serverInfo.capabilities) {
-      const permissions = yield call(requestPermissions);
+      const {data: permissions} = yield call([client, client.listPermissions]);
       buckets = handlePermissions(buckets, permissions);
     }
 

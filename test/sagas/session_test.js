@@ -6,12 +6,7 @@ import { notifyError } from "../../scripts/actions/notifications";
 import * as actions from "../../scripts/actions/session";
 import * as historyActions from "../../scripts/actions/history";
 import * as saga from "../../scripts/sagas/session";
-import {
-  getClient,
-  setClient,
-  resetClient,
-  requestPermissions
-} from "../../scripts/client";
+import { getClient, setClient, resetClient } from "../../scripts/client";
 
 
 const session = {
@@ -73,7 +68,8 @@ describe("session sagas", () => {
         client = setClient({
           batch() {},
           fetchServerInfo() {},
-          listBuckets() {}
+          listBuckets() {},
+          listPermissions() {},
         });
         const getState = () => ({
           session: {
@@ -119,7 +115,7 @@ describe("session sagas", () => {
         ];
 
         expect(listBuckets.next(responses).value)
-          .eql(call(requestPermissions));
+          .eql(call([client, client.listPermissions]));
       });
 
       it("should dispatch the list of buckets", () => {

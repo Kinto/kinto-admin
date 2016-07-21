@@ -3,7 +3,6 @@
 import type { AuthData } from "./types";
 
 import KintoClient from "kinto-http";
-import { isHTTPok } from "./utils";
 
 
 let client: ?KintoClient;
@@ -45,29 +44,4 @@ export function setClient(_client: KintoClient): KintoClient {
 
 export function resetClient(): void {
   client = null;
-}
-
-export function requestPermissions(): Promise {
-  const client: KintoClient = getClient();
-  if (!client) {
-    throw new Error("Client is not configured.");
-  }
-  const {remote, defaultReqOptions}: {
-    remote: string,
-    defaultReqOptions: {
-      headers: Object
-    }
-  } = client;
-  return fetch(`${remote}/permissions`, {
-    headers: defaultReqOptions.headers,
-  })
-    .then((res) => {
-      if (!isHTTPok(res.status)) {
-        throw new Error("HTTP ${status}");
-      }
-      return res.json();
-    })
-    .catch(({message}) => {
-      throw new Error(`Unable to request the permissions endpoint: ${message}`);
-    });
 }
