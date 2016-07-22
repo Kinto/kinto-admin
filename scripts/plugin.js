@@ -12,8 +12,8 @@ export function flattenPluginsRoutes(
   plugins: Object[],
   defaultComponents: Object
 ): Object[] {
-  return plugins.reduce((routes, plugin) => {
-    const pluginRoutes = plugin.routes.map((route, key) => {
+  return plugins.reduce((acc, {routes=[]}) => {
+    const pluginRoutes = routes.map((route, key) => {
       const {components, ...props} = route;
       return (
         <Route key={key}
@@ -21,7 +21,7 @@ export function flattenPluginsRoutes(
                {...props} />
       );
     });
-    return [...routes, ...pluginRoutes];
+    return [...acc, ...pluginRoutes];
   }, []);
 }
 

@@ -53,7 +53,7 @@ const routes = [
   {path: "/test/plugin", components: {content: TestPluginContainer}}
 ];
 
-const sagas = [
+export const sagas = [
   [takeEvery, PLUGIN_ACTION_REQUEST, testSaga]
 ];
 
@@ -72,8 +72,6 @@ export const reducers = {
 
 export function register(store) {
   return {
-    routes,
-    reducers,
-    sagas,
+    routes
   };
 }
