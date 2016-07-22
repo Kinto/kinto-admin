@@ -11,9 +11,9 @@ import * as collectionSagas from "./collection";
  * Registers saga watchers.
  *
  * @param {Function} getState Function to obtain the current store state.
- * @param {Array}    plugins  The list of plugins.
+ * @param {Array}    sagas  The list of plugin sagas.
  */
-export default function* rootSaga(getState, plugins=[]) {
+export default function* rootSaga(getState, pluginsSagas=[]) {
   const standardSagas = [
     // session
     takeEvery(c.SESSION_SETUP, sessionSagas.setupSession, getState),
@@ -39,5 +39,5 @@ export default function* rootSaga(getState, plugins=[]) {
     takeEvery(c.ATTACHMENT_DELETE_REQUEST, collectionSagas.deleteAttachment, getState),
   ];
 
-  yield [...standardSagas, ...flattenPluginsSagas(plugins, getState)];
+  yield [...standardSagas, ...flattenPluginsSagas(pluginsSagas, getState)];
 }

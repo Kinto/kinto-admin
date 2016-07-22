@@ -52,6 +52,10 @@ export class Notification extends Component {
 }
 
 export default class Notifications extends Component {
+  // This is useful to identify wrapped component for plugin hooks when code is
+  // minified; see https://github.com/facebook/react/issues/4915
+  static displayName = "Notifications";
+
   render() {
     const {notifications, removeNotification} = this.props;
     if (!notifications.length) {

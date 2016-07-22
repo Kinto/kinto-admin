@@ -22,9 +22,9 @@ const standardReducers = {
   history,
 };
 
-export default function createRootReducer(plugins: Object[] = []) {
+export default function createRootReducer(pluginsReducers: Object[] = []) {
   return combineReducers({
     ...standardReducers,
-    ...flattenPluginsReducers(plugins, standardReducers),
+    ...flattenPluginsReducers(pluginsReducers, standardReducers),
   });
 }

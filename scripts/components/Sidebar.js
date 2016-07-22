@@ -87,6 +87,10 @@ function BucketsMenu(props) {
 }
 
 export default class Sidebar extends Component {
+  // This is useful to identify wrapped component for plugin hooks when code is
+  // minified; see https://github.com/facebook/react/issues/4915
+  static displayName = "Sidebar";
+
   render() {
     const {session, params, location} = this.props;
     const {bid, cid} = params;

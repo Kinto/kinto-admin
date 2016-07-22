@@ -67,17 +67,13 @@ describe("Plugin API", () => {
     function* saga2() { yield 2; }
     function* saga3() { yield 3; }
     const plugins = [
-      {
-        sagas: [
-          [takeEvery, "ACTION_1", saga1],
-          [takeEvery, "ACTION_2", saga2],
-        ]
-      },
-      {
-        sagas: [
-          [takeEvery, "ACTION_3", saga3],
-        ]
-      },
+      [
+        [takeEvery, "ACTION_1", saga1],
+        [takeEvery, "ACTION_2", saga2],
+      ],
+      [
+        [takeEvery, "ACTION_3", saga3],
+      ],
     ];
 
     it("should append the plugins sagas to the standard watchers", () => {
@@ -93,16 +89,12 @@ describe("Plugin API", () => {
   describe("flattenPluginsReducers()", () => {
     const plugins = [
       {
-        reducers: {
-          foo() {},
-          bar() {},
-        }
+        foo() {},
+        bar() {},
       },
       {
-        reducers: {
-          baz() {},
-        }
-      }
+        baz() {},
+      },
     ];
 
     it("should flatten reducers", () => {
