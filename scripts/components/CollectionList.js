@@ -201,20 +201,21 @@ class Table extends Component {
 }
 
 function ListActions(props) {
-  const {bid, cid, session, collection} = props;
+  const {bid, cid, session, collection, hooks=[]} = props;
   if (session.busy || collection.busy) {
     return null;
   }
+  const defaultButtons = [
+    <Link key="__1" to={`/buckets/${bid}/collections/${cid}/add`}
+          className="btn btn-info btn-record-add">Add</Link>,
+    <Link key="__2" to={`/buckets/${bid}/collections/${cid}/bulk`}
+          className="btn btn-info btn-record-bulk-add">Bulk add</Link>,
+  ];
   return (
     <div className="row list-actions">
       <div className="col-xs-8">
         {canCreateRecord(session, collection) ?
-          <div>
-            <Link to={`/buckets/${bid}/collections/${cid}/add`}
-              className="btn btn-info btn-record-add">Add</Link>
-            <Link to={`/buckets/${bid}/collections/${cid}/bulk`}
-              className="btn btn-info btn-record-bulk-add">Bulk add</Link>
-          </div> : null}
+          [...defaultButtons, ...hooks] : null}
       </div>
       <div className="edit-coll-props col-xs-4 text-right">
         <Link to={`/buckets/${bid}/collections/${cid}/edit`}
@@ -241,6 +242,7 @@ export default class CollectionList extends Component {
       collection,
       deleteRecord,
       updatePath,
+      pluginHooks,
     } = this.props;
     const {bid, cid} = params;
     const {
@@ -258,7 +260,8 @@ export default class CollectionList extends Component {
         bid={bid}
         cid={cid}
         session={session}
-        collection={collection} />
+        collection={collection}
+        hooks={pluginHooks.ListActions} />
     );
 
     return (

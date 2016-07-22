@@ -1,7 +1,13 @@
 import React from "react";
 
 
-// Plugin view root container component
+const PLUGIN_SIGNOFF_REQUEST = "PLUGIN_SIGNOFF_REQUEST";
+
+// Actions
+function requestSignoff() {
+  return {type: PLUGIN_SIGNOFF_REQUEST};
+}
+
 class Signoff extends React.Component {
   render() {
     const {params} = this.props;
@@ -23,6 +29,14 @@ export const routes = [
     }
   }
 ];
+
+export const hooks = {
+  CollectionList: {
+    ListActions: [
+      <a key="request-signoff-btn" className="btn btn-info" href="#">Request signoff</a>
+    ]
+  }
+};
 
 export const sagas = [];
 

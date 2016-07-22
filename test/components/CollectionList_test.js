@@ -42,6 +42,7 @@ describe("CollectionList component", () => {
       node = createComponent(CollectionList, {
         params: {bid: "bucket", cid: "collection"},
         session: {authenticated: true, serverInfo: {user: {id: "plop"}}},
+        pluginHooks: {},
         collection,
       });
     });
@@ -80,6 +81,7 @@ describe("CollectionList component", () => {
       node = createComponent(CollectionList, {
         params: {bid: "bucket", cid: "collection"},
         session: {authenticated: true, serverInfo: {user: {id: "plop"}}},
+        pluginHooks: {},
         collection,
       });
     });
@@ -123,6 +125,7 @@ describe("CollectionList component", () => {
         node = createComponent(CollectionList, {
           params: {bid: "bucket", cid: "collection"},
           session: {authenticated: true, serverInfo: {user: {id: "basicauth:plop"}}},
+          pluginHooks: {},
           collection,
         });
       });
@@ -156,6 +159,7 @@ describe("CollectionList component", () => {
         node = createComponent(CollectionList, {
           params: {bid: "bucket", cid: "collection"},
           session: {authenticated: true, serverInfo: {user: {id: "basicauth:plop"}}},
+          pluginHooks: {},
           collection,
         });
       });

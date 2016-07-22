@@ -5,6 +5,7 @@ import * as CollectionActions from "../actions/collection";
 import * as NotificationsActions from "../actions/notifications";
 import { push as updatePath } from "react-router-redux";
 
+
 function mapStateToProps(state) {
   return {
     collection: state.collection,

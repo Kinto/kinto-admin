@@ -1,8 +1,10 @@
 /* @flow */
 
-import React from "react";
+import React, { Component } from "react";
 import { Route, IndexRoute } from "react-router";
+import { mergeObjects } from "react-jsonschema-form/lib/utils";
 
+import { isObject } from "./utils";
 import { flattenPluginsRoutes } from "./plugin";
 import App from "./containers/App";
 import HomePage from "./containers/HomePage";
@@ -20,11 +22,6 @@ import * as sessionActions from "./actions/session";
 import * as collectionActions from "./actions/collection";
 import * as notificationActions from "./actions/notifications";
 
-
-const common = {
-  notifications: Notifications,
-  sidebar: Sidebar,
-};
 
 function onAuthEnter(store: Object, {params}) {
   // XXX there's an odd bug where we enter twice this function while we clearly
@@ -59,7 +56,37 @@ function onCollectionListEnter(store: Object, {params}) {
   store.dispatch(collectionActions.listRecords(bid, cid, sort));
 }
 
+function registerPluginsComponentHooks(PageContainer, plugins) {
+  // Extract the container wrapped component (see react-redux connect() API)
+  const {WrappedComponent} = PageContainer;
+  // By convention, the hook namespace is the wrapped component name
+  const namespace = WrappedComponent.displayName;
+  // Retrieve all the hooks if any
+  const hooks = plugins
+    .map(plugin => plugin.hooks)
+    .filter(isObject);
+  // Merge all the hooks together, recursively grouped by namespaces
+  const mergedHooks = hooks.reduce((acc, hookObject) => {
+    return mergeObjects(acc, hookObject, true);
+  }, {});
+  // Wrap the root component, augmenting its props with the plugin hooks for it.
+  return class extends Component {
+    render() {
+      return (
+        <PageContainer
+          {...this.props}
+          pluginHooks={mergedHooks[namespace] || {}} />
+      );
+    }
+  };
+}
+
 export default function getRoutes(store: Object, plugins: Object[] = []) {
+  const common = {
+    notifications: registerPluginsComponentHooks(Notifications, plugins),
+    sidebar: registerPluginsComponentHooks(Sidebar, plugins),
+  };
+
   return (
     <Route path="/" component={App}>
       <IndexRoute components={{...common, content: HomePage}} />
@@ -76,7 +103,10 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
       <Route path="/buckets/:bid/collections/:cid/edit"
         components={{...common, content: CollectionEditPage}} />
       <Route path="/buckets/:bid/collections/:cid"
-        components={{...common, content: CollectionListPage}}
+        components={{
+          ...common,
+          content: registerPluginsComponentHooks(CollectionListPage, plugins),
+        }}
         onEnter={onCollectionListEnter.bind(null, store)}
         onChange={onCollectionListEnter.bind(null, store)} />
       <Route path="/buckets/:bid/collections/:cid/add"
