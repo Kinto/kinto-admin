@@ -14,10 +14,12 @@ const finalCreateStore = compose(
 )(createStore);
 
 export default function configureStore(initialState, plugins=[]) {
-  const store = finalCreateStore(createRootReducer(plugins), initialState);
+  const pluginReducers = plugins.map(({reducers={}}) => reducers);
+  const pluginSagas = plugins.map(({sagas=[]}) => sagas);
+  const store = finalCreateStore(createRootReducer(pluginReducers), initialState);
   // Every saga will receive the store getState() function as first argument
   // by default; this allows sagas to share the same signature and access the
   // state consistently.
-  sagaMiddleware.run(rootSaga, store.getState.bind(store), plugins);
+  sagaMiddleware.run(rootSaga, store.getState.bind(store), pluginSagas);
   return store;
 }

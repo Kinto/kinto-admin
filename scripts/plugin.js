@@ -26,14 +26,14 @@ export function flattenPluginsRoutes(
 }
 
 export function flattenPluginsSagas(
-  plugins: Object[],
+  pluginsSagas: Array<Array<any>>,
   getState: Function
 ): Object[] {
-  return plugins.reduce((acc, {sagas:sagaDefs = []}) => {
+  return pluginsSagas.reduce((acc, sagaDefs = []) => {
     // Create the saga watchers for this plugin, passing them the getState
     // function
-    const sagas = sagaDefs.map(([fn, ...args]) => fn(...args, getState));
-    return [...acc, ...sagas];
+    const pluginSagas = sagaDefs.map(([fn, ...args]) => fn(...args, getState));
+    return [...acc, ...pluginSagas];
   }, []);
 }
 
@@ -62,13 +62,13 @@ function extendReducers(pluginReducers, standardReducers) {
 }
 
 export function flattenPluginsReducers(
-  plugins: Object[],
+  pluginsReducers: Object[],
   standardReducers: Object
 ): Object {
   // standardReducers contain the kinto-admin core reducers; each plugin
   // will extend their reducers against these, so a plugin will never extend
   // another plugin reducer.
-  return plugins.reduce((acc, {reducers: pluginReducers = {}}) => ({
+  return pluginsReducers.reduce((acc, pluginReducers = {}) => ({
     ...acc,
     ...extendReducers(pluginReducers, standardReducers)
   }), {});

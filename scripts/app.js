@@ -15,6 +15,8 @@ import "../css/styles.css";
 export function createAdmin(plugins=[]) {
   const store = configureStore({}, plugins);
 
+  const registerPlugins = plugins.map(plugin => plugin.register(store));
+
   syncHistoryWithStore(hashHistory, store);
 
   function onRouteUpdate() {
@@ -25,7 +27,7 @@ export function createAdmin(plugins=[]) {
   const component = (
     <Provider store={store}>
       <Router history={hashHistory} onUpdate={onRouteUpdate}>
-        {getRoutes(store, plugins)}
+        {getRoutes(store, registerPlugins)}
       </Router>
     </Provider>
   );

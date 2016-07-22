@@ -21,7 +21,7 @@ class Signoff extends React.Component {
   }
 }
 
-export const routes = [
+const routes = [
   {
     path: "/buckets/:bid/collections/:cid/signoff",
     components: {
@@ -30,14 +30,28 @@ export const routes = [
   }
 ];
 
-export const hooks = {
-  CollectionList: {
-    ListActions: [
-      <a key="request-signoff-btn" className="btn btn-info" href="#">Request signoff</a>
-    ]
-  }
-};
-
-export const sagas = [];
+const sagas = [];
 
 export const reducers = {};
+
+export function register(store) {
+  const hooks = {
+    CollectionList: {
+      ListActions: [
+        <a key="request-signoff-btn"
+           className="btn btn-info"
+           href="#"
+           onClick={(event) => {
+             event.preventDefault();
+             store.dispatch(requestSignoff());
+           }}>Request signoff</a>
+      ]
+    }
+  };
+
+  return {
+    routes,
+    sagas,
+    hooks,
+  };
+}
