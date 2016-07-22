@@ -11,7 +11,7 @@ class Row extends Component {
     schema: {},
     displayFields: ["__json"],
     record: {},
-  }
+  };
 
   get lastModified() {
     const lastModified = this.props.record.last_modified;
@@ -229,6 +229,10 @@ function ListActions(props) {
 }
 
 export default class CollectionList extends Component {
+  // This is useful to identify wrapped component for plugin hooks when code is
+  // minified; see https://github.com/facebook/react/issues/4915
+  static displayName = "CollectionList";
+
   updateSort = (sort) => {
     const {params, listRecords} = this.props;
     const {bid, cid} = params;
