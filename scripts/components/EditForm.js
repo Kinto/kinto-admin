@@ -11,8 +11,16 @@ export default class EditForm extends Component {
   }
 
   render() {
-    const {params, session, collection, record, deleteAttachment} = this.props;
+    const {
+      params,
+      session,
+      collection,
+      record,
+      deleteRecord,
+      deleteAttachment
+    } = this.props;
     const {bid, cid, rid} = params;
+
     return (
       <div>
         <h1>Edit <b>{bid}/{cid}/{rid}</b></h1>
@@ -23,6 +31,7 @@ export default class EditForm extends Component {
           session={session}
           collection={collection}
           record={record}
+          deleteRecord={deleteRecord}
           deleteAttachment={deleteAttachment}
           onSubmit={this.onSubmit} />
       </div>

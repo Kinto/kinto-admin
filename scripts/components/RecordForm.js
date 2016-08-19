@@ -133,6 +133,13 @@ export default class RecordForm extends Component {
     }
   }
 
+  deleteRecord = () => {
+    const {deleteRecord, bid, cid, rid} = this.props;
+    if (confirm("Are you sure?")) {
+      deleteRecord(bid, cid, rid);
+    }
+  }
+
   getForm() {
     const {asJSON} = this.state;
     const {bid, cid, collection, record} = this.props;
@@ -145,15 +152,24 @@ export default class RecordForm extends Component {
     }
 
     const buttons = (
-      <div>
-        <input type="submit" className="btn btn-primary"
-          disabled={!this.allowEditing} value={record ? "Update" : "Create"} />
-        {" or "}
-        <Link to={`/buckets/${bid}/collections/${cid}`}>Cancel</Link>
-        {" | "}
-        <a href="#" onClick={this.toggleJSON}>
-          {asJSON ? "Edit form" : "Edit raw JSON"}
-        </a>
+      <div className="row">
+        <div className="col-sm-6">
+          <input type="submit" className="btn btn-primary"
+            disabled={!this.allowEditing} value={record ? "Update" : "Create"} />
+          {" or "}
+          <Link to={`/buckets/${bid}/collections/${cid}`}>Cancel</Link>
+          {" | "}
+          <a href="#" onClick={this.toggleJSON}>
+            {asJSON ? "Edit form" : "Edit raw JSON"}
+          </a>
+        </div>
+        <div className="col-sm-6 text-right">
+          {this.allowEditing && record ?
+            <button type="button" className="btn btn-danger"
+                    onClick={this.deleteRecord}>
+              Delete record
+            </button> : null}
+        </div>
       </div>
     );
 
