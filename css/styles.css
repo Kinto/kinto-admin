@@ -124,8 +124,8 @@ table.record-list tr.conflicting {
   );
 }
 
-table.record-list td {
-  max-width: 10vw;
+table.record-list td:not(.actions) {
+  max-width: 8vw;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

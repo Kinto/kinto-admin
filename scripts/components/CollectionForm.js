@@ -112,7 +112,6 @@ const schema = {
       minItems: 1,
       items: {
         type: "string",
-        description: "Enter a field name. i.e: name, attachment.filename",
         minLength: 1,
       }
     },
@@ -186,6 +185,9 @@ const uiSchema = {
     ),
   },
   displayFields: {
+    items: {
+      "ui:placeholder": "Enter a field name. i.e: name, attachment.filename"
+    },
     "ui:help": (
       <p>
         This field allows defining the record object properties to display as
