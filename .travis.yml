@@ -29,5 +29,6 @@ install:
 - npm run dist
 matrix:
   allow_failures:
-  - env: ACTION="test-browser"
+  - env: ACTION="test-browser" SERVER=stable
+  - env: ACTION="test-browser" SERVER=development
 script: npm run $ACTION
