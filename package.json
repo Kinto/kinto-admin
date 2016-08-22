@@ -1,6 +1,6 @@
 {
   "name": "kinto-admin",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Kinto Web Administration Console in React.js",
   "scripts": {
     "build:readme": "toctoc README.md -w",
@@ -37,12 +37,12 @@
     "codemirror": "^5.13.2",
     "express": "^4.14.0",
     "filesize": "^3.3.0",
-    "kinto-http": "^2.2.0",
+    "kinto-http": "^2.2.1",
     "node-fs-extra": "^0.8.1",
     "react": "^15.2.0",
     "react-codemirror": "^0.2.3",
     "react-dom": "^15.2.0",
-    "react-jsonschema-form": "^0.38.0",
+    "react-jsonschema-form": "^0.39.0",
     "react-redux": "^4.0.0",
     "react-router": "^2.4.1",
     "react-router-redux": "4.0.5",
