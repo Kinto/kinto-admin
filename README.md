@@ -189,6 +189,18 @@ For instance:
 If you use `target.merkle.tree.file.name` it will render the string
 `foobar` and `target.proof.hash` will render `abcd`.
 
+### Assets path url
+
+By default this package assumes the static admin will be hosted at the root of a given domain; if you plan on hosting it under a given sub path, you need to build the admin setting the `KINTO_ADMIN_PUBLIC_PATH` env var, specifying the absolute root URL path where the static asset files are obtainable.
+
+For example, if you plan on hosting the admin at `https://mydomain.tld/kinto-admin/`, you need to build it like this:
+
+```
+$ KINTO_ADMIN_PUBLIC_PATH=/kinto-admin/ npm run dist
+```
+
+Note: Unfortunately, the `kinto-admin build` CLI command doesn't support this feature.
+
 ## License
 
 Apache Licence Version 2.0
