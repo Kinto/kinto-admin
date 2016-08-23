@@ -153,6 +153,20 @@ table.record-list td.actions .btn-group {
   margin-left: .5em;
 }
 
+.history-row-details {
+  display: table-row;
+}
+
+.table > tbody > tr.history-row-details > td {
+  padding: 0;
+  margin: 0;
+}
+
+.history-row-details td pre {
+  border: none;
+  margin: 0;
+}
+
 .sort-link {
   float: right;
   margin-top: .1em;

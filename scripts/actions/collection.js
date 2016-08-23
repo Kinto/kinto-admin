@@ -12,6 +12,8 @@ import {
   COLLECTION_BUSY,
   COLLECTION_RESET,
   COLLECTION_LOAD_SUCCESS,
+  COLLECTION_HISTORY_REQUEST,
+  COLLECTION_HISTORY_SUCCESS,
   COLLECTION_RECORDS_REQUEST,
   COLLECTION_RECORDS_SUCCESS,
   RECORD_CREATE_REQUEST,
@@ -36,12 +38,20 @@ export function collectionLoadSuccess(
   return {type: COLLECTION_LOAD_SUCCESS, data, permissions};
 }
 
+export function listRecords(bid: string, cid: string, sort: string): Action {
+  return {type: COLLECTION_RECORDS_REQUEST, bid, cid, sort};
+}
+
 export function listRecordsSuccess(records: RecordData[]): Action {
   return {type: COLLECTION_RECORDS_SUCCESS, records};
 }
 
-export function listRecords(bid: string, cid: string, sort: string): Action {
-  return {type: COLLECTION_RECORDS_REQUEST, bid, cid, sort};
+export function listCollectionHistory(bid: string, cid: string): Action {
+  return {type: COLLECTION_HISTORY_REQUEST, bid, cid};
+}
+
+export function listCollectionHistorySuccess(history: Object[]): Action {
+  return {type: COLLECTION_HISTORY_SUCCESS, history};
 }
 
 export function createRecord(bid: string, cid: string, record: RecordData, attachment?: String): Action {

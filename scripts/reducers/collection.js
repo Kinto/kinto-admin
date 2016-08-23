@@ -7,6 +7,8 @@ import {
   COLLECTION_LOAD_SUCCESS,
   COLLECTION_RECORDS_REQUEST,
   COLLECTION_RECORDS_SUCCESS,
+  COLLECTION_HISTORY_REQUEST,
+  COLLECTION_HISTORY_SUCCESS,
 } from "../constants";
 
 const DEFAULT_SORT: string = "-last_modified";
@@ -29,6 +31,8 @@ export const INITIAL_STATE: Collection = {
     "write": [],
     "record:create": [],
   },
+  history: [],
+  historyLoaded: false,
 };
 
 export function collection(
@@ -76,6 +80,12 @@ export function collection(
     }
     case COLLECTION_RECORDS_SUCCESS: {
       return {...state, records: action.records, recordsLoaded: true};
+    }
+    case COLLECTION_HISTORY_REQUEST: {
+      return {...state, historyLoaded: false};
+    }
+    case COLLECTION_HISTORY_SUCCESS: {
+      return {...state, history: action.history, historyLoaded: true};
     }
     default: {
       return state;

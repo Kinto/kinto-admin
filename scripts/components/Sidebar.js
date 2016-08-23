@@ -75,10 +75,10 @@ function BucketCollectionsMenu(props) {
   return (
     <div className="collections-menu list-group">
       {
-        collections.map((collection) => {
+        collections.map((collection, index) => {
           return (
             <CollectionMenuEntry
-              key={bid + cid}
+              key={index}
               active={bid === bucket.id && cid === collection.id}
               bucket={bucket}
               collection={collection}

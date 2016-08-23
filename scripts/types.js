@@ -49,6 +49,8 @@ export type Collection = {
   recordsLoaded: boolean,
   sort: string,
   permissions: CollectionPermissions,
+  history: Object[],
+  historyLoaded: boolean,
 };
 
 export type CollectionData = {

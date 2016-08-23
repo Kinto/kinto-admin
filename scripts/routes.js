@@ -57,6 +57,17 @@ function onCollectionListEnter(store: Object, {params}) {
   store.dispatch(collectionActions.listRecords(bid, cid, sort));
 }
 
+function onCollectionHistoryEnter(store: Object, {params}) {
+  const {bid, cid} = params;
+  const {session} = store.getState();
+  if (!session.authenticated) {
+    // We're not authenticated, skip requesting the list of records. This likely
+    // occurs when users refresh the page and lose their session.
+    return;
+  }
+  store.dispatch(collectionActions.listCollectionHistory(bid, cid));
+}
+
 function registerPluginsComponentHooks(PageContainer, plugins) {
   // Extract the container wrapped component (see react-redux connect() API)
   const {WrappedComponent} = PageContainer;
@@ -111,7 +122,9 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
         onEnter={onCollectionListEnter.bind(null, store)}
         onChange={onCollectionListEnter.bind(null, store)} />
       <Route path="/buckets/:bid/collections/:cid/history"
-        components={{...common, content: CollectionHistoryPage}} />
+        components={{...common, content: CollectionHistoryPage}}
+        onEnter={onCollectionHistoryEnter.bind(null, store)}
+        onChange={onCollectionHistoryEnter.bind(null, store)} />
       <Route path="/buckets/:bid/collections/:cid/add"
         components={{...common, content: AddFormPage}} />
       <Route path="/buckets/:bid/collections/:cid/edit/:rid"
