@@ -114,8 +114,12 @@ export function* bulkCreateRecords(getState, action) {
       // XXX We should perform a batch request here
       for (const rawRecord of records) {
         // Note: data urls are attached to the __attachment__ record property
-        const {__attachment__: dataURL, ...record} = rawRecord;
-        yield call([coll, coll.addAttachment], dataURL, record);
+        const {__attachment__: attachement, ...record} = rawRecord;
+        if (attachement) {
+          yield call([coll, coll.addAttachment], attachement, record);
+        } else {
+          yield call([coll, coll.createRecord], record);
+        }
       }
       yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
       yield put(notifySuccess(`${records.length} records created.`));
