@@ -1,6 +1,6 @@
 # Kinto Web Administration Console
 
-[![Build Status](https://travis-ci.org/Kinto/kinto-admin.svg)](https://travis-ci.org/Kinto/kinto-admin)
+[![Build Status](https://travis-ci.org/Kinto/kinto-admin.svg?branch=master)](https://travis-ci.org/Kinto/kinto-admin)
 
 A Web admin UI to manage data from a [Kinto](https://kinto.readthedocs.io/) server.
 [Give it a go](http://kinto.github.io/kinto-admin/)!
