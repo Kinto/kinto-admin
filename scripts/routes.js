@@ -13,6 +13,7 @@ import Notifications from "./containers/Notifications";
 import BucketCreatePage from "./containers/BucketCreatePage";
 import BucketEditPage from "./containers/BucketEditPage";
 import CollectionListPage from "./containers/CollectionListPage";
+import CollectionHistoryPage from "./containers/CollectionHistoryPage";
 import CollectionCreatePage from "./containers/CollectionCreatePage";
 import CollectionEditPage from "./containers/CollectionEditPage";
 import AddFormPage from "./containers/AddFormPage";
@@ -109,6 +110,8 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
         }}
         onEnter={onCollectionListEnter.bind(null, store)}
         onChange={onCollectionListEnter.bind(null, store)} />
+      <Route path="/buckets/:bid/collections/:cid/history"
+        components={{...common, content: CollectionHistoryPage}} />
       <Route path="/buckets/:bid/collections/:cid/add"
         components={{...common, content: AddFormPage}} />
       <Route path="/buckets/:bid/collections/:cid/edit/:rid"
