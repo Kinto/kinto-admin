@@ -7,31 +7,82 @@ function activeIfPathname(location, pathname) {
   return `list-group-item ${active}`;
 }
 
+class GearMenu extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {open: false};
+  }
+
+  toggle = (event) => {
+    this.setState({open: !this.state.open});
+  };
+
+  render() {
+    const {children} = this.props;
+    const {open} = this.state;
+    return (
+      <div className={`gear-menu dropdown ${open ? "open" : ""}`}>
+        <button type="button" className="dropdown-toggle"
+          onClick={this.toggle}>
+          <i className="glyphicon glyphicon-cog" />
+        </button>
+        <ul className="dropdown-menu">{
+          React.Children.map(children, (child, i) => {
+            return <li
+              onClick={(event) => this.setState({open: false})}>{child}</li>;
+          })
+        }</ul>
+      </div>
+    );
+  }
+}
+
+function CollectionMenuEntry(props) {
+  const {bucket, collection, active, currentPath} = props;
+  const {id} = collection;
+  const classes = [
+    "list-group-item",
+    "collections-menu-entry",
+    active ? "active" : "",
+  ].join(" ");
+  const listPath = `/buckets/${bucket.id}/collections/${id}`;
+  const editPath = `/buckets/${bucket.id}/collections/${id}/edit`;
+  const historyPath = `/buckets/${bucket.id}/collections/${id}/history`;
+
+  return (
+    <div className={classes}>
+      <i className="glyphicon glyphicon-align-justify"/>
+      {
+        currentPath === listPath ? id : <Link to={listPath}>{id}</Link>
+      }
+      <GearMenu>
+        <Link to={listPath}>
+          <i className="glyphicon glyphicon-search" />Browse records
+        </Link>
+        <Link to={editPath}>
+          <i className="glyphicon glyphicon-pencil" />Edit properties
+        </Link>
+        <Link to={historyPath}>
+          <i className="glyphicon glyphicon-time" />View history
+        </Link>
+      </GearMenu>
+    </div>
+  );
+}
+
 function BucketCollectionsMenu(props) {
   const {active, currentPath, bucket, collections, bid, cid} = props;
   return (
     <div className="collections-menu list-group">
       {
-        collections.map((collection, i) => {
-          const {id} = collection;
-          const classes = [
-            "list-group-item",
-            "collections-menu-entry",
-            bid === bucket.id && cid === id ? "active" : "",
-          ].join(" ");
-          const listPath = `/buckets/${bucket.id}/collections/${id}`;
+        collections.map((collection) => {
           return (
-            <div key={i} className={classes}>
-              <i className="glyphicon glyphicon-align-justify"/>
-              {
-                currentPath === listPath ? id : <Link to={listPath}>{id}</Link>
-              }
-              <Link to={`/buckets/${bucket.id}/collections/${id}/edit`}
-                className="collections-menu-entry-edit"
-                title="Edit collection properties">
-                <i className="glyphicon glyphicon-cog"/>
-              </Link>
-            </div>
+            <CollectionMenuEntry
+              key={bid + cid}
+              active={bid === bucket.id && cid === collection.id}
+              bucket={bucket}
+              collection={collection}
+              currentPath={currentPath} />
           );
         })
       }
