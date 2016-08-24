@@ -7,6 +7,7 @@ import {
   COLLECTION_LOAD_SUCCESS,
   COLLECTION_RECORDS_REQUEST,
   COLLECTION_RECORDS_SUCCESS,
+  COLLECTION_HISTORY_SUCCESS,
 } from "../../scripts/constants";
 
 
@@ -54,6 +55,8 @@ describe("collection reducer", () => {
       sort: "-last_modified",
       busy: false,
       permissions: {write: [], read: []},
+      history: [],
+      historyLoaded: false,
     });
   });
 
@@ -66,5 +69,16 @@ describe("collection reducer", () => {
 
     expect(state.records).eql(records);
     expect(state.recordsLoaded).eql(true);
+  });
+
+  it("COLLECTION_HISTORY_SUCCESS", () => {
+    const history = [1, 2, 3];
+    const state = collection(undefined, {
+      type: COLLECTION_HISTORY_SUCCESS,
+      history
+    });
+
+    expect(state.history).eql(history);
+    expect(state.historyLoaded).eql(true);
   });
 });

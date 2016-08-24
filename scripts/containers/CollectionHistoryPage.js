@@ -1,6 +1,6 @@
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import CollectionList from "../components/CollectionList";
+import CollectionHistory from "../components/CollectionHistory";
 import * as CollectionActions from "../actions/collection";
 import * as NotificationsActions from "../actions/notifications";
 import { push as updatePath } from "react-router-redux";
@@ -25,5 +25,5 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(CollectionList);
+)(CollectionHistory);
 

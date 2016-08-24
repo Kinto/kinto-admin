@@ -91,6 +91,14 @@ h1 {
   margin-right: .5em;
 }
 
+.tabs-container .panel-default {
+  border-top: none;
+}
+
+.tabs-container .panel-danger {
+  margin-top: 2em;
+}
+
 table.record-list {
   margin-top: 1em;
 }
@@ -152,6 +160,24 @@ table.record-list td.actions .btn-group {
   margin-left: .5em;
 }
 
+table.record-list > tbody + tbody {
+  border-top: none;
+}
+
+.history-row-details {
+  display: table-row;
+}
+
+.table > tbody > tr.history-row-details > td {
+  padding: 0;
+  margin: 0;
+}
+
+.history-row-details td pre {
+  border: none;
+  margin: 0;
+}
+
 .sort-link {
   float: right;
   margin-top: .1em;
@@ -187,12 +213,30 @@ table.record-list td.actions .btn-group {
   min-height: 300px;
 }
 
-.panel-heading > .glyphicon {
+.panel-heading > .glyphicon,
+.list-group-item .glyphicon,
+.nav-tabs li .glyphicon {
   margin-right: .5em;
 }
 
-.list-group-item .glyphicon {
-  margin-right: .5em;
+.nav-tabs.nav-justified > li > a {
+  color: #333;
+}
+
+.gear-menu {
+  float: right;
+  margin: 0 -1.4em 0 0;
+  color: #555;
+  text-decoration: none;
+}
+
+.gear-menu .dropdown-toggle {
+  border: 0;
+  background: transparent;
+}
+
+.active .gear-menu button {
+  color: #fff;
 }
 
 .collections-menu-entry a {
@@ -200,7 +244,7 @@ table.record-list td.actions .btn-group {
   text-decoration: none;
 }
 
-.collections-menu-entry.active a {
+.collections-menu-entry.active > a {
   color: #fff;
 }
 

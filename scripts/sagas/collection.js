@@ -45,6 +45,22 @@ export function* listRecords(getState, action) {
   }
 }
 
+export function* listHistory(getState, action) {
+  const {bid, cid} = action;
+  try {
+    const bucket = getBucket(bid);
+    const {data} = yield call([bucket, bucket.listHistory], {
+      sort: "-date",
+      filters: {
+        collection_id: cid,
+      }
+    });
+    yield put(actions.listCollectionHistorySuccess(data));
+  } catch(error) {
+    yield put(notifyError(error));
+  }
+}
+
 export function* createRecord(getState, action) {
   const {session} = getState();
   const {bid, cid, record, attachment} = action;

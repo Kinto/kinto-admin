@@ -21,6 +21,7 @@ describe("Sidebar component", () => {
         params: {},
         location: {pathname: ""},
         session: {authenticated: false},
+        capabilities: {history: {}},
       });
 
       expect(node.querySelectorAll(".bucket-menu")).to.have.length.of(0);
@@ -50,8 +51,9 @@ describe("Sidebar component", () => {
     beforeEach(() => {
       const params = {bid: "mybuck", cid: "mycoll"};
       const location = {pathname: ""};
+      const capabilities = {history: {}};
 
-      node = createComponent(Sidebar, {params, location, session});
+      node = createComponent(Sidebar, {params, location, session, capabilities});
       bucketMenus = node.querySelectorAll(".bucket-menu");
     });
 
@@ -60,14 +62,14 @@ describe("Sidebar component", () => {
     });
 
     it("should list collections for the first bucket", () => {
-      const collMenus = bucketMenus[0].querySelectorAll(".collections-menu-entry");
+      const collMenus = bucketMenus[0].querySelectorAll(".collections-menu-entry > a");
 
       expect([].map.call(collMenus, x => x.textContent))
         .eql(["othercoll", "mycoll"]);
     });
 
     it("should list collections for the second bucket", () => {
-      const collMenus = bucketMenus[1].querySelectorAll(".collections-menu-entry");
+      const collMenus = bucketMenus[1].querySelectorAll(".collections-menu-entry > a");
 
       expect([].map.call(collMenus, x => x.textContent))
         .eql(["foo", "bar", "baz"]);

@@ -262,20 +262,16 @@ export default class CollectionForm extends Component {
 
     return (
       <div>
-        <div className="panel panel-default">
-          <div className="panel-body">
-            {alert}
-            <Form
-              schema={schema}
-              formData={formData}
-              uiSchema={this.allowEditing ? _uiSchema :
-                                         {..._uiSchema, "ui:disabled": true}}
-              validate={validate}
-              onSubmit={this.onSubmit}>
-              {buttons}
-            </Form>
-          </div>
-        </div>
+        {alert}
+        <Form
+          schema={schema}
+          formData={formData}
+          uiSchema={this.allowEditing ? _uiSchema :
+                                     {..._uiSchema, "ui:disabled": true}}
+          validate={validate}
+          onSubmit={this.onSubmit}>
+          {buttons}
+        </Form>
         {showDeleteForm ?
           <DeleteForm
             cid={cid}
