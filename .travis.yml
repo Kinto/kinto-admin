@@ -12,20 +12,23 @@ addons:
 cache:
   directories:
   - node_modules
+env:
+- ACTION="test-all"
+- SERVER=stable ACTION="test-browser"
+- SERVER=development ACTION="test-browser"
 before_install:
 - export PATH=$HOME/.local/bin:$PATH
 - pip install --user `whoami` virtualenv
 - virtualenv .venv
-- .venv/bin/pip install https://github.com/Kinto/kinto/zipball/master
+- if [[ $SERVER && $SERVER != development ]]; then .venv/bin/pip install kinto; fi
+- if [[ $SERVER && $SERVER == development ]]; then .venv/bin/pip install https://github.com/Kinto/kinto/zipball/master; fi
 install:
 - export DISPLAY=':99.0'
 - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
 - npm install
 - npm run dist
-env:
-- ACTION="test-all"
-- ACTION="test-browser"
 matrix:
   allow_failures:
-  - env: ACTION="test-browser"
+  - env: ACTION="test-browser" SERVER=stable
+  - env: ACTION="test-browser" SERVER=development
 script: npm run $ACTION
