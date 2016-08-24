@@ -10,6 +10,7 @@ function mapStateToProps(state) {
   return {
     collection: state.collection,
     session: state.session,
+    capabilities: state.session.serverInfo.capabilities,
   };
 }
 

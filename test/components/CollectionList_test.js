@@ -16,6 +16,8 @@ describe("CollectionList component", () => {
     sandbox.restore();
   });
 
+  const capabilities = {history: {}};
+
   describe("Schema defined", () => {
     let node;
 
@@ -44,6 +46,7 @@ describe("CollectionList component", () => {
         session: {authenticated: true, serverInfo: {user: {id: "plop"}}},
         pluginHooks: {},
         collection,
+        capabilities,
       });
     });
 
@@ -83,6 +86,7 @@ describe("CollectionList component", () => {
         session: {authenticated: true, serverInfo: {user: {id: "plop"}}},
         pluginHooks: {},
         collection,
+        capabilities,
       });
     });
 
@@ -127,6 +131,7 @@ describe("CollectionList component", () => {
           session: {authenticated: true, serverInfo: {user: {id: "basicauth:plop"}}},
           pluginHooks: {},
           collection,
+          capabilities,
         });
       });
 
@@ -161,6 +166,7 @@ describe("CollectionList component", () => {
           session: {authenticated: true, serverInfo: {user: {id: "basicauth:plop"}}},
           pluginHooks: {},
           collection,
+          capabilities,
         });
       });
 

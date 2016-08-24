@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import Spinner from "./Spinner";
+import CollectionTabs from "./CollectionTabs";
 
 
 class HistoryRow extends Component {
@@ -54,7 +55,7 @@ class HistoryRow extends Component {
 function HistoryTable(props) {
   const {history} = props;
   return (
-    <table className="table table-striped table-bordered history-list">
+    <table className="table table-striped table-bordered record-list">
       <thead>
         <tr>
           <th>Date</th>
@@ -76,15 +77,21 @@ function HistoryTable(props) {
 
 export default class CollectionHistory extends Component {
   render() {
-    const {params, collection} = this.props;
+    const {params, collection, capabilities} = this.props;
     const {bid, cid} = params;
     const {history, historyLoaded} = collection;
 
     return (
       <div className="collection-history">
         <h1>History for <b>{bid}/{cid}</b></h1>
-        { !historyLoaded ? <Spinner /> :
-          <HistoryTable history={history} />}
+        <CollectionTabs
+          bid={bid}
+          cid={cid}
+          selected="history"
+          capabilities={capabilities}>
+          { !historyLoaded ? <Spinner /> :
+            <HistoryTable history={history} />}
+        </CollectionTabs>
       </div>
     );
   }

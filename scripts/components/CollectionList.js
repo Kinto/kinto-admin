@@ -4,6 +4,7 @@ import { Link } from "react-router";
 import { renderDisplayField } from "../utils";
 import { canCreateRecord } from "../permission";
 import Spinner from "./Spinner";
+import CollectionTabs from "./CollectionTabs";
 
 
 class Row extends Component {
@@ -212,18 +213,9 @@ function ListActions(props) {
           className="btn btn-info btn-record-bulk-add">Bulk add</Link>,
   ];
   return (
-    <div className="row list-actions">
-      <div className="col-xs-8">
-        {canCreateRecord(session, collection) ?
-          [...defaultButtons, ...hooks] : null}
-      </div>
-      <div className="edit-coll-props col-xs-4 text-right">
-        <Link to={`/buckets/${bid}/collections/${cid}/edit`}
-          className="btn btn-default">
-          <i className="glyphicon glyphicon-cog"/>
-          Collection settings
-        </Link>
-      </div>
+    <div className="list-actions">
+      {canCreateRecord(session, collection) ?
+        [...defaultButtons, ...hooks] : null}
     </div>
   );
 }
@@ -247,6 +239,7 @@ export default class CollectionList extends Component {
       deleteRecord,
       updatePath,
       pluginHooks,
+      capabilities,
     } = this.props;
     const {bid, cid} = params;
     const {
@@ -271,20 +264,26 @@ export default class CollectionList extends Component {
     return (
       <div className="collection-page">
         <h1>List of records in <b>{bid}/{name}</b></h1>
-        {listActions}
-        <Table
-          busy={busy}
+        <CollectionTabs
           bid={bid}
           cid={cid}
-          records={records}
-          recordsLoaded={recordsLoaded}
-          sort={sort}
-          schema={schema}
-          displayFields={displayFields}
-          deleteRecord={deleteRecord}
-          updateSort={this.updateSort}
-          updatePath={updatePath} />
-        {listActions}
+          selected="records"
+          capabilities={capabilities}>
+          {listActions}
+          <Table
+            busy={busy}
+            bid={bid}
+            cid={cid}
+            records={records}
+            recordsLoaded={recordsLoaded}
+            sort={sort}
+            schema={schema}
+            displayFields={displayFields}
+            deleteRecord={deleteRecord}
+            updateSort={this.updateSort}
+            updatePath={updatePath} />
+          {listActions}
+        </CollectionTabs>
       </div>
     );
   }

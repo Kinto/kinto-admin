@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import CollectionForm from "./CollectionForm";
+import CollectionTabs from "./CollectionTabs";
 import Spinner from "./Spinner";
 
 
@@ -20,7 +21,7 @@ export default class CollectionEdit extends Component {
   };
 
   render() {
-    const {params, session, bucket, collection} = this.props;
+    const {params, session, bucket, collection, capabilities} = this.props;
     const {bid, cid} = params;
     const {
       schema = {},
@@ -48,15 +49,21 @@ export default class CollectionEdit extends Component {
     return (
       <div>
         <h1>Edit <b>{bid}/{cid}</b> collection properties</h1>
-        <CollectionForm
+        <CollectionTabs
           bid={bid}
           cid={cid}
-          session={session}
-          bucket={bucket}
-          collection={collection}
-          deleteCollection={this.deleteCollection}
-          formData={formData}
-          onSubmit={this.onSubmit} />
+          selected="settings"
+          capabilities={capabilities}>
+          <CollectionForm
+            bid={bid}
+            cid={cid}
+            session={session}
+            bucket={bucket}
+            collection={collection}
+            deleteCollection={this.deleteCollection}
+            formData={formData}
+            onSubmit={this.onSubmit} />
+        </CollectionTabs>
       </div>
     );
   }

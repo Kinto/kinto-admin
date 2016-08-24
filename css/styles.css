@@ -91,6 +91,14 @@ h1 {
   margin-right: .5em;
 }
 
+.tabs-container .panel-default {
+  border-top: none;
+}
+
+.tabs-container .panel-danger {
+  margin-top: 2em;
+}
+
 table.record-list {
   margin-top: 1em;
 }
@@ -124,8 +132,7 @@ table.record-list tr.conflicting {
   );
 }
 
-table.record-list td:not(.actions),
-table.history-list td:not(.actions) {
+table.record-list td:not(.actions) {
   max-width: 8vw;
   white-space: nowrap;
   overflow: hidden;
@@ -151,6 +158,10 @@ table.record-list td.actions {
 
 table.record-list td.actions .btn-group {
   margin-left: .5em;
+}
+
+table.record-list > tbody + tbody {
+  border-top: none;
 }
 
 .history-row-details {
