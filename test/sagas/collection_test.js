@@ -15,9 +15,10 @@ const records = [
   record,
   record2,
 ];
-const recordsWithAttachment = records.map((record, i) => {
-  return {...record, __attachment__: {n: i + 1}};
-});
+const recordsWithAttachment = [
+  {...record, __attachment__: "fake-attachment"},
+  record2,
+];
 
 describe("collection sagas", () => {
   describe("listRecords()", () => {
@@ -467,6 +468,7 @@ describe("collection sagas", () => {
       collection = {
         batch() {},
         addAttachment() {},
+        createRecord() {},
       };
       const bucket = {collection() {return collection;}};
       setClient({bucket() {return bucket;}});
@@ -545,10 +547,9 @@ describe("collection sagas", () => {
                     record));
       });
 
-      it("should send the second attachment", () => {
+      it("should send the second record with no attachment", () => {
         expect(bulkCreateRecords.next().value)
-          .eql(call([collection, collection.addAttachment],
-                    recordsWithAttachment[1].__attachment__,
+          .eql(call([collection, collection.createRecord],
                     record2));
       });
 
