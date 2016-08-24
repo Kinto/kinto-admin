@@ -213,12 +213,14 @@ table.record-list > tbody + tbody {
   min-height: 300px;
 }
 
-.panel-heading > .glyphicon {
+.panel-heading > .glyphicon,
+.list-group-item .glyphicon,
+.nav-tabs li .glyphicon {
   margin-right: .5em;
 }
 
-.list-group-item .glyphicon {
-  margin-right: .5em;
+.nav-tabs.nav-justified > li > a {
+  color: #333;
 }
 
 .gear-menu {
