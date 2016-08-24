@@ -53,7 +53,6 @@ export function* listHistory(getState, action) {
       sort: "-date",
       filters: {
         collection_id: cid,
-        // resource_name: "record",
       }
     });
     yield put(actions.listCollectionHistorySuccess(data));

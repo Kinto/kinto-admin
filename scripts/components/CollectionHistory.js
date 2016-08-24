@@ -22,8 +22,7 @@ class HistoryRow extends Component {
       date,
       action,
       resource_name,
-      collection_id,
-      record_id,
+      target,
       user_id,
     } = entry;
     return (
@@ -32,11 +31,12 @@ class HistoryRow extends Component {
           <td>{date}</td>
           <td>{action}</td>
           <td>{resource_name}</td>
-          <td>{resource_name === "collection" ? collection_id : record_id}</td>
+          <td>{target && target.data && target.data.id}</td>
           <td>{user_id}</td>
           <td className="text-center">
             <a href="." className="btn btn-xs btn-default"
-               onClick={this.toggle}>
+               onClick={this.toggle}
+               title="View entry details">
               <i className={`glyphicon glyphicon-eye-${open ? "close" : "open"}`} />
             </a>
           </td>

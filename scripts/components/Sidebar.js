@@ -58,7 +58,7 @@ function CollectionMenuEntry(props) {
       }
       <GearMenu>
         <Link to={listPath}>
-          <i className="glyphicon glyphicon-search" />Browse records
+          <i className="glyphicon glyphicon-align-justify" />Browse records
         </Link>
         <Link to={editPath}>
           <i className="glyphicon glyphicon-pencil" />Edit properties
