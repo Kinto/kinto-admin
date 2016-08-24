@@ -5,6 +5,7 @@ function mapStateToProps(state) {
   return {
     collections: state.collections,
     session: state.session,
+    capabilities: state.session.serverInfo.capabilities,
   };
 }
 

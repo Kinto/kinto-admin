@@ -38,7 +38,7 @@ class GearMenu extends Component {
 }
 
 function CollectionMenuEntry(props) {
-  const {bucket, collection, active, currentPath} = props;
+  const {bucket, collection, active, currentPath, capabilities} = props;
   const {id} = collection;
   const classes = [
     "list-group-item",
@@ -48,6 +48,7 @@ function CollectionMenuEntry(props) {
   const listPath = `/buckets/${bucket.id}/collections/${id}`;
   const editPath = `/buckets/${bucket.id}/collections/${id}/edit`;
   const historyPath = `/buckets/${bucket.id}/collections/${id}/history`;
+  const hasHistory = "history" in capabilities;
 
   return (
     <div className={classes}>
@@ -62,16 +63,17 @@ function CollectionMenuEntry(props) {
         <Link to={editPath}>
           <i className="glyphicon glyphicon-pencil" />Edit properties
         </Link>
-        <Link to={historyPath}>
-          <i className="glyphicon glyphicon-time" />View history
-        </Link>
+        {hasHistory ?
+          <Link to={historyPath}>
+            <i className="glyphicon glyphicon-time" />View history
+          </Link> : null}
       </GearMenu>
     </div>
   );
 }
 
 function BucketCollectionsMenu(props) {
-  const {active, currentPath, bucket, collections, bid, cid} = props;
+  const {active, currentPath, bucket, collections, bid, cid, capabilities} = props;
   return (
     <div className="collections-menu list-group">
       {
@@ -79,6 +81,7 @@ function BucketCollectionsMenu(props) {
           return (
             <CollectionMenuEntry
               key={index}
+              capabilities={capabilities}
               active={bid === bucket.id && cid === collection.id}
               bucket={bucket}
               collection={collection}
@@ -96,7 +99,7 @@ function BucketCollectionsMenu(props) {
 }
 
 function BucketsMenu(props) {
-  const {active, currentPath, buckets, userBucket, bid, cid} = props;
+  const {active, currentPath, buckets, userBucket, bid, cid, capabilities} = props;
   return (
     <div>
       <div className="panel panel-default">
@@ -123,6 +126,7 @@ function BucketsMenu(props) {
                 </Link>
               </div>
               <BucketCollectionsMenu
+                capabilities={capabilities}
                 bucket={bucket}
                 collections={collections}
                 active={active}
@@ -143,7 +147,7 @@ export default class Sidebar extends Component {
   static displayName = "Sidebar";
 
   render() {
-    const {session, params, location} = this.props;
+    const {session, params, location, capabilities} = this.props;
     const {bid, cid} = params;
     const {buckets=[], serverInfo={}} = session;
     const userBucket = serverInfo.user && serverInfo.bucket;
@@ -157,6 +161,7 @@ export default class Sidebar extends Component {
         </div>
         {session.authenticated ?
           <BucketsMenu
+            capabilities={capabilities}
             buckets={buckets}
             userBucket={userBucket}
             active={active}
