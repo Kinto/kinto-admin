@@ -92,45 +92,49 @@ describe("collection sagas", () => {
     });
   });
 
-  describe("listRecordsNext()", () => {
+  describe("listNextRecords()", () => {
     describe("Success", () => {
-      let listRecordsNext, collection;
+      let listNextRecords, collection;
 
       before(() => {
-        collection = {listRecordsNext() {}};
-        const bucket = {collection() {return collection;}};
-        setClient({bucket() {return bucket;}});
-        const action = collectionActions.listRecordsNext("bucket", "collection");
-        const getState = () => ({collection: {nextRecords() {}}});
-        listRecordsNext = saga.listRecordsNext(getState, action);
+        const action = collectionActions.listNextRecords();
+        collection = {listNextRecords() {}};
+        const getState = () => ({collection});
+        listNextRecords = saga.listNextRecords(getState, action);
       });
 
-      it.only("should list collection records", () => {
-        expect(listRecordsNext.next().value)
-          .eql(call([collection, collection.listRecordsNext], {sort: "title", limit: 200}));
+      it("should list collection records", () => {
+        expect(listNextRecords.next().value)
+          .eql(call(collection.listNextRecords));
       });
 
-      it("should dispatch the listRecordsNextSuccess action", () => {
-        expect(listRecordsNext.next({data: records}).value)
-          .eql(put(collectionActions.listRecordsSuccess(records)));
+      it("should dispatch the listNextRecordsSuccess action", () => {
+        const fakeNext = () => {};
+        const result = {data: records, hasNextPage: false, next: fakeNext};
+        expect(listNextRecords.next(result).value)
+          .eql(put(collectionActions.listRecordsSuccess(records, false, fakeNext)));
+      });
+
+      it("should scroll to page bottom", () => {
+        window.document.body.scrollHeight = 42;
+        expect(listNextRecords.next().value)
+          .eql(call([window, window.scrollTo], 0, 42));
       });
     });
 
     describe("Failure", () => {
-      let listRecordsNext, collection;
+      let listNextRecords, collection;
 
       before(() => {
-        collection = {listRecordsNext() {}};
-        const bucket = {collection() {return collection;}};
-        setClient({bucket() {return bucket;}});
-        const getState = () => ({collection: {}});
-        const action = collectionActions.listRecordsNext("bucket", "collection");
-        listRecordsNext = saga.listRecordsNext(getState, action);
-        listRecordsNext.next();
+        const action = collectionActions.listNextRecords();
+        collection = {listNextRecords() {}};
+        const getState = () => ({collection});
+        listNextRecords = saga.listNextRecords(getState, action);
+        listNextRecords.next();
       });
 
       it("should dispatch an error notification action", () => {
-        expect(listRecordsNext.throw("error").value)
+        expect(listNextRecords.throw("error").value)
           .eql(put(notifyError("error")));
       });
     });
