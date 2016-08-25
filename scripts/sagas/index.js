@@ -31,7 +31,7 @@ export default function* rootSaga(getState, pluginsSagas=[]) {
     takeEvery(c.COLLECTION_DELETE_REQUEST, bucketSagas.deleteCollection, getState),
     // collection/records
     takeEvery(c.COLLECTION_RECORDS_REQUEST, collectionSagas.listRecords, getState),
-    takeEvery(c.COLLECTION_RECORDS_REQUEST_NEXT, collectionSagas.listRecordsNext, getState),
+    takeEvery(c.COLLECTION_RECORDS_NEXT_REQUEST, collectionSagas.listNextRecords, getState),
     takeEvery(c.COLLECTION_HISTORY_REQUEST, collectionSagas.listHistory, getState),
     takeEvery(c.RECORD_CREATE_REQUEST, collectionSagas.createRecord, getState),
     takeEvery(c.RECORD_UPDATE_REQUEST, collectionSagas.updateRecord, getState),

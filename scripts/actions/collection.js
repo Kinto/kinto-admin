@@ -15,7 +15,7 @@ import {
   COLLECTION_HISTORY_REQUEST,
   COLLECTION_HISTORY_SUCCESS,
   COLLECTION_RECORDS_REQUEST,
-  COLLECTION_RECORDS_REQUEST_NEXT,
+  COLLECTION_RECORDS_NEXT_REQUEST,
   COLLECTION_RECORDS_SUCCESS,
   RECORD_CREATE_REQUEST,
   RECORD_UPDATE_REQUEST,
@@ -43,12 +43,16 @@ export function listRecords(bid: string, cid: string, sort: string): Action {
   return {type: COLLECTION_RECORDS_REQUEST, bid, cid, sort};
 }
 
-export function listRecordsNext(): Action {
-  return {type: COLLECTION_RECORDS_REQUEST_NEXT};
+export function listNextRecords(): Action {
+  return {type: COLLECTION_RECORDS_NEXT_REQUEST};
 }
 
-export function listRecordsSuccess(records: RecordData[], nextRecords: ?Function): Action {
-  return {type: COLLECTION_RECORDS_SUCCESS, records, nextRecords};
+export function listRecordsSuccess(
+  records: RecordData[],
+  hasNextRecords: boolean,
+  listNextRecords: ?Function
+): Action {
+  return {type: COLLECTION_RECORDS_SUCCESS, records, hasNextRecords, listNextRecords};
 }
 
 export function listCollectionHistory(bid: string, cid: string): Action {
