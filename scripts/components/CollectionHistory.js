@@ -52,7 +52,7 @@ class HistoryRow extends Component {
   }
 }
 
-function HistoryTable(props) {
+export function HistoryTable(props) {
   const {history} = props;
   return (
     <table className="table table-striped table-bordered record-list">

@@ -8,6 +8,7 @@ import session from "./session";
 import bucket from "./bucket";
 import collection from "./collection";
 import record from "./record";
+import group from "./group";
 import notifications from "./notifications";
 import history from "./history";
 
@@ -17,6 +18,7 @@ const standardReducers = {
   session,
   bucket,
   collection,
+  group,
   record,
   notifications,
   history,

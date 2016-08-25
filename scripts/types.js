@@ -75,6 +75,9 @@ export type CollectionPermissions = {
   "record:create"?: string[],
 };
 
+export type Group = {
+};
+
 export type Notification = {
   type: string,
   persistent: boolean,

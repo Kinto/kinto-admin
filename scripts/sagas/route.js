@@ -6,16 +6,20 @@ import { storeRedirectURL } from "../actions/session";
 import { resetBucket, bucketBusy, bucketLoadSuccess } from "../actions/bucket";
 import { routeLoadSuccess } from "../actions/route";
 import { resetCollection, collectionBusy, collectionLoadSuccess } from "../actions/collection";
+import { resetGroup, groupBusy, groupLoadSuccess } from "../actions/group";
 import { resetRecord } from "../actions/record";
 import { recordLoadSuccess } from "../actions/record";
 import { notifyInfo, notifyError, clearNotifications } from "../actions/notifications";
 
 
-function getBatchLoadFn(bid, cid, rid) {
+function getBatchLoadFn(bid, cid, gid, rid) {
   return (batch) => {
     if (bid) {
       const bucket = batch.bucket(bid);
       bucket.getData();
+      if (gid) {
+        bucket.getGroup(gid);
+      }
       if (cid) {
         const coll = bucket.collection(cid);
         coll.getData();
@@ -27,9 +31,9 @@ function getBatchLoadFn(bid, cid, rid) {
   };
 }
 
-export function* loadRoute(bid, cid, rid) {
+export function* loadRoute(bid, cid, gid, rid) {
   // If we don't have anything to load, exit
-  if (!bid && !cid && !rid) {
+  if (!bid && !cid && !gid && !rid) {
     return;
   }
 
@@ -45,31 +49,33 @@ export function* loadRoute(bid, cid, rid) {
       yield put(collectionBusy(true));
     }
 
+    if (gid) {
+      yield put(resetGroup());
+      yield put(groupBusy(true));
+    }
+
     if (rid) {
       // XXX implement recordBusy()
       yield put(resetRecord());
     }
 
     // Fetch all currently selected resource data in a single batch request
-    const res = yield call([client, client.batch], getBatchLoadFn(bid, cid, rid));
-
-    // Map them to state
-    const [bucket, collection, record] = res.map(({status, body}, index) => {
+    const res = yield call([client, client.batch], getBatchLoadFn(bid, cid, gid, rid));
+    const responses = res.map(({status, body}, index) => {
       if (status === 403) {
         // We may not have permission to read this resource, though we need to
         // have its default information propagated to the store.
-        if (index === 0) { // bucket
-          return {data: {id: bid}, permissions: {read: [], write: []}};
-        }
-        if (index === 1) { // collection
-          return {data: {id: cid}, permissions: {read: [], write: []}};
-        }
-        if (index === 2) { // record
-          return {data: {id: rid}, permissions: {read: [], write: []}};
-        }
+        const id = [bid, cid, gid, rid][index];
+        return {data: {id}, permissions: {read: [], write: []}};
       }
       return body;
     });
+    // Map them to state
+    const bucket = bid ? responses[0] : null;
+    const collection = bid && cid ? responses[1] : null;
+    const group = bid && gid ? responses[1] : null;
+    const record = bid && cid && rid ? responses[2] : null;
+
     yield put(bucketLoadSuccess(bucket.data, bucket.permissions));
     if (collection) {
       yield put(collectionLoadSuccess({
@@ -79,6 +85,9 @@ export function* loadRoute(bid, cid, rid) {
       if (record) {
         yield put(recordLoadSuccess(record.data, record.permissions));
       }
+    }
+    if (group) {
+      yield put(groupLoadSuccess(group.data, group.permissions));
     }
     yield put(routeLoadSuccess(bucket, collection, rid));
   } catch(error) {
@@ -92,7 +101,7 @@ export function* loadRoute(bid, cid, rid) {
 export function* routeUpdated(getState, action) {
   const {session} = getState();
   const {params, location} = action;
-  const {bid, cid, rid, token} = params;
+  const {bid, cid, rid, gid, token} = params;
 
   // Clear notifications on each route update
   yield put(clearNotifications());
@@ -107,7 +116,7 @@ export function* routeUpdated(getState, action) {
   }
 
   // Load route related resources
-  yield call(loadRoute, bid, cid, rid);
+  yield call(loadRoute, bid, cid, gid, rid);
 
   // Side effect: scroll to page top on each route change
   yield call([window, window.scrollTo], 0, 0);
