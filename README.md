@@ -130,6 +130,18 @@ There's also a TDD mode:
 $ npm run tdd-browser
 ```
 
+## Customization
+
+### Plugins
+
+*to be done*
+
+### Environment variables
+
+* `KINTO_MAX_PER_PAGE`: number of list items retrieved in one HTTP call (Default: `200`)
+* `KINTO_ADMIN_PUBLIC_PATH`: root URL path to assets (Default: `/`)
+
+
 ## FAQ
 
 ### Browser support

@@ -42,7 +42,7 @@ describe("collection sagas", () => {
 
         it("should list collection records", () => {
           expect(listRecords.next().value)
-            .eql(call([collection, collection.listRecords], {sort: "title"}));
+            .eql(call([collection, collection.listRecords], {sort: "title", limit: 200}));
         });
 
         it("should dispatch the listRecordsSuccess action", () => {
@@ -62,7 +62,7 @@ describe("collection sagas", () => {
 
         it("should list collection records", () => {
           expect(listRecords.next().value)
-            .eql(call([collection, collection.listRecords], {sort: "title"}));
+            .eql(call([collection, collection.listRecords], {sort: "title", limit: 200}));
         });
 
         it("should dispatch the listRecordsSuccess action", () => {
@@ -87,6 +87,54 @@ describe("collection sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(listRecords.throw("error").value)
+          .eql(put(notifyError("error")));
+      });
+    });
+  });
+
+  describe("listNextRecords()", () => {
+    describe("Success", () => {
+      let listNextRecords, collection;
+
+      before(() => {
+        const action = collectionActions.listNextRecords();
+        collection = {listNextRecords() {}};
+        const getState = () => ({collection});
+        listNextRecords = saga.listNextRecords(getState, action);
+      });
+
+      it("should list collection records", () => {
+        expect(listNextRecords.next().value)
+          .eql(call(collection.listNextRecords));
+      });
+
+      it("should dispatch the listNextRecordsSuccess action", () => {
+        const fakeNext = () => {};
+        const result = {data: records, hasNextPage: false, next: fakeNext};
+        expect(listNextRecords.next(result).value)
+          .eql(put(collectionActions.listRecordsSuccess(records, false, fakeNext)));
+      });
+
+      it("should scroll to page bottom", () => {
+        window.document.body.scrollHeight = 42;
+        expect(listNextRecords.next().value)
+          .eql(call([window, window.scrollTo], 0, 42));
+      });
+    });
+
+    describe("Failure", () => {
+      let listNextRecords, collection;
+
+      before(() => {
+        const action = collectionActions.listNextRecords();
+        collection = {listNextRecords() {}};
+        const getState = () => ({collection});
+        listNextRecords = saga.listNextRecords(getState, action);
+        listNextRecords.next();
+      });
+
+      it("should dispatch an error notification action", () => {
+        expect(listNextRecords.throw("error").value)
           .eql(put(notifyError("error")));
       });
     });

@@ -7,6 +7,9 @@ import { resetRecord } from "../actions/record";
 import * as actions from "../actions/collection";
 
 
+const KINTO_MAX_PER_PAGE = parseInt(process.env.KINTO_MAX_PER_PAGE, 10) || 200;
+
+
 function getBucket(bid) {
   return getClient().bucket(bid);
 }
@@ -36,10 +39,23 @@ export function* listRecords(getState, action) {
   const {bid, cid, sort} = action;
   try {
     const coll = getCollection(bid, cid);
-    const {data} = yield call([coll, coll.listRecords], {
-      sort: sort || defaultSort
+    const {data, hasNextPage, next} = yield call([coll, coll.listRecords], {
+      sort: sort || defaultSort,
+      limit: KINTO_MAX_PER_PAGE,
     });
-    yield put(actions.listRecordsSuccess(data));
+    yield put(actions.listRecordsSuccess(data, hasNextPage, next));
+  } catch(error) {
+    yield put(notifyError(error));
+  }
+}
+
+export function* listNextRecords(getState) {
+  const {collection} = getState();
+  const {listNextRecords} = collection;
+  try {
+    const {data, hasNextPage, next} = yield call(listNextRecords);
+    yield put(actions.listRecordsSuccess(data, hasNextPage, next));
+    yield call([window, window.scrollTo], 0, window.document.body.scrollHeight);
   } catch(error) {
     yield put(notifyError(error));
   }

@@ -47,6 +47,8 @@ export type Collection = {
   displayFields: ?string[],
   records: RecordData[],
   recordsLoaded: boolean,
+  hasNextRecords: boolean,
+  listNextRecords: ?Function,
   sort: string,
   permissions: CollectionPermissions,
   history: Object[],

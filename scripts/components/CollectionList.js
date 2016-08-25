@@ -131,11 +131,12 @@ class Table extends Component {
 
   render() {
     const {
-      busy,
       bid,
       cid,
       records,
       recordsLoaded,
+      hasNextRecords,
+      listNextRecords,
       sort,
       schema,
       displayFields,
@@ -144,9 +145,7 @@ class Table extends Component {
       updatePath
     } = this.props;
 
-    if (busy) {
-      return <Spinner />;
-    } else if (recordsLoaded && records.length === 0) {
+    if (recordsLoaded && records.length === 0) {
       return (
         <div className="alert alert-info">
           <p>This collection is empty.</p>
@@ -196,6 +195,18 @@ class Table extends Component {
             );
           })
         }</tbody>
+        { hasNextRecords ?
+          <tfoot>
+            <tr>
+              <td colSpan={displayFields.length + 2} className="load-more text-center">
+                {!recordsLoaded ?  <Spinner /> :
+                  <a href="." key="__3" onClick={(event) => {
+                    event.preventDefault();
+                    listNextRecords();
+                  }}>Load more</a>}
+              </td>
+            </tr>
+          </tfoot> : null }
       </table>
     );
   }
@@ -237,6 +248,7 @@ export default class CollectionList extends Component {
       session,
       collection,
       deleteRecord,
+      listNextRecords,
       updatePath,
       pluginHooks,
       capabilities,
@@ -249,6 +261,7 @@ export default class CollectionList extends Component {
       displayFields,
       records,
       recordsLoaded,
+      hasNextRecords,
       sort,
     } = collection;
 
@@ -276,6 +289,8 @@ export default class CollectionList extends Component {
             cid={cid}
             records={records}
             recordsLoaded={recordsLoaded}
+            hasNextRecords={hasNextRecords}
+            listNextRecords={listNextRecords}
             sort={sort}
             schema={schema}
             displayFields={displayFields}
