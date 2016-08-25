@@ -148,7 +148,7 @@ class Table extends Component {
     if (recordsLoaded && records.length === 0) {
       return (
         <div className="alert alert-info">
-          <p>This collection is empty.</p>
+          <p>This collection has no record.</p>
         </div>
       );
     }
@@ -276,7 +276,7 @@ export default class CollectionList extends Component {
 
     return (
       <div className="collection-page">
-        <h1>List of records in <b>{bid}/{name}</b></h1>
+        <h1>Records of <b>{bid}/{name}</b></h1>
         <CollectionTabs
           bid={bid}
           cid={cid}

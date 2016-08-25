@@ -5,6 +5,10 @@ import {
   BUCKET_BUSY,
   BUCKET_RESET,
   BUCKET_LOAD_SUCCESS,
+  BUCKET_COLLECTIONS_REQUEST,
+  BUCKET_COLLECTIONS_SUCCESS,
+  BUCKET_GROUPS_REQUEST,
+  BUCKET_GROUPS_SUCCESS,
   BUCKET_HISTORY_REQUEST,
   BUCKET_HISTORY_SUCCESS,
 } from "../constants";
@@ -15,6 +19,9 @@ const INITIAL_STATE: Bucket = {
   busy: false,
   name: null,
   data: {},
+  collections: [],
+  groups: [],
+  listLoaded: false,
   history: [],
   historyLoaded: false,
   permissions: {
@@ -45,6 +52,20 @@ export function bucket(state: Bucket = INITIAL_STATE, action: Object) {
           write: permissions.write,
         },
       };
+    }
+    case BUCKET_COLLECTIONS_REQUEST: {
+      return {...state, listLoaded: false};
+    }
+    case BUCKET_COLLECTIONS_SUCCESS: {
+      const {collections} = action;
+      return {...state, collections, listLoaded: true};
+    }
+    case BUCKET_GROUPS_REQUEST: {
+      return {...state, listLoaded: false};
+    }
+    case BUCKET_GROUPS_SUCCESS: {
+      const {groups} = action;
+      return {...state, groups, listLoaded: true};
     }
     case BUCKET_HISTORY_REQUEST: {
       return {...state, historyLoaded: false};

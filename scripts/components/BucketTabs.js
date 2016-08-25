@@ -10,7 +10,7 @@ export default class BucketTabs extends Component {
       <div className="tabs-container">
         <ul className="nav nav-tabs nav-justified">
           <li role="presentation" className={selected === "collections" ? "active" : ""}>
-            <Link to={`/buckets/${bid}/collections}`}>
+            <Link to={`/buckets/${bid}/collections`}>
               <i className="glyphicon glyphicon-align-justify" />
               Collections
             </Link>
