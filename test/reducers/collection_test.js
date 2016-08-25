@@ -52,6 +52,7 @@ describe("collection reducer", () => {
       displayFields: "displayFields",
       records: [],
       recordsLoaded: false,
+      nextRecords: null,
       sort: "-last_modified",
       busy: false,
       permissions: {write: [], read: []},

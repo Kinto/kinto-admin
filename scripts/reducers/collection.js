@@ -6,6 +6,7 @@ import {
   COLLECTION_RESET,
   COLLECTION_LOAD_SUCCESS,
   COLLECTION_RECORDS_REQUEST,
+  COLLECTION_RECORDS_REQUEST_NEXT,
   COLLECTION_RECORDS_SUCCESS,
   COLLECTION_HISTORY_REQUEST,
   COLLECTION_HISTORY_SUCCESS,
@@ -25,6 +26,7 @@ export const INITIAL_STATE: Collection = {
   displayFields: [],
   records: [],
   recordsLoaded: false,
+  nextRecords: null,
   sort: DEFAULT_SORT,
   permissions: {
     "read": [],
@@ -78,8 +80,16 @@ export function collection(
     case COLLECTION_RECORDS_REQUEST: {
       return {...state, sort: action.sort, recordsLoaded: false};
     }
+    case COLLECTION_RECORDS_REQUEST_NEXT: {
+      return {...state, recordsLoaded: false};
+    }
     case COLLECTION_RECORDS_SUCCESS: {
-      return {...state, records: action.records, recordsLoaded: true};
+      return {
+        ...state,
+        records: [...state.records, ...action.records],
+        recordsLoaded: true,
+        nextRecords: action.nextRecords,
+      };
     }
     case COLLECTION_HISTORY_REQUEST: {
       return {...state, historyLoaded: false};

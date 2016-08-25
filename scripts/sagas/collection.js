@@ -36,10 +36,23 @@ export function* listRecords(getState, action) {
   const {bid, cid, sort} = action;
   try {
     const coll = getCollection(bid, cid);
-    const {data} = yield call([coll, coll.listRecords], {
-      sort: sort || defaultSort
+    const {data, next} = yield call([coll, coll.listRecords], {
+      sort: sort || defaultSort,
+      limit: parseInt(process.env.KINTO_MAX_PER_PAGE, 10) || 200,
     });
-    yield put(actions.listRecordsSuccess(data));
+    yield put(actions.listRecordsSuccess(data, next));
+  } catch(error) {
+    yield put(notifyError(error));
+  }
+}
+
+export function* listRecordsNext(getState) {
+  const {collection} = getState();
+  const {nextRecords} = collection;
+  try {
+    const {data, next} = yield call(nextRecords);
+    yield put(actions.listRecordsSuccess(data, next));
+    yield call([window, window.scrollTo], 0, window.document.body.scrollHeight);
   } catch(error) {
     yield put(notifyError(error));
   }

@@ -42,7 +42,7 @@ describe("collection sagas", () => {
 
         it("should list collection records", () => {
           expect(listRecords.next().value)
-            .eql(call([collection, collection.listRecords], {sort: "title"}));
+            .eql(call([collection, collection.listRecords], {sort: "title", limit: 200}));
         });
 
         it("should dispatch the listRecordsSuccess action", () => {
@@ -62,7 +62,7 @@ describe("collection sagas", () => {
 
         it("should list collection records", () => {
           expect(listRecords.next().value)
-            .eql(call([collection, collection.listRecords], {sort: "title"}));
+            .eql(call([collection, collection.listRecords], {sort: "title", limit: 200}));
         });
 
         it("should dispatch the listRecordsSuccess action", () => {
@@ -87,6 +87,50 @@ describe("collection sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(listRecords.throw("error").value)
+          .eql(put(notifyError("error")));
+      });
+    });
+  });
+
+  describe("listRecordsNext()", () => {
+    describe("Success", () => {
+      let listRecordsNext, collection;
+
+      before(() => {
+        collection = {listRecordsNext() {}};
+        const bucket = {collection() {return collection;}};
+        setClient({bucket() {return bucket;}});
+        const action = collectionActions.listRecordsNext("bucket", "collection");
+        const getState = () => ({collection: {nextRecords() {}}});
+        listRecordsNext = saga.listRecordsNext(getState, action);
+      });
+
+      it.only("should list collection records", () => {
+        expect(listRecordsNext.next().value)
+          .eql(call([collection, collection.listRecordsNext], {sort: "title", limit: 200}));
+      });
+
+      it("should dispatch the listRecordsNextSuccess action", () => {
+        expect(listRecordsNext.next({data: records}).value)
+          .eql(put(collectionActions.listRecordsSuccess(records)));
+      });
+    });
+
+    describe("Failure", () => {
+      let listRecordsNext, collection;
+
+      before(() => {
+        collection = {listRecordsNext() {}};
+        const bucket = {collection() {return collection;}};
+        setClient({bucket() {return bucket;}});
+        const getState = () => ({collection: {}});
+        const action = collectionActions.listRecordsNext("bucket", "collection");
+        listRecordsNext = saga.listRecordsNext(getState, action);
+        listRecordsNext.next();
+      });
+
+      it("should dispatch an error notification action", () => {
+        expect(listRecordsNext.throw("error").value)
           .eql(put(notifyError("error")));
       });
     });
