@@ -26,6 +26,7 @@ export default function* rootSaga(getState, pluginsSagas=[]) {
     takeEvery(c.BUCKET_CREATE_REQUEST, bucketSagas.createBucket, getState),
     takeEvery(c.BUCKET_UPDATE_REQUEST, bucketSagas.updateBucket, getState),
     takeEvery(c.BUCKET_DELETE_REQUEST, bucketSagas.deleteBucket, getState),
+    takeEvery(c.BUCKET_HISTORY_REQUEST, bucketSagas.listBucketHistory, getState),
     takeEvery(c.COLLECTION_CREATE_REQUEST, bucketSagas.createCollection, getState),
     takeEvery(c.COLLECTION_UPDATE_REQUEST, bucketSagas.updateCollection, getState),
     takeEvery(c.COLLECTION_DELETE_REQUEST, bucketSagas.deleteCollection, getState),

@@ -4,7 +4,7 @@ import { call, put } from "redux-saga/effects";
 import { getClient } from "../client";
 import { notifySuccess, notifyError } from "../actions/notifications";
 import { sessionBusy, listBuckets } from "../actions/session";
-import { bucketLoadSuccess } from "../actions/bucket";
+import { bucketLoadSuccess, listBucketHistorySuccess } from "../actions/bucket";
 import { collectionLoadSuccess } from "../actions/collection";
 
 
@@ -107,6 +107,21 @@ export function* deleteCollection(getState, action) {
     yield put(updatePath(""));
     yield put(notifySuccess("Collection deleted."));
     yield put(listBuckets());
+  } catch(error) {
+    yield put(notifyError(error));
+  }
+}
+
+export function* listBucketHistory(getState, action) {
+  const {bid} = action;
+  try {
+    const bucket = getBucket(bid);
+    const {data} = yield call([bucket, bucket.listHistory], {
+      filters: {
+        exclude_resource_name: "record"
+      }
+    });
+    yield put(listBucketHistorySuccess(data));
   } catch(error) {
     yield put(notifyError(error));
   }

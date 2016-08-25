@@ -1,27 +1,26 @@
 import React, { Component } from "react";
 
 import Spinner from "./Spinner";
-import CollectionTabs from "./CollectionTabs";
+import BucketTabs from "./BucketTabs";
 import HistoryTable from "./HistoryTable";
 
 
-export default class CollectionHistory extends Component {
+export default class BucketHistory extends Component {
   render() {
-    const {params, collection, capabilities} = this.props;
-    const {bid, cid} = params;
-    const {history, historyLoaded} = collection;
+    const {params, bucket, capabilities} = this.props;
+    const {bid} = params;
+    const {history, historyLoaded} = bucket;
 
     return (
       <div>
-        <h1>History for <b>{bid}/{cid}</b></h1>
-        <CollectionTabs
+        <h1>History for <b>{bid}</b></h1>
+        <BucketTabs
           bid={bid}
-          cid={cid}
           selected="history"
           capabilities={capabilities}>
           { !historyLoaded ? <Spinner /> :
             <HistoryTable history={history} />}
-        </CollectionTabs>
+        </BucketTabs>
       </div>
     );
   }

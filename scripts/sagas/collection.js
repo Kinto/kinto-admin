@@ -66,7 +66,6 @@ export function* listHistory(getState, action) {
   try {
     const bucket = getBucket(bid);
     const {data} = yield call([bucket, bucket.listHistory], {
-      sort: "-date",
       filters: {
         collection_id: cid,
       }

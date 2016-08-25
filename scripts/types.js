@@ -20,6 +20,8 @@ export type Bucket = {
   name: ?string,
   data: BucketData,
   permissions: BucketPermissions,
+  history: Object[],
+  historyLoaded: boolean,
 };
 
 export type BucketData = {

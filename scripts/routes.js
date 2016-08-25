@@ -12,6 +12,7 @@ import Sidebar from "./containers/Sidebar";
 import Notifications from "./containers/Notifications";
 import BucketCreatePage from "./containers/BucketCreatePage";
 import BucketEditPage from "./containers/BucketEditPage";
+import BucketHistoryPage from "./containers/BucketHistoryPage";
 import CollectionListPage from "./containers/CollectionListPage";
 import CollectionHistoryPage from "./containers/CollectionHistoryPage";
 import CollectionCreatePage from "./containers/CollectionCreatePage";
@@ -20,6 +21,7 @@ import AddFormPage from "./containers/AddFormPage";
 import BulkFormPage from "./containers/BulkFormPage";
 import EditFormPage from "./containers/EditFormPage";
 import * as sessionActions from "./actions/session";
+import * as bucketActions from "./actions/bucket";
 import * as collectionActions from "./actions/collection";
 import * as notificationActions from "./actions/notifications";
 
@@ -68,6 +70,17 @@ function onCollectionHistoryEnter(store: Object, {params}) {
   store.dispatch(collectionActions.listCollectionHistory(bid, cid));
 }
 
+function onBucketHistoryEnter(store: Object, {params}) {
+  const {bid} = params;
+  const {session} = store.getState();
+  if (!session.authenticated) {
+    // We're not authenticated, skip requesting the list of records. This likely
+    // occurs when users refresh the page and lose their session.
+    return;
+  }
+  store.dispatch(bucketActions.listBucketHistory(bid));
+}
+
 function registerPluginsComponentHooks(PageContainer, plugins) {
   // Extract the container wrapped component (see react-redux connect() API)
   const {WrappedComponent} = PageContainer;
@@ -110,6 +123,10 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
         components={{...common, content: BucketCreatePage}} />
       <Route path="/buckets/:bid/edit"
         components={{...common, content: BucketEditPage}} />
+      <Route path="/buckets/:bid/history"
+        components={{...common, content: BucketHistoryPage}}
+        onEnter={onBucketHistoryEnter.bind(null, store)}
+        onChange={onBucketHistoryEnter.bind(null, store)} />
       <Route path="/buckets/:bid/create-collection"
         components={{...common, content: CollectionCreatePage}} />
       <Route path="/buckets/:bid/collections/:cid/edit"

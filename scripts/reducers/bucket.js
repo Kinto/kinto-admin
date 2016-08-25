@@ -5,6 +5,8 @@ import {
   BUCKET_BUSY,
   BUCKET_RESET,
   BUCKET_LOAD_SUCCESS,
+  BUCKET_HISTORY_REQUEST,
+  BUCKET_HISTORY_SUCCESS,
 } from "../constants";
 import { omit } from "../utils";
 
@@ -13,6 +15,8 @@ const INITIAL_STATE: Bucket = {
   busy: false,
   name: null,
   data: {},
+  history: [],
+  historyLoaded: false,
   permissions: {
     "read": [],
     "write": [],
@@ -41,6 +45,12 @@ export function bucket(state: Bucket = INITIAL_STATE, action: Object) {
           write: permissions.write,
         },
       };
+    }
+    case BUCKET_HISTORY_REQUEST: {
+      return {...state, historyLoaded: false};
+    }
+    case BUCKET_HISTORY_SUCCESS: {
+      return {...state, history: action.history, historyLoaded: true};
     }
     case BUCKET_RESET: {
       return INITIAL_STATE;
