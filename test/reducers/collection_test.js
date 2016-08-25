@@ -24,11 +24,29 @@ describe("collection reducer", () => {
       .eql(initial);
   });
 
-  it("COLLECTION_RECORDS_REQUEST", () => {
-    expect(collection(undefined, {
-      type: COLLECTION_RECORDS_REQUEST,
-      sort: "title",
-    })).to.have.property("sort").eql("title");
+  describe("COLLECTION_RECORDS_REQUEST", () => {
+    it("should update the recordsLoaded flag", () => {
+      expect(collection({recordsLoaded: true}, {
+        type: COLLECTION_RECORDS_REQUEST,
+      })).to.have.property("recordsLoaded").eql(false);
+    });
+
+    it("should update the sort parameter", () => {
+      expect(collection(undefined, {
+        type: COLLECTION_RECORDS_REQUEST,
+        sort: "title",
+      })).to.have.property("sort").eql("title");
+    });
+
+    it("should reset records list when the sort param changes", () => {
+      expect(collection({
+        records: [1, 2, 3],
+        sort: "initial"
+      }, {
+        type: COLLECTION_RECORDS_REQUEST,
+        sort: "title",
+      })).to.have.property("records").eql([]);
+    });
   });
 
   it("COLLECTION_LOAD_SUCCESS", () => {
@@ -62,15 +80,34 @@ describe("collection reducer", () => {
     });
   });
 
-  it("COLLECTION_RECORDS_SUCCESS", () => {
+  describe("COLLECTION_RECORDS_SUCCESS", () => {
     const records = [1, 2, 3];
-    const state = collection(undefined, {
-      type: COLLECTION_RECORDS_SUCCESS,
-      records
+
+    let state;
+
+    beforeEach(() => {
+      state = collection(undefined, {
+        type: COLLECTION_RECORDS_SUCCESS,
+        records
+      });
     });
 
-    expect(state.records).eql(records);
-    expect(state.recordsLoaded).eql(true);
+    it("should assign received records to state", () => {
+      expect(state.records).eql(records);
+    });
+
+    it("should mark records as loaded", () => {
+      expect(state.recordsLoaded).eql(true);
+    });
+
+    it("should append new records received to existing list", () => {
+      const state2 = collection(state, {
+        type: COLLECTION_RECORDS_SUCCESS,
+        records: [4, 5],
+      });
+
+      expect(state2.records).eql([1, 2, 3, 4, 5]);
+    });
   });
 
   it("COLLECTION_HISTORY_SUCCESS", () => {
