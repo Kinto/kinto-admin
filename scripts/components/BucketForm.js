@@ -114,23 +114,19 @@ export default class BucketForm extends Component {
 
     return (
       <div>
-        <div className="panel panel-default">
-          <div className="panel-body">
-            {alert}
-            {bucket.busy ?
-              <Spinner /> :
-              <Form
-                schema={schema}
-                uiSchema={formIsEditable ? _uiSchema :
-                            {..._uiSchema, "ui:readonly": true}}
-                formData={formData}
-                validate={validate}
-                onSubmit={this.onSubmit}>
-                {buttons}
-              </Form>
-            }
-          </div>
-        </div>
+        {alert}
+        {bucket.busy ?
+          <Spinner /> :
+          <Form
+            schema={schema}
+            uiSchema={formIsEditable ? _uiSchema :
+                        {..._uiSchema, "ui:readonly": true}}
+            formData={formData}
+            validate={validate}
+            onSubmit={this.onSubmit}>
+            {buttons}
+          </Form>
+        }
         {showDeleteForm ?
           <DeleteForm
             bid={bid}

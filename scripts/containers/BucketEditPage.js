@@ -9,6 +9,7 @@ function mapStateToProps(state) {
   return {
     session: state.session,
     bucket: state.bucket,
+    capabilities: state.session.serverInfo.capabilities,
   };
 }
 

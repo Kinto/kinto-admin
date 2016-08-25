@@ -2,6 +2,7 @@ import React, { Component } from "react";
 
 import Spinner from "./Spinner";
 import BucketForm from "./BucketForm";
+import BucketTabs from "./BucketTabs";
 
 
 export default class BucketEditForm extends Component {
@@ -20,7 +21,7 @@ export default class BucketEditForm extends Component {
   }
 
   render() {
-    const {params, session, bucket} = this.props;
+    const {params, session, capabilities, bucket} = this.props;
     const {bid} = params;
     const {busy} = session;
     if (busy) {
@@ -34,13 +35,18 @@ export default class BucketEditForm extends Component {
     return (
       <div>
         <h1>Manage <b>{bid}</b> bucket</h1>
-        <BucketForm
-          session={session}
+        <BucketTabs
           bid={bid}
-          bucket={bucket}
-          formData={formData}
-          deleteBucket={this.deleteBucket}
-          onSubmit={this.onSubmit} />
+          capabilities={capabilities}
+          selected="settings">
+          <BucketForm
+            session={session}
+            bid={bid}
+            bucket={bucket}
+            formData={formData}
+            deleteBucket={this.deleteBucket}
+            onSubmit={this.onSubmit} />
+        </BucketTabs>
       </div>
     );
   }

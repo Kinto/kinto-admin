@@ -1,0 +1,46 @@
+import React, { Component } from "react";
+import { Link } from "react-router";
+
+
+export default class BucketTabs extends Component {
+  render() {
+    const {bid, selected, capabilities, children} = this.props;
+
+    return (
+      <div className="tabs-container">
+        <ul className="nav nav-tabs nav-justified">
+          <li role="presentation" className={selected === "collections" ? "active" : ""}>
+            <Link to={`/buckets/${bid}/collections}`}>
+              <i className="glyphicon glyphicon-align-justify" />
+              Collections
+            </Link>
+          </li>
+          {"history" in capabilities ?
+            <li role="presentation" className={selected === "history" ? "active" : ""}>
+              <Link to={`/buckets/${bid}/history`}>
+                <i className="glyphicon glyphicon-time" />
+                History
+              </Link>
+            </li> : null}
+          <li role="presentation" className={selected === "groups" ? "active" : ""}>
+            <Link to={`/buckets/${bid}/groups`}>
+              <i className="glyphicon glyphicon-cog" />
+              Groups
+            </Link>
+          </li>
+          <li role="presentation" className={selected === "settings" ? "active" : ""}>
+            <Link to={`/buckets/${bid}/edit`}>
+              <i className="glyphicon glyphicon-cog" />
+              Properties
+            </Link>
+          </li>
+        </ul>
+        <div className="panel panel-default">
+          <div className="panel-body">
+            {children}
+          </div>
+        </div>
+      </div>
+    );
+  }
+}

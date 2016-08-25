@@ -14,10 +14,14 @@ export default class BucketCreateForm extends Component {
     return (
       <div>
         <h1>Create a new bucket</h1>
-        <BucketForm
-          session={session}
-          bucket={bucket}
-          onSubmit={({name, data}) => createBucket(name, data)} />
+        <div className="panel panel-default">
+          <div className="panel-body">
+            <BucketForm
+              session={session}
+              bucket={bucket}
+              onSubmit={({name, data}) => createBucket(name, data)} />
+          </div>
+        </div>
       </div>
     );
   }
