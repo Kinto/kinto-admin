@@ -198,7 +198,7 @@ class Table extends Component {
         { hasNextRecords ?
           <tfoot>
             <tr>
-              <td colSpan={displayFields.length + 2} className="text-center">
+              <td colSpan={displayFields.length + 2} className="load-more text-center">
                 {!recordsLoaded ?  <Spinner /> :
                   <a href="." key="__3" onClick={(event) => {
                     event.preventDefault();

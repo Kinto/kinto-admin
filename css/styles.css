@@ -164,6 +164,25 @@ table.record-list > tbody + tbody {
   border-top: none;
 }
 
+.load-more > a {
+  display: block;
+  width: 100%;
+}
+
+table.record-list td.load-more {
+  padding: 0;
+  line-height: 2.5em;
+}
+
+.load-more > a:hover, .load-more > a:active {
+  background: #d9edf7;
+  text-decoration: none;
+}
+
+.load-more .spinner {
+  margin-top: .25em;
+}
+
 .history-row-details {
   display: table-row;
 }
