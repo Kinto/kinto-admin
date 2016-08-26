@@ -5,6 +5,7 @@ import type {
   BucketData,
   BucketPermissions,
   CollectionData,
+  GroupData,
 } from "../types";
 import {
   BUCKET_BUSY,
@@ -16,6 +17,9 @@ import {
   COLLECTION_CREATE_REQUEST,
   COLLECTION_UPDATE_REQUEST,
   COLLECTION_DELETE_REQUEST,
+  GROUP_CREATE_REQUEST,
+  GROUP_UPDATE_REQUEST,
+  GROUP_DELETE_REQUEST,
 } from "../constants";
 
 
@@ -53,4 +57,16 @@ export function updateCollection(bid: string, cid: string, collectionData: Colle
 
 export function deleteCollection(bid: string, cid: string): Action {
   return {type: COLLECTION_DELETE_REQUEST, bid, cid};
+}
+
+export function createGroup(bid: string, groupData: GroupData): Action {
+  return {type: GROUP_CREATE_REQUEST, bid, groupData};
+}
+
+export function updateGroup(bid: string, gid: string, groupData: GroupData): Action {
+  return {type: GROUP_UPDATE_REQUEST, bid, gid, groupData};
+}
+
+export function deleteGroup(bid: string, gid: string): Action {
+  return {type: GROUP_DELETE_REQUEST, bid, gid};
 }
