@@ -90,7 +90,7 @@ describe("configureStore()", () => {
                 collection: (state, action) => {
                   return action.type === "LOADED" ? {
                     ...state,
-                    listLoaded: true,
+                    recordsLoaded: true,
                   } : state;
                 }
               }
@@ -101,7 +101,7 @@ describe("configureStore()", () => {
         it("should extend a standard reducer", () => {
           expect(store.getState())
             .to.have.property("collection")
-            .to.have.property("listLoaded").eql(false);
+            .to.have.property("recordsLoaded").eql(false);
         });
 
         it("should override previously registered reducer with the same name", () => {
@@ -115,7 +115,7 @@ describe("configureStore()", () => {
 
           expect(store.getState())
             .to.have.property("collection")
-            .to.have.property("listLoaded").eql(true);
+            .to.have.property("recordsLoaded").eql(true);
         });
       });
 
@@ -141,7 +141,7 @@ describe("configureStore()", () => {
                 collection: (state, action) => {
                   return action.type === "LOADED" ? {
                     ...state,
-                    listLoaded: true,
+                    recordsLoaded: true,
                   } : state;
                 }
               }
@@ -156,7 +156,7 @@ describe("configureStore()", () => {
 
           expect(store.getState())
             .to.have.property("collection")
-            .to.have.property("listLoaded").eql(false);
+            .to.have.property("recordsLoaded").eql(false);
         });
 
         it("should override previously registered reducer with the same name", () => {
@@ -170,7 +170,7 @@ describe("configureStore()", () => {
 
           expect(store.getState())
             .to.have.property("collection")
-            .to.have.property("listLoaded").eql(true);
+            .to.have.property("recordsLoaded").eql(true);
         });
       });
     });

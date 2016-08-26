@@ -134,7 +134,7 @@ class Table extends Component {
       bid,
       cid,
       records,
-      listLoaded,
+      recordsLoaded,
       hasNextRecords,
       listNextRecords,
       sort,
@@ -145,7 +145,7 @@ class Table extends Component {
       updatePath
     } = this.props;
 
-    if (listLoaded && records.length === 0) {
+    if (recordsLoaded && records.length === 0) {
       return (
         <div className="alert alert-info">
           <p>This collection has no records.</p>
@@ -181,7 +181,7 @@ class Table extends Component {
             <th></th>
           </tr>
         </thead>
-        <tbody className={!listLoaded ? "loading" : ""}>{
+        <tbody className={!recordsLoaded ? "loading" : ""}>{
           records.map((record, index) => {
             return (
               <Row key={index}
@@ -199,7 +199,7 @@ class Table extends Component {
           <tfoot>
             <tr>
               <td colSpan={displayFields.length + 2} className="load-more text-center">
-                {!listLoaded ?  <Spinner /> :
+                {!recordsLoaded ?  <Spinner /> :
                   <a href="." key="__3" onClick={(event) => {
                     event.preventDefault();
                     listNextRecords();
@@ -260,7 +260,7 @@ export default class CollectionList extends Component {
       schema,
       displayFields,
       records,
-      listLoaded,
+      recordsLoaded,
       hasNextRecords,
       sort,
     } = collection;
@@ -288,7 +288,7 @@ export default class CollectionList extends Component {
             bid={bid}
             cid={cid}
             records={records}
-            listLoaded={listLoaded}
+            recordsLoaded={recordsLoaded}
             hasNextRecords={hasNextRecords}
             listNextRecords={listNextRecords}
             sort={sort}

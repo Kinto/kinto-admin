@@ -21,9 +21,7 @@ export type Bucket = {
   data: BucketData,
   permissions: BucketPermissions,
   history: Object[],
-  groups: Object[],
-  collections: Object[],
-  listLoaded: boolean,
+  historyLoaded: boolean,
 };
 
 export type BucketData = {
@@ -50,12 +48,13 @@ export type Collection = {
   },
   displayFields: ?string[],
   records: RecordData[],
+  recordsLoaded: boolean,
   hasNextRecords: boolean,
   listNextRecords: ?Function,
   sort: string,
   permissions: CollectionPermissions,
   history: Object[],
-  listLoaded: boolean,
+  historyLoaded: boolean,
 };
 
 export type CollectionData = {

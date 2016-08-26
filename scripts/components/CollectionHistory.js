@@ -9,7 +9,7 @@ export default class CollectionHistory extends Component {
   render() {
     const {params, collection, capabilities} = this.props;
     const {bid, cid} = params;
-    const {history, listLoaded} = collection;
+    const {history, historyLoaded} = collection;
 
     return (
       <div>
@@ -19,7 +19,7 @@ export default class CollectionHistory extends Component {
           cid={cid}
           selected="history"
           capabilities={capabilities}>
-          { !listLoaded ? <Spinner /> :
+          { !historyLoaded ? <Spinner /> :
             <HistoryTable history={history} />}
         </CollectionTabs>
       </div>
