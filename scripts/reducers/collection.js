@@ -79,7 +79,10 @@ export function collection(
       };
     }
     case COLLECTION_RECORDS_REQUEST: {
-      return {...state, sort: action.sort, recordsLoaded: false};
+      // If a new sort filter is used, purge the previous records list and
+      // pagination state.
+      const records = state.sort !== action.sort ? [] : state.records;
+      return {...state, sort: action.sort, records, recordsLoaded: false};
     }
     case COLLECTION_RECORDS_NEXT_REQUEST: {
       return {...state, recordsLoaded: false};
