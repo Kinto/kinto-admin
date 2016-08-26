@@ -157,7 +157,7 @@ table.record-list td.actions {
 }
 
 table.record-list td.actions .btn-group {
-  margin-left: .5em;
+  margin: 0 .5em;
 }
 
 table.record-list > tbody + tbody {
