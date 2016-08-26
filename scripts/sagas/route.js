@@ -65,16 +65,21 @@ export function* loadRoute(bid, cid, gid, rid) {
       if (status === 403) {
         // We may not have permission to read this resource, though we need to
         // have its default information propagated to the store.
-        const id = [bid, cid, gid, rid][index];
+        let id;
+        switch(index) {
+          case 0: id = bid; break;
+          case 1: id = cid ? cid : gid; break;
+          case 2: id = rid; break;
+        }
         return {data: {id}, permissions: {read: [], write: []}};
       }
       return body;
     });
     // Map them to state
-    const bucket = bid ? responses[0] : null;
-    const collection = bid && cid ? responses[1] : null;
-    const group = bid && gid ? responses[1] : null;
-    const record = bid && cid && rid ? responses[2] : null;
+    const bucket     = bid ?               responses[0] : null;
+    const collection = bid && cid ?        responses[1] : null;
+    const group      = bid && gid ?        responses[1] : null;
+    const record     = bid && cid && rid ? responses[2] : null;
 
     yield put(bucketLoadSuccess(bucket.data, bucket.permissions));
     if (collection) {
