@@ -25,6 +25,8 @@ describe("route sagas", () => {
 
     describe("Failure", () => {
       it("should dispatch an error notification action", () => {
+        const batch = () => {};
+        setClient({batch});
         const loadRoute = saga.loadRoute("bucket");
         loadRoute.next();
 
@@ -174,11 +176,17 @@ describe("route sagas", () => {
 
     describe("Bucket, collection and record to load", () => {
       let batch, loadRoute;
+      const responses = [
+        {status: 200, body: {data: {id: "bucket", a: 1}}},
+        {status: 200, body: {data: {id: "collection", a: 2}}},
+        {status: 200, body: {data: {id: "record", a: 3},
+                             permissions: {write: [1], read: [2]}}},
+      ];
 
       before(() => {
         batch = () => {};
         setClient({batch});
-        loadRoute = saga.loadRoute("bucket", "collection", "record");
+        loadRoute = saga.loadRoute("bucket", "collection", undefined, "record");
       });
 
       it("should reset the selected bucket", () => {
@@ -214,12 +222,6 @@ describe("route sagas", () => {
       });
 
       it("should update bucket state from response data", () => {
-        const responses = [
-          {status: 200, body: {data: {id: "bucket", a: 1}}},
-          {status: 200, body: {data: {id: "collection", a: 2}}},
-          {status: 200, body: {data: {id: "record", a: 3},
-                               permissions: {write: [1], read: [2]}}},
-        ];
         expect(loadRoute.next(responses).value)
           .eql(put(bucketActions.bucketLoadSuccess({
             id: "bucket",
@@ -228,7 +230,7 @@ describe("route sagas", () => {
       });
 
       it("should update collection state from response data", () => {
-        expect(loadRoute.next().value)
+        expect(loadRoute.next(responses).value)
           .eql(put(collectionActions.collectionLoadSuccess({
             id: "collection",
             bucket: "bucket",
@@ -237,7 +239,7 @@ describe("route sagas", () => {
       });
 
       it("should update record state from response data", () => {
-        expect(loadRoute.next().value)
+        expect(loadRoute.next(responses).value)
           .eql(put(recordActions.recordLoadSuccess({
             id: "record",
             a: 3
@@ -296,7 +298,7 @@ describe("route sagas", () => {
 
       it("should load route resources", () => {
         expect(routeUpdated.next().value)
-          .eql(call(saga.loadRoute, params.bid, params.cid, params.rid));
+          .eql(call(saga.loadRoute, params.bid, params.cid, params.gid, params.rid));
       });
 
       it("should scroll window to top", () => {
