@@ -5,7 +5,7 @@ import BucketTabs from "./BucketTabs";
 
 
 function DataList(props) {
-  const {bid, data, groupsLoaded} = props;
+  const {bid, data, capabilities, groupsLoaded} = props;
   return (
     <table className="table table-striped table-bordered record-list">
       <thead>
@@ -13,6 +13,7 @@ function DataList(props) {
           <th>Name</th>
           <th>Members</th>
           <th>Last mod.</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody className={!groupsLoaded ? "loading" : ""}>{
@@ -27,6 +28,21 @@ function DataList(props) {
               </td>
               <td>{members.join(", ")}</td>
               <td>{last_modified}</td>
+              <td className="actions">
+                <div className="btn-group">
+                  {"history" in capabilities ?
+                    <Link to={`/buckets/${bid}/groups/${id}/history`}
+                          className="btn btn-xs btn-default"
+                          title="View group history">
+                      <i className="glyphicon glyphicon-time" />
+                    </Link> : null}
+                  <Link to={`/buckets/${bid}/groups/${id}/edit`}
+                        className="btn btn-xs btn-default"
+                        title="Edit groups properties">
+                    <i className="glyphicon glyphicon-cog" />
+                  </Link>
+                </div>
+              </td>
             </tr>
           );
         })
@@ -78,7 +94,8 @@ export default class BucketCollections extends Component {
             :
             <DataList bid={bid}
                       data={groups}
-                      groupsLoaded={groupsLoaded} />
+                      groupsLoaded={groupsLoaded}
+                      capabilities={capabilities} />
           }
           {listActions}
         </BucketTabs>

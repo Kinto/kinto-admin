@@ -5,7 +5,7 @@ import BucketTabs from "./BucketTabs";
 
 
 function DataList(props) {
-  const {bid, data, collectionsLoaded} = props;
+  const {bid, data, capabilities, collectionsLoaded} = props;
   return (
     <table className="table table-striped table-bordered record-list">
       <thead>
@@ -33,11 +33,12 @@ function DataList(props) {
                         title="Browse collection">
                     <i className="glyphicon glyphicon-align-justify" />
                   </Link>
-                  <Link to={`/buckets/${bid}/collections/${id}/history`}
-                        className="btn btn-xs btn-default"
-                        title="View collection history">
-                    <i className="glyphicon glyphicon-time" />
-                  </Link>
+                  {"history" in capabilities ?
+                    <Link to={`/buckets/${bid}/collections/${id}/history`}
+                          className="btn btn-xs btn-default"
+                          title="View collection history">
+                      <i className="glyphicon glyphicon-time" />
+                    </Link> : null}
                   <Link to={`/buckets/${bid}/collections/${id}/edit`}
                         className="btn btn-xs btn-default"
                         title="Edit collection properties">
@@ -96,7 +97,8 @@ export default class BucketCollections extends Component {
             :
             <DataList bid={bid}
                       data={collections}
-                      collectionsLoaded={collectionsLoaded} />
+                      collectionsLoaded={collectionsLoaded}
+                      capabilities={capabilities} />
           }
           {listActions}
         </BucketTabs>
