@@ -14,6 +14,7 @@ function DataList(props) {
           <th>Schema</th>
           <th>Cache Expires</th>
           <th>Last mod.</th>
+          <th />
         </tr>
       </thead>
       <tbody className={!listLoaded ? "loading" : ""}>{
@@ -21,14 +22,29 @@ function DataList(props) {
           const {id, schema, cache_expires, last_modified} = collection;
           return (
             <tr key={index}>
-              <td>
-                <Link to={`/buckets/${bid}/collections/${id}/edit`}>
-                  {id}
-                </Link>
-              </td>
+              <td>{id}</td>
               <td>{schema ? "Yes" : "No"}</td>
               <td>{cache_expires ? `${cache_expires} seconds` : "No" }</td>
               <td>{last_modified}</td>
+              <td className="text-center">
+                <div className="btn-group">
+                  <Link to={`/buckets/${bid}/collections/${id}`}
+                        className="btn btn-sm btn-default"
+                        title="Browse collection">
+                    <i className="glyphicon glyphicon-align-justify" />
+                  </Link>
+                  <Link to={`/buckets/${bid}/collections/${id}/history`}
+                        className="btn btn-sm btn-default"
+                        title="View collection history">
+                    <i className="glyphicon glyphicon-time" />
+                  </Link>
+                  <Link to={`/buckets/${bid}/collections/${id}/edit`}
+                        className="btn btn-sm btn-default"
+                        title="Edit collection properties">
+                    <i className="glyphicon glyphicon-cog" />
+                  </Link>
+                </div>
+              </td>
             </tr>
           );
         })
