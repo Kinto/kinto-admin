@@ -21,7 +21,7 @@ const collectionData = {
 
 const groupData = {
   id: "group",
-  members: ["tartenpion", "account:abc"]
+  members: ["tartempion", "account:abc"]
 };
 
 
