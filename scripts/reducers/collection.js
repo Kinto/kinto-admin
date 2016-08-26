@@ -25,7 +25,8 @@ export const INITIAL_STATE: Collection = {
   },
   displayFields: [],
   records: [],
-  recordsLoaded: false,
+  history: [],
+  listLoaded: false,
   hasNextRecords: false,
   listNextRecords: null,
   sort: DEFAULT_SORT,
@@ -34,8 +35,6 @@ export const INITIAL_STATE: Collection = {
     "write": [],
     "record:create": [],
   },
-  history: [],
-  historyLoaded: false,
 };
 
 export function collection(
@@ -82,26 +81,26 @@ export function collection(
       // If a new sort filter is used, purge the previous records list and
       // pagination state.
       const records = state.sort !== action.sort ? [] : state.records;
-      return {...state, sort: action.sort, records, recordsLoaded: false};
+      return {...state, sort: action.sort, records, listLoaded: false};
     }
     case COLLECTION_RECORDS_NEXT_REQUEST: {
-      return {...state, recordsLoaded: false};
+      return {...state, listLoaded: false};
     }
     case COLLECTION_RECORDS_SUCCESS: {
       const {records, hasNextRecords, listNextRecords} = action;
       return {
         ...state,
         records: [...state.records, ...records],
-        recordsLoaded: true,
+        listLoaded: true,
         hasNextRecords,
         listNextRecords,
       };
     }
     case COLLECTION_HISTORY_REQUEST: {
-      return {...state, historyLoaded: false};
+      return {...state, listLoaded: false};
     }
     case COLLECTION_HISTORY_SUCCESS: {
-      return {...state, history: action.history, historyLoaded: true};
+      return {...state, history: action.history, listLoaded: true};
     }
     default: {
       return state;

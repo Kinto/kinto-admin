@@ -23,7 +23,7 @@ describe("CollectionList component", () => {
 
     const collection = {
       busy: false,
-      recordsLoaded: true,
+      listLoaded: true,
       records: [
         {id: "id1", foo: "bar", last_modified: 2},
         {id: "id2", foo: "baz", last_modified: 1},
@@ -70,7 +70,7 @@ describe("CollectionList component", () => {
 
     const collection = {
       busy: false,
-      recordsLoaded: true,
+      listLoaded: true,
       records: [
         {id: "id1", foo: "bar", last_modified: 1},
         {id: "id2", foo: "baz", last_modified: 2},
@@ -111,7 +111,7 @@ describe("CollectionList component", () => {
 
       const collection = {
         busy: false,
-        recordsLoaded: true,
+        listLoaded: true,
         records: [],
         schema: {
           type: "object",
@@ -146,7 +146,7 @@ describe("CollectionList component", () => {
 
       const collection = {
         busy: false,
-        recordsLoaded: true,
+        listLoaded: true,
         records: [],
         schema: {
           type: "object",

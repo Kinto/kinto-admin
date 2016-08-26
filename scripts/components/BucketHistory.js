@@ -9,7 +9,7 @@ export default class BucketHistory extends Component {
   render() {
     const {params, bucket, capabilities} = this.props;
     const {bid} = params;
-    const {history, historyLoaded} = bucket;
+    const {history, listLoaded} = bucket;
 
     return (
       <div>
@@ -18,7 +18,7 @@ export default class BucketHistory extends Component {
           bid={bid}
           selected="history"
           capabilities={capabilities}>
-          { !historyLoaded ? <Spinner /> :
+          { !listLoaded ? <Spinner /> :
             <HistoryTable history={history} />}
         </BucketTabs>
       </div>

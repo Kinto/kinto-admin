@@ -25,10 +25,10 @@ describe("collection reducer", () => {
   });
 
   describe("COLLECTION_RECORDS_REQUEST", () => {
-    it("should update the recordsLoaded flag", () => {
-      expect(collection({recordsLoaded: true}, {
+    it("should update the listLoaded flag", () => {
+      expect(collection({listLoaded: true}, {
         type: COLLECTION_RECORDS_REQUEST,
-      })).to.have.property("recordsLoaded").eql(false);
+      })).to.have.property("listLoaded").eql(false);
     });
 
     it("should update the sort parameter", () => {
@@ -70,13 +70,12 @@ describe("collection reducer", () => {
       displayFields: "displayFields",
       hasNextRecords: false,
       records: [],
-      recordsLoaded: false,
+      listLoaded: false,
       listNextRecords: null,
       sort: "-last_modified",
       busy: false,
       permissions: {write: [], read: []},
       history: [],
-      historyLoaded: false,
     });
   });
 
@@ -97,7 +96,7 @@ describe("collection reducer", () => {
     });
 
     it("should mark records as loaded", () => {
-      expect(state.recordsLoaded).eql(true);
+      expect(state.listLoaded).eql(true);
     });
 
     it("should append new records received to existing list", () => {
@@ -118,6 +117,6 @@ describe("collection reducer", () => {
     });
 
     expect(state.history).eql(history);
-    expect(state.historyLoaded).eql(true);
+    expect(state.listLoaded).eql(true);
   });
 });

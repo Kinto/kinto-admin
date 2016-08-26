@@ -21,9 +21,8 @@ const INITIAL_STATE: Bucket = {
   data: {},
   collections: [],
   groups: [],
-  listLoaded: false,
   history: [],
-  historyLoaded: false,
+  listLoaded: false,
   permissions: {
     "read": [],
     "write": [],
@@ -68,10 +67,10 @@ export function bucket(state: Bucket = INITIAL_STATE, action: Object) {
       return {...state, groups, listLoaded: true};
     }
     case BUCKET_HISTORY_REQUEST: {
-      return {...state, historyLoaded: false};
+      return {...state, listLoaded: false};
     }
     case BUCKET_HISTORY_SUCCESS: {
-      return {...state, history: action.history, historyLoaded: true};
+      return {...state, history: action.history, listLoaded: true};
     }
     case BUCKET_RESET: {
       return INITIAL_STATE;

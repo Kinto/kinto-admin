@@ -35,7 +35,6 @@ describe("bucket reducer", () => {
       groups: [],
       history: [],
       listLoaded: false,
-      historyLoaded: false,
       name: "buck",
       data: {a: 2},
       permissions: {
