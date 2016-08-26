@@ -19,7 +19,6 @@ const INITIAL_STATE: Bucket = {
   busy: false,
   name: null,
   data: {},
-  collections: [],
   groups: [],
   groupsLoaded: false,
   collections: [],
