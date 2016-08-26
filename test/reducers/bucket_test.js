@@ -32,9 +32,10 @@ describe("bucket reducer", () => {
     })).eql({
       busy: false,
       collections: [],
+      collectionsLoaded: false,
       groups: [],
+      groupsLoaded: false,
       history: [],
-      listLoaded: false,
       historyLoaded: false,
       name: "buck",
       data: {a: 2},

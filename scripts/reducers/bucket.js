@@ -21,7 +21,9 @@ const INITIAL_STATE: Bucket = {
   data: {},
   collections: [],
   groups: [],
-  listLoaded: false,
+  groupsLoaded: false,
+  collections: [],
+  collectionsLoaded: false,
   history: [],
   historyLoaded: false,
   permissions: {
@@ -54,18 +56,18 @@ export function bucket(state: Bucket = INITIAL_STATE, action: Object) {
       };
     }
     case BUCKET_COLLECTIONS_REQUEST: {
-      return {...state, listLoaded: false};
+      return {...state, collectionsLoaded: false};
     }
     case BUCKET_COLLECTIONS_SUCCESS: {
       const {collections} = action;
-      return {...state, collections, listLoaded: true};
+      return {...state, collections, collectionsLoaded: true};
     }
     case BUCKET_GROUPS_REQUEST: {
-      return {...state, listLoaded: false};
+      return {...state, groupsLoaded: false};
     }
     case BUCKET_GROUPS_SUCCESS: {
       const {groups} = action;
-      return {...state, groups, listLoaded: true};
+      return {...state, groups, groupsLoaded: true};
     }
     case BUCKET_HISTORY_REQUEST: {
       return {...state, historyLoaded: false};

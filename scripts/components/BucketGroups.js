@@ -5,7 +5,7 @@ import BucketTabs from "./BucketTabs";
 
 
 function DataList(props) {
-  const {bid, data, listLoaded} = props;
+  const {bid, data, groupsLoaded} = props;
   return (
     <table className="table table-striped table-bordered record-list">
       <thead>
@@ -15,7 +15,7 @@ function DataList(props) {
           <th>Last mod.</th>
         </tr>
       </thead>
-      <tbody className={!listLoaded ? "loading" : ""}>{
+      <tbody className={!groupsLoaded ? "loading" : ""}>{
         data.map((group, index) => {
           const {id, members, last_modified} = group;
           return (
@@ -40,7 +40,7 @@ export default class BucketCollections extends Component {
   render() {
     const {params, bucket, capabilities} = this.props;
     const {bid} = params;
-    const {groups, listLoaded} = bucket;
+    const {groups, groupsLoaded} = bucket;
 
     return (
       <div>
@@ -49,14 +49,14 @@ export default class BucketCollections extends Component {
           bid={bid}
           selected="groups"
           capabilities={capabilities}>
-          { listLoaded && groups.length === 0 ?
+          { groupsLoaded && groups.length === 0 ?
             <div className="alert alert-info">
               <p>This bucket has no groups.</p>
             </div>
             :
             <DataList bid={bid}
                       data={groups}
-                      listLoaded={listLoaded} />
+                      groupsLoaded={groupsLoaded} />
           }
         </BucketTabs>
       </div>
