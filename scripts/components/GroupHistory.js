@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import Spinner from "./Spinner";
 import CollectionTabs from "./GroupTabs";
 
-import {HistoryTable} from "./CollectionHistory";
+import HistoryTable from "./HistoryTable";
 
 
 export default class GroupHistory extends Component {
