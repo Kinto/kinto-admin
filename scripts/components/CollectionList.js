@@ -148,7 +148,7 @@ class Table extends Component {
     if (recordsLoaded && records.length === 0) {
       return (
         <div className="alert alert-info">
-          <p>This collection has no record.</p>
+          <p>This collection has no records.</p>
         </div>
       );
     }

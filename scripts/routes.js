@@ -72,7 +72,7 @@ function onCollectionHistoryEnter(store: Object, {params}) {
   store.dispatch(collectionActions.listCollectionHistory(bid, cid));
 }
 
-function onBucketHistoryEnter(store: Object, {params}) {
+function onBucketPageEnter(store: Object, action: Function, {params}) {
   const {bid} = params;
   const {session} = store.getState();
   if (!session.authenticated) {
@@ -80,30 +80,9 @@ function onBucketHistoryEnter(store: Object, {params}) {
     // occurs when users refresh the page and lose their session.
     return;
   }
-  store.dispatch(bucketActions.listBucketHistory(bid));
+  store.dispatch(action(bid));
 }
 
-function onBucketCollectionsEnter(store: Object, {params}) {
-  const {bid} = params;
-  const {session} = store.getState();
-  if (!session.authenticated) {
-    // We're not authenticated, skip requesting the list of records. This likely
-    // occurs when users refresh the page and lose their session.
-    return;
-  }
-  store.dispatch(bucketActions.listBucketCollections(bid));
-}
-
-function onBucketGroupsEnter(store: Object, {params}) {
-  const {bid} = params;
-  const {session} = store.getState();
-  if (!session.authenticated) {
-    // We're not authenticated, skip requesting the list of records. This likely
-    // occurs when users refresh the page and lose their session.
-    return;
-  }
-  store.dispatch(bucketActions.listBucketGroups(bid));
-}
 
 function registerPluginsComponentHooks(PageContainer, plugins) {
   // Extract the container wrapped component (see react-redux connect() API)
@@ -149,16 +128,16 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
         components={{...common, content: BucketEditPage}} />
       <Route path="/buckets/:bid/history"
         components={{...common, content: BucketHistoryPage}}
-        onEnter={onBucketHistoryEnter.bind(null, store)}
-        onChange={onBucketHistoryEnter.bind(null, store)} />
+        onEnter={onBucketPageEnter.bind(null, store, bucketActions.listBucketHistory)}
+        onChange={onBucketPageEnter.bind(null, store, bucketActions.listBucketHistory)} />
       <Route path="/buckets/:bid/collections"
         components={{...common, content: BucketCollectionsPage}}
-        onEnter={onBucketCollectionsEnter.bind(null, store)}
-        onChange={onBucketCollectionsEnter.bind(null, store)} />
+        onEnter={onBucketPageEnter.bind(null, store, bucketActions.listBucketCollections)}
+        onChange={onBucketPageEnter.bind(null, store, bucketActions.listBucketCollections)} />
       <Route path="/buckets/:bid/groups"
         components={{...common, content: BucketGroupsPage}}
-        onEnter={onBucketGroupsEnter.bind(null, store)}
-        onChange={onBucketGroupsEnter.bind(null, store)} />
+        onEnter={onBucketPageEnter.bind(null, store, bucketActions.listBucketGroups)}
+        onChange={onBucketPageEnter.bind(null, store, bucketActions.listBucketGroups)} />
       <Route path="/buckets/:bid/create-collection"
         components={{...common, content: CollectionCreatePage}} />
       <Route path="/buckets/:bid/collections/:cid/edit"

@@ -8,7 +8,7 @@ import {
   bucketLoadSuccess,
   listBucketCollectionsSuccess,
   listBucketGroupsSuccess,
-  listBucketHistorySuccess
+  listBucketHistorySuccess,
 } from "../actions/bucket";
 import { collectionLoadSuccess } from "../actions/collection";
 

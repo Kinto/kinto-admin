@@ -4,40 +4,35 @@ import { Link } from "react-router";
 import BucketTabs from "./BucketTabs";
 
 
-class DataList extends Component {
-  render() {
-    const {
-      bid,
-      data,
-      listLoaded,
-    } = this.props;
-    return (
-      <table className="table table-striped table-bordered record-list">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Members</th>
-            <th>Last mod.</th>
-          </tr>
-        </thead>
-        <tbody className={!listLoaded ? "loading" : ""}>{
-          data.map((group, index) => {
-            return (
-              <tr key={index}>
-                <td>
-                  <Link to={`/buckets/${bid}/groups/${group.id}/edit`}>
-                  {group.id}
-                  </Link>
-                </td>
-                <td>{group.members.join(", ")}</td>
-                <td>{group.last_modified}</td>
-              </tr>
-            );
-          })
-        }</tbody>
-      </table>
-    );
-  }
+function DataList(props) {
+  const {bid, data, listLoaded} = props;
+  return (
+    <table className="table table-striped table-bordered record-list">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Members</th>
+          <th>Last mod.</th>
+        </tr>
+      </thead>
+      <tbody className={!listLoaded ? "loading" : ""}>{
+        data.map((group, index) => {
+          const {id, members, last_modified} = group;
+          return (
+            <tr key={index}>
+              <td>
+                <Link to={`/buckets/${bid}/groups/${id}/edit`}>
+                  {id}
+                </Link>
+              </td>
+              <td>{members.join(", ")}</td>
+              <td>{last_modified}</td>
+            </tr>
+          );
+        })
+      }</tbody>
+    </table>
+  );
 }
 
 

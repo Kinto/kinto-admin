@@ -53,16 +53,16 @@ export function listBucketCollections(bid: string): Action {
   return {type: BUCKET_COLLECTIONS_REQUEST, bid};
 }
 
-export function listBucketCollectionsSuccess(data: Object[]): Action {
-  return {type: BUCKET_COLLECTIONS_SUCCESS, collections: data};
+export function listBucketCollectionsSuccess(collections: Object[]): Action {
+  return {type: BUCKET_COLLECTIONS_SUCCESS, collections};
 }
 
 export function listBucketGroups(bid: string): Action {
   return {type: BUCKET_GROUPS_REQUEST, bid};
 }
 
-export function listBucketGroupsSuccess(data: Object[]): Action {
-  return {type: BUCKET_GROUPS_SUCCESS, groups: data};
+export function listBucketGroupsSuccess(groups: Object[]): Action {
+  return {type: BUCKET_GROUPS_SUCCESS, groups};
 }
 
 export function listBucketHistory(bid: string): Action {
