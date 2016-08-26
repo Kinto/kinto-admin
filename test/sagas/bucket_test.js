@@ -372,6 +372,90 @@ describe("bucket sagas", () => {
   });
 
 
+  describe("listBucketCollections()", () => {
+    describe("Success", () => {
+      let bucket, listBucketCollections;
+
+      before(() => {
+        bucket = {listCollections() {}};
+        setClient({bucket() {return bucket;}});
+        const action = actions.listBucketCollections("bucket");
+        listBucketCollections = saga.listBucketCollections(() => {}, action);
+      });
+
+      it("should list the collections", () => {
+        expect(listBucketCollections.next().value)
+          .eql(call([bucket, bucket.listCollections]));
+      });
+
+      it("should dispatch the listBucketCollectionsSuccess action", () => {
+        const results = [];
+        expect(listBucketCollections.next({data: results}).value)
+          .eql(put(actions.listBucketCollectionsSuccess(results)));
+      });
+    });
+
+    describe("Failure", () => {
+      let listBucketCollections;
+
+      before(() => {
+        const action = actions.listBucketCollections("bucket");
+        listBucketCollections = saga.listBucketCollections(() => {}, action);
+        listBucketCollections.next();
+      });
+
+      it("should dispatch an error notification action", () => {
+        expect(listBucketCollections.throw("error").value)
+          .eql(put(notifyError("error", {clear: true})));
+      });
+    });
+  });
+
+
+  describe("listBucketHistory()", () => {
+    describe("Success", () => {
+      let bucket, listBucketHistory;
+
+      before(() => {
+        bucket = {listHistory() {}};
+        setClient({bucket() {return bucket;}});
+        const action = actions.listBucketHistory("bucket");
+        listBucketHistory = saga.listBucketHistory(() => {}, action);
+      });
+
+      it("should list the history", () => {
+        expect(listBucketHistory.next().value)
+          .eql(call([bucket, bucket.listHistory], {
+            filters: {
+              exclude_resource_name: "record"
+            }
+          }));
+      });
+
+      it("should dispatch the listBucketHistorySuccess action", () => {
+        const results = [];
+        expect(listBucketHistory.next({data: results}).value)
+          .eql(put(actions.listBucketHistorySuccess(results)));
+      });
+    });
+
+    describe("Failure", () => {
+      let listBucketHistory;
+
+      before(() => {
+        const action = actions.listBucketHistory("bucket");
+        listBucketHistory = saga.listBucketHistory(() => {}, action);
+        listBucketHistory.next();
+      });
+
+      it("should dispatch an error notification action", () => {
+        expect(listBucketHistory.throw("error").value)
+          .eql(put(notifyError("error", {clear: true})));
+      });
+    });
+  });
+
+
   describe("createGroup()", () => {
     describe("Success", () => {
       let bucket, createGroup;
@@ -505,6 +589,46 @@ describe("bucket sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(deleteGroup.throw("error").value)
+          .eql(put(notifyError("error", {clear: true})));
+      });
+    });
+  });
+
+
+  describe("listBucketGroups()", () => {
+    describe("Success", () => {
+      let bucket, listBucketGroups;
+
+      before(() => {
+        bucket = {listGroups() {}};
+        setClient({bucket() {return bucket;}});
+        const action = actions.listBucketGroups("bucket");
+        listBucketGroups = saga.listBucketGroups(() => {}, action);
+      });
+
+      it("should list the groups", () => {
+        expect(listBucketGroups.next().value)
+          .eql(call([bucket, bucket.listGroups]));
+      });
+
+      it("should dispatch the listBucketGroupsSuccess action", () => {
+        const results = [];
+        expect(listBucketGroups.next({data: results}).value)
+          .eql(put(actions.listBucketGroupsSuccess(results)));
+      });
+    });
+
+    describe("Failure", () => {
+      let listBucketGroups;
+
+      before(() => {
+        const action = actions.listBucketGroups("bucket");
+        listBucketGroups = saga.listBucketGroups(() => {}, action);
+        listBucketGroups.next();
+      });
+
+      it("should dispatch an error notification action", () => {
+        expect(listBucketGroups.throw("error").value)
           .eql(put(notifyError("error", {clear: true})));
       });
     });

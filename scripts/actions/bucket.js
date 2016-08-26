@@ -10,6 +10,12 @@ import type {
 import {
   BUCKET_BUSY,
   BUCKET_LOAD_SUCCESS,
+  BUCKET_COLLECTIONS_REQUEST,
+  BUCKET_COLLECTIONS_SUCCESS,
+  BUCKET_GROUPS_REQUEST,
+  BUCKET_GROUPS_SUCCESS,
+  BUCKET_HISTORY_REQUEST,
+  BUCKET_HISTORY_SUCCESS,
   BUCKET_CREATE_REQUEST,
   BUCKET_UPDATE_REQUEST,
   BUCKET_DELETE_REQUEST,
@@ -45,6 +51,30 @@ export function deleteBucket(bid: string): Action {
 
 export function resetBucket(): Action {
   return {type: BUCKET_RESET};
+}
+
+export function listBucketCollections(bid: string): Action {
+  return {type: BUCKET_COLLECTIONS_REQUEST, bid};
+}
+
+export function listBucketCollectionsSuccess(collections: Object[]): Action {
+  return {type: BUCKET_COLLECTIONS_SUCCESS, collections};
+}
+
+export function listBucketGroups(bid: string): Action {
+  return {type: BUCKET_GROUPS_REQUEST, bid};
+}
+
+export function listBucketGroupsSuccess(groups: Object[]): Action {
+  return {type: BUCKET_GROUPS_SUCCESS, groups};
+}
+
+export function listBucketHistory(bid: string): Action {
+  return {type: BUCKET_HISTORY_REQUEST, bid};
+}
+
+export function listBucketHistorySuccess(history: Object[]): Action {
+  return {type: BUCKET_HISTORY_SUCCESS, history};
 }
 
 export function createCollection(bid: string, collectionData: CollectionData): Action {
