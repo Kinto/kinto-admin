@@ -2,7 +2,7 @@
 
 import type {
   Action,
-  Group,
+  GroupData,
   GroupPermissions,
 } from "../types";
 
@@ -24,7 +24,7 @@ export function resetGroup(): Action {
 }
 
 export function groupLoadSuccess(
-  data: Group,
+  data: GroupData,
   permissions: GroupPermissions
 ): Action {
   return {type: GROUP_LOAD_SUCCESS, data, permissions};

@@ -75,7 +75,24 @@ export type CollectionPermissions = {
   "record:create"?: string[],
 };
 
-export type Group = {
+export type GroupState = {
+  id: ?string,
+  members?: ?string[],
+  data?: Object,
+  permissions: GroupPermissions,
+  history: Object[],
+  historyLoaded: boolean,
+};
+
+export type GroupData = {
+  id?: string,
+  last_modified?: number,
+  members?: ?string[],
+};
+
+export type GroupPermissions = {
+  write: string[],
+  read?: string[],
 };
 
 export type Notification = {

@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { Group, GroupData, GroupPermissions } from "../types";
+import type { GroupState, GroupData, GroupPermissions } from "../types";
 import {
   GROUP_BUSY,
   GROUP_RESET,
@@ -10,9 +10,10 @@ import {
 } from "../constants";
 import { omit } from "../utils";
 
-export const INITIAL_STATE: Group = {
-  bucket: null,
-  name: null,
+export const INITIAL_STATE: GroupState = {
+  id: null,
+  members: [],
+  data: {},
   busy: false,
   permissions: {
     "read": [],
@@ -23,9 +24,9 @@ export const INITIAL_STATE: Group = {
 };
 
 export function group(
-  state: Group = INITIAL_STATE,
+  state: GroupState = INITIAL_STATE,
   action: Object
-): Group {
+): GroupState {
   switch (action.type) {
     case GROUP_BUSY: {
       const {busy}: {busy: boolean} = action;
