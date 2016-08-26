@@ -275,7 +275,7 @@ export default class CollectionList extends Component {
     );
 
     return (
-      <div className="collection-page">
+      <div className="list-page">
         <h1>Records of <b>{bid}/{name}</b></h1>
         <CollectionTabs
           bid={bid}

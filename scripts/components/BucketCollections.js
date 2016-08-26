@@ -54,20 +54,42 @@ function DataList(props) {
 }
 
 
+function ListActions(props) {
+  const {bid, session, bucket} = props;
+  if (session.busy || bucket.busy) {
+    return null;
+  }
+  return (
+    <div className="list-actions">
+      <Link to={`/buckets/${bid}/create-collection`}
+            className="btn btn-info btn-collection-add">Add</Link>
+    </div>
+  );
+}
+
+
 export default class BucketCollections extends Component {
   render() {
-    const {params, bucket, capabilities} = this.props;
+    const {params, session, bucket, capabilities} = this.props;
     const {bid} = params;
     const {collections, collectionsLoaded} = bucket;
 
+    const listActions = (
+      <ListActions
+        bid={bid}
+        session={session}
+        bucket={bucket} />
+    );
+
     return (
-      <div>
+      <div className="list-page">
         <h1>Collections of <b>{bid}</b></h1>
         <BucketTabs
           bid={bid}
           selected="collections"
           capabilities={capabilities}>
-          { collectionsLoaded && collections.length === 0 ?
+          {listActions}
+          {collectionsLoaded && collections.length === 0 ?
             <div className="alert alert-info">
               <p>This bucket has no collections.</p>
             </div>
@@ -76,6 +98,7 @@ export default class BucketCollections extends Component {
                       data={collections}
                       collectionsLoaded={collectionsLoaded} />
           }
+          {listActions}
         </BucketTabs>
       </div>
     );
