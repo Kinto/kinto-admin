@@ -5,6 +5,7 @@ import { put, call } from "redux-saga/effects";
 import { notifyError, notifySuccess } from "../../scripts/actions/notifications";
 import * as sessionActions from "../../scripts/actions/session";
 import * as collectionActions from "../../scripts/actions/collection";
+import * as groupActions from "../../scripts/actions/group";
 import * as actions from "../../scripts/actions/bucket";
 import * as saga from "../../scripts/sagas/bucket";
 import { setClient } from "../../scripts/client";
@@ -17,6 +18,12 @@ const collectionData = {
   sort: "-title",
   displayFields: [],
 };
+
+const groupData = {
+  id: "group",
+  members: ["tartempion", "account:abc"]
+};
+
 
 describe("bucket sagas", () => {
   describe("createBucket()", () => {
@@ -359,6 +366,145 @@ describe("bucket sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(deleteCollection.throw("error").value)
+          .eql(put(notifyError("error", {clear: true})));
+      });
+    });
+  });
+
+
+  describe("createGroup()", () => {
+    describe("Success", () => {
+      let bucket, createGroup;
+
+      before(() => {
+        bucket = {createGroup() {}};
+        setClient({bucket() {return bucket;}});
+        const action = actions.createGroup("bucket", groupData);
+        createGroup = saga.createGroup(() => {}, action);
+      });
+
+      it("should post the collection data", () => {
+        expect(createGroup.next().value)
+          .eql(call([bucket, bucket.createGroup], "group", groupData.members, {
+            data: groupData
+          }));
+      });
+
+      it("should update the route path", () => {
+        expect(createGroup.next().value)
+          .eql(put(updatePath("/buckets/bucket/groups/group/edit")));
+      });
+
+      it("should dispatch a notification", () => {
+        expect(createGroup.next().value)
+          .eql(put(notifySuccess("Group created.")));
+      });
+    });
+
+    describe("Failure", () => {
+      let createGroup;
+
+      before(() => {
+        const bucket = {createGroup() {}};
+        setClient({bucket() {return bucket;}});
+        const action = actions.createGroup("bucket", {
+          ...collectionData,
+          name: "collection",
+        });
+        createGroup = saga.createGroup(() => {}, action);
+        createGroup.next();
+      });
+
+      it("should dispatch an error notification action", () => {
+        expect(createGroup.throw("error").value)
+          .eql(put(notifyError("error", {clear: true})));
+      });
+    });
+  });
+
+  describe("updateGroup()", () => {
+    describe("Success", () => {
+      let bucket, updateGroup;
+
+      before(() => {
+        bucket = {updateGroup() {}};
+        setClient({bucket() {return bucket;}});
+        const action = actions.updateGroup(
+          "bucket", "group", groupData);
+        updateGroup = saga.updateGroup(() => {}, action);
+      });
+
+      it("should post the group data", () => {
+        expect(updateGroup.next().value)
+          .eql(call([bucket, bucket.updateGroup], groupData));
+      });
+
+      it("should dispatch the groupLoadSuccess action", () => {
+        expect(updateGroup.next({data: groupData}).value)
+          .eql(put(groupActions.groupLoadSuccess(groupData)));
+      });
+
+      it("should update the route path", () => {
+        expect(updateGroup.next().value)
+          .eql(put(updatePath("/buckets/bucket/groups/group/edit")));
+      });
+
+      it("should dispatch a notification", () => {
+        expect(updateGroup.next().value)
+          .eql(put(notifySuccess("Group properties updated.")));
+      });
+    });
+
+    describe("Failure", () => {
+      it("should dispatch an error notification action", () => {
+        const updateGroup = saga.updateGroup(
+          "bucket", "group", groupData);
+        updateGroup.next();
+
+        expect(updateGroup.throw("error").value)
+          .eql(put(notifyError("error", {clear: true})));
+      });
+    });
+  });
+
+  describe("deleteGroup()", () => {
+    describe("Success", () => {
+      let bucket, deleteGroup;
+
+      before(() => {
+        bucket = {deleteGroup() {}};
+        setClient({bucket() {return bucket;}});
+        const action = actions.deleteGroup("bucket", "group");
+        deleteGroup = saga.deleteGroup(() => {}, action);
+      });
+
+      it("should delete the group", () => {
+        expect(deleteGroup.next().value)
+          .eql(call([bucket, bucket.deleteGroup], "group"));
+      });
+
+      it("should update the route path", () => {
+        expect(deleteGroup.next().value)
+          .eql(put(updatePath("/buckets/bucket/groups")));
+      });
+
+      it("should dispatch a notification", () => {
+        expect(deleteGroup.next().value)
+          .eql(put(notifySuccess("Group deleted.")));
+      });
+    });
+
+    describe("Failure", () => {
+      let deleteGroup;
+
+      before(() => {
+        const action = actions.deleteGroup("bucket", "group");
+        deleteGroup = saga.deleteGroup(() => {}, action);
+        deleteGroup.next();
+      });
+
+      it("should dispatch an error notification action", () => {
+        expect(deleteGroup.throw("error").value)
           .eql(put(notifyError("error", {clear: true})));
       });
     });

@@ -5,6 +5,7 @@ import * as c from "../constants";
 import * as sessionSagas from "./session";
 import * as routeSagas from "./route";
 import * as bucketSagas from "./bucket";
+import * as groupSagas from "./group";
 import * as collectionSagas from "./collection";
 
 /**
@@ -22,16 +23,22 @@ export default function* rootSaga(getState, pluginsSagas=[]) {
     takeEvery(c.SESSION_LOGOUT, sessionSagas.sessionLogout, getState),
     // route
     takeEvery(c.ROUTE_UPDATED, routeSagas.routeUpdated, getState),
-    // bucket/collections
+    // bucket
     takeEvery(c.BUCKET_CREATE_REQUEST, bucketSagas.createBucket, getState),
     takeEvery(c.BUCKET_UPDATE_REQUEST, bucketSagas.updateBucket, getState),
     takeEvery(c.BUCKET_DELETE_REQUEST, bucketSagas.deleteBucket, getState),
+    // bucket/collections
     takeEvery(c.BUCKET_COLLECTIONS_REQUEST, bucketSagas.listBucketCollections, getState),
     takeEvery(c.BUCKET_GROUPS_REQUEST, bucketSagas.listBucketGroups, getState),
     takeEvery(c.BUCKET_HISTORY_REQUEST, bucketSagas.listBucketHistory, getState),
     takeEvery(c.COLLECTION_CREATE_REQUEST, bucketSagas.createCollection, getState),
     takeEvery(c.COLLECTION_UPDATE_REQUEST, bucketSagas.updateCollection, getState),
     takeEvery(c.COLLECTION_DELETE_REQUEST, bucketSagas.deleteCollection, getState),
+    // bucket/groups
+    takeEvery(c.GROUP_CREATE_REQUEST, bucketSagas.createGroup, getState),
+    takeEvery(c.GROUP_UPDATE_REQUEST, bucketSagas.updateGroup, getState),
+    takeEvery(c.GROUP_DELETE_REQUEST, bucketSagas.deleteGroup, getState),
+    takeEvery(c.GROUP_HISTORY_REQUEST, groupSagas.listHistory, getState),
     // collection/records
     takeEvery(c.COLLECTION_RECORDS_REQUEST, collectionSagas.listRecords, getState),
     takeEvery(c.COLLECTION_RECORDS_NEXT_REQUEST, collectionSagas.listNextRecords, getState),

@@ -10,6 +10,7 @@ import {
   listBucketGroupsSuccess,
   listBucketHistorySuccess,
 } from "../actions/bucket";
+import { groupLoadSuccess } from "../actions/group";
 import { collectionLoadSuccess } from "../actions/collection";
 
 
@@ -149,6 +150,50 @@ export function* listBucketHistory(getState, action) {
       }
     });
     yield put(listBucketHistorySuccess(data));
+  } catch(error) {
+    yield put(notifyError(error));
+  }
+}
+
+export function* createGroup(getState, action) {
+  const {bid, groupData} = action;
+  try {
+    const {
+      id: gid,
+      members,
+    } = groupData;
+    const bucket = getBucket(bid);
+    yield call([bucket, bucket.createGroup], gid, members, {
+      data: groupData,
+    });
+    yield put(updatePath(`/buckets/${bid}/groups/${gid}/edit`));
+    yield put(notifySuccess("Group created."));
+  } catch(error) {
+    yield put(notifyError(error));
+  }
+}
+
+export function* updateGroup(getState, action) {
+  const {bid, gid, groupData} = action;
+  try {
+    const bucket = getBucket(bid);
+    const group = {id: gid, ...groupData};
+    const {data, permissions} = yield call([bucket, bucket.updateGroup], group);
+    yield put(groupLoadSuccess(data, permissions));
+    yield put(updatePath(`/buckets/${bid}/groups/${gid}/edit`));
+    yield put(notifySuccess("Group properties updated."));
+  } catch(error) {
+    yield put(notifyError(error));
+  }
+}
+
+export function* deleteGroup(getState, action) {
+  const {bid, gid} = action;
+  try {
+    const bucket = getBucket(bid);
+    yield call([bucket, bucket.deleteGroup], gid);
+    yield put(updatePath(`/buckets/${bid}/groups`));
+    yield put(notifySuccess("Group deleted."));
   } catch(error) {
     yield put(notifyError(error));
   }

@@ -15,6 +15,9 @@ import BucketEditPage from "./containers/BucketEditPage";
 import BucketCollectionsPage from "./containers/BucketCollectionsPage";
 import BucketGroupsPage from "./containers/BucketGroupsPage";
 import BucketHistoryPage from "./containers/BucketHistoryPage";
+import GroupCreatePage from "./containers/GroupCreatePage";
+import GroupEditPage from "./containers/GroupEditPage";
+import GroupHistoryPage from "./containers/GroupHistoryPage";
 import CollectionListPage from "./containers/CollectionListPage";
 import CollectionHistoryPage from "./containers/CollectionHistoryPage";
 import CollectionCreatePage from "./containers/CollectionCreatePage";
@@ -25,6 +28,7 @@ import EditFormPage from "./containers/EditFormPage";
 import * as sessionActions from "./actions/session";
 import * as bucketActions from "./actions/bucket";
 import * as collectionActions from "./actions/collection";
+import * as groupActions from "./actions/group";
 import * as notificationActions from "./actions/notifications";
 
 
@@ -83,6 +87,16 @@ function onBucketPageEnter(store: Object, action: Function, {params}) {
   store.dispatch(action(bid));
 }
 
+function onGroupHistoryEnter(store: Object, {params}) {
+  const {bid, gid} = params;
+  const {session} = store.getState();
+  if (!session.authenticated) {
+    // We're not authenticated, skip requesting the list of records. This likely
+    // occurs when users refresh the page and lose their session.
+    return;
+  }
+  store.dispatch(groupActions.listGroupHistory(bid, gid));
+}
 
 function registerPluginsComponentHooks(PageContainer, plugins) {
   // Extract the container wrapped component (see react-redux connect() API)
@@ -142,6 +156,14 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
         components={{...common, content: CollectionCreatePage}} />
       <Route path="/buckets/:bid/collections/:cid/edit"
         components={{...common, content: CollectionEditPage}} />
+      <Route path="/buckets/:bid/create-group"
+        components={{...common, content: GroupCreatePage}} />
+      <Route path="/buckets/:bid/groups/:gid/edit"
+        components={{...common, content: GroupEditPage}} />
+      <Route path="/buckets/:bid/groups/:gid/history"
+        components={{...common, content: GroupHistoryPage}}
+        onEnter={onGroupHistoryEnter.bind(null, store)}
+        onChange={onGroupHistoryEnter.bind(null, store)} />
       <Route path="/buckets/:bid/collections/:cid"
         components={{
           ...common,
