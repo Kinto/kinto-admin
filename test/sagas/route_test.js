@@ -8,6 +8,7 @@ import * as actions from "../../scripts/actions/route";
 import * as notificationActions from "../../scripts/actions/notifications";
 import * as sessionActions from "../../scripts/actions/session";
 import * as collectionActions from "../../scripts/actions/collection";
+import * as groupActions from "../../scripts/actions/group";
 import * as bucketActions from "../../scripts/actions/bucket";
 import * as recordActions from "../../scripts/actions/record";
 import * as saga from "../../scripts/sagas/route";
@@ -170,6 +171,66 @@ describe("route sagas", () => {
             id: "collection",
             bucket: "bucket",
             a: 2
+          }, {write: [2], read: [3]})));
+      });
+    });
+
+    describe("Bucket and group to load", () => {
+      let batch, loadRoute;
+
+      const responses = [
+        {status: 200, body: {data: {id: "bucket", a: 1},
+                             permissions: {write: [1], read: [2]}}},
+        {status: 200, body: {data: {id: "group", members: ["dalsin"]},
+                             permissions: {write: [2], read: [3]}}},
+      ];
+
+      before(() => {
+        batch = () => {};
+        setClient({batch});
+        loadRoute = saga.loadRoute("bucket", undefined, "group");
+      });
+
+      it("should reset the selected bucket", () => {
+        expect(loadRoute.next().value)
+          .eql(put(bucketActions.resetBucket()));
+      });
+
+      it("should mark the selected bucket as busy", () => {
+        expect(loadRoute.next().value)
+          .eql(put(bucketActions.bucketBusy(true)));
+      });
+
+      it("should reset the selected group", () => {
+        expect(loadRoute.next().value)
+          .eql(put(groupActions.resetGroup()));
+      });
+
+      it("should mark the selected group as busy", () => {
+        expect(loadRoute.next().value)
+          .eql(put(groupActions.groupBusy(true)));
+      });
+
+      it("should batch fetch resources data", () => {
+        expect(loadRoute.next().value)
+          .to.have.property("CALL")
+          .to.have.property("context")
+          .to.have.property("batch").eql(batch);
+      });
+
+      it("should update bucket state from response data", () => {
+        expect(loadRoute.next(responses).value)
+          .eql(put(bucketActions.bucketLoadSuccess({
+            id: "bucket",
+            a: 1
+          }, {write: [1], read: [2]})));
+      });
+
+      it("should update group state from response data", () => {
+        expect(loadRoute.next(responses).value)
+          .eql(put(groupActions.groupLoadSuccess({
+            id: "group",
+            members: ["dalsin"],
           }, {write: [2], read: [3]})));
       });
     });
