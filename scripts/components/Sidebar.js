@@ -89,8 +89,8 @@ function BucketCollectionsMenu(props) {
           );
         })
       }
-      <Link className={active(`/buckets/${bucket.id}/create-collection`)}
-        to={`/buckets/${bucket.id}/create-collection`}>
+      <Link className={active(`/buckets/${bucket.id}/collections/create`)}
+        to={`/buckets/${bucket.id}/collections/create`}>
         <i className="glyphicon glyphicon-plus"/>
         Create collection
       </Link>
@@ -104,7 +104,7 @@ function BucketsMenu(props) {
     <div>
       <div className="panel panel-default">
         <div className="list-group">
-          <Link to="/buckets/create-bucket" className={active("/buckets/create-bucket")}>
+          <Link to="/buckets/create" className={active("/buckets/create")}>
             <i className="glyphicon glyphicon-plus"/>
             Create bucket
           </Link>

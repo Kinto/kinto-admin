@@ -47,8 +47,7 @@ export default class App extends Component {
               <Breadcrumbs
                 routes={routes}
                 params={params}
-                separator=" / "
-                excludes={["buckets"]} />
+                separator=" / " />
               {content || <p>Default.</p>}
             </div>
           </div>

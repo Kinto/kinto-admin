@@ -138,18 +138,18 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
         onEnter={onAuthEnter.bind(null, store)} />
       <Route name="buckets" path="buckets">
         <IndexRedirect to="/" />
-        <Route name="create" path="create-bucket"
+        <Route name="create" path="create"
           components={{...common, content: BucketCreatePage}} />
         <Route name=":bid" path=":bid">
           <IndexRedirect to="collections" />
-          <Route name="create group" path="create-group"
-            components={{...common, content: GroupCreatePage}} />
           <Route name="groups" path="groups">
             <IndexRoute
               name="groups"
               components={{...common, content: BucketGroupsPage}}
               onEnter={onBucketPageEnter.bind(null, store, bucketActions.listBucketGroups)}
               onChange={onBucketPageEnter.bind(null, store, bucketActions.listBucketGroups)} />
+            <Route name="create" path="create"
+              components={{...common, content: GroupCreatePage}} />
             <Route name=":gid" path=":gid">
               <IndexRedirect to="edit" />
               <Route name="properties" path="edit"
@@ -166,12 +166,12 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
             components={{...common, content: BucketHistoryPage}}
             onEnter={onBucketPageEnter.bind(null, store, bucketActions.listBucketHistory)}
             onChange={onBucketPageEnter.bind(null, store, bucketActions.listBucketHistory)} />
-          <Route name="create collection" path="create-collection"
-            components={{...common, content: CollectionCreatePage}} />
           <Route name="collections" path="collections">
             <IndexRoute name="collections" components={{...common, content: BucketCollectionsPage}}
               onEnter={onBucketPageEnter.bind(null, store, bucketActions.listBucketCollections)}
               onChange={onBucketPageEnter.bind(null, store, bucketActions.listBucketCollections)} />
+            <Route name="create" path="create"
+              components={{...common, content: CollectionCreatePage}} />
             <Route name=":cid" path=":cid">
               <IndexRoute
                 name="records"
