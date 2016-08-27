@@ -22,7 +22,8 @@ describe("App component", () => {
     it("should not render a session top bar when not authenticated", () => {
       const node = createComponent(App, {
         session: {authenticated: false},
-        notificationList: [{message: "blah"}]
+        notificationList: [{message: "blah"}],
+        routes: [{name: "Home"}],
       });
 
       expect(node.querySelector(".session-info-bar")).to.not.exist;
@@ -41,7 +42,8 @@ describe("App component", () => {
       const node = createComponent(App, {
         session,
         logout,
-        notificationList: []
+        notificationList: [],
+        routes: [{name: "Home"}],
       });
 
       const infoBar = node.querySelector(".session-info-bar");
@@ -63,7 +65,8 @@ describe("App component", () => {
       const session = {authenticated: false};
       const node = createComponent(App, {
         session,
-        notificationList: [{message: "blah"}]
+        notificationList: [{message: "blah"}],
+        routes: [{name: "Home"}],
       });
 
       expect(node.querySelector(".content")

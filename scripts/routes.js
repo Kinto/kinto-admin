@@ -1,7 +1,7 @@
 /* @flow */
 
 import React, { Component } from "react";
-import { Route, IndexRoute } from "react-router";
+import { Route, IndexRoute, IndexRedirect } from "react-router";
 import { mergeObjects } from "react-jsonschema-form/lib/utils";
 
 import { isObject } from "./utils";
@@ -130,69 +130,74 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
   };
 
   return (
-    <Route path="/" component={App}>
-      <IndexRoute name="Home" components={{...common, content: HomePage}} />
+    <Route name="home" path="/" component={App}>
+      <IndexRoute name="home" components={{...common, content: HomePage}} />
       {flattenPluginsRoutes(plugins, common)}
-      <Route path="/auth/:payload/:token"
+      <Route name="auth" path="/auth/:payload/:token"
         components={{...common, content: HomePage}}
         onEnter={onAuthEnter.bind(null, store)} />
-      <Route name="Buckets" path="buckets">
-        <Route name="Create" path="create-bucket"
+      <Route name="buckets" path="buckets">
+        <IndexRedirect to="/" />
+        <Route name="create" path="create-bucket"
           components={{...common, content: BucketCreatePage}} />
         <Route name=":bid" path=":bid">
-          <Route name="Create group" path="create-group"
+          <IndexRedirect to="collections" />
+          <Route name="create group" path="create-group"
             components={{...common, content: GroupCreatePage}} />
-          <Route name="Groups" path="groups">
+          <Route name="groups" path="groups">
             <IndexRoute
+              name="groups"
               components={{...common, content: BucketGroupsPage}}
               onEnter={onBucketPageEnter.bind(null, store, bucketActions.listBucketGroups)}
               onChange={onBucketPageEnter.bind(null, store, bucketActions.listBucketGroups)} />
             <Route name=":gid" path=":gid">
-              <Route name="Edit" path="edit"
+              <IndexRedirect to="edit" />
+              <Route name="properties" path="edit"
                 components={{...common, content: GroupEditPage}} />
-              <Route name="History" path="history"
+              <Route name="history" path="history"
                 components={{...common, content: GroupHistoryPage}}
                 onEnter={onGroupHistoryEnter.bind(null, store)}
                 onChange={onGroupHistoryEnter.bind(null, store)} />
             </Route>
           </Route>
-          <Route name="Edit" path="edit"
+          <Route name="properties" path="edit"
             components={{...common, content: BucketEditPage}} />
-          <Route name="History" path="history"
+          <Route name="history" path="history"
             components={{...common, content: BucketHistoryPage}}
             onEnter={onBucketPageEnter.bind(null, store, bucketActions.listBucketHistory)}
             onChange={onBucketPageEnter.bind(null, store, bucketActions.listBucketHistory)} />
-          <Route name="Create collection" path="create-collection"
+          <Route name="create collection" path="create-collection"
             components={{...common, content: CollectionCreatePage}} />
-          <Route name="Collections" path="collections">
-            <IndexRoute name="Collections" components={{...common, content: BucketCollectionsPage}}
+          <Route name="collections" path="collections">
+            <IndexRoute name="collections" components={{...common, content: BucketCollectionsPage}}
               onEnter={onBucketPageEnter.bind(null, store, bucketActions.listBucketCollections)}
               onChange={onBucketPageEnter.bind(null, store, bucketActions.listBucketCollections)} />
             <Route name=":cid" path=":cid">
               <IndexRoute
+                name="records"
                 components={{
                   ...common,
                   content: registerPluginsComponentHooks(CollectionListPage, plugins),
                 }}
                 onEnter={onCollectionListEnter.bind(null, store)}
                 onChange={onCollectionListEnter.bind(null, store)} />
-              <Route name="Edit" path="edit"
+              <Route name="properties" path="edit"
                 components={{...common, content: CollectionEditPage}} />
-              <Route name="History" path="history"
+              <Route name="history" path="history"
                 components={{...common, content: CollectionHistoryPage}}
                 onEnter={onCollectionHistoryEnter.bind(null, store)}
                 onChange={onCollectionHistoryEnter.bind(null, store)} />
-              <Route name="Create" path="add"
+              <Route name="create" path="add"
                 components={{...common, content: AddFormPage}} />
-              <Route name="Edit" path="edit/:rid"
+              <Route name="properties" path="edit/:rid"
                 components={{...common, content: EditFormPage}} />
-              <Route name="Bulk create" path="bulk"
+              <Route name="bulk create" path="bulk"
                 components={{...common, content: BulkFormPage}} />
             </Route>
           </Route>
         </Route>
       </Route>
-      <Route path="*" components={{
+      <Route name="not found" path="*" components={{
         sidebar: Sidebar,
         content: _ => <h1>Page not found.</h1>
       }}/>
