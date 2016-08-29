@@ -20,9 +20,14 @@ h1 {
   padding-top: 1em;
 }
 
+.breadcrumbs {
+  font-size: 1.2em;
+  text-transform: lowercase;
+}
+
 .content {
   background: #F6F4EC;
-  padding-top: 1em;
+  padding-top: 3.3em;
 }
 
 .content .list-actions {

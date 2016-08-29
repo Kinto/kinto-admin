@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Breadcrumbs from "react-breadcrumbs";
 
 
 function SessionInfoBar({session, logout}) {
@@ -23,7 +24,9 @@ export default class App extends Component {
       notifications,
       content,
       notificationList,
-      linkBack
+      linkBack,
+      routes,
+      params,
     } = this.props;
     const notificationsClass = notificationList.length ?
                                " with-notifications" : "";
@@ -41,6 +44,10 @@ export default class App extends Component {
             </div>
             <div className={contentClasses}>
               {notifications || <div/>}
+              <Breadcrumbs
+                routes={routes}
+                params={params}
+                separator=" / " />
               {content || <p>Default.</p>}
             </div>
           </div>

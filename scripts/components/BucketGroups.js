@@ -59,7 +59,7 @@ function ListActions(props) {
   }
   return (
     <div className="list-actions">
-      <Link to={`/buckets/${bid}/create-group`}
+      <Link to={`/buckets/${bid}/groups/create`}
             className="btn btn-info btn-group-add">Add</Link>
     </div>
   );
