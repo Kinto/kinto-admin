@@ -7,38 +7,8 @@ function activeIfPathname(location, pathname) {
   return `list-group-item ${active}`;
 }
 
-class GearMenu extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {open: false};
-  }
-
-  toggle = (event) => {
-    this.setState({open: !this.state.open});
-  };
-
-  render() {
-    const {children} = this.props;
-    const {open} = this.state;
-    return (
-      <div className={`gear-menu dropdown ${open ? "open" : ""}`}>
-        <button type="button" className="dropdown-toggle"
-          onClick={this.toggle}>
-          <i className="glyphicon glyphicon-cog" />
-        </button>
-        <ul className="dropdown-menu">{
-          React.Children.map(children, (child, i) => {
-            return <li
-              onClick={(event) => this.setState({open: false})}>{child}</li>;
-          })
-        }</ul>
-      </div>
-    );
-  }
-}
-
 function CollectionMenuEntry(props) {
-  const {bucket, collection, active, currentPath, capabilities} = props;
+  const {bucket, collection, active, currentPath} = props;
   const {id} = collection;
   const classes = [
     "list-group-item",
@@ -47,8 +17,6 @@ function CollectionMenuEntry(props) {
   ].join(" ");
   const listPath = `/buckets/${bucket.id}/collections/${id}`;
   const editPath = `/buckets/${bucket.id}/collections/${id}/edit`;
-  const historyPath = `/buckets/${bucket.id}/collections/${id}/history`;
-  const hasHistory = "history" in capabilities;
 
   return (
     <div className={classes}>
@@ -56,24 +24,17 @@ function CollectionMenuEntry(props) {
       {
         currentPath === listPath ? id : <Link to={listPath}>{id}</Link>
       }
-      <GearMenu>
-        <Link to={listPath}>
-          <i className="glyphicon glyphicon-align-justify" />Browse records
-        </Link>
-        <Link to={editPath}>
-          <i className="glyphicon glyphicon-pencil" />Edit properties
-        </Link>
-        {hasHistory ?
-          <Link to={historyPath}>
-            <i className="glyphicon glyphicon-time" />View history
-          </Link> : null}
-      </GearMenu>
+      <Link to={editPath}
+        className="collections-menu-entry-edit"
+        title="Edit collection properties">
+        <i className="glyphicon glyphicon-cog" />
+      </Link>
     </div>
   );
 }
 
 function BucketCollectionsMenu(props) {
-  const {active, currentPath, bucket, collections, bid, cid, capabilities} = props;
+  const {active, currentPath, bucket, collections, bid, cid} = props;
   return (
     <div className="collections-menu list-group">
       {
@@ -81,7 +42,6 @@ function BucketCollectionsMenu(props) {
           return (
             <CollectionMenuEntry
               key={index}
-              capabilities={capabilities}
               active={bid === bucket.id && cid === collection.id}
               bucket={bucket}
               collection={collection}
@@ -99,7 +59,7 @@ function BucketCollectionsMenu(props) {
 }
 
 function BucketsMenu(props) {
-  const {active, currentPath, buckets, userBucket, bid, cid, capabilities} = props;
+  const {active, currentPath, buckets, userBucket, bid, cid} = props;
   return (
     <div>
       <div className="panel panel-default">
@@ -126,7 +86,6 @@ function BucketsMenu(props) {
                 </Link>
               </div>
               <BucketCollectionsMenu
-                capabilities={capabilities}
                 bucket={bucket}
                 collections={collections}
                 active={active}
@@ -147,7 +106,7 @@ export default class Sidebar extends Component {
   static displayName = "Sidebar";
 
   render() {
-    const {session, params, location, capabilities} = this.props;
+    const {session, params, location} = this.props;
     const {bid, cid} = params;
     const {buckets=[], serverInfo={}} = session;
     const userBucket = serverInfo.user && serverInfo.bucket;
@@ -161,7 +120,6 @@ export default class Sidebar extends Component {
         </div>
         {session.authenticated ?
           <BucketsMenu
-            capabilities={capabilities}
             buckets={buckets}
             userBucket={userBucket}
             active={active}

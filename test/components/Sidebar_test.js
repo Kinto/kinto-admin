@@ -62,14 +62,14 @@ describe("Sidebar component", () => {
     });
 
     it("should list collections for the first bucket", () => {
-      const collMenus = bucketMenus[0].querySelectorAll(".collections-menu-entry > a");
+      const collMenus = bucketMenus[0].querySelectorAll(".collections-menu-entry");
 
       expect([].map.call(collMenus, x => x.textContent))
         .eql(["othercoll", "mycoll"]);
     });
 
     it("should list collections for the second bucket", () => {
-      const collMenus = bucketMenus[1].querySelectorAll(".collections-menu-entry > a");
+      const collMenus = bucketMenus[1].querySelectorAll(".collections-menu-entry");
 
       expect([].map.call(collMenus, x => x.textContent))
         .eql(["foo", "bar", "baz"]);
