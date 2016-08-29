@@ -56,7 +56,7 @@ function onAuthEnter(store: Object, {params}) {
 function onCollectionListEnter(store: Object, {params}) {
   const {bid, cid} = params;
   const {session, collection} = store.getState();
-  if (!session.authenticated) {
+  if (!session.authenticated && !session.authPending) {
     // We're not authenticated, skip requesting the list of records. This likely
     // occurs when users refresh the page and lose their session.
     return;
@@ -68,7 +68,7 @@ function onCollectionListEnter(store: Object, {params}) {
 function onCollectionHistoryEnter(store: Object, {params}) {
   const {bid, cid} = params;
   const {session} = store.getState();
-  if (!session.authenticated) {
+  if (!session.authenticated && !session.authPending) {
     // We're not authenticated, skip requesting the list of records. This likely
     // occurs when users refresh the page and lose their session.
     return;
@@ -79,7 +79,7 @@ function onCollectionHistoryEnter(store: Object, {params}) {
 function onBucketPageEnter(store: Object, action: Function, {params}) {
   const {bid} = params;
   const {session} = store.getState();
-  if (!session.authenticated) {
+  if (!session.authenticated && !session.authPending) {
     // We're not authenticated, skip requesting the list of records. This likely
     // occurs when users refresh the page and lose their session.
     return;
@@ -90,7 +90,7 @@ function onBucketPageEnter(store: Object, action: Function, {params}) {
 function onGroupHistoryEnter(store: Object, {params}) {
   const {bid, gid} = params;
   const {session} = store.getState();
-  if (!session.authenticated) {
+  if (!session.authenticated && !session.authPending) {
     // We're not authenticated, skip requesting the list of records. This likely
     // occurs when users refresh the page and lose their session.
     return;

@@ -30,10 +30,12 @@ describe("session reducer", () => {
 
     expect(session(undefined, {
       type: SESSION_SETUP_COMPLETE,
-      session: setup
+      session: setup,
+      authPending: false,
     })).eql({
       busy: false,
       authenticated: false,
+      authPending: true,
       server: setup.server,
       authType: setup.authType,
       credentials: setup.credentials,
@@ -74,6 +76,7 @@ describe("session reducer", () => {
 
     expect(state).to.have.property("buckets").eql(buckets);
     expect(state).to.have.property("authenticated").eql(true);
+    expect(state).to.have.property("authPending").eql(false);
   });
 
   it("SESSION_LOGOUT", () => {

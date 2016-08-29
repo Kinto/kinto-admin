@@ -105,6 +105,7 @@ export function* loadRoute(bid, cid, gid, rid) {
 
 export function* routeUpdated(getState, action) {
   const {session} = getState();
+  const {authenticated, authPending} = session;
   const {params, location} = action;
   const {bid, cid, rid, gid, token} = params;
 
@@ -113,7 +114,7 @@ export function* routeUpdated(getState, action) {
 
   // Check for an authenticated session; if we're requesting anything other
   // than the homepage, redirect to the homepage with a notification.
-  if (!session.authenticated && !token && location.pathname !== "/") {
+  if (!authPending && !authenticated && !token && location.pathname !== "/") {
     yield put(storeRedirectURL(location.pathname));
     yield put(updatePath(""));
     yield put(notifyInfo("Authentication required.", {persistent: true}));

@@ -14,6 +14,7 @@ import {
 const DEFAULT: Session = {
   busy: false,
   authenticated: false,
+  authPending: false,
   server: null,
   credentials: {},
   buckets: [],
@@ -35,7 +36,7 @@ export default function session(
     }
     case SESSION_SETUP_COMPLETE: {
       const {session}: {session: Session} = action;
-      return {...state, ...session};
+      return {...state, ...session, authPending: true};
     }
     case SESSION_STORE_REDIRECT_URL: {
       const {redirectURL}: {redirectURL: string} = action;
@@ -47,6 +48,7 @@ export default function session(
       return {
         ...state,
         authenticated: true,
+        authPending: false,
         buckets: action.buckets.map((bucket) => {
           return {
             ...bucket,
