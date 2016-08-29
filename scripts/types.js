@@ -129,6 +129,7 @@ export type RecordPermissions = {
 export type Session = {
   busy: boolean,
   authenticated: boolean,
+  authPending: boolean,
   server: ?string,
   credentials: Object,
   buckets: Object[],
