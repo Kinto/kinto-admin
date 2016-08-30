@@ -6,6 +6,7 @@ import {
   SESSION_SETUP_COMPLETE,
   SESSION_STORE_REDIRECT_URL,
   SESSION_SERVERINFO_SUCCESS,
+  SESSION_AUTHENTICATED,
   SESSION_BUCKETS_SUCCESS,
   SESSION_LOGOUT,
 } from "../constants";
@@ -46,7 +47,6 @@ export default function session(
       const userBucket = serverInfo.user && serverInfo.user.bucket;
       return {
         ...state,
-        authenticated: true,
         buckets: action.buckets.map((bucket) => {
           return {
             ...bucket,
@@ -58,6 +58,9 @@ export default function session(
     case SESSION_SERVERINFO_SUCCESS: {
       const {serverInfo} = action;
       return {...state, serverInfo};
+    }
+    case SESSION_AUTHENTICATED: {
+      return {...state, authenticated: true};
     }
     case SESSION_LOGOUT: {
       return DEFAULT;

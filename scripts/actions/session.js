@@ -11,6 +11,7 @@ import {
   SESSION_SERVERINFO_SUCCESS,
   SESSION_BUCKETS_REQUEST,
   SESSION_BUCKETS_SUCCESS,
+  SESSION_AUTHENTICATED,
   SESSION_LOGOUT,
 } from "../constants";
 
@@ -41,6 +42,10 @@ export function listBuckets(): Action {
 
 export function bucketsSuccess(buckets: Object[]): Action {
   return {type: SESSION_BUCKETS_SUCCESS, buckets};
+}
+
+export function setAuthenticated(): Action {
+  return {type: SESSION_AUTHENTICATED};
 }
 
 export function logout(): Action {

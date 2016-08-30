@@ -85,8 +85,13 @@ describe("session sagas", () => {
           .eql(call([client, client.fetchServerInfo]));
       });
 
-      it("should add server to recent history", () => {
+      it("should mark the user as authenticated", () => {
         expect(listBuckets.next(serverInfo).value)
+          .eql(put(actions.setAuthenticated()));
+      });
+
+      it("should add server to recent history", () => {
+        expect(listBuckets.next().value)
           .eql(put(historyActions.addHistory("http://server.test/v1")));
       });
 
@@ -154,25 +159,6 @@ describe("session sagas", () => {
         expect(listBuckets.throw("error").value)
           .eql(put(notifyError("error")));
       });
-    });
-  });
-
-  describe("completeSessionSetup()", () => {
-    let completeSessionSetup;
-
-    before(() => {
-      const action = actions.setupComplete({server: "server", redirectURL: "/blah"});
-      completeSessionSetup = saga.completeSessionSetup(() =>  {}, action);
-    });
-
-    it("should redirect to redirectURL", () => {
-      expect(completeSessionSetup.next().value)
-        .eql(put(updatePath("/blah")));
-    });
-
-    it("should clear the redirectURL", () => {
-      expect(completeSessionSetup.next().value)
-        .eql(put(actions.storeRedirectURL(null)));
     });
   });
 

@@ -18,7 +18,6 @@ export default function* rootSaga(getState, pluginsSagas=[]) {
   const standardSagas = [
     // session
     takeEvery(c.SESSION_SETUP, sessionSagas.setupSession, getState),
-    takeEvery(c.SESSION_SETUP_COMPLETE, sessionSagas.completeSessionSetup, getState),
     takeEvery(c.SESSION_BUCKETS_REQUEST, sessionSagas.listBuckets, getState),
     takeEvery(c.SESSION_LOGOUT, sessionSagas.sessionLogout, getState),
     // route

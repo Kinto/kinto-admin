@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { push as updatePath } from "react-router-redux";
-import { call, put } from "redux-saga/effects";
+import { call, put, take } from "redux-saga/effects";
 
 import { notifyError } from "../../scripts/actions/notifications";
 import { setClient } from "../../scripts/client";
@@ -12,6 +12,8 @@ import * as groupActions from "../../scripts/actions/group";
 import * as bucketActions from "../../scripts/actions/bucket";
 import * as recordActions from "../../scripts/actions/record";
 import * as saga from "../../scripts/sagas/route";
+
+import { SESSION_AUTHENTICATED } from "../../scripts/constants";
 
 
 describe("route sagas", () => {
@@ -339,6 +341,26 @@ describe("route sagas", () => {
           .eql(put(notificationActions.notifyInfo("Authentication required.", {
             persistent: true
           })));
+      });
+
+      it("should wait for the SESSION_AUTHENTICATED event", () => {
+        expect(routeUpdated.next().value)
+          .eql(take(SESSION_AUTHENTICATED));
+      });
+
+      it("should clear the notification", () => {
+        expect(routeUpdated.next().value)
+          .eql(put(notificationActions.clearNotifications({force: true})));
+      });
+
+      it("should redirect the user to the initially requested URL", () => {
+        expect(routeUpdated.next().value)
+          .eql(put(updatePath("/blah")));
+      });
+
+      it("should remove previously stored redirect URL", () => {
+        expect(routeUpdated.next().value)
+          .eql(put(sessionActions.storeRedirectURL(null)));
       });
     });
 

@@ -5,6 +5,7 @@ import {
   SESSION_BUSY,
   SESSION_SETUP_COMPLETE,
   SESSION_SERVERINFO_SUCCESS,
+  SESSION_AUTHENTICATED,
   SESSION_BUCKETS_SUCCESS,
   SESSION_LOGOUT,
 } from "../../scripts/constants";
@@ -73,6 +74,13 @@ describe("session reducer", () => {
     });
 
     expect(state).to.have.property("buckets").eql(buckets);
+  });
+
+  it("SESSION_AUTHENTICATED", () => {
+    const state = session({authenticated: false}, {
+      type: SESSION_AUTHENTICATED,
+    });
+
     expect(state).to.have.property("authenticated").eql(true);
   });
 
