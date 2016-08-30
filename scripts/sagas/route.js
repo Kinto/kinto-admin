@@ -1,4 +1,4 @@
-import { call, put } from "redux-saga/effects";
+import { call, put, take } from "redux-saga/effects";
 import { push as updatePath } from "react-router-redux";
 
 import { getClient } from "../client";
@@ -10,6 +10,7 @@ import { resetGroup, groupBusy, groupLoadSuccess } from "../actions/group";
 import { resetRecord } from "../actions/record";
 import { recordLoadSuccess } from "../actions/record";
 import { notifyInfo, notifyError, clearNotifications } from "../actions/notifications";
+import { SESSION_AUTHENTICATED } from "../constants";
 
 
 function getBatchLoadFn(bid, cid, gid, rid) {
@@ -117,12 +118,19 @@ export function* routeUpdated(getState, action) {
     yield put(storeRedirectURL(location.pathname));
     yield put(updatePath(""));
     yield put(notifyInfo("Authentication required.", {persistent: true}));
-    return;
+    // pause until the user is authenticated
+    yield take(SESSION_AUTHENTICATED);
+    // clear auth related notifications
+    yield put(clearNotifications({force: true}));
+    // Redirect the user to the initially requested URL
+    yield put(updatePath(location.pathname));
+    // Clear stored redirectURL
+    yield put(storeRedirectURL(null));
+  } else {
+    // Load route related resources
+    yield call(loadRoute, bid, cid, gid, rid);
+
+    // Side effect: scroll to page top on each route change
+    yield call([window, window.scrollTo], 0, 0);
   }
-
-  // Load route related resources
-  yield call(loadRoute, bid, cid, gid, rid);
-
-  // Side effect: scroll to page top on each route change
-  yield call([window, window.scrollTo], 0, 0);
 }

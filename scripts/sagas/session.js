@@ -23,14 +23,6 @@ export function* setupSession(getState, action) {
   }
 }
 
-export function* completeSessionSetup(getState, action) {
-  const {session} = action;
-  if (session.redirectURL) {
-    yield put(updatePath(session.redirectURL));
-    yield put(sessionActions.storeRedirectURL(null));
-  }
-}
-
 export function* sessionLogout(getState, action) {
   resetClient();
   yield put(updatePath("/"));
@@ -68,6 +60,8 @@ export function* listBuckets(getState, action) {
     const client = getClient();
     // Fetch server information
     const serverInfo = yield call([client, client.fetchServerInfo]);
+    // We got a valid response; officially declare current user authenticated
+    yield put(sessionActions.setAuthenticated());
     // Store this valid server url in the history
     yield put(historyActions.addHistory(getState().session.server));
     // Notify they're received
