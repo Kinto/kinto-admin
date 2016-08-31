@@ -1,8 +1,8 @@
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
-import GroupEdit from "../components/group/GroupEdit";
-import * as BucketActions from "../actions/bucket";
+import GroupEdit from "../../components/group/GroupEdit";
+import * as BucketActions from "../../actions/bucket";
 
 
 function mapStateToProps(state) {
