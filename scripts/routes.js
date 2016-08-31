@@ -10,21 +10,21 @@ import App from "./containers/App";
 import HomePage from "./containers/HomePage";
 import Sidebar from "./containers/Sidebar";
 import Notifications from "./containers/Notifications";
-import BucketCreatePage from "./containers/BucketCreatePage";
-import BucketEditPage from "./containers/BucketEditPage";
-import BucketCollectionsPage from "./containers/BucketCollectionsPage";
-import BucketGroupsPage from "./containers/BucketGroupsPage";
-import BucketHistoryPage from "./containers/BucketHistoryPage";
-import GroupCreatePage from "./containers/GroupCreatePage";
-import GroupEditPage from "./containers/GroupEditPage";
-import GroupHistoryPage from "./containers/GroupHistoryPage";
-import CollectionListPage from "./containers/CollectionListPage";
-import CollectionHistoryPage from "./containers/CollectionHistoryPage";
-import CollectionCreatePage from "./containers/CollectionCreatePage";
-import CollectionEditPage from "./containers/CollectionEditPage";
-import AddFormPage from "./containers/AddFormPage";
-import BulkFormPage from "./containers/BulkFormPage";
-import EditFormPage from "./containers/EditFormPage";
+import BucketCreatePage from "./containers/bucket/BucketCreatePage";
+import BucketEditPage from "./containers/bucket/BucketEditPage";
+import BucketCollectionsPage from "./containers/bucket/BucketCollectionsPage";
+import BucketGroupsPage from "./containers/bucket/BucketGroupsPage";
+import BucketHistoryPage from "./containers/bucket/BucketHistoryPage";
+import GroupCreatePage from "./containers/group/GroupCreatePage";
+import GroupEditPage from "./containers/group/GroupEditPage";
+import GroupHistoryPage from "./containers/group/GroupHistoryPage";
+import CollectionRecordsPage from "./containers/collection/CollectionRecordsPage";
+import CollectionHistoryPage from "./containers/collection/CollectionHistoryPage";
+import CollectionCreatePage from "./containers/collection/CollectionCreatePage";
+import CollectionEditPage from "./containers/collection/CollectionEditPage";
+import RecordCreatePage from "./containers/record/RecordCreatePage";
+import RecordBulkPage from "./containers/record/RecordBulkPage";
+import RecordEditPage from "./containers/record/RecordEditPage";
 import * as sessionActions from "./actions/session";
 import * as bucketActions from "./actions/bucket";
 import * as collectionActions from "./actions/collection";
@@ -53,7 +53,7 @@ function onAuthEnter(store: Object, {params}) {
   }
 }
 
-function onCollectionListEnter(store: Object, {params}) {
+function onCollectionRecordsEnter(store: Object, {params}) {
   const {bid, cid} = params;
   const {session, collection} = store.getState();
   if (!session.authenticated) {
@@ -177,10 +177,10 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                 name="records"
                 components={{
                   ...common,
-                  content: registerPluginsComponentHooks(CollectionListPage, plugins),
+                  content: registerPluginsComponentHooks(CollectionRecordsPage, plugins),
                 }}
-                onEnter={onCollectionListEnter.bind(null, store)}
-                onChange={onCollectionListEnter.bind(null, store)} />
+                onEnter={onCollectionRecordsEnter.bind(null, store)}
+                onChange={onCollectionRecordsEnter.bind(null, store)} />
               <Route name="properties" path="edit"
                 components={{...common, content: CollectionEditPage}} />
               <Route name="history" path="history"
@@ -188,11 +188,11 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                 onEnter={onCollectionHistoryEnter.bind(null, store)}
                 onChange={onCollectionHistoryEnter.bind(null, store)} />
               <Route name="create" path="add"
-                components={{...common, content: AddFormPage}} />
+                components={{...common, content: RecordCreatePage}} />
               <Route name="properties" path="edit/:rid"
-                components={{...common, content: EditFormPage}} />
+                components={{...common, content: RecordEditPage}} />
               <Route name="bulk create" path="bulk"
-                components={{...common, content: BulkFormPage}} />
+                components={{...common, content: RecordBulkPage}} />
             </Route>
           </Route>
         </Route>
