@@ -4,7 +4,7 @@ import BucketForm from "./BucketForm";
 import Spinner from "../Spinner";
 
 
-export default class BucketCreateForm extends Component {
+export default class BucketCreate extends Component {
   render() {
     const {session, bucket, createBucket} = this.props;
     const {busy} = session;

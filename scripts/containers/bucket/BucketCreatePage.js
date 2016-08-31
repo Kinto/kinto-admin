@@ -1,7 +1,7 @@
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
-import BucketCreateForm from "../../components/bucket/BucketCreateForm";
+import BucketCreate from "../../components/bucket/BucketCreate";
 import * as BucketActions from "../../actions/bucket";
 
 
@@ -19,4 +19,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(BucketCreateForm);
+)(BucketCreate);
