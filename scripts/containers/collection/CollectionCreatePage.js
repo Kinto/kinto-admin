@@ -1,8 +1,8 @@
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
-import CollectionCreate from "../components/collection/CollectionCreate";
-import * as BucketActions from "../actions/bucket";
+import CollectionCreate from "../../components/collection/CollectionCreate";
+import * as BucketActions from "../../actions/bucket";
 
 
 function mapStateToProps(state) {
