@@ -2,7 +2,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { push as updatePath } from "react-router-redux";
 
-import EditForm from "../components/EditForm";
+import EditForm from "../components/record/EditForm";
 import * as CollectionActions from "../actions/collection";
 import * as NotificationsActions from "../actions/notifications";
 

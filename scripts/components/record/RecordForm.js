@@ -3,10 +3,10 @@ import { Link } from "react-router";
 import Form from "react-jsonschema-form";
 import filesize from "filesize";
 
-import Spinner from "./Spinner";
-import JSONRecordForm from "./JSONRecordForm";
-import { canCreateRecord, canEditRecord } from "../permission";
-import { cleanRecord, linkify } from "../utils";
+import Spinner from "../Spinner";
+import JSONRecordForm from "../JSONRecordForm";
+import { canCreateRecord, canEditRecord } from "../../permission";
+import { cleanRecord, linkify } from "../../utils";
 
 
 export function extendSchemaWithAttachment(schema, attachment, edit=false) {

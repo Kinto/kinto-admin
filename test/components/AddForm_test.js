@@ -4,7 +4,7 @@ import { Simulate } from "react-addons-test-utils";
 
 import { createSandbox, createComponent } from "../test_utils";
 
-import AddForm from "../../scripts/components/AddForm";
+import AddForm from "../../scripts/components/record/AddForm";
 
 
 describe("AddForm component", () => {

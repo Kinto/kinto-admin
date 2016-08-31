@@ -4,7 +4,7 @@ import { Simulate } from "react-addons-test-utils";
 
 import { createSandbox, createComponent } from "../test_utils";
 
-import BulkForm from "../../scripts/components/BulkForm";
+import BulkForm from "../../scripts/components/record/BulkForm";
 
 
 describe("BulkForm component", () => {
