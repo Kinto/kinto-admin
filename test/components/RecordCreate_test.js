@@ -4,10 +4,10 @@ import { Simulate } from "react-addons-test-utils";
 
 import { createSandbox, createComponent } from "../test_utils";
 
-import AddForm from "../../scripts/components/record/AddForm";
+import RecordCreate from "../../scripts/components/record/RecordCreate";
 
 
-describe("AddForm component", () => {
+describe("RecordCreate component", () => {
   let sandbox;
 
   beforeEach(() => {
@@ -37,7 +37,7 @@ describe("AddForm component", () => {
 
     beforeEach(() => {
       createRecord = sinon.spy();
-      node = createComponent(AddForm, {
+      node = createComponent(RecordCreate, {
         params: {bid: "bucket", cid: "collection"},
         session: {authenticated: true, serverInfo: {user: "plop"}},
         collection,

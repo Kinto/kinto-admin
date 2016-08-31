@@ -2,16 +2,15 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { push as updatePath } from "react-router-redux";
 
-import AddForm from "../../components/record/AddForm";
+import RecordBulk from "../../components/record/RecordBulk";
 import * as CollectionActions from "../../actions/collection";
 import * as NotificationsActions from "../../actions/notifications";
 
 
 function mapStateToProps(state) {
   return {
-    session: state.session,
     collection: state.collection,
-    record: state.record,
+    session: state.session,
   };
 }
 
@@ -26,4 +25,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(AddForm);
+)(RecordBulk);

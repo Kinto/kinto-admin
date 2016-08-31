@@ -4,10 +4,10 @@ import { Simulate } from "react-addons-test-utils";
 
 import { createSandbox, createComponent } from "../test_utils";
 
-import BulkForm from "../../scripts/components/record/BulkForm";
+import RecordBulk from "../../scripts/components/record/RecordBulk";
 
 
-describe("BulkForm component", () => {
+describe("RecordBulk component", () => {
   let sandbox;
 
   beforeEach(() => {
@@ -33,7 +33,7 @@ describe("BulkForm component", () => {
 
     beforeEach(() => {
       bulkCreateRecords = sinon.spy();
-      node = createComponent(BulkForm, {
+      node = createComponent(RecordBulk, {
         params: {bid: "bucket", cid: "collection"},
         collection,
         bulkCreateRecords,

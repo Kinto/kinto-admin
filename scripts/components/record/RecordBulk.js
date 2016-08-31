@@ -10,7 +10,7 @@ import {
 } from "./RecordForm";
 
 
-export default class BulkForm extends Component {
+export default class RecordBulk extends Component {
   onSubmit = ({formData}) => {
     const {params, collection, notifyError, bulkCreateRecords} = this.props;
     const {bid, cid} = params;

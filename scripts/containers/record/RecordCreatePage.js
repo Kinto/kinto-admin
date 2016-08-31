@@ -2,15 +2,15 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { push as updatePath } from "react-router-redux";
 
-import EditForm from "../../components/record/EditForm";
+import RecordCreate from "../../components/record/RecordCreate";
 import * as CollectionActions from "../../actions/collection";
 import * as NotificationsActions from "../../actions/notifications";
 
 
 function mapStateToProps(state) {
   return {
-    collection: state.collection,
     session: state.session,
+    collection: state.collection,
     record: state.record,
   };
 }
@@ -26,5 +26,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(EditForm);
-
+)(RecordCreate);

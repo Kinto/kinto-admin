@@ -22,9 +22,9 @@ import CollectionRecordsPage from "./containers/collection/CollectionRecordsPage
 import CollectionHistoryPage from "./containers/collection/CollectionHistoryPage";
 import CollectionCreatePage from "./containers/collection/CollectionCreatePage";
 import CollectionEditPage from "./containers/collection/CollectionEditPage";
-import AddFormPage from "./containers/record/AddFormPage";
-import BulkFormPage from "./containers/record/BulkFormPage";
-import EditFormPage from "./containers/record/EditFormPage";
+import RecordCreatePage from "./containers/record/RecordCreatePage";
+import RecordBulkPage from "./containers/record/RecordBulkPage";
+import RecordEditPage from "./containers/record/RecordEditPage";
 import * as sessionActions from "./actions/session";
 import * as bucketActions from "./actions/bucket";
 import * as collectionActions from "./actions/collection";
@@ -188,11 +188,11 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                 onEnter={onCollectionHistoryEnter.bind(null, store)}
                 onChange={onCollectionHistoryEnter.bind(null, store)} />
               <Route name="create" path="add"
-                components={{...common, content: AddFormPage}} />
+                components={{...common, content: RecordCreatePage}} />
               <Route name="properties" path="edit/:rid"
-                components={{...common, content: EditFormPage}} />
+                components={{...common, content: RecordEditPage}} />
               <Route name="bulk create" path="bulk"
-                components={{...common, content: BulkFormPage}} />
+                components={{...common, content: RecordBulkPage}} />
             </Route>
           </Route>
         </Route>

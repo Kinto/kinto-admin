@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import RecordForm from "./RecordForm";
 
 
-export default class AddForm extends Component {
+export default class RecordCreate extends Component {
   onSubmit = ({__attachment__: attachment, ...record}) => {
     const {params, createRecord} = this.props;
     const {bid, cid} = params;
