@@ -2,7 +2,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { push as updatePath } from "react-router-redux";
 
-import BucketHistory from "../components/BucketHistory";
+import BucketHistory from "../components/bucket/BucketHistory";
 import * as BucketActions from "../actions/bucket";
 import * as NotificationsActions from "../actions/notifications";
 

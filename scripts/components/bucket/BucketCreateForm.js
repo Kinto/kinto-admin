@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import BucketForm from "./BucketForm";
-import Spinner from "./Spinner";
+import Spinner from "../Spinner";
 
 
 export default class BucketCreateForm extends Component {

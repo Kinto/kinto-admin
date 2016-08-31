@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import Spinner from "./Spinner";
+import Spinner from "../Spinner";
 import BucketForm from "./BucketForm";
 import BucketTabs from "./BucketTabs";
 

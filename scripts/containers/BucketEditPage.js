@@ -1,7 +1,7 @@
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
-import BucketEditForm from "../components/BucketEditForm";
+import BucketEditForm from "../components/bucket/BucketEditForm";
 import * as BucketActions from "../actions/bucket";
 
 
