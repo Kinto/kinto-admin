@@ -2,10 +2,10 @@ import { expect } from "chai";
 
 import { createSandbox, createComponent } from "../test_utils";
 
-import CollectionList from "../../scripts/components/collection/CollectionList";
+import CollectionRecords from "../../scripts/components/collection/CollectionRecords";
 
 
-describe("CollectionList component", () => {
+describe("CollectionRecords component", () => {
   let sandbox;
 
   beforeEach(() => {
@@ -41,7 +41,7 @@ describe("CollectionList component", () => {
     };
 
     beforeEach(() => {
-      node = createComponent(CollectionList, {
+      node = createComponent(CollectionRecords, {
         params: {bid: "bucket", cid: "collection"},
         session: {authenticated: true, serverInfo: {user: {id: "plop"}}},
         pluginHooks: {},
@@ -81,7 +81,7 @@ describe("CollectionList component", () => {
     };
 
     beforeEach(() => {
-      node = createComponent(CollectionList, {
+      node = createComponent(CollectionRecords, {
         params: {bid: "bucket", cid: "collection"},
         session: {authenticated: true, serverInfo: {user: {id: "plop"}}},
         pluginHooks: {},
@@ -126,7 +126,7 @@ describe("CollectionList component", () => {
       };
 
       beforeEach(() => {
-        node = createComponent(CollectionList, {
+        node = createComponent(CollectionRecords, {
           params: {bid: "bucket", cid: "collection"},
           session: {authenticated: true, serverInfo: {user: {id: "basicauth:plop"}}},
           pluginHooks: {},
@@ -161,7 +161,7 @@ describe("CollectionList component", () => {
       };
 
       beforeEach(() => {
-        node = createComponent(CollectionList, {
+        node = createComponent(CollectionRecords, {
           params: {bid: "bucket", cid: "collection"},
           session: {authenticated: true, serverInfo: {user: {id: "basicauth:plop"}}},
           pluginHooks: {},

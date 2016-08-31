@@ -231,10 +231,10 @@ function ListActions(props) {
   );
 }
 
-export default class CollectionList extends Component {
+export default class CollectionRecords extends Component {
   // This is useful to identify wrapped component for plugin hooks when code is
   // minified; see https://github.com/facebook/react/issues/4915
-  static displayName = "CollectionList";
+  static displayName = "CollectionRecords";
 
   updateSort = (sort) => {
     const {params, listRecords} = this.props;

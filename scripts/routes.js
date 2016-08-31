@@ -18,7 +18,7 @@ import BucketHistoryPage from "./containers/bucket/BucketHistoryPage";
 import GroupCreatePage from "./containers/group/GroupCreatePage";
 import GroupEditPage from "./containers/group/GroupEditPage";
 import GroupHistoryPage from "./containers/group/GroupHistoryPage";
-import CollectionListPage from "./containers/collection/CollectionListPage";
+import CollectionRecordsPage from "./containers/collection/CollectionRecordsPage";
 import CollectionHistoryPage from "./containers/collection/CollectionHistoryPage";
 import CollectionCreatePage from "./containers/collection/CollectionCreatePage";
 import CollectionEditPage from "./containers/collection/CollectionEditPage";
@@ -53,7 +53,7 @@ function onAuthEnter(store: Object, {params}) {
   }
 }
 
-function onCollectionListEnter(store: Object, {params}) {
+function onCollectionRecordsEnter(store: Object, {params}) {
   const {bid, cid} = params;
   const {session, collection} = store.getState();
   if (!session.authenticated) {
@@ -177,10 +177,10 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                 name="records"
                 components={{
                   ...common,
-                  content: registerPluginsComponentHooks(CollectionListPage, plugins),
+                  content: registerPluginsComponentHooks(CollectionRecordsPage, plugins),
                 }}
-                onEnter={onCollectionListEnter.bind(null, store)}
-                onChange={onCollectionListEnter.bind(null, store)} />
+                onEnter={onCollectionRecordsEnter.bind(null, store)}
+                onChange={onCollectionRecordsEnter.bind(null, store)} />
               <Route name="properties" path="edit"
                 components={{...common, content: CollectionEditPage}} />
               <Route name="history" path="history"
