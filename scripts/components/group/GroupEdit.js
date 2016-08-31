@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
+import Spinner from "../Spinner";
 import GroupForm from "./GroupForm";
 import GroupTabs from "./GroupTabs";
-import Spinner from "./Spinner";
 
 
 export default class GroupEdit extends Component {

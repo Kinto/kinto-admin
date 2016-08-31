@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 
-import Spinner from "./Spinner";
+import Spinner from "../Spinner";
+import HistoryTable from "../HistoryTable";
 import CollectionTabs from "./GroupTabs";
-
-import HistoryTable from "./HistoryTable";
 
 
 export default class GroupHistory extends Component {

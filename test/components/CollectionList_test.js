@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import { createSandbox, createComponent } from "../test_utils";
 
-import CollectionList from "../../scripts/components/CollectionList";
+import CollectionList from "../../scripts/components/collection/CollectionList";
 
 
 describe("CollectionList component", () => {

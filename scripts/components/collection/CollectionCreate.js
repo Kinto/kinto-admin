@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
+import Spinner from "../Spinner";
 import CollectionForm from "./CollectionForm";
-import Spinner from "./Spinner";
 
 
 export default class CollectionCreate extends Component {

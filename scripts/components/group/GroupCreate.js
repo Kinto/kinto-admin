@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import GroupForm from "./GroupForm";
-import Spinner from "./Spinner";
+import Spinner from "../Spinner";
 
 
 export default class GroupCreate extends Component {

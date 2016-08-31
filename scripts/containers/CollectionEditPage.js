@@ -1,7 +1,7 @@
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
-import CollectionEdit from "../components/CollectionEdit";
+import CollectionEdit from "../components/collection/CollectionEdit";
 import * as BucketActions from "../actions/bucket";
 
 

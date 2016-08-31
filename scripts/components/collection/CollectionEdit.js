@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
+import Spinner from "../Spinner";
 import CollectionForm from "./CollectionForm";
 import CollectionTabs from "./CollectionTabs";
-import Spinner from "./Spinner";
 
 
 export default class CollectionEdit extends Component {

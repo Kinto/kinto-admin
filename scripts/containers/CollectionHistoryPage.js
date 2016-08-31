@@ -1,9 +1,10 @@
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import CollectionHistory from "../components/CollectionHistory";
+import { push as updatePath } from "react-router-redux";
+
+import CollectionHistory from "../components/collection/CollectionHistory";
 import * as CollectionActions from "../actions/collection";
 import * as NotificationsActions from "../actions/notifications";
-import { push as updatePath } from "react-router-redux";
 
 
 function mapStateToProps(state) {

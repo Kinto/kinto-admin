@@ -1,7 +1,7 @@
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
-import GroupCreate from "../components/GroupCreate";
+import GroupCreate from "../components/group/GroupCreate";
 import * as BucketActions from "../actions/bucket";
 
 

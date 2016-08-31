@@ -1,9 +1,10 @@
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import GroupHistory from "../components/GroupHistory";
+import { push as updatePath } from "react-router-redux";
+
+import GroupHistory from "../components/group/GroupHistory";
 import * as GroupActions from "../actions/group";
 import * as NotificationsActions from "../actions/notifications";
-import { push as updatePath } from "react-router-redux";
 
 
 function mapStateToProps(state) {

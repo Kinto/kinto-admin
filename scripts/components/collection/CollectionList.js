@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
 
-import { renderDisplayField } from "../utils";
-import { canCreateRecord } from "../permission";
-import Spinner from "./Spinner";
+import { renderDisplayField } from "../../utils";
+import { canCreateRecord } from "../../permission";
+import Spinner from "../Spinner";
 import CollectionTabs from "./CollectionTabs";
 
 

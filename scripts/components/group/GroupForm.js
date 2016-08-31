@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import { Link } from "react-router";
 import Form from "react-jsonschema-form";
 
-import JSONEditor from "./JSONEditor";
-import Spinner from "./Spinner";
-import { canCreateGroup, canEditGroup } from "../permission";
-import { validJSON, omit } from "./../utils";
+import JSONEditor from "../JSONEditor";
+import { canCreateGroup, canEditGroup } from "../../permission";
+import { validJSON, omit } from "../../utils";
+import Spinner from "../Spinner";
 
 
 const schema = {

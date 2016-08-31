@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
-import Spinner from "./Spinner";
+import Spinner from "../Spinner";
+import HistoryTable from "../HistoryTable";
 import CollectionTabs from "./CollectionTabs";
-import HistoryTable from "./HistoryTable";
 
 
 export default class CollectionHistory extends Component {

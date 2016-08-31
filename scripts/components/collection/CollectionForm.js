@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { Link } from "react-router";
 import Form from "react-jsonschema-form";
 
-import JSONEditor from "./JSONEditor";
-import { canCreateCollection, canEditCollection } from "../permission";
-import { validateSchema, validateUiSchema } from "./../utils";
+import JSONEditor from "../JSONEditor";
+import { canCreateCollection, canEditCollection } from "../../permission";
+import { validateSchema, validateUiSchema } from "../../utils";
 
 
 const defaultSchema = JSON.stringify({
