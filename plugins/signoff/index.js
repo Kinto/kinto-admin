@@ -28,7 +28,7 @@ function* handleSignoffRequest(getState, action) {
     yield call([coll, coll.setData], {status: "to-sign"}, {patch: true});
     yield put(notifySuccess("Signature requested."));
   } catch (e) {
-    yield put(notifyError(e));
+    yield put(notifyError("Couldn't sign collection.", e));
   }
 }
 
@@ -72,7 +72,7 @@ export const reducers = {};
 
 export function register(store) {
   const hooks = {
-    CollectionList: {
+    CollectionRecords: {
       ListActions: [
         <SignoffButton key="request-signoff-btn"
                        getState={store.getState.bind(store)}

@@ -22,9 +22,9 @@ export type Bucket = {
   permissions: BucketPermissions,
   history: Object[],
   historyLoaded: boolean,
-  collections: Object[],
+  collections: CollectionData[],
   collectionsLoaded: boolean,
-  groups: Object[],
+  groups: GroupData[],
   groupsLoaded: boolean,
 };
 
