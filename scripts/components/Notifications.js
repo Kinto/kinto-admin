@@ -2,10 +2,6 @@ import React, { Component} from "react";
 
 
 class ErrorDetails extends Component {
-  static defaultProps = {
-    details: []
-  };
-
   render() {
     const { details } = this.props;
     if (details.length === 0) {
@@ -22,6 +18,15 @@ class ErrorDetails extends Component {
 }
 
 export class Notification extends Component {
+  static defaultProps = {
+    details: [],
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {expanded: false};
+  }
+
   onCloseClick(event) {
     event.preventDefault();
     this.props.close();
@@ -38,14 +43,27 @@ export class Notification extends Component {
     return messages["type" in messages ? type : "info"];
   }
 
+  expand = (event) => {
+    event.preventDefault();
+    this.setState({expanded: !this.state.expanded});
+  }
+
   render() {
+    const {type, message, details} = this.props;
+    const {expanded} = this.state;
     return (
-      <div className={`alert notification alert-${this.props.type}`}>
+      <div className={`alert notification alert-${type}`}>
         <a className="close" href=""
           onClick={this.onCloseClick.bind(this)}>✖</a>
         <h4>{this.getHeading()}</h4>
-        <p>{this.props.message}</p>
-        <ErrorDetails details={this.props.details} />
+        <p>
+          {message}
+          {details.length !== 0 ?
+            <a href="." className="btn-details" onClick={this.expand} title="Error details">
+              <i className={`glyphicon glyphicon-triangle-${expanded ? "bottom" : "right"}`} />
+            </a> : null}
+        </p>
+        {expanded ? <ErrorDetails details={details} /> : null}
       </div>
     );
   }

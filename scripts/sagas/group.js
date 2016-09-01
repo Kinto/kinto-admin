@@ -20,6 +20,6 @@ export function* listHistory(getState, action) {
     });
     yield put(actions.listGroupHistorySuccess(data));
   } catch(error) {
-    yield put(notifyError(error));
+    yield put(notifyError("Couldn't list group history.", error));
   }
 }

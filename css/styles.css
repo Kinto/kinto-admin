@@ -233,6 +233,11 @@ table.record-list td.load-more {
   animation-duration: 1s;
 }
 
+.notification a.btn-details {
+  margin-left: .3em;
+  color: #777;
+}
+
 .json-record {
   min-height: 300px;
 }

@@ -87,7 +87,7 @@ describe("collection sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(listRecords.throw("error").value)
-          .eql(put(notifyError("error")));
+          .eql(put(notifyError("Couldn't list records.", "error")));
       });
     });
   });
@@ -135,7 +135,7 @@ describe("collection sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(listNextRecords.throw("error").value)
-          .eql(put(notifyError("error")));
+          .eql(put(notifyError("Couldn't process next page.", "error")));
       });
     });
   });
@@ -249,7 +249,7 @@ describe("collection sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(createRecord.throw("error").value)
-          .eql(put(notifyError("error")));
+          .eql(put(notifyError("Couldn't create record.", "error")));
       });
 
       it("should unmark the current collection as busy", () => {
@@ -325,7 +325,7 @@ describe("collection sagas", () => {
 
         it("should dispatch an error notification action", () => {
           expect(updateRecord.throw("error").value)
-            .eql(put(notifyError("error")));
+            .eql(put(notifyError("Couldn't update record.", "error")));
         });
 
         it("should unmark the current collection as busy", () => {
@@ -408,7 +408,7 @@ describe("collection sagas", () => {
 
         it("should dispatch an error notification action", () => {
           expect(updateRecord.throw("error").value)
-            .eql(put(notifyError("error")));
+            .eql(put(notifyError("Couldn't update record.", "error")));
         });
 
         it("should unmark the current collection as busy", () => {
@@ -467,7 +467,7 @@ describe("collection sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(deleteRecord.throw("error").value)
-          .eql(put(notifyError("error")));
+          .eql(put(notifyError("Couldn't delete record.", "error")));
       });
 
       it("should unmark the current collection as busy", () => {
@@ -639,7 +639,7 @@ describe("collection sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(bulkCreateRecords.throw("error").value)
-          .eql(put(notifyError("error")));
+          .eql(put(notifyError("Couldn't create some records.", "error", {details: []})));
       });
 
       it("should unmark the current collection as busy", () => {

@@ -97,7 +97,7 @@ export function* loadRoute(bid, cid, gid, rid) {
     }
     yield put(routeLoadSuccess(bucket, collection, rid));
   } catch(error) {
-    yield put(notifyError(error));
+    yield put(notifyError("Couldn't retrieve route resources.", error));
   } finally {
     yield put(bucketBusy(false));
     yield put(collectionBusy(false));

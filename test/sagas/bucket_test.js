@@ -43,7 +43,7 @@ describe("bucket sagas", () => {
 
       it("should fetch collection attributes", () => {
         expect(createBucket.next().value)
-          .eql(call([client, client.createBucket], "bucket", {data: {a: 1}}));
+          .eql(call([client, client.createBucket], "bucket", {data: {a: 1}, safe: true}));
       });
 
       it("should reload the list of buckets/collections", () => {
@@ -79,7 +79,7 @@ describe("bucket sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(createBucket.throw("error").value)
-          .eql(put(notifyError("error", {clear: true})));
+          .eql(put(notifyError("Couldn't create bucket.", "error", {clear: true})));
       });
 
       it("should unmark the current session as busy", () => {
@@ -144,7 +144,7 @@ describe("bucket sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(updateBucket.throw("error").value)
-          .eql(put(notifyError("error", {clear: true})));
+          .eql(put(notifyError("Couldn't update bucket.", "error", {clear: true})));
       });
 
       it("should unmark the current session as busy", () => {
@@ -206,7 +206,7 @@ describe("bucket sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(deleteBucket.throw("error").value)
-          .eql(put(notifyError("error", {clear: true})));
+          .eql(put(notifyError("Couldn't delete bucket.", "error", {clear: true})));
       });
 
       it("should unmark the current collection as busy", () => {
@@ -233,7 +233,8 @@ describe("bucket sagas", () => {
       it("should post the collection data", () => {
         expect(createCollection.next().value)
           .eql(call([bucket, bucket.createCollection], "collection", {
-            data: collectionData
+            data: collectionData,
+            safe: true,
           }));
       });
 
@@ -269,7 +270,7 @@ describe("bucket sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(createCollection.throw("error").value)
-          .eql(put(notifyError("error", {clear: true})));
+          .eql(put(notifyError("Couldn't create collection.", "error", {clear: true})));
       });
     });
   });
@@ -318,7 +319,7 @@ describe("bucket sagas", () => {
         updateCollection.next();
 
         expect(updateCollection.throw("error").value)
-          .eql(put(notifyError("error", {clear: true})));
+          .eql(put(notifyError("Couldn't update collection.", "error", {clear: true})));
       });
     });
   });
@@ -366,7 +367,7 @@ describe("bucket sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(deleteCollection.throw("error").value)
-          .eql(put(notifyError("error", {clear: true})));
+          .eql(put(notifyError("Couldn't delete collection.", "error", {clear: true})));
       });
     });
   });
@@ -406,7 +407,7 @@ describe("bucket sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(listBucketCollections.throw("error").value)
-          .eql(put(notifyError("error", {clear: true})));
+          .eql(put(notifyError("Couldn't list bucket collections.", "error", {clear: true})));
       });
     });
   });
@@ -450,7 +451,7 @@ describe("bucket sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(listBucketHistory.throw("error").value)
-          .eql(put(notifyError("error", {clear: true})));
+          .eql(put(notifyError("Couldn't list bucket history.", "error", {clear: true})));
       });
     });
   });
@@ -501,7 +502,7 @@ describe("bucket sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(createGroup.throw("error").value)
-          .eql(put(notifyError("error", {clear: true})));
+          .eql(put(notifyError("Couldn't create group.", "error", {clear: true})));
       });
     });
   });
@@ -546,7 +547,7 @@ describe("bucket sagas", () => {
         updateGroup.next();
 
         expect(updateGroup.throw("error").value)
-          .eql(put(notifyError("error", {clear: true})));
+          .eql(put(notifyError("Couldn't update group.", "error", {clear: true})));
       });
     });
   });
@@ -589,7 +590,7 @@ describe("bucket sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(deleteGroup.throw("error").value)
-          .eql(put(notifyError("error", {clear: true})));
+          .eql(put(notifyError("Couldn't delete group.", "error", {clear: true})));
       });
     });
   });
@@ -629,7 +630,7 @@ describe("bucket sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(listBucketGroups.throw("error").value)
-          .eql(put(notifyError("error", {clear: true})));
+          .eql(put(notifyError("Couldn't list bucket groups.", "error", {clear: true})));
       });
     });
   });

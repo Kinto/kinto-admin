@@ -40,6 +40,18 @@ export type BucketPermissions = {
   "group:create"?: string[],
 };
 
+export type ClientError = {
+  message: string,
+  data: {
+    code: number,
+    details: {
+      existing: {
+        id: string
+      }
+    }
+  }
+};
+
 export type Collection = {
   bucket: ?string,
   name: ?string,

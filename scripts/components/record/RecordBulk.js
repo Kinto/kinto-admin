@@ -17,7 +17,7 @@ export default class RecordBulk extends Component {
     const {schema} = collection;
 
     if (formData.length === 0) {
-      return notifyError({message: "The form is empty."});
+      return notifyError("The form is empty.");
     }
 
     if (Object.keys(schema).length === 0) {
