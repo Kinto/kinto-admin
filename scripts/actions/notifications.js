@@ -18,15 +18,16 @@ function getErrorDetails(error: Error | ClientError): string[] {
   const {code} = error.data;
   switch(code) {
     case 412: {
-      if (error.data && error.data.existing && error.data.existing.id) {
-        const id = error.data.existing.id;
+      if (error.data.details &&
+          error.data.details.existing &&
+          error.data.details.existing.id) {
+        const id = error.data.details.existing.id;
         return [
+          `Resource ${id} already exists or has been modified meanwhile.`,
           ...details,
-          `Resource ${id} already exists or has been modified meanwhile.`
         ];
-      } else {
-        return details;
       }
+      return details;
     }
     default: return [];
   }
