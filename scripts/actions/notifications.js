@@ -9,7 +9,10 @@ import {
 } from "../constants";
 
 
-function getErrorDetails(error: Error | ClientError): string[] {
+function getErrorDetails(error: ?(Error | ClientError)): string[] {
+  if (!error) {
+    return [];
+  }
   const {message} = error;
   let details = [message];
   if (!error.data) {
@@ -61,7 +64,7 @@ export function notifySuccess(message: string, options: Object={}): Action {
 
 export function notifyError(
   message: string,
-  error:   Error | ClientError,
+  error:   ?(Error | ClientError),
   options: Object={}
 ): Action {
   console.error(error);
