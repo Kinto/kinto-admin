@@ -19,6 +19,7 @@ class ErrorDetails extends Component {
 
 export class Notification extends Component {
   static defaultProps = {
+    type: "info",
     details: [],
   }
 
@@ -40,7 +41,7 @@ export class Notification extends Component {
       success: "Success",
       warning: "Warning",
     };
-    return messages["type" in messages ? type : "info"];
+    return messages[type];
   }
 
   expand = (event) => {
