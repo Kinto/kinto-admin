@@ -214,7 +214,7 @@ table.record-list td.load-more {
 
 .notifications {
   z-index: 99;
-  margin-bottom: 1em;
+  margin: 1em 0;
   position: fixed;
   top: 1em;
   right: 1em;
