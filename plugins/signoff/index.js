@@ -16,8 +16,18 @@ function requestSignoff() {
 
 function* handleSignoffRequest(getState, action) {
   // Obtain current bucket and collection ids from state.
-  const {collection:collectionState} = getState();
+  const {session, bucket, collection:collectionState} = getState();
   const {bucket: bid, name: cid} = collectionState;
+  const {groups} = bucket;
+  const {serverInfo: {user: {id}}} = session;
+
+  const editorGroup = groups.find(group => group.id === "editors");
+  const isEditor = editorGroup && editorGroup.members.includes(id);
+
+  if (!isEditor) {
+    yield put(notifyError("You are not an editor!", new Error("XXX")));
+    return;
+  }
 
   // XXX: Currently the signoff feature does not exist on the server.
   // Meanwhile we will just trigger a signature.
