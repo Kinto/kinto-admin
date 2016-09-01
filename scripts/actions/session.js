@@ -64,6 +64,6 @@ export function navigateToExternalAuth(authFormData: Object): ?Action {
     const redirect = encodeURIComponent(`${origin}${pathname}#/auth/${payload}/`);
     document.location.href = `${server}/fxa-oauth/login?redirect=${redirect}`;
   } catch(error) {
-    return notifyError(error);
+    return notifyError("Couldn't redirect to authentication endpoint.", error);
   }
 }

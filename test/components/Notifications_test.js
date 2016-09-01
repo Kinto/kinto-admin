@@ -29,13 +29,27 @@ describe("Notifications component", () => {
     expect(node.querySelectorAll(".notification")).to.have.length.of(1);
   });
 
-  it("should render a detailed error", () => {
+  it("should not render a detailed error by default", () => {
     const node = createComponent(Notifications, {
       removeNotification,
       notifications: [
         {type: "error", message: "fail", details: ["a", "b"]},
       ]
     });
+
+    expect([].map.call(node.querySelectorAll(".notification ul li"),
+                       n => n.textContent)).eql([]);
+  });
+
+  it("should render a detailed error when clicking the details button", () => {
+    const node = createComponent(Notifications, {
+      removeNotification,
+      notifications: [
+        {type: "error", message: "fail", details: ["a", "b"]},
+      ]
+    });
+
+    Simulate.click(node.querySelector(".btn-details"));
 
     expect([].map.call(node.querySelectorAll(".notification ul li"),
                        n => n.textContent)).eql(["a", "b"]);

@@ -157,7 +157,7 @@ describe("session sagas", () => {
         listBuckets.next();
 
         expect(listBuckets.throw("error").value)
-          .eql(put(notifyError("error")));
+          .eql(put(notifyError("Couldn't list buckets.", "error")));
       });
     });
   });

@@ -27,12 +27,12 @@ export function* createBucket(getState, action) {
   try {
     const client = getClient();
     yield put(sessionBusy(true));
-    yield call([client, client.createBucket], bid, {data});
+    yield call([client, client.createBucket], bid, {data, safe: true});
     yield put(listBuckets());
     yield put(updatePath(`/buckets/${bid}/edit`));
     yield put(notifySuccess("Bucket created."));
   } catch(error) {
-    yield put(notifyError(error));
+    yield put(notifyError("Couldn't create bucket.", error));
   } finally {
     yield put(sessionBusy(false));
   }
@@ -47,7 +47,7 @@ export function* updateBucket(getState, action) {
     yield put(bucketLoadSuccess(data, permissions));
     yield put(notifySuccess("Bucket updated."));
   } catch(error) {
-    yield put(notifyError(error));
+    yield put(notifyError("Couldn't update bucket.", error));
   } finally {
     yield put(sessionBusy(false));
   }
@@ -63,7 +63,7 @@ export function* deleteBucket(getState, action) {
     yield put(updatePath("/"));
     yield put(notifySuccess("Bucket deleted."));
   } catch(error) {
-    yield put(notifyError(error));
+    yield put(notifyError("Couldn't delete bucket.", error));
   } finally {
     yield put(sessionBusy(false));
   }
@@ -83,12 +83,13 @@ export function* createCollection(getState, action) {
     const bucket = getBucket(bid);
     yield call([bucket, bucket.createCollection], name, {
       data: {uiSchema, schema, attachment, sort, displayFields},
+      safe: true,
     });
     yield put(updatePath(`/buckets/${bid}/collections/${name}`));
     yield put(notifySuccess("Collection created."));
     yield put(listBuckets());
   } catch(error) {
-    yield put(notifyError(error));
+    yield put(notifyError("Couldn't create collection.", error));
   }
 }
 
@@ -101,7 +102,7 @@ export function* updateCollection(getState, action) {
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess("Collection properties updated."));
   } catch(error) {
-    yield put(notifyError(error));
+    yield put(notifyError("Couldn't update collection.", error));
   }
 }
 
@@ -114,7 +115,7 @@ export function* deleteCollection(getState, action) {
     yield put(notifySuccess("Collection deleted."));
     yield put(listBuckets());
   } catch(error) {
-    yield put(notifyError(error));
+    yield put(notifyError("Couldn't delete collection.", error));
   }
 }
 
@@ -125,7 +126,7 @@ export function* listBucketCollections(getState, action) {
     const {data} = yield call([bucket, bucket.listCollections]);
     yield put(listBucketCollectionsSuccess(data));
   } catch(error) {
-    yield put(notifyError(error));
+    yield put(notifyError("Couldn't list bucket collections.", error));
   }
 }
 
@@ -136,7 +137,7 @@ export function* listBucketGroups(getState, action) {
     const {data} = yield call([bucket, bucket.listGroups]);
     yield put(listBucketGroupsSuccess(data));
   } catch(error) {
-    yield put(notifyError(error));
+    yield put(notifyError("Couldn't list bucket groups.", error));
   }
 }
 
@@ -151,7 +152,7 @@ export function* listBucketHistory(getState, action) {
     });
     yield put(listBucketHistorySuccess(data));
   } catch(error) {
-    yield put(notifyError(error));
+    yield put(notifyError("Couldn't list bucket history.", error));
   }
 }
 
@@ -169,7 +170,7 @@ export function* createGroup(getState, action) {
     yield put(updatePath(`/buckets/${bid}/groups/${gid}/edit`));
     yield put(notifySuccess("Group created."));
   } catch(error) {
-    yield put(notifyError(error));
+    yield put(notifyError("Couldn't create group.", error));
   }
 }
 
@@ -183,7 +184,7 @@ export function* updateGroup(getState, action) {
     yield put(updatePath(`/buckets/${bid}/groups/${gid}/edit`));
     yield put(notifySuccess("Group properties updated."));
   } catch(error) {
-    yield put(notifyError(error));
+    yield put(notifyError("Couldn't update group.", error));
   }
 }
 
@@ -195,6 +196,6 @@ export function* deleteGroup(getState, action) {
     yield put(updatePath(`/buckets/${bid}/groups`));
     yield put(notifySuccess("Group deleted."));
   } catch(error) {
-    yield put(notifyError(error));
+    yield put(notifyError("Couldn't delete group.", error));
   }
 }

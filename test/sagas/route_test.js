@@ -34,7 +34,7 @@ describe("route sagas", () => {
         loadRoute.next();
 
         expect(loadRoute.throw("error").value)
-          .eql(put(notifyError("error")));
+          .eql(put(notifyError("Couldn't retrieve route resources.", "error")));
       });
     });
 

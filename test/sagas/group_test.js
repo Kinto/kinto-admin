@@ -48,7 +48,7 @@ describe("group sagas", () => {
 
       it("should dispatch an error notification action", () => {
         expect(listHistory.throw("error").value)
-          .eql(put(notifyError("error", {clear: true})));
+          .eql(put(notifyError("Couldn't list group history.", "error", {clear: true})));
       });
     });
   });

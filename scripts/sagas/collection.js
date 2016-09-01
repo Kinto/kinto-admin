@@ -27,7 +27,7 @@ export function* deleteAttachment(getState, action) {
     yield put(updatePath(`/buckets/${bid}/collections/${cid}/edit/${rid}`));
     yield put(notifySuccess("Attachment deleted."));
   } catch(error) {
-    yield put(notifyError(error));
+    yield put(notifyError("Couldn't delete attachment.", error));
   } finally {
     yield put(actions.collectionBusy(false));
   }
@@ -45,7 +45,7 @@ export function* listRecords(getState, action) {
     });
     yield put(actions.listRecordsSuccess(data, hasNextPage, next));
   } catch(error) {
-    yield put(notifyError(error));
+    yield put(notifyError("Couldn't list records.", error));
   }
 }
 
@@ -57,7 +57,7 @@ export function* listNextRecords(getState) {
     yield put(actions.listRecordsSuccess(data, hasNextPage, next));
     yield call([window, window.scrollTo], 0, window.document.body.scrollHeight);
   } catch(error) {
-    yield put(notifyError(error));
+    yield put(notifyError("Couldn't process next page.", error));
   }
 }
 
@@ -72,7 +72,7 @@ export function* listHistory(getState, action) {
     });
     yield put(actions.listCollectionHistorySuccess(data));
   } catch(error) {
-    yield put(notifyError(error));
+    yield put(notifyError("Couldn't list collection history.", error));
   }
 }
 
@@ -90,7 +90,7 @@ export function* createRecord(getState, action) {
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess("Record added."));
   } catch(error) {
-    yield put(notifyError(error));
+    yield put(notifyError("Couldn't create record.", error));
   } finally {
     yield put(actions.collectionBusy(false));
   }
@@ -113,7 +113,7 @@ export function* updateRecord(getState, action) {
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess("Record updated."));
   } catch(error) {
-    yield put(notifyError(error));
+    yield put(notifyError("Couldn't update record.", error));
   } finally {
     yield put(actions.collectionBusy(false));
   }
@@ -128,7 +128,7 @@ export function* deleteRecord(getState, action) {
     yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
     yield put(notifySuccess("Record deleted."));
   } catch(error) {
-    yield put(notifyError(error));
+    yield put(notifyError("Couldn't delete record.", error));
   } finally {
     yield put(actions.collectionBusy(false));
   }
@@ -168,7 +168,7 @@ export function* bulkCreateRecords(getState, action) {
       yield put(notifySuccess(`${published.length} records created.`));
     }
   } catch(error) {
-    yield put(notifyError(error, {details: errorDetails}));
+    yield put(notifyError("Couldn't create some records.", error, {details: errorDetails}));
   } finally {
     yield put(actions.collectionBusy(false));
   }

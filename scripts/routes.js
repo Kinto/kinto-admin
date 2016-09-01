@@ -48,7 +48,8 @@ function onAuthEnter(store: Object, {params}) {
         redirectURL,
       }));
     } catch(error) {
-      store.dispatch(notificationActions.notifyError(error));
+      const message = "Couldn't proceed with authentication.";
+      store.dispatch(notificationActions.notifyError(message, error));
     }
   }
 }

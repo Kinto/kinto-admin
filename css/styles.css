@@ -43,7 +43,7 @@ h1 {
 }
 
 .content.with-notifications {
-  padding-top: 8em;
+  padding-top: 10em;
 }
 
 .content .edit-coll-props .btn {
@@ -214,7 +214,7 @@ table.record-list td.load-more {
 
 .notifications {
   z-index: 99;
-  margin-bottom: 1em;
+  margin: 1em 0;
   position: fixed;
   top: 1em;
   right: 1em;
@@ -231,6 +231,16 @@ table.record-list td.load-more {
 .notification {
   animation-name: fadeIn;
   animation-duration: 1s;
+}
+
+.notification p {
+  line-height: 1.8em;
+}
+
+.notification a.btn-details {
+  font-size: .9em;
+  margin-left: .3em;
+  color: #777;
 }
 
 .json-record {

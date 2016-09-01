@@ -17,7 +17,7 @@ export function* setupSession(getState, action) {
     yield put(sessionActions.listBuckets());
     yield put(sessionActions.setupComplete(session));
   } catch(error) {
-    yield put(notificationActions.notifyError(error));
+    yield put(notificationActions.notifyError("Couldn't complete session setup.", error));
   } finally {
     yield put(sessionActions.sessionBusy(false));
   }
@@ -86,6 +86,6 @@ export function* listBuckets(getState, action) {
 
     yield put(sessionActions.bucketsSuccess(buckets));
   } catch(error) {
-    yield put(notificationActions.notifyError(error));
+    yield put(notificationActions.notifyError("Couldn't list buckets.", error));
   }
 }
