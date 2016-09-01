@@ -1,6 +1,7 @@
 import { push as updatePath } from "react-router-redux";
 import { call, put } from "redux-saga/effects";
 
+import { saveSession, clearSession } from "../app";
 import * as notificationActions from "../actions/notifications";
 import * as sessionActions from "../actions/session";
 import * as historyActions from "../actions/history";
@@ -27,6 +28,7 @@ export function* sessionLogout(getState, action) {
   resetClient();
   yield put(updatePath("/"));
   yield put(notificationActions.notifySuccess("Logged out.", {persistent: true}));
+  yield call(clearSession);
 }
 
 function handlePermissions(buckets, permissions) {
@@ -85,6 +87,9 @@ export function* listBuckets(getState, action) {
     }
 
     yield put(sessionActions.bucketsSuccess(buckets));
+
+    // Save current app state
+    yield call(saveSession, getState().session);
   } catch(error) {
     yield put(notificationActions.notifyError("Couldn't list buckets.", error));
   }
