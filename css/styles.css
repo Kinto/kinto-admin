@@ -43,7 +43,7 @@ h1 {
 }
 
 .content.with-notifications {
-  padding-top: 8em;
+  padding-top: 10em;
 }
 
 .content .edit-coll-props .btn {
@@ -233,7 +233,12 @@ table.record-list td.load-more {
   animation-duration: 1s;
 }
 
+.notification p {
+  line-height: 1.8em;
+}
+
 .notification a.btn-details {
+  font-size: .9em;
   margin-left: .3em;
   color: #777;
 }
