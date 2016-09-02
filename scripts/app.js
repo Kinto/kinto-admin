@@ -6,6 +6,7 @@ import { syncHistoryWithStore } from "react-router-redux";
 import getRoutes from "./routes";
 import configureStore from "./store/configureStore";
 import * as routeActions from "./actions/route";
+import * as sessionActions from "./actions/session";
 
 import { loadSession } from "./store/localStore";
 
@@ -15,7 +16,7 @@ import "../css/styles.css";
 
 
 export function createAdmin(plugins=[]) {
-  const store = configureStore(loadSession(), plugins);
+  const store = configureStore({}, plugins);
 
   const registerPlugins = plugins.map(plugin => plugin.register(store));
 
@@ -33,6 +34,12 @@ export function createAdmin(plugins=[]) {
       </Router>
     </Provider>
   );
+
+  // Load any previously saved session, trigger reauth against it
+  const session = loadSession();
+  if (session) {
+    store.dispatch(sessionActions.setup(session));
+  }
 
   return {store, component};
 }
