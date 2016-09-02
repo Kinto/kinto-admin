@@ -1,31 +1,10 @@
 /* @flow */
 
 import { HISTORY_ADD, HISTORY_CLEAR } from "../constants";
+import { loadHistory, saveHistory, clearHistory } from "../store/localStore";
 
 
-function load(): string[] {
-  const jsonHistory = localStorage.getItem("kinto-admin-server-history");
-  if (!jsonHistory) {
-    return [];
-  }
-  try {
-    return JSON.parse(jsonHistory);
-  } catch(err) {
-    return [];
-  }
-}
-
-function save(history: string[]): string[] {
-  try {
-    localStorage.setItem("kinto-admin-server-history", JSON.stringify(history));
-  } catch(err) {
-    // Not much to do here, let's fail silently
-  } finally {
-    return history;
-  }
-}
-
-const INITIAL_STATE: string[] = load();
+const INITIAL_STATE: string[] = loadHistory();
 
 export default function history(
   state: string[] = INITIAL_STATE,
@@ -33,10 +12,10 @@ export default function history(
 ): string[] {
   switch(action.type) {
     case HISTORY_ADD: {
-      return save(Array.from(new Set([action.entry, ...state])));
+      return saveHistory(Array.from(new Set([action.entry, ...state])));
     }
     case HISTORY_CLEAR: {
-      return save([]);
+      return clearHistory();
     }
     default: {
       return state;

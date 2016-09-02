@@ -7,13 +7,15 @@ import getRoutes from "./routes";
 import configureStore from "./store/configureStore";
 import * as routeActions from "./actions/route";
 
+import { loadSession } from "./store/localStore";
+
 import "bootstrap/dist/css/bootstrap.css";
 import "codemirror/lib/codemirror.css";
 import "../css/styles.css";
 
 
 export function createAdmin(plugins=[]) {
-  const store = configureStore({}, plugins);
+  const store = configureStore(loadSession(), plugins);
 
   const registerPlugins = plugins.map(plugin => plugin.register(store));
 

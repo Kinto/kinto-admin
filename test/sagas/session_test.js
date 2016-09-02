@@ -2,9 +2,11 @@ import { expect } from "chai";
 import { push as updatePath } from "react-router-redux";
 import { put, call } from "redux-saga/effects";
 
+import { saveSession, clearSession } from "../../scripts/store/localStore";
 import { notifyError } from "../../scripts/actions/notifications";
 import * as actions from "../../scripts/actions/session";
 import * as historyActions from "../../scripts/actions/history";
+import * as notificationsActions from "../../scripts/actions/notifications";
 import * as saga from "../../scripts/sagas/session";
 import { getClient, setClient, resetClient } from "../../scripts/client";
 
@@ -71,11 +73,7 @@ describe("session sagas", () => {
           listBuckets() {},
           listPermissions() {},
         });
-        const getState = () => ({
-          session: {
-            server: "http://server.test/v1"
-          }
-        });
+        const getState = () => ({session});
         const action = actions.listBuckets();
         listBuckets = saga.listBuckets(getState, action);
       });
@@ -149,6 +147,11 @@ describe("session sagas", () => {
             }
           ])));
       });
+
+      it("should save the session", () => {
+        expect(listBuckets.next().value)
+          .eql(call(saveSession, session));
+      });
     });
 
     describe("Failure", () => {
@@ -174,6 +177,16 @@ describe("session sagas", () => {
     it("should redirect to the homepage", () => {
       expect(sessionLogout.next().value)
         .eql(put(updatePath("/")));
+    });
+
+    it("should notify users they're logged out", () => {
+      expect(sessionLogout.next().value)
+        .eql(put(notificationsActions.notifySuccess("Logged out.", {persistent: true})));
+    });
+
+    it("should clear the saved session", () => {
+      expect(sessionLogout.next().value)
+        .eql(call(clearSession));
     });
 
     it("should reset the client", () => {
