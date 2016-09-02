@@ -20,6 +20,12 @@ function getErrorDetails(error: ?(Error | ClientError)): string[] {
   }
   const {code} = error.data;
   switch(code) {
+    case 403: {
+      return [error.data.message || "Unauthorized access."];
+    }
+    case 404: {
+      return [error.data.message || "Resource not found."];
+    }
     case 412: {
       if (error.data.details &&
           error.data.details.existing &&

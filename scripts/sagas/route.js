@@ -32,6 +32,17 @@ function getBatchLoadFn(bid, cid, gid, rid) {
   };
 }
 
+function identifyResponse(index, bid, cid, gid, rid) {
+  switch(index) {
+    case 0: return {type: "Bucket", id: bid};
+    case 1: return {
+      type: cid ? "Collection" : "Group",
+      id: cid ? cid : gid,
+    };
+    case 2: return {type: "Record", id: rid};
+  }
+}
+
 export function* loadRoute(bid, cid, gid, rid) {
   // If we don't have anything to load, exit
   if (!bid && !cid && !gid && !rid) {
@@ -63,15 +74,10 @@ export function* loadRoute(bid, cid, gid, rid) {
     // Fetch all currently selected resource data in a single batch request
     const res = yield call([client, client.batch], getBatchLoadFn(bid, cid, gid, rid));
     const responses = res.map(({status, body}, index) => {
-      if (status === 403) {
-        // We may not have permission to read this resource, though we need to
-        // have its default information propagated to the store.
-        let id;
-        switch(index) {
-          case 0: id = bid; break;
-          case 1: id = cid ? cid : gid; break;
-          case 2: id = rid; break;
-        }
+      const {id, type} = identifyResponse(index, bid, cid, gid, rid);
+      if (status === 404) {
+        throw new Error(`${type} ${id} does not exist.`);
+      } else if (status === 403) {
         return {data: {id}, permissions: {read: [], write: []}};
       }
       return body;
