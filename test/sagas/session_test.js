@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { push as updatePath } from "react-router-redux";
 import { put, call } from "redux-saga/effects";
 
-import { saveSession, clearSession } from "../../scripts/app";
+import { saveSession, clearSession } from "../../scripts/store/localStore";
 import { notifyError } from "../../scripts/actions/notifications";
 import * as actions from "../../scripts/actions/session";
 import * as historyActions from "../../scripts/actions/history";

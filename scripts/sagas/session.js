@@ -1,7 +1,7 @@
 import { push as updatePath } from "react-router-redux";
 import { call, put } from "redux-saga/effects";
 
-import { saveSession, clearSession } from "../app";
+import { saveSession, clearSession } from "../store/localStore";
 import * as notificationActions from "../actions/notifications";
 import * as sessionActions from "../actions/session";
 import * as historyActions from "../actions/history";
