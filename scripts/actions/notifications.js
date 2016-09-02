@@ -18,19 +18,17 @@ function getErrorDetails(error: ?(Error | ClientError)): string[] {
   if (!error.data) {
     return details;
   }
-  const {code} = error.data;
+  const {code, message: errorMessage, details: errorDetails} = error.data;
   switch(code) {
     case 403: {
-      return [error.data.message || "Unauthorized access."];
+      return [errorMessage || "Unauthorized access.", ...details];
     }
     case 404: {
-      return [error.data.message || "Resource not found."];
+      return [errorMessage || "Resource not found.", ...details];
     }
     case 412: {
-      if (error.data.details &&
-          error.data.details.existing &&
-          error.data.details.existing.id) {
-        const id = error.data.details.existing.id;
+      if (errorDetails && errorDetails.existing && errorDetails.existing.id) {
+        const id = errorDetails.existing.id;
         return [
           `Resource ${id} already exists or has been modified meanwhile.`,
           ...details,
