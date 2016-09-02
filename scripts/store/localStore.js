@@ -1,8 +1,6 @@
 /* @flow */
 import type { Session } from "../types";
 
-import { setupClient } from "../client";
-
 
 const HISTORY_KEY = "kinto-admin-server-history";
 const SESSION_KEY = "kinto-admin-session";
@@ -34,20 +32,11 @@ export function clearHistory(): string[] {
   return saveHistory([]);
 }
 
-export function loadSession(): Object {
-  const jsonSession = localStorage.getItem(SESSION_KEY);
-  if (!jsonSession) {
-    return {};
-  }
+export function loadSession(): ?Object {
   try {
-    const session = JSON.parse(jsonSession);
-    if (!session) {
-      return {};
-    }
-    setupClient(session);
-    return {session};
+    return JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
   } catch(err) {
-    return {};
+    return null;
   }
 }
 

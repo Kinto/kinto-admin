@@ -38,19 +38,19 @@ describe("localStore", () => {
     });
 
     it("should load initial session", () => {
-      expect(localStore.loadSession()).eql({});
+      expect(localStore.loadSession()).eql(null);
     });
 
     it("should save and load session", () => {
       localStore.saveSession(session);
 
-      expect(localStore.loadSession()).eql({session});
+      expect(localStore.loadSession()).eql(session);
     });
 
     it("should clear session", () => {
       localStore.clearSession();
 
-      expect(localStore.loadSession()).eql({});
+      expect(localStore.loadSession()).eql(null);
     });
   });
 });
