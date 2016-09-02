@@ -44,6 +44,7 @@ export type ClientError = {
   message: string,
   data: {
     code: number,
+    message: string,
     details: {
       existing: {
         id: string
