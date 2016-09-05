@@ -5,7 +5,7 @@ module.exports = {
   devtool: "#inline-source-map",
   entry: [
     "webpack-hot-middleware/client",
-    "./scripts/index"
+    "./index"
   ],
   output: {
     path: path.join(__dirname, "build"),
@@ -39,6 +39,7 @@ module.exports = {
         loaders: ["babel"],
         exclude: /node_modules/,
         include: [
+          path.join(__dirname),
           path.join(__dirname, "scripts"),
           path.join(__dirname, "plugins"),
         ],

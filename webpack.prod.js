@@ -7,7 +7,7 @@ module.exports = {
     stats: "errors-only",
   },
   entry: {
-    app: path.resolve(__dirname, "scripts/index.js"),
+    app: path.resolve(__dirname, "index.js"),
   },
   output: {
     path: path.join(__dirname, "dist"),
@@ -40,6 +40,7 @@ module.exports = {
         loaders: ["babel"],
         exclude: /node_modules/,
         include: [
+          path.join(__dirname),
           path.join(__dirname, "scripts"),
           path.join(__dirname, "plugins"),
         ]
