@@ -79,7 +79,7 @@
     "kinto-node-test-server": "0.0.1",
     "mocha": "^2.5.3",
     "mocha-generators": "^1.2.0",
-    "nightmare": "^2.5.1",
+    "nightmare": "^2.7.0",
     "react-addons-test-utils": "^15.2.0",
     "react-transform-catch-errors": "^1.0.0",
     "react-transform-hmr": "^1.0.1",
