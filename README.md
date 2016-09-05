@@ -52,7 +52,7 @@ To run a local development server:
 $ npm start
 ```
 
-To build the admin as a collection of static assets:
+To build the admin as a collection of static assets, ready to be hosted on a static webserver:
 
 ```
 $ npm run build
