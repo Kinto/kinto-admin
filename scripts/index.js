@@ -1,4 +1,8 @@
-import renderAdmin from "./app";
+import React from "react";
+import { render } from "react-dom";
+
+import KintoAdmin from "./app";
+
 
 // Check for local plugins to enable for development.
 const plugins = (process.env.KINTO_ADMIN_PLUGINS || "")
@@ -18,4 +22,4 @@ const plugins = (process.env.KINTO_ADMIN_PLUGINS || "")
     }
   });
 
-renderAdmin(document.getElementById("app"), plugins);
+render(<KintoAdmin plugins={plugins} />, document.getElementById("app"));
