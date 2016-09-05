@@ -23,6 +23,7 @@ install:
 - npm install
 - npm run build:gh-pages
 env:
+- ACTION="build:lib"
 - ACTION="test-all"
 - ACTION="test-browser"
 matrix:
