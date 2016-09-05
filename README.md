@@ -2,8 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Kinto/kinto-admin.svg?branch=master)](https://travis-ci.org/Kinto/kinto-admin)
 
-A Web admin UI to manage data from a [Kinto](https://kinto.readthedocs.io/) server.
-[Give it a go](http://kinto.github.io/kinto-admin/)!
+A Web admin UI to manage data from a [Kinto](https://kinto.readthedocs.io/) server. [Demo](http://kinto.github.io/kinto-admin/).
 
 `kinto-admin` wants to be the [pgAdmin](http://pgadmin.org/) for
 Kinto. You can also use it to build administration interfaces for
@@ -24,47 +23,42 @@ Kinto-based systems.
 
 ---
 
-## Installation
+## Prerequisites
 
 NodeJS v4+ and npm 2.14+ should be installed and available on your machine.
+## Installation
 
-```bash
-$ npm install -g kinto-admin
-```
+## Installation
 
-Or if you want it to be installed as a project dependency:
-
-```bash
-$ npm install kinto-admin --save
-```
-
-## Standalone local server
-
-The Web admin UI can be served locally using the `kinto-admin` executable:
-
-```bash
-$ kinto-admin serve
-Listening at http://0.0.0.0:3000
-```
-
-You can specify the port to listen to using the `--port` or `-p` options:
-
-```bash
-$ kinto-admin serve -p 4000
-Listening at http://0.0.0.0:4000
-```
-
-## Building static assets for production hosting
+The easiest way to get started is to install [create-react-app](https://github.com/facebookincubator/create-react-app) first:
 
 ```
-$ kinto-admin build -d static-build
+$ npm install -g create-react-app
+$ create-react-app test-kinto-admin && cd test-kinto-admin
+$ npm install test-kinto-admin --save-dev
 ```
 
-Here, production-ready assets are generated into the `static-build/` directory,
-and can be published to any static webserver like
-[github-pages](https://pages.github.com/).
+Then, import and render the main `KintoAdmin` component in the generated `src/App.js` file:
 
-## Build kinto-admin locally
+```jsx
+import KintoAdmin from "kinto-admin";
+
+render(<KintoAdmin />, document.getElementById("main"))
+```
+
+To run a local development server:
+
+```
+$ npm start
+```
+
+To build the admin as a collection of static assets:
+
+```
+$ npm run build
+```
+
+## Hacking on kinto-admin
 
 Clone repository:
 
