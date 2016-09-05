@@ -35,7 +35,7 @@ The easiest way to get started is to install [create-react-app](https://github.c
 ```
 $ npm install -g create-react-app
 $ create-react-app test-kinto-admin && cd test-kinto-admin
-$ npm install test-kinto-admin --save-dev
+$ npm install kinto-admin --save-dev
 ```
 
 Then, import and render the main `KintoAdmin` component in the generated `src/index.js` file:
