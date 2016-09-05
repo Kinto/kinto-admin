@@ -38,12 +38,19 @@ $ create-react-app test-kinto-admin && cd test-kinto-admin
 $ npm install test-kinto-admin --save-dev
 ```
 
-Then, import and render the main `KintoAdmin` component in the generated `src/App.js` file:
+Then, import and render the main `KintoAdmin` component in the generated `src/index.js` file:
 
 ```jsx
+import React from "react";
+import ReactDOM from "react-dom";
+
 import KintoAdmin from "kinto-admin";
 
-render(<KintoAdmin />, document.getElementById("main"))
+ReactDOM.render(
+  <KintoAdmin />,
+  document.getElementById("root")
+);
+
 ```
 
 To run a local development server:
