@@ -10,7 +10,7 @@ module.exports = {
     app: path.resolve(__dirname, "index.js"),
   },
   output: {
-    path: path.join(__dirname, "dist"),
+    path: path.join(__dirname, "gh-pages"),
     filename: "bundle.js",
     publicPath: process.env.KINTO_ADMIN_PUBLIC_PATH || "/",
   },

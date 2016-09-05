@@ -8,7 +8,7 @@
     "build:readme": "toctoc README.md -w",
     "flow-check": "node_modules/.bin/flow check",
     "lint": "node_modules/.bin/eslint scripts test test-browser",
-    "publish-to-gh-pages": "npm run build:gh-pages && gh-pages --add --dist build/",
+    "publish-to-gh-pages": "npm run build:gh-pages && gh-pages --add --dist gh-pages/",
     "publish-to-npm": "npm run build:lib && npm publish",
     "start": "NODE_ENV=development node devServer.js",
     "tdd": "NODE_ENV=test node_modules/.bin/babel-node node_modules/.bin/_mocha --require ignore-styles --require ./test/setup-jsdom.js 'test/**/*_test.js' --watch",
@@ -18,10 +18,6 @@
     "test-all": "npm run lint && npm run flow-check && npm run test"
   },
   "main": "lib/index.js",
-  "files": [
-    "bin",
-    "dist"
-  ],
   "engineStrict": false,
   "engines": {
     "npm": "^2.14.7",
