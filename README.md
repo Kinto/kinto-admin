@@ -79,7 +79,22 @@ The `KintoAdmin` component accepts a `settings` prop, where you can define the f
 
 ### Plugins
 
-TODO
+**Note:** The plugin API is under heavy development and will remain undocumented until it stabilizes.
+
+To enable admin plugins, import and pass them as a `plugins` prop to the `KintoAdmin` component:
+
+```jsx
+import React from "react";
+import ReactDOM from "react-dom";
+
+import KintoAdmin from "kinto-admin";
+import * as signoffPlugin from "kinto-admin/lib/plugins/signoff";
+
+ReactDOM.render(
+  <KintoAdmin plugins={[signoffPlugin]}/>,
+  document.getElementById("root")
+);
+```
 
 ### Build customization
 
