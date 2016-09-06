@@ -115,7 +115,8 @@ Quoting the ([create-react-app documentation](https://github.com/facebookincubat
 > To override this, specify the homepage in your `package.json`, for example:
 >
 > ```
-> "homepage": "http://mywebsite.com/relativepath",
+>   "homepage": "http://mywebsite.com/relativepath",
+> ```
 >
 > This will let Create React App correctly infer the root path to use in the generated HTML file.
 
