@@ -3,7 +3,7 @@
   "version": "1.3.0",
   "description": "Kinto Web Administration Console in React.js",
   "scripts": {
-    "build:gh-pages": "rimraf gh-pages && NODE_ENV=production KINTO_ADMIN_PUBLIC_PATH='/kinto-admin/' node_modules/.bin/webpack --progress --config webpack.prod.js && cp index.prod.html gh-pages/index.html",
+    "build:gh-pages": "rimraf gh-pages && NODE_ENV=production node_modules/.bin/webpack --progress --config webpack.prod.js && cp index.prod.html gh-pages/index.html",
     "build:lib": "rimraf lib && NODE_ENV=production babel -d lib/ src/",
     "build:readme": "toctoc README.md -w",
     "flow-check": "node_modules/.bin/flow check",

@@ -12,7 +12,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, "gh-pages"),
     filename: "bundle.js",
-    publicPath: process.env.KINTO_ADMIN_PUBLIC_PATH || "/",
+    publicPath: "/kinto-admin/",
   },
   plugins: [
     new webpack.IgnorePlugin(/^(buffertools)$/), // unwanted "deeper" dependency
