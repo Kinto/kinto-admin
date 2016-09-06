@@ -7,9 +7,6 @@ import { resetRecord } from "../actions/record";
 import * as actions from "../actions/collection";
 
 
-const KINTO_MAX_PER_PAGE = parseInt(process.env.KINTO_MAX_PER_PAGE, 10) || 200;
-
-
 function getBucket(bid) {
   return getClient().bucket(bid);
 }
@@ -34,14 +31,14 @@ export function* deleteAttachment(getState, action) {
 }
 
 export function* listRecords(getState, action) {
-  const {collection} = getState();
+  const {collection, settings} = getState();
   const defaultSort = collection.sort;
   const {bid, cid, sort} = action;
   try {
     const coll = getCollection(bid, cid);
     const {data, hasNextPage, next} = yield call([coll, coll.listRecords], {
       sort: sort || defaultSort,
-      limit: KINTO_MAX_PER_PAGE,
+      limit: settings.maxPerPage,
     });
     yield put(actions.listRecordsSuccess(data, hasNextPage, next));
   } catch(error) {

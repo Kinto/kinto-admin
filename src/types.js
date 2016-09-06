@@ -157,6 +157,10 @@ export type SessionServerInfo = {
   }
 };
 
+export type SettingsState = {
+  maxPerPage: number,
+};
+
 export type TokenAuth = {
   authType: "fxa",
   server: string,
