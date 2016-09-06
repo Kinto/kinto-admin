@@ -26,7 +26,6 @@ Kinto-based systems.
 ## Prerequisites
 
 NodeJS v4+ and npm 2.14+ should be installed and available on your machine.
-## Installation
 
 ## Installation
 
