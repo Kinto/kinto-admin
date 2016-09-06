@@ -6,7 +6,7 @@ import {
   flattenPluginsRoutes,
   flattenPluginsSagas,
   flattenPluginsReducers,
-} from "../scripts/plugin";
+} from "../src/plugin";
 
 
 describe("Plugin API", () => {

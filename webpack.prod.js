@@ -7,10 +7,10 @@ module.exports = {
     stats: "errors-only",
   },
   entry: {
-    app: path.resolve(__dirname, "scripts/index.js"),
+    app: path.resolve(__dirname, "index.js"),
   },
   output: {
-    path: path.join(__dirname, "dist"),
+    path: path.join(__dirname, "gh-pages"),
     filename: "bundle.js",
     publicPath: process.env.KINTO_ADMIN_PUBLIC_PATH || "/",
   },
@@ -40,7 +40,8 @@ module.exports = {
         loaders: ["babel"],
         exclude: /node_modules/,
         include: [
-          path.join(__dirname, "scripts"),
+          path.join(__dirname),
+          path.join(__dirname, "src"),
           path.join(__dirname, "plugins"),
         ]
       },

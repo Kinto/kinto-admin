@@ -2,13 +2,13 @@ import { expect } from "chai";
 import { push as updatePath } from "react-router-redux";
 import { put, call } from "redux-saga/effects";
 
-import { saveSession, clearSession } from "../../scripts/store/localStore";
-import { notifyError } from "../../scripts/actions/notifications";
-import * as actions from "../../scripts/actions/session";
-import * as historyActions from "../../scripts/actions/history";
-import * as notificationsActions from "../../scripts/actions/notifications";
-import * as saga from "../../scripts/sagas/session";
-import { getClient, setClient, resetClient } from "../../scripts/client";
+import { saveSession, clearSession } from "../../src/store/localStore";
+import { notifyError } from "../../src/actions/notifications";
+import * as actions from "../../src/actions/session";
+import * as historyActions from "../../src/actions/history";
+import * as notificationsActions from "../../src/actions/notifications";
+import * as saga from "../../src/sagas/session";
+import { getClient, setClient, resetClient } from "../../src/client";
 
 
 const session = {

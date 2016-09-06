@@ -1,10 +1,10 @@
 import { expect } from "chai";
 
-import record from "../../scripts/reducers/record";
+import record from "../../src/reducers/record";
 import {
   RECORD_LOAD_SUCCESS,
   RECORD_RESET,
-} from "../../scripts/constants";
+} from "../../src/constants";
 
 
 describe("record reducer", () => {

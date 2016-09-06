@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
-import history from "../../scripts/reducers/history";
-import { HISTORY_ADD, HISTORY_CLEAR } from "../../scripts/constants";
+import history from "../../src/reducers/history";
+import { HISTORY_ADD, HISTORY_CLEAR } from "../../src/constants";
 
 
 describe("history reducer", () => {

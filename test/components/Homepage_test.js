@@ -3,7 +3,7 @@ import sinon from "sinon";
 import { Simulate } from "react-addons-test-utils";
 
 import { createSandbox, createComponent } from "../test_utils";
-import HomePage from "../../scripts/components/HomePage";
+import HomePage from "../../src/components/HomePage";
 
 
 describe("HomePage component", () => {

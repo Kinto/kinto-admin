@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import bucket from "../../scripts/reducers/bucket";
+import bucket from "../../src/reducers/bucket";
 import {
   BUCKET_BUSY,
   BUCKET_RESET,
@@ -11,7 +11,7 @@ import {
   BUCKET_GROUPS_SUCCESS,
   BUCKET_HISTORY_REQUEST,
   BUCKET_HISTORY_SUCCESS,
-} from "../../scripts/constants";
+} from "../../src/constants";
 
 
 describe("bucket reducer", () => {

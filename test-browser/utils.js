@@ -6,6 +6,7 @@ import btoa from "btoa";
 import staticServer from "../testServer";
 
 
+const NIGHTMARE_SHOW = !!process.env.NIGHTMARE_SHOW;
 let kintoServer;
 
 export function startServers() {
@@ -28,16 +29,17 @@ export function stopServers() {
   ]).then(new Promise(r => setTimeout(r, 200)));
 }
 
-export function createBrowser() {
+export function createBrowser(options={show: NIGHTMARE_SHOW}) {
   return Nightmare({
     waitTimeout: 60000,
-    show: !!process.env.NIGHTMARE_SHOW,
+    show: options.show,
     openDevTools: true,
     width: 1600,
     height: 1024,
     center: true,
     alwaysOnTop: false,
     skipTaskbar: true,
+    webPreferences: options.persistent ? {} : {partition: "nopersist"},
   });
 }
 
@@ -64,7 +66,7 @@ export function authenticate(browser, username, password) {
 }
 
 export function createBucket(browser, bucket) {
-  return browser.click("[href='#/buckets/create-bucket']")
+  return browser.click("[href='#/buckets/create']")
     .wait(".rjsf")
     .type("#root_name", bucket)
     .click(".rjsf input[type=submit]")
@@ -74,7 +76,7 @@ export function createBucket(browser, bucket) {
 
 export function createCollection(browser, bucket, collection) {
   return createBucket(browser, bucket)
-    .click(`[href='#/buckets/${bucket}/create-collection']`)
+    .click(`[href='#/buckets/${bucket}/collections/create']`)
     .wait(".rjsf")
     .type("#root_name", collection)
     .click(".rjsf input[type=submit]")

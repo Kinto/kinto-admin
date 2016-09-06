@@ -3,7 +3,7 @@ import sinon from "sinon";
 import { Simulate } from "react-addons-test-utils";
 
 import { createSandbox, createComponent } from "../test_utils";
-import Notifications from "../../scripts/components/Notifications";
+import Notifications from "../../src/components/Notifications";
 
 
 describe("Notifications component", () => {

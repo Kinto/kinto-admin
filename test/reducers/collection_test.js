@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import collection from "../../scripts/reducers/collection";
+import collection from "../../src/reducers/collection";
 import {
   COLLECTION_BUSY,
   COLLECTION_RESET,
@@ -8,7 +8,7 @@ import {
   COLLECTION_RECORDS_REQUEST,
   COLLECTION_RECORDS_SUCCESS,
   COLLECTION_HISTORY_SUCCESS,
-} from "../../scripts/constants";
+} from "../../src/constants";
 
 
 describe("collection reducer", () => {
