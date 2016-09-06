@@ -20,8 +20,6 @@ module.exports = {
     new webpack.DefinePlugin({
       "process.env": {
         NODE_ENV: JSON.stringify("production"),
-        KINTO_ADMIN_PLUGINS: JSON.stringify(process.env.KINTO_ADMIN_PLUGINS),
-        KINTO_MAX_PER_PAGE: JSON.stringify(process.env.KINTO_MAX_PER_PAGE),
       }
     }),
     new webpack.optimize.UglifyJsPlugin({
