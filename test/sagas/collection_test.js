@@ -21,6 +21,10 @@ const recordsWithAttachment = [
 ];
 
 describe("collection sagas", () => {
+  const settings = {
+    maxPerPage: 42,
+  };
+
   describe("listRecords()", () => {
     describe("Success", () => {
       let collection;
@@ -36,13 +40,13 @@ describe("collection sagas", () => {
 
         before(() => {
           const action = collectionActions.listRecords("bucket", "collection");
-          const getState = () => ({collection: {sort: "title"}});
+          const getState = () => ({settings, collection: {sort: "title"}});
           listRecords = saga.listRecords(getState, action);
         });
 
         it("should list collection records", () => {
           expect(listRecords.next().value)
-            .eql(call([collection, collection.listRecords], {sort: "title", limit: 200}));
+            .eql(call([collection, collection.listRecords], {sort: "title", limit: 42}));
         });
 
         it("should dispatch the listRecordsSuccess action", () => {
@@ -56,13 +60,13 @@ describe("collection sagas", () => {
 
         before(() => {
           const action = collectionActions.listRecords("bucket", "collection", "title");
-          const getState = () => ({collection: {sort: "nope"}});
+          const getState = () => ({settings, collection: {sort: "nope"}});
           listRecords = saga.listRecords(getState, action);
         });
 
         it("should list collection records", () => {
           expect(listRecords.next().value)
-            .eql(call([collection, collection.listRecords], {sort: "title", limit: 200}));
+            .eql(call([collection, collection.listRecords], {sort: "title", limit: 42}));
         });
 
         it("should dispatch the listRecordsSuccess action", () => {
@@ -79,7 +83,7 @@ describe("collection sagas", () => {
         collection = {listRecords() {}};
         const bucket = {collection() {return collection;}};
         setClient({bucket() {return bucket;}});
-        const getState = () => ({collection: {}});
+        const getState = () => ({settings, collection: {}});
         const action = collectionActions.listRecords("bucket", "collection");
         listRecords = saga.listRecords(getState, action);
         listRecords.next();
@@ -99,7 +103,7 @@ describe("collection sagas", () => {
       before(() => {
         const action = collectionActions.listNextRecords();
         collection = {listNextRecords() {}};
-        const getState = () => ({collection});
+        const getState = () => ({settings, collection});
         listNextRecords = saga.listNextRecords(getState, action);
       });
 
@@ -128,7 +132,7 @@ describe("collection sagas", () => {
       before(() => {
         const action = collectionActions.listNextRecords();
         collection = {listNextRecords() {}};
-        const getState = () => ({collection});
+        const getState = () => ({settings, collection});
         listNextRecords = saga.listNextRecords(getState, action);
         listNextRecords.next();
       });
@@ -157,6 +161,7 @@ describe("collection sagas", () => {
 
       before(() => {
         const getState = () => ({
+          settings,
           session: {
             serverInfo: {
               capabilities: {}
@@ -200,6 +205,7 @@ describe("collection sagas", () => {
 
       before(() => {
         const getState = () => ({
+          settings,
           session: {
             serverInfo: {
               capabilities: {attachments: {}}
@@ -241,7 +247,7 @@ describe("collection sagas", () => {
       let createRecord;
 
       before(() => {
-        const getState = () => ({session: {serverInfo: {capabilities: {}}}});
+        const getState = () => ({settings, session: {serverInfo: {capabilities: {}}}});
         const action = collectionActions.createRecord("bucket", "collection", record);
         createRecord = saga.createRecord(getState, action);
         createRecord.next();
@@ -527,6 +533,7 @@ describe("collection sagas", () => {
 
       before(() => {
         const getState = () => ({
+          settings,
           session: {
             serverInfo: {
               capabilities: {}
@@ -572,6 +579,7 @@ describe("collection sagas", () => {
 
       before(() => {
         const getState = () => ({
+          settings,
           session: {
             serverInfo: {
               capabilities: {attachments: {}}
@@ -625,6 +633,7 @@ describe("collection sagas", () => {
 
       before(() => {
         const getState = () => ({
+          settings,
           session: {
             serverInfo: {
               capabilities: {}

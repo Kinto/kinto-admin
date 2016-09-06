@@ -11,6 +11,7 @@ import record from "./record";
 import group from "./group";
 import notifications from "./notifications";
 import history from "./history";
+import settings from "./settings";
 
 
 const standardReducers = {
@@ -22,6 +23,7 @@ const standardReducers = {
   record,
   notifications,
   history,
+  settings,
 };
 
 export default function createRootReducer(pluginsReducers: Object[] = []) {

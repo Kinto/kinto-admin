@@ -16,12 +16,12 @@ import "../css/styles.css";
 
 export default class KintoAdmin extends Component {
   static defaultProps = {
-    plugins: []
+    plugins: [],
   }
 
   componentWillMount() {
-    const {plugins} = this.props;
-    this.store = configureStore({}, plugins);
+    const {plugins, settings} = this.props;
+    this.store = configureStore({settings}, plugins);
     syncHistoryWithStore(hashHistory, this.store);
 
     const session = loadSession();

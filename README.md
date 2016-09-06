@@ -10,14 +10,18 @@ Kinto-based systems.
 
 ## Table of Contents
 
+  - [Prerequisites](#prerequisites)
   - [Installation](#installation)
-  - [Standalone local server](#standalone-local-server)
-  - [Building static assets for production hosting](#building-static-assets-for-production-hosting)
-  - [Build kinto-admin locally](#build-kinto-admin-locally)
+     - [Admin settings](#admin-settings)
+     - [Plugins](#plugins)
+     - [Build customization](#build-customization)
+        - [Building for relative paths](#building-for-relative-paths)
+  - [Hacking on kinto-admin](#hacking-on-kinto-admin)
   - [Development server](#development-server)
+  - [Tests](#tests)
+  - [Browser tests](#browser-tests)
   - [FAQ](#faq)
      - [Browser support](#browser-support)
-     - [I get an ENOENT when I go to localhost:3000](#i-get-an-enoent-when-i-go-to-localhost-3000)
      - [How to display a nested field value using the collection displayFields property?](#how-to-display-a-nested-field-value-using-the-collection-displayfields-property)
   - [License](#license)
 
@@ -63,6 +67,57 @@ To build the admin as a collection of static assets, ready to be hosted on a sta
 ```
 $ npm run build
 ```
+
+This will generate production-ready assets in the `build` folder.
+
+### Admin settings
+
+The `KintoAdmin` component accepts a `settings` prop, where you can define the following options:
+
+- `maxPerPage`: The max number of results per page in lists (default: `200`).
+
+Example:
+
+```jsx
+import KintoAdmin from "kinto-admin";
+
+ReactDOM.render(
+  <KintoAdmin settings={{maxPerPage: 42}}/>,
+  document.getElementById("root")
+);
+```
+
+### Plugins
+
+**Note:** The plugin API is under heavy development and will remain undocumented until it stabilizes.
+
+To enable admin plugins, import and pass them as a `plugins` prop to the `KintoAdmin` component:
+
+```jsx
+import KintoAdmin from "kinto-admin";
+import * as signoffPlugin from "kinto-admin/lib/plugins/signoff";
+
+ReactDOM.render(
+  <KintoAdmin plugins={[signoffPlugin]}/>,
+  document.getElementById("root")
+);
+```
+
+### Build customization
+
+#### Building for relative paths
+
+Quoting the ([create-react-app documentation](https://github.com/facebookincubator/create-react-app/blob/v0.4.1/template/README.md#building-for-relative-paths)):
+
+> By default, Create React App produces a build assuming your app is hosted at the server root.
+>
+> To override this, specify the homepage in your `package.json`, for example:
+>
+> ```
+>   "homepage": "http://mywebsite.com/relativepath",
+> ```
+>
+> This will let Create React App correctly infer the root path to use in the generated HTML file.
 
 ## Hacking on kinto-admin
 
@@ -130,18 +185,6 @@ There's also a TDD mode:
 $ npm run tdd-browser
 ```
 
-## Customization
-
-### Plugins
-
-*to be done*
-
-### Environment variables
-
-* `KINTO_MAX_PER_PAGE`: number of list items retrieved in one HTTP call (Default: `200`)
-* `KINTO_ADMIN_PUBLIC_PATH`: root URL path to assets (Default: `/`)
-
-
 ## FAQ
 
 ### Browser support
@@ -150,17 +193,6 @@ Let's be honest, we're mainly testing kinto-admin on recent versions of Firefox
 and Chrome, so we can't really guarantee proper compatibility with IE, Safari,
 Opera and others. We're accepting
 [pull requests](https://github.com/Kinto/kinto-admin/pulls) though.
-
-### I get an ENOENT when I go to localhost:3000
-
-Did you run `bin/kinto-admin` from this repository?
-
-You can only run `kinto-admin` if you get `kinto-admin` with npm. The
-version of `kinto-admin` uploaded to npm contains an
-automatically-built `dist` directory with the artifacts that the
-browser needs.
-
-Instead, run the development server, as above.
 
 ### How to display a nested field value using the collection displayFields property?
 
@@ -200,18 +232,6 @@ For instance:
 
 If you use `target.merkle.tree.file.name` it will render the string
 `foobar` and `target.proof.hash` will render `abcd`.
-
-### Assets path url
-
-By default this package assumes the static admin will be hosted at the root of a given domain; if you plan on hosting it under a given sub path, you need to build the admin setting the `KINTO_ADMIN_PUBLIC_PATH` env var, specifying the absolute root URL path where the static asset files are obtainable.
-
-For example, if you plan on hosting the admin at `https://mydomain.tld/kinto-admin/`, you need to build it like this:
-
-```
-$ KINTO_ADMIN_PUBLIC_PATH=/kinto-admin/ npm run dist
-```
-
-Note: Unfortunately, the `kinto-admin build` CLI command doesn't support this feature.
 
 ## License
 

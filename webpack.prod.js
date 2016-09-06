@@ -12,7 +12,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, "gh-pages"),
     filename: "bundle.js",
-    publicPath: process.env.KINTO_ADMIN_PUBLIC_PATH || "/",
+    publicPath: "/kinto-admin/",
   },
   plugins: [
     new webpack.IgnorePlugin(/^(buffertools)$/), // unwanted "deeper" dependency
@@ -20,8 +20,6 @@ module.exports = {
     new webpack.DefinePlugin({
       "process.env": {
         NODE_ENV: JSON.stringify("production"),
-        KINTO_ADMIN_PLUGINS: JSON.stringify(process.env.KINTO_ADMIN_PLUGINS),
-        KINTO_MAX_PER_PAGE: JSON.stringify(process.env.KINTO_MAX_PER_PAGE),
       }
     }),
     new webpack.optimize.UglifyJsPlugin({
@@ -42,7 +40,6 @@ module.exports = {
         include: [
           path.join(__dirname),
           path.join(__dirname, "src"),
-          path.join(__dirname, "plugins"),
         ]
       },
       {
