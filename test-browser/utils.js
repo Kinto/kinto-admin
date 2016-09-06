@@ -3,7 +3,7 @@ import KintoServer from "kinto-node-test-server";
 import KintoClient from "kinto-http";
 import btoa from "btoa";
 
-import staticServer from "../testServer";
+import staticServer from "../server/test";
 
 
 const NIGHTMARE_SHOW = !!process.env.NIGHTMARE_SHOW;
