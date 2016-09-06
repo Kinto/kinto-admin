@@ -4,10 +4,10 @@
   "description": "Kinto Web Administration Console in React.js",
   "scripts": {
     "build:gh-pages": "rimraf gh-pages && NODE_ENV=production KINTO_ADMIN_PUBLIC_PATH='/kinto-admin/' node_modules/.bin/webpack --progress --config webpack.prod.js && cp index.prod.html gh-pages/index.html",
-    "build:lib": "rimraf lib && NODE_ENV=production babel -d lib/ scripts/",
+    "build:lib": "rimraf lib && NODE_ENV=production babel -d lib/ src/",
     "build:readme": "toctoc README.md -w",
     "flow-check": "node_modules/.bin/flow check",
-    "lint": "node_modules/.bin/eslint scripts test test-browser",
+    "lint": "node_modules/.bin/eslint src test test-browser",
     "publish-to-gh-pages": "npm run build:gh-pages && gh-pages --add --dist gh-pages/",
     "publish-to-npm": "npm run build:lib && npm publish",
     "start": "NODE_ENV=development node devServer.js",

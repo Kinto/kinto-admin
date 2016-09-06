@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import * as localStore from "../../scripts/store/localStore";
+import * as localStore from "../../src/store/localStore";
 
 
 describe("localStore", () => {

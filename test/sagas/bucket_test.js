@@ -2,13 +2,13 @@ import { expect } from "chai";
 import { push as updatePath } from "react-router-redux";
 import { put, call } from "redux-saga/effects";
 
-import { notifyError, notifySuccess } from "../../scripts/actions/notifications";
-import * as sessionActions from "../../scripts/actions/session";
-import * as collectionActions from "../../scripts/actions/collection";
-import * as groupActions from "../../scripts/actions/group";
-import * as actions from "../../scripts/actions/bucket";
-import * as saga from "../../scripts/sagas/bucket";
-import { setClient } from "../../scripts/client";
+import { notifyError, notifySuccess } from "../../src/actions/notifications";
+import * as sessionActions from "../../src/actions/session";
+import * as collectionActions from "../../src/actions/collection";
+import * as groupActions from "../../src/actions/group";
+import * as actions from "../../src/actions/bucket";
+import * as saga from "../../src/sagas/bucket";
+import { setClient } from "../../src/client";
 
 
 const collectionData = {

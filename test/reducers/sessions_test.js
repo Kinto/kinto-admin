@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import session from "../../scripts/reducers/session";
+import session from "../../src/reducers/session";
 import {
   SESSION_BUSY,
   SESSION_SETUP_COMPLETE,
@@ -8,7 +8,7 @@ import {
   SESSION_AUTHENTICATED,
   SESSION_BUCKETS_SUCCESS,
   SESSION_LOGOUT,
-} from "../../scripts/constants";
+} from "../../src/constants";
 
 
 describe("session reducer", () => {

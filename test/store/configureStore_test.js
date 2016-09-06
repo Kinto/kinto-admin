@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import configureStore from "../../scripts/store/configureStore";
+import configureStore from "../../src/store/configureStore";
 
 describe("configureStore()", () => {
   describe("Plugin registration", () => {

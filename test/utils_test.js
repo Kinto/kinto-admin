@@ -5,7 +5,7 @@ import {
   renderDisplayField,
   validateSchema,
   validateUiSchema,
-} from "../scripts/utils";
+} from "../src/utils";
 
 
 describe("cleanRecord", () => {

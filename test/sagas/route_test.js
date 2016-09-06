@@ -2,18 +2,18 @@ import { expect } from "chai";
 import { push as updatePath } from "react-router-redux";
 import { call, put, take } from "redux-saga/effects";
 
-import { notifyError } from "../../scripts/actions/notifications";
-import { setClient } from "../../scripts/client";
-import * as actions from "../../scripts/actions/route";
-import * as notificationActions from "../../scripts/actions/notifications";
-import * as sessionActions from "../../scripts/actions/session";
-import * as collectionActions from "../../scripts/actions/collection";
-import * as groupActions from "../../scripts/actions/group";
-import * as bucketActions from "../../scripts/actions/bucket";
-import * as recordActions from "../../scripts/actions/record";
-import * as saga from "../../scripts/sagas/route";
+import { notifyError } from "../../src/actions/notifications";
+import { setClient } from "../../src/client";
+import * as actions from "../../src/actions/route";
+import * as notificationActions from "../../src/actions/notifications";
+import * as sessionActions from "../../src/actions/session";
+import * as collectionActions from "../../src/actions/collection";
+import * as groupActions from "../../src/actions/group";
+import * as bucketActions from "../../src/actions/bucket";
+import * as recordActions from "../../src/actions/record";
+import * as saga from "../../src/sagas/route";
 
-import { SESSION_AUTHENTICATED } from "../../scripts/constants";
+import { SESSION_AUTHENTICATED } from "../../src/constants";
 
 
 describe("route sagas", () => {

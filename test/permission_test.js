@@ -9,7 +9,7 @@ import {
   canEditCollection,
   canCreateRecord,
   canEditRecord,
-} from "../scripts/permission";
+} from "../src/permission";
 
 
 describe("can()", () => {

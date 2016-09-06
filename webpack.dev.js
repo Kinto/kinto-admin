@@ -40,7 +40,7 @@ module.exports = {
         exclude: /node_modules/,
         include: [
           path.join(__dirname),
-          path.join(__dirname, "scripts"),
+          path.join(__dirname, "src"),
           path.join(__dirname, "plugins"),
         ],
       },

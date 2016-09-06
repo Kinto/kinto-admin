@@ -1,10 +1,10 @@
 import { expect } from "chai";
 import { put, call } from "redux-saga/effects";
 
-import { notifyError } from "../../scripts/actions/notifications";
-import * as actions from "../../scripts/actions/group";
-import * as saga from "../../scripts/sagas/group";
-import { setClient } from "../../scripts/client";
+import { notifyError } from "../../src/actions/notifications";
+import * as actions from "../../src/actions/group";
+import * as saga from "../../src/sagas/group";
+import { setClient } from "../../src/client";
 
 
 describe("group sagas", () => {

@@ -1,15 +1,15 @@
 import { expect } from "chai";
 import sinon from "sinon";
 
-import configureStore from "../../scripts/store/configureStore";
-import * as routeSagas from "../../scripts/sagas/route";
-import * as sessionSagas from "../../scripts/sagas/session";
-import * as bucketSagas from "../../scripts/sagas/bucket";
-import * as collectionSagas from "../../scripts/sagas/collection";
-import * as routeActions from "../../scripts/actions/route";
-import * as sessionActions from "../../scripts/actions/session";
-import * as bucketActions from "../../scripts/actions/bucket";
-import * as collectionActions from "../../scripts/actions/collection";
+import configureStore from "../../src/store/configureStore";
+import * as routeSagas from "../../src/sagas/route";
+import * as sessionSagas from "../../src/sagas/session";
+import * as bucketSagas from "../../src/sagas/bucket";
+import * as collectionSagas from "../../src/sagas/collection";
+import * as routeActions from "../../src/actions/route";
+import * as sessionActions from "../../src/actions/session";
+import * as bucketActions from "../../src/actions/bucket";
+import * as collectionActions from "../../src/actions/collection";
 
 
 function expectSagaCalled(saga, action) {

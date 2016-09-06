@@ -4,7 +4,7 @@ import { Simulate } from "react-addons-test-utils";
 
 import { createSandbox, createComponent } from "../test_utils";
 
-import App from "../../scripts/components/App";
+import App from "../../src/components/App";
 
 
 describe("App component", () => {

@@ -1,12 +1,12 @@
 import { expect } from "chai";
 
-import group from "../../scripts/reducers/group";
+import group from "../../src/reducers/group";
 import {
   GROUP_BUSY,
   GROUP_RESET,
   GROUP_LOAD_SUCCESS,
   GROUP_HISTORY_SUCCESS,
-} from "../../scripts/constants";
+} from "../../src/constants";
 
 
 describe("group reducer", () => {

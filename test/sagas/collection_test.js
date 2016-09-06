@@ -2,11 +2,11 @@ import { expect } from "chai";
 import { push as updatePath } from "react-router-redux";
 import { put, call } from "redux-saga/effects";
 
-import { notifyError, notifySuccess } from "../../scripts/actions/notifications";
-import * as collectionActions from "../../scripts/actions/collection";
-import * as recordActions from "../../scripts/actions/record";
-import * as saga from "../../scripts/sagas/collection";
-import { setClient } from "../../scripts/client";
+import { notifyError, notifySuccess } from "../../src/actions/notifications";
+import * as collectionActions from "../../src/actions/collection";
+import * as recordActions from "../../src/actions/record";
+import * as saga from "../../src/sagas/collection";
+import { setClient } from "../../src/client";
 
 
 const record = {id: 1, foo: "bar1"};

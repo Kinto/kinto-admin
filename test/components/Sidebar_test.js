@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import { createSandbox, createComponent } from "../test_utils";
-import Sidebar from "../../scripts/components/Sidebar";
+import Sidebar from "../../src/components/Sidebar";
 
 
 describe("Sidebar component", () => {

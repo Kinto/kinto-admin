@@ -4,7 +4,7 @@ import { Simulate } from "react-addons-test-utils";
 
 import { createSandbox, createComponent } from "../test_utils";
 
-import RecordCreate from "../../scripts/components/record/RecordCreate";
+import RecordCreate from "../../src/components/record/RecordCreate";
 
 
 describe("RecordCreate component", () => {
