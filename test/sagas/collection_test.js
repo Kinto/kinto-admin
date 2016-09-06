@@ -160,7 +160,8 @@ describe("collection sagas", () => {
       let createRecord;
 
       before(() => {
-        const getState = () => ({settings,
+        const getState = () => ({
+          settings,
           session: {
             serverInfo: {
               capabilities: {}
@@ -203,7 +204,8 @@ describe("collection sagas", () => {
       const attachment = "data:test/fake";
 
       before(() => {
-        const getState = () => ({settings,
+        const getState = () => ({
+          settings,
           session: {
             serverInfo: {
               capabilities: {attachments: {}}
@@ -530,7 +532,8 @@ describe("collection sagas", () => {
       let bulkCreateRecords;
 
       before(() => {
-        const getState = () => ({settings,
+        const getState = () => ({
+          settings,
           session: {
             serverInfo: {
               capabilities: {}
@@ -575,7 +578,8 @@ describe("collection sagas", () => {
       let bulkCreateRecords;
 
       before(() => {
-        const getState = () => ({settings,
+        const getState = () => ({
+          settings,
           session: {
             serverInfo: {
               capabilities: {attachments: {}}
@@ -628,7 +632,8 @@ describe("collection sagas", () => {
       let bulkCreateRecords;
 
       before(() => {
-        const getState = () => ({settings,
+        const getState = () => ({
+          settings,
           session: {
             serverInfo: {
               capabilities: {}
