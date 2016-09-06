@@ -21,8 +21,7 @@
   "files": [
     "css",
     "images",
-    "lib",
-    "plugins"
+    "lib"
   ],
   "engineStrict": false,
   "engines": {

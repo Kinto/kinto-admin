@@ -2,8 +2,8 @@ import React from "react";
 import { takeEvery } from "redux-saga";
 import { call, put } from "redux-saga/effects";
 
-import { getClient } from "../../src/client";
-import { notifySuccess, notifyError } from "../../src/actions/notifications";
+import { getClient } from "../../client";
+import { notifySuccess, notifyError } from "../../actions/notifications";
 
 
 const PLUGIN_SIGNOFF_REQUEST = "PLUGIN_SIGNOFF_REQUEST";

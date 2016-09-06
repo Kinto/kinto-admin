@@ -77,6 +77,10 @@ The `KintoAdmin` component accepts a `settings` prop, where you can define the f
 
 - `maxPerPage`: The max number of results per page in lists (default: `200`).
 
+### Plugins
+
+TODO
+
 ### Build customization
 
 #### Building for relative paths
@@ -157,12 +161,6 @@ There's also a TDD mode:
 ```
 $ npm run tdd-browser
 ```
-
-## Customization
-
-### Plugins
-
-*to be done*
 
 ## FAQ
 
