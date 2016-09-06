@@ -77,6 +77,17 @@ The `KintoAdmin` component accepts a `settings` prop, where you can define the f
 
 - `maxPerPage`: The max number of results per page in lists (default: `200`).
 
+Example:
+
+```jsx
+import KintoAdmin from "kinto-admin";
+
+ReactDOM.render(
+  <KintoAdmin settings={{maxPerPage: 42}}/>,
+  document.getElementById("root")
+);
+```
+
 ### Plugins
 
 **Note:** The plugin API is under heavy development and will remain undocumented until it stabilizes.
@@ -84,9 +95,6 @@ The `KintoAdmin` component accepts a `settings` prop, where you can define the f
 To enable admin plugins, import and pass them as a `plugins` prop to the `KintoAdmin` component:
 
 ```jsx
-import React from "react";
-import ReactDOM from "react-dom";
-
 import KintoAdmin from "kinto-admin";
 import * as signoffPlugin from "kinto-admin/lib/plugins/signoff";
 
