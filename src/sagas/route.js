@@ -101,7 +101,6 @@ export function* loadRoute(bid, cid, gid, rid) {
     if (group) {
       yield put(groupLoadSuccess(group.data, group.permissions));
     }
-    yield put(routeLoadSuccess(bucket, collection, rid));
   } catch(error) {
     yield put(notifyError("Couldn't retrieve route resources.", error));
   } finally {
