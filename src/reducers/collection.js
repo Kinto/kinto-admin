@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { Collection, CollectionData, CollectionPermissions } from "../types";
+import type { CollectionState, CollectionData, CollectionPermissions } from "../types";
 import {
   COLLECTION_BUSY,
   COLLECTION_RESET,
@@ -13,7 +13,7 @@ import {
 } from "../constants";
 
 const DEFAULT_SORT: string = "-last_modified";
-export const INITIAL_STATE: Collection = {
+export const INITIAL_STATE: CollectionState = {
   bucket: null,
   name: null,
   busy: false,
@@ -39,9 +39,9 @@ export const INITIAL_STATE: Collection = {
 };
 
 export function collection(
-  state: Collection = INITIAL_STATE,
+  state: CollectionState = INITIAL_STATE,
   action: Object
-): Collection {
+): CollectionState {
   switch (action.type) {
     case COLLECTION_BUSY: {
       const {busy}: {busy: boolean} = action;

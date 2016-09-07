@@ -53,7 +53,7 @@ export type ClientError = {
   }
 };
 
-export type Collection = {
+export type CollectionState = {
   bucket: ?string,
   name: ?string,
   busy: boolean,

@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { Session, BucketState, Collection, GroupState, Record } from "./types";
+import type { Session, BucketState, CollectionState, GroupState, Record } from "./types";
 
 export const EVERYONE = "System.Everyone";
 export const AUTHENTICATED = "System.Authenticated";
@@ -43,7 +43,7 @@ export function canCreateCollection(session: Session, bucket: BucketState): bool
   return canSession.write(bucket) || canSession.createCollection(bucket);
 }
 
-export function canEditCollection(session: Session, collection: Collection): boolean {
+export function canEditCollection(session: Session, collection: CollectionState): boolean {
   return can(session).write(collection);
 }
 
@@ -56,7 +56,7 @@ export function canEditGroup(session: Session, group: GroupState): boolean {
   return can(session).write(group);
 }
 
-export function canCreateRecord(session: Session, collection: Collection): boolean {
+export function canCreateRecord(session: Session, collection: CollectionState): boolean {
   const canSession = can(session);
   return canSession.write(collection) || canSession.createRecord(collection);
 }
