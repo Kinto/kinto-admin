@@ -61,7 +61,7 @@ describe("collection reducer", () => {
       },
       permissions: {write: [], read: []},
     })).eql({
-      name: "id",
+      id: "id",
       busy: false,
       data: {
         id: "id",

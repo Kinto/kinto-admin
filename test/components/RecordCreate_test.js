@@ -21,13 +21,15 @@ describe("RecordCreate component", () => {
   describe("Schema defined", () => {
     let node, createRecord;
     const collection = {
-      schema: {
-        type: "object",
-        properties: {
-          foo: {
-            type: "string"
-          }
-        }
+      data: {
+        schema: {
+          type: "object",
+          properties: {
+            foo: {
+              type: "string"
+            }
+          },
+        },
       },
       permissions: {
         write: []

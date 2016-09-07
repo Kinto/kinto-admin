@@ -225,7 +225,7 @@ describe("bucket sagas", () => {
         setClient({bucket() {return bucket;}});
         const action = actions.createCollection("bucket", {
           ...collectionData,
-          name: "collection",
+          id: "collection",
         });
         createCollection = saga.createCollection(() => {}, action);
       });

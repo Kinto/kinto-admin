@@ -256,7 +256,6 @@ export default class CollectionRecords extends Component {
     const {bid, cid} = params;
     const {
       busy,
-      id,
       data,
       records,
       recordsLoaded,
