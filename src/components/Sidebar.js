@@ -109,7 +109,7 @@ export default class Sidebar extends Component {
     const {session, params, location} = this.props;
     const {bid, cid} = params;
     const {buckets=[], serverInfo={}} = session;
-    const userBucket = serverInfo.user && serverInfo.bucket;
+    const userBucket = serverInfo.user && serverInfo.user.bucket;
     const active = activeIfPathname.bind(null, location);
     return (
       <div>
