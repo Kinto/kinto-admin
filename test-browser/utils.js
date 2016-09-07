@@ -68,7 +68,7 @@ export function authenticate(browser, username, password) {
 export function createBucket(browser, bucket) {
   return browser.click("[href='#/buckets/create']")
     .wait(".rjsf")
-    .type("#root_name", bucket)
+    .type("#root_id", bucket)
     .click(".rjsf input[type=submit]")
     .wait(".notification.alert-success")
     .wait(`[href='#/buckets/${bucket}/edit']`);
@@ -78,7 +78,7 @@ export function createCollection(browser, bucket, collection) {
   return createBucket(browser, bucket)
     .click(`[href='#/buckets/${bucket}/collections/create']`)
     .wait(".rjsf")
-    .type("#root_name", collection)
+    .type("#root_id", collection)
     .click(".rjsf input[type=submit]")
     .wait(".notification.alert-success")
     .wait(`[href='#/buckets/${bucket}/collections/${collection}/edit']`);
