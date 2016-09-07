@@ -145,11 +145,11 @@ export type SessionState = {
   server: ?string,
   credentials: Object,
   buckets: Object[],
-  serverInfo: SessionServerInfo,
+  serverInfo: ServerInfo,
   redirectURL: ?string,
 };
 
-export type SessionServerInfo = {
+export type ServerInfo = {
   capabilities: Object,
   user: {
     id?: string,

@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { Action, SessionServerInfo } from "../types";
+import type { Action, ServerInfo } from "../types";
 
 import { notifyError } from "./notifications";
 import {
@@ -32,7 +32,7 @@ export function storeRedirectURL(redirectURL: string): Action {
   return {type: SESSION_STORE_REDIRECT_URL, redirectURL};
 }
 
-export function serverInfoSuccess(serverInfo: SessionServerInfo): Action {
+export function serverInfoSuccess(serverInfo: ServerInfo): Action {
   return {type: SESSION_SERVERINFO_SUCCESS, serverInfo};
 }
 
