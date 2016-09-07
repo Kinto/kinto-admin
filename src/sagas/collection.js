@@ -84,7 +84,7 @@ export function* createRecord(getState, action) {
     } else {
       yield call([coll, coll.createRecord], record);
     }
-    yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
+    yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
     yield put(notifySuccess("Record added."));
   } catch(error) {
     yield put(notifyError("Couldn't create record.", error));
@@ -107,7 +107,7 @@ export function* updateRecord(getState, action) {
       yield call([coll, coll.updateRecord], {...record, id: rid}, {patch: true});
     }
     yield put(resetRecord());
-    yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
+    yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
     yield put(notifySuccess("Record updated."));
   } catch(error) {
     yield put(notifyError("Couldn't update record.", error));
@@ -122,7 +122,7 @@ export function* deleteRecord(getState, action) {
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
     yield call([coll, coll.deleteRecord], rid);
-    yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
+    yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
     yield put(notifySuccess("Record deleted."));
   } catch(error) {
     yield put(notifyError("Couldn't delete record.", error));
@@ -149,7 +149,7 @@ export function* bulkCreateRecords(getState, action) {
           yield call([coll, coll.createRecord], record);
         }
       }
-      yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
+      yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
       yield put(notifySuccess(`${records.length} records created.`));
     } else {
       const {errors, published} = yield call([coll, coll.batch], (batch) => {
@@ -161,7 +161,7 @@ export function* bulkCreateRecords(getState, action) {
         errorDetails = errors.map(err => err.error.message);
         throw new Error("Some records could not be created.");
       }
-      yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
+      yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
       yield put(notifySuccess(`${published.length} records created.`));
     }
   } catch(error) {

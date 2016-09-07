@@ -303,7 +303,7 @@ describe("bucket sagas", () => {
 
       it("should update the route path", () => {
         expect(updateCollection.next().value)
-          .eql(put(updatePath("/buckets/bucket/collections/collection")));
+          .eql(put(updatePath("/buckets/bucket/collections/collection/records")));
       });
 
       it("should dispatch a notification", () => {

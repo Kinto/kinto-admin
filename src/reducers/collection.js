@@ -1,6 +1,7 @@
 /* @flow */
 
 import type { CollectionState, CollectionData, CollectionPermissions } from "../types";
+
 import {
   COLLECTION_BUSY,
   COLLECTION_RESET,
@@ -12,23 +13,25 @@ import {
   COLLECTION_HISTORY_SUCCESS,
 } from "../constants";
 
+
 const DEFAULT_SORT: string = "-last_modified";
+
 export const INITIAL_STATE: CollectionState = {
   bucket: null,
   name: null,
   busy: false,
-  schema: {},
-  uiSchema: {},
-  attachment: {
+  schema: {},         // CollectionData
+  uiSchema: {},       // CollectionData
+  attachment: {       // CollectionData
     enabled: false,
     required: false
   },
-  displayFields: [],
+  displayFields: [],  // CollectionData
+  sort: DEFAULT_SORT, // CollectionData
   records: [],
   recordsLoaded: false,
   hasNextRecords: false,
   listNextRecords: null,
-  sort: DEFAULT_SORT,
   permissions: {
     "read": [],
     "write": [],

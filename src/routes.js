@@ -174,8 +174,8 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
             <Route name="create" path="create"
               components={{...common, content: CollectionCreatePage}} />
             <Route name=":cid" path=":cid">
-              <IndexRoute
-                name="records"
+              <IndexRedirect to="records" />
+              <Route name="records" path="records"
                 components={{
                   ...common,
                   content: registerPluginsComponentHooks(CollectionRecordsPage, plugins),

@@ -184,7 +184,7 @@ describe("collection sagas", () => {
 
       it("should update the route path", () => {
         expect(createRecord.next().value)
-          .eql(put(updatePath("/buckets/bucket/collections/collection")));
+          .eql(put(updatePath("/buckets/bucket/collections/collection/records")));
       });
 
       it("should dispatch a notification", () => {
@@ -229,7 +229,7 @@ describe("collection sagas", () => {
 
       it("should update the route path", () => {
         expect(createRecord.next().value)
-          .eql(put(updatePath("/buckets/bucket/collections/collection")));
+          .eql(put(updatePath("/buckets/bucket/collections/collection/records")));
       });
 
       it("should dispatch a notification", () => {
@@ -307,7 +307,7 @@ describe("collection sagas", () => {
 
         it("should update the route path", () => {
           expect(updateRecord.next().value)
-            .eql(put(updatePath("/buckets/bucket/collections/collection")));
+            .eql(put(updatePath("/buckets/bucket/collections/collection/records")));
         });
 
         it("should dispatch a notification", () => {
@@ -390,7 +390,7 @@ describe("collection sagas", () => {
 
         it("should update the route path", () => {
           expect(updateRecord.next().value)
-            .eql(put(updatePath("/buckets/bucket/collections/collection")));
+            .eql(put(updatePath("/buckets/bucket/collections/collection/records")));
         });
 
         it("should dispatch a notification", () => {
@@ -449,7 +449,7 @@ describe("collection sagas", () => {
 
       it("should update the route path", () => {
         expect(deleteRecord.next().value)
-          .eql(put(updatePath("/buckets/bucket/collections/collection")));
+          .eql(put(updatePath("/buckets/bucket/collections/collection/records")));
       });
 
       it("should dispatch a notification", () => {
@@ -560,7 +560,7 @@ describe("collection sagas", () => {
 
       it("should update the route path", () => {
         expect(bulkCreateRecords.next({published: records, errors: []}).value)
-          .eql(put(updatePath("/buckets/bucket/collections/collection")));
+          .eql(put(updatePath("/buckets/bucket/collections/collection/records")));
       });
 
       it("should dispatch a notification", () => {
@@ -614,7 +614,7 @@ describe("collection sagas", () => {
           published: recordsWithAttachment,
           errors: [],
         }).value)
-          .eql(put(updatePath("/buckets/bucket/collections/collection")));
+          .eql(put(updatePath("/buckets/bucket/collections/collection/records")));
       });
 
       it("should dispatch a notification", () => {

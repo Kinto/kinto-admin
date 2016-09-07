@@ -75,7 +75,7 @@ export default class RecordBulk extends Component {
               <input type="submit" className="btn btn-primary"
                 value="Bulk create" />
               {" or "}
-              <Link to={`/buckets/${bid}/collections/${cid}`}>Cancel</Link>
+              <Link to={`/buckets/${bid}/collections/${cid}/records`}>Cancel</Link>
             </Form>
           </div>
         </div>}
