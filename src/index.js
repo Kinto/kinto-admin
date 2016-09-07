@@ -19,11 +19,14 @@ export default class KintoAdmin extends Component {
     plugins: [],
   }
 
-  componentWillMount() {
-    const {plugins, settings} = this.props;
+  constructor(props) {
+    super(props);
+
+    const {plugins, settings} = props;
     this.store = configureStore({settings}, plugins);
     syncHistoryWithStore(hashHistory, this.store);
 
+    // Restore saved session, if any
     const session = loadSession();
     if (session) {
       this.store.dispatch(sessionActions.setup(session));
@@ -33,7 +36,7 @@ export default class KintoAdmin extends Component {
   render() {
     const {store} = this;
     const {plugins} = this.props;
-    const registerPlugins = plugins.map(plugin => plugin.register(this.store));
+    const registerPlugins = plugins.map(plugin => plugin.register(store));
 
     function onRouteUpdate() {
       const {params, location} = this.state;
@@ -41,7 +44,7 @@ export default class KintoAdmin extends Component {
     }
 
     return (
-      <Provider store={this.store}>
+      <Provider store={store}>
         <Router history={hashHistory} onUpdate={onRouteUpdate}>
           {getRoutes(this.store, registerPlugins)}
         </Router>
