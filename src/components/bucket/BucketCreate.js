@@ -19,7 +19,7 @@ export default class BucketCreate extends Component {
             <BucketForm
               session={session}
               bucket={bucket}
-              onSubmit={({name, data}) => createBucket(name, data)} />
+              onSubmit={({id, data}) => createBucket(id, data)} />
           </div>
         </div>
       </div>

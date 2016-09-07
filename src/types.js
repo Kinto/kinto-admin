@@ -17,7 +17,7 @@ export type BasicAuth = {
 
 export type BucketState = {
   busy: boolean,
-  name: ?string,
+  id: ?string,
   data: BucketData,
   permissions: BucketPermissions,
   history: Object[],

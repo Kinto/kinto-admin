@@ -11,9 +11,9 @@ import { validJSON } from "../../utils";
 const schema = {
   type: "object",
   title: "Bucket properties",
-  required: ["name"],
+  required: ["id"],
   properties: {
-    name: {
+    id: {
       type: "string",
       title: "Bucket name",
       pattern: "^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
@@ -88,10 +88,10 @@ export default class BucketForm extends Component {
     const formIsEditable = creation || hasWriteAccess;
     const showDeleteForm = !creation && hasWriteAccess;
 
-    // Disable edition of the collection name
+    // Disable edition of the collection id
     const _uiSchema = creation ? uiSchema : {
       ...uiSchema,
-      name: {
+      id: {
         "ui:readonly": true,
       }
     };

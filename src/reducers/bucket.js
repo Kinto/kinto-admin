@@ -17,7 +17,7 @@ import { omit } from "../utils";
 
 const INITIAL_STATE: BucketState = {
   busy: false,
-  name: null,
+  id: null,
   data: {},
   groups: [],
   groupsLoaded: false,
@@ -47,7 +47,7 @@ export function bucket(state: BucketState = INITIAL_STATE, action: Object) {
       return {
         ...state,
         data: omit(data, ["id", "last_modified"]),
-        name: data.id,
+        id: data.id,
         permissions: {
           read: permissions.read,
           write: permissions.write,
