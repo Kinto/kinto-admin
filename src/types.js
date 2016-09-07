@@ -121,7 +121,7 @@ export type Notification = {
   details: string[],
 };
 
-export type Notifications = Array<Notification>;
+export type Notifications = Notification[];
 
 export type RecordState = {
   data: RecordData,
