@@ -15,7 +15,7 @@ export type BasicAuth = {
   }
 };
 
-export type Bucket = {
+export type BucketState = {
   busy: boolean,
   name: ?string,
   data: BucketData,
