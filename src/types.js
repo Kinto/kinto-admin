@@ -54,7 +54,6 @@ export type ClientError = {
 };
 
 export type CollectionState = {
-  bucket: ?string,
   name: ?string,
   busy: boolean,
   data: CollectionData,

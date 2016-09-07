@@ -295,10 +295,7 @@ describe("bucket sagas", () => {
 
       it("should dispatch the collectionLoadSuccess action", () => {
         expect(updateCollection.next({data: collectionData}).value)
-          .eql(put(collectionActions.collectionLoadSuccess({
-            ...collectionData,
-            bucket: "bucket",
-          })));
+          .eql(put(collectionActions.collectionLoadSuccess(collectionData)));
       });
 
       it("should update the route path", () => {

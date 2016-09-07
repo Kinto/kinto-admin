@@ -53,7 +53,6 @@ describe("collection reducer", () => {
     expect(collection(undefined, {
       type: COLLECTION_LOAD_SUCCESS,
       data: {
-        bucket: "bucket",
         id: "id",
         schema: "schema",
         uiSchema: "uiSchema",
@@ -62,12 +61,10 @@ describe("collection reducer", () => {
       },
       permissions: {write: [], read: []},
     })).eql({
-      bucket: "bucket",
       name: "id",
       busy: false,
       data: {
         id: "id",
-        bucket: "bucket",
         schema: "schema",
         uiSchema: "uiSchema",
         attachment: {enabled: true, required: false},
