@@ -17,7 +17,7 @@ import {
 const DEFAULT_SORT: string = "-last_modified";
 
 export const INITIAL_STATE: CollectionState = {
-  name: null,
+  id: null,
   busy: false,
   data: {
     schema: {},
@@ -63,7 +63,7 @@ export function collection(
       return {
         ...state,
         busy: false,
-        name: data.id,
+        id: data.id,
         data: {...INITIAL_STATE.data, ...data},
         permissions: {read, write}
       };

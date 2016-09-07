@@ -72,10 +72,10 @@ export function* deleteBucket(getState, action) {
 export function* createCollection(getState, action) {
   const {bid, collectionData} = action;
   try {
-    const {name, ...data} = collectionData;
+    const {id, ...data} = collectionData;
     const bucket = getBucket(bid);
-    yield call([bucket, bucket.createCollection], name, {data, safe: true});
-    yield put(updatePath(`/buckets/${bid}/collections/${name}`));
+    yield call([bucket, bucket.createCollection], id, {data, safe: true});
+    yield put(updatePath(`/buckets/${bid}/collections/${id}`));
     yield put(notifySuccess("Collection created."));
     yield put(listBuckets());
   } catch(error) {

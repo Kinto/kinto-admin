@@ -23,7 +23,7 @@ export default class CollectionEdit extends Component {
   render() {
     const {params, session, bucket, collection, capabilities} = this.props;
     const {bid, cid} = params;
-    const {busy, data} = collection;
+    const {busy, id, data} = collection;
     const {
       schema = {},
       uiSchema = {},
@@ -37,7 +37,7 @@ export default class CollectionEdit extends Component {
     }
 
     const formData = {
-      name: collection.name,
+      id,
       displayFields,
       attachment,
       sort,

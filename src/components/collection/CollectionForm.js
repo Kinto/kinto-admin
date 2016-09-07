@@ -75,9 +75,9 @@ const schema = {
   type: "object",
   title: "Collection properties",
   description: FormInstructions(),
-  required: ["name"],
+  required: ["id"],
   properties: {
-    name: {
+    id: {
       type: "string",
       title: "Collection name",
       pattern: "^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
@@ -141,8 +141,8 @@ const schema = {
 };
 
 const uiSchema = {
-  "ui:order": ["name", "schema", "uiSchema", "sort", "displayFields", "attachment"],
-  name: {
+  "ui:order": ["id", "schema", "uiSchema", "sort", "displayFields", "attachment"],
+  id: {
     "ui:help": "The name should only contain letters, numbers, dashes or underscores."
   },
   schema: {
@@ -237,10 +237,10 @@ export default class CollectionForm extends Component {
     const creation = !formData;
     const showDeleteForm = !creation && this.allowEditing;
 
-    // Disable edition of the collection name
+    // Disable edition of the collection id
     const _uiSchema = !formData ? uiSchema : {
       ...uiSchema,
-      name: {
+      id: {
         "ui:readonly": true,
       }
     };

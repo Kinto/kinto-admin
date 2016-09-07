@@ -54,7 +54,7 @@ export type ClientError = {
 };
 
 export type CollectionState = {
-  name: ?string,
+  id: ?string,
   busy: boolean,
   data: CollectionData,
   permissions: CollectionPermissions,
