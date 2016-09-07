@@ -69,7 +69,6 @@ export type CollectionState = {
 export type CollectionData = {
   id?: string,
   last_modified?: number,
-  bucket?: string,
   schema?: Object,
   uiSchema?: Object,
   attachment?: {
