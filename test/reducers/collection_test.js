@@ -26,7 +26,7 @@ describe("collection reducer", () => {
 
   describe("COLLECTION_RECORDS_REQUEST", () => {
     it("should update the recordsLoaded flag", () => {
-      expect(collection({recordsLoaded: true}, {
+      expect(collection({data: {}, recordsLoaded: true}, {
         type: COLLECTION_RECORDS_REQUEST,
       })).to.have.property("recordsLoaded").eql(false);
     });
@@ -40,8 +40,8 @@ describe("collection reducer", () => {
 
     it("should reset records list when the sort param changes", () => {
       expect(collection({
+        data: {sort: "initial"},
         records: [1, 2, 3],
-        sort: "initial"
       }, {
         type: COLLECTION_RECORDS_REQUEST,
         sort: "title",
@@ -64,17 +64,21 @@ describe("collection reducer", () => {
     })).eql({
       bucket: "bucket",
       name: "id",
-      schema: "schema",
-      uiSchema: "uiSchema",
-      attachment: {enabled: true, required: false},
-      displayFields: "displayFields",
-      hasNextRecords: false,
+      busy: false,
+      data: {
+        id: "id",
+        bucket: "bucket",
+        schema: "schema",
+        uiSchema: "uiSchema",
+        attachment: {enabled: true, required: false},
+        displayFields: "displayFields",
+        sort: "-last_modified",
+      },
+      permissions: {write: [], read: []},
       records: [],
       recordsLoaded: false,
+      hasNextRecords: false,
       listNextRecords: null,
-      sort: "-last_modified",
-      busy: false,
-      permissions: {write: [], read: []},
       history: [],
       historyLoaded: false,
     });

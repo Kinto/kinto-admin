@@ -257,13 +257,12 @@ export default class CollectionRecords extends Component {
     const {
       busy,
       name,
-      schema,
-      displayFields,
+      data,
       records,
       recordsLoaded,
       hasNextRecords,
-      sort,
     } = collection;
+    const {schema, displayFields, sort} = data;
 
     const listActions = (
       <ListActions

@@ -20,23 +20,25 @@ export const INITIAL_STATE: CollectionState = {
   bucket: null,
   name: null,
   busy: false,
-  schema: {},         // CollectionData
-  uiSchema: {},       // CollectionData
-  attachment: {       // CollectionData
-    enabled: false,
-    required: false
+  data: {
+    schema: {},
+    uiSchema: {},
+    attachment: {
+      enabled: false,
+      required: false
+    },
+    displayFields: [],
+    sort: DEFAULT_SORT,
   },
-  displayFields: [],  // CollectionData
-  sort: DEFAULT_SORT, // CollectionData
-  records: [],
-  recordsLoaded: false,
-  hasNextRecords: false,
-  listNextRecords: null,
   permissions: {
     "read": [],
     "write": [],
     "record:create": [],
   },
+  records: [],
+  recordsLoaded: false,
+  hasNextRecords: false,
+  listNextRecords: null,
   history: [],
   historyLoaded: false,
 };
@@ -58,33 +60,22 @@ export function collection(
         data: CollectionData,
         permissions: CollectionPermissions,
       } = action;
-      const {
-        bucket,
-        id,
-        schema,
-        uiSchema,
-        attachment,
-        displayFields,
-        sort = DEFAULT_SORT,
-      } = data;
+      const {bucket, id} = data;
       const {read=[], write=[]} = permissions;
       return {
         ...state,
         busy: false,
         name: id,
         bucket,
-        schema,
-        uiSchema,
-        attachment,
-        displayFields,
-        sort,
+        data: {...INITIAL_STATE.data, ...data},
         permissions: {read, write}
       };
     }
     case COLLECTION_RECORDS_REQUEST: {
+      const {data: {sort: currentSort}} = state;
       // If a new sort filter is used, purge the previous records list and
       // pagination state.
-      const records = state.sort !== action.sort ? [] : state.records;
+      const records = currentSort !== action.sort ? [] : state.records;
       return {...state, sort: action.sort, records, recordsLoaded: false};
     }
     case COLLECTION_RECORDS_NEXT_REQUEST: {
