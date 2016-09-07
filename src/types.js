@@ -123,7 +123,7 @@ export type Notification = {
 
 export type Notifications = Array<Notification>;
 
-export type Record = {
+export type RecordState = {
   data: RecordData,
   permissions: RecordPermissions,
 };

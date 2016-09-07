@@ -1,13 +1,13 @@
 /* @flow */
 
-import type { Record, RecordData, RecordPermissions } from "../types";
+import type { RecordState, RecordData, RecordPermissions } from "../types";
 import {
   RECORD_LOAD_SUCCESS,
   RECORD_RESET,
 } from "../constants";
 
 
-const INITIAL_STATE: Record = {
+const INITIAL_STATE: RecordState = {
   data: {},
   permissions: {
     read: [],
@@ -16,9 +16,9 @@ const INITIAL_STATE: Record = {
 };
 
 export default function record(
-  state: Record = INITIAL_STATE,
+  state: RecordState = INITIAL_STATE,
   action: Object // XXX: "type: string" + arbitrary keys
-): Record {
+): RecordState {
   switch(action.type) {
     case RECORD_LOAD_SUCCESS: {
       const {data, permissions}: {

@@ -4,7 +4,6 @@ import { push as updatePath } from "react-router-redux";
 import { getClient } from "../client";
 import { storeRedirectURL } from "../actions/session";
 import { resetBucket, bucketBusy, bucketLoadSuccess } from "../actions/bucket";
-import { routeLoadSuccess } from "../actions/route";
 import { resetCollection, collectionBusy, collectionLoadSuccess } from "../actions/collection";
 import { resetGroup, groupBusy, groupLoadSuccess } from "../actions/group";
 import { resetRecord } from "../actions/record";
