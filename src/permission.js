@@ -1,7 +1,7 @@
 /* @flow */
 
 import type {
-  Session,
+  SessionState,
   BucketState,
   CollectionState,
   GroupState,
@@ -20,7 +20,7 @@ const permMethodMap = {
   createGroup: "group:create",
 };
 
-export function can(session: Session): Object {
+export function can(session: SessionState): Object {
   const {authenticated, serverInfo} = session;
   const {user={}} = serverInfo;
 
@@ -40,33 +40,33 @@ export function can(session: Session): Object {
   return api;
 }
 
-export function canEditBucket(session: Session, bucket: BucketState): boolean {
+export function canEditBucket(session: SessionState, bucket: BucketState): boolean {
   return can(session).write(bucket);
 }
 
-export function canCreateCollection(session: Session, bucket: BucketState): boolean {
+export function canCreateCollection(session: SessionState, bucket: BucketState): boolean {
   const canSession = can(session);
   return canSession.write(bucket) || canSession.createCollection(bucket);
 }
 
-export function canEditCollection(session: Session, collection: CollectionState): boolean {
+export function canEditCollection(session: SessionState, collection: CollectionState): boolean {
   return can(session).write(collection);
 }
 
-export function canCreateGroup(session: Session, bucket: BucketState): boolean {
+export function canCreateGroup(session: SessionState, bucket: BucketState): boolean {
   const canSession = can(session);
   return canSession.write(bucket) || canSession.createGroup(bucket);
 }
 
-export function canEditGroup(session: Session, group: GroupState): boolean {
+export function canEditGroup(session: SessionState, group: GroupState): boolean {
   return can(session).write(group);
 }
 
-export function canCreateRecord(session: Session, collection: CollectionState): boolean {
+export function canCreateRecord(session: SessionState, collection: CollectionState): boolean {
   const canSession = can(session);
   return canSession.write(collection) || canSession.createRecord(collection);
 }
 
-export function canEditRecord(session: Session, record: RecordState): boolean {
+export function canEditRecord(session: SessionState, record: RecordState): boolean {
   return can(session).write(record);
 }

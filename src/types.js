@@ -139,7 +139,7 @@ export type RecordPermissions = {
   read?: string[],
 };
 
-export type Session = {
+export type SessionState = {
   busy: boolean,
   authenticated: boolean,
   server: ?string,
