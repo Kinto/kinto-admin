@@ -41,32 +41,58 @@ export function can(session: SessionState): Object {
 }
 
 export function canEditBucket(session: SessionState, bucket: BucketState): boolean {
+  // You can edit a bucket if you can write in it.
   return can(session).write(bucket);
 }
 
 export function canCreateCollection(session: SessionState, bucket: BucketState): boolean {
+  // You can createa a collection if you can write in the bucket or create a collection in it.
   const canSession = can(session);
   return canSession.write(bucket) || canSession.createCollection(bucket);
 }
 
-export function canEditCollection(session: SessionState, collection: CollectionState): boolean {
-  return can(session).write(collection);
+export function canEditCollection(session: SessionState, collection: CollectionState, bucket: BucketState): boolean {
+  // You can create a group if you can write in the bucket or create a group in it.
+  const canSession = can(session);
+  return canSession.write(collection) || canSession.write(bucket);
 }
 
 export function canCreateGroup(session: SessionState, bucket: BucketState): boolean {
+  // You can create a group if you can write in the bucket or create a group in it.
   const canSession = can(session);
   return canSession.write(bucket) || canSession.createGroup(bucket);
 }
 
-export function canEditGroup(session: SessionState, group: GroupState): boolean {
-  return can(session).write(group);
-}
-
-export function canCreateRecord(session: SessionState, collection: CollectionState): boolean {
+export function canEditGroup(session: SessionState, group: GroupState, bucket: BucketState): boolean {
+  // You can edit if you can write in the group or in the bucket
   const canSession = can(session);
-  return canSession.write(collection) || canSession.createRecord(collection);
+  return canSession.write(group) || canSession.write(bucket);
 }
 
-export function canEditRecord(session: SessionState, record: RecordState): boolean {
-  return can(session).write(record);
+export function canCreateRecord(session: SessionState, collection: CollectionState, bucket: BucketState): boolean {
+  const canSession = can(session);
+
+  // You can edit if you can write in the collection or create a record in it.
+  let canCreate = canSession.write(collection) || canSession.createRecord(collection);
+
+  // You can edit if you can write in the bucket
+  if (typeof bucket !== 'undefined') {
+    canCreate = canCreate || canSession.write(bucket)
+  }
+  return canCreate;
+}
+
+export function canEditRecord(session: SessionState, record: RecordState, collection: CollectionState, bucket: BucketState): boolean {
+  const canSession = can(session);
+
+  // You can edit if you can write in the record
+  let canEdit = canSession.write(record);
+
+  // You can edit if you can write in the collection
+  canEdit = canEdit || canSession.write(collection)
+
+  // You can edit if you can write in the bucket
+  canEdit = canEdit || canSession.write(bucket)
+
+  return canEdit;
 }

@@ -10,6 +10,7 @@ import * as NotificationsActions from "../../actions/notifications";
 function mapStateToProps(state) {
   return {
     session: state.session,
+    bucket: state.bucket,
     collection: state.collection,
     record: state.record,
   };

@@ -11,7 +11,7 @@ export default class RecordCreate extends Component {
   }
 
   render() {
-    const {params, session, collection} = this.props;
+    const {params, session, bucket, collection} = this.props;
     const {bid, cid} = params;
     return (
       <div>
@@ -20,6 +20,7 @@ export default class RecordCreate extends Component {
           bid={bid}
           cid={cid}
           session={session}
+          bucket={bucket}
           collection={collection}
           onSubmit={this.onSubmit} />
       </div>

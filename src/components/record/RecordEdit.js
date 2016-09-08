@@ -29,6 +29,7 @@ export default class RecordEdit extends Component {
           cid={cid}
           rid={rid}
           session={session}
+          bucket={bucket}
           collection={collection}
           record={record}
           deleteRecord={deleteRecord}
