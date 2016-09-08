@@ -129,7 +129,7 @@ export default class RecordForm extends Component {
     if (record) {
       return canEditRecord(session, record, collection, bucket);
     } else {
-      return canCreateRecord(session, collection);
+      return canCreateRecord(session, collection, bucket);
     }
   }
 
