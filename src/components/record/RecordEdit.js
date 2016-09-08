@@ -14,6 +14,7 @@ export default class RecordEdit extends Component {
     const {
       params,
       session,
+      bucket,
       collection,
       record,
       deleteRecord,

@@ -76,9 +76,8 @@ export function canCreateRecord(session: SessionState, collection: CollectionSta
   let canCreate = canSession.write(collection) || canSession.createRecord(collection);
 
   // You can edit if you can write in the bucket
-  if (typeof bucket !== 'undefined') {
-    canCreate = canCreate || canSession.write(bucket)
-  }
+  canCreate = canCreate || canSession.write(bucket);
+
   return canCreate;
 }
 
@@ -89,10 +88,10 @@ export function canEditRecord(session: SessionState, record: RecordState, collec
   let canEdit = canSession.write(record);
 
   // You can edit if you can write in the collection
-  canEdit = canEdit || canSession.write(collection)
+  canEdit = canEdit || canSession.write(collection);
 
   // You can edit if you can write in the bucket
-  canEdit = canEdit || canSession.write(bucket)
+  canEdit = canEdit || canSession.write(bucket);
 
   return canEdit;
 }
