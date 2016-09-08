@@ -7,6 +7,8 @@ import {
   canEditBucket,
   canCreateCollection,
   canEditCollection,
+  canCreateGroup,
+  canEditGroup,
   canCreateRecord,
   canEditRecord,
 } from "../src/permission";
@@ -122,6 +124,63 @@ describe("canEditCollection", () => {
     const collection = {permissions: {write: ["chucknorris"]}};
 
     expect(canEditCollection(session, collection, bucket)).eql(false);
+  });
+});
+
+describe("canCreateGroup", () => {
+  const session = {authenticated: true, serverInfo: {user: {id: 1}}};
+
+  describe("group:create permission", () => {
+    it("should check if a group can be created in a bucket", () => {
+      const bucket = {permissions: {"group:create": [1]}};
+
+      expect(canCreateGroup(session, bucket)).eql(true);
+    });
+
+    it("should check if a group cannot be created in a bucket", () => {
+      const bucket = {permissions: {"group:create": ["chucknorris"]}};
+
+      expect(canCreateGroup(session, bucket)).eql(false);
+    });
+  });
+
+  describe("write permission", () => {
+    it("should check if a group can be created in a bucket", () => {
+      const bucket = {permissions: {write: [1]}};
+
+      expect(canCreateGroup(session, bucket)).eql(true);
+    });
+
+    it("should check if a group cannot be created in a bucket", () => {
+      const bucket = {permissions: {write: ["chucknorris"]}};
+
+      expect(canCreateGroup(session, bucket)).eql(false);
+    });
+  });
+});
+
+describe("canEditGroup", () => {
+  const session = {authenticated: true, serverInfo: {user: {id: 1}}};
+
+  it("should check if a group can be edited", () => {
+    const bucket = {permissions: {}};
+    const group = {permissions: {write: [1]}};
+
+    expect(canEditGroup(session, group, bucket)).eql(true);
+  });
+
+  it("should check if a bucket can be edited", () => {
+    const bucket = {permissions: {write: [1]}};
+    const group = {permissions: {}};
+
+    expect(canEditGroup(session, group, bucket)).eql(true);
+  });
+
+  it("should check if a group cannot be edited", () => {
+    const bucket = {permissions: {write: ["chucknorris"]}};
+    const group = {permissions: {write: ["chucknorris"]}};
+
+    expect(canEditGroup(session, group, bucket)).eql(false);
   });
 });
 
