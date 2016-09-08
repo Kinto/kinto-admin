@@ -143,11 +143,11 @@ export default class RecordForm extends Component {
   getForm() {
     const {asJSON} = this.state;
     const {bid, cid, collection, record} = this.props;
-    const {data: {schema={}, uiSchema={}, attachment={}, busy}} = collection;
+    const {data: {schema={}, uiSchema={}, attachment={}}} = collection;
     const recordData = record && record.data || {};
     const emptySchema = Object.keys(schema).length === 0;
 
-    if (busy) {
+    if (record && record.busy) {
       return <Spinner />;
     }
 

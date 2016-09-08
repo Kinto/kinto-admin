@@ -2,6 +2,10 @@
 
 import type { RecordState, RecordResource } from "../types";
 import {
+  RECORD_BUSY,
+  RECORD_CREATE_REQUEST,
+  RECORD_UPDATE_REQUEST,
+  RECORD_DELETE_REQUEST,
   RECORD_RESET,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
@@ -31,6 +35,14 @@ export default function record(
   action: Object // XXX: "type: string" + arbitrary keys
 ): RecordState {
   switch(action.type) {
+    case RECORD_BUSY: {
+      return {...state, busy: action.busy};
+    }
+    case RECORD_CREATE_REQUEST:
+    case RECORD_UPDATE_REQUEST:
+    case RECORD_DELETE_REQUEST: {
+      return {...state, busy: true};
+    }
     case ROUTE_LOAD_REQUEST: {
       return {...INITIAL_STATE, busy: true};
     }

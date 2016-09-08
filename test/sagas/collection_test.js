@@ -172,11 +172,6 @@ describe("collection sagas", () => {
         createRecord = saga.createRecord(getState, action);
       });
 
-      it("should mark the current collection as busy", () => {
-        expect(createRecord.next().value)
-          .eql(put(collectionActions.collectionBusy(true)));
-      });
-
       it("should create the record", () => {
         expect(createRecord.next().value)
           .eql(call([collection, collection.createRecord], record));
@@ -192,9 +187,9 @@ describe("collection sagas", () => {
           .eql(put(notifySuccess("Record added.")));
       });
 
-      it("should unmark the current collection as busy", () => {
+      it("should unmark the current record as busy", () => {
         expect(createRecord.next().value)
-          .eql(put(collectionActions.collectionBusy(false)));
+          .eql(put(recordActions.recordBusy(false)));
       });
     });
 
@@ -217,11 +212,6 @@ describe("collection sagas", () => {
         createRecord = saga.createRecord(getState, action);
       });
 
-      it("should mark the current collection as busy", () => {
-        expect(createRecord.next().value)
-          .eql(put(collectionActions.collectionBusy(true)));
-      });
-
       it("should post the attachment", () => {
         expect(createRecord.next().value)
           .eql(call([collection, collection.addAttachment], attachment, record));
@@ -237,9 +227,9 @@ describe("collection sagas", () => {
           .eql(put(notifySuccess("Record added.")));
       });
 
-      it("should unmark the current collection as busy", () => {
+      it("should unmark the current record as busy", () => {
         expect(createRecord.next().value)
-          .eql(put(collectionActions.collectionBusy(false)));
+          .eql(put(recordActions.recordBusy(false)));
       });
     });
 
@@ -258,9 +248,9 @@ describe("collection sagas", () => {
           .eql(put(notifyError("Couldn't create record.", "error")));
       });
 
-      it("should unmark the current collection as busy", () => {
+      it("should unmark the current record as busy", () => {
         expect(createRecord.next().value)
-          .eql(put(collectionActions.collectionBusy(false)));
+          .eql(put(recordActions.recordBusy(false)));
       });
     });
   });
@@ -290,11 +280,6 @@ describe("collection sagas", () => {
           updateRecord = saga.updateRecord(getState, action);
         });
 
-        it("should mark the current collection as busy", () => {
-          expect(updateRecord.next().value)
-            .eql(put(collectionActions.collectionBusy(true)));
-        });
-
         it("should update the record", () => {
           expect(updateRecord.next().value)
             .eql(call([collection, collection.updateRecord], record, {patch: true}));
@@ -315,9 +300,9 @@ describe("collection sagas", () => {
             .eql(put(notifySuccess("Record updated.")));
         });
 
-        it("should unmark the current collection as busy", () => {
+        it("should unmark the current record as busy", () => {
           expect(updateRecord.next().value)
-            .eql(put(collectionActions.collectionBusy(false)));
+            .eql(put(recordActions.recordBusy(false)));
         });
       });
 
@@ -334,9 +319,9 @@ describe("collection sagas", () => {
             .eql(put(notifyError("Couldn't update record.", "error")));
         });
 
-        it("should unmark the current collection as busy", () => {
+        it("should unmark the current record as busy", () => {
           expect(updateRecord.next().value)
-            .eql(put(collectionActions.collectionBusy(false)));
+            .eql(put(recordActions.recordBusy(false)));
         });
       });
     });
@@ -373,11 +358,6 @@ describe("collection sagas", () => {
           updateRecord = saga.updateRecord(getState, action);
         });
 
-        it("should mark the current collection as busy", () => {
-          expect(updateRecord.next().value)
-            .eql(put(collectionActions.collectionBusy(true)));
-        });
-
         it("should update the record with its attachment", () => {
           expect(updateRecord.next().value)
             .eql(call([collection, collection.addAttachment], attachment, record));
@@ -398,9 +378,9 @@ describe("collection sagas", () => {
             .eql(put(notifySuccess("Record updated.")));
         });
 
-        it("should unmark the current collection as busy", () => {
+        it("should unmark the current record as busy", () => {
           expect(updateRecord.next().value)
-            .eql(put(collectionActions.collectionBusy(false)));
+            .eql(put(recordActions.recordBusy(false)));
         });
       });
 
@@ -417,9 +397,9 @@ describe("collection sagas", () => {
             .eql(put(notifyError("Couldn't update record.", "error")));
         });
 
-        it("should unmark the current collection as busy", () => {
+        it("should unmark the current record as busy", () => {
           expect(updateRecord.next().value)
-            .eql(put(collectionActions.collectionBusy(false)));
+            .eql(put(recordActions.recordBusy(false)));
         });
       });
     });
@@ -437,11 +417,6 @@ describe("collection sagas", () => {
         deleteRecord = saga.deleteRecord(() => {}, action);
       });
 
-      it("should mark the current collection as busy", () => {
-        expect(deleteRecord.next().value)
-          .eql(put(collectionActions.collectionBusy(true)));
-      });
-
       it("should create the record", () => {
         expect(deleteRecord.next().value)
           .eql(call([collection, collection.deleteRecord], 1));
@@ -457,9 +432,9 @@ describe("collection sagas", () => {
           .eql(put(notifySuccess("Record deleted.")));
       });
 
-      it("should unmark the current collection as busy", () => {
+      it("should unmark the current record as busy", () => {
         expect(deleteRecord.next().value)
-          .eql(put(collectionActions.collectionBusy(false)));
+          .eql(put(recordActions.recordBusy(false)));
       });
     });
 
@@ -476,9 +451,9 @@ describe("collection sagas", () => {
           .eql(put(notifyError("Couldn't delete record.", "error")));
       });
 
-      it("should unmark the current collection as busy", () => {
+      it("should unmark the current record as busy", () => {
         expect(deleteRecord.next().value)
-          .eql(put(collectionActions.collectionBusy(false)));
+          .eql(put(recordActions.recordBusy(false)));
       });
     });
   });
