@@ -21,13 +21,15 @@ describe("RecordBulk component", () => {
   describe("Schema defined", () => {
     let node, bulkCreateRecords;
     const collection = {
-      schema: {
-        type: "object",
-        properties: {
-          foo: {
-            type: "string"
-          }
-        }
+      data: {
+        schema: {
+          type: "object",
+          properties: {
+            foo: {
+              type: "string"
+            }
+          },
+        },
       },
     };
 

@@ -19,10 +19,10 @@ describe("Bucket tests", function() {
   let browser, client;
 
   beforeEach(function* () {
+    client = createClient("__test__", "__pass__");
     browser = createBrowser();
     yield startServers();
     yield authenticate(browser, "__test__", "__pass__");
-    client = createClient("__test__", "__pass__");
   });
 
   afterEach(function* () {
@@ -62,7 +62,7 @@ describe("Bucket tests", function() {
         window.confirm = () => true;
       })
       .click("[href='#/buckets/MyBucket/edit']")
-      .wait(".rjsf")
+      .wait(".panel-danger")
       .type(".panel-danger #root", "MyBucket")
       .click(".panel-danger button[type=submit]")
       .wait(".notification.alert-success")

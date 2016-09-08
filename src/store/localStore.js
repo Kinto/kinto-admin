@@ -1,5 +1,5 @@
 /* @flow */
-import type { Session } from "../types";
+import type { SessionState } from "../types";
 
 
 const HISTORY_KEY = "kinto-admin-server-history";
@@ -40,7 +40,7 @@ export function loadSession(): ?Object {
   }
 }
 
-export function saveSession(sessionState: Session) {
+export function saveSession(sessionState: SessionState) {
   localStorage.setItem(SESSION_KEY, JSON.stringify(sessionState));
 }
 

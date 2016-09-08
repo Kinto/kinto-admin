@@ -37,13 +37,13 @@ describe("bucket reducer", () => {
       }
     })).eql({
       busy: false,
+      id: "buck",
       collections: [],
       collectionsLoaded: false,
       groups: [],
       groupsLoaded: false,
       history: [],
       historyLoaded: false,
-      name: "buck",
       data: {a: 2},
       permissions: {
         write: ["twitter:Natim"],

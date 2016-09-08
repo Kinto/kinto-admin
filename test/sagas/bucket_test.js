@@ -225,7 +225,7 @@ describe("bucket sagas", () => {
         setClient({bucket() {return bucket;}});
         const action = actions.createCollection("bucket", {
           ...collectionData,
-          name: "collection",
+          id: "collection",
         });
         createCollection = saga.createCollection(() => {}, action);
       });
@@ -295,15 +295,12 @@ describe("bucket sagas", () => {
 
       it("should dispatch the collectionLoadSuccess action", () => {
         expect(updateCollection.next({data: collectionData}).value)
-          .eql(put(collectionActions.collectionLoadSuccess({
-            ...collectionData,
-            bucket: "bucket",
-          })));
+          .eql(put(collectionActions.collectionLoadSuccess(collectionData)));
       });
 
       it("should update the route path", () => {
         expect(updateCollection.next().value)
-          .eql(put(updatePath("/buckets/bucket/collections/collection")));
+          .eql(put(updatePath("/buckets/bucket/collections/collection/records")));
       });
 
       it("should dispatch a notification", () => {

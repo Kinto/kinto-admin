@@ -72,20 +72,10 @@ export function* deleteBucket(getState, action) {
 export function* createCollection(getState, action) {
   const {bid, collectionData} = action;
   try {
-    const {
-      name,
-      schema,
-      uiSchema,
-      attachment,
-      sort,
-      displayFields,
-    } = collectionData;
+    const {id, ...data} = collectionData;
     const bucket = getBucket(bid);
-    yield call([bucket, bucket.createCollection], name, {
-      data: {uiSchema, schema, attachment, sort, displayFields},
-      safe: true,
-    });
-    yield put(updatePath(`/buckets/${bid}/collections/${name}`));
+    yield call([bucket, bucket.createCollection], id, {data, safe: true});
+    yield put(updatePath(`/buckets/${bid}/collections/${id}`));
     yield put(notifySuccess("Collection created."));
     yield put(listBuckets());
   } catch(error) {
@@ -98,8 +88,8 @@ export function* updateCollection(getState, action) {
   try {
     const coll = getCollection(bid, cid);
     const {data, permissions} = yield call([coll, coll.setData], collectionData);
-    yield put(collectionLoadSuccess({...data, bucket: bid}, permissions));
-    yield put(updatePath(`/buckets/${bid}/collections/${cid}`));
+    yield put(collectionLoadSuccess(data, permissions));
+    yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
     yield put(notifySuccess("Collection properties updated."));
   } catch(error) {
     yield put(notifyError("Couldn't update collection.", error));

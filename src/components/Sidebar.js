@@ -59,7 +59,7 @@ function BucketCollectionsMenu(props) {
 }
 
 function BucketsMenu(props) {
-  const {active, currentPath, buckets, userBucket, bid, cid} = props;
+  const {active, currentPath, buckets, bid, cid} = props;
   return (
     <div>
       <div className="panel panel-default">
@@ -78,7 +78,7 @@ function BucketsMenu(props) {
             <div key={i} className="panel panel-default bucket-menu">
               <div className="panel-heading">
                 <i className={`glyphicon glyphicon-folder-${current ? "open" : "close"}`} />
-                <strong>{id === userBucket ? "default" : id}</strong> bucket
+                <strong>{id}</strong> bucket
                 <Link to={`/buckets/${id}/edit`}
                   className="bucket-menu-entry-edit"
                   title="Manage bucket">
@@ -108,8 +108,7 @@ export default class Sidebar extends Component {
   render() {
     const {session, params, location} = this.props;
     const {bid, cid} = params;
-    const {buckets=[], serverInfo={}} = session;
-    const userBucket = serverInfo.user && serverInfo.bucket;
+    const {buckets=[]} = session;
     const active = activeIfPathname.bind(null, location);
     return (
       <div>
@@ -121,7 +120,6 @@ export default class Sidebar extends Component {
         {session.authenticated ?
           <BucketsMenu
             buckets={buckets}
-            userBucket={userBucket}
             active={active}
             currentPath={location.pathname}
             bid={bid}

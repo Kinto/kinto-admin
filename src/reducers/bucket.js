@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { Bucket, BucketData, BucketPermissions } from "../types";
+import type { BucketState, BucketData, BucketPermissions } from "../types";
 import {
   BUCKET_BUSY,
   BUCKET_RESET,
@@ -15,9 +15,9 @@ import {
 import { omit } from "../utils";
 
 
-const INITIAL_STATE: Bucket = {
+const INITIAL_STATE: BucketState = {
   busy: false,
-  name: null,
+  id: null,
   data: {},
   groups: [],
   groupsLoaded: false,
@@ -33,7 +33,7 @@ const INITIAL_STATE: Bucket = {
   },
 };
 
-export function bucket(state: Bucket = INITIAL_STATE, action: Object) {
+export function bucket(state: BucketState = INITIAL_STATE, action: Object) {
   switch (action.type) {
     case BUCKET_BUSY: {
       const {busy}: {busy: boolean} = action;
@@ -47,7 +47,7 @@ export function bucket(state: Bucket = INITIAL_STATE, action: Object) {
       return {
         ...state,
         data: omit(data, ["id", "last_modified"]),
-        name: data.id,
+        id: data.id,
         permissions: {
           read: permissions.read,
           write: permissions.write,

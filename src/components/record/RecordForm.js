@@ -143,7 +143,7 @@ export default class RecordForm extends Component {
   getForm() {
     const {asJSON} = this.state;
     const {bid, cid, collection, record} = this.props;
-    const {schema={}, uiSchema={}, attachment={}, busy} = collection;
+    const {data: {schema={}, uiSchema={}, attachment={}, busy}} = collection;
     const recordData = record && record.data || {};
     const emptySchema = Object.keys(schema).length === 0;
 
@@ -157,7 +157,7 @@ export default class RecordForm extends Component {
           <input type="submit" className="btn btn-primary"
             disabled={!this.allowEditing} value={record ? "Update" : "Create"} />
           {" or "}
-          <Link to={`/buckets/${bid}/collections/${cid}`}>Cancel</Link>
+          <Link to={`/buckets/${bid}/collections/${cid}/records`}>Cancel</Link>
           {" | "}
           <a href="#" onClick={this.toggleJSON}>
             {asJSON ? "Edit form" : "Edit raw JSON"}
@@ -218,7 +218,7 @@ export default class RecordForm extends Component {
 
   render() {
     const {collection, record} = this.props;
-    const {attachment={}} = collection;
+    const {data: {attachment={}}} = collection;
     const creation = !record;
 
     const alert = this.allowEditing || collection.busy ? null : (
@@ -227,7 +227,6 @@ export default class RecordForm extends Component {
         {creation ? " create a" : " edit this"} record.
       </div>
     );
-
 
     return (
       <div className="panel panel-default">

@@ -15,9 +15,9 @@ export type BasicAuth = {
   }
 };
 
-export type Bucket = {
+export type BucketState = {
   busy: boolean,
-  name: ?string,
+  id: ?string,
   data: BucketData,
   permissions: BucketPermissions,
   history: Object[],
@@ -53,23 +53,15 @@ export type ClientError = {
   }
 };
 
-export type Collection = {
-  bucket: ?string,
-  name: ?string,
+export type CollectionState = {
+  id: ?string,
   busy: boolean,
-  schema: ?Object,
-  uiSchema: ?Object,
-  attachment: {
-    enabled: boolean,
-    required: boolean,
-  },
-  displayFields: ?string[],
+  data: CollectionData,
+  permissions: CollectionPermissions,
   records: RecordData[],
   recordsLoaded: boolean,
   hasNextRecords: boolean,
   listNextRecords: ?Function,
-  sort: string,
-  permissions: CollectionPermissions,
   history: Object[],
   historyLoaded: boolean,
 };
@@ -77,7 +69,6 @@ export type Collection = {
 export type CollectionData = {
   id?: string,
   last_modified?: number,
-  bucket?: string,
   schema?: Object,
   uiSchema?: Object,
   attachment?: {
@@ -121,9 +112,9 @@ export type Notification = {
   details: string[],
 };
 
-export type Notifications = Array<Notification>;
+export type Notifications = Notification[];
 
-export type Record = {
+export type RecordState = {
   data: RecordData,
   permissions: RecordPermissions,
 };
@@ -139,17 +130,17 @@ export type RecordPermissions = {
   read?: string[],
 };
 
-export type Session = {
+export type SessionState = {
   busy: boolean,
   authenticated: boolean,
   server: ?string,
   credentials: Object,
   buckets: Object[],
-  serverInfo: SessionServerInfo,
+  serverInfo: ServerInfo,
   redirectURL: ?string,
 };
 
-export type SessionServerInfo = {
+export type ServerInfo = {
   capabilities: Object,
   user: {
     id?: string,

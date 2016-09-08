@@ -10,7 +10,7 @@ export default class CollectionTabs extends Component {
       <div className="tabs-container">
         <ul className="nav nav-tabs nav-justified">
           <li role="presentation" className={selected === "records" ? "active" : ""}>
-            <Link to={`/buckets/${bid}/collections/${cid}`}>
+            <Link to={`/buckets/${bid}/collections/${cid}/records`}>
               <i className="glyphicon glyphicon-align-justify" />
               Records
             </Link>

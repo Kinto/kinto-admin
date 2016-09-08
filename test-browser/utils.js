@@ -66,10 +66,12 @@ export function authenticate(browser, username, password) {
 }
 
 export function createBucket(browser, bucket) {
-  return browser.click("[href='#/buckets/create']")
+  return browser
+    .wait("[href='#/buckets/create']")
+    .click("[href='#/buckets/create']")
     .wait(".rjsf")
-    .type("#root_name", bucket)
-    .click(".rjsf input[type=submit]")
+    .type("#root_id", bucket)
+    .click(".rjsf [type=submit]")
     .wait(".notification.alert-success")
     .wait(`[href='#/buckets/${bucket}/edit']`);
 }
@@ -78,8 +80,8 @@ export function createCollection(browser, bucket, collection) {
   return createBucket(browser, bucket)
     .click(`[href='#/buckets/${bucket}/collections/create']`)
     .wait(".rjsf")
-    .type("#root_name", collection)
-    .click(".rjsf input[type=submit]")
+    .type("#root_id", collection)
+    .click(".rjsf [type=submit]")
     .wait(".notification.alert-success")
     .wait(`[href='#/buckets/${bucket}/collections/${collection}/edit']`);
 }

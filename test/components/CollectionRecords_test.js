@@ -23,21 +23,23 @@ describe("CollectionRecords component", () => {
 
     const collection = {
       busy: false,
-      recordsLoaded: true,
+      data: {
+        schema: {
+          type: "object",
+          properties: {
+            foo: {type: "string"}
+          }
+        },
+        displayFields: ["foo"],
+      },
+      permissions: {
+        write: []
+      },
       records: [
         {id: "id1", foo: "bar", last_modified: 2},
         {id: "id2", foo: "baz", last_modified: 1},
       ],
-      schema: {
-        type: "object",
-        properties: {
-          foo: {type: "string"}
-        }
-      },
-      displayFields: ["foo"],
-      permissions: {
-        write: []
-      }
+      recordsLoaded: true,
     };
 
     beforeEach(() => {
@@ -70,14 +72,15 @@ describe("CollectionRecords component", () => {
 
     const collection = {
       busy: false,
+      data: {},
+      permissions: {
+        write: []
+      },
       recordsLoaded: true,
       records: [
         {id: "id1", foo: "bar", last_modified: 1},
         {id: "id2", foo: "baz", last_modified: 2},
       ],
-      permissions: {
-        write: []
-      }
     };
 
     beforeEach(() => {
@@ -111,18 +114,20 @@ describe("CollectionRecords component", () => {
 
       const collection = {
         busy: false,
-        recordsLoaded: true,
-        records: [],
-        schema: {
-          type: "object",
-          properties: {
-            foo: {type: "string"}
-          }
+        data: {
+          schema: {
+            type: "object",
+            properties: {
+              foo: {type: "string"}
+            }
+          },
+          displayFields: ["foo"],
         },
-        displayFields: ["foo"],
         permissions: {
           write: ["basicauth:plop"]
-        }
+        },
+        recordsLoaded: true,
+        records: [],
       };
 
       beforeEach(() => {
@@ -146,18 +151,20 @@ describe("CollectionRecords component", () => {
 
       const collection = {
         busy: false,
-        recordsLoaded: true,
-        records: [],
-        schema: {
-          type: "object",
-          properties: {
-            foo: {type: "string"}
-          }
+        data: {
+          schema: {
+            type: "object",
+            properties: {
+              foo: {type: "string"}
+            }
+          },
+          displayFields: ["foo"],
         },
-        displayFields: ["foo"],
         permissions: {
           write: ["basicauth:other"]
-        }
+        },
+        recordsLoaded: true,
+        records: [],
       };
 
       beforeEach(() => {

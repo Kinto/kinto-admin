@@ -256,14 +256,12 @@ export default class CollectionRecords extends Component {
     const {bid, cid} = params;
     const {
       busy,
-      name,
-      schema,
-      displayFields,
+      data,
       records,
       recordsLoaded,
       hasNextRecords,
-      sort,
     } = collection;
+    const {schema, displayFields, sort} = data;
 
     const listActions = (
       <ListActions
@@ -276,7 +274,7 @@ export default class CollectionRecords extends Component {
 
     return (
       <div className="list-page">
-        <h1>Records of <b>{bid}/{name}</b></h1>
+        <h1>Records of <b>{bid}/{cid}</b></h1>
         <CollectionTabs
           bid={bid}
           cid={cid}

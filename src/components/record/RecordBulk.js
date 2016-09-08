@@ -14,7 +14,7 @@ export default class RecordBulk extends Component {
   onSubmit = ({formData}) => {
     const {params, collection, notifyError, bulkCreateRecords} = this.props;
     const {bid, cid} = params;
-    const {schema} = collection;
+    const {data: {schema}} = collection;
 
     if (formData.length === 0) {
       return notifyError("The form is empty.");
@@ -29,7 +29,7 @@ export default class RecordBulk extends Component {
 
   render() {
     const {params, collection} = this.props;
-    const {busy, schema, uiSchema, attachment={}} = collection;
+    const {data: {busy, schema, uiSchema, attachment={}}} = collection;
     const {bid, cid} = params;
 
     let bulkSchema, bulkUiSchema, bulkFormData;
@@ -75,7 +75,7 @@ export default class RecordBulk extends Component {
               <input type="submit" className="btn btn-primary"
                 value="Bulk create" />
               {" or "}
-              <Link to={`/buckets/${bid}/collections/${cid}`}>Cancel</Link>
+              <Link to={`/buckets/${bid}/collections/${cid}/records`}>Cancel</Link>
             </Form>
           </div>
         </div>}

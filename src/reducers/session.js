@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { Session } from "../types";
+import type { SessionState } from "../types";
 import {
   SESSION_BUSY,
   SESSION_SETUP_COMPLETE,
@@ -12,7 +12,7 @@ import {
 } from "../constants";
 
 
-const DEFAULT: Session = {
+const DEFAULT: SessionState = {
   busy: false,
   authenticated: false,
   server: null,
@@ -26,16 +26,16 @@ const DEFAULT: Session = {
 };
 
 export default function session(
-  state: Session = DEFAULT,
+  state: SessionState = DEFAULT,
   action: Object
-): Session {
+): SessionState {
   switch (action.type) {
     case SESSION_BUSY: {
       const {busy}: {busy: boolean} = action;
       return {...state, busy};
     }
     case SESSION_SETUP_COMPLETE: {
-      const {session}: {session: Session} = action;
+      const {session}: {session: SessionState} = action;
       return {...state, ...session};
     }
     case SESSION_STORE_REDIRECT_URL: {
