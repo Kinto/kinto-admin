@@ -1,15 +1,8 @@
 /* @flow */
 
-import type {
-  Action,
-  BucketData,
-  BucketPermissions,
-  CollectionData,
-  GroupData,
-} from "../types";
+import type { Action, BucketData, CollectionData, GroupData } from "../types";
 import {
   BUCKET_BUSY,
-  BUCKET_LOAD_SUCCESS,
   BUCKET_COLLECTIONS_REQUEST,
   BUCKET_COLLECTIONS_SUCCESS,
   BUCKET_GROUPS_REQUEST,
@@ -31,10 +24,6 @@ import {
 
 export function bucketBusy(busy: boolean): Action {
   return {type: BUCKET_BUSY, busy};
-}
-
-export function bucketLoadSuccess(data: BucketData, permissions: BucketPermissions): Action {
-  return {type: BUCKET_LOAD_SUCCESS, data, permissions};
 }
 
 export function createBucket(bid: string, data: BucketData): Action {

@@ -1,15 +1,10 @@
 /* @flow */
 
-import type {
-  Action,
-  GroupData,
-  GroupPermissions,
-} from "../types";
+import type { Action } from "../types";
 
 import {
   GROUP_BUSY,
   GROUP_RESET,
-  GROUP_LOAD_SUCCESS,
   GROUP_HISTORY_REQUEST,
   GROUP_HISTORY_SUCCESS,
 } from "../constants";
@@ -21,13 +16,6 @@ export function groupBusy(busy: boolean): Action {
 
 export function resetGroup(): Action {
   return {type: GROUP_RESET};
-}
-
-export function groupLoadSuccess(
-  data: GroupData,
-  permissions: GroupPermissions
-): Action {
-  return {type: GROUP_LOAD_SUCCESS, data, permissions};
 }
 
 export function listGroupHistory(bid: string, gid: string): Action {

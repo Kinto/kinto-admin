@@ -4,10 +4,12 @@ import collection from "../../src/reducers/collection";
 import {
   COLLECTION_BUSY,
   COLLECTION_RESET,
-  COLLECTION_LOAD_SUCCESS,
   COLLECTION_RECORDS_REQUEST,
   COLLECTION_RECORDS_SUCCESS,
   COLLECTION_HISTORY_SUCCESS,
+  ROUTE_LOAD_REQUEST,
+  ROUTE_LOAD_SUCCESS,
+  ROUTE_LOAD_FAILURE,
 } from "../../src/constants";
 
 
@@ -49,35 +51,40 @@ describe("collection reducer", () => {
     });
   });
 
-  it("COLLECTION_LOAD_SUCCESS", () => {
-    expect(collection(undefined, {
-      type: COLLECTION_LOAD_SUCCESS,
-      data: {
-        id: "id",
-        schema: "schema",
-        uiSchema: "uiSchema",
-        attachment: {enabled: true, required: false},
-        displayFields: "displayFields",
-      },
-      permissions: {write: [], read: []},
-    })).eql({
-      id: "id",
-      busy: false,
-      data: {
-        id: "id",
-        schema: "schema",
-        uiSchema: "uiSchema",
-        attachment: {enabled: true, required: false},
-        displayFields: "displayFields",
-        sort: "-last_modified",
-      },
-      permissions: {write: [], read: []},
-      records: [],
-      recordsLoaded: false,
-      hasNextRecords: false,
-      listNextRecords: null,
-      history: [],
-      historyLoaded: false,
+  describe("ROUTE_LOAD_REQUEST", () => {
+    it("should set the busy flag", () => {
+      expect(collection({busy: false}, {type: ROUTE_LOAD_REQUEST}))
+        .to.have.property("busy").eql(true);
+    });
+  });
+
+  describe("ROUTE_LOAD_SUCCESS", () => {
+    it("should preserve state when no collection is passed", () => {
+      const initial = collection(undefined, {type: null});
+
+      expect(collection(undefined, {type: ROUTE_LOAD_SUCCESS}))
+        .eql(initial);
+    });
+
+    it("should update state when a collection is passed", () => {
+      const state = collection(undefined, {
+        type: ROUTE_LOAD_SUCCESS,
+        collection: {
+          data: {id: "coll", last_modified: 42, foo: "bar"},
+          permissions: {read: ["a"], write: ["b"]},
+        },
+      });
+
+      expect(state.id).eql("coll");
+      expect(state.data).to.have.property("foo").eql("bar");
+      expect(state.permissions).eql({read: ["a"], write: ["b"]});
+    });
+  });
+
+  describe("ROUTE_LOAD_FAILURE", () => {
+    it("should clear the busy flag", () => {
+      expect(collection({busy: true}, {type: ROUTE_LOAD_FAILURE}))
+        .to.have.property("busy").eql(false);
     });
   });
 

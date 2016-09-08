@@ -1,12 +1,14 @@
 /* @flow */
 
-import type { GroupState, GroupData, GroupPermissions } from "../types";
+import type { GroupState, GroupResource } from "../types";
 import {
   GROUP_BUSY,
   GROUP_RESET,
-  GROUP_LOAD_SUCCESS,
   GROUP_HISTORY_REQUEST,
   GROUP_HISTORY_SUCCESS,
+  ROUTE_LOAD_REQUEST,
+  ROUTE_LOAD_SUCCESS,
+  ROUTE_LOAD_FAILURE,
 } from "../constants";
 import { omit } from "../utils";
 
@@ -23,6 +25,22 @@ export const INITIAL_STATE: GroupState = {
   historyLoaded: false,
 };
 
+function load(state: GroupState, group: GroupResource): GroupState {
+  if (!group) {
+    return {...state, busy: false};
+  }
+  const {permissions, data} = group;
+  const {id, members} = data;
+  return {
+    ...state,
+    busy: false,
+    id,
+    members,
+    data: omit(data, ["id", "last_modified", "members"]),
+    permissions,
+  };
+}
+
 export function group(
   state: GroupState = INITIAL_STATE,
   action: Object
@@ -32,24 +50,17 @@ export function group(
       const {busy}: {busy: boolean} = action;
       return {...state, busy};
     }
+    case ROUTE_LOAD_REQUEST: {
+      return {...INITIAL_STATE, busy: true};
+    }
+    case ROUTE_LOAD_SUCCESS: {
+      return load(state, action.group);
+    }
+    case ROUTE_LOAD_FAILURE: {
+      return {...state, busy: false};
+    }
     case GROUP_RESET: {
       return INITIAL_STATE;
-    }
-    case GROUP_LOAD_SUCCESS: {
-      const {data, permissions}: {
-        data: GroupData,
-        permissions: GroupPermissions,
-      } = action;
-      const {id, members} = data;
-      const {read=[], write=[]} = permissions;
-      return {
-        ...state,
-        id,
-        members,
-        data: omit(data, ["id", "last_modified", "members"]),
-        busy: false,
-        permissions: {read, write}
-      };
     }
     case GROUP_HISTORY_REQUEST: {
       return {...state, historyLoaded: false};

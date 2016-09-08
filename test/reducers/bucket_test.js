@@ -4,63 +4,83 @@ import bucket from "../../src/reducers/bucket";
 import {
   BUCKET_BUSY,
   BUCKET_RESET,
-  BUCKET_LOAD_SUCCESS,
   BUCKET_COLLECTIONS_REQUEST,
   BUCKET_COLLECTIONS_SUCCESS,
   BUCKET_GROUPS_REQUEST,
   BUCKET_GROUPS_SUCCESS,
   BUCKET_HISTORY_REQUEST,
   BUCKET_HISTORY_SUCCESS,
+  ROUTE_LOAD_REQUEST,
+  ROUTE_LOAD_SUCCESS,
+  ROUTE_LOAD_FAILURE,
 } from "../../src/constants";
 
 
 describe("bucket reducer", () => {
-  it("BUCKET_BUSY", () => {
-    expect(bucket(undefined, {type: BUCKET_BUSY, busy: true}))
-      .to.have.property("busy").eql(true);
-  });
-
-  it("BUCKET_RESET", () => {
-    const initial = bucket(undefined, {type: null});
-    const altered = bucket(initial, {type: BUCKET_BUSY, busy: true});
-    expect(bucket(altered, {type: BUCKET_RESET}))
-      .eql(initial);
-  });
-
-  it("BUCKET_LOAD_SUCCESS", () => {
-    expect(bucket(undefined, {
-      type: BUCKET_LOAD_SUCCESS,
-      data: {id: "buck", a: 2, last_modified: 42},
-      permissions: {
-        write: ["twitter:Natim"],
-        read: ["github:n1k0", "github:almet"],
-      }
-    })).eql({
-      busy: false,
-      id: "buck",
-      collections: [],
-      collectionsLoaded: false,
-      groups: [],
-      groupsLoaded: false,
-      history: [],
-      historyLoaded: false,
-      data: {a: 2},
-      permissions: {
-        write: ["twitter:Natim"],
-        read: ["github:n1k0", "github:almet"],
-      }
+  describe("BUCKET_BUSY", () => {
+    it("should set the busy flag", () => {
+      expect(bucket(undefined, {type: BUCKET_BUSY, busy: true}))
+        .to.have.property("busy").eql(true);
     });
   });
 
-  it("BUCKET_COLLECTIONS_REQUEST", () => {
-    const state = {collectionsLoaded: true};
-    const action = {type: BUCKET_COLLECTIONS_REQUEST};
-
-    expect(bucket(state, action))
-      .to.have.property("collectionsLoaded").eql(false);
+  describe("BUCKET_RESET", () => {
+    it("should reset the state to its initial value", () => {
+      const initial = bucket(undefined, {type: null});
+      const altered = bucket(initial, {type: BUCKET_BUSY, busy: true});
+      expect(bucket(altered, {type: BUCKET_RESET}))
+        .eql(initial);
+    });
   });
 
-  it("BUCKET_COLLECTIONS_SUCCESS", () => {
+  describe("ROUTE_LOAD_REQUEST", () => {
+    it("should set the busy flag", () => {
+      expect(bucket({busy: false}, {type: ROUTE_LOAD_REQUEST}))
+        .to.have.property("busy").eql(true);
+    });
+  });
+
+  describe("ROUTE_LOAD_SUCCESS", () => {
+    it("should preserve state when no bucket is passed", () => {
+      const initial = bucket(undefined, {type: null});
+
+      expect(bucket(undefined, {type: ROUTE_LOAD_SUCCESS}))
+        .eql(initial);
+    });
+
+    it("should update state when a bucket is passed", () => {
+      const state = bucket(undefined, {
+        type: ROUTE_LOAD_SUCCESS,
+        bucket: {
+          data: {id: "buck", last_modified: 42, foo: "bar"},
+          permissions: {read: ["a"], write: ["b"]},
+        },
+      });
+
+      expect(state.id).eql("buck");
+      expect(state.data).eql({foo: "bar"});
+      expect(state.permissions).eql({read: ["a"], write: ["b"]});
+    });
+  });
+
+  describe("ROUTE_LOAD_FAILURE", () => {
+    it("should clear the busy flag", () => {
+      expect(bucket({busy: true}, {type: ROUTE_LOAD_FAILURE}))
+        .to.have.property("busy").eql(false);
+    });
+  });
+
+  describe("BUCKET_COLLECTIONS_REQUEST", () => {
+    it("should update the collectionsLoaded flag", () => {
+      const state = {collectionsLoaded: true};
+      const action = {type: BUCKET_COLLECTIONS_REQUEST};
+
+      expect(bucket(state, action))
+        .to.have.property("collectionsLoaded").eql(false);
+    });
+  });
+
+  describe("BUCKET_COLLECTIONS_SUCCESS", () => {
     const state = {
       collections: [],
       collectionsLoaded: false,
@@ -70,21 +90,28 @@ describe("bucket reducer", () => {
       collections: [1, 2, 3],
     };
 
-    expect(bucket(state, action))
-      .to.have.property("collections").eql(action.collections);
-    expect(bucket(state, action))
-      .to.have.property("collectionsLoaded").eql(true);
+    it("should update the list of bucket collections", () => {
+      expect(bucket(state, action))
+        .to.have.property("collections").eql(action.collections);
+    });
+
+    it("should update the collectionsLoaded flag", () => {
+      expect(bucket(state, action))
+        .to.have.property("collectionsLoaded").eql(true);
+    });
   });
 
-  it("BUCKET_GROUPS_REQUEST", () => {
-    const state = {groupsLoaded: true};
-    const action = {type: BUCKET_GROUPS_REQUEST};
+  describe("BUCKET_GROUPS_REQUEST", () => {
+    it("should update the groupsLoaded flag", () => {
+      const state = {groupsLoaded: true};
+      const action = {type: BUCKET_GROUPS_REQUEST};
 
-    expect(bucket(state, action))
-      .to.have.property("groupsLoaded").eql(false);
+      expect(bucket(state, action))
+        .to.have.property("groupsLoaded").eql(false);
+    });
   });
 
-  it("BUCKET_GROUPS_SUCCESS", () => {
+  describe("BUCKET_GROUPS_SUCCESS", () => {
     const state = {
       groups: [],
       groupsLoaded: false,
@@ -94,21 +121,28 @@ describe("bucket reducer", () => {
       groups: [1, 2, 3],
     };
 
-    expect(bucket(state, action))
-      .to.have.property("groups").eql(action.groups);
-    expect(bucket(state, action))
-      .to.have.property("groupsLoaded").eql(true);
+    it("should update the list of groups", () => {
+      expect(bucket(state, action))
+        .to.have.property("groups").eql(action.groups);
+    });
+
+    it("should update the groupLoaded flag", () => {
+      expect(bucket(state, action))
+        .to.have.property("groupsLoaded").eql(true);
+    });
   });
 
-  it("BUCKET_HISTORY_REQUEST", () => {
-    const state = {historyLoaded: true};
-    const action = {type: BUCKET_HISTORY_REQUEST};
+  describe("BUCKET_HISTORY_REQUEST", () => {
+    it("should update the historyLoaded flag", () => {
+      const state = {historyLoaded: true};
+      const action = {type: BUCKET_HISTORY_REQUEST};
 
-    expect(bucket(state, action))
-      .to.have.property("historyLoaded").eql(false);
+      expect(bucket(state, action))
+        .to.have.property("historyLoaded").eql(false);
+    });
   });
 
-  it("BUCKET_HISTORY_SUCCESS", () => {
+  describe("BUCKET_HISTORY_SUCCESS", () => {
     const state = {
       history: [],
       historyLoaded: false,
@@ -118,9 +152,14 @@ describe("bucket reducer", () => {
       history: [1, 2, 3],
     };
 
-    expect(bucket(state, action))
-      .to.have.property("history").eql(action.history);
-    expect(bucket(state, action))
-      .to.have.property("historyLoaded").eql(true);
+    it("should update the list of history", () => {
+      expect(bucket(state, action))
+        .to.have.property("history").eql(action.history);
+    });
+
+    it("should update the historyLoaded flag", () => {
+      expect(bucket(state, action))
+        .to.have.property("historyLoaded").eql(true);
+    });
   });
 });

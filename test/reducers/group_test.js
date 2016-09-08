@@ -4,8 +4,10 @@ import group from "../../src/reducers/group";
 import {
   GROUP_BUSY,
   GROUP_RESET,
-  GROUP_LOAD_SUCCESS,
   GROUP_HISTORY_SUCCESS,
+  ROUTE_LOAD_REQUEST,
+  ROUTE_LOAD_SUCCESS,
+  ROUTE_LOAD_FAILURE,
 } from "../../src/constants";
 
 
@@ -22,22 +24,40 @@ describe("group reducer", () => {
       .eql(initial);
   });
 
-  it("GROUP_LOAD_SUCCESS", () => {
-    expect(group(undefined, {
-      type: GROUP_LOAD_SUCCESS,
-      data: {
-        id: "id",
-        members: ["blanca"]
-      },
-      permissions: {write: [], read: []},
-    })).eql({
-      id: "id",
-      busy: false,
-      members: ["blanca"],
-      data: {},
-      permissions: {write: [], read: []},
-      history: [],
-      historyLoaded: false,
+  describe("ROUTE_LOAD_REQUEST", () => {
+    it("should set the busy flag", () => {
+      expect(group({busy: false}, {type: ROUTE_LOAD_REQUEST}))
+        .to.have.property("busy").eql(true);
+    });
+  });
+
+  describe("ROUTE_LOAD_SUCCESS", () => {
+    it("should preserve state when no group is passed", () => {
+      const initial = group(undefined, {type: null});
+
+      expect(group(undefined, {type: ROUTE_LOAD_SUCCESS}))
+        .eql(initial);
+    });
+
+    it("should update state when a group is passed", () => {
+      const state = group(undefined, {
+        type: ROUTE_LOAD_SUCCESS,
+        group: {
+          data: {id: "grp", last_modified: 42, foo: "bar"},
+          permissions: {read: ["a"], write: ["b"]},
+        },
+      });
+
+      expect(state.id).eql("grp");
+      expect(state.data).eql({foo: "bar"});
+      expect(state.permissions).eql({read: ["a"], write: ["b"]});
+    });
+  });
+
+  describe("ROUTE_LOAD_FAILURE", () => {
+    it("should clear the busy flag", () => {
+      expect(group({busy: true}, {type: ROUTE_LOAD_FAILURE}))
+        .to.have.property("busy").eql(false);
     });
   });
 

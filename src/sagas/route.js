@@ -3,11 +3,7 @@ import { push as updatePath } from "react-router-redux";
 
 import { getClient } from "../client";
 import { storeRedirectURL } from "../actions/session";
-import { resetBucket, bucketBusy, bucketLoadSuccess } from "../actions/bucket";
-import { resetCollection, collectionBusy, collectionLoadSuccess } from "../actions/collection";
-import { resetGroup, groupBusy, groupLoadSuccess } from "../actions/group";
-import { resetRecord } from "../actions/record";
-import { recordLoadSuccess } from "../actions/record";
+import { routeLoadRequest, routeLoadSuccess, routeLoadFailure } from "../actions/route";
 import { notifyInfo, notifyError, clearNotifications } from "../actions/notifications";
 import { SESSION_AUTHENTICATED } from "../constants";
 
@@ -42,7 +38,9 @@ function identifyResponse(index, bid, cid, gid, rid) {
   }
 }
 
-export function* loadRoute(bid, cid, gid, rid) {
+export function* loadRoute(params) {
+  const {bid, cid, gid, rid} = params;
+
   // If we don't have anything to load, exit
   if (!bid && !cid && !gid && !rid) {
     return;
@@ -51,24 +49,7 @@ export function* loadRoute(bid, cid, gid, rid) {
   try {
     const client = getClient();
 
-    // Mark bucket and collection as busy if we are loading them
-    yield put(resetBucket(bid));
-    yield put(bucketBusy(true));
-
-    if (cid) {
-      yield put(resetCollection());
-      yield put(collectionBusy(true));
-    }
-
-    if (gid) {
-      yield put(resetGroup());
-      yield put(groupBusy(true));
-    }
-
-    if (rid) {
-      // XXX implement recordBusy()
-      yield put(resetRecord());
-    }
+    yield put(routeLoadRequest(params));
 
     // Fetch all currently selected resource data in a single batch request
     const res = yield call([client, client.batch], getBatchLoadFn(bid, cid, gid, rid));
@@ -87,38 +68,25 @@ export function* loadRoute(bid, cid, gid, rid) {
     const group      = bid && gid ?        responses[1] : null;
     const record     = bid && cid && rid ? responses[2] : null;
 
-    yield put(bucketLoadSuccess(bucket.data, bucket.permissions));
-    if (collection) {
-      yield put(collectionLoadSuccess({
-        ...collection.data,
-        bucket: bucket.data.id
-      }, collection.permissions));
-      if (record) {
-        yield put(recordLoadSuccess(record.data, record.permissions));
-      }
-    }
-    if (group) {
-      yield put(groupLoadSuccess(group.data, group.permissions));
-    }
+    yield put(routeLoadSuccess({bucket, collection, group, record}));
   } catch(error) {
+    console.log(error);
+    yield put(routeLoadFailure());
     yield put(notifyError("Couldn't retrieve route resources.", error));
-  } finally {
-    yield put(bucketBusy(false));
-    yield put(collectionBusy(false));
   }
 }
 
 export function* routeUpdated(getState, action) {
-  const {session} = getState();
+  const {session: {authenticated}} = getState();
   const {params, location} = action;
-  const {bid, cid, rid, gid, token} = params;
+  const {token} = params;
 
   // Clear notifications on each route update
   yield put(clearNotifications());
 
   // Check for an authenticated session; if we're requesting anything other
   // than the homepage, redirect to the homepage with a notification.
-  if (!session.authenticated && !token && location.pathname !== "/") {
+  if (!authenticated && !token && location.pathname !== "/") {
     yield put(storeRedirectURL(location.pathname));
     yield put(updatePath(""));
     yield put(notifyInfo("Authentication required.", {persistent: true}));
@@ -132,7 +100,7 @@ export function* routeUpdated(getState, action) {
     yield put(storeRedirectURL(null));
   } else {
     // Load route related resources
-    yield call(loadRoute, bid, cid, gid, rid);
+    yield call(loadRoute, params);
 
     // Side effect: scroll to page top on each route change
     yield call([window, window.scrollTo], 0, 0);

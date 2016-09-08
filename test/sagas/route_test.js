@@ -7,10 +7,6 @@ import { setClient } from "../../src/client";
 import * as actions from "../../src/actions/route";
 import * as notificationActions from "../../src/actions/notifications";
 import * as sessionActions from "../../src/actions/session";
-import * as collectionActions from "../../src/actions/collection";
-import * as groupActions from "../../src/actions/group";
-import * as bucketActions from "../../src/actions/bucket";
-import * as recordActions from "../../src/actions/record";
 import * as saga from "../../src/sagas/route";
 
 import { SESSION_AUTHENTICATED } from "../../src/constants";
@@ -20,41 +16,66 @@ describe("route sagas", () => {
   describe("loadRoute()", () => {
     describe("Nothing to load", () => {
       it("should do nothing", () => {
-        const loadRoute = saga.loadRoute();
+        const loadRoute = saga.loadRoute({});
 
         expect(loadRoute.next().done).eql(true);
       });
     });
 
     describe("Failure", () => {
-      it("should dispatch an error notification action", () => {
+      let loadRoute;
+
+      before(() => {
         const batch = () => {};
         setClient({batch});
-        const loadRoute = saga.loadRoute("bucket");
+        loadRoute = saga.loadRoute({bid: "bucket"});
         loadRoute.next();
+      });
 
+      it("should dispatch the routeLoadFailure action", () => {
         expect(loadRoute.throw("error").value)
+          .eql(put(actions.routeLoadFailure()));
+      });
+
+      it("should dispatch an error notification action", () => {
+        expect(loadRoute.next().value)
           .eql(put(notifyError("Couldn't retrieve route resources.", "error")));
       });
     });
 
-    describe("Bucket to load", () => {
+    describe("Bucket + Collection + Record", () => {
       let batch, loadRoute;
+
+      const params = {
+        bid: "bucket",
+        cid: "collection",
+        rid: "record",
+      };
+
+      const bucket = {
+        data: {id: "bucket", a: 1},
+        permissions: {write: [1], read: [2]}
+      };
+
+      const collection = {
+        data: {id: "collection", a: 1},
+        permissions: {write: [1], read: [2]}
+      };
+
+      const record = {
+        data: {id: "record", a: 1},
+        permissions: {write: [1], read: [2]}
+      };
 
       before(() => {
         batch = () => {};
         setClient({batch});
-        loadRoute = saga.loadRoute("bucket");
+        loadRoute = saga.loadRoute(params);
       });
 
-      it("should reset the selected bucket", () => {
+      it("should dispatch the routeLoadRequest action", () => {
         expect(loadRoute.next().value)
-          .eql(put(bucketActions.resetBucket()));
-      });
-
-      it("should mark the selected bucket as busy", () => {
-        expect(loadRoute.next().value)
-          .eql(put(bucketActions.bucketBusy(true)));
+          .eql(put(actions.routeLoadRequest(params)));
       });
 
       it("should batch fetch resources data", () => {
@@ -66,34 +87,37 @@ describe("route sagas", () => {
 
       it("should update bucket state from response data", () => {
         const responses = [
-          {status: 200, body: {data: {id: "bucket", a: 1},
-                               permissions: {write: [1], read: [2]}}}
+          {status: 200, body: bucket},
+          {status: 200, body: collection},
+          {status: 200, body: record},
         ];
+
         expect(loadRoute.next(responses).value)
-          .eql(put(bucketActions.bucketLoadSuccess({
-            id: "bucket",
-            a: 1
-          }, {write: [1], read: [2]})));
+          .eql(put(actions.routeLoadSuccess({
+            bucket,
+            collection,
+            record,
+            group: null,
+          })));
       });
     });
 
     describe("Failed bucket loading", () => {
       let batch, loadRoute;
 
+      const params = {
+        bid: "bucket",
+      };
+
       before(() => {
         batch = () => {};
         setClient({batch});
-        loadRoute = saga.loadRoute("bucket");
+        loadRoute = saga.loadRoute(params);
       });
 
-      it("should reset the selected bucket", () => {
+      it("should dispatch the routeLoadRequest action", () => {
         expect(loadRoute.next().value)
-          .eql(put(bucketActions.resetBucket()));
-      });
-
-      it("should mark the selected bucket as busy", () => {
-        expect(loadRoute.next().value)
-          .eql(put(bucketActions.bucketBusy(true)));
+          .eql(put(actions.routeLoadRequest(params)));
       });
 
       it("should batch fetch resources data", () => {
@@ -108,205 +132,15 @@ describe("route sagas", () => {
           {status: 403, body: {}}
         ];
         expect(loadRoute.next(responses).value)
-          .eql(put(bucketActions.bucketLoadSuccess({
-            id: "bucket",
-          }, {
-            write: [],
-            read: [],
+          .eql(put(actions.routeLoadSuccess({
+            bucket: {
+              data: {id: "bucket"},
+              permissions: {read: [], write: []}
+            },
+            collection: null,
+            group: null,
+            record: null,
           })));
-      });
-    });
-
-    describe("Bucket and collection to load", () => {
-      let batch, loadRoute;
-
-      before(() => {
-        batch = () => {};
-        setClient({batch});
-        loadRoute = saga.loadRoute("bucket", "collection");
-      });
-
-      it("should reset the selected bucket", () => {
-        expect(loadRoute.next().value)
-          .eql(put(bucketActions.resetBucket()));
-      });
-
-      it("should mark the selected bucket as busy", () => {
-        expect(loadRoute.next().value)
-          .eql(put(bucketActions.bucketBusy(true)));
-      });
-
-      it("should reset the selected collection", () => {
-        expect(loadRoute.next().value)
-          .eql(put(collectionActions.resetCollection()));
-      });
-
-      it("should mark the selected collection as busy", () => {
-        expect(loadRoute.next().value)
-          .eql(put(collectionActions.collectionBusy(true)));
-      });
-
-      it("should batch fetch resources data", () => {
-        expect(loadRoute.next().value)
-          .to.have.property("CALL")
-          .to.have.property("context")
-          .to.have.property("batch").eql(batch);
-      });
-
-      it("should update bucket state from response data", () => {
-        const responses = [
-          {status: 200, body: {data: {id: "bucket", a: 1},
-                               permissions: {write: [1], read: [2]}}},
-          {status: 200, body: {data: {id: "collection", a: 2},
-                               permissions: {write: [2], read: [3]}}},
-        ];
-        expect(loadRoute.next(responses).value)
-          .eql(put(bucketActions.bucketLoadSuccess({
-            id: "bucket",
-            a: 1
-          }, {write: [1], read: [2]})));
-      });
-
-      it("should update collection state from response data", () => {
-        expect(loadRoute.next().value)
-          .eql(put(collectionActions.collectionLoadSuccess({
-            id: "collection",
-            bucket: "bucket",
-            a: 2
-          }, {write: [2], read: [3]})));
-      });
-    });
-
-    describe("Bucket and group to load", () => {
-      let batch, loadRoute;
-
-      const responses = [
-        {status: 200, body: {data: {id: "bucket", a: 1},
-                             permissions: {write: [1], read: [2]}}},
-        {status: 200, body: {data: {id: "group", members: ["dalsin"]},
-                             permissions: {write: [2], read: [3]}}},
-      ];
-
-      before(() => {
-        batch = () => {};
-        setClient({batch});
-        loadRoute = saga.loadRoute("bucket", undefined, "group");
-      });
-
-      it("should reset the selected bucket", () => {
-        expect(loadRoute.next().value)
-          .eql(put(bucketActions.resetBucket()));
-      });
-
-      it("should mark the selected bucket as busy", () => {
-        expect(loadRoute.next().value)
-          .eql(put(bucketActions.bucketBusy(true)));
-      });
-
-      it("should reset the selected group", () => {
-        expect(loadRoute.next().value)
-          .eql(put(groupActions.resetGroup()));
-      });
-
-      it("should mark the selected group as busy", () => {
-        expect(loadRoute.next().value)
-          .eql(put(groupActions.groupBusy(true)));
-      });
-
-      it("should batch fetch resources data", () => {
-        expect(loadRoute.next().value)
-          .to.have.property("CALL")
-          .to.have.property("context")
-          .to.have.property("batch").eql(batch);
-      });
-
-      it("should update bucket state from response data", () => {
-        expect(loadRoute.next(responses).value)
-          .eql(put(bucketActions.bucketLoadSuccess({
-            id: "bucket",
-            a: 1
-          }, {write: [1], read: [2]})));
-      });
-
-      it("should update group state from response data", () => {
-        expect(loadRoute.next(responses).value)
-          .eql(put(groupActions.groupLoadSuccess({
-            id: "group",
-            members: ["dalsin"],
-          }, {write: [2], read: [3]})));
-      });
-    });
-
-    describe("Bucket, collection and record to load", () => {
-      let batch, loadRoute;
-      const responses = [
-        {status: 200, body: {data: {id: "bucket", a: 1}}},
-        {status: 200, body: {data: {id: "collection", a: 2}}},
-        {status: 200, body: {data: {id: "record", a: 3},
-                             permissions: {write: [1], read: [2]}}},
-      ];
-
-      before(() => {
-        batch = () => {};
-        setClient({batch});
-        loadRoute = saga.loadRoute("bucket", "collection", undefined, "record");
-      });
-
-      it("should reset the selected bucket", () => {
-        expect(loadRoute.next().value)
-          .eql(put(bucketActions.resetBucket()));
-      });
-
-      it("should mark the selected bucket as busy", () => {
-        expect(loadRoute.next().value)
-          .eql(put(bucketActions.bucketBusy(true)));
-      });
-
-      it("should reset the selected collection", () => {
-        expect(loadRoute.next().value)
-          .eql(put(collectionActions.resetCollection()));
-      });
-
-      it("should mark the selected collection as busy", () => {
-        expect(loadRoute.next().value)
-          .eql(put(collectionActions.collectionBusy(true)));
-      });
-
-      it("should reset the selected record", () => {
-        expect(loadRoute.next().value)
-          .eql(put(recordActions.resetRecord()));
-      });
-
-      it("should batch fetch resources data", () => {
-        expect(loadRoute.next().value)
-          .to.have.property("CALL")
-          .to.have.property("context")
-          .to.have.property("batch").eql(batch);
-      });
-
-      it("should update bucket state from response data", () => {
-        expect(loadRoute.next(responses).value)
-          .eql(put(bucketActions.bucketLoadSuccess({
-            id: "bucket",
-            a: 1
-          })));
-      });
-
-      it("should update collection state from response data", () => {
-        expect(loadRoute.next(responses).value)
-          .eql(put(collectionActions.collectionLoadSuccess({
-            id: "collection",
-            bucket: "bucket",
-            a: 2
-          })));
-      });
-
-      it("should update record state from response data", () => {
-        expect(loadRoute.next(responses).value)
-          .eql(put(recordActions.recordLoadSuccess({
-            id: "record",
-            a: 3
-          }, {write: [1], read: [2]})));
       });
     });
   });
@@ -381,7 +215,7 @@ describe("route sagas", () => {
 
       it("should load route resources", () => {
         expect(routeUpdated.next().value)
-          .eql(call(saga.loadRoute, params.bid, params.cid, params.gid, params.rid));
+          .eql(call(saga.loadRoute, params));
       });
 
       it("should scroll window to top", () => {
