@@ -4,8 +4,6 @@ import { put, call } from "redux-saga/effects";
 
 import { notifyError, notifySuccess } from "../../src/actions/notifications";
 import * as sessionActions from "../../src/actions/session";
-import * as collectionActions from "../../src/actions/collection";
-import * as groupActions from "../../src/actions/group";
 import * as actions from "../../src/actions/bucket";
 import * as saga from "../../src/sagas/bucket";
 import { setClient } from "../../src/client";
@@ -93,11 +91,6 @@ describe("bucket sagas", () => {
     describe("Success", () => {
       let bucket, updateBucket;
 
-      const response = {
-        data: {a: 1},
-        permissions: {write: [], read: []},
-      };
-
       before(() => {
         bucket = {setData(){}};
         setClient({bucket(){return bucket;}});
@@ -113,12 +106,6 @@ describe("bucket sagas", () => {
       it("should post new bucket data", () => {
         expect(updateBucket.next().value)
           .eql(call([bucket, bucket.setData], {a: 1}));
-      });
-
-      it("should update current bucket state", () => {
-        const {data, permissions} = response;
-        expect(updateBucket.next(response).value)
-          .eql(put(actions.bucketLoadSuccess(data, permissions)));
       });
 
       it("should dispatch a notification", () => {
@@ -291,11 +278,6 @@ describe("bucket sagas", () => {
       it("should post the collection data", () => {
         expect(updateCollection.next().value)
           .eql(call([collection, collection.setData], collectionData));
-      });
-
-      it("should dispatch the collectionLoadSuccess action", () => {
-        expect(updateCollection.next({data: collectionData}).value)
-          .eql(put(collectionActions.collectionLoadSuccess(collectionData)));
       });
 
       it("should update the route path", () => {
@@ -519,11 +501,6 @@ describe("bucket sagas", () => {
       it("should post the group data", () => {
         expect(updateGroup.next().value)
           .eql(call([bucket, bucket.updateGroup], groupData));
-      });
-
-      it("should dispatch the groupLoadSuccess action", () => {
-        expect(updateGroup.next({data: groupData}).value)
-          .eql(put(groupActions.groupLoadSuccess(groupData)));
       });
 
       it("should update the route path", () => {

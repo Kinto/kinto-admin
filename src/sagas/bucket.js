@@ -5,13 +5,10 @@ import { getClient } from "../client";
 import { notifySuccess, notifyError } from "../actions/notifications";
 import { sessionBusy, listBuckets } from "../actions/session";
 import {
-  bucketLoadSuccess,
   listBucketCollectionsSuccess,
   listBucketGroupsSuccess,
   listBucketHistorySuccess,
 } from "../actions/bucket";
-import { groupLoadSuccess } from "../actions/group";
-import { collectionLoadSuccess } from "../actions/collection";
 
 
 function getBucket(bid) {
@@ -43,8 +40,7 @@ export function* updateBucket(getState, action) {
   try {
     const bucket = getBucket(bid);
     yield put(sessionBusy(true));
-    const {data, permissions} = yield call([bucket, bucket.setData], bucketData);
-    yield put(bucketLoadSuccess(data, permissions));
+    yield call([bucket, bucket.setData], bucketData);
     yield put(notifySuccess("Bucket updated."));
   } catch(error) {
     yield put(notifyError("Couldn't update bucket.", error));
@@ -87,8 +83,7 @@ export function* updateCollection(getState, action) {
   const {bid, cid, collectionData} = action;
   try {
     const coll = getCollection(bid, cid);
-    const {data, permissions} = yield call([coll, coll.setData], collectionData);
-    yield put(collectionLoadSuccess(data, permissions));
+    yield call([coll, coll.setData], collectionData);
     yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
     yield put(notifySuccess("Collection properties updated."));
   } catch(error) {
@@ -169,8 +164,7 @@ export function* updateGroup(getState, action) {
   try {
     const bucket = getBucket(bid);
     const group = {id: gid, ...groupData};
-    const {data, permissions} = yield call([bucket, bucket.updateGroup], group);
-    yield put(groupLoadSuccess(data, permissions));
+    yield call([bucket, bucket.updateGroup], group);
     yield put(updatePath(`/buckets/${bid}/groups/${gid}/edit`));
     yield put(notifySuccess("Group properties updated."));
   } catch(error) {

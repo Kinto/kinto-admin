@@ -3,7 +3,7 @@ import { call, put } from "redux-saga/effects";
 
 import { getClient } from "../client";
 import { notifySuccess, notifyError } from "../actions/notifications";
-import { resetRecord } from "../actions/record";
+import { recordBusy, resetRecord } from "../actions/record";
 import * as actions from "../actions/collection";
 
 
@@ -78,7 +78,6 @@ export function* createRecord(getState, action) {
   const {bid, cid, record, attachment} = action;
   try {
     const coll = getCollection(bid, cid);
-    yield put(actions.collectionBusy(true));
     if ("attachments" in session.serverInfo.capabilities && attachment) {
       yield call([coll, coll.addAttachment], attachment, record);
     } else {
@@ -89,7 +88,7 @@ export function* createRecord(getState, action) {
   } catch(error) {
     yield put(notifyError("Couldn't create record.", error));
   } finally {
-    yield put(actions.collectionBusy(false));
+    yield put(recordBusy(false));
   }
 }
 
@@ -98,7 +97,6 @@ export function* updateRecord(getState, action) {
   const {bid, cid, rid, record, attachment} = action;
   try {
     const coll = getCollection(bid, cid);
-    yield put(actions.collectionBusy(true));
     if ("attachments" in session.serverInfo.capabilities && attachment) {
       yield call([coll, coll.addAttachment], attachment, {...record, id: rid});
     } else {
@@ -112,7 +110,7 @@ export function* updateRecord(getState, action) {
   } catch(error) {
     yield put(notifyError("Couldn't update record.", error));
   } finally {
-    yield put(actions.collectionBusy(false));
+    yield put(recordBusy(false));
   }
 }
 
@@ -120,14 +118,13 @@ export function* deleteRecord(getState, action) {
   const {bid, cid, rid} = action;
   try {
     const coll = getCollection(bid, cid);
-    yield put(actions.collectionBusy(true));
     yield call([coll, coll.deleteRecord], rid);
     yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
     yield put(notifySuccess("Record deleted."));
   } catch(error) {
     yield put(notifyError("Couldn't delete record.", error));
   } finally {
-    yield put(actions.collectionBusy(false));
+    yield put(recordBusy(false));
   }
 }
 

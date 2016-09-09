@@ -1,17 +1,11 @@
 /* @flow */
 
-import type {
-  Action,
-  CollectionData,
-  CollectionPermissions,
-  RecordData,
-} from "../types";
+import type { Action, RecordData } from "../types";
 
 import {
   ATTACHMENT_DELETE_REQUEST,
   COLLECTION_BUSY,
   COLLECTION_RESET,
-  COLLECTION_LOAD_SUCCESS,
   COLLECTION_HISTORY_REQUEST,
   COLLECTION_HISTORY_SUCCESS,
   COLLECTION_RECORDS_REQUEST,
@@ -30,13 +24,6 @@ export function collectionBusy(busy: boolean): Action {
 
 export function resetCollection(): Action {
   return {type: COLLECTION_RESET};
-}
-
-export function collectionLoadSuccess(
-  data: CollectionData,
-  permissions: CollectionPermissions
-): Action {
-  return {type: COLLECTION_LOAD_SUCCESS, data, permissions};
 }
 
 export function listRecords(bid: string, cid: string, sort: string): Action {
