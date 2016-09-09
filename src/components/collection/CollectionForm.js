@@ -228,7 +228,7 @@ export default class CollectionForm extends Component {
     if (creation) {
       return canCreateCollection(session, bucket);
     } else {
-      return canEditCollection(session, collection, bucket);
+      return canEditCollection(session, bucket, collection);
     }
   }
 

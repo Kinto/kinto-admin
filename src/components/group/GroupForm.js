@@ -93,7 +93,7 @@ export default class GroupForm extends Component {
     const {gid, session, bucket, group, formData, deleteGroup} = this.props;
     const creation = !formData;
     const hasWriteAccess = creation ? canCreateGroup(session, bucket)
-                                    : canEditGroup(session, group, bucket);
+                                    : canEditGroup(session, bucket, group);
     const formIsEditable = creation || hasWriteAccess;
     const showDeleteForm = !creation && hasWriteAccess;
 

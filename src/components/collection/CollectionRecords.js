@@ -225,7 +225,7 @@ function ListActions(props) {
   ];
   return (
     <div className="list-actions">
-      {canCreateRecord(session, collection, bucket) ?
+      {canCreateRecord(session, bucket, collection) ?
         [...defaultButtons, ...hooks] : null}
     </div>
   );

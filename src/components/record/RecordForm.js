@@ -127,9 +127,9 @@ export default class RecordForm extends Component {
   get allowEditing() {
     const {session, bucket, collection, record} = this.props;
     if (record) {
-      return canEditRecord(session, record, collection, bucket);
+      return canEditRecord(session, bucket, collection, record);
     } else {
-      return canCreateRecord(session, collection, bucket);
+      return canCreateRecord(session, bucket, collection);
     }
   }
 
