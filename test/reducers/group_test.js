@@ -12,16 +12,20 @@ import {
 
 
 describe("group reducer", () => {
-  it("GROUP_BUSY", () => {
-    expect(group(undefined, {type: GROUP_BUSY, busy: true}))
-      .to.have.property("busy").eql(true);
+  describe("GROUP_BUSY", () => {
+    it("should update the busy flag", () => {
+      expect(group(undefined, {type: GROUP_BUSY, busy: true}))
+        .to.have.property("busy").eql(true);
+    });
   });
 
-  it("GROUP_RESET", () => {
-    const initial = group(undefined, {type: null});
-    const altered = group(initial, {type: GROUP_BUSY, busy: true});
-    expect(group(altered, {type: GROUP_RESET}))
-      .eql(initial);
+  describe("GROUP_RESET", () => {
+    it("should reset group state", () => {
+      const initial = group(undefined, {type: null});
+      const altered = group(initial, {type: GROUP_BUSY, busy: true});
+      expect(group(altered, {type: GROUP_RESET}))
+        .eql(initial);
+    });
   });
 
   describe("ROUTE_LOAD_REQUEST", () => {
@@ -61,14 +65,16 @@ describe("group reducer", () => {
     });
   });
 
-  it("GROUP_HISTORY_SUCCESS", () => {
-    const history = [1, 2, 3];
-    const state = group(undefined, {
-      type: GROUP_HISTORY_SUCCESS,
-      history
-    });
+  describe("GROUP_HISTORY_SUCCESS", () => {
+    it("should update group history state", () => {
+      const history = [1, 2, 3];
+      const state = group(undefined, {
+        type: GROUP_HISTORY_SUCCESS,
+        history
+      });
 
-    expect(state.history).eql(history);
-    expect(state.historyLoaded).eql(true);
+      expect(state.history).eql(history);
+      expect(state.historyLoaded).eql(true);
+    });
   });
 });

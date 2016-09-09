@@ -118,14 +118,16 @@ describe("collection reducer", () => {
     });
   });
 
-  it("COLLECTION_HISTORY_SUCCESS", () => {
-    const history = [1, 2, 3];
-    const state = collection(undefined, {
-      type: COLLECTION_HISTORY_SUCCESS,
-      history
-    });
+  describe("COLLECTION_HISTORY_SUCCESS", () => {
+    it("should update history state", () => {
+      const history = [1, 2, 3];
+      const state = collection(undefined, {
+        type: COLLECTION_HISTORY_SUCCESS,
+        history
+      });
 
-    expect(state.history).eql(history);
-    expect(state.historyLoaded).eql(true);
+      expect(state.history).eql(history);
+      expect(state.historyLoaded).eql(true);
+    });
   });
 });

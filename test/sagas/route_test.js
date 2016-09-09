@@ -102,7 +102,7 @@ describe("route sagas", () => {
       });
     });
 
-    describe("Failed bucket loading", () => {
+    describe("Unauthorized bucket access", () => {
       let batch, loadRoute;
 
       const params = {
@@ -141,6 +141,47 @@ describe("route sagas", () => {
             group: null,
             record: null,
           })));
+      });
+    });
+
+    describe("Bucket not found", () => {
+      let batch, loadRoute;
+
+      const params = {
+        bid: "bucket",
+      };
+
+      before(() => {
+        batch = () => {};
+        setClient({batch});
+        loadRoute = saga.loadRoute(params);
+      });
+
+      it("should dispatch the routeLoadRequest action", () => {
+        expect(loadRoute.next().value)
+          .eql(put(actions.routeLoadRequest(params)));
+      });
+
+      it("should batch fetch resources data", () => {
+        expect(loadRoute.next().value)
+          .to.have.property("CALL")
+          .to.have.property("context")
+          .to.have.property("batch").eql(batch);
+      });
+
+      it("should dispatch the failure action", () => {
+        const responses = [
+          {status: 404, body: {}}
+        ];
+        expect(loadRoute.next(responses).value)
+          .eql(put(actions.routeLoadFailure()));
+      });
+
+      it("should dispatch a notification", () => {
+        expect(loadRoute.next().value)
+          .eql(put(notificationActions.notifyError(
+            "Couldn't retrieve route resources.",
+            {message: "Bucket bucket does not exist."})));
       });
     });
   });
