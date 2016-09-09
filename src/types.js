@@ -63,6 +63,7 @@ export type CollectionState = {
   busy: boolean,
   data: CollectionData,
   permissions: CollectionPermissions,
+  currentSort: string,
   records: RecordData[],
   recordsLoaded: boolean,
   hasNextRecords: boolean,

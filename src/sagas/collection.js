@@ -31,14 +31,16 @@ export function* deleteAttachment(getState, action) {
 }
 
 export function* listRecords(getState, action) {
-  const {collection, settings} = getState();
-  const defaultSort = collection.sort;
-  const {bid, cid, sort} = action;
+  const {
+    collection: {currentSort, data: {sort: defaultSort}},
+    settings: {maxPerPage},
+  } = getState();
+  const {bid, cid, sort = currentSort} = action;
   try {
     const coll = getCollection(bid, cid);
     const {data, hasNextPage, next} = yield call([coll, coll.listRecords], {
-      sort: sort || defaultSort,
-      limit: settings.maxPerPage,
+      sort: sort || currentSort || defaultSort,
+      limit: maxPerPage,
     });
     yield put(actions.listRecordsSuccess(data, hasNextPage, next));
   } catch(error) {
