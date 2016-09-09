@@ -40,6 +40,11 @@ export type BucketPermissions = {
   "group:create"?: string[],
 };
 
+export type BucketResource = {
+  data: BucketData,
+  permissions: BucketPermissions,
+};
+
 export type ClientError = {
   message: string,
   data: {
@@ -85,6 +90,11 @@ export type CollectionPermissions = {
   "record:create"?: string[],
 };
 
+export type CollectionResource = {
+  data: CollectionData,
+  permissions: CollectionPermissions,
+};
+
 export type GroupState = {
   id: ?string,
   members?: ?string[],
@@ -105,6 +115,11 @@ export type GroupPermissions = {
   read?: string[],
 };
 
+export type GroupResource = {
+  data: GroupData,
+  permissions: GroupPermissions,
+};
+
 export type Notification = {
   type: string,
   persistent: boolean,
@@ -115,6 +130,7 @@ export type Notification = {
 export type Notifications = Notification[];
 
 export type RecordState = {
+  busy: boolean,
   data: RecordData,
   permissions: RecordPermissions,
 };
@@ -128,6 +144,25 @@ export type RecordData = {
 export type RecordPermissions = {
   write: string[],
   read?: string[],
+};
+
+export type RecordResource = {
+  data: RecordData,
+  permissions: RecordPermissions,
+};
+
+export type RouteParams = {
+  bid: ?string,
+  cid: ?string,
+  gid: ?string,
+  rid: ?string,
+};
+
+export type RouteResources = {
+  bucket: BucketResource,
+  collection: ?CollectionResource,
+  record: ?RecordResource,
+  group: ?GroupResource,
 };
 
 export type SessionState = {

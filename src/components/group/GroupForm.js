@@ -125,7 +125,7 @@ export default class GroupForm extends Component {
       <div>
         {alert}
         {group.busy ?
-          <Spinner /> :
+          <Spinner/> :
           <Form
             schema={schema}
             uiSchema={formIsEditable ? _uiSchema :
