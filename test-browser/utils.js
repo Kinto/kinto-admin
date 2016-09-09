@@ -6,8 +6,14 @@ import btoa from "btoa";
 import staticServer from "../server/test";
 
 
+const KINTO_SERVER = "http://0.0.0.0:8888/v1";
 const NIGHTMARE_SHOW = !!process.env.NIGHTMARE_SHOW;
+
 let kintoServer;
+
+function delay(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
 
 export function startServers() {
   kintoServer = new KintoServer("http://0.0.0.0:8888/v1", {
@@ -16,7 +22,7 @@ export function startServers() {
   return Promise.all([
     kintoServer.start(),
     staticServer.start(),
-  ]).then(new Promise(r => setTimeout(r, 200)));
+  ]).then(delay(200));
 }
 
 export function stopServers() {
@@ -26,10 +32,15 @@ export function stopServers() {
   return Promise.all([
     kintoServer.killAll(),
     staticServer.stop(),
-  ]).then(new Promise(r => setTimeout(r, 200)));
+  ]).then(delay(200));
 }
 
-export function createBrowser(options={show: NIGHTMARE_SHOW}) {
+export function createBrowser(options={}) {
+  options = {
+    show: NIGHTMARE_SHOW,
+    persistent: false,
+    ...options,
+  };
   return Nightmare({
     waitTimeout: 60000,
     show: options.show,
@@ -56,7 +67,7 @@ export function authenticate(browser, username, password) {
     .goto("http://localhost:3000/")
     .wait(".rjsf")
     .type("#root_server", "")
-    .type("#root_server", "http://0.0.0.0:8888/v1")
+    .type("#root_server", KINTO_SERVER)
     .type("#root_credentials_username", "")
     .type("#root_credentials_username", username)
     .type("#root_credentials_password", "")
