@@ -40,7 +40,27 @@ describe("collection sagas", () => {
 
         before(() => {
           const action = collectionActions.listRecords("bucket", "collection");
-          const getState = () => ({settings, collection: {sort: "title"}});
+          const getState = () => ({settings, collection: {data: {sort: "-last_modified"}}});
+          listRecords = saga.listRecords(getState, action);
+        });
+
+        it("should list collection records", () => {
+          expect(listRecords.next().value)
+            .eql(call([collection, collection.listRecords], {sort: "-last_modified", limit: 42}));
+        });
+
+        it("should dispatch the listRecordsSuccess action", () => {
+          expect(listRecords.next({data: records}).value)
+            .eql(put(collectionActions.listRecordsSuccess(records)));
+        });
+      });
+
+      describe("Current sort", () => {
+        let listRecords;
+
+        before(() => {
+          const action = collectionActions.listRecords("bucket", "collection");
+          const getState = () => ({settings, collection: {currentSort: "title", data: {sort: "nope"}}});
           listRecords = saga.listRecords(getState, action);
         });
 
@@ -60,7 +80,7 @@ describe("collection sagas", () => {
 
         before(() => {
           const action = collectionActions.listRecords("bucket", "collection", "title");
-          const getState = () => ({settings, collection: {sort: "nope"}});
+          const getState = () => ({settings, collection: {currentSort: "nope", data: {sort: "nope"}}});
           listRecords = saga.listRecords(getState, action);
         });
 
@@ -83,7 +103,7 @@ describe("collection sagas", () => {
         collection = {listRecords() {}};
         const bucket = {collection() {return collection;}};
         setClient({bucket() {return bucket;}});
-        const getState = () => ({settings, collection: {}});
+        const getState = () => ({settings, collection: {data: {sort: "nope"}}});
         const action = collectionActions.listRecords("bucket", "collection");
         listRecords = saga.listRecords(getState, action);
         listRecords.next();

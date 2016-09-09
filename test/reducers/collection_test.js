@@ -33,11 +33,23 @@ describe("collection reducer", () => {
       })).to.have.property("recordsLoaded").eql(false);
     });
 
-    it("should update the sort parameter", () => {
+    it("should update the currentSort parameter", () => {
       expect(collection(undefined, {
         type: COLLECTION_RECORDS_REQUEST,
         sort: "title",
-      })).to.have.property("sort").eql("title");
+      })).to.have.property("currentSort").eql("title");
+    });
+
+    it("should use default prefered sort when none is provided", () => {
+      expect(collection({data: {sort: "plop"}}, {
+        type: COLLECTION_RECORDS_REQUEST,
+      })).to.have.property("currentSort").eql("plop");
+    });
+
+    it("should use default sort when none is provided", () => {
+      expect(collection({data: {}}, {
+        type: COLLECTION_RECORDS_REQUEST,
+      })).to.have.property("currentSort").eql("-last_modified");
     });
 
     it("should reset records list when the sort param changes", () => {

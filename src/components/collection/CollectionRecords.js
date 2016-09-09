@@ -81,16 +81,16 @@ function SortLink(props) {
 }
 
 function ColumnSortLink(props) {
-  const {column, sort, updateSort} = props;
-  if (!sort || column === "__json") {
+  const {column, currentSort, updateSort} = props;
+  if (!currentSort || column === "__json") {
     return null;
   }
   let active, direction;
   // Check if we're currently sorting on this field.
-  if (new RegExp(`^-?${column}$`).test(sort)) {
+  if (new RegExp(`^-?${column}$`).test(currentSort)) {
     // We're sorting on this field; check for direction.
     active = true;
-    direction = sort.startsWith("-") ? "down" : "up";
+    direction = currentSort.startsWith("-") ? "down" : "up";
   } else {
     // By default, expose links to sort ASC.
     active = false;
@@ -137,7 +137,7 @@ class Table extends Component {
       recordsLoaded,
       hasNextRecords,
       listNextRecords,
-      sort,
+      currentSort,
       schema,
       displayFields,
       deleteRecord,
@@ -164,7 +164,7 @@ class Table extends Component {
                     {this.getFieldTitle(displayField)}
                     {this.isSchemaProperty(displayField) ?
                       <ColumnSortLink
-                        sort={sort}
+                        currentSort={currentSort}
                         column={displayField}
                         updateSort={updateSort} /> : null}
                   </th>
@@ -174,7 +174,7 @@ class Table extends Component {
             <th>
               Last mod.
               <ColumnSortLink
-                sort={sort}
+                currentSort={currentSort}
                 column="last_modified"
                 updateSort={updateSort} />
             </th>
@@ -257,11 +257,12 @@ export default class CollectionRecords extends Component {
     const {
       busy,
       data,
+      currentSort,
       records,
       recordsLoaded,
       hasNextRecords,
     } = collection;
-    const {schema, displayFields, sort} = data;
+    const {schema, displayFields} = data;
 
     const listActions = (
       <ListActions
@@ -289,7 +290,7 @@ export default class CollectionRecords extends Component {
             recordsLoaded={recordsLoaded}
             hasNextRecords={hasNextRecords}
             listNextRecords={listNextRecords}
-            sort={sort}
+            currentSort={currentSort}
             schema={schema}
             displayFields={displayFields}
             deleteRecord={deleteRecord}
