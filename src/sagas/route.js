@@ -70,7 +70,6 @@ export function* loadRoute(params) {
 
     yield put(routeLoadSuccess({bucket, collection, group, record}));
   } catch(error) {
-    console.log(error);
     yield put(routeLoadFailure());
     yield put(notifyError("Couldn't retrieve route resources.", error));
   }
