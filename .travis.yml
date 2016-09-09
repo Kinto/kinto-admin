@@ -19,7 +19,6 @@ before_install:
 - .venv/bin/pip install https://github.com/Kinto/kinto/zipball/master
 install:
 - export DISPLAY=':99.0'
-- export DEBUG=nightmare
 - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
 - npm install
 - npm run build:gh-pages
