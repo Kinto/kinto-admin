@@ -246,6 +246,7 @@ export default class CollectionRecords extends Component {
     const {
       params,
       session,
+      bucket,
       collection,
       deleteRecord,
       listNextRecords,
@@ -267,6 +268,7 @@ export default class CollectionRecords extends Component {
       <ListActions
         bid={bid}
         cid={cid}
+        bucket={bucket}
         session={session}
         collection={collection}
         hooks={pluginHooks.ListActions} />
