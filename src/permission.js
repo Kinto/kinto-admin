@@ -46,13 +46,13 @@ export function canEditBucket(session: SessionState, bucket: BucketState): boole
 }
 
 export function canCreateCollection(session: SessionState, bucket: BucketState): boolean {
-  // You can createa a collection if you can write in the bucket or create a collection in it.
+  // You can create a collection if you can write in the bucket or create a collection in it.
   const canSession = can(session);
   return canSession.write(bucket) || canSession.createCollection(bucket);
 }
 
 export function canEditCollection(session: SessionState, bucket: BucketState, collection: CollectionState): boolean {
-  // You can create a group if you can write in the bucket or create a group in it.
+  // You can edit a collection if you can write in the bucket or in the collection.
   return [bucket, collection].some(can(session).write);
 }
 
@@ -71,11 +71,11 @@ export function canCreateRecord(session: SessionState, bucket: BucketState, coll
   const canSession = can(session);
 
   return [
-    // You can edit if you can write in the collection.
+    // You can create if you can write in the collection.
     canSession.write(collection),
-    // You can edit if you can create a record in the collection.
+    // You can create if you can create a record in the collection.
     canSession.createRecord(collection),
-    // You can edit if you can write in the bucket
+    // You can create if you can write in the bucket
     canSession.write(bucket)
   ].some(condition => condition);
 }
