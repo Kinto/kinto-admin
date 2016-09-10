@@ -14,9 +14,13 @@ import {
 } from "../src/permission";
 
 
+const CURRENT_USER = "fxa:current-user";
+const OTHER_USER = "fxa:other-user";
+
+
 describe("can()", () => {
   describe("Anonymous", () => {
-    const session = {authenticated: false, serverInfo: {user: {id: 1}}};
+    const session = {authenticated: false, serverInfo: {user: {id: CURRENT_USER}}};
 
     it("should check if access to a public resource is allowed", () => {
       const collection = {permissions: {read: [EVERYONE]}};
@@ -32,7 +36,7 @@ describe("can()", () => {
   });
 
   describe("Authenticated", () => {
-    const session = {authenticated: true, serverInfo: {user: {id: 1}}};
+    const session = {authenticated: true, serverInfo: {user: {id: CURRENT_USER}}};
 
     it("should check if access to a resource is allowed for authenticated users", () => {
       const collection = {permissions: {read: [AUTHENTICATED]}};
@@ -41,13 +45,13 @@ describe("can()", () => {
     });
 
     it("should check if access to a restricted resource is allowed", () => {
-      const collection = {permissions: {read: [1]}};
+      const collection = {permissions: {read: [CURRENT_USER]}};
 
       expect(can(session).read(collection)).eql(true);
     });
 
     it("should check if access to a restricted resource is disallowed", () => {
-      const collection = {permissions: {read: ["fxa:chucknorris"]}};
+      const collection = {permissions: {read: [OTHER_USER]}};
 
       expect(can(session).read(collection)).eql(false);
     });
@@ -55,33 +59,33 @@ describe("can()", () => {
 });
 
 describe("canEditBucket", () => {
-  const session = {authenticated: true, serverInfo: {user: {id: 1}}};
+  const session = {authenticated: true, serverInfo: {user: {id: CURRENT_USER}}};
 
   it("should check if a bucket can be edited", () => {
-    const bucket = {permissions: {write: [1]}};
+    const bucket = {permissions: {write: [CURRENT_USER]}};
 
     expect(canEditBucket(session, bucket)).eql(true);
   });
 
   it("should check if a bucket cannot be edited", () => {
-    const bucket = {permissions: {write: ["chucknorris"]}};
+    const bucket = {permissions: {write: [OTHER_USER]}};
 
     expect(canEditBucket(session, bucket)).eql(false);
   });
 });
 
 describe("canCreateCollection", () => {
-  const session = {authenticated: true, serverInfo: {user: {id: 1}}};
+  const session = {authenticated: true, serverInfo: {user: {id: CURRENT_USER}}};
 
   describe("collection:create permission", () => {
     it("should check if a collection can be created in a bucket", () => {
-      const bucket = {permissions: {"collection:create": [1]}};
+      const bucket = {permissions: {"collection:create": [CURRENT_USER]}};
 
       expect(canCreateCollection(session, bucket)).eql(true);
     });
 
     it("should check if a collection cannot be created in a bucket", () => {
-      const bucket = {permissions: {"collection:create": ["chucknorris"]}};
+      const bucket = {permissions: {"collection:create": [OTHER_USER]}};
 
       expect(canCreateCollection(session, bucket)).eql(false);
     });
@@ -89,13 +93,13 @@ describe("canCreateCollection", () => {
 
   describe("write permission", () => {
     it("should check if a collection can be created in a bucket", () => {
-      const bucket = {permissions: {write: [1]}};
+      const bucket = {permissions: {write: [CURRENT_USER]}};
 
       expect(canCreateCollection(session, bucket)).eql(true);
     });
 
     it("should check if a collection cannot be created in a bucket", () => {
-      const bucket = {permissions: {write: ["chucknorris"]}};
+      const bucket = {permissions: {write: [OTHER_USER]}};
 
       expect(canCreateCollection(session, bucket)).eql(false);
     });
@@ -103,42 +107,42 @@ describe("canCreateCollection", () => {
 });
 
 describe("canEditCollection", () => {
-  const session = {authenticated: true, serverInfo: {user: {id: 1}}};
+  const session = {authenticated: true, serverInfo: {user: {id: CURRENT_USER}}};
 
   it("should check if a collection can be edited", () => {
     const bucket = {permissions: {}};
-    const collection = {permissions: {write: [1]}};
+    const collection = {permissions: {write: [CURRENT_USER]}};
 
     expect(canEditCollection(session, bucket, collection)).eql(true);
   });
 
   it("should check if a bucket can be edited", () => {
-    const bucket = {permissions: {write: [1]}};
+    const bucket = {permissions: {write: [CURRENT_USER]}};
     const collection = {permissions: {}};
 
     expect(canEditCollection(session, bucket, collection)).eql(true);
   });
 
   it("should check if a collection cannot be edited", () => {
-    const bucket = {permissions: {write: ["chucknorris"]}};
-    const collection = {permissions: {write: ["chucknorris"]}};
+    const bucket = {permissions: {write: [OTHER_USER]}};
+    const collection = {permissions: {write: [OTHER_USER]}};
 
     expect(canEditCollection(session, bucket, collection)).eql(false);
   });
 });
 
 describe("canCreateGroup", () => {
-  const session = {authenticated: true, serverInfo: {user: {id: 1}}};
+  const session = {authenticated: true, serverInfo: {user: {id: CURRENT_USER}}};
 
   describe("group:create permission", () => {
     it("should check if a group can be created in a bucket", () => {
-      const bucket = {permissions: {"group:create": [1]}};
+      const bucket = {permissions: {"group:create": [CURRENT_USER]}};
 
       expect(canCreateGroup(session, bucket)).eql(true);
     });
 
     it("should check if a group cannot be created in a bucket", () => {
-      const bucket = {permissions: {"group:create": ["chucknorris"]}};
+      const bucket = {permissions: {"group:create": [OTHER_USER]}};
 
       expect(canCreateGroup(session, bucket)).eql(false);
     });
@@ -146,13 +150,13 @@ describe("canCreateGroup", () => {
 
   describe("write permission", () => {
     it("should check if a group can be created in a bucket", () => {
-      const bucket = {permissions: {write: [1]}};
+      const bucket = {permissions: {write: [CURRENT_USER]}};
 
       expect(canCreateGroup(session, bucket)).eql(true);
     });
 
     it("should check if a group cannot be created in a bucket", () => {
-      const bucket = {permissions: {write: ["chucknorris"]}};
+      const bucket = {permissions: {write: [OTHER_USER]}};
 
       expect(canCreateGroup(session, bucket)).eql(false);
     });
@@ -160,44 +164,44 @@ describe("canCreateGroup", () => {
 });
 
 describe("canEditGroup", () => {
-  const session = {authenticated: true, serverInfo: {user: {id: 1}}};
+  const session = {authenticated: true, serverInfo: {user: {id: CURRENT_USER}}};
 
   it("should check if a group can be edited", () => {
     const bucket = {permissions: {}};
-    const group = {permissions: {write: [1]}};
+    const group = {permissions: {write: [CURRENT_USER]}};
 
     expect(canEditGroup(session, bucket, group)).eql(true);
   });
 
   it("should check if a bucket can be edited", () => {
-    const bucket = {permissions: {write: [1]}};
+    const bucket = {permissions: {write: [CURRENT_USER]}};
     const group = {permissions: {}};
 
     expect(canEditGroup(session, bucket, group)).eql(true);
   });
 
   it("should check if a group cannot be edited", () => {
-    const bucket = {permissions: {write: ["chucknorris"]}};
-    const group = {permissions: {write: ["chucknorris"]}};
+    const bucket = {permissions: {write: [OTHER_USER]}};
+    const group = {permissions: {write: [OTHER_USER]}};
 
     expect(canEditGroup(session, bucket, group)).eql(false);
   });
 });
 
 describe("canCreateRecord", () => {
-  const session = {authenticated: true, serverInfo: {user: {id: 1}}};
+  const session = {authenticated: true, serverInfo: {user: {id: CURRENT_USER}}};
 
   describe("record:create permission", () => {
     it("should check if a record can be created in a collection", () => {
-      const bucket = {permissions: {"record:create": ["chucknorris"]}};
-      const collection = {permissions: {"record:create": [1]}};
+      const bucket = {permissions: {"record:create": [OTHER_USER]}};
+      const collection = {permissions: {"record:create": [CURRENT_USER]}};
 
       expect(canCreateRecord(session, bucket, collection)).eql(true);
     });
 
     it("should check if a record cannot be created in a collection", () => {
-      const bucket = {permissions: {"record:create": ["chucknorris"]}};
-      const collection = {permissions: {"record:create": ["chucknorris"]}};
+      const bucket = {permissions: {"record:create": [OTHER_USER]}};
+      const collection = {permissions: {"record:create": [OTHER_USER]}};
 
       expect(canCreateRecord(session, bucket, collection)).eql(false);
     });
@@ -205,8 +209,8 @@ describe("canCreateRecord", () => {
 
   describe("collection write permission", () => {
     it("should check if a record can be created in a collection", () => {
-      const bucket = {permissions: {write: ["chucknorris"]}};
-      const collection = {permissions: {write: [1]}};
+      const bucket = {permissions: {write: [OTHER_USER]}};
+      const collection = {permissions: {write: [CURRENT_USER]}};
 
       expect(canCreateRecord(session, bucket, collection)).eql(true);
     });
@@ -214,8 +218,8 @@ describe("canCreateRecord", () => {
 
   describe("bucket write permission", () => {
     it("should check if a record can be created in a collection", () => {
-      const bucket = {permissions: {write: [1]}};
-      const collection = {permissions: {write: ["chucknorris"]}};
+      const bucket = {permissions: {write: [CURRENT_USER]}};
+      const collection = {permissions: {write: [OTHER_USER]}};
 
       expect(canCreateRecord(session, bucket, collection)).eql(true);
     });
@@ -223,21 +227,21 @@ describe("canCreateRecord", () => {
 });
 
 describe("canEditRecord", () => {
-  const session = {authenticated: true, serverInfo: {user: {id: 1}}};
+  const session = {authenticated: true, serverInfo: {user: {id: CURRENT_USER}}};
 
   describe("record write permission", () => {
     it("should check if a record can be edited", () => {
-      const bucket = {permissions: {write: ["chucknorris"]}};
-      const collection = {permissions: {write: ["chucknorris"]}};
-      const record = {permissions: {write: [1]}};
+      const bucket = {permissions: {write: [OTHER_USER]}};
+      const collection = {permissions: {write: [OTHER_USER]}};
+      const record = {permissions: {write: [CURRENT_USER]}};
 
       expect(canEditRecord(session, bucket, collection, record)).eql(true);
     });
 
     it("should check if a record cannot be edited", () => {
-      const bucket = {permissions: {write: ["chucknorris"]}};
-      const collection = {permissions: {write: ["chucknorris"]}};
-      const record = {permissions: {write: ["chucknorris"]}};
+      const bucket = {permissions: {write: [OTHER_USER]}};
+      const collection = {permissions: {write: [OTHER_USER]}};
+      const record = {permissions: {write: [OTHER_USER]}};
 
       expect(canEditRecord(session, bucket, collection, record)).eql(false);
     });
@@ -245,9 +249,9 @@ describe("canEditRecord", () => {
 
   describe("collection write permission", () => {
     it("should check if a record can be edited", () => {
-      const bucket = {permissions: {write: ["chucknorris"]}};
-      const collection = {permissions: {write: [1]}};
-      const record = {permissions: {write: ["chucknorris"]}};
+      const bucket = {permissions: {write: [OTHER_USER]}};
+      const collection = {permissions: {write: [CURRENT_USER]}};
+      const record = {permissions: {write: [OTHER_USER]}};
 
       expect(canEditRecord(session, bucket, collection, record)).eql(true);
     });
@@ -255,9 +259,9 @@ describe("canEditRecord", () => {
 
   describe("bucket write permission", () => {
     it("should check if a record can be edited", () => {
-      const bucket = {permissions: {write: [1]}};
-      const collection = {permissions: {write: ["chucknorris"]}};
-      const record = {permissions: {write: ["chucknorris"]}};
+      const bucket = {permissions: {write: [CURRENT_USER]}};
+      const collection = {permissions: {write: [OTHER_USER]}};
+      const record = {permissions: {write: [OTHER_USER]}};
 
       expect(canEditRecord(session, bucket, collection, record)).eql(true);
     });
