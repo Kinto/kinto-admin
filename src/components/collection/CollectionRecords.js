@@ -213,7 +213,7 @@ class Table extends Component {
 }
 
 function ListActions(props) {
-  const {bid, cid, session, collection, hooks=[]} = props;
+  const {bid, cid, session, bucket, collection, hooks=[]} = props;
   if (session.busy || collection.busy) {
     return null;
   }
@@ -225,7 +225,7 @@ function ListActions(props) {
   ];
   return (
     <div className="list-actions">
-      {canCreateRecord(session, collection) ?
+      {canCreateRecord(session, bucket, collection) ?
         [...defaultButtons, ...hooks] : null}
     </div>
   );
@@ -246,6 +246,7 @@ export default class CollectionRecords extends Component {
     const {
       params,
       session,
+      bucket,
       collection,
       deleteRecord,
       listNextRecords,
@@ -268,6 +269,7 @@ export default class CollectionRecords extends Component {
       <ListActions
         bid={bid}
         cid={cid}
+        bucket={bucket}
         session={session}
         collection={collection}
         hooks={pluginHooks.ListActions} />

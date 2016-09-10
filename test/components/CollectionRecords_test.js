@@ -16,7 +16,18 @@ describe("CollectionRecords component", () => {
     sandbox.restore();
   });
 
-  const capabilities = {history: {}};
+  const capabilities = {
+    history: {},
+  };
+
+  const bucket = {
+    id: "bucket",
+    data: {},
+    permissions: {
+      read: [],
+      write: [],
+    },
+  };
 
   describe("Schema defined", () => {
     let node;
@@ -47,6 +58,7 @@ describe("CollectionRecords component", () => {
         params: {bid: "bucket", cid: "collection"},
         session: {authenticated: true, serverInfo: {user: {id: "plop"}}},
         pluginHooks: {},
+        bucket,
         collection,
         capabilities,
       });
@@ -88,6 +100,7 @@ describe("CollectionRecords component", () => {
         params: {bid: "bucket", cid: "collection"},
         session: {authenticated: true, serverInfo: {user: {id: "plop"}}},
         pluginHooks: {},
+        bucket,
         collection,
         capabilities,
       });
@@ -135,6 +148,7 @@ describe("CollectionRecords component", () => {
           params: {bid: "bucket", cid: "collection"},
           session: {authenticated: true, serverInfo: {user: {id: "basicauth:plop"}}},
           pluginHooks: {},
+          bucket,
           collection,
           capabilities,
         });
@@ -172,6 +186,7 @@ describe("CollectionRecords component", () => {
           params: {bid: "bucket", cid: "collection"},
           session: {authenticated: true, serverInfo: {user: {id: "basicauth:plop"}}},
           pluginHooks: {},
+          bucket,
           collection,
           capabilities,
         });

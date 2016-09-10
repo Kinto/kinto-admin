@@ -18,6 +18,15 @@ describe("RecordCreate component", () => {
     sandbox.restore();
   });
 
+  const bucket = {
+    id: "bucket",
+    data: {},
+    permissions: {
+      read: [],
+      write: [],
+    },
+  };
+
   describe("Schema defined", () => {
     let node, createRecord;
     const collection = {
@@ -42,6 +51,7 @@ describe("RecordCreate component", () => {
       node = createComponent(RecordCreate, {
         params: {bid: "bucket", cid: "collection"},
         session: {authenticated: true, serverInfo: {user: "plop"}},
+        bucket,
         collection,
         record,
         createRecord,
