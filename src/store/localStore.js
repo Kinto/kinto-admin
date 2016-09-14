@@ -41,7 +41,10 @@ export function loadSession(): ?Object {
 }
 
 export function saveSession(sessionState: SessionState) {
-  localStorage.setItem(SESSION_KEY, JSON.stringify(sessionState));
+  localStorage.setItem(SESSION_KEY, JSON.stringify({
+    ... sessionState,
+    buckets: [],
+  }));
 }
 
 export function clearSession() {

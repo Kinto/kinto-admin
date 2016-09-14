@@ -29,8 +29,11 @@ describe("localStore", () => {
   describe("session store", () => {
     const session = {
       server: "http://server.test/v1",
-      username: "user",
-      password: "pass",
+      credentials: {
+        username: "user",
+        password: "pass",
+      },
+      buckets: [{}]
     };
 
     before(() => {
@@ -41,10 +44,10 @@ describe("localStore", () => {
       expect(localStore.loadSession()).eql(null);
     });
 
-    it("should save and load session", () => {
+    it("should save and load session with the buckets emptied", () => {
       localStore.saveSession(session);
 
-      expect(localStore.loadSession()).eql(session);
+      expect(localStore.loadSession()).eql({...session, buckets: []});
     });
 
     it("should clear session", () => {
