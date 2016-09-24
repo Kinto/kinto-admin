@@ -203,7 +203,7 @@ For example, if you have the following record:
 ```
 {
   "data": {
-    "attachement": {
+    "attachment": {
       "filename": "font.ttf"
     }
   }
