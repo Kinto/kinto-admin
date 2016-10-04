@@ -151,6 +151,7 @@ export function* createGroup(getState, action) {
     const bucket = getBucket(bid);
     yield call([bucket, bucket.createGroup], gid, members, {
       data: groupData,
+      safe: true
     });
     yield put(updatePath(`/buckets/${bid}/groups/${gid}/edit`));
     yield put(notifySuccess("Group created."));

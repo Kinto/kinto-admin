@@ -450,7 +450,8 @@ describe("bucket sagas", () => {
       it("should post the collection data", () => {
         expect(createGroup.next().value)
           .eql(call([bucket, bucket.createGroup], "group", groupData.members, {
-            data: groupData
+            data: groupData,
+            safe: true
           }));
       });
 

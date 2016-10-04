@@ -81,9 +81,9 @@ export function* createRecord(getState, action) {
   try {
     const coll = getCollection(bid, cid);
     if ("attachments" in session.serverInfo.capabilities && attachment) {
-      yield call([coll, coll.addAttachment], attachment, record);
+      yield call([coll, coll.addAttachment], attachment, record, {safe: true});
     } else {
-      yield call([coll, coll.createRecord], record);
+      yield call([coll, coll.createRecord], record, {safe: true});
     }
     yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
     yield put(notifySuccess("Record added."));
@@ -153,7 +153,7 @@ export function* bulkCreateRecords(getState, action) {
     } else {
       const {errors, published} = yield call([coll, coll.batch], (batch) => {
         for (const record of records) {
-          batch.createRecord(record);
+          batch.createRecord(record, {safe: true});
         }
       }, {aggregate: true});
       if (errors.length > 0) {

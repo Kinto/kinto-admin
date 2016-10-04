@@ -194,7 +194,7 @@ describe("collection sagas", () => {
 
       it("should create the record", () => {
         expect(createRecord.next().value)
-          .eql(call([collection, collection.createRecord], record));
+          .eql(call([collection, collection.createRecord], record, {safe: true}));
       });
 
       it("should update the route path", () => {
@@ -234,7 +234,7 @@ describe("collection sagas", () => {
 
       it("should post the attachment", () => {
         expect(createRecord.next().value)
-          .eql(call([collection, collection.addAttachment], attachment, record));
+          .eql(call([collection, collection.addAttachment], attachment, record, {safe: true}));
       });
 
       it("should update the route path", () => {
