@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import timeago from 'timeago.js';
 
 
 class HistoryRow extends Component {
@@ -25,7 +26,9 @@ class HistoryRow extends Component {
     return (
       <tbody>
         <tr>
-          <td>{date}</td>
+          <td>
+            <span title={date}>{timeago().format(new Date(date))}</span>
+          </td>
           <td>{action}</td>
           <td>{resource_name}</td>
           <td>{target && target.data && target.data.id}</td>
@@ -56,7 +59,7 @@ export default class HistoryTable extends Component {
       <table className="table table-striped table-bordered record-list">
         <thead>
           <tr>
-            <th>Date</th>
+            <th>When</th>
             <th>Action</th>
             <th>Resource</th>
             <th>Id</th>
