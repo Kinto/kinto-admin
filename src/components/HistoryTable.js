@@ -23,11 +23,12 @@ class HistoryRow extends Component {
       target,
       user_id,
     } = entry;
+    const tzDate = date + " UTC";
     return (
       <tbody>
         <tr>
           <td>
-            <span title={date}>{timeago().format(new Date(date))}</span>
+            <span title={tzDate}>{timeago().format(new Date(tzDate))}</span>
           </td>
           <td>{action}</td>
           <td>{resource_name}</td>
