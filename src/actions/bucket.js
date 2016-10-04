@@ -34,8 +34,8 @@ export function updateBucket(bid: string, bucketData: BucketData): Action {
   return {type: BUCKET_UPDATE_REQUEST, bid, bucketData};
 }
 
-export function deleteBucket(bid: string): Action {
-  return {type: BUCKET_DELETE_REQUEST, bid};
+export function deleteBucket(bid: string, last_modified: number): Action {
+  return {type: BUCKET_DELETE_REQUEST, bid, last_modified};
 }
 
 export function resetBucket(): Action {

@@ -20,6 +20,7 @@ import { omit } from "../utils";
 const INITIAL_STATE: BucketState = {
   busy: false,
   id: null,
+  last_modified: null,
   data: {},
   groups: [],
   groupsLoaded: false,
@@ -40,11 +41,12 @@ function load(state: BucketState, bucket: BucketResource): BucketState {
     return {...state, busy: false};
   }
   const {data, permissions} = bucket;
-  const {id} = data;
+  const {id, last_modified} = data;
   return {
     ...state,
     busy: false,
     id,
+    last_modified,
     data: omit(data, ["id", "last_modified"]),
     permissions,
   };

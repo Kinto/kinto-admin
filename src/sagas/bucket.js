@@ -50,11 +50,11 @@ export function* updateBucket(getState, action) {
 }
 
 export function* deleteBucket(getState, action) {
-  const { bid } = action;
+  const { bid, last_modified } = action;
   try {
     const client = getClient();
     yield put(sessionBusy(true));
-    yield call([client, client.deleteBucket], bid);
+    yield call([client, client.deleteBucket], bid, {safe: true, last_modified});
     yield put(listBuckets());
     yield put(updatePath("/"));
     yield put(notifySuccess("Bucket deleted."));

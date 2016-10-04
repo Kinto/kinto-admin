@@ -7,10 +7,11 @@ import BucketTabs from "./BucketTabs";
 
 export default class BucketEdit extends Component {
   deleteBucket = (bid) => {
-    const {deleteBucket} = this.props;
+    const {deleteBucket, bucket} = this.props;
+    const {last_modified} = bucket;
     if (confirm("This will delete the bucket and all the collections and " +
                 "records it contains. Are you sure?")) {
-      deleteBucket(bid);
+      deleteBucket(bid, last_modified);
     }
   };
 

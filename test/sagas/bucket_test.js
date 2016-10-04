@@ -147,7 +147,7 @@ describe("bucket sagas", () => {
 
       before(() => {
         client = setClient({deleteBucket() {}});
-        const action = actions.deleteBucket("bucket");
+        const action = actions.deleteBucket("bucket", 42);
         deleteBucket = saga.deleteBucket(() => {}, action);
       });
 
@@ -156,9 +156,12 @@ describe("bucket sagas", () => {
           .eql(put(sessionActions.sessionBusy(true)));
       });
 
-      it("should fetch collection attributes", () => {
+      it("should fetch perform a deleteBucket", () => {
         expect(deleteBucket.next().value)
-          .eql(call([client, client.deleteBucket], "bucket"));
+          .eql(call([client, client.deleteBucket], "bucket", {
+            safe: true,
+            last_modified: 42
+          }));
       });
 
       it("should reload the list of buckets/collections", () => {
