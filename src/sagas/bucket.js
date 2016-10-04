@@ -37,10 +37,11 @@ export function* createBucket(getState, action) {
 
 export function* updateBucket(getState, action) {
   const {bid, bucketData} = action;
+  const {last_modified} = bucketData;
   try {
     const bucket = getBucket(bid);
     yield put(sessionBusy(true));
-    yield call([bucket, bucket.setData], bucketData);
+    yield call([bucket, bucket.setData], bucketData, {safe: true, last_modified});
     yield put(notifySuccess("Bucket updated."));
   } catch(error) {
     yield put(notifyError("Couldn't update bucket.", error));

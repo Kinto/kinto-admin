@@ -15,10 +15,12 @@ export default class BucketEdit extends Component {
     }
   };
 
-  onSubmit = ({name, data}) => {
-    const {params, updateBucket} = this.props;
+  onSubmit = (formData) => {
+    const {params, updateBucket, bucket} = this.props;
     const {bid} = params;
-    updateBucket(bid, data);
+    const {last_modified} = bucket;
+    const savedBucket = {...formData, last_modified};
+    updateBucket(bid, savedBucket);
   }
 
   render() {
