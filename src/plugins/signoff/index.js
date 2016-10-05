@@ -36,9 +36,10 @@ function* handleSignoffRequest(getState, action) {
 class SignoffButton extends React.Component {
   render() {
     const {getState, dispatch} = this.props;
-    const {collection:collectionState, session: sessionState} = getState();
+    const {collection: collectionState, bucket: bucketState, session: sessionState} = getState();
     const {serverInfo} = sessionState;
-    const {bucket: bid, name: cid} = collectionState;
+    const {id: bid} = bucketState;
+    const {id: cid} = collectionState;
 
     // Hide button if server does not support signoff.
     const capability = serverInfo.capabilities.signer;
