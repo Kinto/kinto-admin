@@ -97,6 +97,16 @@ const schema = {
       title: "Sort",
       default: "-last_modified",
     },
+    cache_expires: {
+      type: "integer",
+      title: "Cache expires",
+      default: 0,
+      description: (
+        <p>
+          (in seconds) add <a href="https://kinto.readthedocs.io/en/stable/api/1.x/collections.html#collection-caching">client cache headers on read-only requests</a>.
+        </p>
+      )
+    },
     displayFields: {
       type: "array",
       title: "Records list columns",
@@ -141,7 +151,7 @@ const schema = {
 };
 
 const uiSchema = {
-  "ui:order": ["id", "schema", "uiSchema", "sort", "displayFields", "attachment"],
+  "ui:order": ["id", "schema", "uiSchema", "sort", "cache_expires", "displayFields", "attachment"],
   id: {
     "ui:help": "The name should only contain letters, numbers, dashes or underscores."
   },
