@@ -5,9 +5,12 @@ import RecordForm from "./RecordForm";
 
 export default class RecordEdit extends Component {
   onSubmit = ({__attachment__: attachment, ...record}) => {
-    const {params, updateRecord} = this.props;
+    const {params, updateRecord, record: loadedRecord} = this.props;
     const {bid, cid, rid} = params;
-    updateRecord(bid, cid, rid, record, attachment);
+    const {data} = loadedRecord;
+    const {last_modified} = data;
+    const savedRecord = {...record, last_modified};
+    updateRecord(bid, cid, rid, savedRecord, attachment);
   }
 
   render() {

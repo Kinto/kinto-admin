@@ -97,14 +97,22 @@ export function* createRecord(getState, action) {
 export function* updateRecord(getState, action) {
   const {session} = getState();
   const {bid, cid, rid, record, attachment} = action;
+  const {last_modified} = record;
   try {
     const coll = getCollection(bid, cid);
     if ("attachments" in session.serverInfo.capabilities && attachment) {
-      yield call([coll, coll.addAttachment], attachment, {...record, id: rid});
+      yield call([coll, coll.addAttachment], attachment, {...record, id: rid}, {
+        safe: true,
+        last_modified
+      });
     } else {
       // Note: We update using PATCH to keep existing record properties possibly
       // not defined by the JSON schema, if any.
-      yield call([coll, coll.updateRecord], {...record, id: rid}, {patch: true});
+      yield call([coll, coll.updateRecord], {...record, id: rid}, {
+        patch: true,
+        safe: true,
+        last_modified
+      });
     }
     yield put(resetRecord());
     yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
