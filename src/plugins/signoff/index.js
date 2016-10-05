@@ -5,6 +5,7 @@ import { push as updatePath } from "react-router-redux";
 
 import { getClient } from "../../client";
 import { notifySuccess, notifyError } from "../../actions/notifications";
+import ProgressBar from "./ProgressBar.js";
 
 
 const PLUGIN_REVIEW_REQUEST = "PLUGIN_REVIEW_REQUEST";
@@ -84,11 +85,29 @@ class SignoffButton extends React.Component {
       return null;
     }
 
-    const {status="work-in-progress"} = collectionState.data;
-    let action;
-    let label;
+    const {
+      status,
+      last_author,
+      last_editor,
+      last_reviewer } = collectionState.data;
+    const steps = [
+      {label: "Work in progress", details: "Step 1"},
+      {label: "Waiting review", details: "Step 2"},
+      {label: "Signed", details: "Step 3"},
+    ];
+    // Default to request review
+    let step = 0;
+    let buttons = (
+        <a className="btn btn-info"
+           href="#"
+           onClick={(event) => {
+             event.preventDefault();
+             dispatch(requestReview());
+           }}>Request review</a>
+      );
     if (status === "to-review") {
-      return (
+      step = 1;
+      buttons = (
         <span>
           <a className="btn btn-success"
              href="#"
@@ -106,28 +125,21 @@ class SignoffButton extends React.Component {
         </span>
       );
     } else if (status === "signed") {
-      action = approveChanges();
-      label = "Re-sign";
-      return (
+      step = 2;
+      buttons = (
           <a className="btn btn-info"
              href="#"
              onClick={(event) => {
                event.preventDefault();
-               dispatch(action);
-             }}>{label}</a>
+               dispatch(approveChanges());
+             }}>Re-sign</a>
       );
     }
-
-    // Default to request review
-    action = requestReview();
-    label = "Request review";
     return (
-        <a className="btn btn-info"
-           href="#"
-           onClick={(event) => {
-             event.preventDefault();
-             dispatch(action);
-           }}>{label}</a>
+      <div>
+        <ProgressBar active={step} steps={steps}/>
+        {buttons}
+      </div>
       );
   }
 }
