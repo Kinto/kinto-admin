@@ -74,8 +74,8 @@ export function updateCollection(bid: string, cid: string, collectionData: Colle
   return {type: COLLECTION_UPDATE_REQUEST, bid, cid, collectionData};
 }
 
-export function deleteCollection(bid: string, cid: string): Action {
-  return {type: COLLECTION_DELETE_REQUEST, bid, cid};
+export function deleteCollection(bid: string, cid: string, last_modified: number): Action {
+  return {type: COLLECTION_DELETE_REQUEST, bid, cid, last_modified};
 }
 
 export function createGroup(bid: string, groupData: GroupData): Action {

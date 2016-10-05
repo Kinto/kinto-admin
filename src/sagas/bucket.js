@@ -93,10 +93,10 @@ export function* updateCollection(getState, action) {
 }
 
 export function* deleteCollection(getState, action) {
-  const {bid, cid} = action;
+  const {bid, cid, last_modified} = action;
   try {
     const bucket = getBucket(bid);
-    yield call([bucket, bucket.deleteCollection], cid);
+    yield call([bucket, bucket.deleteCollection], cid, {safe: true, last_modified});
     yield put(updatePath(""));
     yield put(notifySuccess("Collection deleted."));
     yield put(listBuckets());
