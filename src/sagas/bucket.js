@@ -82,9 +82,10 @@ export function* createCollection(getState, action) {
 
 export function* updateCollection(getState, action) {
   const {bid, cid, collectionData} = action;
+  const {last_modified} = collectionData;
   try {
     const coll = getCollection(bid, cid);
-    yield call([coll, coll.setData], collectionData);
+    yield call([coll, coll.setData], collectionData, {safe: true, last_modified});
     yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
     yield put(notifySuccess("Collection properties updated."));
   } catch(error) {

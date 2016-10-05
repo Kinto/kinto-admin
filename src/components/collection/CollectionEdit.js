@@ -7,9 +7,11 @@ import CollectionTabs from "./CollectionTabs";
 
 export default class CollectionEdit extends Component {
   onSubmit = (formData) => {
-    const {params, updateCollection} = this.props;
+    const {params, updateCollection, collection} = this.props;
     const {bid, cid} = params;
-    updateCollection(bid, cid, formData);
+    const {last_modified} = collection;
+    const savedCollection = {...formData, last_modified};
+    updateCollection(bid, cid, savedCollection);
   };
 
   deleteCollection = (cid) => {
