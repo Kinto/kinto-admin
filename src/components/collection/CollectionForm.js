@@ -101,7 +101,11 @@ const schema = {
       type: "integer",
       title: "Cache expires",
       default: 0,
-      description: "(in seconds) add client cache headers on read-only requests."
+      description: (
+        <p>
+          (in seconds) add <a href="https://kinto.readthedocs.io/en/stable/api/1.x/collections.html#collection-caching">client cache headers on read-only requests</a>.
+        </p>
+      )
     },
     displayFields: {
       type: "array",
