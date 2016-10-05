@@ -87,31 +87,48 @@ class SignoffButton extends React.Component {
     const {status="work-in-progress"} = collectionState.data;
     let action;
     let label;
-    switch(status) {
-      case "work-in-progress":
-        action = requestReview();
-        label = "Request review";
-        break;
-      case "to-review":
-        action = approveChanges();
-        label = "Approve changes";
-        break;
-      case "signed":
-        action = approveChanges();
-        label = "Re-sign";
-        break;
-      // XXX: empty ?
-      // XXX: decline: to-review -> work-in-progress
+    if (status === "to-review") {
+      return (
+        <span>
+          <a className="btn btn-success"
+             href="#"
+             onClick={(event) => {
+               event.preventDefault();
+               dispatch(approveChanges());
+             }}><i className="glyphicon glyphicon-ok"></i> Approve changes</a>
+          <a className="btn btn-danger"
+             href="#"
+             onClick={(event) => {
+               event.preventDefault();
+               dispatch(declineChanges());
+             }}><i className="glyphicon glyphicon-remove"></i> Decline changes</a>
+
+        </span>
+      );
+    } else if (status === "signed") {
+      action = approveChanges();
+      label = "Re-sign";
+      return (
+          <a className="btn btn-info"
+             href="#"
+             onClick={(event) => {
+               event.preventDefault();
+               dispatch(action);
+             }}>{label}</a>
+      );
     }
 
+    // Default to request review
+    action = requestReview();
+    label = "Request review";
     return (
-      <a className="btn btn-info"
-         href="#"
-         onClick={(event) => {
-           event.preventDefault();
-           dispatch(action);
-         }}>{label}</a>
-    );
+        <a className="btn btn-info"
+           href="#"
+           onClick={(event) => {
+             event.preventDefault();
+             dispatch(action);
+           }}>{label}</a>
+      );
   }
 }
 
