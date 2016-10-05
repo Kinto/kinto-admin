@@ -167,7 +167,8 @@ export function* updateGroup(getState, action) {
   try {
     const bucket = getBucket(bid);
     const group = {id: gid, ...groupData};
-    yield call([bucket, bucket.updateGroup], group);
+    const {last_modified} = group;
+    yield call([bucket, bucket.updateGroup], group, {safe: true, last_modified});
     yield put(updatePath(`/buckets/${bid}/groups/${gid}/edit`));
     yield put(notifySuccess("Group properties updated."));
   } catch(error) {
