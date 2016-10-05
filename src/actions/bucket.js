@@ -86,6 +86,6 @@ export function updateGroup(bid: string, gid: string, groupData: GroupData): Act
   return {type: GROUP_UPDATE_REQUEST, bid, gid, groupData};
 }
 
-export function deleteGroup(bid: string, gid: string): Action {
-  return {type: GROUP_DELETE_REQUEST, bid, gid};
+export function deleteGroup(bid: string, gid: string, last_modified: number): Action {
+  return {type: GROUP_DELETE_REQUEST, bid, gid, last_modified};
 }

@@ -14,6 +14,7 @@ import { omit } from "../utils";
 
 export const INITIAL_STATE: GroupState = {
   id: null,
+  last_modified: null,
   members: [],
   data: {},
   busy: false,
@@ -30,11 +31,12 @@ function load(state: GroupState, group: GroupResource): GroupState {
     return {...state, busy: false};
   }
   const {permissions, data} = group;
-  const {id, members} = data;
+  const {id, last_modified, members} = data;
   return {
     ...state,
     busy: false,
     id,
+    last_modified,
     members,
     data: omit(data, ["id", "last_modified", "members"]),
     permissions,

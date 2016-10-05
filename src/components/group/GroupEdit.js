@@ -13,10 +13,11 @@ export default class GroupEdit extends Component {
   };
 
   deleteGroup = (gid) => {
-    const {deleteGroup, params} = this.props;
+    const {deleteGroup, params, group} = this.props;
     const {bid} = params;
+    const {last_modified} = group;
     if (confirm("This will delete the group. Are you sure?")) {
-      deleteGroup(bid, gid);
+      deleteGroup(bid, gid, last_modified);
     }
   };
 

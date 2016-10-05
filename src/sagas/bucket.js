@@ -176,10 +176,10 @@ export function* updateGroup(getState, action) {
 }
 
 export function* deleteGroup(getState, action) {
-  const {bid, gid} = action;
+  const {bid, gid, last_modified} = action;
   try {
     const bucket = getBucket(bid);
-    yield call([bucket, bucket.deleteGroup], gid);
+    yield call([bucket, bucket.deleteGroup], gid, {safe: true, last_modified});
     yield put(updatePath(`/buckets/${bid}/groups`));
     yield put(notifySuccess("Group deleted."));
   } catch(error) {
