@@ -7,11 +7,9 @@ import GroupTabs from "./GroupTabs";
 
 export default class GroupEdit extends Component {
   onSubmit = (formData) => {
-    const {params, updateGroup, group} = this.props;
+    const {params, updateGroup} = this.props;
     const {bid, gid} = params;
-    const {last_modified} = group;
-    const savedGroup = {...formData, last_modified};
-    updateGroup(bid, gid, savedGroup);
+    updateGroup(bid, gid, formData);
   };
 
   deleteGroup = (gid) => {

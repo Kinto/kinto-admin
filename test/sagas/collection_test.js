@@ -284,6 +284,9 @@ describe("collection sagas", () => {
             serverInfo: {
               capabilities: {}
             }
+          },
+          record: {
+            data: {last_modified: 42}
           }
         };
       };
@@ -362,6 +365,9 @@ describe("collection sagas", () => {
                 attachments: {}
               }
             }
+          },
+          record: {
+            data: {last_modified: 42}
           }
         };
       };

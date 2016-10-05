@@ -94,8 +94,10 @@ describe("bucket sagas", () => {
       before(() => {
         bucket = {setData(){}};
         setClient({bucket(){return bucket;}});
-        const action = actions.updateBucket("bucket", {a: 1, last_modified: 42});
-        updateBucket = saga.updateBucket(()  => {}, action);
+        const action = actions.updateBucket("bucket", {a: 1});
+        updateBucket = saga.updateBucket(()  =>  ({
+          bucket: {last_modified: 42}
+        }), action);
       });
 
       it("should mark the current session as busy", () => {
@@ -124,7 +126,9 @@ describe("bucket sagas", () => {
 
       before(() => {
         const action = actions.updateBucket("bucket", {});
-        updateBucket = saga.updateBucket(() => {}, action);
+        updateBucket = saga.updateBucket(() =>  ({
+          bucket: {last_modified: 42}
+        }), action);
         updateBucket.next();
         updateBucket.next();
       });
@@ -273,12 +277,10 @@ describe("bucket sagas", () => {
         collection = {setData() {}};
         bucket = {collection() {return collection;}};
         setClient({bucket() {return bucket;}});
-        const action = actions.updateCollection(
-          "bucket", "collection", {
-            ...collectionData,
-            last_modified: 42,
-          });
-        updateCollection = saga.updateCollection(() => {}, action);
+        const action = actions.updateCollection("bucket", "collection", collectionData);
+        updateCollection = saga.updateCollection(() => ({
+          collection: {last_modified: 42}
+        }), action);
       });
 
       it("should post the collection data", () => {
@@ -302,8 +304,10 @@ describe("bucket sagas", () => {
 
     describe("Failure", () => {
       it("should dispatch an error notification action", () => {
-        const updateCollection = saga.updateCollection(
-          "bucket", "collection", {...collectionData, last_modified: 42});
+        const action =  actions.updateCollection("bucket", "collection", collectionData);
+        const updateCollection = saga.updateCollection(() => ({
+          collection: {last_modified: 42}
+        }), action);
         updateCollection.next();
 
         expect(updateCollection.throw("error").value)
@@ -506,9 +510,10 @@ describe("bucket sagas", () => {
       before(() => {
         bucket = {updateGroup() {}};
         setClient({bucket() {return bucket;}});
-        const action = actions.updateGroup(
-          "bucket", "group", {...groupData, last_modified: 42});
-        updateGroup = saga.updateGroup(() => {}, action);
+        const action = actions.updateGroup("bucket", "group", groupData);
+        updateGroup = saga.updateGroup(() => ({
+          group: {last_modified: 42}
+        }), action);
       });
 
       it("should post the group data", () => {
@@ -532,8 +537,9 @@ describe("bucket sagas", () => {
 
     describe("Failure", () => {
       it("should dispatch an error notification action", () => {
-        const updateGroup = saga.updateGroup(
-          "bucket", "group", groupData);
+        const action = actions.updateGroup("bucket", "group", groupData);
+        const updateGroup = saga.updateGroup(() => ({
+          group: {last_modified: 42}}), action);
         updateGroup.next();
 
         expect(updateGroup.throw("error").value)
