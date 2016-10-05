@@ -288,7 +288,7 @@ describe("collection sagas", () => {
         };
       };
 
-      const action = collectionActions.updateRecord("bucket", "collection", 1, record);
+      const action = collectionActions.updateRecord("bucket", "collection", 1, {...record, last_modified: 42});
 
       describe("Success", () => {
         let collection, updateRecord;
@@ -302,7 +302,13 @@ describe("collection sagas", () => {
 
         it("should update the record", () => {
           expect(updateRecord.next().value)
-            .eql(call([collection, collection.updateRecord], record, {patch: true}));
+            .eql(call([collection, collection.updateRecord], {
+              ...record,
+              last_modified: 42
+            }, {
+              patch: true,
+              safe: true
+            }));
         });
 
         it("should dispatch the resetRecord action", () => {
@@ -363,7 +369,7 @@ describe("collection sagas", () => {
       const attachment = "data:test/fake";
 
       const action = collectionActions.updateRecord(
-        "bucket", "collection", 1, record, attachment);
+        "bucket", "collection", 1, {...record, last_modified: 42}, attachment);
 
       describe("Success", () => {
         let collection, updateRecord;
@@ -380,7 +386,10 @@ describe("collection sagas", () => {
 
         it("should update the record with its attachment", () => {
           expect(updateRecord.next().value)
-            .eql(call([collection, collection.addAttachment], attachment, record));
+            .eql(call([collection, collection.addAttachment], attachment, {
+              ...record,
+              last_modified: 42
+            }, {safe: true}));
         });
 
         it("should dispatch the resetRecord action", () => {
@@ -433,13 +442,14 @@ describe("collection sagas", () => {
         collection = {deleteRecord() {}};
         const bucket = {collection() {return collection;}};
         setClient({bucket() {return bucket;}});
-        const action = collectionActions.deleteRecord("bucket", "collection", 1);
+        const action = collectionActions.deleteRecord("bucket", "collection", 1, 42);
         deleteRecord = saga.deleteRecord(() => {}, action);
       });
 
       it("should create the record", () => {
         expect(deleteRecord.next().value)
-          .eql(call([collection, collection.deleteRecord], 1));
+          .eql(call([collection, collection.deleteRecord], 1, {
+            safe: true, last_modified: 42}));
       });
 
       it("should update the route path", () => {

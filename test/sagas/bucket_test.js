@@ -94,7 +94,7 @@ describe("bucket sagas", () => {
       before(() => {
         bucket = {setData(){}};
         setClient({bucket(){return bucket;}});
-        const action = actions.updateBucket("bucket", {a: 1});
+        const action = actions.updateBucket("bucket", {a: 1, last_modified: 42});
         updateBucket = saga.updateBucket(()  => {}, action);
       });
 
@@ -105,7 +105,7 @@ describe("bucket sagas", () => {
 
       it("should post new bucket data", () => {
         expect(updateBucket.next().value)
-          .eql(call([bucket, bucket.setData], {a: 1}));
+          .eql(call([bucket, bucket.setData], {a: 1, last_modified: 42}, {safe: true}));
       });
 
       it("should dispatch a notification", () => {
@@ -274,13 +274,19 @@ describe("bucket sagas", () => {
         bucket = {collection() {return collection;}};
         setClient({bucket() {return bucket;}});
         const action = actions.updateCollection(
-          "bucket", "collection", collectionData);
+          "bucket", "collection", {
+            ...collectionData,
+            last_modified: 42,
+          });
         updateCollection = saga.updateCollection(() => {}, action);
       });
 
       it("should post the collection data", () => {
         expect(updateCollection.next().value)
-          .eql(call([collection, collection.setData], collectionData));
+          .eql(call([collection, collection.setData], {
+            ...collectionData,
+            last_modified: 42,
+          }, {safe: true}));
       });
 
       it("should update the route path", () => {
@@ -297,7 +303,7 @@ describe("bucket sagas", () => {
     describe("Failure", () => {
       it("should dispatch an error notification action", () => {
         const updateCollection = saga.updateCollection(
-          "bucket", "collection", collectionData);
+          "bucket", "collection", {...collectionData, last_modified: 42});
         updateCollection.next();
 
         expect(updateCollection.throw("error").value)
@@ -313,13 +319,16 @@ describe("bucket sagas", () => {
       before(() => {
         bucket = {deleteCollection() {}};
         setClient({bucket() {return bucket;}});
-        const action = actions.deleteCollection("bucket", "collection");
+        const action = actions.deleteCollection("bucket", "collection", 42);
         deleteCollection = saga.deleteCollection(() => {}, action);
       });
 
       it("should delete the collection", () => {
         expect(deleteCollection.next().value)
-          .eql(call([bucket, bucket.deleteCollection], "collection"));
+          .eql(call([bucket, bucket.deleteCollection], "collection", {
+            safe: true,
+            last_modified: 42
+          }));
       });
 
       it("should update the route path", () => {
@@ -498,13 +507,16 @@ describe("bucket sagas", () => {
         bucket = {updateGroup() {}};
         setClient({bucket() {return bucket;}});
         const action = actions.updateGroup(
-          "bucket", "group", groupData);
+          "bucket", "group", {...groupData, last_modified: 42});
         updateGroup = saga.updateGroup(() => {}, action);
       });
 
       it("should post the group data", () => {
         expect(updateGroup.next().value)
-          .eql(call([bucket, bucket.updateGroup], groupData));
+          .eql(call([bucket, bucket.updateGroup], {
+            ...groupData,
+            last_modified: 42
+          }, {safe: true}));
       });
 
       it("should update the route path", () => {
@@ -537,13 +549,13 @@ describe("bucket sagas", () => {
       before(() => {
         bucket = {deleteGroup() {}};
         setClient({bucket() {return bucket;}});
-        const action = actions.deleteGroup("bucket", "group");
+        const action = actions.deleteGroup("bucket", "group", 42);
         deleteGroup = saga.deleteGroup(() => {}, action);
       });
 
       it("should delete the group", () => {
         expect(deleteGroup.next().value)
-          .eql(call([bucket, bucket.deleteGroup], "group"));
+          .eql(call([bucket, bucket.deleteGroup], "group", {safe: true, last_modified: 42}));
       });
 
       it("should update the route path", () => {
