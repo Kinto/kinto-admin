@@ -84,7 +84,7 @@ class SignoffButton extends React.Component {
       return null;
     }
 
-    const {status} = collectionState.data;
+    const {status="work-in-progress"} = collectionState.data;
     let action;
     let label;
     switch(status) {
