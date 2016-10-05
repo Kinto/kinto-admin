@@ -117,10 +117,10 @@ export function* updateRecord(getState, action) {
 }
 
 export function* deleteRecord(getState, action) {
-  const {bid, cid, rid} = action;
+  const {bid, cid, rid, last_modified} = action;
   try {
     const coll = getCollection(bid, cid);
-    yield call([coll, coll.deleteRecord], rid);
+    yield call([coll, coll.deleteRecord], rid, {safe: true, last_modified});
     yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
     yield put(notifySuccess("Record deleted."));
   } catch(error) {

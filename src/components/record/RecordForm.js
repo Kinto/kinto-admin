@@ -134,9 +134,11 @@ export default class RecordForm extends Component {
   }
 
   deleteRecord = () => {
-    const {deleteRecord, bid, cid, rid} = this.props;
+    const {deleteRecord, bid, cid, rid, record} = this.props;
+    const {data} = record;
+    const {last_modified} = data;
     if (confirm("Are you sure?")) {
-      deleteRecord(bid, cid, rid);
+      deleteRecord(bid, cid, rid, last_modified);
     }
   }
 
