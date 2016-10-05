@@ -2,7 +2,7 @@
 
 import type { RecordData } from "./types";
 import React from "react";
-import { default as _timeago } from "timeago.js";
+import _timeago  from "timeago.js";
 
 
 export function clone(obj: any) {
@@ -21,8 +21,8 @@ export function isObject(thing: any): boolean {
 
 export function timeago(date: string): string {
   // Show relative time according to current timezone.
-  const tzDate = date + " UTC";
-  return _timeago(date).format(new Date(tzDate));
+  const tzDate = date + "Z";
+  return _timeago().format(new Date(tzDate));
 }
 
 export function validJSON(string: string): boolean {
