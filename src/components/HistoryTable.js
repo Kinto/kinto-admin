@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import timeago from 'timeago.js';
+import { timeago } from '../utils';
 
 
 class HistoryRow extends Component {
@@ -23,12 +23,11 @@ class HistoryRow extends Component {
       target,
       user_id,
     } = entry;
-    const tzDate = date + " UTC";
     return (
       <tbody>
         <tr>
           <td>
-            <span title={tzDate}>{timeago().format(new Date(tzDate))}</span>
+            <span title={date}>{timeago(date)}</span>
           </td>
           <td>{action}</td>
           <td>{resource_name}</td>
