@@ -5,7 +5,7 @@ import Form from "react-jsonschema-form";
 import JSONEditor from "../JSONEditor";
 import Spinner from "../Spinner";
 import { canEditBucket } from "../../permission";
-import { validJSON } from "../../utils";
+import { validJSON, omit } from "../../utils";
 
 
 const schema = {
@@ -75,9 +75,9 @@ function DeleteForm({bid, onSubmit}) {
 export default class BucketForm extends Component {
   onSubmit = ({formData}) => {
     this.props.onSubmit({
-      ...formData,
+      ...omit(formData, ["data"]),
       // Parse JSON fields so they can be sent to the server
-      data: JSON.parse(formData.data),
+      ...JSON.parse(formData.data)
     });
   }
 
@@ -87,6 +87,12 @@ export default class BucketForm extends Component {
     const hasWriteAccess = canEditBucket(session, bucket);
     const formIsEditable = creation || hasWriteAccess;
     const showDeleteForm = !creation && hasWriteAccess;
+
+    const formDataSerialized = {
+      ...formData,
+      // Stringify JSON fields so they're editable in a text field
+      data: JSON.stringify(formData.data || {}, null, 2),
+    };
 
     // Disable edition of the collection id
     const _uiSchema = creation ? uiSchema : {
@@ -121,7 +127,7 @@ export default class BucketForm extends Component {
             schema={schema}
             uiSchema={formIsEditable ? _uiSchema :
                         {..._uiSchema, "ui:readonly": true}}
-            formData={formData}
+            formData={formDataSerialized}
             validate={validate}
             onSubmit={this.onSubmit}>
             {buttons}

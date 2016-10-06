@@ -27,10 +27,10 @@ export default class BucketEdit extends Component {
     if (busy) {
       return <Spinner />;
     }
+    const {data} = bucket;
     const formData = {
       id: bid,
-      // Stringify JSON fields so they're editable in a text field
-      data: JSON.stringify(bucket && bucket.data || {}, null, 2),
+      data
     };
     return (
       <div>
