@@ -39,11 +39,11 @@ export function* updateBucket(getState, action) {
   const {bid, bucketData} = action;
   const {bucket: currentBucket} = getState();
   const {last_modified} = currentBucket;
-  const savedBucket = {...bucketData, last_modified};
+  const updatedBucket = {...bucketData, last_modified};
   try {
     const bucket = getBucket(bid);
     yield put(sessionBusy(true));
-    yield call([bucket, bucket.setData], savedBucket, {safe: true});
+    yield call([bucket, bucket.setData], updatedBucket, {safe: true});
     yield put(notifySuccess("Bucket updated."));
   } catch(error) {
     yield put(notifyError("Couldn't update bucket.", error));
@@ -88,10 +88,10 @@ export function* updateCollection(getState, action) {
   const {bid, cid, collectionData} = action;
   const {collection: currentCollection} = getState();
   const {last_modified} = currentCollection;
-  const savedCollection = {...collectionData, last_modified};
+  const updatedCollection = {...collectionData, last_modified};
   try {
     const coll = getCollection(bid, cid);
-    yield call([coll, coll.setData], savedCollection, {safe: true});
+    yield call([coll, coll.setData], updatedCollection, {safe: true});
     yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
     yield put(notifySuccess("Collection properties updated."));
   } catch(error) {
@@ -174,10 +174,10 @@ export function* updateGroup(getState, action) {
   const {bid, gid, groupData} = action;
   const {group: currentGroup} = getState();
   const {last_modified} = currentGroup;
-  const savedGroup = {...groupData, id: gid, last_modified};
+  const updatedGroup = {...groupData, id: gid, last_modified};
   try {
     const bucket = getBucket(bid);
-    yield call([bucket, bucket.updateGroup], savedGroup, {safe: true});
+    yield call([bucket, bucket.updateGroup], updatedGroup, {safe: true});
     yield put(updatePath(`/buckets/${bid}/groups/${gid}/edit`));
     yield put(notifySuccess("Group properties updated."));
   } catch(error) {
