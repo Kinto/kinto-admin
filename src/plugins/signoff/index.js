@@ -3,27 +3,53 @@ import { Link } from "react-router";
 import { takeEvery } from "redux-saga";
 import { call, put } from "redux-saga/effects";
 import { push as updatePath } from "react-router-redux";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
 import { getClient } from "../../client";
 import { notifySuccess, notifyError } from "../../actions/notifications";
 import ProgressBar from "./ProgressBar.js";
+import * as constants from "../../constants";
 
+
+//
+// Constants
+//
 
 const PLUGIN_REVIEW_REQUEST = "PLUGIN_REVIEW_REQUEST";
 const PLUGIN_DECLINE_REQUEST = "PLUGIN_DECLINE_REQUEST";
 const PLUGIN_SIGNOFF_REQUEST = "PLUGIN_SIGNOFF_REQUEST";
+const SIGNOFF_WORKFLOW_INFO = "SIGNOFF_WORKFLOW_INFO";
 
+//
 // Actions
-function requestReview() {
-  return {type: PLUGIN_REVIEW_REQUEST};
-}
-function declineChanges() {
-  return {type: PLUGIN_DECLINE_REQUEST};
-}
-function approveChanges() {
-  return {type: PLUGIN_SIGNOFF_REQUEST};
+//
+
+const SignoffActions = {
+  requestReview() {
+    return {type: PLUGIN_REVIEW_REQUEST};
+  },
+  declineChanges() {
+    return {type: PLUGIN_DECLINE_REQUEST};
+  },
+  approveChanges() {
+    return {type: PLUGIN_SIGNOFF_REQUEST};
+  },
+  workflowInfo(answer) {
+    return {type: SIGNOFF_WORKFLOW_INFO, answer};
+  }
 }
 
+//
+// Sagas
+//
+
+function *onCollectionRecordsRequest(getState, action) {
+  // XXX if not in capabilities return;
+  const client = getClient();
+  const results = yield call([client, client.listBuckets]);
+  yield put(SignoffActions.workflowInfo(results.data.length));
+}
 
 function* handleSignoffRequest(getState, action) {
   // Obtain current bucket and collection ids from state.
@@ -58,6 +84,7 @@ function* handleSignoffRequest(getState, action) {
       patch: true,
       last_modified
     });
+    // XXX: do not refresh the page, dispatch action?
     yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
     yield put(notifySuccess(message));
   } catch (e) {
@@ -65,29 +92,71 @@ function* handleSignoffRequest(getState, action) {
   }
 }
 
+export const sagas = [
+  [takeEvery, constants.COLLECTION_RECORDS_REQUEST, onCollectionRecordsRequest],
+  [takeEvery, PLUGIN_REVIEW_REQUEST, handleSignoffRequest],
+  [takeEvery, PLUGIN_DECLINE_REQUEST, handleSignoffRequest],
+  [takeEvery, PLUGIN_SIGNOFF_REQUEST, handleSignoffRequest],
+];
+
+//
+// Reducers
+//
+
+const INITIAL_STATE = {};
+
+export const reducers = {
+  signoff(state=INITIAL_STATE, action) {
+    switch(action.type) {
+      case SIGNOFF_WORKFLOW_INFO: {
+        return {...state, answer: action.answer};
+      }
+      default: {
+        return state;
+      }
+    }
+  }
+};
+
+
+//
+// Components
+//
 
 class SignoffButton extends React.Component {
   render() {
-    const {getState, dispatch} = this.props;
-    const {collection: collectionState, bucket: bucketState, session: sessionState} = getState();
+    const {
+      // Global state
+      collectionState,
+      bucketState,
+      sessionState,
+      // Plugin state
+      signoff,
+      // Actions
+      requestReview,
+      approveChanges,
+      declineChanges} = this.props;
+
     const {serverInfo} = sessionState;
     const {id: bid} = bucketState;
     const {id: cid} = collectionState;
 
-    // Hide button if server does not support signoff.
+    // Hide button if server has not kinto-signer plugin.
     const capability = serverInfo.capabilities.signer;
     if (!capability) {
       return null;
     }
 
-    const current_resource = capability.resources.filter((r) => r.source.bucket == bid && r.source.collection == cid);
+    const currentResource = capability.resources.filter((r) => {
+      return r.source.bucket == bid && r.source.collection == cid;
+    })[0];
 
     // Hide button if this collection is not configured to be signed.
-    if (current_resource.length === 0) {
+    if (!currentResource) {
       return null;
     }
 
-    const preview = current_resource[0].preview;
+    const {preview} = currentResource;
 
     const {
       status,
@@ -103,92 +172,103 @@ class SignoffButton extends React.Component {
       step = 2;
     }
 
-    const wip_details = (
+    const wipDetails = (
       <div>
         <ul>
           <li><strong>Author: </strong> {last_author}</li>
+          <li><strong>Prout: </strong> {signoff.answer}</li>
         </ul>
-        <a className="btn btn-info"
-           href="#"
-           onClick={(event) => {
-             event.preventDefault();
-             dispatch(requestReview());
-           }}>Request review</a>
+        <button className="btn btn-info"
+                onClick={requestReview}>
+          <i className="glyphicon glyphicon-comment"></i> Request review
+        </button>
       </div>
     );
+
     let link = null;
     if (preview) {
       const previewURL = `/buckets/${preview.bucket}/collections/${preview.collection}/records`;
       link = <Link to={previewURL}>{previewURL}</Link>;
     }
-    const review_details = (
+    const reviewDetails = (
       <div>
         <ul>
           <li><strong>Editor: </strong> {last_editor}</li>
           <li><strong>Preview URL: </strong> {link || "Preview disabled"}</li>
         </ul>
         <span>
-          <a className="btn btn-success"
-             href="#"
-             onClick={(event) => {
-               event.preventDefault();
-               dispatch(approveChanges());
-             }}><i className="glyphicon glyphicon-ok"></i> Approve</a>
-          <a className="btn btn-danger"
-             href="#"
-             onClick={(event) => {
-               event.preventDefault();
-               dispatch(declineChanges());
-             }}><i className="glyphicon glyphicon-remove"></i> Decline</a>
-
+          <button className="btn btn-success"
+                  onClick={approveChanges}>
+            <i className="glyphicon glyphicon-ok"></i> Approve
+          </button>
+          <button className="btn btn-danger"
+                  onClick={declineChanges}>
+            <i className="glyphicon glyphicon-remove"></i> Decline
+          </button>
         </span>
       </div>
     );
-    const signed_details = (
+
+    const signedDetails = (
       <div>
         <ul>
           <li><strong>Reviewer: </strong>{last_reviewer}</li>
         </ul>
-        <a className="btn btn-info"
-           href="#"
-           onClick={(event) => {
-             event.preventDefault();
-             dispatch(approveChanges());
-           }}>Re-sign</a>
+        <button className="btn btn-info"
+                onClick={approveChanges}>
+          <i className="glyphicon glyphicon-repeat"></i> Re-sign
+        </button>
       </div>
     );
 
     const steps = [
-      {label: "Work in progress", details: wip_details},
-      {label: "Waiting review", details: review_details},
-      {label: "Signed", details: signed_details},
+      {label: "Work in progress", details: wipDetails},
+      {label: "Waiting review", details: reviewDetails},
+      {label: "Signed", details: signedDetails},
     ];
 
-    return (
-      <div>
-        <ProgressBar active={step} steps={steps}/>
-      </div>
-      );
-
+    return <ProgressBar active={step} steps={steps}/>;
   }
 }
 
+//
+// Container
+//
 
-export const sagas = [
-  [takeEvery, PLUGIN_REVIEW_REQUEST, handleSignoffRequest],
-  [takeEvery, PLUGIN_DECLINE_REQUEST, handleSignoffRequest],
-  [takeEvery, PLUGIN_SIGNOFF_REQUEST, handleSignoffRequest],
-];
+function mapStateToProps(state) {
+  const {
+    collection: collectionState,
+    bucket: bucketState,
+    session: sessionState,
+    signoff
+  } = state;
+  return {
+    collectionState,
+    bucketState,
+    sessionState,
+    signoff
+  }
+}
 
-export const reducers = {};
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(SignoffActions, dispatch);
+}
+
+const SignoffContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SignoffButton);
+
+
+//
+// Plugin register
+//
 
 export function register(store) {
   const hooks = {
     CollectionRecords: {
       ListActions: [
-        <SignoffButton key="request-signoff-btn"
-                       getState={store.getState.bind(store)}
-                       dispatch={store.dispatch.bind(store)} />
+        <SignoffContainer key="request-signoff-btn" />
       ]
     }
   };
