@@ -21,8 +21,7 @@ export function isObject(thing: any): boolean {
 
 export function timeago(date: string): string {
   // Show relative time according to current timezone.
-  const tzDate = date + "Z";
-  return _timeago().format(new Date(tzDate));
+  return _timeago().format(new Date(date));
 }
 
 export function validJSON(string: string): boolean {

@@ -27,7 +27,7 @@ class HistoryRow extends Component {
       <tbody>
         <tr>
           <td>
-            <span title={date}>{timeago(date)}</span>
+            <span title={date}>{timeago(date + "Z")}</span>
           </td>
           <td>{action}</td>
           <td>{resource_name}</td>
