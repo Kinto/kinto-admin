@@ -81,9 +81,9 @@ export function* createRecord(getState, action) {
   try {
     const coll = getCollection(bid, cid);
     if ("attachments" in session.serverInfo.capabilities && attachment) {
-      yield call([coll, coll.addAttachment], attachment, record);
+      yield call([coll, coll.addAttachment], attachment, record, {safe: true});
     } else {
-      yield call([coll, coll.createRecord], record);
+      yield call([coll, coll.createRecord], record, {safe: true});
     }
     yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
     yield put(notifySuccess("Record added."));
@@ -95,16 +95,18 @@ export function* createRecord(getState, action) {
 }
 
 export function* updateRecord(getState, action) {
-  const {session} = getState();
+  const {session, record: currentRecord} = getState();
   const {bid, cid, rid, record, attachment} = action;
+  const {last_modified} = currentRecord.data;
+  const updatedRecord = {...record, id: rid, last_modified};
   try {
     const coll = getCollection(bid, cid);
     if ("attachments" in session.serverInfo.capabilities && attachment) {
-      yield call([coll, coll.addAttachment], attachment, {...record, id: rid});
+      yield call([coll, coll.addAttachment], attachment, updatedRecord, {safe: true});
     } else {
       // Note: We update using PATCH to keep existing record properties possibly
       // not defined by the JSON schema, if any.
-      yield call([coll, coll.updateRecord], {...record, id: rid}, {patch: true});
+      yield call([coll, coll.updateRecord], updatedRecord, {patch: true, safe: true});
     }
     yield put(resetRecord());
     yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
@@ -117,10 +119,12 @@ export function* updateRecord(getState, action) {
 }
 
 export function* deleteRecord(getState, action) {
-  const {bid, cid, rid} = action;
+  const {bid, cid, rid, last_modified: actionLastModified} = action;
+  const {record: currentRecord={data: {}}} = getState();
+  const {last_modified=actionLastModified} = currentRecord.data;
   try {
     const coll = getCollection(bid, cid);
-    yield call([coll, coll.deleteRecord], rid);
+    yield call([coll, coll.deleteRecord], rid, {safe: true, last_modified});
     yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
     yield put(notifySuccess("Record deleted."));
   } catch(error) {
@@ -153,7 +157,7 @@ export function* bulkCreateRecords(getState, action) {
     } else {
       const {errors, published} = yield call([coll, coll.batch], (batch) => {
         for (const record of records) {
-          batch.createRecord(record);
+          batch.createRecord(record, {safe: true});
         }
       }, {aggregate: true});
       if (errors.length > 0) {
