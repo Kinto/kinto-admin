@@ -10,14 +10,14 @@ import { validateSchema, validateUiSchema } from "../../utils";
 const defaultSchema = JSON.stringify({
   type: "object",
   properties: {
-    field1: {type: "string"},
-    field2: {type: "string"},
+    title: {type: "string", title: "Title", description: "Short title"},
+    content: {type: "string", title: "Content", description: "Provide details..."},
   }
 }, null, 2);
 
 const defaultUiSchema = JSON.stringify({
-  "ui:order": ["field1", "field2"],
-  field2: {
+  "ui:order": ["title", "author"],
+  content: {
     "ui:widget": "textarea"
   }
 }, null, 2);
