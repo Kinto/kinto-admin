@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router";
 import { takeEvery } from "redux-saga";
 import { call, put } from "redux-saga/effects";
 import { push as updatePath } from "react-router-redux";
@@ -79,68 +80,96 @@ class SignoffButton extends React.Component {
       return null;
     }
 
+    const current_resource = capability.resources.filter((r) => r.source.bucket == bid && r.source.collection == cid);
+
     // Hide button if this collection is not configured to be signed.
-    const sources = capability.resources.map((r) => `${r.source.bucket}/${r.source.collection}`);
-    if (!sources.includes(`${bid}/${cid}`)) {
+    if (current_resource.length === 0) {
       return null;
     }
+
+    const preview = current_resource[0].preview;
 
     const {
       status,
       last_author,
       last_editor,
       last_reviewer } = collectionState.data;
-    const steps = [
-      {label: "Work in progress", details: "Step 1"},
-      {label: "Waiting review", details: "Step 2"},
-      {label: "Signed", details: "Step 3"},
-    ];
+
     // Default to request review
     let step = 0;
-    let buttons = (
+    if (status === "to-review") {
+      step = 1;
+    } else if (status === "signed") {
+      step = 2;
+    }
+
+    const wip_details = (
+      <div>
+        <ul>
+          <li><strong>Author: </strong> {last_author}</li>
+        </ul>
         <a className="btn btn-info"
            href="#"
            onClick={(event) => {
              event.preventDefault();
              dispatch(requestReview());
            }}>Request review</a>
-      );
-    if (status === "to-review") {
-      step = 1;
-      buttons = (
+      </div>
+    );
+    let link = null;
+    if (preview) {
+      const previewURL = `/buckets/${preview.bucket}/collections/${preview.collection}/records`;
+      link = <Link to={previewURL}>{previewURL}</Link>;
+    }
+    const review_details = (
+      <div>
+        <ul>
+          <li><strong>Editor: </strong> {last_editor}</li>
+          <li><strong>Preview URL: </strong> {link || "Preview disabled"}</li>
+        </ul>
         <span>
           <a className="btn btn-success"
              href="#"
              onClick={(event) => {
                event.preventDefault();
                dispatch(approveChanges());
-             }}><i className="glyphicon glyphicon-ok"></i> Approve changes</a>
+             }}><i className="glyphicon glyphicon-ok"></i> Approve</a>
           <a className="btn btn-danger"
              href="#"
              onClick={(event) => {
                event.preventDefault();
                dispatch(declineChanges());
-             }}><i className="glyphicon glyphicon-remove"></i> Decline changes</a>
+             }}><i className="glyphicon glyphicon-remove"></i> Decline</a>
 
         </span>
-      );
-    } else if (status === "signed") {
-      step = 2;
-      buttons = (
-          <a className="btn btn-info"
-             href="#"
-             onClick={(event) => {
-               event.preventDefault();
-               dispatch(approveChanges());
-             }}>Re-sign</a>
-      );
-    }
+      </div>
+    );
+    const signed_details = (
+      <div>
+        <ul>
+          <li><strong>Reviewer: </strong>{last_reviewer}</li>
+        </ul>
+        <a className="btn btn-info"
+           href="#"
+           onClick={(event) => {
+             event.preventDefault();
+             dispatch(approveChanges());
+           }}>Re-sign</a>
+      </div>
+    );
+
+    const steps = [
+      {label: "Work in progress", details: wip_details},
+      {label: "Waiting review", details: review_details},
+      {label: "Signed", details: signed_details},
+    ];
+
     return (
       <div>
         <ProgressBar active={step} steps={steps}/>
-        {buttons}
       </div>
       );
+
   }
 }
 
