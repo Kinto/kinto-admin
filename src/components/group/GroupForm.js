@@ -109,7 +109,7 @@ export default class GroupForm extends Component {
       ...formData,
       // Stringify JSON fields so they're editable in a text field
       data: JSON.stringify(formData.data || {}, null, 2),
-    }
+    };
 
     const alert = formIsEditable || group.busy ? null : (
       <div className="alert alert-warning">
