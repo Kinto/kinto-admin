@@ -67,14 +67,14 @@ function onCollectionRecordsEnter(store: Object, {params}) {
 }
 
 function onCollectionHistoryEnter(store: Object, {params}) {
-  const {bid, cid} = params;
+  const {bid, cid, since} = params;
   const {session} = store.getState();
   if (!session.authenticated) {
     // We're not authenticated, skip requesting the list of records. This likely
     // occurs when users refresh the page and lose their session.
     return;
   }
-  store.dispatch(collectionActions.listCollectionHistory(bid, cid));
+  store.dispatch(collectionActions.listCollectionHistory(bid, cid, since));
 }
 
 function onBucketPageEnter(store: Object, action: Function, {params}) {
@@ -88,15 +88,26 @@ function onBucketPageEnter(store: Object, action: Function, {params}) {
   store.dispatch(action(bid));
 }
 
-function onGroupHistoryEnter(store: Object, {params}) {
-  const {bid, gid} = params;
+function onBucketHistoryEnter(store: Object, {params}) {
+  const {bid, since} = params;
   const {session} = store.getState();
   if (!session.authenticated) {
     // We're not authenticated, skip requesting the list of records. This likely
     // occurs when users refresh the page and lose their session.
     return;
   }
-  store.dispatch(groupActions.listGroupHistory(bid, gid));
+  store.dispatch(bucketActions.listBucketHistory(bid, since));
+}
+
+function onGroupHistoryEnter(store: Object, {params}) {
+  const {bid, gid, since} = params;
+  const {session} = store.getState();
+  if (!session.authenticated) {
+    // We're not authenticated, skip requesting the list of records. This likely
+    // occurs when users refresh the page and lose their session.
+    return;
+  }
+  store.dispatch(groupActions.listGroupHistory(bid, gid, since));
 }
 
 function registerPluginsComponentHooks(PageContainer, plugins) {
@@ -155,7 +166,7 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
               <IndexRedirect to="edit" />
               <Route name="properties" path="edit"
                 components={{...common, content: GroupEditPage}} />
-              <Route name="history" path="history"
+              <Route name="history" path="history(/:since)"
                 components={{...common, content: GroupHistoryPage}}
                 onEnter={onGroupHistoryEnter.bind(null, store)}
                 onChange={onGroupHistoryEnter.bind(null, store)} />
@@ -163,10 +174,10 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
           </Route>
           <Route name="properties" path="edit"
             components={{...common, content: BucketEditPage}} />
-          <Route name="history" path="history"
+          <Route name="history" path="history(/:since)"
             components={{...common, content: BucketHistoryPage}}
-            onEnter={onBucketPageEnter.bind(null, store, bucketActions.listBucketHistory)}
-            onChange={onBucketPageEnter.bind(null, store, bucketActions.listBucketHistory)} />
+            onEnter={onBucketHistoryEnter.bind(null, store)}
+            onChange={onBucketHistoryEnter.bind(null, store)} />
           <Route name="collections" path="collections">
             <IndexRoute name="collections" components={{...common, content: BucketCollectionsPage}}
               onEnter={onBucketPageEnter.bind(null, store, bucketActions.listBucketCollections)}
@@ -184,7 +195,7 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                 onChange={onCollectionRecordsEnter.bind(null, store)} />
               <Route name="properties" path="edit"
                 components={{...common, content: CollectionEditPage}} />
-              <Route name="history" path="history"
+              <Route name="history" path="history(/:since)"
                 components={{...common, content: CollectionHistoryPage}}
                 onEnter={onCollectionHistoryEnter.bind(null, store)}
                 onChange={onCollectionHistoryEnter.bind(null, store)} />

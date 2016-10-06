@@ -42,8 +42,8 @@ export function listRecordsSuccess(
   return {type: COLLECTION_RECORDS_SUCCESS, records, hasNextRecords, listNextRecords};
 }
 
-export function listCollectionHistory(bid: string, cid: string): Action {
-  return {type: COLLECTION_HISTORY_REQUEST, bid, cid};
+export function listCollectionHistory(bid: string, cid: string, since: number): Action {
+  return {type: COLLECTION_HISTORY_REQUEST, bid, cid, since};
 }
 
 export function listCollectionHistorySuccess(history: Object[]): Action {

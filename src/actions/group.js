@@ -18,8 +18,8 @@ export function resetGroup(): Action {
   return {type: GROUP_RESET};
 }
 
-export function listGroupHistory(bid: string, gid: string): Action {
-  return {type: GROUP_HISTORY_REQUEST, bid, gid};
+export function listGroupHistory(bid: string, gid: string, since: number): Action {
+  return {type: GROUP_HISTORY_REQUEST, bid, gid, since};
 }
 
 export function listGroupHistorySuccess(history: Object[]): Action {

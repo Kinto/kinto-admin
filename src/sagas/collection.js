@@ -61,10 +61,11 @@ export function* listNextRecords(getState) {
 }
 
 export function* listHistory(getState, action) {
-  const {bid, cid} = action;
+  const {bid, cid, since} = action;
   try {
     const bucket = getBucket(bid);
     const {data} = yield call([bucket, bucket.listHistory], {
+      since,
       filters: {
         collection_id: cid,
       }
