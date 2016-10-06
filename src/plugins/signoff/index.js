@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import { getClient } from "../../client";
+import { routeLoadSuccess } from "../../actions/route";
 import { notifySuccess, notifyError } from "../../actions/notifications";
 import ProgressBar from "./ProgressBar.js";
 import * as constants from "../../constants";
@@ -44,6 +45,16 @@ const SignoffActions = {
 // Sagas
 //
 
+function _updateCollectionAttributes(getState, data) {
+  const client = getClient();
+  const {bucket: bucketState, collection: collectionState} = getState();
+  const {id: bid} = bucketState;
+  const {id: cid} = collectionState;
+  const coll = client.bucket(bid).collection(cid);
+  const {last_modified} = collectionState.data;
+  return coll.setData(data, {safe: true, patch: true, last_modified});
+}
+
 function *onCollectionRecordsRequest(getState, action) {
   // XXX if not in capabilities return;
   const client = getClient();
@@ -51,52 +62,47 @@ function *onCollectionRecordsRequest(getState, action) {
   yield put(SignoffActions.workflowInfo(results.data.length));
 }
 
-function* handleSignoffRequest(getState, action) {
-  // Obtain current bucket and collection ids from state.
-  const {bucket: bucketState, collection: collectionState} = getState();
-  const {type} = action;
-  const {id: bid} = bucketState;
-  const {id: cid} = collectionState;
-
-  let status;
-  let message;
-  switch (type) {
-    case PLUGIN_SIGNOFF_REQUEST:
-      status = {status: "to-sign"};
-      message = "Signature requested.";
-      break;
-    case PLUGIN_DECLINE_REQUEST:
-      status = {status: "work-in-progress"};
-      message = "Changes declined.";
-      break;
-    case PLUGIN_REVIEW_REQUEST:
-      status = {status: "to-review"};
-      message = "Review requested.";
-      break;
-  }
-
-  const client = getClient();
-  const coll = client.bucket(bid).collection(cid);
-  const {last_modified} = collectionState.data;
+function* handleRequestReview(getState, action) {
+  const {bucket: bucketState} = getState();
+  const bucket = {data: bucketState, permissions: {}};
   try {
-    yield call([coll, coll.setData], status, {
-      safe: true,
-      patch: true,
-      last_modified
-    });
-    // XXX: do not refresh the page, dispatch action?
-    yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
-    yield put(notifySuccess(message));
-  } catch (e) {
-    yield put(notifyError("Couldn't change collection status.", e));
+    const collection = yield call([this, _updateCollectionAttributes], getState, {status: "to-review"});
+    yield put(routeLoadSuccess({bucket, collection}));
+    yield put(notifySuccess("Review requested."));
+  } catch(e) {
+    yield put(notifyError("Couldn't request review.", e));
+  }
+}
+
+function* handleDeclineChanges(getState, action) {
+  const {bucket: bucketState} = getState();
+  const bucket = {data: bucketState, permissions: {}};
+  try {
+    const collection = yield call([this, _updateCollectionAttributes], getState, {status: "work-in-progress"});
+    yield put(routeLoadSuccess({bucket, collection}));
+    yield put(notifySuccess("Changes declined."));
+  } catch(e) {
+    yield put(notifyError("Couldn't decline changes.", e));
+  }
+}
+
+function* handleApproveChanges(getState, action) {
+  const {bucket: bucketState} = getState();
+  const bucket = {data: bucketState, permissions: {}};
+  try {
+    const collection = yield call([this, _updateCollectionAttributes], getState, {status: "to-sign"});
+    yield put(routeLoadSuccess({bucket, collection}));
+    yield put(notifySuccess("Signature requested."));
+  } catch(e) {
+    yield put(notifyError("Couldn't approve changes.", e));
   }
 }
 
 export const sagas = [
   [takeEvery, constants.COLLECTION_RECORDS_REQUEST, onCollectionRecordsRequest],
-  [takeEvery, PLUGIN_REVIEW_REQUEST, handleSignoffRequest],
-  [takeEvery, PLUGIN_DECLINE_REQUEST, handleSignoffRequest],
-  [takeEvery, PLUGIN_SIGNOFF_REQUEST, handleSignoffRequest],
+  [takeEvery, PLUGIN_REVIEW_REQUEST, handleRequestReview],
+  [takeEvery, PLUGIN_DECLINE_REQUEST, handleDeclineChanges],
+  [takeEvery, PLUGIN_SIGNOFF_REQUEST, handleApproveChanges],
 ];
 
 //
