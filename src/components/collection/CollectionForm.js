@@ -118,7 +118,7 @@ const schema = {
           property names of your records.</em>
         </p>
       ),
-      default: ["field1", "field2"],
+      default: ["title"],
       minItems: 1,
       items: {
         type: "string",
