@@ -27,7 +27,7 @@ class HistoryRow extends Component {
       record_id: rid
     } = entry;
 
-    const objectId = target.data.id;
+    const {data: {id: objectId}} = target;
 
     const link = {
       bucket: `/buckets/${bid}/edit`,
