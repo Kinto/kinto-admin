@@ -148,7 +148,7 @@ export function* listBucketHistory(getState, action) {
       since,
       filters: {
         exclude_resource_name: "record"
-      },
+      }
     });
     yield put(listBucketHistorySuccess(data));
   } catch(error) {

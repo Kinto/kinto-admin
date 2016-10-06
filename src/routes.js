@@ -67,8 +67,8 @@ function onCollectionRecordsEnter(store: Object, {params}) {
 }
 
 function onCollectionHistoryEnter(store: Object, {params}) {
-  const {bid, cid, since} = params;
-  const {session} = store.getState();
+  const {bid, cid} = params;
+  const {session, routing: {locationBeforeTransitions: {query: {since}}}} = store.getState();
   if (!session.authenticated) {
     // We're not authenticated, skip requesting the list of records. This likely
     // occurs when users refresh the page and lose their session.
@@ -89,8 +89,8 @@ function onBucketPageEnter(store: Object, action: Function, {params}) {
 }
 
 function onBucketHistoryEnter(store: Object, {params}) {
-  const {bid, since} = params;
-  const {session} = store.getState();
+  const {bid} = params;
+  const {session, routing: {locationBeforeTransitions: {query: {since}}}} = store.getState();
   if (!session.authenticated) {
     // We're not authenticated, skip requesting the list of records. This likely
     // occurs when users refresh the page and lose their session.
@@ -100,8 +100,8 @@ function onBucketHistoryEnter(store: Object, {params}) {
 }
 
 function onGroupHistoryEnter(store: Object, {params}) {
-  const {bid, gid, since} = params;
-  const {session} = store.getState();
+  const {bid, gid} = params;
+  const {session, routing: {locationBeforeTransitions: {query: {since}}}} = store.getState();
   if (!session.authenticated) {
     // We're not authenticated, skip requesting the list of records. This likely
     // occurs when users refresh the page and lose their session.
@@ -166,7 +166,7 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
               <IndexRedirect to="edit" />
               <Route name="properties" path="edit"
                 components={{...common, content: GroupEditPage}} />
-              <Route name="history" path="history(/:since)"
+              <Route name="history" path="history"
                 components={{...common, content: GroupHistoryPage}}
                 onEnter={onGroupHistoryEnter.bind(null, store)}
                 onChange={onGroupHistoryEnter.bind(null, store)} />
@@ -174,7 +174,7 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
           </Route>
           <Route name="properties" path="edit"
             components={{...common, content: BucketEditPage}} />
-          <Route name="history" path="history(/:since)"
+          <Route name="history" path="history"
             components={{...common, content: BucketHistoryPage}}
             onEnter={onBucketHistoryEnter.bind(null, store)}
             onChange={onBucketHistoryEnter.bind(null, store)} />
@@ -195,7 +195,7 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                 onChange={onCollectionRecordsEnter.bind(null, store)} />
               <Route name="properties" path="edit"
                 components={{...common, content: CollectionEditPage}} />
-              <Route name="history" path="history(/:since)"
+              <Route name="history" path="history"
                 components={{...common, content: CollectionHistoryPage}}
                 onEnter={onCollectionHistoryEnter.bind(null, store)}
                 onChange={onCollectionHistoryEnter.bind(null, store)} />
