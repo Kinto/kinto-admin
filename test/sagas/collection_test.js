@@ -448,14 +448,26 @@ describe("collection sagas", () => {
         collection = {deleteRecord() {}};
         const bucket = {collection() {return collection;}};
         setClient({bucket() {return bucket;}});
-        const action = collectionActions.deleteRecord("bucket", "collection", 1, 42);
-        deleteRecord = saga.deleteRecord(() => {}, action);
+        const action = collectionActions.deleteRecord("bucket", "collection", 1);
+        deleteRecord = saga.deleteRecord(() => ({
+          record: {
+            data: {last_modified: 42}
+          }
+        }), action);
       });
 
-      it("should create the record", () => {
+      it("should delete the record", () => {
         expect(deleteRecord.next().value)
           .eql(call([collection, collection.deleteRecord], 1, {
             safe: true, last_modified: 42}));
+      });
+
+      it("should accept it from the action too", () => {
+        const action = collectionActions.deleteRecord("bucket", "collection", 1, 43);
+        const deleteSaga = saga.deleteRecord(() => ({}), action);
+        expect(deleteSaga.next().value)
+          .eql(call([collection, collection.deleteRecord], 1, {
+            safe: true, last_modified: 43}));
       });
 
       it("should update the route path", () => {
@@ -478,7 +490,10 @@ describe("collection sagas", () => {
       let deleteRecord;
 
       before(() => {
-        deleteRecord = saga.deleteRecord("bucket", "collection", 1);
+        const action = collectionActions.deleteRecord("bucket", "collection", 1);
+        deleteRecord = saga.deleteRecord(() => ({
+          record: {data: {}}
+        }), action);
         deleteRecord.next();
       });
 

@@ -119,7 +119,9 @@ export function* updateRecord(getState, action) {
 }
 
 export function* deleteRecord(getState, action) {
-  const {bid, cid, rid, last_modified} = action;
+  const {bid, cid, rid, last_modified: actionLastModified} = action;
+  const {record: currentRecord={data: {}}} = getState();
+  const {last_modified=actionLastModified} = currentRecord.data;
   try {
     const coll = getCollection(bid, cid);
     yield call([coll, coll.deleteRecord], rid, {safe: true, last_modified});

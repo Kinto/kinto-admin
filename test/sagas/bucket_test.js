@@ -151,8 +151,10 @@ describe("bucket sagas", () => {
 
       before(() => {
         client = setClient({deleteBucket() {}});
-        const action = actions.deleteBucket("bucket", 42);
-        deleteBucket = saga.deleteBucket(() => {}, action);
+        const action = actions.deleteBucket("bucket");
+        deleteBucket = saga.deleteBucket(() => ({
+          bucket: {last_modified: 42}
+        }), action);
       });
 
       it("should mark the current session as busy", () => {
@@ -194,7 +196,9 @@ describe("bucket sagas", () => {
 
       before(() => {
         const action = actions.deleteBucket("bucket");
-        deleteBucket = saga.deleteBucket(() => {}, action);
+        deleteBucket = saga.deleteBucket(() => ({
+          bucket: {last_modified: 42}
+        }), action);
         deleteBucket.next();
       });
 
@@ -323,8 +327,10 @@ describe("bucket sagas", () => {
       before(() => {
         bucket = {deleteCollection() {}};
         setClient({bucket() {return bucket;}});
-        const action = actions.deleteCollection("bucket", "collection", 42);
-        deleteCollection = saga.deleteCollection(() => {}, action);
+        const action = actions.deleteCollection("bucket", "collection");
+        deleteCollection = saga.deleteCollection(() => ({
+          collection: {last_modified: 42}
+        }), action);
       });
 
       it("should delete the collection", () => {
@@ -356,7 +362,9 @@ describe("bucket sagas", () => {
 
       before(() => {
         const action = actions.deleteCollection("bucket", "collection");
-        deleteCollection = saga.deleteCollection(() => {}, action);
+        deleteCollection = saga.deleteCollection(() => ({
+          collection: {last_modified: 42}
+        }), action);
         deleteCollection.next();
       });
 
@@ -555,8 +563,10 @@ describe("bucket sagas", () => {
       before(() => {
         bucket = {deleteGroup() {}};
         setClient({bucket() {return bucket;}});
-        const action = actions.deleteGroup("bucket", "group", 42);
-        deleteGroup = saga.deleteGroup(() => {}, action);
+        const action = actions.deleteGroup("bucket", "group");
+        deleteGroup = saga.deleteGroup(() => ({
+          group: {last_modified: 42}
+        }), action);
       });
 
       it("should delete the group", () => {
@@ -580,7 +590,9 @@ describe("bucket sagas", () => {
 
       before(() => {
         const action = actions.deleteGroup("bucket", "group");
-        deleteGroup = saga.deleteGroup(() => {}, action);
+        deleteGroup = saga.deleteGroup(() => ({
+          group: {last_modified: 42}
+        }), action);
         deleteGroup.next();
       });
 

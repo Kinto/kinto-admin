@@ -34,8 +34,8 @@ export function updateBucket(bid: string, bucketData: BucketData): Action {
   return {type: BUCKET_UPDATE_REQUEST, bid, bucketData};
 }
 
-export function deleteBucket(bid: string, last_modified: number): Action {
-  return {type: BUCKET_DELETE_REQUEST, bid, last_modified};
+export function deleteBucket(bid: string): Action {
+  return {type: BUCKET_DELETE_REQUEST, bid};
 }
 
 export function resetBucket(): Action {
@@ -74,8 +74,8 @@ export function updateCollection(bid: string, cid: string, collectionData: Colle
   return {type: COLLECTION_UPDATE_REQUEST, bid, cid, collectionData};
 }
 
-export function deleteCollection(bid: string, cid: string, last_modified: number): Action {
-  return {type: COLLECTION_DELETE_REQUEST, bid, cid, last_modified};
+export function deleteCollection(bid: string, cid: string): Action {
+  return {type: COLLECTION_DELETE_REQUEST, bid, cid};
 }
 
 export function createGroup(bid: string, groupData: GroupData): Action {
@@ -86,6 +86,6 @@ export function updateGroup(bid: string, gid: string, groupData: GroupData): Act
   return {type: GROUP_UPDATE_REQUEST, bid, gid, groupData};
 }
 
-export function deleteGroup(bid: string, gid: string, last_modified: number): Action {
-  return {type: GROUP_DELETE_REQUEST, bid, gid, last_modified};
+export function deleteGroup(bid: string, gid: string): Action {
+  return {type: GROUP_DELETE_REQUEST, bid, gid};
 }

@@ -13,11 +13,10 @@ export default class CollectionEdit extends Component {
   };
 
   deleteCollection = (cid) => {
-    const {deleteCollection, params, collection} = this.props;
+    const {deleteCollection, params} = this.props;
     const {bid} = params;
-    const {last_modified} = collection;
     if (confirm("This will delete the collection and all the records it contains. Are you sure?")) {
-      deleteCollection(bid, cid, last_modified);
+      deleteCollection(bid, cid);
     }
   };
 

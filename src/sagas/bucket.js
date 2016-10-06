@@ -53,7 +53,9 @@ export function* updateBucket(getState, action) {
 }
 
 export function* deleteBucket(getState, action) {
-  const { bid, last_modified } = action;
+  const {bid} = action;
+  const {bucket: currentBucket} = getState();
+  const {last_modified} = currentBucket;
   try {
     const client = getClient();
     yield put(sessionBusy(true));
@@ -98,7 +100,9 @@ export function* updateCollection(getState, action) {
 }
 
 export function* deleteCollection(getState, action) {
-  const {bid, cid, last_modified} = action;
+  const {bid, cid} = action;
+  const {collection: currentCollection} = getState();
+  const {last_modified} = currentCollection;
   try {
     const bucket = getBucket(bid);
     yield call([bucket, bucket.deleteCollection], cid, {safe: true, last_modified});
@@ -182,7 +186,9 @@ export function* updateGroup(getState, action) {
 }
 
 export function* deleteGroup(getState, action) {
-  const {bid, gid, last_modified} = action;
+  const {bid, gid} = action;
+  const {group: currentGroup} = getState();
+  const {last_modified} = currentGroup;
   try {
     const bucket = getBucket(bid);
     yield call([bucket, bucket.deleteGroup], gid, {safe: true, last_modified});
