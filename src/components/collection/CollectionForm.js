@@ -255,6 +255,13 @@ export default class CollectionForm extends Component {
       }
     };
 
+    const formDataSerialized = !formData ? formData : {
+      ...formData,
+      // Stringify JSON fields so they're editable in a text field
+      schema: JSON.stringify(formData.schema || {}, null, 2),
+      uiSchema: JSON.stringify(formData.uiSchema || {}, null, 2),
+    };
+
     const alert = this.allowEditing || bucket.busy || collection.busy ? null : (
       <div className="alert alert-warning">
         You don't have the required permission to edit this collection.
@@ -275,9 +282,9 @@ export default class CollectionForm extends Component {
         {alert}
         <Form
           schema={schema}
-          formData={formData}
+          formData={formDataSerialized}
           uiSchema={this.allowEditing ? _uiSchema :
-                                     {..._uiSchema, "ui:disabled": true}}
+                                        {..._uiSchema, "ui:disabled": true}}
           validate={validate}
           onSubmit={this.onSubmit}>
           {buttons}
