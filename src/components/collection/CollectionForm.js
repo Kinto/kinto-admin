@@ -16,7 +16,7 @@ const defaultSchema = JSON.stringify({
 }, null, 2);
 
 const defaultUiSchema = JSON.stringify({
-  "ui:order": ["title", "author"],
+  "ui:order": ["title", "content"],
   content: {
     "ui:widget": "textarea"
   }
