@@ -178,14 +178,15 @@ class SignoffButton extends React.Component {
           <li><strong>Author: </strong> {last_author}</li>
           <li><strong>Prout: </strong> {signoff.answer}</li>
         </ul>
-        <button className="btn btn-info"
+        {step == 0 ?
+         <button className="btn btn-info"
                 onClick={requestReview}>
           <i className="glyphicon glyphicon-comment"></i> Request review
-        </button>
+         </button> : null}
       </div>
     );
 
-    let link = null;
+    let link = "Preview disabled";
     if (preview) {
       const previewURL = `/buckets/${preview.bucket}/collections/${preview.collection}/records`;
       link = <Link to={previewURL}>{previewURL}</Link>;
@@ -194,18 +195,19 @@ class SignoffButton extends React.Component {
       <div>
         <ul>
           <li><strong>Editor: </strong> {last_editor}</li>
-          <li><strong>Preview URL: </strong> {link || "Preview disabled"}</li>
+          <li><strong>Preview URL: </strong> {link}</li>
         </ul>
-        <span>
-          <button className="btn btn-success"
-                  onClick={approveChanges}>
-            <i className="glyphicon glyphicon-ok"></i> Approve
-          </button>
-          <button className="btn btn-danger"
-                  onClick={declineChanges}>
-            <i className="glyphicon glyphicon-remove"></i> Decline
-          </button>
-        </span>
+        {step == 1 ?
+         <span>
+           <button className="btn btn-success"
+                   onClick={approveChanges}>
+             <i className="glyphicon glyphicon-ok"></i> Approve
+           </button>
+           <button className="btn btn-danger"
+                   onClick={declineChanges}>
+             <i className="glyphicon glyphicon-remove"></i> Decline
+           </button>
+         </span> : null}
       </div>
     );
 
@@ -214,10 +216,11 @@ class SignoffButton extends React.Component {
         <ul>
           <li><strong>Reviewer: </strong>{last_reviewer}</li>
         </ul>
-        <button className="btn btn-info"
-                onClick={approveChanges}>
-          <i className="glyphicon glyphicon-repeat"></i> Re-sign
-        </button>
+        {step == 2 ?
+         <button className="btn btn-info"
+                 onClick={approveChanges}>
+           <i className="glyphicon glyphicon-repeat"></i> Re-sign
+         </button> : null}
       </div>
     );
 
