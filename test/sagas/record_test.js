@@ -19,7 +19,7 @@ describe("record sagas", () => {
         listHistory = saga.listHistory(() => {}, action);
       });
 
-      it("should fetch history on group", () => {
+      it("should fetch history on record", () => {
         expect(listHistory.next().value)
           .eql(call([client, client.listHistory], {
             since: undefined,
