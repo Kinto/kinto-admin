@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
-
-import { humanDate } from "../utils";
+import { timeago, humanDate } from "../utils";
 
 
 class HistoryRow extends Component {
@@ -41,7 +40,9 @@ class HistoryRow extends Component {
     return (
       <tbody>
         <tr>
-          <td>{date}</td>
+          <td>
+            <span title={date}>{timeago(date + "Z")}</span>
+          </td>
           <td>{action}</td>
           <td>{resource_name}</td>
           <td>{link ? <Link to={link}>{objectId}</Link> : objectId}</td>
@@ -80,13 +81,14 @@ function FilterInfo({location}) {
 export default class HistoryTable extends Component {
   render() {
     const {history, bid, location} = this.props;
+    const isFiltered = !!location.query.since;
     return (
       <div>
-        {location.query.since ? <FilterInfo location={location} /> : null}
+        {isFiltered ? <FilterInfo location={location} /> : null}
         <table className="table table-striped table-bordered record-list">
           <thead>
             <tr>
-              <th>Date</th>
+              <th>When</th>
               <th>Action</th>
               <th>Resource</th>
               <th>Id</th>

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
 
-import { renderDisplayField } from "../../utils";
+import { renderDisplayField, timeago } from "../../utils";
 import { canCreateRecord } from "../../permission";
 import Spinner from "../Spinner";
 import CollectionTabs from "./CollectionTabs";
@@ -20,7 +20,9 @@ class Row extends Component {
       return null;
     }
     const date = new Date(lastModified).toISOString();
-    return date.slice(0, 10) + " " + date.slice(11, 19);
+    return (
+      <span title={date}>{timeago(date)}</span>
+    );
   }
 
   onDoubleClick(event) {

@@ -2,6 +2,7 @@
 
 import type { RecordData } from "./types";
 import React from "react";
+import _timeago  from "timeago.js";
 
 
 export function clone(obj: any) {
@@ -16,6 +17,11 @@ export function omit(obj: Object, keys: string[] = []): Object {
 
 export function isObject(thing: any): boolean {
   return typeof thing === "object" && thing !== null && !Array.isArray(thing);
+}
+
+export function timeago(date: string): string {
+  // Show relative time according to current timezone.
+  return _timeago().format(new Date(date));
 }
 
 export function validJSON(string: string): boolean {
