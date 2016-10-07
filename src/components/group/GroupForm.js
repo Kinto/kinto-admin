@@ -105,6 +105,12 @@ export default class GroupForm extends Component {
       }
     };
 
+    const formDataSerialized = creation ? formData : {
+      ...formData,
+      // Stringify JSON fields so they're editable in a text field
+      data: JSON.stringify(formData.data || {}, null, 2),
+    };
+
     const alert = formIsEditable || group.busy ? null : (
       <div className="alert alert-warning">
         You don't have the required permission to edit this group.
@@ -130,7 +136,7 @@ export default class GroupForm extends Component {
             schema={schema}
             uiSchema={formIsEditable ? _uiSchema :
                         {..._uiSchema, "ui:readonly": true}}
-            formData={formData}
+            formData={formDataSerialized}
             validate={validate}
             onSubmit={this.onSubmit}>
             {buttons}

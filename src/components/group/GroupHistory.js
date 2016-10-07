@@ -20,7 +20,7 @@ export default class GroupHistory extends Component {
           selected="history"
           capabilities={capabilities}>
           { !historyLoaded ? <Spinner /> :
-            <HistoryTable history={history} />}
+            <HistoryTable bid={bid} history={history} />}
         </CollectionTabs>
       </div>
     );

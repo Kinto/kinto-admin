@@ -58,8 +58,8 @@ export function updateRecord(bid: string, cid: string, rid: string, record: Reco
   return {type: RECORD_UPDATE_REQUEST, bid, cid, rid, record, attachment};
 }
 
-export function deleteRecord(bid: string, cid: string, rid: string): Action {
-  return {type: RECORD_DELETE_REQUEST, bid, cid, rid};
+export function deleteRecord(bid: string, cid: string, rid: string, last_modified: number): Action {
+  return {type: RECORD_DELETE_REQUEST, bid, cid, rid, last_modified};
 }
 
 export function deleteAttachment(bid: string, cid: string, rid: string): Action {

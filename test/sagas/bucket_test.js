@@ -95,7 +95,9 @@ describe("bucket sagas", () => {
         bucket = {setData(){}};
         setClient({bucket(){return bucket;}});
         const action = actions.updateBucket("bucket", {a: 1});
-        updateBucket = saga.updateBucket(()  => {}, action);
+        updateBucket = saga.updateBucket(()  =>  ({
+          bucket: {last_modified: 42}
+        }), action);
       });
 
       it("should mark the current session as busy", () => {
@@ -105,7 +107,8 @@ describe("bucket sagas", () => {
 
       it("should post new bucket data", () => {
         expect(updateBucket.next().value)
-          .eql(call([bucket, bucket.setData], {a: 1}));
+          .eql(call([bucket, bucket.setData], {a: 1, last_modified: 42}, {
+            patch: true, safe: true}));
       });
 
       it("should dispatch a notification", () => {
@@ -124,7 +127,9 @@ describe("bucket sagas", () => {
 
       before(() => {
         const action = actions.updateBucket("bucket", {});
-        updateBucket = saga.updateBucket(() => {}, action);
+        updateBucket = saga.updateBucket(() =>  ({
+          bucket: {last_modified: 42}
+        }), action);
         updateBucket.next();
         updateBucket.next();
       });
@@ -148,7 +153,9 @@ describe("bucket sagas", () => {
       before(() => {
         client = setClient({deleteBucket() {}});
         const action = actions.deleteBucket("bucket");
-        deleteBucket = saga.deleteBucket(() => {}, action);
+        deleteBucket = saga.deleteBucket(() => ({
+          bucket: {last_modified: 42}
+        }), action);
       });
 
       it("should mark the current session as busy", () => {
@@ -156,9 +163,12 @@ describe("bucket sagas", () => {
           .eql(put(sessionActions.sessionBusy(true)));
       });
 
-      it("should fetch collection attributes", () => {
+      it("should fetch perform a deleteBucket", () => {
         expect(deleteBucket.next().value)
-          .eql(call([client, client.deleteBucket], "bucket"));
+          .eql(call([client, client.deleteBucket], "bucket", {
+            safe: true,
+            last_modified: 42
+          }));
       });
 
       it("should reload the list of buckets/collections", () => {
@@ -187,7 +197,9 @@ describe("bucket sagas", () => {
 
       before(() => {
         const action = actions.deleteBucket("bucket");
-        deleteBucket = saga.deleteBucket(() => {}, action);
+        deleteBucket = saga.deleteBucket(() => ({
+          bucket: {last_modified: 42}
+        }), action);
         deleteBucket.next();
       });
 
@@ -270,14 +282,18 @@ describe("bucket sagas", () => {
         collection = {setData() {}};
         bucket = {collection() {return collection;}};
         setClient({bucket() {return bucket;}});
-        const action = actions.updateCollection(
-          "bucket", "collection", collectionData);
-        updateCollection = saga.updateCollection(() => {}, action);
+        const action = actions.updateCollection("bucket", "collection", collectionData);
+        updateCollection = saga.updateCollection(() => ({
+          collection: {last_modified: 42}
+        }), action);
       });
 
       it("should post the collection data", () => {
         expect(updateCollection.next().value)
-          .eql(call([collection, collection.setData], collectionData));
+          .eql(call([collection, collection.setData], {
+            ...collectionData,
+            last_modified: 42,
+          }, {patch: true, safe: true}));
       });
 
       it("should update the route path", () => {
@@ -293,8 +309,10 @@ describe("bucket sagas", () => {
 
     describe("Failure", () => {
       it("should dispatch an error notification action", () => {
-        const updateCollection = saga.updateCollection(
-          "bucket", "collection", collectionData);
+        const action =  actions.updateCollection("bucket", "collection", collectionData);
+        const updateCollection = saga.updateCollection(() => ({
+          collection: {last_modified: 42}
+        }), action);
         updateCollection.next();
 
         expect(updateCollection.throw("error").value)
@@ -311,12 +329,17 @@ describe("bucket sagas", () => {
         bucket = {deleteCollection() {}};
         setClient({bucket() {return bucket;}});
         const action = actions.deleteCollection("bucket", "collection");
-        deleteCollection = saga.deleteCollection(() => {}, action);
+        deleteCollection = saga.deleteCollection(() => ({
+          collection: {last_modified: 42}
+        }), action);
       });
 
       it("should delete the collection", () => {
         expect(deleteCollection.next().value)
-          .eql(call([bucket, bucket.deleteCollection], "collection"));
+          .eql(call([bucket, bucket.deleteCollection], "collection", {
+            safe: true,
+            last_modified: 42
+          }));
       });
 
       it("should update the route path", () => {
@@ -340,7 +363,9 @@ describe("bucket sagas", () => {
 
       before(() => {
         const action = actions.deleteCollection("bucket", "collection");
-        deleteCollection = saga.deleteCollection(() => {}, action);
+        deleteCollection = saga.deleteCollection(() => ({
+          collection: {last_modified: 42}
+        }), action);
         deleteCollection.next();
       });
 
@@ -450,7 +475,8 @@ describe("bucket sagas", () => {
       it("should post the collection data", () => {
         expect(createGroup.next().value)
           .eql(call([bucket, bucket.createGroup], "group", groupData.members, {
-            data: groupData
+            data: groupData,
+            safe: true
           }));
       });
 
@@ -493,14 +519,18 @@ describe("bucket sagas", () => {
       before(() => {
         bucket = {updateGroup() {}};
         setClient({bucket() {return bucket;}});
-        const action = actions.updateGroup(
-          "bucket", "group", groupData);
-        updateGroup = saga.updateGroup(() => {}, action);
+        const action = actions.updateGroup("bucket", "group", groupData);
+        updateGroup = saga.updateGroup(() => ({
+          group: {last_modified: 42}
+        }), action);
       });
 
       it("should post the group data", () => {
         expect(updateGroup.next().value)
-          .eql(call([bucket, bucket.updateGroup], groupData));
+          .eql(call([bucket, bucket.updateGroup], {
+            ...groupData,
+            last_modified: 42
+          }, {patch: true, safe: true}));
       });
 
       it("should update the route path", () => {
@@ -516,8 +546,9 @@ describe("bucket sagas", () => {
 
     describe("Failure", () => {
       it("should dispatch an error notification action", () => {
-        const updateGroup = saga.updateGroup(
-          "bucket", "group", groupData);
+        const action = actions.updateGroup("bucket", "group", groupData);
+        const updateGroup = saga.updateGroup(() => ({
+          group: {last_modified: 42}}), action);
         updateGroup.next();
 
         expect(updateGroup.throw("error").value)
@@ -534,12 +565,14 @@ describe("bucket sagas", () => {
         bucket = {deleteGroup() {}};
         setClient({bucket() {return bucket;}});
         const action = actions.deleteGroup("bucket", "group");
-        deleteGroup = saga.deleteGroup(() => {}, action);
+        deleteGroup = saga.deleteGroup(() => ({
+          group: {last_modified: 42}
+        }), action);
       });
 
       it("should delete the group", () => {
         expect(deleteGroup.next().value)
-          .eql(call([bucket, bucket.deleteGroup], "group"));
+          .eql(call([bucket, bucket.deleteGroup], "group", {safe: true, last_modified: 42}));
       });
 
       it("should update the route path", () => {
@@ -558,7 +591,9 @@ describe("bucket sagas", () => {
 
       before(() => {
         const action = actions.deleteGroup("bucket", "group");
-        deleteGroup = saga.deleteGroup(() => {}, action);
+        deleteGroup = saga.deleteGroup(() => ({
+          group: {last_modified: 42}
+        }), action);
         deleteGroup.next();
       });
 

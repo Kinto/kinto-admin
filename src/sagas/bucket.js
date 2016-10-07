@@ -37,10 +37,15 @@ export function* createBucket(getState, action) {
 
 export function* updateBucket(getState, action) {
   const {bid, bucketData} = action;
+  const {bucket: currentBucket} = getState();
+  const {last_modified} = currentBucket;
+  const updatedBucket = {...bucketData, last_modified};
   try {
     const bucket = getBucket(bid);
     yield put(sessionBusy(true));
-    yield call([bucket, bucket.setData], bucketData);
+    yield call([bucket, bucket.setData], updatedBucket, {
+      patch: true,
+      safe: true});
     yield put(notifySuccess("Bucket updated."));
   } catch(error) {
     yield put(notifyError("Couldn't update bucket.", error));
@@ -50,11 +55,13 @@ export function* updateBucket(getState, action) {
 }
 
 export function* deleteBucket(getState, action) {
-  const { bid } = action;
+  const {bid} = action;
+  const {bucket: currentBucket} = getState();
+  const {last_modified} = currentBucket;
   try {
     const client = getClient();
     yield put(sessionBusy(true));
-    yield call([client, client.deleteBucket], bid);
+    yield call([client, client.deleteBucket], bid, {safe: true, last_modified});
     yield put(listBuckets());
     yield put(updatePath("/"));
     yield put(notifySuccess("Bucket deleted."));
@@ -81,9 +88,14 @@ export function* createCollection(getState, action) {
 
 export function* updateCollection(getState, action) {
   const {bid, cid, collectionData} = action;
+  const {collection: currentCollection} = getState();
+  const {last_modified} = currentCollection;
+  const updatedCollection = {...collectionData, last_modified};
   try {
     const coll = getCollection(bid, cid);
-    yield call([coll, coll.setData], collectionData);
+    yield call([coll, coll.setData], updatedCollection, {
+      patch: true,
+      safe: true});
     yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
     yield put(notifySuccess("Collection properties updated."));
   } catch(error) {
@@ -93,9 +105,11 @@ export function* updateCollection(getState, action) {
 
 export function* deleteCollection(getState, action) {
   const {bid, cid} = action;
+  const {collection: currentCollection} = getState();
+  const {last_modified} = currentCollection;
   try {
     const bucket = getBucket(bid);
-    yield call([bucket, bucket.deleteCollection], cid);
+    yield call([bucket, bucket.deleteCollection], cid, {safe: true, last_modified});
     yield put(updatePath(""));
     yield put(notifySuccess("Collection deleted."));
     yield put(listBuckets());
@@ -151,6 +165,7 @@ export function* createGroup(getState, action) {
     const bucket = getBucket(bid);
     yield call([bucket, bucket.createGroup], gid, members, {
       data: groupData,
+      safe: true
     });
     yield put(updatePath(`/buckets/${bid}/groups/${gid}/edit`));
     yield put(notifySuccess("Group created."));
@@ -161,10 +176,14 @@ export function* createGroup(getState, action) {
 
 export function* updateGroup(getState, action) {
   const {bid, gid, groupData} = action;
+  const {group: currentGroup} = getState();
+  const {last_modified} = currentGroup;
+  const updatedGroup = {...groupData, id: gid, last_modified};
   try {
     const bucket = getBucket(bid);
-    const group = {id: gid, ...groupData};
-    yield call([bucket, bucket.updateGroup], group);
+    yield call([bucket, bucket.updateGroup], updatedGroup, {
+      patch: true,
+      safe: true});
     yield put(updatePath(`/buckets/${bid}/groups/${gid}/edit`));
     yield put(notifySuccess("Group properties updated."));
   } catch(error) {
@@ -174,9 +193,11 @@ export function* updateGroup(getState, action) {
 
 export function* deleteGroup(getState, action) {
   const {bid, gid} = action;
+  const {group: currentGroup} = getState();
+  const {last_modified} = currentGroup;
   try {
     const bucket = getBucket(bid);
-    yield call([bucket, bucket.deleteGroup], gid);
+    yield call([bucket, bucket.deleteGroup], gid, {safe: true, last_modified});
     yield put(updatePath(`/buckets/${bid}/groups`));
     yield put(notifySuccess("Group deleted."));
   } catch(error) {

@@ -32,8 +32,7 @@ export default class GroupEdit extends Component {
     const formData = {
       name: gid,
       members,
-      // Stringify JSON fields so they're editable in a text field
-      data: JSON.stringify(data || {}, null, 2),
+      data
     };
 
     return (

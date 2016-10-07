@@ -19,7 +19,7 @@ export default class BucketHistory extends Component {
           selected="history"
           capabilities={capabilities}>
           { !historyLoaded ? <Spinner /> :
-            <HistoryTable history={history} />}
+            <HistoryTable bid={bid} history={history} />}
         </BucketTabs>
       </div>
     );

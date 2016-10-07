@@ -33,8 +33,9 @@ class Row extends Component {
 
   onDeleteClick(event) {
     const {bid, cid, record, deleteRecord} = this.props;
+    const {id, last_modified} = record;
     if (confirm("Are you sure?")) {
-      deleteRecord(bid, cid, record.id);
+      deleteRecord(bid, cid, id, last_modified);
     }
   }
 
