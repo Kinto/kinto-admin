@@ -63,27 +63,38 @@ class HistoryRow extends Component {
   }
 }
 
+
+function FilterInfo({since}) {
+  const humanDate = new Date(parseInt(since, 10) / 1000).toISOString();
+  return (
+    <p>Since ${humanDate}. <a href="">View all entries</a></p>
+  );
+}
+
 export default class HistoryTable extends Component {
   render() {
-    const {history, bid} = this.props;
+    const {history, bid, since} = this.props;
     return (
-      <table className="table table-striped table-bordered record-list">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Action</th>
-            <th>Resource</th>
-            <th>Id</th>
-            <th>Author</th>
-            <th></th>
-          </tr>
-        </thead>
-        {
-          history.map((entry, index) => {
-            return <HistoryRow key={index} bid={bid} entry={entry} />;
-          })
-        }
-      </table>
+      <div>
+        {since ? <FilterInfo since={since} /> : null}
+        <table className="table table-striped table-bordered record-list">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Action</th>
+              <th>Resource</th>
+              <th>Id</th>
+              <th>Author</th>
+              <th></th>
+            </tr>
+          </thead>
+          {
+            history.map((entry, index) => {
+              return <HistoryRow key={index} bid={bid} entry={entry} />;
+            })
+          }
+        </table>
+      </div>
     );
   }
 }

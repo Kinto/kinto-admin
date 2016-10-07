@@ -7,7 +7,7 @@ import CollectionTabs from "./GroupTabs";
 
 export default class GroupHistory extends Component {
   render() {
-    const {params, group, capabilities} = this.props;
+    const {params, group, capabilities, location: {query: since}} = this.props;
     const {bid, gid} = params;
     const {history, historyLoaded} = group;
 
@@ -20,7 +20,7 @@ export default class GroupHistory extends Component {
           selected="history"
           capabilities={capabilities}>
           { !historyLoaded ? <Spinner /> :
-            <HistoryTable bid={bid} history={history} />}
+            <HistoryTable bid={bid} history={history} since={since} />}
         </CollectionTabs>
       </div>
     );
