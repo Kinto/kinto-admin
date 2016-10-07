@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router";
 
 import BucketTabs from "./BucketTabs";
+import { timeago } from "../../utils";
 
 
 function DataList(props) {
@@ -20,12 +21,13 @@ function DataList(props) {
       <tbody className={!collectionsLoaded ? "loading" : ""}>{
         data.map((collection, index) => {
           const {id, schema, cache_expires, last_modified} = collection;
+          const date = new Date(last_modified).toISOString();
           return (
             <tr key={index}>
               <td>{id}</td>
               <td>{schema ? "Yes" : "No"}</td>
               <td>{cache_expires ? `${cache_expires} seconds` : "No" }</td>
-              <td>{last_modified}</td>
+              <td><span title={date}>{timeago(date)}</span></td>
               <td className="actions">
                 <div className="btn-group">
                   <Link to={`/buckets/${bid}/collections/${id}`}

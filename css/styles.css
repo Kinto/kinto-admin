@@ -146,7 +146,7 @@ table.record-list td:not(.actions) {
 
 table.record-list td.lastmod {
   white-space: nowrap;
-  width: 180px;
+  width: 120px;
 }
 
 table.record-list td.status {
