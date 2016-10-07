@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
 
+import { humanDate } from "../utils";
+
 
 class HistoryRow extends Component {
   constructor(props) {
@@ -64,19 +66,23 @@ class HistoryRow extends Component {
 }
 
 
-function FilterInfo({since}) {
-  const humanDate = new Date(parseInt(since, 10) / 1000).toISOString();
+function FilterInfo({location}) {
+  const {pathname, query: {since}} = location;
   return (
-    <p>Since ${humanDate}. <a href="">View all entries</a></p>
+    <p>
+      Since {humanDate(since)}.
+      {" "}
+      <Link to={pathname}>View all entries</Link>
+    </p>
   );
 }
 
 export default class HistoryTable extends Component {
   render() {
-    const {history, bid, since} = this.props;
+    const {history, bid, location} = this.props;
     return (
       <div>
-        {since ? <FilterInfo since={since} /> : null}
+        {location.query.since ? <FilterInfo location={location} /> : null}
         <table className="table table-striped table-bordered record-list">
           <thead>
             <tr>

@@ -5,6 +5,7 @@ import {
   renderDisplayField,
   validateSchema,
   validateUiSchema,
+  humanDate,
 } from "../src/utils";
 
 
@@ -152,5 +153,16 @@ describe("validateUiSchema()", () => {
     const validUiSchema = JSON.stringify({"ui:order": ["foo", "bar"]});
     expect(validateUiSchema(validUiSchema, schema))
       .eql(JSON.parse(validUiSchema));
+  });
+});
+
+describe("humanDate", () => {
+  it("should format a string with zero to an English date string", () => {
+    expect(humanDate("0")).eql("Thursday, January 1, 1970, 1:00:00 AM");
+  });
+
+  it("should format a last_modified string to an English date string", () => {
+    expect(humanDate("1475851921581"))
+      .eql("Friday, October 7, 2016, 4:52:01 PM");
   });
 });
