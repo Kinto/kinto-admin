@@ -7,6 +7,8 @@ import {
   RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
   RECORD_RESET,
+  RECORD_HISTORY_REQUEST,
+  RECORD_HISTORY_SUCCESS,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
   ROUTE_LOAD_FAILURE,
@@ -88,6 +90,28 @@ describe("record reducer", () => {
             read: [],
           }
         });
+    });
+  });
+
+  describe("RECORD_HISTORY_REQUEST", () => {
+    it("should update record history state", () => {
+      const state = record(undefined, {
+        type: RECORD_HISTORY_REQUEST,
+      });
+      expect(state.historyLoaded).eql(false);
+    });
+  });
+
+  describe("RECORD_HISTORY_SUCCESS", () => {
+    it("should update record history state", () => {
+      const history = [1, 2, 3];
+      const state = record(undefined, {
+        type: RECORD_HISTORY_SUCCESS,
+        history
+      });
+
+      expect(state.history).eql(history);
+      expect(state.historyLoaded).eql(true);
     });
   });
 });

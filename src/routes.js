@@ -25,10 +25,12 @@ import CollectionEditPage from "./containers/collection/CollectionEditPage";
 import RecordCreatePage from "./containers/record/RecordCreatePage";
 import RecordBulkPage from "./containers/record/RecordBulkPage";
 import RecordEditPage from "./containers/record/RecordEditPage";
+import RecordHistoryPage from "./containers/record/RecordHistoryPage";
 import * as sessionActions from "./actions/session";
 import * as bucketActions from "./actions/bucket";
 import * as collectionActions from "./actions/collection";
 import * as groupActions from "./actions/group";
+import * as recordActions from "./actions/record";
 import * as notificationActions from "./actions/notifications";
 
 
@@ -97,6 +99,15 @@ function onGroupHistoryEnter(store: Object, {params}) {
     return;
   }
   store.dispatch(groupActions.listGroupHistory(bid, gid));
+}
+
+function onRecordHistoryEnter(store: Object, {params}) {
+  const {bid, cid, rid} = params;
+  const {session, routing: {locationBeforeTransitions: {query: {since}}}} = store.getState();
+  if (!session.authenticated) {
+    return;
+  }
+  store.dispatch(recordActions.listRecordHistory(bid, cid, rid, since));
 }
 
 function registerPluginsComponentHooks(PageContainer, plugins) {
@@ -204,8 +215,14 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                 {/* /buckets/:bid/collections/:cid/records/:rid */}
                 <Route name=":rid" path=":rid">
                   <IndexRedirect to="edit" />
+                  {/* /buckets/:bid/collections/:cid/records/:rid/edit */}
                   <Route name="properties" path="edit"
                     components={{...common, content: RecordEditPage}} />
+                  {/* /buckets/:bid/collections/:cid/history */}
+                  <Route name="history" path="history"
+                    components={{...common, content: RecordHistoryPage}}
+                    onEnter={onRecordHistoryEnter.bind(null, store)}
+                    onChange={onRecordHistoryEnter.bind(null, store)} />
                 </Route>
               </Route>
               {/* /buckets/:bid/collections/:cid/edit */}

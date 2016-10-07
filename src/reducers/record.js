@@ -6,6 +6,8 @@ import {
   RECORD_CREATE_REQUEST,
   RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
+  RECORD_HISTORY_REQUEST,
+  RECORD_HISTORY_SUCCESS,
   RECORD_RESET,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
@@ -54,6 +56,12 @@ export default function record(
     }
     case RECORD_RESET: {
       return INITIAL_STATE;
+    }
+    case RECORD_HISTORY_REQUEST: {
+      return {...state, historyLoaded: false};
+    }
+    case RECORD_HISTORY_SUCCESS: {
+      return {...state, history: action.history, historyLoaded: true};
     }
     default: {
       return state;
