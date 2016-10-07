@@ -2,24 +2,22 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { push as updatePath } from "react-router-redux";
 
-import RecordEdit from "../../components/record/RecordEdit";
-import * as CollectionActions from "../../actions/collection";
+import RecordHistory from "../../components/record/RecordHistory";
+import * as RecordActions from "../../actions/record";
 import * as NotificationsActions from "../../actions/notifications";
 
 
 function mapStateToProps(state) {
   return {
+    record: state.record,
     session: state.session,
     capabilities: state.session.serverInfo.capabilities,
-    bucket: state.bucket,
-    collection: state.collection,
-    record: state.record,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    ...CollectionActions,
+    ...RecordActions,
     ...NotificationsActions,
     updatePath
   }, dispatch);
@@ -28,5 +26,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(RecordEdit);
-
+)(RecordHistory);

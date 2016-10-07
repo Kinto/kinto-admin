@@ -229,16 +229,14 @@ export default class RecordForm extends Component {
     );
 
     return (
-      <div className="panel panel-default">
-        <div className="panel-body">
-          {alert}
-          {creation ? null :
-            <AttachmentInfo
-              record={record}
-              attachmentRequired={attachment.required}
-              deleteAttachment={this.deleteAttachment} />}
-          {this.getForm()}
-        </div>
+      <div>
+        {alert}
+        {creation ? null :
+          <AttachmentInfo
+            record={record}
+            attachmentRequired={attachment.required}
+            deleteAttachment={this.deleteAttachment} />}
+        {this.getForm()}
       </div>
     );
   }

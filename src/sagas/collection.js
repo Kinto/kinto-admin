@@ -21,7 +21,7 @@ export function* deleteAttachment(getState, action) {
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
     yield call([coll, coll.removeAttachment], rid);
-    yield put(updatePath(`/buckets/${bid}/collections/${cid}/edit/${rid}`));
+    yield put(updatePath(`/buckets/${bid}/collections/${cid}/records/${rid}/edit`));
     yield put(notifySuccess("Attachment deleted."));
   } catch(error) {
     yield put(notifyError("Couldn't delete attachment.", error));

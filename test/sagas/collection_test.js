@@ -532,7 +532,7 @@ describe("collection sagas", () => {
 
     it("should update the route path", () => {
       expect(deleteAttachment.next().value)
-        .eql(put(updatePath("/buckets/bucket/collections/collection/edit/record")));
+        .eql(put(updatePath("/buckets/bucket/collections/collection/records/record/edit")));
     });
 
     it("should dispatch a notification", () => {

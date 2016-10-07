@@ -28,7 +28,8 @@ class Row extends Component {
   onDoubleClick(event) {
     event.preventDefault();
     const {bid, cid, record, updatePath} = this.props;
-    updatePath(`/buckets/${bid}/collections/${cid}/edit/${record.id}`);
+    const {id: rid} = record;
+    updatePath(`/buckets/${bid}/collections/${cid}/records/${rid}/edit`);
   }
 
   onDeleteClick(event) {
@@ -41,6 +42,7 @@ class Row extends Component {
 
   render() {
     const {bid, cid, record, displayFields} = this.props;
+    const {id: rid} = record;
     return <tr onDoubleClick={this.onDoubleClick.bind(this)}>
       {
         displayFields.map((displayField, index) => {
@@ -52,7 +54,7 @@ class Row extends Component {
         {record.attachment && record.attachment.location ?
           <i className="glyphicon glyphicon-paperclip" /> : null}
         <div className="btn-group">
-          <Link to={`/buckets/${bid}/collections/${cid}/edit/${record.id}`}
+          <Link to={`/buckets/${bid}/collections/${cid}/records/${rid}/edit`}
             className="btn btn-xs btn-info">Edit</Link>
           <button type="button" className="btn btn-xs btn-danger"
             onClick={this.onDeleteClick.bind(this)}>Delete</button>
@@ -221,9 +223,9 @@ function ListActions(props) {
     return null;
   }
   const defaultButtons = [
-    <Link key="__1" to={`/buckets/${bid}/collections/${cid}/add`}
+    <Link key="__1" to={`/buckets/${bid}/collections/${cid}/records/add`}
           className="btn btn-info btn-record-add">Add</Link>,
-    <Link key="__2" to={`/buckets/${bid}/collections/${cid}/bulk`}
+    <Link key="__2" to={`/buckets/${bid}/collections/${cid}/records/bulk`}
           className="btn btn-info btn-record-bulk-add">Bulk add</Link>,
   ];
   return (

@@ -34,7 +34,7 @@ class HistoryRow extends Component {
       bucket: `/buckets/${bid}/edit`,
       collection: `/buckets/${bid}/collections/${cid}/edit`,
       group: `/buckets/${bid}/groups/${gid}/edit`,
-      record: `/buckets/${bid}/collections/${cid}/edit/${rid}` // XXX: see Kinto/kinto-admin#204
+      record: `/buckets/${bid}/collections/${cid}/records/${rid}/edit`
     }[resource_name];
 
     return (

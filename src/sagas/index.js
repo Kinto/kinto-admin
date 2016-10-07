@@ -7,6 +7,7 @@ import * as routeSagas from "./route";
 import * as bucketSagas from "./bucket";
 import * as groupSagas from "./group";
 import * as collectionSagas from "./collection";
+import * as recordSagas from "./record";
 
 /**
  * Registers saga watchers.
@@ -43,9 +44,10 @@ export default function* rootSaga(getState, pluginsSagas=[]) {
     takeEvery(c.COLLECTION_RECORDS_NEXT_REQUEST, collectionSagas.listNextRecords, getState),
     takeEvery(c.COLLECTION_HISTORY_REQUEST, collectionSagas.listHistory, getState),
     takeEvery(c.RECORD_CREATE_REQUEST, collectionSagas.createRecord, getState),
+    takeEvery(c.RECORD_BULK_CREATE_REQUEST, collectionSagas.bulkCreateRecords, getState),
     takeEvery(c.RECORD_UPDATE_REQUEST, collectionSagas.updateRecord, getState),
     takeEvery(c.RECORD_DELETE_REQUEST, collectionSagas.deleteRecord, getState),
-    takeEvery(c.RECORD_BULK_CREATE_REQUEST, collectionSagas.bulkCreateRecords, getState),
+    takeEvery(c.RECORD_HISTORY_REQUEST, recordSagas.listHistory, getState),
     // attachments
     takeEvery(c.ATTACHMENT_DELETE_REQUEST, collectionSagas.deleteAttachment, getState),
   ];
