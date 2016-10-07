@@ -10,6 +10,7 @@ import App from "./containers/App";
 import HomePage from "./containers/HomePage";
 import Sidebar from "./containers/Sidebar";
 import Notifications from "./containers/Notifications";
+import ConflictPage from "./containers/ConflictPage";
 import BucketCreatePage from "./containers/bucket/BucketCreatePage";
 import BucketEditPage from "./containers/bucket/BucketEditPage";
 import BucketCollectionsPage from "./containers/bucket/BucketCollectionsPage";
@@ -198,6 +199,8 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
           </Route>
         </Route>
       </Route>
+      <Route name="resolve" path="resolve"
+        components={{...common, content: ConflictPage}} />
       <Route name="not found" path="*" components={{
         sidebar: Sidebar,
         content: _ => <h1>Page not found.</h1>
