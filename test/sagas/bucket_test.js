@@ -433,7 +433,8 @@ describe("bucket sagas", () => {
           .eql(call([bucket, bucket.listHistory], {
             filters: {
               exclude_resource_name: "record"
-            }
+            },
+            since: undefined,
           }));
       });
 
@@ -441,6 +442,18 @@ describe("bucket sagas", () => {
         const results = [];
         expect(listBucketHistory.next({data: results}).value)
           .eql(put(actions.listBucketHistorySuccess(results)));
+      });
+
+      it("should filter from timestamp if provided", () => {
+        const action = actions.listBucketHistory("bucket", 42);
+        const historySaga = saga.listBucketHistory(() => {}, action);
+        expect(historySaga.next().value)
+          .eql(call([bucket, bucket.listHistory], {
+            filters: {
+              exclude_resource_name: "record"
+            },
+            since: 42,
+          }));
       });
     });
 

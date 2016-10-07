@@ -141,10 +141,11 @@ export function* listBucketGroups(getState, action) {
 }
 
 export function* listBucketHistory(getState, action) {
-  const {bid} = action;
+  const {bid, since} = action;
   try {
     const bucket = getBucket(bid);
     const {data} = yield call([bucket, bucket.listHistory], {
+      since,
       filters: {
         exclude_resource_name: "record"
       }

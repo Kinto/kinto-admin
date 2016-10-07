@@ -24,7 +24,8 @@ describe("group sagas", () => {
           .eql(call([client, client.listHistory], {
             filters: {
               group_id: "group",
-            }
+            },
+            since: undefined
           }));
       });
 
@@ -35,6 +36,17 @@ describe("group sagas", () => {
           .eql(put(actions.listGroupHistorySuccess(history)));
       });
 
+      it("should filter from timestamp if provided", () => {
+        const action = actions.listGroupHistory("bucket", "group", 42);
+        const historySaga = saga.listHistory(() => {}, action);
+        expect(historySaga.next().value)
+          .eql(call([client, client.listHistory], {
+            filters: {
+              group_id: "group",
+            },
+            since: 42
+          }));
+      });
     });
 
     describe("Failure", () => {

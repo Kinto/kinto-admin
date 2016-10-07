@@ -10,10 +10,11 @@ function getBucket(bid) {
 }
 
 export function* listHistory(getState, action) {
-  const {bid, gid} = action;
+  const {bid, gid, since} = action;
   try {
     const bucket = getBucket(bid);
     const {data} = yield call([bucket, bucket.listHistory], {
+      since,
       filters: {
         group_id: gid,
       }
