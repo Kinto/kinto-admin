@@ -16,13 +16,17 @@ export default class RecordCreate extends Component {
     return (
       <div>
         <h1>Add a new record in <b>{bid}/{cid}</b></h1>
-        <RecordForm
-          bid={bid}
-          cid={cid}
-          session={session}
-          bucket={bucket}
-          collection={collection}
-          onSubmit={this.onSubmit} />
+        <div className="panel panel-default">
+          <div className="panel-body">
+            <RecordForm
+              bid={bid}
+              cid={cid}
+              session={session}
+              bucket={bucket}
+              collection={collection}
+              onSubmit={this.onSubmit} />
+          </div>
+        </div>
       </div>
     );
   }
