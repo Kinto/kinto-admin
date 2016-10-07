@@ -144,6 +144,11 @@ table.record-list td:not(.actions) {
   text-overflow: ellipsis;
 }
 
+table.record-list td.lastmod {
+  white-space: nowrap;
+  width: 120px;
+}
+
 table.record-list td.status {
   white-space: nowrap;
   width: 80px;
