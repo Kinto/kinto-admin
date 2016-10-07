@@ -7,7 +7,7 @@ import HistoryTable from "../HistoryTable";
 
 export default class BucketHistory extends Component {
   render() {
-    const {params, bucket, capabilities} = this.props;
+    const {params, bucket, capabilities, location} = this.props;
     const {bid} = params;
     const {history, historyLoaded} = bucket;
 
@@ -19,7 +19,7 @@ export default class BucketHistory extends Component {
           selected="history"
           capabilities={capabilities}>
           { !historyLoaded ? <Spinner /> :
-            <HistoryTable bid={bid} history={history} />}
+            <HistoryTable bid={bid} history={history} location={location} />}
         </BucketTabs>
       </div>
     );

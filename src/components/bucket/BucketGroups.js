@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router";
 
 import BucketTabs from "./BucketTabs";
+import { timeago } from "../../utils";
 
 
 function DataList(props) {
@@ -19,6 +20,7 @@ function DataList(props) {
       <tbody className={!groupsLoaded ? "loading" : ""}>{
         data.map((group, index) => {
           const {id, members, last_modified} = group;
+          const date = new Date(last_modified).toISOString();
           return (
             <tr key={index}>
               <td>
@@ -27,7 +29,7 @@ function DataList(props) {
                 </Link>
               </td>
               <td>{members.join(", ")}</td>
-              <td>{last_modified}</td>
+              <td><span title={date}>{timeago(date)}</span></td>
               <td className="actions">
                 <div className="btn-group">
                   {"history" in capabilities ?

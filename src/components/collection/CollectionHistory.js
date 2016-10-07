@@ -7,7 +7,7 @@ import CollectionTabs from "./CollectionTabs";
 
 export default class CollectionHistory extends Component {
   render() {
-    const {params, collection, capabilities} = this.props;
+    const {params, collection, capabilities, location} = this.props;
     const {bid, cid} = params;
     const {history, historyLoaded} = collection;
 
@@ -20,7 +20,7 @@ export default class CollectionHistory extends Component {
           selected="history"
           capabilities={capabilities}>
           { !historyLoaded ? <Spinner /> :
-            <HistoryTable bid={bid} history={history} />}
+            <HistoryTable bid={bid} history={history} location={location} />}
         </CollectionTabs>
       </div>
     );

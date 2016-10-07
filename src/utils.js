@@ -2,6 +2,7 @@
 
 import type { RecordData } from "./types";
 import React from "react";
+import _timeago  from "timeago.js";
 
 
 export function clone(obj: any) {
@@ -16,6 +17,11 @@ export function omit(obj: Object, keys: string[] = []): Object {
 
 export function isObject(thing: any): boolean {
   return typeof thing === "object" && thing !== null && !Array.isArray(thing);
+}
+
+export function timeago(date: string): string {
+  // Show relative time according to current timezone.
+  return _timeago().format(new Date(date));
 }
 
 export function validJSON(string: string): boolean {
@@ -179,4 +185,17 @@ export function renderDisplayField(record: Object, displayField: string): any {
     return handleNestedDisplayField(record, displayField);
   }
   return "<unknown>";
+}
+
+export function humanDate(since: string): string {
+  return new Date(parseInt(since, 10)).toLocaleDateString("en-GB", {
+    timeZone: "UTC",
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  }) + " UTC";
 }

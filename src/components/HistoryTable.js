@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
+import { timeago, humanDate } from "../utils";
 
 
 class HistoryRow extends Component {
@@ -39,7 +40,9 @@ class HistoryRow extends Component {
     return (
       <tbody>
         <tr>
-          <td>{date}</td>
+          <td>
+            <span title={date}>{timeago(date + "Z")}</span>
+          </td>
           <td>{action}</td>
           <td>{resource_name}</td>
           <td>{link ? <Link to={link}>{objectId}</Link> : objectId}</td>
@@ -63,27 +66,43 @@ class HistoryRow extends Component {
   }
 }
 
+
+function FilterInfo({location}) {
+  const {pathname, query: {since}} = location;
+  return (
+    <p>
+      Since {humanDate(since)}.
+      {" "}
+      <Link to={pathname}>View all entries</Link>
+    </p>
+  );
+}
+
 export default class HistoryTable extends Component {
   render() {
-    const {history, bid} = this.props;
+    const {history, bid, location} = this.props;
+    const isFiltered = !!location.query.since;
     return (
-      <table className="table table-striped table-bordered record-list">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Action</th>
-            <th>Resource</th>
-            <th>Id</th>
-            <th>Author</th>
-            <th></th>
-          </tr>
-        </thead>
-        {
-          history.map((entry, index) => {
-            return <HistoryRow key={index} bid={bid} entry={entry} />;
-          })
-        }
-      </table>
+      <div>
+        {isFiltered ? <FilterInfo location={location} /> : null}
+        <table className="table table-striped table-bordered record-list">
+          <thead>
+            <tr>
+              <th>When</th>
+              <th>Action</th>
+              <th>Resource</th>
+              <th>Id</th>
+              <th>Author</th>
+              <th></th>
+            </tr>
+          </thead>
+          {
+            history.map((entry, index) => {
+              return <HistoryRow key={index} bid={bid} entry={entry} />;
+            })
+          }
+        </table>
+      </div>
     );
   }
 }

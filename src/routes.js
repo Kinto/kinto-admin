@@ -70,13 +70,13 @@ function onCollectionRecordsEnter(store: Object, {params}) {
 
 function onCollectionHistoryEnter(store: Object, {params}) {
   const {bid, cid} = params;
-  const {session} = store.getState();
+  const {session, routing: {locationBeforeTransitions: {query: {since}}}} = store.getState();
   if (!session.authenticated) {
     // We're not authenticated, skip requesting the list of records. This likely
     // occurs when users refresh the page and lose their session.
     return;
   }
-  store.dispatch(collectionActions.listCollectionHistory(bid, cid));
+  store.dispatch(collectionActions.listCollectionHistory(bid, cid, since));
 }
 
 function onBucketPageEnter(store: Object, action: Function, {params}) {
@@ -90,15 +90,26 @@ function onBucketPageEnter(store: Object, action: Function, {params}) {
   store.dispatch(action(bid));
 }
 
-function onGroupHistoryEnter(store: Object, {params}) {
-  const {bid, gid} = params;
-  const {session} = store.getState();
+function onBucketHistoryEnter(store: Object, {params}) {
+  const {bid} = params;
+  const {session, routing: {locationBeforeTransitions: {query: {since}}}} = store.getState();
   if (!session.authenticated) {
     // We're not authenticated, skip requesting the list of records. This likely
     // occurs when users refresh the page and lose their session.
     return;
   }
-  store.dispatch(groupActions.listGroupHistory(bid, gid));
+  store.dispatch(bucketActions.listBucketHistory(bid, since));
+}
+
+function onGroupHistoryEnter(store: Object, {params}) {
+  const {bid, gid} = params;
+  const {session, routing: {locationBeforeTransitions: {query: {since}}}} = store.getState();
+  if (!session.authenticated) {
+    // We're not authenticated, skip requesting the list of records. This likely
+    // occurs when users refresh the page and lose their session.
+    return;
+  }
+  store.dispatch(groupActions.listGroupHistory(bid, gid, since));
 }
 
 function onRecordHistoryEnter(store: Object, {params}) {
@@ -186,8 +197,8 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
           {/* /buckets/:bid/history */}
           <Route name="history" path="history"
             components={{...common, content: BucketHistoryPage}}
-            onEnter={onBucketPageEnter.bind(null, store, bucketActions.listBucketHistory)}
-            onChange={onBucketPageEnter.bind(null, store, bucketActions.listBucketHistory)} />
+            onEnter={onBucketHistoryEnter.bind(null, store)}
+            onChange={onBucketHistoryEnter.bind(null, store)} />
           {/* /buckets/:bid/collections */}
           <Route name="collections" path="collections">
             <IndexRoute name="collections" components={{...common, content: BucketCollectionsPage}}
