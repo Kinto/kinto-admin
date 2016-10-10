@@ -12,6 +12,7 @@ import Sidebar from "./containers/Sidebar";
 import Notifications from "./containers/Notifications";
 import BucketCreatePage from "./containers/bucket/BucketCreatePage";
 import BucketEditPage from "./containers/bucket/BucketEditPage";
+import BucketPermissionsPage from "./containers/bucket/BucketPermissionsPage";
 import BucketCollectionsPage from "./containers/bucket/BucketCollectionsPage";
 import BucketGroupsPage from "./containers/bucket/BucketGroupsPage";
 import BucketHistoryPage from "./containers/bucket/BucketHistoryPage";
@@ -194,6 +195,9 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
           {/* /buckets/:bid/edit */}
           <Route name="properties" path="edit"
             components={{...common, content: BucketEditPage}} />
+          {/* /buckets/:bid/permissions */}
+          <Route name="permissions" path="permissions"
+            components={{...common, content: BucketPermissionsPage}} />
           {/* /buckets/:bid/history */}
           <Route name="history" path="history"
             components={{...common, content: BucketHistoryPage}}
