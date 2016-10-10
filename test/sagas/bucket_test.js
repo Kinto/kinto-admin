@@ -111,6 +111,11 @@ describe("bucket sagas", () => {
             patch: true, safe: true}));
       });
 
+      it("should update the route path", () => {
+        expect(updateBucket.next().value)
+          .eql(put(updatePath("/buckets/bucket/edit")));
+      });
+
       it("should dispatch a notification", () => {
         expect(updateBucket.next().value)
           .eql(put(notifySuccess("Bucket updated.")));

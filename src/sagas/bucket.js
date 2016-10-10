@@ -46,6 +46,7 @@ export function* updateBucket(getState, action) {
     yield call([bucket, bucket.setData], updatedBucket, {
       patch: true,
       safe: true});
+    yield put(updatePath(`/buckets/${bid}/edit`));
     yield put(notifySuccess("Bucket updated."));
   } catch(error) {
     yield put(notifyError("Couldn't update bucket.", error));
