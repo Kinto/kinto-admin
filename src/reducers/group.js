@@ -27,12 +27,7 @@ function load(state: GroupState, group: GroupResource): GroupState {
     return {...state, busy: false};
   }
   const {permissions, data} = group;
-  return {
-    ...state,
-    busy: false,
-    data,
-    permissions,
-  };
+  return {...state, busy: false, data, permissions};
 }
 
 export function group(
