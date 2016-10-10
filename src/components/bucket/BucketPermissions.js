@@ -9,31 +9,38 @@ const schema = {
   items: {
     type: "object",
     properties: {
-      principal: {type: "string"},
-      read: {type: "boolean"},
-      write: {type: "boolean"},
-      "collection:create": {type: "boolean"},
-      "group:create": {type: "boolean"},
+      principal: {type: "string", title: "Principal"},
+      read: {type: "boolean", default: false},
+      write: {type: "boolean", default: false},
+      "collection:create": {type: "boolean", default: false},
+      "group:create": {type: "boolean", default: false},
     }
   }
 };
 
 function permissionsObjectToList(permissionsObject) {
-  return Object.keys(permissionsObject).reduce((acc, permissionName) => {
-    const principals = permissionsObject[permissionName];
-    for (const principal of principals) {
-      const existing = acc.map(x => x.principal).includes(principal);
-      if (existing) {
-        const permissionEntry = acc.find(x => x.principal === principal);
-        acc = acc
-          .filter(x => x.principal === principal)
-          .concat({...permissionEntry, [permissionName]: true});
-      } else {
-        acc.push({principal, [permissionName]: true});
+  return Object.keys(permissionsObject)
+    .reduce((acc, permissionName) => {
+      const principals = permissionsObject[permissionName];
+      for (const principal of principals) {
+        const existing = acc.find(x => x.principal === principal);
+        if (existing) {
+          acc =  acc.map(perm => {
+            if (perm.principal === principal) {
+              return {...existing, [permissionName]: true};
+            } else {
+              return perm;
+            }
+          });
+        } else {
+          acc = [...acc, {principal, [permissionName]: true}];
+        }
       }
       return acc;
-    }
-  }, []);
+    }, [])
+    // Ensure entries are always listed alphabetically by principals, to avoid
+    // confusing UX.
+    .sort((a, b) => a.principal > b.principal);
 }
 
 function permissionsListToObject(permissionsList) {
