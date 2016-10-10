@@ -96,7 +96,7 @@ describe("bucket sagas", () => {
         setClient({bucket(){return bucket;}});
         const action = actions.updateBucket("bucket", {a: 1});
         updateBucket = saga.updateBucket(()  =>  ({
-          bucket: {last_modified: 42}
+          bucket: {data: {last_modified: 42}}
         }), action);
       });
 
@@ -133,7 +133,7 @@ describe("bucket sagas", () => {
       before(() => {
         const action = actions.updateBucket("bucket", {});
         updateBucket = saga.updateBucket(() =>  ({
-          bucket: {last_modified: 42}
+          bucket: {data: {last_modified: 42}}
         }), action);
         updateBucket.next();
         updateBucket.next();
@@ -159,7 +159,7 @@ describe("bucket sagas", () => {
         client = setClient({deleteBucket() {}});
         const action = actions.deleteBucket("bucket");
         deleteBucket = saga.deleteBucket(() => ({
-          bucket: {last_modified: 42}
+          bucket: {data: {last_modified: 42}}
         }), action);
       });
 
@@ -203,7 +203,7 @@ describe("bucket sagas", () => {
       before(() => {
         const action = actions.deleteBucket("bucket");
         deleteBucket = saga.deleteBucket(() => ({
-          bucket: {last_modified: 42}
+          bucket: {data: {last_modified: 42}}
         }), action);
         deleteBucket.next();
       });
@@ -289,7 +289,7 @@ describe("bucket sagas", () => {
         setClient({bucket() {return bucket;}});
         const action = actions.updateCollection("bucket", "collection", collectionData);
         updateCollection = saga.updateCollection(() => ({
-          collection: {last_modified: 42}
+          collection: {data: {last_modified: 42}}
         }), action);
       });
 
@@ -316,7 +316,7 @@ describe("bucket sagas", () => {
       it("should dispatch an error notification action", () => {
         const action =  actions.updateCollection("bucket", "collection", collectionData);
         const updateCollection = saga.updateCollection(() => ({
-          collection: {last_modified: 42}
+          collection: {data: {last_modified: 42}}
         }), action);
         updateCollection.next();
 
@@ -335,7 +335,7 @@ describe("bucket sagas", () => {
         setClient({bucket() {return bucket;}});
         const action = actions.deleteCollection("bucket", "collection");
         deleteCollection = saga.deleteCollection(() => ({
-          collection: {last_modified: 42}
+          collection: {data: {last_modified: 42}}
         }), action);
       });
 
@@ -369,7 +369,7 @@ describe("bucket sagas", () => {
       before(() => {
         const action = actions.deleteCollection("bucket", "collection");
         deleteCollection = saga.deleteCollection(() => ({
-          collection: {last_modified: 42}
+          collection: {data: {last_modified: 42}}
         }), action);
         deleteCollection.next();
       });
@@ -539,7 +539,7 @@ describe("bucket sagas", () => {
         setClient({bucket() {return bucket;}});
         const action = actions.updateGroup("bucket", "group", groupData);
         updateGroup = saga.updateGroup(() => ({
-          group: {last_modified: 42}
+          group: {data: {last_modified: 42}}
         }), action);
       });
 
@@ -566,7 +566,7 @@ describe("bucket sagas", () => {
       it("should dispatch an error notification action", () => {
         const action = actions.updateGroup("bucket", "group", groupData);
         const updateGroup = saga.updateGroup(() => ({
-          group: {last_modified: 42}}), action);
+          group: {data: {last_modified: 42}}}), action);
         updateGroup.next();
 
         expect(updateGroup.throw("error").value)
@@ -584,7 +584,7 @@ describe("bucket sagas", () => {
         setClient({bucket() {return bucket;}});
         const action = actions.deleteGroup("bucket", "group");
         deleteGroup = saga.deleteGroup(() => ({
-          group: {last_modified: 42}
+          group: {data: {last_modified: 42}}
         }), action);
       });
 
@@ -610,7 +610,7 @@ describe("bucket sagas", () => {
       before(() => {
         const action = actions.deleteGroup("bucket", "group");
         deleteGroup = saga.deleteGroup(() => ({
-          group: {last_modified: 42}
+          group: {data: {last_modified: 42}}
         }), action);
         deleteGroup.next();
       });

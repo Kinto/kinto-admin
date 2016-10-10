@@ -15,7 +15,7 @@ const schema = {
   properties: {
     id: {
       type: "string",
-      title: "Bucket name",
+      title: "Bucket id",
       pattern: "^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
     },
     data: {
@@ -34,7 +34,7 @@ const uiSchema = {
 
 const deleteSchema = {
   type: "string",
-  title: "Please enter the bucket name to delete as a confirmation",
+  title: "Please enter the bucket id to delete as a confirmation",
 };
 
 function validate({data}, errors) {
@@ -47,7 +47,7 @@ function validate({data}, errors) {
 function DeleteForm({bid, onSubmit}) {
   const validate = (formData, errors) => {
     if (formData !== bid) {
-      errors.addError("The bucket name does not match.");
+      errors.addError("The bucket id does not match.");
     }
     return errors;
   };
@@ -74,24 +74,28 @@ function DeleteForm({bid, onSubmit}) {
 
 export default class BucketForm extends Component {
   onSubmit = ({formData}) => {
+    const {id, data} = formData;
+    // Parse JSON fields so they can be sent to the server
+    const attributes = JSON.parse(data);
     this.props.onSubmit({
-      ...omit(formData, ["data"]),
-      // Parse JSON fields so they can be sent to the server
-      ...JSON.parse(formData.data)
+      id,
+      ...attributes
     });
   }
 
   render() {
-    const {bid, session, bucket, formData, deleteBucket} = this.props;
-    const creation = !formData;
+    const {bid, session, bucket, formData={}, deleteBucket} = this.props;
+    const creation = !formData.id;
     const hasWriteAccess = canEditBucket(session, bucket);
     const formIsEditable = creation || hasWriteAccess;
     const showDeleteForm = !creation && hasWriteAccess;
 
+    const attributes = omit(formData, ["id", "last_modified"]);
+    // Stringify JSON fields so they're editable in a text field
+    const data = JSON.stringify(attributes, null, 2);
     const formDataSerialized = {
-      ...formData,
-      // Stringify JSON fields so they're editable in a text field
-      data: JSON.stringify(formData.data || {}, null, 2),
+      id: bid,
+      data
     };
 
     // Disable edition of the collection id

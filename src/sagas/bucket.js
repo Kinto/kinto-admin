@@ -37,8 +37,7 @@ export function* createBucket(getState, action) {
 
 export function* updateBucket(getState, action) {
   const {bid, bucketData} = action;
-  const {bucket: currentBucket} = getState();
-  const {last_modified} = currentBucket;
+  const {bucket: {data: {last_modified}}} = getState();
   const updatedBucket = {...bucketData, last_modified};
   try {
     const bucket = getBucket(bid);
@@ -57,8 +56,7 @@ export function* updateBucket(getState, action) {
 
 export function* deleteBucket(getState, action) {
   const {bid} = action;
-  const {bucket: currentBucket} = getState();
-  const {last_modified} = currentBucket;
+  const {bucket: {data: {last_modified}}} = getState();
   try {
     const client = getClient();
     yield put(sessionBusy(true));
@@ -89,8 +87,7 @@ export function* createCollection(getState, action) {
 
 export function* updateCollection(getState, action) {
   const {bid, cid, collectionData} = action;
-  const {collection: currentCollection} = getState();
-  const {last_modified} = currentCollection;
+  const {collection: {data: {last_modified}}} = getState();
   const updatedCollection = {...collectionData, last_modified};
   try {
     const coll = getCollection(bid, cid);
@@ -106,8 +103,7 @@ export function* updateCollection(getState, action) {
 
 export function* deleteCollection(getState, action) {
   const {bid, cid} = action;
-  const {collection: currentCollection} = getState();
-  const {last_modified} = currentCollection;
+  const {collection: {data: {last_modified}}} = getState();
   try {
     const bucket = getBucket(bid);
     yield call([bucket, bucket.deleteCollection], cid, {safe: true, last_modified});
@@ -178,8 +174,7 @@ export function* createGroup(getState, action) {
 
 export function* updateGroup(getState, action) {
   const {bid, gid, groupData} = action;
-  const {group: currentGroup} = getState();
-  const {last_modified} = currentGroup;
+  const {group: {data: {last_modified}}} = getState();
   const updatedGroup = {...groupData, id: gid, last_modified};
   try {
     const bucket = getBucket(bid);
@@ -195,8 +190,7 @@ export function* updateGroup(getState, action) {
 
 export function* deleteGroup(getState, action) {
   const {bid, gid} = action;
-  const {group: currentGroup} = getState();
-  const {last_modified} = currentGroup;
+  const {group: {data: {last_modified}}} = getState();
   try {
     const bucket = getBucket(bid);
     yield call([bucket, bucket.deleteGroup], gid, {safe: true, last_modified});

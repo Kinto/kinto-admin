@@ -243,19 +243,20 @@ export default class CollectionForm extends Component {
   }
 
   render() {
-    const {cid, bucket, collection, formData, deleteCollection} = this.props;
-    const creation = !formData;
+    const {cid, bucket, collection, formData={}, deleteCollection} = this.props;
+    const creation = !formData.id;
     const showDeleteForm = !creation && this.allowEditing;
 
     // Disable edition of the collection id
-    const _uiSchema = !formData ? uiSchema : {
+    const _uiSchema = creation ? uiSchema : {
       ...uiSchema,
       id: {
         "ui:readonly": true,
       }
     };
 
-    const formDataSerialized = !formData ? formData : {
+    const formDataSerialized = creation ? formData : {
+      displayFields: formData.displayFields || [],
       ...formData,
       // Stringify JSON fields so they're editable in a text field
       schema: JSON.stringify(formData.schema || {}, null, 2),
@@ -271,7 +272,7 @@ export default class CollectionForm extends Component {
     const buttons = (
       <div>
         <input type="submit" className="btn btn-primary" disabled={!this.allowEditing}
-          value={`${formData ? "Update" : "Create"} collection`} />
+          value={`${creation ? "Create" : "Update"} collection`} />
         {" or "}
         <Link to="/">Cancel</Link>
       </div>

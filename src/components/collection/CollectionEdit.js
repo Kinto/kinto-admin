@@ -23,28 +23,10 @@ export default class CollectionEdit extends Component {
   render() {
     const {params, session, bucket, collection, capabilities} = this.props;
     const {bid, cid} = params;
-    const {busy, id, data} = collection;
-    const {
-      schema = {},
-      uiSchema = {},
-      attachment = {},
-      displayFields = [],
-      sort,
-    } = data;
-
+    const {busy, data: formData} = collection;
     if (busy) {
       return <Spinner />;
     }
-
-    const formData = {
-      id,
-      schema,
-      uiSchema,
-      displayFields,
-      attachment,
-      sort,
-    };
-
     return (
       <div>
         <h1>Edit <b>{bid}/{cid}</b> collection properties</h1>

@@ -17,7 +17,6 @@ export type BasicAuth = {
 
 export type BucketState = {
   busy: boolean,
-  id: ?string,
   data: BucketData,
   permissions: BucketPermissions,
   history: Object[],
@@ -59,7 +58,6 @@ export type ClientError = {
 };
 
 export type CollectionState = {
-  id: ?string,
   busy: boolean,
   data: CollectionData,
   permissions: CollectionPermissions,
@@ -97,8 +95,6 @@ export type CollectionResource = {
 };
 
 export type GroupState = {
-  id: ?string,
-  members?: ?string[],
   data?: Object,
   permissions: GroupPermissions,
   history: Object[],

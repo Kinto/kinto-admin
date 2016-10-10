@@ -52,8 +52,7 @@ describe("group reducer", () => {
         },
       });
 
-      expect(state.id).eql("grp");
-      expect(state.data).eql({foo: "bar"});
+      expect(state.data).eql({id: "grp", foo: "bar", last_modified: 42});
       expect(state.permissions).eql({read: ["a"], write: ["b"]});
     });
   });

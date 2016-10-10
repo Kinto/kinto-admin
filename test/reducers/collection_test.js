@@ -87,7 +87,8 @@ describe("collection reducer", () => {
         },
       });
 
-      expect(state.id).eql("coll");
+      expect(state.data).to.have.property("id").eql("coll");
+      expect(state.data).to.have.property("last_modified").eql(42);
       expect(state.data).to.have.property("foo").eql("bar");
       expect(state.permissions).eql({read: ["a"], write: ["b"]});
     });

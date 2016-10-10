@@ -23,15 +23,10 @@ export default class BucketEdit extends Component {
   render() {
     const {params, session, capabilities, bucket} = this.props;
     const {bid} = params;
-    const {busy} = session;
+    const {busy, data: formData} = bucket;
     if (busy) {
       return <Spinner />;
     }
-    const {data} = bucket;
-    const formData = {
-      id: bid,
-      data
-    };
     return (
       <div>
         <h1>Manage <b>{bid}</b> bucket</h1>
