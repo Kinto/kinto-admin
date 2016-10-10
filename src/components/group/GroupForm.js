@@ -11,11 +11,11 @@ import Spinner from "../Spinner";
 const schema = {
   type: "object",
   title: "Group properties",
-  required: ["name", "members"],
+  required: ["id", "members"],
   properties: {
-    name: {
+    id: {
       type: "string",
-      title: "Group name",
+      title: "Group id",
       pattern: "^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
     },
     members: {
@@ -40,7 +40,7 @@ const uiSchema = {
 
 const deleteSchema = {
   type: "string",
-  title: "Please enter the bucket name to delete as a confirmation",
+  title: "Please enter the group id to delete as a confirmation",
 };
 
 function validate({data}, errors) {
@@ -53,7 +53,7 @@ function validate({data}, errors) {
 function DeleteForm({gid, onSubmit}) {
   const validate = (formData, errors) => {
     if (formData !== gid) {
-      errors.addError("The group name does not match.");
+      errors.addError("The group id does not match.");
     }
     return errors;
   };
@@ -79,13 +79,12 @@ function DeleteForm({gid, onSubmit}) {
 
 export default class GroupForm extends Component {
   onSubmit = ({formData}) => {
-    const {name, data} = formData;
-    const groupData = omit(formData, ["name", "data"]);
+    const {data} = formData;
+    // Parse JSON fields so they can be sent to the server
+    const attributes = JSON.parse(data);
     this.props.onSubmit({
-      id: name,
-      ...groupData,
-      // Parse JSON fields so they can be sent to the server
-      ...JSON.parse(data),
+      ...formData,
+      ...attributes
     });
   }
 
@@ -97,18 +96,20 @@ export default class GroupForm extends Component {
     const formIsEditable = creation || hasWriteAccess;
     const showDeleteForm = !creation && hasWriteAccess;
 
-    // Disable edition of the collection name
+    // Disable edition of the group id
     const _uiSchema = creation ? uiSchema : {
       ...uiSchema,
-      name: {
+      id: {
         "ui:readonly": true,
       }
     };
 
-    const formDataSerialized = creation ? formData : {
+    const attributes = omit(formData, ["id", "last_modified", "members"]);
+    // Stringify JSON fields so they're editable in a text field
+    const data = JSON.stringify(attributes || {}, null, 2);
+    const formDataSerialized = {
       ...formData,
-      // Stringify JSON fields so they're editable in a text field
-      data: JSON.stringify(formData.data || {}, null, 2),
+      data
     };
 
     const alert = formIsEditable || group.busy ? null : (
