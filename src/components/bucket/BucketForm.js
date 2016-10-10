@@ -15,7 +15,7 @@ const schema = {
   properties: {
     id: {
       type: "string",
-      title: "Bucket name",
+      title: "Bucket id",
       pattern: "^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
     },
     data: {
@@ -34,7 +34,7 @@ const uiSchema = {
 
 const deleteSchema = {
   type: "string",
-  title: "Please enter the bucket name to delete as a confirmation",
+  title: "Please enter the bucket id to delete as a confirmation",
 };
 
 function validate({data}, errors) {
@@ -47,7 +47,7 @@ function validate({data}, errors) {
 function DeleteForm({bid, onSubmit}) {
   const validate = (formData, errors) => {
     if (formData !== bid) {
-      errors.addError("The bucket name does not match.");
+      errors.addError("The bucket id does not match.");
     }
     return errors;
   };
