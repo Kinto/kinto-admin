@@ -84,3 +84,42 @@ export function canEditRecord(session: SessionState, bucket: BucketState, collec
   // You can edit if you can write in the bucket, collection or record
   return [bucket, collection, record].some(can(session).write);
 }
+
+export function permissionsObjectToList(permissionsObject: Object): Object[] {
+  return Object.keys(permissionsObject)
+    .reduce((acc, permissionName) => {
+      const principals = permissionsObject[permissionName];
+      for (const principal of principals) {
+        const existing = acc.find(x => x.principal === principal);
+        if (existing) {
+          acc =  acc.map(perm => {
+            if (perm.principal === principal) {
+              return {...existing, [permissionName]: true};
+            } else {
+              return perm;
+            }
+          });
+        } else {
+          acc = [...acc, {principal, [permissionName]: true}];
+        }
+      }
+      return acc;
+    }, [])
+    // Ensure entries are always listed alphabetically by principals, to avoid
+    // confusing UX.
+    .sort((a, b) => a.principal > b.principal ? 1 : -1);
+}
+
+export function permissionsListToObject(permissionsList: Object[]) {
+  return permissionsList.reduce((acc, {principal, ...permissions}) => {
+    for (const permissionName of Object.keys(permissions)) {
+      if (!acc.hasOwnProperty(permissionName)) {
+        acc[permissionName] = [];
+      }
+      if (permissions[permissionName]) {
+        acc[permissionName].push(principal);
+      }
+    }
+    return acc;
+  }, {});
+}
