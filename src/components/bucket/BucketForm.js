@@ -84,15 +84,15 @@ export default class BucketForm extends Component {
   }
 
   render() {
-    const {bid, session, bucket, formData, deleteBucket} = this.props;
-    const creation = !formData;
+    const {bid, session, bucket, formData={}, deleteBucket} = this.props;
+    const creation = !formData.id;
     const hasWriteAccess = canEditBucket(session, bucket);
     const formIsEditable = creation || hasWriteAccess;
     const showDeleteForm = !creation && hasWriteAccess;
 
     const attributes = omit(formData, ["id", "last_modified"]);
     // Stringify JSON fields so they're editable in a text field
-    const data = JSON.stringify(attributes || {}, null, 2);
+    const data = JSON.stringify(attributes, null, 2);
     const formDataSerialized = {
       id: bid,
       data

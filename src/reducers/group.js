@@ -12,11 +12,7 @@ import {
 } from "../constants";
 
 export const INITIAL_STATE: GroupState = {
-  data: {
-    id: null,
-    last_modified: null,
-    members: [],
-  },
+  data: {},
   busy: false,
   permissions: {
     "read": [],

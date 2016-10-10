@@ -18,10 +18,7 @@ import {
 
 const INITIAL_STATE: BucketState = {
   busy: false,
-  data: {
-    id: null,
-    last_modified: null,
-  },
+  data: {},
   permissions: {
     "read": [],
     "write": [],
@@ -41,12 +38,7 @@ function load(state: BucketState, bucket: BucketResource): BucketState {
     return {...state, busy: false};
   }
   const {data, permissions} = bucket;
-  return {
-    ...state,
-    busy: false,
-    data,
-    permissions,
-  };
+  return {...state, busy: false, data, permissions};
 }
 
 export function bucket(state: BucketState = INITIAL_STATE, action: Object) {

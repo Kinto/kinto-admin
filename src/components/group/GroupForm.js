@@ -89,8 +89,8 @@ export default class GroupForm extends Component {
   }
 
   render() {
-    const {gid, session, bucket, group, formData, deleteGroup} = this.props;
-    const creation = !formData;
+    const {gid, session, bucket, group, formData={}, deleteGroup} = this.props;
+    const creation = !formData.id;
     const hasWriteAccess = creation ? canCreateGroup(session, bucket)
                                     : canEditGroup(session, bucket, group);
     const formIsEditable = creation || hasWriteAccess;
@@ -106,7 +106,7 @@ export default class GroupForm extends Component {
 
     const attributes = omit(formData, ["id", "last_modified", "members"]);
     // Stringify JSON fields so they're editable in a text field
-    const data = JSON.stringify(attributes || {}, null, 2);
+    const data = JSON.stringify(attributes, null, 2);
     const formDataSerialized = {
       ...formData,
       data

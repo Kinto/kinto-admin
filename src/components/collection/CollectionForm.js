@@ -243,8 +243,8 @@ export default class CollectionForm extends Component {
   }
 
   render() {
-    const {cid, bucket, collection, formData, deleteCollection} = this.props;
-    const creation = !formData;
+    const {cid, bucket, collection, formData={}, deleteCollection} = this.props;
+    const creation = !formData.id;
     const showDeleteForm = !creation && this.allowEditing;
 
     // Disable edition of the collection id
@@ -255,7 +255,8 @@ export default class CollectionForm extends Component {
       }
     };
 
-    const formDataSerialized = !formData ? formData : {
+    const formDataSerialized = creation ? formData : {
+      displayFields: formData.displayFields || [],
       ...formData,
       // Stringify JSON fields so they're editable in a text field
       schema: JSON.stringify(formData.schema || {}, null, 2),

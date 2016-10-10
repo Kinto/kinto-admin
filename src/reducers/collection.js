@@ -20,18 +20,7 @@ const DEFAULT_SORT: string = "-last_modified";
 
 export const INITIAL_STATE: CollectionState = {
   busy: false,
-  data: {
-    id: null,
-    last_modified: null,
-    schema: {},
-    uiSchema: {},
-    attachment: {
-      enabled: false,
-      required: false
-    },
-    displayFields: [],
-    sort: DEFAULT_SORT,
-  },
+  data: {},
   permissions: {
     "read": [],
     "write": [],
@@ -51,12 +40,7 @@ function load(state: CollectionState, collection: CollectionResource): Collectio
     return {...state, busy: false};
   }
   const {data, permissions} = collection;
-  return {
-    ...state,
-    busy: false,
-    data: {...INITIAL_STATE.data, ...data},
-    permissions,
-  };
+  return {...state, busy: false, data, permissions};
 }
 
 export function collection(
