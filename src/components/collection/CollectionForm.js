@@ -248,7 +248,7 @@ export default class CollectionForm extends Component {
     const showDeleteForm = !creation && this.allowEditing;
 
     // Disable edition of the collection id
-    const _uiSchema = !formData ? uiSchema : {
+    const _uiSchema = creation ? uiSchema : {
       ...uiSchema,
       id: {
         "ui:readonly": true,
@@ -272,7 +272,7 @@ export default class CollectionForm extends Component {
     const buttons = (
       <div>
         <input type="submit" className="btn btn-primary" disabled={!this.allowEditing}
-          value={`${formData ? "Update" : "Create"} collection`} />
+          value={`${creation ? "Create" : "Update"} collection`} />
         {" or "}
         <Link to="/">Cancel</Link>
       </div>

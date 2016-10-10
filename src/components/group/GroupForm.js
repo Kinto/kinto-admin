@@ -83,7 +83,7 @@ export default class GroupForm extends Component {
     // Parse JSON fields so they can be sent to the server
     const attributes = JSON.parse(data);
     this.props.onSubmit({
-      ...formData,
+      ...omit(formData, ["data"]),
       ...attributes
     });
   }

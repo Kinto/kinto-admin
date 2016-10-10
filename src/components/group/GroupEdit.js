@@ -23,18 +23,10 @@ export default class GroupEdit extends Component {
   render() {
     const {params, session, bucket, group, capabilities} = this.props;
     const {bid, gid} = params;
-    const {busy, members, data} = group;
-
+    const {busy, data: formData} = group;
     if (busy) {
       return <Spinner />;
     }
-
-    const formData = {
-      name: gid,
-      members,
-      data
-    };
-
     return (
       <div>
         <h1>Edit <b>{bid}/{gid}</b> group properties</h1>
