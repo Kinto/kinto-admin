@@ -86,8 +86,7 @@ export function* createCollection(getState, action) {
 
 export function* updateCollection(getState, action) {
   const {bid, cid, collectionData} = action;
-  const {collection: currentCollection} = getState();
-  const {last_modified} = currentCollection;
+  const {collection: {data: {last_modified}}} = getState();
   const updatedCollection = {...collectionData, last_modified};
   try {
     const coll = getCollection(bid, cid);
@@ -103,8 +102,7 @@ export function* updateCollection(getState, action) {
 
 export function* deleteCollection(getState, action) {
   const {bid, cid} = action;
-  const {collection: currentCollection} = getState();
-  const {last_modified} = currentCollection;
+  const {collection: {data: {last_modified}}} = getState();
   try {
     const bucket = getBucket(bid);
     yield call([bucket, bucket.deleteCollection], cid, {safe: true, last_modified});

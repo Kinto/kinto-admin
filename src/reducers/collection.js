@@ -14,16 +14,15 @@ import {
   ROUTE_LOAD_SUCCESS,
   ROUTE_LOAD_FAILURE,
 } from "../constants";
-import { omit } from "../utils";
 
 
 const DEFAULT_SORT: string = "-last_modified";
 
 export const INITIAL_STATE: CollectionState = {
-  id: null,
-  last_modified: null,
   busy: false,
   data: {
+    id: null,
+    last_modified: null,
     schema: {},
     uiSchema: {},
     attachment: {
@@ -52,14 +51,10 @@ function load(state: CollectionState, collection: CollectionResource): Collectio
     return {...state, busy: false};
   }
   const {data, permissions} = collection;
-  const {id, last_modified} = data;
-  const attributes = omit(data, ["id", "last_modified"]);
   return {
     ...state,
     busy: false,
-    id,
-    last_modified,
-    data: {...INITIAL_STATE.data, ...attributes},
+    data: {...INITIAL_STATE.data, ...data},
     permissions,
   };
 }
