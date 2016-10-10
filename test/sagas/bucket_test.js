@@ -96,7 +96,7 @@ describe("bucket sagas", () => {
         setClient({bucket(){return bucket;}});
         const action = actions.updateBucket("bucket", {a: 1});
         updateBucket = saga.updateBucket(()  =>  ({
-          bucket: {last_modified: 42}
+          bucket: {data: {last_modified: 42}}
         }), action);
       });
 
@@ -128,7 +128,7 @@ describe("bucket sagas", () => {
       before(() => {
         const action = actions.updateBucket("bucket", {});
         updateBucket = saga.updateBucket(() =>  ({
-          bucket: {last_modified: 42}
+          bucket: {data: {last_modified: 42}}
         }), action);
         updateBucket.next();
         updateBucket.next();
@@ -154,7 +154,7 @@ describe("bucket sagas", () => {
         client = setClient({deleteBucket() {}});
         const action = actions.deleteBucket("bucket");
         deleteBucket = saga.deleteBucket(() => ({
-          bucket: {last_modified: 42}
+          bucket: {data: {last_modified: 42}}
         }), action);
       });
 
@@ -198,7 +198,7 @@ describe("bucket sagas", () => {
       before(() => {
         const action = actions.deleteBucket("bucket");
         deleteBucket = saga.deleteBucket(() => ({
-          bucket: {last_modified: 42}
+          bucket: {data: {last_modified: 42}}
         }), action);
         deleteBucket.next();
       });

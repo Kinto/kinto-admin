@@ -14,26 +14,26 @@ import {
   ROUTE_LOAD_SUCCESS,
   ROUTE_LOAD_FAILURE,
 } from "../constants";
-import { omit } from "../utils";
 
 
 const INITIAL_STATE: BucketState = {
   busy: false,
-  id: null,
-  last_modified: null,
-  data: {},
-  groups: [],
-  groupsLoaded: false,
-  collections: [],
-  collectionsLoaded: false,
-  history: [],
-  historyLoaded: false,
+  data: {
+    id: null,
+    last_modified: null,
+  },
   permissions: {
     "read": [],
     "write": [],
     "collection:create": [],
     "group:create": [],
   },
+  groups: [],
+  groupsLoaded: false,
+  collections: [],
+  collectionsLoaded: false,
+  history: [],
+  historyLoaded: false,
 };
 
 function load(state: BucketState, bucket: BucketResource): BucketState {
@@ -41,13 +41,10 @@ function load(state: BucketState, bucket: BucketResource): BucketState {
     return {...state, busy: false};
   }
   const {data, permissions} = bucket;
-  const {id, last_modified} = data;
   return {
     ...state,
     busy: false,
-    id,
-    last_modified,
-    data: omit(data, ["id", "last_modified"]),
+    data,
     permissions,
   };
 }

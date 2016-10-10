@@ -57,8 +57,7 @@ describe("bucket reducer", () => {
         },
       });
 
-      expect(state.id).eql("buck");
-      expect(state.data).eql({foo: "bar"});
+      expect(state.data).eql({id: "buck", foo: "bar", last_modified: 42});
       expect(state.permissions).eql({read: ["a"], write: ["b"]});
     });
   });

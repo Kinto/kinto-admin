@@ -37,8 +37,7 @@ export function* createBucket(getState, action) {
 
 export function* updateBucket(getState, action) {
   const {bid, bucketData} = action;
-  const {bucket: currentBucket} = getState();
-  const {last_modified} = currentBucket;
+  const {bucket: {data: {last_modified}}} = getState();
   const updatedBucket = {...bucketData, last_modified};
   try {
     const bucket = getBucket(bid);
@@ -56,8 +55,7 @@ export function* updateBucket(getState, action) {
 
 export function* deleteBucket(getState, action) {
   const {bid} = action;
-  const {bucket: currentBucket} = getState();
-  const {last_modified} = currentBucket;
+  const {bucket: {data: {last_modified}}} = getState();
   try {
     const client = getClient();
     yield put(sessionBusy(true));

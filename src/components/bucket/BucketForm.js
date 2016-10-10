@@ -74,10 +74,12 @@ function DeleteForm({bid, onSubmit}) {
 
 export default class BucketForm extends Component {
   onSubmit = ({formData}) => {
+    const {id, data} = formData;
+    // Parse JSON fields so they can be sent to the server
+    const attributes = JSON.parse(data);
     this.props.onSubmit({
-      ...omit(formData, ["data"]),
-      // Parse JSON fields so they can be sent to the server
-      ...JSON.parse(formData.data)
+      id,
+      ...attributes
     });
   }
 
@@ -88,10 +90,12 @@ export default class BucketForm extends Component {
     const formIsEditable = creation || hasWriteAccess;
     const showDeleteForm = !creation && hasWriteAccess;
 
+    const attributes = omit(formData, ["id", "last_modified"]);
+    // Stringify JSON fields so they're editable in a text field
+    const data = JSON.stringify(attributes || {}, null, 2);
     const formDataSerialized = {
-      ...formData,
-      // Stringify JSON fields so they're editable in a text field
-      data: JSON.stringify(formData.data || {}, null, 2),
+      id: bid,
+      data
     };
 
     // Disable edition of the collection id
