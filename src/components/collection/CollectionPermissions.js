@@ -1,34 +1,26 @@
 import React, { Component } from "react";
-import Form from "react-jsonschema-form";
 
 import Spinner from "../Spinner";
 import CollectionTabs from "./CollectionTabs";
+import PermissionsForm from "../PermissionsForm";
 
-import {
-  permissionsObjectToList,
-  permissionsListToObject,
-  preparePermissionsForm,
-} from "../../permission";
 
 export default class CollectionPermissions extends Component {
   onSubmit = ({formData}) => {
     const {params, updateCollection} = this.props;
     const {bid, cid} = params;
-    updateCollection(bid, cid, {
-      permissions: permissionsListToObject(formData),
-    });
+    updateCollection(bid, cid, {permissions: formData});
   }
 
   render() {
     const {params, capabilities, collection} = this.props;
     const {bid, cid} = params;
     const {busy, permissions} = collection;
-    const formData = permissionsObjectToList(permissions);
-    const {schema, uiSchema} = preparePermissionsForm([
+    const acls = [
       "read",
       "write",
       "record:create",
-    ]);
+    ];
     if (busy) {
       return <Spinner />;
     }
@@ -39,11 +31,9 @@ export default class CollectionPermissions extends Component {
           bid={bid}
           capabilities={capabilities}
           selected="permissions">
-          <Form
-            className="permissions-form"
-            schema={schema}
-            uiSchema={uiSchema}
-            formData={formData}
+          <PermissionsForm
+            permissions={permissions}
+            acls={acls}
             onSubmit={this.onSubmit} />
         </CollectionTabs>
       </div>

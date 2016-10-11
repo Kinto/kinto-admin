@@ -3,33 +3,26 @@ import Form from "react-jsonschema-form";
 
 import Spinner from "../Spinner";
 import BucketTabs from "./BucketTabs";
+import PermissionsForm from "../PermissionsForm";
 
-import {
-  permissionsObjectToList,
-  permissionsListToObject,
-  preparePermissionsForm,
-} from "../../permission";
 
 export default class BucketPermissions extends Component {
   onSubmit = ({formData}) => {
     const {params, updateBucket} = this.props;
     const {bid} = params;
-    updateBucket(bid, {
-      permissions: permissionsListToObject(formData),
-    });
+    updateBucket(bid, {permissions: formData});
   }
 
   render() {
     const {params, capabilities, bucket} = this.props;
     const {bid} = params;
     const {busy, permissions} = bucket;
-    const formData = permissionsObjectToList(permissions);
-    const {schema, uiSchema} = preparePermissionsForm([
+    const acls = [
       "read",
       "write",
       "collection:create",
       "group:create",
-    ]);
+    ];
     if (busy) {
       return <Spinner />;
     }
@@ -40,11 +33,9 @@ export default class BucketPermissions extends Component {
           bid={bid}
           capabilities={capabilities}
           selected="permissions">
-          <Form
-            className="permissions-form"
-            schema={schema}
-            uiSchema={uiSchema}
-            formData={formData}
+          <PermissionsForm
+            permissions={permissions}
+            acls={acls}
             onSubmit={this.onSubmit} />
         </BucketTabs>
       </div>
