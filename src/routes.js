@@ -18,6 +18,7 @@ import BucketGroupsPage from "./containers/bucket/BucketGroupsPage";
 import BucketHistoryPage from "./containers/bucket/BucketHistoryPage";
 import GroupCreatePage from "./containers/group/GroupCreatePage";
 import GroupEditPage from "./containers/group/GroupEditPage";
+import GroupPermissionsPage from "./containers/group/GroupPermissionsPage";
 import GroupHistoryPage from "./containers/group/GroupHistoryPage";
 import CollectionRecordsPage from "./containers/collection/CollectionRecordsPage";
 import CollectionHistoryPage from "./containers/collection/CollectionHistoryPage";
@@ -186,6 +187,9 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
               {/* /buckets/:bid/groups/:gid/edit */}
               <Route name="properties" path="edit"
                 components={{...common, content: GroupEditPage}} />
+              {/* /buckets/:bid/groups/:gid/permissions */}
+              <Route name="permissions" path="permissions"
+                components={{...common, content: GroupPermissionsPage}} />
               {/* /buckets/:bid/groups/:gid/history */}
               <Route name="history" path="history"
                 components={{...common, content: GroupHistoryPage}}

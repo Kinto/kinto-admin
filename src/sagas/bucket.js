@@ -192,16 +192,26 @@ export function* createGroup(getState, action) {
 }
 
 export function* updateGroup(getState, action) {
-  const {bid, gid, groupData} = action;
-  const {group: {data: {last_modified}}} = getState();
-  const updatedGroup = {...groupData, id: gid, last_modified};
+  const {bid, gid, group: {data, permissions}} = action;
+  const {group: {data: loadedData}} = getState();
+  const {last_modified} = loadedData;
   try {
     const bucket = getBucket(bid);
-    yield call([bucket, bucket.updateGroup], updatedGroup, {
-      patch: true,
-      safe: true});
-    yield put(updatePath(`/buckets/${bid}/groups/${gid}/edit`));
-    yield put(notifySuccess("Group properties updated."));
+    if (data) {
+      const updatedGroup = {...data, id: gid, last_modified};
+      yield call([bucket, bucket.updateGroup], updatedGroup, {
+        patch: true,
+        safe: true});
+      yield put(updatePath(`/buckets/${bid}/groups/${gid}/edit`));
+      yield put(notifySuccess("Group properties updated."));
+    } else if (permissions) {
+      yield call([bucket, bucket.updateGroup], loadedData, {
+        permissions,
+        last_modified,
+        safe: true});
+      yield put(updatePath(`/buckets/${bid}/groups/${gid}/permissions`));
+      yield put(notifySuccess("Group permissions updated."));
+    }
   } catch(error) {
     yield put(notifyError("Couldn't update group.", error));
   }

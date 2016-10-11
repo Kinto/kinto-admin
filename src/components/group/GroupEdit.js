@@ -9,7 +9,7 @@ export default class GroupEdit extends Component {
   onSubmit = (formData) => {
     const {params, updateGroup} = this.props;
     const {bid, gid} = params;
-    updateGroup(bid, gid, formData);
+    updateGroup(bid, gid, {data: formData});
   };
 
   deleteGroup = (gid) => {

@@ -6,7 +6,8 @@ import type {
   BucketResource,
   CollectionData,
   CollectionResource,
-  GroupData } from "../types";
+  GroupData,
+  GroupResource } from "../types";
 import {
   BUCKET_BUSY,
   BUCKET_COLLECTIONS_REQUEST,
@@ -88,8 +89,8 @@ export function createGroup(bid: string, groupData: GroupData): Action {
   return {type: GROUP_CREATE_REQUEST, bid, groupData};
 }
 
-export function updateGroup(bid: string, gid: string, groupData: GroupData): Action {
-  return {type: GROUP_UPDATE_REQUEST, bid, gid, groupData};
+export function updateGroup(bid: string, gid: string, group: GroupResource): Action {
+  return {type: GROUP_UPDATE_REQUEST, bid, gid, group};
 }
 
 export function deleteGroup(bid: string, gid: string): Action {
