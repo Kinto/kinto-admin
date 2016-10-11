@@ -148,8 +148,12 @@ export function preparePermissionsForm(permissions: string[]) {
 
   const uiSchema = {
     items: {
+      principal: {
+        "classNames": "field-principal",
+      },
       permissions: {
-        "ui:widget": "checkboxes"
+        "ui:widget": "checkboxes",
+        "classNames": "field-permissions",
       }
     }
   };
