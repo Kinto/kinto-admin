@@ -36,26 +36,27 @@ export function* createBucket(getState, action) {
 }
 
 export function* updateBucket(getState, action) {
-  const {bid, bucketData, bucketPermissions} = action;
+  const {bid, bucket: {data, permissions}} = action;
   const {bucket: {data: {last_modified}}} = getState();
-  const updatedBucket = {...bucketData, last_modified};
   try {
     const bucket = getBucket(bid);
     yield put(sessionBusy(true));
-    if (bucketData) {
+    if (data) {
+      const updatedBucket = {...data, last_modified};
       yield call([bucket, bucket.setData], updatedBucket, {
         patch: true,
-        safe: true
-      });
-    }
-    if (bucketPermissions) {
-      yield call([bucket, bucket.setPermissions], bucketPermissions, {
         safe: true,
-        last_modified
       });
+      yield put(updatePath(`/buckets/${bid}/edit`));
+      yield put(notifySuccess("Bucket attributes updated."));
+    } else if (permissions) {
+      yield call([bucket, bucket.setPermissions], permissions, {
+        safe: true,
+        last_modified,
+      });
+      yield put(updatePath(`/buckets/${bid}/permissions`));
+      yield put(notifySuccess("Bucket permissions updated."));
     }
-    yield put(updatePath(`/buckets/${bid}/edit`));
-    yield put(notifySuccess("Bucket updated."));
   } catch(error) {
     yield put(notifyError("Couldn't update bucket.", error));
   } finally {

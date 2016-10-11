@@ -14,7 +14,9 @@ export default class BucketPermissions extends Component {
   onSubmit = ({formData}) => {
     const {params, updateBucket} = this.props;
     const {bid} = params;
-    updateBucket(bid, undefined, permissionsListToObject(formData));
+    updateBucket(bid, {
+      permissions: permissionsListToObject(formData),
+    });
   }
 
   render() {

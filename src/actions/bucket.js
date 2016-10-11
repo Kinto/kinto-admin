@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { Action, BucketData, BucketPermissions, CollectionData, GroupData } from "../types";
+import type { Action, BucketData, BucketResource, CollectionData, GroupData } from "../types";
 import {
   BUCKET_BUSY,
   BUCKET_COLLECTIONS_REQUEST,
@@ -30,12 +30,8 @@ export function createBucket(bid: string, data: BucketData): Action {
   return {type: BUCKET_CREATE_REQUEST, bid, data};
 }
 
-export function updateBucket(
-  bid: string,
-  bucketData: ?BucketData,
-  bucketPermissions: ?BucketPermissions
-): Action {
-  return {type: BUCKET_UPDATE_REQUEST, bid, bucketData, bucketPermissions};
+export function updateBucket(bid: string, bucket: BucketResource): Action {
+  return {type: BUCKET_UPDATE_REQUEST, bid, bucket};
 }
 
 export function deleteBucket(bid: string): Action {

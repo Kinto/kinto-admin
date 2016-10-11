@@ -88,65 +88,132 @@ describe("bucket sagas", () => {
   });
 
   describe("updateBucket()", () => {
-    describe("Success", () => {
-      let bucket, updateBucket;
+    describe("Attributes", () => {
+      describe("Success", () => {
+        let bucket, updateBucket;
 
-      before(() => {
-        bucket = {setData(){}};
-        setClient({bucket(){return bucket;}});
-        const action = actions.updateBucket("bucket", {a: 1});
-        updateBucket = saga.updateBucket(()  =>  ({
-          bucket: {data: {last_modified: 42}}
-        }), action);
+        before(() => {
+          bucket = {setData(){}};
+          setClient({bucket(){return bucket;}});
+          const action = actions.updateBucket("bucket", {data: {a: 1}});
+          updateBucket = saga.updateBucket(()  =>  ({
+            bucket: {data: {last_modified: 42}}
+          }), action);
+        });
+
+        it("should mark the current session as busy", () => {
+          expect(updateBucket.next().value)
+            .eql(put(sessionActions.sessionBusy(true)));
+        });
+
+        it("should post new bucket data", () => {
+          expect(updateBucket.next().value)
+            .eql(call([bucket, bucket.setData], {a: 1, last_modified: 42}, {
+              patch: true, safe: true}));
+        });
+
+        it("should update the route path", () => {
+          expect(updateBucket.next().value)
+            .eql(put(updatePath("/buckets/bucket/edit")));
+        });
+
+        it("should dispatch a notification", () => {
+          expect(updateBucket.next().value)
+            .eql(put(notifySuccess("Bucket attributes updated.")));
+        });
+
+        it("should unmark the current session as busy", () => {
+          expect(updateBucket.next().value)
+            .eql(put(sessionActions.sessionBusy(false)));
+        });
       });
 
-      it("should mark the current session as busy", () => {
-        expect(updateBucket.next().value)
-          .eql(put(sessionActions.sessionBusy(true)));
-      });
+      describe("Failure", () => {
+        let updateBucket;
 
-      it("should post new bucket data", () => {
-        expect(updateBucket.next().value)
-          .eql(call([bucket, bucket.setData], {a: 1, last_modified: 42}, {
-            patch: true, safe: true}));
-      });
+        before(() => {
+          const action = actions.updateBucket("bucket",{data: {}});
+          updateBucket = saga.updateBucket(() =>  ({
+            bucket: {data: {last_modified: 42}}
+          }), action);
+          updateBucket.next();
+          updateBucket.next();
+        });
 
-      it("should update the route path", () => {
-        expect(updateBucket.next().value)
-          .eql(put(updatePath("/buckets/bucket/edit")));
-      });
+        it("should dispatch an error notification action", () => {
+          expect(updateBucket.throw("error").value)
+            .eql(put(notifyError("Couldn't update bucket.", "error", {clear: true})));
+        });
 
-      it("should dispatch a notification", () => {
-        expect(updateBucket.next().value)
-          .eql(put(notifySuccess("Bucket updated.")));
-      });
-
-      it("should unmark the current session as busy", () => {
-        expect(updateBucket.next().value)
-          .eql(put(sessionActions.sessionBusy(false)));
+        it("should unmark the current session as busy", () => {
+          expect(updateBucket.next().value)
+            .eql(put(sessionActions.sessionBusy(false)));
+        });
       });
     });
 
-    describe("Failure", () => {
-      let updateBucket;
+    describe("Permissions", () => {
+      describe("Success", () => {
+        let bucket, updateBucket;
 
-      before(() => {
-        const action = actions.updateBucket("bucket", {});
-        updateBucket = saga.updateBucket(() =>  ({
-          bucket: {data: {last_modified: 42}}
-        }), action);
-        updateBucket.next();
-        updateBucket.next();
+        before(() => {
+          bucket = {setPermissions(){}};
+          setClient({bucket(){return bucket;}});
+          const action = actions.updateBucket("bucket", {permissions: {a: 1}});
+          updateBucket = saga.updateBucket(()  =>  ({
+            bucket: {data: {last_modified: 42}}
+          }), action);
+        });
+
+        it("should mark the current session as busy", () => {
+          expect(updateBucket.next().value)
+            .eql(put(sessionActions.sessionBusy(true)));
+        });
+
+        it("should post new bucket data", () => {
+          expect(updateBucket.next().value)
+            .eql(call([bucket, bucket.setPermissions], {a: 1}, {
+              safe: true,
+              last_modified: 42}));
+        });
+
+        it("should update the route path", () => {
+          expect(updateBucket.next().value)
+            .eql(put(updatePath("/buckets/bucket/permissions")));
+        });
+
+        it("should dispatch a notification", () => {
+          expect(updateBucket.next().value)
+            .eql(put(notifySuccess("Bucket permissions updated.")));
+        });
+
+        it("should unmark the current session as busy", () => {
+          expect(updateBucket.next().value)
+            .eql(put(sessionActions.sessionBusy(false)));
+        });
       });
 
-      it("should dispatch an error notification action", () => {
-        expect(updateBucket.throw("error").value)
-          .eql(put(notifyError("Couldn't update bucket.", "error", {clear: true})));
-      });
+      describe("Failure", () => {
+        let updateBucket;
 
-      it("should unmark the current session as busy", () => {
-        expect(updateBucket.next().value)
-          .eql(put(sessionActions.sessionBusy(false)));
+        before(() => {
+          const action = actions.updateBucket("bucket", {permissions: {}});
+          updateBucket = saga.updateBucket(() =>  ({
+            bucket: {data: {last_modified: 42}}
+          }), action);
+          updateBucket.next();
+          updateBucket.next();
+        });
+
+        it("should dispatch an error notification action", () => {
+          expect(updateBucket.throw("error").value)
+            .eql(put(notifyError("Couldn't update bucket.", "error", {clear: true})));
+        });
+
+        it("should unmark the current session as busy", () => {
+          expect(updateBucket.next().value)
+            .eql(put(sessionActions.sessionBusy(false)));
+        });
       });
     });
   });
