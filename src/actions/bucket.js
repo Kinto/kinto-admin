@@ -1,6 +1,12 @@
 /* @flow */
 
-import type { Action, BucketData, BucketResource, CollectionData, GroupData } from "../types";
+import type {
+  Action,
+  BucketData,
+  BucketResource,
+  CollectionData,
+  CollectionResource,
+  GroupData } from "../types";
 import {
   BUCKET_BUSY,
   BUCKET_COLLECTIONS_REQUEST,
@@ -70,8 +76,8 @@ export function createCollection(bid: string, collectionData: CollectionData): A
   return {type: COLLECTION_CREATE_REQUEST, bid, collectionData};
 }
 
-export function updateCollection(bid: string, cid: string, collectionData: CollectionData): Action {
-  return {type: COLLECTION_UPDATE_REQUEST, bid, cid, collectionData};
+export function updateCollection(bid: string, cid: string, collection: CollectionResource): Action {
+  return {type: COLLECTION_UPDATE_REQUEST, bid, cid, collection};
 }
 
 export function deleteCollection(bid: string, cid: string): Action {

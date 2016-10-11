@@ -96,16 +96,25 @@ export function* createCollection(getState, action) {
 }
 
 export function* updateCollection(getState, action) {
-  const {bid, cid, collectionData} = action;
+  const {bid, cid, collection: {data, permissions}} = action;
   const {collection: {data: {last_modified}}} = getState();
-  const updatedCollection = {...collectionData, last_modified};
   try {
     const coll = getCollection(bid, cid);
-    yield call([coll, coll.setData], updatedCollection, {
-      patch: true,
-      safe: true});
-    yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
-    yield put(notifySuccess("Collection properties updated."));
+    if (data) {
+      const updatedCollection = {...data, last_modified};
+      yield call([coll, coll.setData], updatedCollection, {
+        patch: true,
+        safe: true});
+      yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
+      yield put(notifySuccess("Collection properties updated."));
+    } else if (permissions) {
+      yield call([coll, coll.setPermissions], permissions, {
+        safe: true,
+        last_modified,
+      });
+      yield put(updatePath(`/buckets/${bid}/collections/${cid}/permissions`));
+      yield put(notifySuccess("Collection permissions updated."));
+    }
   } catch(error) {
     yield put(notifyError("Couldn't update collection.", error));
   }
