@@ -8,7 +8,7 @@ export default class RecordEdit extends Component {
   onSubmit = ({__attachment__: attachment, ...record}) => {
     const {params, updateRecord} = this.props;
     const {bid, cid, rid} = params;
-    updateRecord(bid, cid, rid, record, attachment);
+    updateRecord(bid, cid, rid, {data: record, attachment});
   }
 
   render() {

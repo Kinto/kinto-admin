@@ -28,6 +28,7 @@ import CollectionPermissionsPage from "./containers/collection/CollectionPermiss
 import RecordCreatePage from "./containers/record/RecordCreatePage";
 import RecordBulkPage from "./containers/record/RecordBulkPage";
 import RecordEditPage from "./containers/record/RecordEditPage";
+import RecordPermissionsPage from "./containers/record/RecordPermissionsPage";
 import RecordHistoryPage from "./containers/record/RecordHistoryPage";
 import * as sessionActions from "./actions/session";
 import * as bucketActions from "./actions/bucket";
@@ -238,6 +239,9 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                   {/* /buckets/:bid/collections/:cid/records/:rid/edit */}
                   <Route name="properties" path="edit"
                     components={{...common, content: RecordEditPage}} />
+                  {/* /buckets/:bid/collections/:cid/records/:rid/permissions */}
+                  <Route name="permissions" path="permissions"
+                    components={{...common, content: RecordPermissionsPage}} />
                   {/* /buckets/:bid/collections/:cid/history */}
                   <Route name="history" path="history"
                     components={{...common, content: RecordHistoryPage}}
