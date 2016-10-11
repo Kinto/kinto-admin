@@ -125,3 +125,34 @@ export function permissionsListToObject(permissionsList: Object[]) {
     return acc;
   }, {});
 }
+
+export function preparePermissionsForm(permissions: string[]) {
+  const schema = {
+    type: "array",
+    items: {
+      type: "object",
+      properties: {
+        principal: {type: "string", title: "Principal"},
+        permissions: {
+          type: "array",
+          title: "Permissions",
+          items: {
+            type: "string",
+            enum: permissions,
+          },
+          uniqueItems: true,
+        }
+      }
+    }
+  };
+
+  const uiSchema = {
+    items: {
+      permissions: {
+        "ui:widget": "checkboxes"
+      }
+    }
+  };
+
+  return {schema, uiSchema};
+}

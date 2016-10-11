@@ -345,6 +345,12 @@ table.record-list td.load-more {
 
 /*.permissions-form .field-string {
   float: left;
+  width: 50%;
+}
+
+.permissions-form .field-array .field-array {
+  float: left;
+  width: 50%;
 }*/
 
 /* Spinner http://tobiasahlin.com/spinkit/ */
