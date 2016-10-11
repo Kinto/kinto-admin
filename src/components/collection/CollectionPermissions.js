@@ -29,6 +29,7 @@ export default class CollectionPermissions extends Component {
         <h1>Permissions for <b>{bid}/{cid} collection</b></h1>
         <CollectionTabs
           bid={bid}
+          cid={cid}
           capabilities={capabilities}
           selected="permissions">
           <PermissionsForm
