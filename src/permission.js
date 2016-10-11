@@ -92,15 +92,18 @@ export function permissionsObjectToList(permissionsObject: Object): Object[] {
       for (const principal of principals) {
         const existing = acc.find(x => x.principal === principal);
         if (existing) {
-          acc =  acc.map(perm => {
+          acc = acc.map(perm => {
             if (perm.principal === principal) {
-              return {...existing, [permissionName]: true};
+              return {
+                ...existing,
+                permissions: [...existing.permissions, permissionName]
+              };
             } else {
               return perm;
             }
           });
         } else {
-          acc = [...acc, {principal, [permissionName]: true}];
+          acc = [...acc, {principal, permissions: [permissionName]}];
         }
       }
       return acc;
@@ -111,13 +114,12 @@ export function permissionsObjectToList(permissionsObject: Object): Object[] {
 }
 
 export function permissionsListToObject(permissionsList: Object[]) {
-  return permissionsList.reduce((acc, {principal, ...permissions}) => {
-    for (const permissionName of Object.keys(permissions)) {
+  return permissionsList.reduce((acc, {principal, permissions}) => {
+    for (const permissionName of permissions) {
       if (!acc.hasOwnProperty(permissionName)) {
-        acc[permissionName] = [];
-      }
-      if (permissions[permissionName]) {
-        acc[permissionName].push(principal);
+        acc[permissionName] = [principal];
+      } else {
+        acc[permissionName] = [...acc[permissionName], principal];
       }
     }
     return acc;

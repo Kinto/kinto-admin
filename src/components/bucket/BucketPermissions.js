@@ -12,10 +12,23 @@ const schema = {
     type: "object",
     properties: {
       principal: {type: "string", title: "Principal"},
-      read: {type: "boolean", default: false},
-      write: {type: "boolean", default: false},
-      "collection:create": {type: "boolean", default: false},
-      "group:create": {type: "boolean", default: false},
+      permissions: {
+        type: "array",
+        title: "Permissions",
+        items: {
+          type: "string",
+          enum: ["read", "write", "collection:create", "group:create"],
+        },
+        uniqueItems: true,
+      }
+    }
+  }
+};
+
+const uiSchema = {
+  items: {
+    permissions: {
+      "ui:widget": "checkboxes"
     }
   }
 };
@@ -32,6 +45,7 @@ export default class BucketPermissions extends Component {
     const {bid} = params;
     const {busy, permissions} = bucket;
     const formData = permissionsObjectToList(permissions);
+    console.log(permissions,formData);
     if (busy) {
       return <Spinner />;
     }
@@ -42,7 +56,12 @@ export default class BucketPermissions extends Component {
           bid={bid}
           capabilities={capabilities}
           selected="permissions">
-          <Form schema={schema} formData={formData} onSubmit={this.onSubmit} />
+          <Form
+            className="permissions-form"
+            schema={schema}
+            uiSchema={uiSchema}
+            formData={formData}
+            onSubmit={this.onSubmit} />
         </BucketTabs>
       </div>
     );

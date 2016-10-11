@@ -341,6 +341,12 @@ table.record-list td.load-more {
   margin: 0;
 }
 
+/* Permissions form table */
+
+/*.permissions-form .field-string {
+  float: left;
+}*/
+
 /* Spinner http://tobiasahlin.com/spinkit/ */
 .spinner {
   margin: 30px auto 0;
