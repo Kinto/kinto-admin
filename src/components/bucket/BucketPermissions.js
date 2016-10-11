@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Form from "react-jsonschema-form";
 
 import Spinner from "../Spinner";
 import BucketTabs from "./BucketTabs";
