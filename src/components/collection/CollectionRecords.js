@@ -53,10 +53,11 @@ class Row extends Component {
       <td className="actions text-right">
         <div className="btn-group">
           {record.attachment && record.attachment.location ?
-            <button type="button" className="btn btn-sm btn-default"
-              title="The record has an attachment">
+            <a href={record.attachment.location} className="btn btn-sm btn-default"
+              title="The record has an attachment"
+              target="_blank">
               <i className="glyphicon glyphicon-paperclip" />
-            </button> : null}
+            </a> : null}
           <Link to={`/buckets/${bid}/collections/${cid}/records/${rid}/edit`}
             className="btn btn-sm btn-info" title="Edit record">
             <i className="glyphicon glyphicon-pencil"/>
