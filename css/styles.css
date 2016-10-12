@@ -155,8 +155,8 @@ table.record-list td.status {
 }
 
 table.record-list td.actions {
-  min-width: 110px;
-  width: 110px;
+  min-width: 120px;
+  width: 120px;
   white-space: nowrap;
   text-align: center;
 }
