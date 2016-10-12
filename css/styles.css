@@ -142,6 +142,7 @@ table.record-list td:not(.actions) {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  padding: .8em .5em;
 }
 
 table.record-list td.lastmod {
@@ -155,8 +156,9 @@ table.record-list td.status {
 }
 
 table.record-list td.actions {
-  min-width: 120px;
-  width: 120px;
+  min-width: 150px;
+  width: 150px;
+  padding: .5em 0;
   white-space: nowrap;
   text-align: center;
 }
@@ -341,7 +343,7 @@ table.record-list td.load-more {
   margin: 0;
 }
 
-/* Permissions form table */
+/* Permissions form */
 
 .permissions-form .array-item:not(:last-child) fieldset {
   border-bottom: 1px solid #eee;

@@ -51,13 +51,24 @@ class Row extends Component {
       }
       <td className="lastmod">{this.lastModified}</td>
       <td className="actions text-right">
-        {record.attachment && record.attachment.location ?
-          <i className="glyphicon glyphicon-paperclip" /> : null}
         <div className="btn-group">
+          {record.attachment && record.attachment.location ?
+            <button type="button" className="btn btn-sm btn-default"
+              title="The record has an attachment">
+              <i className="glyphicon glyphicon-paperclip" />
+            </button> : null}
           <Link to={`/buckets/${bid}/collections/${cid}/records/${rid}/edit`}
-            className="btn btn-xs btn-info">Edit</Link>
-          <button type="button" className="btn btn-xs btn-danger"
-            onClick={this.onDeleteClick.bind(this)}>Delete</button>
+            className="btn btn-sm btn-info" title="Edit record">
+            <i className="glyphicon glyphicon-pencil"/>
+          </Link>
+          <Link to={`/buckets/${bid}/collections/${cid}/records/${rid}/permissions`}
+            className="btn btn-sm btn-warning" title="Record permissions">
+            <i className="glyphicon glyphicon-lock"/>
+          </Link>
+          <button type="button" className="btn btn-sm btn-danger"
+            onClick={this.onDeleteClick.bind(this)} title="Delete record">
+            <i className="glyphicon glyphicon-trash"/>
+          </button>
         </div>
       </td>
     </tr>;
