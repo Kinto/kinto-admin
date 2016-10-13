@@ -106,7 +106,7 @@ export function* updateRecord(getState, action) {
       if ("attachments" in session.serverInfo.capabilities && attachment) {
         yield call([coll, coll.addAttachment], attachment, updatedRecord, {safe: true});
       } else {
-        // Note: We update using PATCH to keep existing record properties possibly
+        // Note: We update using PATCH to keep existing record attributes possibly
         // not defined by the JSON schema, if any.
         yield call([coll, coll.updateRecord], updatedRecord, {patch: true, safe: true});
       }

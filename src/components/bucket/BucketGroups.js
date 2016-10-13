@@ -40,7 +40,7 @@ function DataList(props) {
                     </Link> : null}
                   <Link to={`/buckets/${bid}/groups/${id}/attributes`}
                         className="btn btn-xs btn-default"
-                        title="Edit groups properties">
+                        title="Edit groups attributes">
                     <i className="glyphicon glyphicon-cog" />
                   </Link>
                 </div>
