@@ -8,8 +8,11 @@ import type {
   RecordState,
 } from "./types";
 
-export const EVERYONE = "System.Everyone";
-export const AUTHENTICATED = "System.Authenticated";
+import React from "react";  /* import to enable JSX transpilation */
+
+
+export const EVERYONE = "system.Everyone";
+export const AUTHENTICATED = "system.Authenticated";
 
 
 const permMethodMap = {
@@ -85,35 +88,89 @@ export function canEditRecord(session: SessionState, bucket: BucketState, collec
   return [bucket, collection, record].some(can(session).write);
 }
 
-export function permissionsObjectToList(permissionsObject: Object): Object[] {
-  return Object.keys(permissionsObject)
+/**
+ * Transform the permissions object returned by the API into data that can
+ * be processed by the form (see `preparePermissionsForm()`).
+ * Basically:
+ *   ```
+ *     {
+ *       "write": ["basicauth:cbd37", "github:bob"],
+ *       "read": ["system.Everyone"]}
+ *     }
+ *   ```
+ * becomes
+ *   ```
+ *   {
+ *     anonymous: ["read"],
+ *     authenticated: [],
+ *     principals: [
+ *       {principal: "basicauth:cbd37": permissions: ["write"]},
+ *       {principals: "github:bob", permissions: ["write"]}
+ *     ]
+ *   }
+ *   ```
+ */
+export function permissionsToFormData(permissionsObject: Object): Object {
+  const formData = Object.keys(permissionsObject)
     .reduce((acc, permissionName) => {
       const principals = permissionsObject[permissionName];
       for (const principal of principals) {
-        const existing = acc.find(x => x.principal === principal);
-        if (existing) {
-          acc = acc.map(perm => {
-            if (perm.principal === principal) {
-              return {
-                ...existing,
-                permissions: [...existing.permissions, permissionName]
-              };
+        switch (principal) {
+          case EVERYONE: {
+            acc.anonymous = [...acc.anonymous, permissionName];
+            break;
+          }
+          case AUTHENTICATED: {
+            acc.authenticated = [...acc.authenticated, permissionName];
+            break;
+          }
+          default: {
+            let {principals: principalsList} = acc;
+            const existing = principalsList.find(x => x.principal === principal);
+            if (existing) {
+              principalsList = principalsList.map(perm => {
+                if (perm.principal === principal) {
+                  return {
+                    ...existing,
+                    permissions: [...existing.permissions, permissionName]
+                  };
+                } else {
+                  return perm;
+                }
+              });
             } else {
-              return perm;
+              principalsList = [...principalsList, {principal, permissions: [permissionName]}];
             }
-          });
-        } else {
-          acc = [...acc, {principal, permissions: [permissionName]}];
+            acc.principals = principalsList;
+          }
         }
       }
       return acc;
-    }, [])
+    }, {
+      anonymous: [],
+      authenticated: [],
+      principals: []
+    });
+
+  const {principals} = formData;
+  return {
+    ...formData,
     // Ensure entries are always listed alphabetically by principals, to avoid
     // confusing UX.
-    .sort((a, b) => a.principal > b.principal ? 1 : -1);
+    principals: principals.sort((a, b) => a.principal > b.principal ? 1 : -1)
+  };
 }
 
-export function permissionsListToObject(permissionsList: Object[]) {
+/**
+ * Transform the permissions form result into data processable by the API.
+ * See `permissionsToFormData()` and `preparePermissionsForm()`.
+ */
+export function formDataToPermissions(formData: Object) : Object {
+  const {anonymous, authenticated, principals} = formData;
+  const permissionsList = [
+    ...principals,
+    {principal: EVERYONE, permissions: anonymous},
+    {principal: AUTHENTICATED, permissions: authenticated}];
   return permissionsList.reduce((acc, {principal, permissions}) => {
     for (const permissionName of permissions) {
       if (!acc.hasOwnProperty(permissionName)) {
@@ -127,35 +184,74 @@ export function permissionsListToObject(permissionsList: Object[]) {
 }
 
 export function preparePermissionsForm(permissions: string[]) {
+  const apiDocURI = "https://kinto.readthedocs.io/en/stable/api/1.x/permissions.html#api-principals";
   const schema = {
-    type: "array",
-    items: {
-      type: "object",
-      properties: {
-        principal: {type: "string", title: "Principal"},
-        permissions: {
-          type: "array",
-          title: "Permissions",
-          items: {
-            type: "string",
-            enum: permissions,
-          },
-          uniqueItems: true,
+    definitions: {
+      permissions: {
+        type: "array",
+        items: {
+          type: "string",
+          enum: permissions,
+        },
+        uniqueItems: true,
+      }
+    },
+    type: "object",
+    properties: {
+      anonymous: {
+        title: "Anonymous",
+        description: "Permissions for anyone, including anonymous",
+        $ref: "#/definitions/permissions"
+      },
+      authenticated: {
+        title: "Authenticated",
+        description: "Permissions for authenticated users",
+        $ref: "#/definitions/permissions"
+      },
+      principals: {
+        title: "Principals",
+        description: (
+          <p>A principal <a href={apiDocURI} target="_blank">can be a user ID or a group URI</a>.
+            The write permissions is always granted to the user that edited the object.
+          </p>
+        ),
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            principal: {type: "string", title: " "},
+            permissions: {
+              title: "  ",
+              $ref: "#/definitions/permissions"
+            }
+          }
         }
       }
     }
   };
 
   const uiSchema = {
-    items: {
-      principal: {
-        "classNames": "field-principal",
-      },
-      permissions: {
-        "ui:widget": "checkboxes",
-        "classNames": "field-permissions",
+    anonymous: {
+      "ui:widget": "checkboxes",
+      classNames: "field-anonymous",
+    },
+    authenticated: {
+      "ui:widget": "checkboxes",
+      classNames: "field-authenticated",
+    },
+    principals: {
+      classNames: "field-principals",
+      items: {
+        principal: {
+          classNames: "field-principal",
+          "ui:placeholder": "Principal, eg. basicauth:alice, /buckets/x/groups/y"
+        },
+        permissions: {
+          "ui:widget": "checkboxes",
+          classNames: "field-permissions",
+        }
       }
-    }
+    },
   };
 
   return {schema, uiSchema};
