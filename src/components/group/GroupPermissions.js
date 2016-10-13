@@ -25,6 +25,7 @@ export default class GroupPermissions extends Component {
         <h1>Permissions for <b>{bid}/{gid} group</b></h1>
         <GroupTabs
           bid={bid}
+          gid={gid}
           capabilities={capabilities}
           selected="permissions">
           <PermissionsForm
