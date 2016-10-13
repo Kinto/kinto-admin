@@ -43,7 +43,7 @@ function DataList(props) {
                     </Link> : null}
                   <Link to={`/buckets/${bid}/collections/${id}/attributes`}
                         className="btn btn-xs btn-default"
-                        title="Edit collection properties">
+                        title="Edit collection attributes">
                     <i className="glyphicon glyphicon-cog" />
                   </Link>
                 </div>

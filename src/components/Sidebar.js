@@ -26,7 +26,7 @@ function CollectionMenuEntry(props) {
       }
       <Link to={editPath}
         className="collections-menu-entry-edit"
-        title="Edit collection properties">
+        title="Edit collection attributes">
         <i className="glyphicon glyphicon-cog" />
       </Link>
     </div>

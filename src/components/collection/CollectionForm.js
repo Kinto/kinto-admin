@@ -73,7 +73,6 @@ function DeleteForm({cid, onSubmit}) {
 
 const schema = {
   type: "object",
-  title: "Collection properties",
   description: FormInstructions(),
   required: ["id"],
   properties: {

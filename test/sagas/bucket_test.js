@@ -376,7 +376,7 @@ describe("bucket sagas", () => {
 
         it("should dispatch a notification", () => {
           expect(updateCollection.next().value)
-            .eql(put(notifySuccess("Collection properties updated.")));
+            .eql(put(notifySuccess("Collection attributes updated.")));
         });
       });
 
@@ -679,7 +679,7 @@ describe("bucket sagas", () => {
 
         it("should dispatch a notification", () => {
           expect(updateGroup.next().value)
-            .eql(put(notifySuccess("Group properties updated.")));
+            .eql(put(notifySuccess("Group attributes updated.")));
         });
       });
 

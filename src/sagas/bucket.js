@@ -106,7 +106,7 @@ export function* updateCollection(getState, action) {
         patch: true,
         safe: true});
       yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
-      yield put(notifySuccess("Collection properties updated."));
+      yield put(notifySuccess("Collection attributes updated."));
     } else if (permissions) {
       yield call([coll, coll.setPermissions], permissions, {
         safe: true,
@@ -203,7 +203,7 @@ export function* updateGroup(getState, action) {
         patch: true,
         safe: true});
       yield put(updatePath(`/buckets/${bid}/groups/${gid}/attributes`));
-      yield put(notifySuccess("Group properties updated."));
+      yield put(notifySuccess("Group attributes updated."));
     } else if (permissions) {
       yield call([bucket, bucket.updateGroup], loadedData, {
         permissions,
