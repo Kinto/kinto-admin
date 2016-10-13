@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { Action, RecordData } from "../types";
+import type { Action, RecordData, RecordResource } from "../types";
 
 import {
   ATTACHMENT_DELETE_REQUEST,
@@ -54,7 +54,7 @@ export function createRecord(bid: string, cid: string, record: RecordData, attac
   return {type: RECORD_CREATE_REQUEST, bid, cid, record, attachment};
 }
 
-export function updateRecord(bid: string, cid: string, rid: string, record: RecordData, attachment?: String): Action {
+export function updateRecord(bid: string, cid: string, rid: string, record: RecordResource, attachment?: String): Action {
   return {type: RECORD_UPDATE_REQUEST, bid, cid, rid, record, attachment};
 }
 

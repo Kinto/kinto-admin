@@ -286,15 +286,23 @@ describe("collection sagas", () => {
             }
           },
           record: {
-            data: {last_modified: 42}
+            data: {
+              ...record,
+              last_modified: 42
+            }
           }
         };
       };
 
-      const action = collectionActions.updateRecord("bucket", "collection", 1, {...record, last_modified: 42});
-
-      describe("Success", () => {
+      describe("Success, attributes", () => {
         let collection, updateRecord;
+
+        const action = collectionActions.updateRecord("bucket", "collection", 1, {
+          data: {
+            ...record,
+            last_modified: 42,
+          }
+        });
 
         before(() => {
           collection = {updateRecord() {}};
@@ -326,7 +334,51 @@ describe("collection sagas", () => {
 
         it("should dispatch a notification", () => {
           expect(updateRecord.next().value)
-            .eql(put(notifySuccess("Record updated.")));
+            .eql(put(notifySuccess("Record attributes updated.")));
+        });
+
+        it("should unmark the current record as busy", () => {
+          expect(updateRecord.next().value)
+            .eql(put(recordActions.recordBusy(false)));
+        });
+      });
+
+      describe("Success, permissions", () => {
+        let collection, updateRecord;
+
+        const permissions = {a: 1};
+
+        const action = collectionActions.updateRecord("bucket", "collection", 1, {
+          permissions
+        });
+
+        before(() => {
+          collection = {updateRecord() {}};
+          const bucket = {collection() {return collection;}};
+          setClient({bucket() {return bucket;}});
+          updateRecord = saga.updateRecord(getState, action);
+        });
+
+        it("should update the record", () => {
+          expect(updateRecord.next().value)
+            .eql(call([collection, collection.updateRecord], {
+              ...record,
+              last_modified: 42,
+            }, {
+              permissions,
+              last_modified: 42,
+              safe: true,
+            }));
+        });
+
+        it("should update the route path", () => {
+          expect(updateRecord.next().value)
+            .eql(put(updatePath("/buckets/bucket/collections/collection/records/1/permissions")));
+        });
+
+        it("should dispatch a notification", () => {
+          expect(updateRecord.next().value)
+            .eql(put(notifySuccess("Record permissions updated.")));
         });
 
         it("should unmark the current record as busy", () => {
@@ -337,6 +389,13 @@ describe("collection sagas", () => {
 
       describe("Failure", () => {
         let updateRecord;
+
+        const action = collectionActions.updateRecord("bucket", "collection", 1, {
+          data: {
+            ...record,
+            last_modified: 42,
+          }
+        });
 
         before(() => {
           updateRecord = saga.updateRecord(getState, action);
@@ -374,8 +433,12 @@ describe("collection sagas", () => {
 
       const attachment = "data:test/fake";
 
-      const action = collectionActions.updateRecord(
-        "bucket", "collection", 1, {...record, last_modified: 42}, attachment);
+      const action = collectionActions.updateRecord("bucket", "collection", 1, {
+        data: {
+          ...record,
+          last_modified: 42,
+        }
+      }, attachment);
 
       describe("Success", () => {
         let collection, updateRecord;
@@ -410,7 +473,7 @@ describe("collection sagas", () => {
 
         it("should dispatch a notification", () => {
           expect(updateRecord.next().value)
-            .eql(put(notifySuccess("Record updated.")));
+            .eql(put(notifySuccess("Record attributes updated.")));
         });
 
         it("should unmark the current record as busy", () => {

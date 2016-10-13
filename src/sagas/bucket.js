@@ -36,17 +36,27 @@ export function* createBucket(getState, action) {
 }
 
 export function* updateBucket(getState, action) {
-  const {bid, bucketData} = action;
+  const {bid, bucket: {data, permissions}} = action;
   const {bucket: {data: {last_modified}}} = getState();
-  const updatedBucket = {...bucketData, last_modified};
   try {
     const bucket = getBucket(bid);
     yield put(sessionBusy(true));
-    yield call([bucket, bucket.setData], updatedBucket, {
-      patch: true,
-      safe: true});
-    yield put(updatePath(`/buckets/${bid}/edit`));
-    yield put(notifySuccess("Bucket updated."));
+    if (data) {
+      const updatedBucket = {...data, last_modified};
+      yield call([bucket, bucket.setData], updatedBucket, {
+        patch: true,
+        safe: true,
+      });
+      yield put(updatePath(`/buckets/${bid}/edit`));
+      yield put(notifySuccess("Bucket attributes updated."));
+    } else if (permissions) {
+      yield call([bucket, bucket.setPermissions], permissions, {
+        safe: true,
+        last_modified,
+      });
+      yield put(updatePath(`/buckets/${bid}/permissions`));
+      yield put(notifySuccess("Bucket permissions updated."));
+    }
   } catch(error) {
     yield put(notifyError("Couldn't update bucket.", error));
   } finally {
@@ -86,16 +96,25 @@ export function* createCollection(getState, action) {
 }
 
 export function* updateCollection(getState, action) {
-  const {bid, cid, collectionData} = action;
+  const {bid, cid, collection: {data, permissions}} = action;
   const {collection: {data: {last_modified}}} = getState();
-  const updatedCollection = {...collectionData, last_modified};
   try {
     const coll = getCollection(bid, cid);
-    yield call([coll, coll.setData], updatedCollection, {
-      patch: true,
-      safe: true});
-    yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
-    yield put(notifySuccess("Collection properties updated."));
+    if (data) {
+      const updatedCollection = {...data, last_modified};
+      yield call([coll, coll.setData], updatedCollection, {
+        patch: true,
+        safe: true});
+      yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
+      yield put(notifySuccess("Collection properties updated."));
+    } else if (permissions) {
+      yield call([coll, coll.setPermissions], permissions, {
+        safe: true,
+        last_modified,
+      });
+      yield put(updatePath(`/buckets/${bid}/collections/${cid}/permissions`));
+      yield put(notifySuccess("Collection permissions updated."));
+    }
   } catch(error) {
     yield put(notifyError("Couldn't update collection.", error));
   }
@@ -173,16 +192,26 @@ export function* createGroup(getState, action) {
 }
 
 export function* updateGroup(getState, action) {
-  const {bid, gid, groupData} = action;
-  const {group: {data: {last_modified}}} = getState();
-  const updatedGroup = {...groupData, id: gid, last_modified};
+  const {bid, gid, group: {data, permissions}} = action;
+  const {group: {data: loadedData}} = getState();
+  const {last_modified} = loadedData;
   try {
     const bucket = getBucket(bid);
-    yield call([bucket, bucket.updateGroup], updatedGroup, {
-      patch: true,
-      safe: true});
-    yield put(updatePath(`/buckets/${bid}/groups/${gid}/edit`));
-    yield put(notifySuccess("Group properties updated."));
+    if (data) {
+      const updatedGroup = {...data, id: gid, last_modified};
+      yield call([bucket, bucket.updateGroup], updatedGroup, {
+        patch: true,
+        safe: true});
+      yield put(updatePath(`/buckets/${bid}/groups/${gid}/edit`));
+      yield put(notifySuccess("Group properties updated."));
+    } else if (permissions) {
+      yield call([bucket, bucket.updateGroup], loadedData, {
+        permissions,
+        last_modified,
+        safe: true});
+      yield put(updatePath(`/buckets/${bid}/groups/${gid}/permissions`));
+      yield put(notifySuccess("Group permissions updated."));
+    }
   } catch(error) {
     yield put(notifyError("Couldn't update group.", error));
   }

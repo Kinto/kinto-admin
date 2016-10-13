@@ -11,6 +11,8 @@ import {
   canEditGroup,
   canCreateRecord,
   canEditRecord,
+  permissionsListToObject,
+  permissionsObjectToList,
 } from "../src/permission";
 
 
@@ -264,6 +266,45 @@ describe("canEditRecord", () => {
       const record = {permissions: {write: [OTHER_USER]}};
 
       expect(canEditRecord(session, bucket, collection, record)).eql(true);
+    });
+  });
+});
+
+describe("Permission form mappers", () => {
+  const permissions = {
+    read: ["a", "b", "c"],
+    write: ["a"],
+    "collection:create": ["c"],
+    "group:create": ["b"],
+  };
+
+  describe("permissionsObjectToList", () => {
+    it("should convert a permissions object into a list", () => {
+      expect(permissionsObjectToList(permissions)).eql([
+        {
+          "principal": "a",
+          "permissions": ["read", "write"],
+        },
+        {
+          "principal": "b",
+          "permissions": ["read", "group:create"],
+        },
+        {
+          "principal": "c",
+          "permissions": ["read", "collection:create"],
+        }
+      ]);
+    });
+  });
+
+  describe("permissionsListToObject", () => {
+    it("should convert a list of permissions into an object", () => {
+      expect(permissionsListToObject([
+        {principal: "a", permissions: ["read", "write"]},
+        {principal: "b", permissions: ["read", "group:create"]},
+        {principal: "c", permissions: ["read", "collection:create"]},
+      ]))
+        .eql(permissions);
     });
   });
 });

@@ -88,65 +88,132 @@ describe("bucket sagas", () => {
   });
 
   describe("updateBucket()", () => {
-    describe("Success", () => {
-      let bucket, updateBucket;
+    describe("Attributes", () => {
+      describe("Success", () => {
+        let bucket, updateBucket;
 
-      before(() => {
-        bucket = {setData(){}};
-        setClient({bucket(){return bucket;}});
-        const action = actions.updateBucket("bucket", {a: 1});
-        updateBucket = saga.updateBucket(()  =>  ({
-          bucket: {data: {last_modified: 42}}
-        }), action);
+        before(() => {
+          bucket = {setData(){}};
+          setClient({bucket(){return bucket;}});
+          const action = actions.updateBucket("bucket", {data: {a: 1}});
+          updateBucket = saga.updateBucket(()  =>  ({
+            bucket: {data: {last_modified: 42}}
+          }), action);
+        });
+
+        it("should mark the current session as busy", () => {
+          expect(updateBucket.next().value)
+            .eql(put(sessionActions.sessionBusy(true)));
+        });
+
+        it("should post new bucket data", () => {
+          expect(updateBucket.next().value)
+            .eql(call([bucket, bucket.setData], {a: 1, last_modified: 42}, {
+              patch: true, safe: true}));
+        });
+
+        it("should update the route path", () => {
+          expect(updateBucket.next().value)
+            .eql(put(updatePath("/buckets/bucket/edit")));
+        });
+
+        it("should dispatch a notification", () => {
+          expect(updateBucket.next().value)
+            .eql(put(notifySuccess("Bucket attributes updated.")));
+        });
+
+        it("should unmark the current session as busy", () => {
+          expect(updateBucket.next().value)
+            .eql(put(sessionActions.sessionBusy(false)));
+        });
       });
 
-      it("should mark the current session as busy", () => {
-        expect(updateBucket.next().value)
-          .eql(put(sessionActions.sessionBusy(true)));
-      });
+      describe("Failure", () => {
+        let updateBucket;
 
-      it("should post new bucket data", () => {
-        expect(updateBucket.next().value)
-          .eql(call([bucket, bucket.setData], {a: 1, last_modified: 42}, {
-            patch: true, safe: true}));
-      });
+        before(() => {
+          const action = actions.updateBucket("bucket",{data: {}});
+          updateBucket = saga.updateBucket(() =>  ({
+            bucket: {data: {last_modified: 42}}
+          }), action);
+          updateBucket.next();
+          updateBucket.next();
+        });
 
-      it("should update the route path", () => {
-        expect(updateBucket.next().value)
-          .eql(put(updatePath("/buckets/bucket/edit")));
-      });
+        it("should dispatch an error notification action", () => {
+          expect(updateBucket.throw("error").value)
+            .eql(put(notifyError("Couldn't update bucket.", "error", {clear: true})));
+        });
 
-      it("should dispatch a notification", () => {
-        expect(updateBucket.next().value)
-          .eql(put(notifySuccess("Bucket updated.")));
-      });
-
-      it("should unmark the current session as busy", () => {
-        expect(updateBucket.next().value)
-          .eql(put(sessionActions.sessionBusy(false)));
+        it("should unmark the current session as busy", () => {
+          expect(updateBucket.next().value)
+            .eql(put(sessionActions.sessionBusy(false)));
+        });
       });
     });
 
-    describe("Failure", () => {
-      let updateBucket;
+    describe("Permissions", () => {
+      describe("Success", () => {
+        let bucket, updateBucket;
 
-      before(() => {
-        const action = actions.updateBucket("bucket", {});
-        updateBucket = saga.updateBucket(() =>  ({
-          bucket: {data: {last_modified: 42}}
-        }), action);
-        updateBucket.next();
-        updateBucket.next();
+        before(() => {
+          bucket = {setPermissions(){}};
+          setClient({bucket(){return bucket;}});
+          const action = actions.updateBucket("bucket", {permissions: {a: 1}});
+          updateBucket = saga.updateBucket(()  =>  ({
+            bucket: {data: {last_modified: 42}}
+          }), action);
+        });
+
+        it("should mark the current session as busy", () => {
+          expect(updateBucket.next().value)
+            .eql(put(sessionActions.sessionBusy(true)));
+        });
+
+        it("should post new bucket permissions", () => {
+          expect(updateBucket.next().value)
+            .eql(call([bucket, bucket.setPermissions], {a: 1}, {
+              safe: true,
+              last_modified: 42}));
+        });
+
+        it("should update the route path", () => {
+          expect(updateBucket.next().value)
+            .eql(put(updatePath("/buckets/bucket/permissions")));
+        });
+
+        it("should dispatch a notification", () => {
+          expect(updateBucket.next().value)
+            .eql(put(notifySuccess("Bucket permissions updated.")));
+        });
+
+        it("should unmark the current session as busy", () => {
+          expect(updateBucket.next().value)
+            .eql(put(sessionActions.sessionBusy(false)));
+        });
       });
 
-      it("should dispatch an error notification action", () => {
-        expect(updateBucket.throw("error").value)
-          .eql(put(notifyError("Couldn't update bucket.", "error", {clear: true})));
-      });
+      describe("Failure", () => {
+        let updateBucket;
 
-      it("should unmark the current session as busy", () => {
-        expect(updateBucket.next().value)
-          .eql(put(sessionActions.sessionBusy(false)));
+        before(() => {
+          const action = actions.updateBucket("bucket", {permissions: {}});
+          updateBucket = saga.updateBucket(() =>  ({
+            bucket: {data: {last_modified: 42}}
+          }), action);
+          updateBucket.next();
+          updateBucket.next();
+        });
+
+        it("should dispatch an error notification action", () => {
+          expect(updateBucket.throw("error").value)
+            .eql(put(notifyError("Couldn't update bucket.", "error", {clear: true})));
+        });
+
+        it("should unmark the current session as busy", () => {
+          expect(updateBucket.next().value)
+            .eql(put(sessionActions.sessionBusy(false)));
+        });
       });
     });
   });
@@ -280,48 +347,101 @@ describe("bucket sagas", () => {
   });
 
   describe("updateCollection()", () => {
-    describe("Success", () => {
-      let bucket, collection, updateCollection;
+    describe("Attributes", () => {
+      describe("Success", () => {
+        let bucket, collection, updateCollection;
 
-      before(() => {
-        collection = {setData() {}};
-        bucket = {collection() {return collection;}};
-        setClient({bucket() {return bucket;}});
-        const action = actions.updateCollection("bucket", "collection", collectionData);
-        updateCollection = saga.updateCollection(() => ({
-          collection: {data: {last_modified: 42}}
-        }), action);
+        before(() => {
+          collection = {setData() {}};
+          bucket = {collection() {return collection;}};
+          setClient({bucket() {return bucket;}});
+          const action = actions.updateCollection("bucket", "collection", {data: collectionData});
+          updateCollection = saga.updateCollection(() => ({
+            collection: {data: {last_modified: 42}}
+          }), action);
+        });
+
+        it("should post the collection data", () => {
+          expect(updateCollection.next().value)
+            .eql(call([collection, collection.setData], {
+              ...collectionData,
+              last_modified: 42,
+            }, {patch: true, safe: true}));
+        });
+
+        it("should update the route path", () => {
+          expect(updateCollection.next().value)
+            .eql(put(updatePath("/buckets/bucket/collections/collection/records")));
+        });
+
+        it("should dispatch a notification", () => {
+          expect(updateCollection.next().value)
+            .eql(put(notifySuccess("Collection properties updated.")));
+        });
       });
 
-      it("should post the collection data", () => {
-        expect(updateCollection.next().value)
-          .eql(call([collection, collection.setData], {
-            ...collectionData,
-            last_modified: 42,
-          }, {patch: true, safe: true}));
-      });
+      describe("Failure", () => {
+        it("should dispatch an error notification action", () => {
+          const action =  actions.updateCollection("bucket", "collection", {data: collectionData});
+          const updateCollection = saga.updateCollection(() => ({
+            collection: {data: {last_modified: 42}}
+          }), action);
+          updateCollection.next();
 
-      it("should update the route path", () => {
-        expect(updateCollection.next().value)
-          .eql(put(updatePath("/buckets/bucket/collections/collection/records")));
-      });
-
-      it("should dispatch a notification", () => {
-        expect(updateCollection.next().value)
-          .eql(put(notifySuccess("Collection properties updated.")));
+          expect(updateCollection.throw("error").value)
+            .eql(put(notifyError("Couldn't update collection.", "error", {clear: true})));
+        });
       });
     });
 
-    describe("Failure", () => {
-      it("should dispatch an error notification action", () => {
-        const action =  actions.updateCollection("bucket", "collection", collectionData);
-        const updateCollection = saga.updateCollection(() => ({
-          collection: {data: {last_modified: 42}}
-        }), action);
-        updateCollection.next();
+    describe("Permissions", () => {
+      describe("Success", () => {
+        let bucket, collection, updateCollection;
 
-        expect(updateCollection.throw("error").value)
-          .eql(put(notifyError("Couldn't update collection.", "error", {clear: true})));
+        before(() => {
+          collection = {setPermissions() {}};
+          bucket = {collection() {return collection;}};
+          setClient({bucket() {return bucket;}});
+          const action = actions.updateCollection("bucket", "collection", {permissions: {a: 1}});
+          updateCollection = saga.updateCollection(()  =>  ({
+            collection: {data: {last_modified: 42}}
+          }), action);
+        });
+
+        it("should post new collection permissions", () => {
+          expect(updateCollection.next().value)
+            .eql(call([collection, collection.setPermissions], {a: 1}, {
+              safe: true,
+              last_modified: 42}));
+        });
+
+        it("should update the route path", () => {
+          expect(updateCollection.next().value)
+            .eql(put(updatePath("/buckets/bucket/collections/collection/permissions")));
+        });
+
+        it("should dispatch a notification", () => {
+          expect(updateCollection.next().value)
+            .eql(put(notifySuccess("Collection permissions updated.")));
+        });
+      });
+
+      describe("Failure", () => {
+        let updateCollection;
+
+        before(() => {
+          const action = actions.updateCollection("bucket", "collection", {permissions: {}});
+          updateCollection = saga.updateCollection(() =>  ({
+            collection: {data: {last_modified: 42}}
+          }), action);
+          updateCollection.next();
+          updateCollection.next();
+        });
+
+        it("should dispatch an error notification action", () => {
+          expect(updateCollection.throw("error").value)
+            .eql(put(notifyError("Couldn't update collection.", "error", {clear: true})));
+        });
       });
     });
   });
@@ -531,46 +651,100 @@ describe("bucket sagas", () => {
   });
 
   describe("updateGroup()", () => {
-    describe("Success", () => {
-      let bucket, updateGroup;
+    describe("Attributes", () => {
+      describe("Success", () => {
+        let bucket, updateGroup;
 
-      before(() => {
-        bucket = {updateGroup() {}};
-        setClient({bucket() {return bucket;}});
-        const action = actions.updateGroup("bucket", "group", groupData);
-        updateGroup = saga.updateGroup(() => ({
-          group: {data: {last_modified: 42}}
-        }), action);
+        before(() => {
+          bucket = {updateGroup() {}};
+          setClient({bucket() {return bucket;}});
+          const action = actions.updateGroup("bucket", "group", {data: groupData});
+          updateGroup = saga.updateGroup(() => ({
+            group: {data: {last_modified: 42}}
+          }), action);
+        });
+
+        it("should post the group data", () => {
+          expect(updateGroup.next().value)
+            .eql(call([bucket, bucket.updateGroup], {
+              ...groupData,
+              last_modified: 42
+            }, {patch: true, safe: true}));
+        });
+
+        it("should update the route path", () => {
+          expect(updateGroup.next().value)
+            .eql(put(updatePath("/buckets/bucket/groups/group/edit")));
+        });
+
+        it("should dispatch a notification", () => {
+          expect(updateGroup.next().value)
+            .eql(put(notifySuccess("Group properties updated.")));
+        });
       });
 
-      it("should post the group data", () => {
-        expect(updateGroup.next().value)
-          .eql(call([bucket, bucket.updateGroup], {
-            ...groupData,
-            last_modified: 42
-          }, {patch: true, safe: true}));
-      });
+      describe("Failure", () => {
+        it("should dispatch an error notification action", () => {
+          const action = actions.updateGroup("bucket", "group", {data: groupData});
+          const updateGroup = saga.updateGroup(() => ({
+            group: {data: {last_modified: 42}}}), action);
+          updateGroup.next();
 
-      it("should update the route path", () => {
-        expect(updateGroup.next().value)
-          .eql(put(updatePath("/buckets/bucket/groups/group/edit")));
-      });
-
-      it("should dispatch a notification", () => {
-        expect(updateGroup.next().value)
-          .eql(put(notifySuccess("Group properties updated.")));
+          expect(updateGroup.throw("error").value)
+            .eql(put(notifyError("Couldn't update group.", "error", {clear: true})));
+        });
       });
     });
 
-    describe("Failure", () => {
-      it("should dispatch an error notification action", () => {
-        const action = actions.updateGroup("bucket", "group", groupData);
-        const updateGroup = saga.updateGroup(() => ({
-          group: {data: {last_modified: 42}}}), action);
-        updateGroup.next();
+    describe("Permissions", () => {
+      describe("Success", () => {
+        let bucket, updateGroup;
+        const loadedGroup = {last_modified: 42};
 
-        expect(updateGroup.throw("error").value)
-          .eql(put(notifyError("Couldn't update group.", "error", {clear: true})));
+        before(() => {
+          bucket = {updateGroup() {}};
+          setClient({bucket() {return bucket;}});
+          const action = actions.updateGroup("bucket", "group", {permissions: {a: 1}});
+          updateGroup = saga.updateGroup(()  =>  ({
+            group: {data: loadedGroup}
+          }), action);
+        });
+
+        it("should post new group permissions", () => {
+          expect(updateGroup.next().value)
+            .eql(call([bucket, bucket.updateGroup], loadedGroup, {
+              permissions: {a: 1},
+              safe: true,
+              last_modified: 42}));
+        });
+
+        it("should update the route path", () => {
+          expect(updateGroup.next().value)
+            .eql(put(updatePath("/buckets/bucket/groups/group/permissions")));
+        });
+
+        it("should dispatch a notification", () => {
+          expect(updateGroup.next().value)
+            .eql(put(notifySuccess("Group permissions updated.")));
+        });
+      });
+
+      describe("Failure", () => {
+        let updateGroup;
+
+        before(() => {
+          const action = actions.updateGroup("bucket", "group", {permissions: {}});
+          updateGroup = saga.updateGroup(() =>  ({
+            group: {data: {last_modified: 42}}
+          }), action);
+          updateGroup.next();
+          updateGroup.next();
+        });
+
+        it("should dispatch an error notification action", () => {
+          expect(updateGroup.throw("error").value)
+            .eql(put(notifyError("Couldn't update group.", "error", {clear: true})));
+        });
       });
     });
   });

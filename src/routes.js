@@ -12,19 +12,23 @@ import Sidebar from "./containers/Sidebar";
 import Notifications from "./containers/Notifications";
 import BucketCreatePage from "./containers/bucket/BucketCreatePage";
 import BucketEditPage from "./containers/bucket/BucketEditPage";
+import BucketPermissionsPage from "./containers/bucket/BucketPermissionsPage";
 import BucketCollectionsPage from "./containers/bucket/BucketCollectionsPage";
 import BucketGroupsPage from "./containers/bucket/BucketGroupsPage";
 import BucketHistoryPage from "./containers/bucket/BucketHistoryPage";
 import GroupCreatePage from "./containers/group/GroupCreatePage";
 import GroupEditPage from "./containers/group/GroupEditPage";
+import GroupPermissionsPage from "./containers/group/GroupPermissionsPage";
 import GroupHistoryPage from "./containers/group/GroupHistoryPage";
 import CollectionRecordsPage from "./containers/collection/CollectionRecordsPage";
 import CollectionHistoryPage from "./containers/collection/CollectionHistoryPage";
 import CollectionCreatePage from "./containers/collection/CollectionCreatePage";
 import CollectionEditPage from "./containers/collection/CollectionEditPage";
+import CollectionPermissionsPage from "./containers/collection/CollectionPermissionsPage";
 import RecordCreatePage from "./containers/record/RecordCreatePage";
 import RecordBulkPage from "./containers/record/RecordBulkPage";
 import RecordEditPage from "./containers/record/RecordEditPage";
+import RecordPermissionsPage from "./containers/record/RecordPermissionsPage";
 import RecordHistoryPage from "./containers/record/RecordHistoryPage";
 import * as sessionActions from "./actions/session";
 import * as bucketActions from "./actions/bucket";
@@ -184,6 +188,9 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
               {/* /buckets/:bid/groups/:gid/edit */}
               <Route name="properties" path="edit"
                 components={{...common, content: GroupEditPage}} />
+              {/* /buckets/:bid/groups/:gid/permissions */}
+              <Route name="permissions" path="permissions"
+                components={{...common, content: GroupPermissionsPage}} />
               {/* /buckets/:bid/groups/:gid/history */}
               <Route name="history" path="history"
                 components={{...common, content: GroupHistoryPage}}
@@ -194,6 +201,9 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
           {/* /buckets/:bid/edit */}
           <Route name="properties" path="edit"
             components={{...common, content: BucketEditPage}} />
+          {/* /buckets/:bid/permissions */}
+          <Route name="permissions" path="permissions"
+            components={{...common, content: BucketPermissionsPage}} />
           {/* /buckets/:bid/history */}
           <Route name="history" path="history"
             components={{...common, content: BucketHistoryPage}}
@@ -229,6 +239,9 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                   {/* /buckets/:bid/collections/:cid/records/:rid/edit */}
                   <Route name="properties" path="edit"
                     components={{...common, content: RecordEditPage}} />
+                  {/* /buckets/:bid/collections/:cid/records/:rid/permissions */}
+                  <Route name="permissions" path="permissions"
+                    components={{...common, content: RecordPermissionsPage}} />
                   {/* /buckets/:bid/collections/:cid/history */}
                   <Route name="history" path="history"
                     components={{...common, content: RecordHistoryPage}}
@@ -239,6 +252,9 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
               {/* /buckets/:bid/collections/:cid/edit */}
               <Route name="properties" path="edit"
                 components={{...common, content: CollectionEditPage}} />
+              {/* /buckets/:bid/collections/:cid/permissions */}
+              <Route name="permissions" path="permissions"
+                components={{...common, content: CollectionPermissionsPage}} />
               {/* /buckets/:bid/collections/:cid/history */}
               <Route name="history" path="history"
                 components={{...common, content: CollectionHistoryPage}}

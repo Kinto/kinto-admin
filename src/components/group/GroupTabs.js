@@ -16,6 +16,12 @@ export default class GroupTabs extends Component {
                 History
               </Link>
             </li> : null}
+          <li role="presentation" className={selected === "permissions" ? "active" : ""}>
+            <Link to={`/buckets/${bid}/groups/${gid}/permissions`}>
+              <i className="glyphicon glyphicon-lock" />
+              Permissions
+            </Link>
+          </li>
           <li role="presentation" className={selected === "settings" ? "active" : ""}>
             <Link to={`/buckets/${bid}/groups/${gid}/edit`}>
               <i className="glyphicon glyphicon-cog" />

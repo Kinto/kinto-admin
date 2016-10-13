@@ -96,22 +96,32 @@ export function* createRecord(getState, action) {
 }
 
 export function* updateRecord(getState, action) {
-  const {session, record: currentRecord} = getState();
-  const {bid, cid, rid, record, attachment} = action;
-  const {last_modified} = currentRecord.data;
-  const updatedRecord = {...record, id: rid, last_modified};
+  const {session, record: {data: currentRecord}} = getState();
+  const {bid, cid, rid, record: {data, permissions}, attachment} = action;
+  const {last_modified} = currentRecord;
   try {
     const coll = getCollection(bid, cid);
-    if ("attachments" in session.serverInfo.capabilities && attachment) {
-      yield call([coll, coll.addAttachment], attachment, updatedRecord, {safe: true});
-    } else {
-      // Note: We update using PATCH to keep existing record properties possibly
-      // not defined by the JSON schema, if any.
-      yield call([coll, coll.updateRecord], updatedRecord, {patch: true, safe: true});
+    if (data) {
+      const updatedRecord = {...data, id: rid, last_modified};
+      if ("attachments" in session.serverInfo.capabilities && attachment) {
+        yield call([coll, coll.addAttachment], attachment, updatedRecord, {safe: true});
+      } else {
+        // Note: We update using PATCH to keep existing record properties possibly
+        // not defined by the JSON schema, if any.
+        yield call([coll, coll.updateRecord], updatedRecord, {patch: true, safe: true});
+      }
+      yield put(resetRecord());
+      yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
+      yield put(notifySuccess("Record attributes updated."));
+    } else if (permissions) {
+      yield call([coll, coll.updateRecord], currentRecord, {
+        permissions,
+        safe: true,
+        last_modified,
+      });
+      yield put(updatePath(`/buckets/${bid}/collections/${cid}/records/${rid}/permissions`));
+      yield put(notifySuccess("Record permissions updated."));
     }
-    yield put(resetRecord());
-    yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
-    yield put(notifySuccess("Record updated."));
   } catch(error) {
     yield put(notifyError("Couldn't update record.", error));
   } finally {

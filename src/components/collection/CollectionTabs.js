@@ -22,6 +22,12 @@ export default class CollectionTabs extends Component {
                 History
               </Link>
             </li> : null}
+          <li role="presentation" className={selected === "permissions" ? "active" : ""}>
+            <Link to={`/buckets/${bid}/collections/${cid}/permissions`}>
+              <i className="glyphicon glyphicon-lock" />
+              Permissions
+            </Link>
+          </li>
           <li role="presentation" className={selected === "settings" ? "active" : ""}>
             <Link to={`/buckets/${bid}/collections/${cid}/edit`}>
               <i className="glyphicon glyphicon-cog" />

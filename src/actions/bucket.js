@@ -1,6 +1,13 @@
 /* @flow */
 
-import type { Action, BucketData, CollectionData, GroupData } from "../types";
+import type {
+  Action,
+  BucketData,
+  BucketResource,
+  CollectionData,
+  CollectionResource,
+  GroupData,
+  GroupResource } from "../types";
 import {
   BUCKET_BUSY,
   BUCKET_COLLECTIONS_REQUEST,
@@ -30,8 +37,8 @@ export function createBucket(bid: string, data: BucketData): Action {
   return {type: BUCKET_CREATE_REQUEST, bid, data};
 }
 
-export function updateBucket(bid: string, bucketData: BucketData): Action {
-  return {type: BUCKET_UPDATE_REQUEST, bid, bucketData};
+export function updateBucket(bid: string, bucket: BucketResource): Action {
+  return {type: BUCKET_UPDATE_REQUEST, bid, bucket};
 }
 
 export function deleteBucket(bid: string): Action {
@@ -70,8 +77,8 @@ export function createCollection(bid: string, collectionData: CollectionData): A
   return {type: COLLECTION_CREATE_REQUEST, bid, collectionData};
 }
 
-export function updateCollection(bid: string, cid: string, collectionData: CollectionData): Action {
-  return {type: COLLECTION_UPDATE_REQUEST, bid, cid, collectionData};
+export function updateCollection(bid: string, cid: string, collection: CollectionResource): Action {
+  return {type: COLLECTION_UPDATE_REQUEST, bid, cid, collection};
 }
 
 export function deleteCollection(bid: string, cid: string): Action {
@@ -82,8 +89,8 @@ export function createGroup(bid: string, groupData: GroupData): Action {
   return {type: GROUP_CREATE_REQUEST, bid, groupData};
 }
 
-export function updateGroup(bid: string, gid: string, groupData: GroupData): Action {
-  return {type: GROUP_UPDATE_REQUEST, bid, gid, groupData};
+export function updateGroup(bid: string, gid: string, group: GroupResource): Action {
+  return {type: GROUP_UPDATE_REQUEST, bid, gid, group};
 }
 
 export function deleteGroup(bid: string, gid: string): Action {
