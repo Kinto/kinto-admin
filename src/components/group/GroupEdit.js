@@ -29,7 +29,7 @@ export default class GroupEdit extends Component {
     }
     return (
       <div>
-        <h1>Edit <b>{bid}/{gid}</b> group properties</h1>
+        <h1>Edit <b>{bid}/{gid}</b> group attributes</h1>
         <GroupTabs
           bid={bid}
           gid={gid}

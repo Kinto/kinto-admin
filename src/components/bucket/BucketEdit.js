@@ -29,7 +29,7 @@ export default class BucketEdit extends Component {
     }
     return (
       <div>
-        <h1>Manage <b>{bid}</b> bucket</h1>
+        <h1>Edit <b>{bid}</b> bucket attributes</h1>
         <BucketTabs
           bid={bid}
           capabilities={capabilities}
