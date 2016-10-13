@@ -11,8 +11,8 @@ import type {
 import React from "react";  /* import to enable JSX transpilation */
 
 
-export const EVERYONE = "System.Everyone";
-export const AUTHENTICATED = "System.Authenticated";
+export const EVERYONE = "system.Everyone";
+export const AUTHENTICATED = "system.Authenticated";
 
 
 const permMethodMap = {
