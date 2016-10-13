@@ -115,10 +115,10 @@ export function permissionsToFormData(permissionsObject: Object): Object {
     .reduce((acc, permissionName) => {
       const principals = permissionsObject[permissionName];
       for (const principal of principals) {
-        if (principal === "system.Everyone") {
+        if (principal === EVERYONE) {
           acc.anonymous = [...acc.anonymous, permissionName];
         }
-        else if (principal === "system.Authenticated") {
+        else if (principal === AUTHENTICATED) {
           acc.authenticated = [...acc.authenticated, permissionName];
         }
         else {
@@ -165,8 +165,8 @@ export function formDataToPermissions(formData: Object) : Object {
   const {anonymous, authenticated, principals} = formData;
   const permissionsList = [
     ...principals,
-    {principal: "system.Everyone", permissions: anonymous},
-    {principal: "system.Authenticated", permissions: authenticated}];
+    {principal: EVERYONE, permissions: anonymous},
+    {principal: AUTHENTICATED, permissions: authenticated}];
   return permissionsList.reduce((acc, {principal, permissions}) => {
     for (const permissionName of permissions) {
       if (!acc.hasOwnProperty(permissionName)) {
