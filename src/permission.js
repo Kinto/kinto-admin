@@ -8,6 +8,9 @@ import type {
   RecordState,
 } from "./types";
 
+import React from "react";  /* import to enable JSX transpilation */
+
+
 export const EVERYONE = "System.Everyone";
 export const AUTHENTICATED = "System.Authenticated";
 
@@ -86,7 +89,10 @@ export function canEditRecord(session: SessionState, bucket: BucketState, collec
 }
 
 export function permissionsObjectToList(permissionsObject: Object): Object[] {
-  return Object.keys(permissionsObject)
+  return {
+    anonymous: [],
+    authenticated: [],
+    principals: Object.keys(permissionsObject)
     .reduce((acc, permissionName) => {
       const principals = permissionsObject[permissionName];
       for (const principal of principals) {
@@ -110,7 +116,8 @@ export function permissionsObjectToList(permissionsObject: Object): Object[] {
     }, [])
     // Ensure entries are always listed alphabetically by principals, to avoid
     // confusing UX.
-    .sort((a, b) => a.principal > b.principal ? 1 : -1);
+    .sort((a, b) => a.principal > b.principal ? 1 : -1)
+  };
 }
 
 export function permissionsListToObject(permissionsList: Object[]) {
@@ -127,35 +134,72 @@ export function permissionsListToObject(permissionsList: Object[]) {
 }
 
 export function preparePermissionsForm(permissions: string[]) {
+  const apiDocURI = "https://kinto.readthedocs.io/en/stable/api/1.x/permissions.html#api-principals";
   const schema = {
-    type: "array",
-    items: {
-      type: "object",
-      properties: {
-        principal: {type: "string", title: "Principal"},
-        permissions: {
-          type: "array",
-          title: "Permissions",
-          items: {
-            type: "string",
-            enum: permissions,
-          },
-          uniqueItems: true,
+    definitions: {
+      permissions: {
+        type: "array",
+        items: {
+          type: "string",
+          enum: permissions,
+        },
+        uniqueItems: true,
+      }
+    },
+    type: "object",
+    properties: {
+      anonymous: {
+        title: "Anonymous",
+        description: "Permissions for anyone, including anonymous",
+        $ref: "#/definitions/permissions"
+      },
+      authenticated: {
+        title: "Authenticated",
+        description: "Permissions for authenticated users",
+        $ref: "#/definitions/permissions"
+      },
+      principals: {
+        title: "Principals",
+        description: (
+          <p>A principal <a href={apiDocURI} target="_blank">can be a user ID or a group URI</a>.</p>
+        ),
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            principal: {type: "string", title: " "},
+            permissions: {
+              title: "  ",
+              $ref: "#/definitions/permissions"
+            }
+          }
         }
       }
     }
   };
 
   const uiSchema = {
-    items: {
-      principal: {
-        "classNames": "field-principal",
-      },
-      permissions: {
-        "ui:widget": "checkboxes",
-        "classNames": "field-permissions",
+    anonymous: {
+      "ui:widget": "checkboxes",
+      classNames: "field-anonymous",
+    },
+    authenticated: {
+      "ui:widget": "checkboxes",
+      classNames: "field-authenticated",
+    },
+    principals: {
+      classNames: "field-principals",
+      items: {
+        principal: {
+          classNames: "field-principal",
+          "ui:placeholder": "Principal, eg. basicauth:alice, /buckets/x/groups/y"
+        },
+        permissions: {
+          "ui:widget": "checkboxes",
+          classNames: "field-permissions",
+        }
       }
-    }
+    },
   };
 
   return {schema, uiSchema};

@@ -361,6 +361,37 @@ table.record-list td.load-more {
   padding-left:1em;
 }
 
+.permissions-form .field-anonymous,
+.permissions-form .field-authenticated {
+  width: 100%;
+  float: left;
+  clear: both;
+}
+  .permissions-form .field-anonymous {
+    border-bottom: 1px solid #eee;
+  }
+  .permissions-form .field-anonymous p,
+  .permissions-form .field-authenticated p {
+    width: 50%;
+  }
+  .permissions-form .field-anonymous .checkboxes,
+  .permissions-form .field-authenticated .checkboxes {
+    float: right;
+    width: 50%;
+    padding-left: 1em;
+    margin-top: -60px;  /* \o/ */
+  }
+  .permissions-form .field-principals fieldset {
+    clear: left;
+  }
+  .permissions-form .field-principals .checkboxes {
+    margin-top: -35px;  /* \o/ */
+  }
+
+  .permissions-form .field-principal > label {
+    display: none;
+  }
+
 /* Spinner http://tobiasahlin.com/spinkit/ */
 .spinner {
   margin: 30px auto 0;
