@@ -5,7 +5,7 @@ import GroupForm from "./GroupForm";
 import GroupTabs from "./GroupTabs";
 
 
-export default class GroupEdit extends Component {
+export default class GroupAttributes extends Component {
   onSubmit = (formData) => {
     const {params, updateGroup} = this.props;
     const {bid, gid} = params;

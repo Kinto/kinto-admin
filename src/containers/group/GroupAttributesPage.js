@@ -1,7 +1,7 @@
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
-import GroupEdit from "../../components/group/GroupEdit";
+import GroupAttributes from "../../components/group/GroupAttributes";
 import * as BucketActions from "../../actions/bucket";
 
 
@@ -21,4 +21,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(GroupEdit);
+)(GroupAttributes);
