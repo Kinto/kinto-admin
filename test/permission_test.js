@@ -273,10 +273,10 @@ describe("canEditRecord", () => {
 describe("Permission form mappers", () => {
   const permissions = {
     read: ["a", "b", "c"],
-    write: ["system.Authenticated"],
+    write: [AUTHENTICATED],
     "collection:create": ["c"],
     "group:create": ["b"],
-    "record:create": ["system.Everyone"],
+    "record:create": [EVERYONE],
   };
 
   const formData = {

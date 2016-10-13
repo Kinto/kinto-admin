@@ -115,30 +115,34 @@ export function permissionsToFormData(permissionsObject: Object): Object {
     .reduce((acc, permissionName) => {
       const principals = permissionsObject[permissionName];
       for (const principal of principals) {
-        if (principal === EVERYONE) {
-          acc.anonymous = [...acc.anonymous, permissionName];
-        }
-        else if (principal === AUTHENTICATED) {
-          acc.authenticated = [...acc.authenticated, permissionName];
-        }
-        else {
-          let {principals: principalsList} = acc;
-          const existing = principalsList.find(x => x.principal === principal);
-          if (existing) {
-            principalsList = principalsList.map(perm => {
-              if (perm.principal === principal) {
-                return {
-                  ...existing,
-                  permissions: [...existing.permissions, permissionName]
-                };
-              } else {
-                return perm;
-              }
-            });
-          } else {
-            principalsList = [...principalsList, {principal, permissions: [permissionName]}];
+        switch (principal) {
+          case EVERYONE: {
+            acc.anonymous = [...acc.anonymous, permissionName];
+            break;
           }
-          acc.principals = principalsList;
+          case AUTHENTICATED: {
+            acc.authenticated = [...acc.authenticated, permissionName];
+            break;
+          }
+          default: {
+            let {principals: principalsList} = acc;
+            const existing = principalsList.find(x => x.principal === principal);
+            if (existing) {
+              principalsList = principalsList.map(perm => {
+                if (perm.principal === principal) {
+                  return {
+                    ...existing,
+                    permissions: [...existing.permissions, permissionName]
+                  };
+                } else {
+                  return perm;
+                }
+              });
+            } else {
+              principalsList = [...principalsList, {principal, permissions: [permissionName]}];
+            }
+            acc.principals = principalsList;
+          }
         }
       }
       return acc;
