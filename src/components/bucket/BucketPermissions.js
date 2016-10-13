@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import Spinner from "../Spinner";
 import BucketTabs from "./BucketTabs";
 import PermissionsForm from "../PermissionsForm";
+import { canEditBucket } from "../../permission";
 
 
 export default class BucketPermissions extends Component {
@@ -10,6 +11,11 @@ export default class BucketPermissions extends Component {
     const {params, updateBucket} = this.props;
     const {bid} = params;
     updateBucket(bid, {permissions: formData});
+  }
+
+  get readonly() {
+    const {session, bucket} = this.props;
+    return !canEditBucket(session, bucket);
   }
 
   render() {
@@ -35,6 +41,7 @@ export default class BucketPermissions extends Component {
           <PermissionsForm
             permissions={permissions}
             acls={acls}
+            readonly={this.readonly}
             onSubmit={this.onSubmit} />
         </BucketTabs>
       </div>

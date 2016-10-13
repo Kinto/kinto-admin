@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import Spinner from "../Spinner";
 import RecordTabs from "./RecordTabs";
 import PermissionsForm from "../PermissionsForm";
+import { canEditRecord } from "../../permission";
 
 
 export default class RecordPermissions extends Component {
@@ -10,6 +11,11 @@ export default class RecordPermissions extends Component {
     const {params, updateRecord} = this.props;
     const {bid, cid, rid} = params;
     updateRecord(bid, cid, rid, {permissions: formData});
+  }
+
+  get readonly() {
+    const {session, bucket, collection, record} = this.props;
+    return !canEditRecord(session, bucket, collection, record);
   }
 
   render() {
@@ -32,6 +38,7 @@ export default class RecordPermissions extends Component {
           <PermissionsForm
             permissions={permissions}
             acls={acls}
+            readonly={this.readonly}
             onSubmit={this.onSubmit} />
         </RecordTabs>
       </div>
