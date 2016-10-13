@@ -21,7 +21,7 @@ export default class RecordHistory extends Component {
           selected="history"
           capabilities={capabilities}>
           { !historyLoaded ? <Spinner /> :
-            <HistoryTable history={history} location={location} />}
+            <HistoryTable bid={bid} history={history} location={location} />}
         </RecordTabs>
       </div>
     );
