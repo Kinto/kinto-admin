@@ -2,19 +2,19 @@ import React, { Component } from "react";
 import Form from "react-jsonschema-form";
 
 import {
-  permissionsObjectToList,
-  permissionsListToObject,
+  permissionsToFormData,
+  formDataToPermissions,
   preparePermissionsForm,
 } from "../permission";
 
 export default class PermissionsForm extends Component {
   onSubmit = ({formData}) => {
-    this.props.onSubmit({formData: permissionsListToObject(formData)});
+    this.props.onSubmit({formData: formDataToPermissions(formData)});
   }
 
   render() {
     const {permissions, acls} = this.props;
-    const formData = permissionsObjectToList(permissions);
+    const formData = permissionsToFormData(permissions);
     const {schema, uiSchema} = preparePermissionsForm(acls);
     return (
       <Form className="permissions-form"

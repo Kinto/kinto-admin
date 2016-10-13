@@ -11,8 +11,8 @@ import {
   canEditGroup,
   canCreateRecord,
   canEditRecord,
-  permissionsListToObject,
-  permissionsObjectToList,
+  formDataToPermissions,
+  permissionsToFormData,
 } from "../src/permission";
 
 
@@ -273,38 +273,31 @@ describe("canEditRecord", () => {
 describe("Permission form mappers", () => {
   const permissions = {
     read: ["a", "b", "c"],
-    write: ["a"],
+    write: ["system.Authenticated"],
     "collection:create": ["c"],
     "group:create": ["b"],
+    "record:create": ["system.Everyone"],
+  };
+
+  const formData = {
+    anonymous: ["record:create"],
+    authenticated: ["write"],
+    principals: [
+      {principal: "a", permissions: ["read"]},
+      {principal: "b", permissions: ["read", "group:create"]},
+      {principal: "c", permissions: ["read", "collection:create"]},
+    ]
   };
 
   describe("permissionsObjectToList", () => {
     it("should convert a permissions object into a list", () => {
-      expect(permissionsObjectToList(permissions)).eql([
-        {
-          "principal": "a",
-          "permissions": ["read", "write"],
-        },
-        {
-          "principal": "b",
-          "permissions": ["read", "group:create"],
-        },
-        {
-          "principal": "c",
-          "permissions": ["read", "collection:create"],
-        }
-      ]);
+      expect(permissionsToFormData(permissions)).eql(formData);
     });
   });
 
   describe("permissionsListToObject", () => {
     it("should convert a list of permissions into an object", () => {
-      expect(permissionsListToObject([
-        {principal: "a", permissions: ["read", "write"]},
-        {principal: "b", permissions: ["read", "group:create"]},
-        {principal: "c", permissions: ["read", "collection:create"]},
-      ]))
-        .eql(permissions);
+      expect(formDataToPermissions(formData)).eql(permissions);
     });
   });
 });

@@ -88,39 +88,85 @@ export function canEditRecord(session: SessionState, bucket: BucketState, collec
   return [bucket, collection, record].some(can(session).write);
 }
 
-export function permissionsObjectToList(permissionsObject: Object): Object[] {
-  return {
-    anonymous: [],
-    authenticated: [],
-    principals: Object.keys(permissionsObject)
+/**
+ * Transform the permissions object returned by the API into data that can
+ * be processed by the form (see `preparePermissionsForm()`).
+ * Basically:
+ *   ```
+ *     {
+ *       "write": ["basicauth:cbd37", "github:bob"],
+ *       "read": ["system.Everyone"]}
+ *     }
+ *   ```
+ * becomes
+ *   ```
+ *   {
+ *     anonymous: ["read"],
+ *     authenticated: [],
+ *     principals: [
+ *       {principal: "basicauth:cbd37": permissions: ["write"]},
+ *       {principals: "github:bob", permissions: ["write"]}
+ *     ]
+ *   }
+ *   ```
+ */
+export function permissionsToFormData(permissionsObject: Object): Object {
+  const formData = Object.keys(permissionsObject)
     .reduce((acc, permissionName) => {
       const principals = permissionsObject[permissionName];
       for (const principal of principals) {
-        const existing = acc.find(x => x.principal === principal);
-        if (existing) {
-          acc = acc.map(perm => {
-            if (perm.principal === principal) {
-              return {
-                ...existing,
-                permissions: [...existing.permissions, permissionName]
-              };
-            } else {
-              return perm;
-            }
-          });
-        } else {
-          acc = [...acc, {principal, permissions: [permissionName]}];
+        if (principal === "system.Everyone") {
+          acc.anonymous = [...acc.anonymous, permissionName];
+        }
+        else if (principal === "system.Authenticated") {
+          acc.authenticated = [...acc.authenticated, permissionName];
+        }
+        else {
+          let {principals: principalsList} = acc;
+          const existing = principalsList.find(x => x.principal === principal);
+          if (existing) {
+            principalsList = principalsList.map(perm => {
+              if (perm.principal === principal) {
+                return {
+                  ...existing,
+                  permissions: [...existing.permissions, permissionName]
+                };
+              } else {
+                return perm;
+              }
+            });
+          } else {
+            principalsList = [...principalsList, {principal, permissions: [permissionName]}];
+          }
+          acc.principals = principalsList;
         }
       }
       return acc;
-    }, [])
+    }, {
+      anonymous: [],
+      authenticated: [],
+      principals: []
+    });
+
+  const {principals} = formData;
+  return {
+    ...formData,
     // Ensure entries are always listed alphabetically by principals, to avoid
     // confusing UX.
-    .sort((a, b) => a.principal > b.principal ? 1 : -1)
+    principals: principals.sort((a, b) => a.principal > b.principal ? 1 : -1)
   };
 }
 
-export function permissionsListToObject(permissionsList: Object[]) {
+/**
+ * Transform the permissions form result into data processable by the API.
+ * See `permissionsToFormData()` and `preparePermissionsForm()`.
+ */
+export function formDataToPermissions(formData: Object) : Object {
+  const {anonymous, authenticated, principals} = formData;
+  const permissionsList = [
+    ...principals,
+    {principal: "system.Everyone", permissions: anonymous},
+    {principal: "system.Authenticated", permissions: authenticated}];
   return permissionsList.reduce((acc, {principal, permissions}) => {
     for (const permissionName of permissions) {
       if (!acc.hasOwnProperty(permissionName)) {
@@ -161,7 +207,9 @@ export function preparePermissionsForm(permissions: string[]) {
       principals: {
         title: "Principals",
         description: (
-          <p>A principal <a href={apiDocURI} target="_blank">can be a user ID or a group URI</a>.</p>
+          <p>A principal <a href={apiDocURI} target="_blank">can be a user ID or a group URI</a>.
+            The write permissions is always granted to the user that edited the object.
+          </p>
         ),
         type: "array",
         items: {
