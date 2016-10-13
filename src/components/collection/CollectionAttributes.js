@@ -33,7 +33,7 @@ export default class CollectionAttributes extends Component {
         <CollectionTabs
           bid={bid}
           cid={cid}
-          selected="settings"
+          selected="attributes"
           capabilities={capabilities}>
           <CollectionForm
             bid={bid}

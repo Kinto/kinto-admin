@@ -21,7 +21,7 @@ export default class BucketTabs extends Component {
               Groups
             </Link>
           </li>
-          <li role="presentation" className={selected === "settings" ? "active" : ""}>
+          <li role="presentation" className={selected === "attributes" ? "active" : ""}>
             <Link to={`/buckets/${bid}/attributes`}>
               <i className="glyphicon glyphicon-cog" />
               Attributes

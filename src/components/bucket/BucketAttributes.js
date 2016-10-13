@@ -33,7 +33,7 @@ export default class BucketAttributes extends Component {
         <BucketTabs
           bid={bid}
           capabilities={capabilities}
-          selected="settings">
+          selected="attributes">
           <BucketForm
             session={session}
             bid={bid}

@@ -33,7 +33,7 @@ export default class GroupAttributes extends Component {
         <GroupTabs
           bid={bid}
           gid={gid}
-          selected="settings"
+          selected="attributes"
           capabilities={capabilities}>
           <GroupForm
             bid={bid}

@@ -31,7 +31,7 @@ export default class RecordAttributes extends Component {
           bid={bid}
           cid={cid}
           rid={rid}
-          selected="settings"
+          selected="attributes"
           capabilities={capabilities}>
           <RecordForm
             bid={bid}

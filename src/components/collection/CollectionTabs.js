@@ -15,7 +15,7 @@ export default class CollectionTabs extends Component {
               Records
             </Link>
           </li>
-          <li role="presentation" className={selected === "settings" ? "active" : ""}>
+          <li role="presentation" className={selected === "attributes" ? "active" : ""}>
             <Link to={`/buckets/${bid}/collections/${cid}/attributes`}>
               <i className="glyphicon glyphicon-cog" />
               Attributes
