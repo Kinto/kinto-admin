@@ -185,8 +185,8 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
             {/* /buckets/:bid/groups/:gid */}
             <Route name=":gid" path=":gid">
               <IndexRedirect to="edit" />
-              {/* /buckets/:bid/groups/:gid/edit */}
-              <Route name="properties" path="edit"
+              {/* /buckets/:bid/groups/:gid/attributes */}
+              <Route name="attributes" path="attributes"
                 components={{...common, content: GroupEditPage}} />
               {/* /buckets/:bid/groups/:gid/permissions */}
               <Route name="permissions" path="permissions"
@@ -198,8 +198,8 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                 onChange={onGroupHistoryEnter.bind(null, store)} />
             </Route>
           </Route>
-          {/* /buckets/:bid/edit */}
-          <Route name="properties" path="edit"
+          {/* /buckets/:bid/attributes */}
+          <Route name="attributes" path="attributes"
             components={{...common, content: BucketEditPage}} />
           {/* /buckets/:bid/permissions */}
           <Route name="permissions" path="permissions"
@@ -236,8 +236,8 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                 {/* /buckets/:bid/collections/:cid/records/:rid */}
                 <Route name=":rid" path=":rid">
                   <IndexRedirect to="edit" />
-                  {/* /buckets/:bid/collections/:cid/records/:rid/edit */}
-                  <Route name="properties" path="edit"
+                  {/* /buckets/:bid/collections/:cid/records/:rid/attributes */}
+                  <Route name="attributes" path="attributes"
                     components={{...common, content: RecordEditPage}} />
                   {/* /buckets/:bid/collections/:cid/records/:rid/permissions */}
                   <Route name="permissions" path="permissions"
@@ -249,8 +249,8 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                     onChange={onRecordHistoryEnter.bind(null, store)} />
                 </Route>
               </Route>
-              {/* /buckets/:bid/collections/:cid/edit */}
-              <Route name="properties" path="edit"
+              {/* /buckets/:bid/collections/:cid/attributes */}
+              <Route name="attributes" path="attributes"
                 components={{...common, content: CollectionEditPage}} />
               {/* /buckets/:bid/collections/:cid/permissions */}
               <Route name="permissions" path="permissions"

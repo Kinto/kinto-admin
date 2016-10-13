@@ -10,7 +10,7 @@ export default class RecordTabs extends Component {
       <div className="tabs-container">
         <ul className="nav nav-tabs nav-justified">
           <li role="presentation" className={selected === "settings" ? "active" : ""}>
-            <Link to={`/buckets/${bid}/collections/${cid}/records/${rid}/edit`}>
+            <Link to={`/buckets/${bid}/collections/${cid}/records/${rid}/attributes`}>
               <i className="glyphicon glyphicon-cog" />
               Attributes
             </Link>

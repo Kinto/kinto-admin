@@ -16,7 +16,7 @@ export default class CollectionTabs extends Component {
             </Link>
           </li>
           <li role="presentation" className={selected === "settings" ? "active" : ""}>
-            <Link to={`/buckets/${bid}/collections/${cid}/edit`}>
+            <Link to={`/buckets/${bid}/collections/${cid}/attributes`}>
               <i className="glyphicon glyphicon-cog" />
               Attributes
             </Link>

@@ -595,7 +595,7 @@ describe("collection sagas", () => {
 
     it("should update the route path", () => {
       expect(deleteAttachment.next().value)
-        .eql(put(updatePath("/buckets/bucket/collections/collection/records/record/edit")));
+        .eql(put(updatePath("/buckets/bucket/collections/collection/records/record/attributes")));
     });
 
     it("should dispatch a notification", () => {

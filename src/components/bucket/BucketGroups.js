@@ -24,7 +24,7 @@ function DataList(props) {
           return (
             <tr key={index}>
               <td>
-                <Link to={`/buckets/${bid}/groups/${id}/edit`}>
+                <Link to={`/buckets/${bid}/groups/${id}/attributes`}>
                   {id}
                 </Link>
               </td>
@@ -38,7 +38,7 @@ function DataList(props) {
                           title="View group history">
                       <i className="glyphicon glyphicon-time" />
                     </Link> : null}
-                  <Link to={`/buckets/${bid}/groups/${id}/edit`}
+                  <Link to={`/buckets/${bid}/groups/${id}/attributes`}
                         className="btn btn-xs btn-default"
                         title="Edit groups properties">
                     <i className="glyphicon glyphicon-cog" />

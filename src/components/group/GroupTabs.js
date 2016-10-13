@@ -10,7 +10,7 @@ export default class GroupTabs extends Component {
       <div className="tabs-container">
         <ul className="nav nav-tabs nav-justified">
           <li role="presentation" className={selected === "settings" ? "active" : ""}>
-            <Link to={`/buckets/${bid}/groups/${gid}/edit`}>
+            <Link to={`/buckets/${bid}/groups/${gid}/attributes`}>
               <i className="glyphicon glyphicon-cog" />
               Attributes
             </Link>

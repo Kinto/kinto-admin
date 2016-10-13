@@ -51,7 +51,7 @@ describe("bucket sagas", () => {
 
       it("should update the route path", () => {
         expect(createBucket.next().value)
-          .eql(put(updatePath("/buckets/bucket/edit")));
+          .eql(put(updatePath("/buckets/bucket/attributes")));
       });
 
       it("should dispatch a notification", () => {
@@ -114,7 +114,7 @@ describe("bucket sagas", () => {
 
         it("should update the route path", () => {
           expect(updateBucket.next().value)
-            .eql(put(updatePath("/buckets/bucket/edit")));
+            .eql(put(updatePath("/buckets/bucket/attributes")));
         });
 
         it("should dispatch a notification", () => {
@@ -620,7 +620,7 @@ describe("bucket sagas", () => {
 
       it("should update the route path", () => {
         expect(createGroup.next().value)
-          .eql(put(updatePath("/buckets/bucket/groups/group/edit")));
+          .eql(put(updatePath("/buckets/bucket/groups/group/attributes")));
       });
 
       it("should dispatch a notification", () => {
@@ -674,7 +674,7 @@ describe("bucket sagas", () => {
 
         it("should update the route path", () => {
           expect(updateGroup.next().value)
-            .eql(put(updatePath("/buckets/bucket/groups/group/edit")));
+            .eql(put(updatePath("/buckets/bucket/groups/group/attributes")));
         });
 
         it("should dispatch a notification", () => {

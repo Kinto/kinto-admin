@@ -84,7 +84,7 @@ export function createBucket(browser, bucket) {
     .type("#root_id", bucket)
     .click(".rjsf [type=submit]")
     .wait(".notification.alert-success")
-    .wait(`[href='#/buckets/${bucket}/edit']`);
+    .wait(`[href='#/buckets/${bucket}/attributes']`);
 }
 
 export function createCollection(browser, bucket, collection) {
@@ -94,5 +94,5 @@ export function createCollection(browser, bucket, collection) {
     .type("#root_id", collection)
     .click(".rjsf [type=submit]")
     .wait(".notification.alert-success")
-    .wait(`[href='#/buckets/${bucket}/collections/${collection}/edit']`);
+    .wait(`[href='#/buckets/${bucket}/collections/${collection}/attributes']`);
 }
