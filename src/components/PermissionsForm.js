@@ -13,6 +13,14 @@ export default class PermissionsForm extends Component {
   }
 
   render() {
+    if (this.props.readonly) {
+      return (
+        <div className="alert alert-warning">
+          You don't have the required permission to edit the object permissions.
+        </div>
+      );
+    }
+
     const {permissions, acls} = this.props;
     const formData = permissionsObjectToList(permissions);
     const {schema, uiSchema} = preparePermissionsForm(acls);

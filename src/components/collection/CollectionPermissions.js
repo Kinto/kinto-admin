@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import Spinner from "../Spinner";
 import CollectionTabs from "./CollectionTabs";
 import PermissionsForm from "../PermissionsForm";
+import { canEditCollection } from "../../permission";
 
 
 export default class CollectionPermissions extends Component {
@@ -10,6 +11,11 @@ export default class CollectionPermissions extends Component {
     const {params, updateCollection} = this.props;
     const {bid, cid} = params;
     updateCollection(bid, cid, {permissions: formData});
+  }
+
+  get readonly() {
+    const {session, bucket, collection} = this.props;
+    return !canEditCollection(session, bucket, collection);
   }
 
   render() {
@@ -35,6 +41,7 @@ export default class CollectionPermissions extends Component {
           <PermissionsForm
             permissions={permissions}
             acls={acls}
+            readonly={this.readonly}
             onSubmit={this.onSubmit} />
         </CollectionTabs>
       </div>

@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import Spinner from "../Spinner";
 import GroupTabs from "./GroupTabs";
 import PermissionsForm from "../PermissionsForm";
+import { canEditGroup } from "../../permission";
 
 
 export default class GroupPermissions extends Component {
@@ -10,6 +11,11 @@ export default class GroupPermissions extends Component {
     const {params, updateGroup} = this.props;
     const {bid, gid} = params;
     updateGroup(bid, gid, {permissions: formData});
+  }
+
+  get readonly() {
+    const {session, bucket, group} = this.props;
+    return !canEditGroup(session, bucket, group);
   }
 
   render() {
@@ -30,6 +36,7 @@ export default class GroupPermissions extends Component {
           <PermissionsForm
             permissions={permissions}
             acls={acls}
+            readonly={this.readonly}
             onSubmit={this.onSubmit} />
         </GroupTabs>
       </div>
