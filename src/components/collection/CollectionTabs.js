@@ -15,6 +15,18 @@ export default class CollectionTabs extends Component {
               Records
             </Link>
           </li>
+          <li role="presentation" className={selected === "settings" ? "active" : ""}>
+            <Link to={`/buckets/${bid}/collections/${cid}/edit`}>
+              <i className="glyphicon glyphicon-cog" />
+              Attributes
+            </Link>
+          </li>
+          <li role="presentation" className={selected === "permissions" ? "active" : ""}>
+            <Link to={`/buckets/${bid}/collections/${cid}/permissions`}>
+              <i className="glyphicon glyphicon-lock" />
+              Permissions
+            </Link>
+          </li>
           {"history" in capabilities ?
             <li role="presentation" className={selected === "history" ? "active" : ""}>
               <Link to={`/buckets/${bid}/collections/${cid}/history`}>
@@ -22,18 +34,6 @@ export default class CollectionTabs extends Component {
                 History
               </Link>
             </li> : null}
-          <li role="presentation" className={selected === "permissions" ? "active" : ""}>
-            <Link to={`/buckets/${bid}/collections/${cid}/permissions`}>
-              <i className="glyphicon glyphicon-lock" />
-              Permissions
-            </Link>
-          </li>
-          <li role="presentation" className={selected === "settings" ? "active" : ""}>
-            <Link to={`/buckets/${bid}/collections/${cid}/edit`}>
-              <i className="glyphicon glyphicon-cog" />
-              Properties
-            </Link>
-          </li>
         </ul>
         <div className="panel panel-default">
           <div className="panel-body">

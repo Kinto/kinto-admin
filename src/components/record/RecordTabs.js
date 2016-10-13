@@ -15,6 +15,12 @@ export default class RecordTabs extends Component {
               Attributes
             </Link>
           </li>
+          <li role="presentation" className={selected === "permissions" ? "active" : ""}>
+            <Link to={`/buckets/${bid}/collections/${cid}/records/${rid}/permissions`}>
+              <i className="glyphicon glyphicon-lock" />
+              Permissions
+            </Link>
+          </li>
           {"history" in capabilities ?
             <li role="presentation" className={selected === "history" ? "active" : ""}>
               <Link to={`/buckets/${bid}/collections/${cid}/records/${rid}/history`}>
@@ -22,12 +28,6 @@ export default class RecordTabs extends Component {
                 History
               </Link>
             </li> : null}
-          <li role="presentation" className={selected === "permissions" ? "active" : ""}>
-            <Link to={`/buckets/${bid}/collections/${cid}/records/${rid}/permissions`}>
-              <i className="glyphicon glyphicon-lock" />
-              Permissions
-            </Link>
-          </li>
         </ul>
         <div className="panel panel-default">
           <div className="panel-body">
