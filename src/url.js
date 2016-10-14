@@ -46,7 +46,7 @@ const URLS = {
 
   // Record urls
   "record:create": ({bid, cid}) =>
-    `/buckets/${bid}/collections/${cid}/records/add`,
+    `/buckets/${bid}/collections/${cid}/records/create`,
   "record:bulk": ({bid, cid}) =>
     `/buckets/${bid}/collections/${cid}/records/bulk`,
   "record:attributes": ({bid, cid, rid}) =>
