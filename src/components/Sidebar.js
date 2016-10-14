@@ -1,34 +1,43 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
 
+import AdminLink from "./AdminLink";
+
+
 
 function activeIfPathname(location, pathname) {
   const active = location.pathname === pathname ? "active" : "";
   return `list-group-item ${active}`;
 }
 
+function getCurrentUrlId(routes) {
+  return routes[routes.length -1].urlid;
+}
+
 function CollectionMenuEntry(props) {
-  const {bucket, collection, active, currentPath} = props;
-  const {id} = collection;
+  const {bucket: {id: bid}, collection, active, currentPath} = props;
+  const {id: cid} = collection;
   const classes = [
     "list-group-item",
     "collections-menu-entry",
     active ? "active" : "",
   ].join(" ");
-  const listPath = `/buckets/${bucket.id}/collections/${id}`;
-  const editPath = `/buckets/${bucket.id}/collections/${id}/attributes`;
-
+  //const listPath = `/buckets/${bid}/collections/${cid}/records`;
+  //const editPath = `/buckets/${bid}/collections/${cid}/attributes`;
+  // XXX dro pthat
+  const listPath = true;
   return (
     <div className={classes}>
       <i className="glyphicon glyphicon-align-justify"/>
       {
-        currentPath === listPath ? id : <Link to={listPath}>{id}</Link>
+        currentPath === listPath ? cid :
+          <AdminLink name="collection:records" params={{bid, cid}}>{cid}</AdminLink>
       }
-      <Link to={editPath}
+      <AdminLink name="collection:attributes" params={{bid, cid}}
         className="collections-menu-entry-edit"
         title="Edit collection attributes">
         <i className="glyphicon glyphicon-cog" />
-      </Link>
+      </AdminLink>
     </div>
   );
 }
@@ -106,10 +115,12 @@ export default class Sidebar extends Component {
   static displayName = "Sidebar";
 
   render() {
-    const {session, params, location} = this.props;
+    const {session, params, location, routes} = this.props;
     const {bid, cid} = params;
     const {buckets=[]} = session;
     const active = activeIfPathname.bind(null, location);
+    const currentUrlId = getCurrentUrlId(routes);
+    console.log(currentUrlId);
     return (
       <div>
         <div className="panel panel-default">
