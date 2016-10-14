@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Link } from "react-router";
 
 import AdminLink from "./AdminLink";
 
@@ -46,11 +45,10 @@ function BucketCollectionsMenu(props) {
           );
         })
       }
-      <Link className={active(`/buckets/${bucket.id}/collections/create`)}
-        to={`/buckets/${bucket.id}/collections/create`}>
+      <AdminLink name="collection:create" params={{bid: bucket.id}} className={active(`/buckets/${bucket.id}/collections/create`)}>
         <i className="glyphicon glyphicon-plus"/>
         Create collection
-      </Link>
+      </AdminLink>
     </div>
   );
 }
@@ -61,10 +59,10 @@ function BucketsMenu(props) {
     <div>
       <div className="panel panel-default">
         <div className="list-group">
-          <Link to="/buckets/create" className={active("/buckets/create")}>
+          <AdminLink name="bucket:create" className={active("/buckets/create")}>
             <i className="glyphicon glyphicon-plus"/>
             Create bucket
-          </Link>
+          </AdminLink>
         </div>
       </div>
       {
@@ -76,11 +74,11 @@ function BucketsMenu(props) {
               <div className="panel-heading">
                 <i className={`glyphicon glyphicon-folder-${current ? "open" : "close"}`} />
                 <strong>{id}</strong> bucket
-                <Link to={`/buckets/${id}/attributes`}
+                <AdminLink name="bucket:attributes" params={{bid: id}}
                   className="bucket-menu-entry-edit"
                   title="Manage bucket">
                   <i className="glyphicon glyphicon-cog"/>
-                </Link>
+                </AdminLink>
               </div>
               <BucketCollectionsMenu
                 bucket={bucket}
@@ -110,7 +108,7 @@ export default class Sidebar extends Component {
       <div>
         <div className="panel panel-default">
           <div className="list-group">
-            <Link to="/" className={active("/")}>Home</Link>
+            <AdminLink name="home" className={active("/")}>Home</AdminLink>
           </div>
         </div>
         {session.authenticated ?
