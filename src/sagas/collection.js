@@ -5,6 +5,7 @@ import { getClient } from "../client";
 import { notifySuccess, notifyError } from "../actions/notifications";
 import { recordBusy, resetRecord } from "../actions/record";
 import * as actions from "../actions/collection";
+import { redirectTo } from "../actions/route";
 
 
 function getBucket(bid) {
@@ -21,7 +22,7 @@ export function* deleteAttachment(getState, action) {
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
     yield call([coll, coll.removeAttachment], rid);
-    yield put(updatePath(`/buckets/${bid}/collections/${cid}/records/${rid}/attributes`));
+    yield put(redirectTo("record:attributes", {bid, cid, rid}));
     yield put(notifySuccess("Attachment deleted."));
   } catch(error) {
     yield put(notifyError("Couldn't delete attachment.", error));

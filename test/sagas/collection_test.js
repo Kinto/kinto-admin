@@ -5,6 +5,7 @@ import { put, call } from "redux-saga/effects";
 import { notifyError, notifySuccess } from "../../src/actions/notifications";
 import * as collectionActions from "../../src/actions/collection";
 import * as recordActions from "../../src/actions/record";
+import * as routeActions from "../../src/actions/route";
 import * as saga from "../../src/sagas/collection";
 import { setClient } from "../../src/client";
 
@@ -595,7 +596,11 @@ describe("collection sagas", () => {
 
     it("should update the route path", () => {
       expect(deleteAttachment.next().value)
-        .eql(put(updatePath("/buckets/bucket/collections/collection/records/record/attributes")));
+        .eql(put(routeActions.redirectTo("record:attributes", {
+          bid: "bucket",
+          cid: "collection",
+          rid: "record",
+        })));
     });
 
     it("should dispatch a notification", () => {

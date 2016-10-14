@@ -59,7 +59,7 @@ class Row extends Component {
               target="_blank">
               <i className="glyphicon glyphicon-paperclip" />
             </a> : null}
-          <AdminLink name="recordAttributes" params={{bid, cid, rid}}
+          <AdminLink name="record:attributes" params={{bid, cid, rid}}
             className="btn btn-sm btn-info" title="Edit record">
             <i className="glyphicon glyphicon-pencil"/>
           </AdminLink>

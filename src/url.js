@@ -1,4 +1,4 @@
-/* @flow */
+/* flow */
 
 import type { RouteParams } from "./types";
 
@@ -6,9 +6,9 @@ import type { RouteParams } from "./types";
 const URLS = {
   home: () =>
     "/",
-  collectionRecords: ({bid, cid}) =>
+  "collection:records": ({bid, cid}) =>
     `/buckets/${bid}/collections/${cid}/records`,
-  recordAttributes: ({bid, cid, rid}) =>
+  "record:attributes": ({bid, cid, rid}) =>
     `/buckets/${bid}/collections/${cid}/records/${rid}/attributes`,
 };
 
