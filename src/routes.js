@@ -220,6 +220,17 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
             {/* /buckets/:bid/collections/:cid */}
             <Route name=":cid" path=":cid">
               <IndexRedirect to="records" />
+              {/* /buckets/:bid/collections/:cid/attributes */}
+              <Route name="attributes" path="attributes"
+                components={{...common, content: CollectionAttributesPage}} />
+              {/* /buckets/:bid/collections/:cid/permissions */}
+              <Route name="permissions" path="permissions"
+                components={{...common, content: CollectionPermissionsPage}} />
+              {/* /buckets/:bid/collections/:cid/history */}
+              <Route name="history" path="history"
+                components={{...common, content: CollectionHistoryPage}}
+                onEnter={onCollectionHistoryEnter.bind(null, store)}
+                onChange={onCollectionHistoryEnter.bind(null, store)} />
               {/* /buckets/:bid/collections/:cid/records */}
               <Route name="records" path="records">
                 <IndexRoute
@@ -249,17 +260,6 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                     onChange={onRecordHistoryEnter.bind(null, store)} />
                 </Route>
               </Route>
-              {/* /buckets/:bid/collections/:cid/attributes */}
-              <Route name="attributes" path="attributes"
-                components={{...common, content: CollectionAttributesPage}} />
-              {/* /buckets/:bid/collections/:cid/permissions */}
-              <Route name="permissions" path="permissions"
-                components={{...common, content: CollectionPermissionsPage}} />
-              {/* /buckets/:bid/collections/:cid/history */}
-              <Route name="history" path="history"
-                components={{...common, content: CollectionHistoryPage}}
-                onEnter={onCollectionHistoryEnter.bind(null, store)}
-                onChange={onCollectionHistoryEnter.bind(null, store)} />
             </Route>
           </Route>
         </Route>
