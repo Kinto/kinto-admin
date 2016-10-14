@@ -69,7 +69,10 @@ function DeleteForm({gid, onSubmit}) {
           schema={deleteSchema}
           validate={validate}
           onSubmit={({formData}) => onSubmit(formData)}>
-          <button type="submit" className="btn btn-danger">Delete group</button>
+          <button type="submit" className="btn btn-danger">
+            <i className="glyphicon glyphicon-trash"/>{" "}
+            Delete group
+          </button>
         </Form>
       </div>
     </div>
