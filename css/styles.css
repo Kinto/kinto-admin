@@ -343,6 +343,14 @@ table.record-list td.load-more {
   margin: 0;
 }
 
+/* Generic forms */
+
+form button[type="submit"].btn-primary {
+  font-size: 1.2em;
+  padding: 12px;
+  box-shadow: inset 0px 0px 0px 1px #fff;
+}
+
 /* Permissions form */
 
 .permissions-form .array-item:not(:last-child) fieldset {

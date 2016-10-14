@@ -154,9 +154,11 @@ export default class RecordForm extends Component {
     const buttons = (
       <div className="row">
         <div className="col-sm-6">
-          <input type="submit" className="btn btn-primary"
-            disabled={!this.allowEditing}
-            value={`${record ? "Update" : "Create"} record`} />
+          <button type="submit" className="btn btn-primary"
+            disabled={!this.allowEditing}>
+            <i className="glyphicon glyphicon-ok"/>
+            {` ${record ? "Update" : "Create"} record`}
+          </button>
           {" or "}
           <Link to={`/buckets/${bid}/collections/${cid}/records`}>Cancel</Link>
           {" | "}

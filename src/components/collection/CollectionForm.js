@@ -270,8 +270,11 @@ export default class CollectionForm extends Component {
 
     const buttons = (
       <div>
-        <input type="submit" className="btn btn-primary" disabled={!this.allowEditing}
-          value={`${creation ? "Create" : "Update"} collection`} />
+        <button type="submit" disabled={!this.allowEditing}
+          className="btn btn-primary">
+          <i className="glyphicon glyphicon-ok"/>
+          {` ${creation ? "Create" : "Update"} collection`}
+        </button>
         {" or "}
         <Link to="/">Cancel</Link>
       </div>

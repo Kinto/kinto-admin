@@ -119,9 +119,11 @@ export default class GroupForm extends Component {
 
     const buttons = (
       <div>
-        <input type="submit" disabled={!formIsEditable}
-          className="btn btn-primary"
-          value={`${creation ? "Create" : "Update"} group`} />
+        <button type="submit" disabled={!formIsEditable}
+          className="btn btn-primary">
+          <i className="glyphicon glyphicon-ok"/>
+          {` ${creation ? "Create" : "Update"} group`}
+        </button>
         {" or "}
         <Link to="/">Cancel</Link>
       </div>

@@ -113,9 +113,11 @@ export default class BucketForm extends Component {
 
     const buttons = (
       <div>
-        <input type="submit" disabled={!formIsEditable}
-          className="btn btn-primary"
-          value={`${creation ? "Create" : "Update"} bucket`} />
+        <button type="submit" disabled={!formIsEditable}
+          className="btn btn-primary">
+          <i className="glyphicon glyphicon-ok"/>
+          {` ${creation ? "Create" : "Update"} bucket`}
+        </button>
         {" or "}
         <Link to="/">Cancel</Link>
       </div>
