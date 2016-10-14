@@ -10,29 +10,18 @@ function activeIfPathname(location, pathname) {
   return `list-group-item ${active}`;
 }
 
-function getCurrentUrlId(routes) {
-  return routes[routes.length -1].urlid;
-}
-
 function CollectionMenuEntry(props) {
-  const {bucket: {id: bid}, collection, active, currentPath} = props;
+  const {bucket: {id: bid}, collection, active} = props;
   const {id: cid} = collection;
   const classes = [
     "list-group-item",
     "collections-menu-entry",
     active ? "active" : "",
   ].join(" ");
-  //const listPath = `/buckets/${bid}/collections/${cid}/records`;
-  //const editPath = `/buckets/${bid}/collections/${cid}/attributes`;
-  // XXX dro pthat
-  const listPath = true;
   return (
     <div className={classes}>
       <i className="glyphicon glyphicon-align-justify"/>
-      {
-        currentPath === listPath ? cid :
-          <AdminLink name="collection:records" params={{bid, cid}}>{cid}</AdminLink>
-      }
+      <AdminLink name="collection:records" params={{bid, cid}}>{cid}</AdminLink>
       <AdminLink name="collection:attributes" params={{bid, cid}}
         className="collections-menu-entry-edit"
         title="Edit collection attributes">
@@ -43,7 +32,7 @@ function CollectionMenuEntry(props) {
 }
 
 function BucketCollectionsMenu(props) {
-  const {active, currentPath, bucket, collections, bid, cid} = props;
+  const {active, bucket, collections, bid, cid} = props;
   return (
     <div className="collections-menu list-group">
       {
@@ -53,8 +42,7 @@ function BucketCollectionsMenu(props) {
               key={index}
               active={bid === bucket.id && cid === collection.id}
               bucket={bucket}
-              collection={collection}
-              currentPath={currentPath} />
+              collection={collection} />
           );
         })
       }
@@ -68,7 +56,7 @@ function BucketCollectionsMenu(props) {
 }
 
 function BucketsMenu(props) {
-  const {active, currentPath, buckets, bid, cid} = props;
+  const {active, buckets, bid, cid} = props;
   return (
     <div>
       <div className="panel panel-default">
@@ -98,7 +86,6 @@ function BucketsMenu(props) {
                 bucket={bucket}
                 collections={collections}
                 active={active}
-                currentPath={currentPath}
                 bid={bid}
                 cid={cid} />
             </div>
@@ -115,12 +102,10 @@ export default class Sidebar extends Component {
   static displayName = "Sidebar";
 
   render() {
-    const {session, params, location, routes} = this.props;
+    const {session, params, location} = this.props;
     const {bid, cid} = params;
     const {buckets=[]} = session;
     const active = activeIfPathname.bind(null, location);
-    const currentUrlId = getCurrentUrlId(routes);
-    console.log(currentUrlId);
     return (
       <div>
         <div className="panel panel-default">
@@ -132,7 +117,6 @@ export default class Sidebar extends Component {
           <BucketsMenu
             buckets={buckets}
             active={active}
-            currentPath={location.pathname}
             bid={bid}
             cid={cid} /> : null}
       </div>

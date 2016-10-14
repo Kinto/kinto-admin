@@ -199,7 +199,7 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
             </Route>
           </Route>
           {/* /buckets/:bid/attributes */}
-          <Route name="attributes" path="attributes" urlid="bucket:attributes"
+          <Route name="attributes" path="attributes"
             components={{...common, content: BucketAttributesPage}} />
           {/* /buckets/:bid/permissions */}
           <Route name="permissions" path="permissions"
