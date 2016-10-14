@@ -1,9 +1,9 @@
-import { push as updatePath } from "react-router-redux";
 import { call, put } from "redux-saga/effects";
 
 import { getClient } from "../client";
 import { notifySuccess, notifyError } from "../actions/notifications";
 import { sessionBusy, listBuckets } from "../actions/session";
+import { redirectTo } from "../actions/route";
 import {
   listBucketCollectionsSuccess,
   listBucketGroupsSuccess,
@@ -26,7 +26,7 @@ export function* createBucket(getState, action) {
     yield put(sessionBusy(true));
     yield call([client, client.createBucket], bid, {data, safe: true});
     yield put(listBuckets());
-    yield put(updatePath(`/buckets/${bid}/attributes`));
+    yield put(redirectTo("bucket:attributes", {bid}));
     yield put(notifySuccess("Bucket created."));
   } catch(error) {
     yield put(notifyError("Couldn't create bucket.", error));
@@ -47,14 +47,14 @@ export function* updateBucket(getState, action) {
         patch: true,
         safe: true,
       });
-      yield put(updatePath(`/buckets/${bid}/attributes`));
+      yield put(redirectTo("bucket:attributes", {bid}));
       yield put(notifySuccess("Bucket attributes updated."));
     } else if (permissions) {
       yield call([bucket, bucket.setPermissions], permissions, {
         safe: true,
         last_modified,
       });
-      yield put(updatePath(`/buckets/${bid}/permissions`));
+      yield put(redirectTo("bucket:permissions", {bid}));
       yield put(notifySuccess("Bucket permissions updated."));
     }
   } catch(error) {
@@ -72,7 +72,7 @@ export function* deleteBucket(getState, action) {
     yield put(sessionBusy(true));
     yield call([client, client.deleteBucket], bid, {safe: true, last_modified});
     yield put(listBuckets());
-    yield put(updatePath("/"));
+    yield put(redirectTo("home"));
     yield put(notifySuccess("Bucket deleted."));
   } catch(error) {
     yield put(notifyError("Couldn't delete bucket.", error));
@@ -84,10 +84,10 @@ export function* deleteBucket(getState, action) {
 export function* createCollection(getState, action) {
   const {bid, collectionData} = action;
   try {
-    const {id, ...data} = collectionData;
+    const {id: cid, ...data} = collectionData;
     const bucket = getBucket(bid);
-    yield call([bucket, bucket.createCollection], id, {data, safe: true});
-    yield put(updatePath(`/buckets/${bid}/collections/${id}`));
+    yield call([bucket, bucket.createCollection], cid, {data, safe: true});
+    yield put(redirectTo("collection:records", {bid, cid}));
     yield put(notifySuccess("Collection created."));
     yield put(listBuckets());
   } catch(error) {
@@ -105,14 +105,14 @@ export function* updateCollection(getState, action) {
       yield call([coll, coll.setData], updatedCollection, {
         patch: true,
         safe: true});
-      yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
+      yield put(redirectTo("collection:records", {bid, cid}));
       yield put(notifySuccess("Collection attributes updated."));
     } else if (permissions) {
       yield call([coll, coll.setPermissions], permissions, {
         safe: true,
         last_modified,
       });
-      yield put(updatePath(`/buckets/${bid}/collections/${cid}/permissions`));
+      yield put(redirectTo("collection:permissions", {bid, cid}));
       yield put(notifySuccess("Collection permissions updated."));
     }
   } catch(error) {
@@ -126,7 +126,7 @@ export function* deleteCollection(getState, action) {
   try {
     const bucket = getBucket(bid);
     yield call([bucket, bucket.deleteCollection], cid, {safe: true, last_modified});
-    yield put(updatePath(""));
+    yield put(redirectTo("bucket:collections", {bid}));
     yield put(notifySuccess("Collection deleted."));
     yield put(listBuckets());
   } catch(error) {
@@ -184,7 +184,7 @@ export function* createGroup(getState, action) {
       data: groupData,
       safe: true
     });
-    yield put(updatePath(`/buckets/${bid}/groups/${gid}/attributes`));
+    yield put(redirectTo("group:attributes", {bid, gid}));
     yield put(notifySuccess("Group created."));
   } catch(error) {
     yield put(notifyError("Couldn't create group.", error));
@@ -202,14 +202,14 @@ export function* updateGroup(getState, action) {
       yield call([bucket, bucket.updateGroup], updatedGroup, {
         patch: true,
         safe: true});
-      yield put(updatePath(`/buckets/${bid}/groups/${gid}/attributes`));
+      yield put(redirectTo("group:attributes", {bid, gid}));
       yield put(notifySuccess("Group attributes updated."));
     } else if (permissions) {
       yield call([bucket, bucket.updateGroup], loadedData, {
         permissions,
         last_modified,
         safe: true});
-      yield put(updatePath(`/buckets/${bid}/groups/${gid}/permissions`));
+      yield put(redirectTo("group:permissions", {bid, gid}));
       yield put(notifySuccess("Group permissions updated."));
     }
   } catch(error) {
@@ -223,7 +223,7 @@ export function* deleteGroup(getState, action) {
   try {
     const bucket = getBucket(bid);
     yield call([bucket, bucket.deleteGroup], gid, {safe: true, last_modified});
-    yield put(updatePath(`/buckets/${bid}/groups`));
+    yield put(redirectTo("bucket:groups", {bid}));
     yield put(notifySuccess("Group deleted."));
   } catch(error) {
     yield put(notifyError("Couldn't delete group.", error));

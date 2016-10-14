@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Link } from "react-router";
+
+import AdminLink from "../AdminLink";
 
 
 export default class GroupTabs extends Component {
@@ -10,23 +11,23 @@ export default class GroupTabs extends Component {
       <div className="tabs-container">
         <ul className="nav nav-tabs nav-justified">
           <li role="presentation" className={selected === "attributes" ? "active" : ""}>
-            <Link to={`/buckets/${bid}/groups/${gid}/attributes`}>
+            <AdminLink name="group:attributes" params={{bid, gid}}>
               <i className="glyphicon glyphicon-cog" />
               Attributes
-            </Link>
+            </AdminLink>
           </li>
           <li role="presentation" className={selected === "permissions" ? "active" : ""}>
-            <Link to={`/buckets/${bid}/groups/${gid}/permissions`}>
+            <AdminLink name="group:permissions" params={{bid, gid}}>
               <i className="glyphicon glyphicon-lock" />
               Permissions
-            </Link>
+            </AdminLink>
           </li>
           {"history" in capabilities ?
             <li role="presentation" className={selected === "history" ? "active" : ""}>
-              <Link to={`/buckets/${bid}/groups/${gid}/history`}>
+              <AdminLink name="group:history" params={{bid, gid}}>
                 <i className="glyphicon glyphicon-time" />
                 History
-              </Link>
+              </AdminLink>
             </li> : null}
         </ul>
         <div className="panel panel-default">

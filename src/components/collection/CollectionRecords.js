@@ -1,11 +1,10 @@
 import React, { Component } from "react";
-import { Link } from "react-router";
 
 import { renderDisplayField, timeago } from "../../utils";
 import { canCreateRecord } from "../../permission";
+import AdminLink from "../AdminLink";
 import Spinner from "../Spinner";
 import CollectionTabs from "./CollectionTabs";
-import AdminLink from "../AdminLink";
 
 
 class Row extends Component {
@@ -28,9 +27,9 @@ class Row extends Component {
 
   onDoubleClick(event) {
     event.preventDefault();
-    const {bid, cid, record, updatePath} = this.props;
+    const {bid, cid, record, redirectTo} = this.props;
     const {id: rid} = record;
-    updatePath(`/buckets/${bid}/collections/${cid}/records/${rid}/attributes`);
+    redirectTo("record:attributes", {bid, cid, rid});
   }
 
   onDeleteClick(event) {
@@ -63,10 +62,10 @@ class Row extends Component {
             className="btn btn-sm btn-info" title="Edit record">
             <i className="glyphicon glyphicon-pencil"/>
           </AdminLink>
-          <Link to={`/buckets/${bid}/collections/${cid}/records/${rid}/permissions`}
+          <AdminLink name="record:permissions" params={{bid, cid, rid}}
             className="btn btn-sm btn-warning" title="Record permissions">
             <i className="glyphicon glyphicon-lock"/>
-          </Link>
+          </AdminLink>
           <button type="button" className="btn btn-sm btn-danger"
             onClick={this.onDeleteClick.bind(this)} title="Delete record">
             <i className="glyphicon glyphicon-trash"/>
@@ -160,7 +159,7 @@ class Table extends Component {
       displayFields,
       deleteRecord,
       updateSort,
-      updatePath
+      redirectTo
     } = this.props;
 
     if (recordsLoaded && records.length === 0) {
@@ -209,7 +208,7 @@ class Table extends Component {
                 schema={schema}
                 displayFields={displayFields}
                 deleteRecord={deleteRecord}
-                updatePath={updatePath} />
+                redirectTo={redirectTo} />
             );
           })
         }</tbody>
@@ -236,10 +235,10 @@ function ListActions(props) {
     return null;
   }
   const defaultButtons = [
-    <Link key="__1" to={`/buckets/${bid}/collections/${cid}/records/add`}
-          className="btn btn-info btn-record-add">Add</Link>,
-    <Link key="__2" to={`/buckets/${bid}/collections/${cid}/records/bulk`}
-          className="btn btn-info btn-record-bulk-add">Bulk add</Link>,
+    <AdminLink key="__1" name="record:create" params={{bid, cid}}
+      className="btn btn-info btn-record-add">Add</AdminLink>,
+    <AdminLink key="__2" name="record:bulk" params={{bid, cid}}
+      className="btn btn-info btn-record-bulk-add">Bulk add</AdminLink>,
   ];
   return (
     <div className="list-actions">
@@ -268,7 +267,7 @@ export default class CollectionRecords extends Component {
       collection,
       deleteRecord,
       listNextRecords,
-      updatePath,
+      redirectTo,
       pluginHooks,
       capabilities,
     } = this.props;
@@ -315,7 +314,7 @@ export default class CollectionRecords extends Component {
             displayFields={displayFields}
             deleteRecord={deleteRecord}
             updateSort={this.updateSort}
-            updatePath={updatePath} />
+            redirectTo={redirectTo} />
           {listActions}
         </CollectionTabs>
       </div>

@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import { push as updatePath } from "react-router-redux";
 import { put, call } from "redux-saga/effects";
 
 import { notifyError, notifySuccess } from "../../src/actions/notifications";
 import * as sessionActions from "../../src/actions/session";
+import { redirectTo } from "../../src/actions/route";
 import * as actions from "../../src/actions/bucket";
 import * as saga from "../../src/sagas/bucket";
 import { setClient } from "../../src/client";
@@ -51,7 +51,7 @@ describe("bucket sagas", () => {
 
       it("should update the route path", () => {
         expect(createBucket.next().value)
-          .eql(put(updatePath("/buckets/bucket/attributes")));
+          .eql(put(redirectTo("bucket:attributes", {bid: "bucket"})));
       });
 
       it("should dispatch a notification", () => {
@@ -114,7 +114,7 @@ describe("bucket sagas", () => {
 
         it("should update the route path", () => {
           expect(updateBucket.next().value)
-            .eql(put(updatePath("/buckets/bucket/attributes")));
+            .eql(put(redirectTo("bucket:attributes", {bid: "bucket"})));
         });
 
         it("should dispatch a notification", () => {
@@ -179,7 +179,7 @@ describe("bucket sagas", () => {
 
         it("should update the route path", () => {
           expect(updateBucket.next().value)
-            .eql(put(updatePath("/buckets/bucket/permissions")));
+            .eql(put(redirectTo("bucket:permissions", {bid: "bucket"})));
         });
 
         it("should dispatch a notification", () => {
@@ -250,7 +250,7 @@ describe("bucket sagas", () => {
 
       it("should update the route path", () => {
         expect(deleteBucket.next().value)
-          .eql(put(updatePath("/")));
+          .eql(put(redirectTo("home")));
       });
 
       it("should dispatch a notification", () => {
@@ -311,7 +311,10 @@ describe("bucket sagas", () => {
 
       it("should update the route path", () => {
         expect(createCollection.next().value)
-          .eql(put(updatePath("/buckets/bucket/collections/collection")));
+          .eql(put(redirectTo("collection:records", {
+            bid: "bucket",
+            cid: "collection",
+          })));
       });
 
       it("should dispatch a notification", () => {
@@ -371,7 +374,10 @@ describe("bucket sagas", () => {
 
         it("should update the route path", () => {
           expect(updateCollection.next().value)
-            .eql(put(updatePath("/buckets/bucket/collections/collection/records")));
+            .eql(put(redirectTo("collection:records", {
+              bid: "bucket",
+              cid: "collection",
+            })));
         });
 
         it("should dispatch a notification", () => {
@@ -417,7 +423,10 @@ describe("bucket sagas", () => {
 
         it("should update the route path", () => {
           expect(updateCollection.next().value)
-            .eql(put(updatePath("/buckets/bucket/collections/collection/permissions")));
+            .eql(put(redirectTo("collection:permissions", {
+              bid: "bucket",
+              cid: "collection",
+            })));
         });
 
         it("should dispatch a notification", () => {
@@ -469,7 +478,7 @@ describe("bucket sagas", () => {
 
       it("should update the route path", () => {
         expect(deleteCollection.next().value)
-          .eql(put(updatePath("")));
+          .eql(put(redirectTo("bucket:collections", {bid: "bucket"})));
       });
 
       it("should dispatch a notification", () => {
@@ -620,7 +629,10 @@ describe("bucket sagas", () => {
 
       it("should update the route path", () => {
         expect(createGroup.next().value)
-          .eql(put(updatePath("/buckets/bucket/groups/group/attributes")));
+          .eql(put(redirectTo("group:attributes", {
+            bid: "bucket",
+            gid: "group",
+          })));
       });
 
       it("should dispatch a notification", () => {
@@ -674,7 +686,10 @@ describe("bucket sagas", () => {
 
         it("should update the route path", () => {
           expect(updateGroup.next().value)
-            .eql(put(updatePath("/buckets/bucket/groups/group/attributes")));
+            .eql(put(redirectTo("group:attributes", {
+              bid: "bucket",
+              gid: "group",
+            })));
         });
 
         it("should dispatch a notification", () => {
@@ -720,7 +735,10 @@ describe("bucket sagas", () => {
 
         it("should update the route path", () => {
           expect(updateGroup.next().value)
-            .eql(put(updatePath("/buckets/bucket/groups/group/permissions")));
+            .eql(put(redirectTo("group:permissions", {
+              bid: "bucket",
+              gid: "group",
+            })));
         });
 
         it("should dispatch a notification", () => {
@@ -769,7 +787,7 @@ describe("bucket sagas", () => {
 
       it("should update the route path", () => {
         expect(deleteGroup.next().value)
-          .eql(put(updatePath("/buckets/bucket/groups")));
+          .eql(put(redirectTo("bucket:groups", {bid: "bucket"})));
       });
 
       it("should dispatch a notification", () => {

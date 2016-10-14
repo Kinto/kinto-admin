@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
+
 import { timeago, humanDate } from "../utils";
+import url from "../url";
 
 
 class HistoryRow extends Component {
@@ -30,12 +32,7 @@ class HistoryRow extends Component {
 
     const {data: {id: objectId}} = target;
 
-    const link = {
-      bucket: `/buckets/${bid}/attributes`,
-      collection: `/buckets/${bid}/collections/${cid}/attributes`,
-      group: `/buckets/${bid}/groups/${gid}/attributes`,
-      record: `/buckets/${bid}/collections/${cid}/records/${rid}/attributes`
-    }[resource_name];
+    const link = url(resource_name, {bid, cid, gid, rid});
 
     return (
       <tbody>

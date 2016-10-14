@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Link } from "react-router";
+
+import AdminLink from "../AdminLink";
 
 
 export default class RecordTabs extends Component {
@@ -10,23 +11,23 @@ export default class RecordTabs extends Component {
       <div className="tabs-container">
         <ul className="nav nav-tabs nav-justified">
           <li role="presentation" className={selected === "attributes" ? "active" : ""}>
-            <Link to={`/buckets/${bid}/collections/${cid}/records/${rid}/attributes`}>
+            <AdminLink name="record:attributes" params={{bid, cid, rid}}>
               <i className="glyphicon glyphicon-cog" />
               Attributes
-            </Link>
+            </AdminLink>
           </li>
           <li role="presentation" className={selected === "permissions" ? "active" : ""}>
-            <Link to={`/buckets/${bid}/collections/${cid}/records/${rid}/permissions`}>
+            <AdminLink name="record:permissions" params={{bid, cid, rid}}>
               <i className="glyphicon glyphicon-lock" />
               Permissions
-            </Link>
+            </AdminLink>
           </li>
           {"history" in capabilities ?
             <li role="presentation" className={selected === "history" ? "active" : ""}>
-              <Link to={`/buckets/${bid}/collections/${cid}/records/${rid}/history`}>
+              <AdminLink name="record:history" params={{bid, cid, rid}}>
                 <i className="glyphicon glyphicon-time" />
                 History
-              </Link>
+              </AdminLink>
             </li> : null}
         </ul>
         <div className="panel panel-default">
