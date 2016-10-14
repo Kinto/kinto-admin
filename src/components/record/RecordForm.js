@@ -155,7 +155,8 @@ export default class RecordForm extends Component {
       <div className="row">
         <div className="col-sm-6">
           <input type="submit" className="btn btn-primary"
-            disabled={!this.allowEditing} value={record ? "Update" : "Create"} />
+            disabled={!this.allowEditing}
+            value={`${record ? "Update" : "Create"} record`} />
           {" or "}
           <Link to={`/buckets/${bid}/collections/${cid}/records`}>Cancel</Link>
           {" | "}
