@@ -5,6 +5,7 @@ import { renderDisplayField, timeago } from "../../utils";
 import { canCreateRecord } from "../../permission";
 import Spinner from "../Spinner";
 import CollectionTabs from "./CollectionTabs";
+import AdminLink from "../AdminLink";
 
 
 class Row extends Component {
@@ -58,10 +59,10 @@ class Row extends Component {
               target="_blank">
               <i className="glyphicon glyphicon-paperclip" />
             </a> : null}
-          <Link to={`/buckets/${bid}/collections/${cid}/records/${rid}/attributes`}
+          <AdminLink name="recordAttributes" params={{bid, cid, rid}}
             className="btn btn-sm btn-info" title="Edit record">
             <i className="glyphicon glyphicon-pencil"/>
-          </Link>
+          </AdminLink>
           <Link to={`/buckets/${bid}/collections/${cid}/records/${rid}/permissions`}
             className="btn btn-sm btn-warning" title="Record permissions">
             <i className="glyphicon glyphicon-lock"/>
