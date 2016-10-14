@@ -184,7 +184,7 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
               components={{...common, content: GroupCreatePage}} />
             {/* /buckets/:bid/groups/:gid */}
             <Route name=":gid" path=":gid">
-              <IndexRedirect to="edit" />
+              <IndexRedirect to="attributes" />
               {/* /buckets/:bid/groups/:gid/attributes */}
               <Route name="attributes" path="attributes"
                 components={{...common, content: GroupAttributesPage}} />
@@ -235,7 +235,7 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                   components={{...common, content: RecordBulkPage}} />
                 {/* /buckets/:bid/collections/:cid/records/:rid */}
                 <Route name=":rid" path=":rid">
-                  <IndexRedirect to="edit" />
+                  <IndexRedirect to="attributes" />
                   {/* /buckets/:bid/collections/:cid/records/:rid/attributes */}
                   <Route name="attributes" path="attributes"
                     components={{...common, content: RecordAttributesPage}} />
