@@ -10,7 +10,6 @@ import Spinner from "../Spinner";
 
 const schema = {
   type: "object",
-  title: "Group properties",
   required: ["id", "members"],
   properties: {
     id: {

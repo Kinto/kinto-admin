@@ -26,7 +26,7 @@ export function* createBucket(getState, action) {
     yield put(sessionBusy(true));
     yield call([client, client.createBucket], bid, {data, safe: true});
     yield put(listBuckets());
-    yield put(updatePath(`/buckets/${bid}/edit`));
+    yield put(updatePath(`/buckets/${bid}/attributes`));
     yield put(notifySuccess("Bucket created."));
   } catch(error) {
     yield put(notifyError("Couldn't create bucket.", error));
@@ -47,7 +47,7 @@ export function* updateBucket(getState, action) {
         patch: true,
         safe: true,
       });
-      yield put(updatePath(`/buckets/${bid}/edit`));
+      yield put(updatePath(`/buckets/${bid}/attributes`));
       yield put(notifySuccess("Bucket attributes updated."));
     } else if (permissions) {
       yield call([bucket, bucket.setPermissions], permissions, {
@@ -106,7 +106,7 @@ export function* updateCollection(getState, action) {
         patch: true,
         safe: true});
       yield put(updatePath(`/buckets/${bid}/collections/${cid}/records`));
-      yield put(notifySuccess("Collection properties updated."));
+      yield put(notifySuccess("Collection attributes updated."));
     } else if (permissions) {
       yield call([coll, coll.setPermissions], permissions, {
         safe: true,
@@ -184,7 +184,7 @@ export function* createGroup(getState, action) {
       data: groupData,
       safe: true
     });
-    yield put(updatePath(`/buckets/${bid}/groups/${gid}/edit`));
+    yield put(updatePath(`/buckets/${bid}/groups/${gid}/attributes`));
     yield put(notifySuccess("Group created."));
   } catch(error) {
     yield put(notifyError("Couldn't create group.", error));
@@ -202,8 +202,8 @@ export function* updateGroup(getState, action) {
       yield call([bucket, bucket.updateGroup], updatedGroup, {
         patch: true,
         safe: true});
-      yield put(updatePath(`/buckets/${bid}/groups/${gid}/edit`));
-      yield put(notifySuccess("Group properties updated."));
+      yield put(updatePath(`/buckets/${bid}/groups/${gid}/attributes`));
+      yield put(notifySuccess("Group attributes updated."));
     } else if (permissions) {
       yield call([bucket, bucket.updateGroup], loadedData, {
         permissions,

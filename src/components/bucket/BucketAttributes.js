@@ -5,7 +5,7 @@ import BucketForm from "./BucketForm";
 import BucketTabs from "./BucketTabs";
 
 
-export default class BucketEdit extends Component {
+export default class BucketAttributes extends Component {
   deleteBucket = (bid) => {
     const {deleteBucket} = this.props;
     if (confirm("This will delete the bucket and all the collections and " +
@@ -29,11 +29,11 @@ export default class BucketEdit extends Component {
     }
     return (
       <div>
-        <h1>Manage <b>{bid}</b> bucket</h1>
+        <h1>Edit <b>{bid}</b> bucket attributes</h1>
         <BucketTabs
           bid={bid}
           capabilities={capabilities}
-          selected="settings">
+          selected="attributes">
           <BucketForm
             session={session}
             bid={bid}

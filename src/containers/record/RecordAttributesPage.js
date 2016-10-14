@@ -2,7 +2,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { push as updatePath } from "react-router-redux";
 
-import RecordEdit from "../../components/record/RecordEdit";
+import RecordAttributes from "../../components/record/RecordAttributes";
 import * as CollectionActions from "../../actions/collection";
 import * as NotificationsActions from "../../actions/notifications";
 
@@ -28,5 +28,5 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(RecordEdit);
+)(RecordAttributes);
 

@@ -5,7 +5,7 @@ import CollectionForm from "./CollectionForm";
 import CollectionTabs from "./CollectionTabs";
 
 
-export default class CollectionEdit extends Component {
+export default class CollectionAttributes extends Component {
   onSubmit = (formData) => {
     const {params, updateCollection} = this.props;
     const {bid, cid} = params;
@@ -29,11 +29,11 @@ export default class CollectionEdit extends Component {
     }
     return (
       <div>
-        <h1>Edit <b>{bid}/{cid}</b> collection properties</h1>
+        <h1>Edit <b>{bid}/{cid}</b> collection attributes</h1>
         <CollectionTabs
           bid={bid}
           cid={cid}
-          selected="settings"
+          selected="attributes"
           capabilities={capabilities}>
           <CollectionForm
             bid={bid}

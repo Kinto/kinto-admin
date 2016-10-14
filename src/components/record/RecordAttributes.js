@@ -4,7 +4,7 @@ import RecordForm from "./RecordForm";
 import RecordTabs from "./RecordTabs";
 
 
-export default class RecordEdit extends Component {
+export default class RecordAttributes extends Component {
   onSubmit = ({__attachment__: attachment, ...record}) => {
     const {params, updateRecord} = this.props;
     const {bid, cid, rid} = params;
@@ -26,12 +26,12 @@ export default class RecordEdit extends Component {
 
     return (
       <div>
-        <h1>Edit <b>{bid}/{cid}/{rid}</b></h1>
+        <h1>Edit <b>{bid}/{cid}/{rid}</b> record attributes</h1>
         <RecordTabs
           bid={bid}
           cid={cid}
           rid={rid}
-          selected="settings"
+          selected="attributes"
           capabilities={capabilities}>
           <RecordForm
             bid={bid}

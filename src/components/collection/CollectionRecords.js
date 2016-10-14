@@ -29,7 +29,7 @@ class Row extends Component {
     event.preventDefault();
     const {bid, cid, record, updatePath} = this.props;
     const {id: rid} = record;
-    updatePath(`/buckets/${bid}/collections/${cid}/records/${rid}/edit`);
+    updatePath(`/buckets/${bid}/collections/${cid}/records/${rid}/attributes`);
   }
 
   onDeleteClick(event) {
@@ -58,7 +58,7 @@ class Row extends Component {
               target="_blank">
               <i className="glyphicon glyphicon-paperclip" />
             </a> : null}
-          <Link to={`/buckets/${bid}/collections/${cid}/records/${rid}/edit`}
+          <Link to={`/buckets/${bid}/collections/${cid}/records/${rid}/attributes`}
             className="btn btn-sm btn-info" title="Edit record">
             <i className="glyphicon glyphicon-pencil"/>
           </Link>

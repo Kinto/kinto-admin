@@ -28,7 +28,7 @@ export default class GroupPermissions extends Component {
     }
     return (
       <div>
-        <h1>Permissions for <b>{bid}/{gid} group</b></h1>
+        <h1>Edit <b>{bid}/{gid} group</b> group permissions</h1>
         <GroupTabs
           bid={bid}
           gid={gid}

@@ -5,7 +5,7 @@ import GroupForm from "./GroupForm";
 import GroupTabs from "./GroupTabs";
 
 
-export default class GroupEdit extends Component {
+export default class GroupAttributes extends Component {
   onSubmit = (formData) => {
     const {params, updateGroup} = this.props;
     const {bid, gid} = params;
@@ -29,11 +29,11 @@ export default class GroupEdit extends Component {
     }
     return (
       <div>
-        <h1>Edit <b>{bid}/{gid}</b> group properties</h1>
+        <h1>Edit <b>{bid}/{gid}</b> group attributes</h1>
         <GroupTabs
           bid={bid}
           gid={gid}
-          selected="settings"
+          selected="attributes"
           capabilities={capabilities}>
           <GroupForm
             bid={bid}

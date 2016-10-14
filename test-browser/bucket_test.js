@@ -45,7 +45,7 @@ describe("Bucket tests", function() {
 
   it("should edit a bucket", function* () {
     const result = yield createBucket(browser, "MyBucket")
-      .click("[href='#/buckets/MyBucket/edit']")
+      .click("[href='#/buckets/MyBucket/attributes']")
       .wait(".rjsf")
       .evaluate(() => {
         return document.querySelector(".rjsf input[type=submit]").value;
@@ -61,7 +61,7 @@ describe("Bucket tests", function() {
         // Force accepting confirmation prompt
         window.confirm = () => true;
       })
-      .click("[href='#/buckets/MyBucket/edit']")
+      .click("[href='#/buckets/MyBucket/attributes']")
       .wait(".panel-danger")
       .type(".panel-danger #root", "MyBucket")
       .click(".panel-danger button[type=submit]")

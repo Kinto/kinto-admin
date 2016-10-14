@@ -31,10 +31,10 @@ class HistoryRow extends Component {
     const {data: {id: objectId}} = target;
 
     const link = {
-      bucket: `/buckets/${bid}/edit`,
-      collection: `/buckets/${bid}/collections/${cid}/edit`,
-      group: `/buckets/${bid}/groups/${gid}/edit`,
-      record: `/buckets/${bid}/collections/${cid}/records/${rid}/edit`
+      bucket: `/buckets/${bid}/attributes`,
+      collection: `/buckets/${bid}/collections/${cid}/attributes`,
+      group: `/buckets/${bid}/groups/${gid}/attributes`,
+      record: `/buckets/${bid}/collections/${cid}/records/${rid}/attributes`
     }[resource_name];
 
     return (

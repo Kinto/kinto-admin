@@ -1,15 +1,14 @@
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
-import CollectionEdit from "../../components/collection/CollectionEdit";
+import BucketAttributes from "../../components/bucket/BucketAttributes";
 import * as BucketActions from "../../actions/bucket";
 
 
 function mapStateToProps(state) {
   return {
-    bucket: state.bucket,
-    collection: state.collection,
     session: state.session,
+    bucket: state.bucket,
     capabilities: state.session.serverInfo.capabilities,
   };
 }
@@ -21,4 +20,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(CollectionEdit);
+)(BucketAttributes);

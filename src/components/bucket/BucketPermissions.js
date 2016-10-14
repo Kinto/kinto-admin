@@ -33,7 +33,7 @@ export default class BucketPermissions extends Component {
     }
     return (
       <div>
-        <h1>Permissions for <b>{bid}</b> bucket</h1>
+        <h1>Edit <b>{bid}</b> bucket permissions</h1>
         <BucketTabs
           bid={bid}
           capabilities={capabilities}

@@ -10,7 +10,6 @@ import { validJSON, omit } from "../../utils";
 
 const schema = {
   type: "object",
-  title: "Bucket properties",
   required: ["id"],
   properties: {
     id: {

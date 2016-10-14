@@ -16,7 +16,7 @@ function CollectionMenuEntry(props) {
     active ? "active" : "",
   ].join(" ");
   const listPath = `/buckets/${bucket.id}/collections/${id}`;
-  const editPath = `/buckets/${bucket.id}/collections/${id}/edit`;
+  const editPath = `/buckets/${bucket.id}/collections/${id}/attributes`;
 
   return (
     <div className={classes}>
@@ -26,7 +26,7 @@ function CollectionMenuEntry(props) {
       }
       <Link to={editPath}
         className="collections-menu-entry-edit"
-        title="Edit collection properties">
+        title="Edit collection attributes">
         <i className="glyphicon glyphicon-cog" />
       </Link>
     </div>
@@ -79,7 +79,7 @@ function BucketsMenu(props) {
               <div className="panel-heading">
                 <i className={`glyphicon glyphicon-folder-${current ? "open" : "close"}`} />
                 <strong>{id}</strong> bucket
-                <Link to={`/buckets/${id}/edit`}
+                <Link to={`/buckets/${id}/attributes`}
                   className="bucket-menu-entry-edit"
                   title="Manage bucket">
                   <i className="glyphicon glyphicon-cog"/>

@@ -28,7 +28,7 @@ export default class RecordPermissions extends Component {
     }
     return (
       <div>
-        <h1>Permissions for <b>{bid}/{cid}/{rid}</b></h1>
+        <h1>Edit <b>{bid}/{cid}/{rid}</b> record permissions</h1>
         <RecordTabs
           bid={bid}
           cid={cid}

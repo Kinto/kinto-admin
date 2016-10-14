@@ -46,7 +46,7 @@ describe("Collection tests", function() {
 
   it("should update a collection", function* () {
     const result = yield createCollection(browser, "MyBucket", "MyCollection")
-      .click("[href='#/buckets/MyBucket/collections/MyCollection/edit']")
+      .click("[href='#/buckets/MyBucket/collections/MyCollection/attributes']")
       .wait(".rjsf")
       .evaluate(() => {
         return document.querySelector(".rjsf input[type=submit]").value;
@@ -62,7 +62,7 @@ describe("Collection tests", function() {
         // Force accepting confirmation prompt
         window.confirm = () => true;
       })
-      .click("[href='#/buckets/MyBucket/collections/MyCollection/edit']")
+      .click("[href='#/buckets/MyBucket/collections/MyCollection/attributes']")
       .wait(".rjsf")
       .type(".panel-danger #root", "MyCollection")
       .click(".panel-danger button[type=submit]")

@@ -9,10 +9,16 @@ export default class RecordTabs extends Component {
     return (
       <div className="tabs-container">
         <ul className="nav nav-tabs nav-justified">
-          <li role="presentation" className={selected === "settings" ? "active" : ""}>
-            <Link to={`/buckets/${bid}/collections/${cid}/records/${rid}/edit`}>
+          <li role="presentation" className={selected === "attributes" ? "active" : ""}>
+            <Link to={`/buckets/${bid}/collections/${cid}/records/${rid}/attributes`}>
               <i className="glyphicon glyphicon-cog" />
               Attributes
+            </Link>
+          </li>
+          <li role="presentation" className={selected === "permissions" ? "active" : ""}>
+            <Link to={`/buckets/${bid}/collections/${cid}/records/${rid}/permissions`}>
+              <i className="glyphicon glyphicon-lock" />
+              Permissions
             </Link>
           </li>
           {"history" in capabilities ?
@@ -22,12 +28,6 @@ export default class RecordTabs extends Component {
                 History
               </Link>
             </li> : null}
-          <li role="presentation" className={selected === "permissions" ? "active" : ""}>
-            <Link to={`/buckets/${bid}/collections/${cid}/records/${rid}/permissions`}>
-              <i className="glyphicon glyphicon-lock" />
-              Permissions
-            </Link>
-          </li>
         </ul>
         <div className="panel panel-default">
           <div className="panel-body">

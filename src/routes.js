@@ -11,23 +11,23 @@ import HomePage from "./containers/HomePage";
 import Sidebar from "./containers/Sidebar";
 import Notifications from "./containers/Notifications";
 import BucketCreatePage from "./containers/bucket/BucketCreatePage";
-import BucketEditPage from "./containers/bucket/BucketEditPage";
+import BucketAttributesPage from "./containers/bucket/BucketAttributesPage";
 import BucketPermissionsPage from "./containers/bucket/BucketPermissionsPage";
 import BucketCollectionsPage from "./containers/bucket/BucketCollectionsPage";
 import BucketGroupsPage from "./containers/bucket/BucketGroupsPage";
 import BucketHistoryPage from "./containers/bucket/BucketHistoryPage";
 import GroupCreatePage from "./containers/group/GroupCreatePage";
-import GroupEditPage from "./containers/group/GroupEditPage";
+import GroupAttributesPage from "./containers/group/GroupAttributesPage";
 import GroupPermissionsPage from "./containers/group/GroupPermissionsPage";
 import GroupHistoryPage from "./containers/group/GroupHistoryPage";
 import CollectionRecordsPage from "./containers/collection/CollectionRecordsPage";
 import CollectionHistoryPage from "./containers/collection/CollectionHistoryPage";
 import CollectionCreatePage from "./containers/collection/CollectionCreatePage";
-import CollectionEditPage from "./containers/collection/CollectionEditPage";
+import CollectionAttributesPage from "./containers/collection/CollectionAttributesPage";
 import CollectionPermissionsPage from "./containers/collection/CollectionPermissionsPage";
 import RecordCreatePage from "./containers/record/RecordCreatePage";
 import RecordBulkPage from "./containers/record/RecordBulkPage";
-import RecordEditPage from "./containers/record/RecordEditPage";
+import RecordAttributesPage from "./containers/record/RecordAttributesPage";
 import RecordPermissionsPage from "./containers/record/RecordPermissionsPage";
 import RecordHistoryPage from "./containers/record/RecordHistoryPage";
 import * as sessionActions from "./actions/session";
@@ -185,9 +185,9 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
             {/* /buckets/:bid/groups/:gid */}
             <Route name=":gid" path=":gid">
               <IndexRedirect to="edit" />
-              {/* /buckets/:bid/groups/:gid/edit */}
-              <Route name="properties" path="edit"
-                components={{...common, content: GroupEditPage}} />
+              {/* /buckets/:bid/groups/:gid/attributes */}
+              <Route name="attributes" path="attributes"
+                components={{...common, content: GroupAttributesPage}} />
               {/* /buckets/:bid/groups/:gid/permissions */}
               <Route name="permissions" path="permissions"
                 components={{...common, content: GroupPermissionsPage}} />
@@ -198,9 +198,9 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                 onChange={onGroupHistoryEnter.bind(null, store)} />
             </Route>
           </Route>
-          {/* /buckets/:bid/edit */}
-          <Route name="properties" path="edit"
-            components={{...common, content: BucketEditPage}} />
+          {/* /buckets/:bid/attributes */}
+          <Route name="attributes" path="attributes"
+            components={{...common, content: BucketAttributesPage}} />
           {/* /buckets/:bid/permissions */}
           <Route name="permissions" path="permissions"
             components={{...common, content: BucketPermissionsPage}} />
@@ -236,9 +236,9 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                 {/* /buckets/:bid/collections/:cid/records/:rid */}
                 <Route name=":rid" path=":rid">
                   <IndexRedirect to="edit" />
-                  {/* /buckets/:bid/collections/:cid/records/:rid/edit */}
-                  <Route name="properties" path="edit"
-                    components={{...common, content: RecordEditPage}} />
+                  {/* /buckets/:bid/collections/:cid/records/:rid/attributes */}
+                  <Route name="attributes" path="attributes"
+                    components={{...common, content: RecordAttributesPage}} />
                   {/* /buckets/:bid/collections/:cid/records/:rid/permissions */}
                   <Route name="permissions" path="permissions"
                     components={{...common, content: RecordPermissionsPage}} />
@@ -249,9 +249,9 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                     onChange={onRecordHistoryEnter.bind(null, store)} />
                 </Route>
               </Route>
-              {/* /buckets/:bid/collections/:cid/edit */}
-              <Route name="properties" path="edit"
-                components={{...common, content: CollectionEditPage}} />
+              {/* /buckets/:bid/collections/:cid/attributes */}
+              <Route name="attributes" path="attributes"
+                components={{...common, content: CollectionAttributesPage}} />
               {/* /buckets/:bid/collections/:cid/permissions */}
               <Route name="permissions" path="permissions"
                 components={{...common, content: CollectionPermissionsPage}} />

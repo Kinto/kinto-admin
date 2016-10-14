@@ -125,7 +125,7 @@ function handleNestedDisplayField(record: RecordData, displayField: string): any
   }
 
   // In case we have properties containing dots,
-  // we look for other candidates in the record properties.
+  // we look for other candidates in the record attributes.
   let biggestCandidate = [];
   let candidates = Object.keys(record).filter((key) => {
     return key.indexOf(fields[0] + ".") === 0;
