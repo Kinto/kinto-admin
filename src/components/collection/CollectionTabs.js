@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Link } from "react-router";
+
+import AdminLink from "../AdminLink";
 
 
 export default class CollectionTabs extends Component {
@@ -10,29 +11,29 @@ export default class CollectionTabs extends Component {
       <div className="tabs-container">
         <ul className="nav nav-tabs nav-justified">
           <li role="presentation" className={selected === "records" ? "active" : ""}>
-            <Link to={`/buckets/${bid}/collections/${cid}/records`}>
+            <AdminLink name="collection:records" params={{bid, cid}}>
               <i className="glyphicon glyphicon-align-justify" />
               Records
-            </Link>
+            </AdminLink>
           </li>
           <li role="presentation" className={selected === "attributes" ? "active" : ""}>
-            <Link to={`/buckets/${bid}/collections/${cid}/attributes`}>
+            <AdminLink name="collection:attributes" params={{bid, cid}}>
               <i className="glyphicon glyphicon-cog" />
               Attributes
-            </Link>
+            </AdminLink>
           </li>
           <li role="presentation" className={selected === "permissions" ? "active" : ""}>
-            <Link to={`/buckets/${bid}/collections/${cid}/permissions`}>
+            <AdminLink name="collection:permissions" params={{bid, cid}}>
               <i className="glyphicon glyphicon-lock" />
               Permissions
-            </Link>
+            </AdminLink>
           </li>
           {"history" in capabilities ?
             <li role="presentation" className={selected === "history" ? "active" : ""}>
-              <Link to={`/buckets/${bid}/collections/${cid}/history`}>
+              <AdminLink name="collection:history" params={{bid, cid}}>
                 <i className="glyphicon glyphicon-time" />
                 History
-              </Link>
+              </AdminLink>
             </li> : null}
         </ul>
         <div className="panel panel-default">

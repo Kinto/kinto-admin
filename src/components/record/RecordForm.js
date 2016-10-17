@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { Link } from "react-router";
 import Form from "react-jsonschema-form";
 import filesize from "filesize";
 
+import AdminLink from "../AdminLink";
 import Spinner from "../Spinner";
 import JSONRecordForm from "../JSONRecordForm";
 import { canCreateRecord, canEditRecord } from "../../permission";
@@ -160,7 +160,7 @@ export default class RecordForm extends Component {
             {` ${record ? "Update" : "Create"} record`}
           </button>
           {" or "}
-          <Link to={`/buckets/${bid}/collections/${cid}/records`}>Cancel</Link>
+          <AdminLink name="collection:records" params={{bid, cid}}>Cancel</AdminLink>
           {" | "}
           <a href="#" onClick={this.toggleJSON}>
             {asJSON ? "Edit form" : "Edit raw JSON"}

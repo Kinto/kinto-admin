@@ -22,6 +22,7 @@ export default function* rootSaga(getState, pluginsSagas=[]) {
     takeEvery(c.SESSION_BUCKETS_REQUEST, sessionSagas.listBuckets, getState),
     takeEvery(c.SESSION_LOGOUT, sessionSagas.sessionLogout, getState),
     // route
+    takeEvery(c.ROUTE_REDIRECT, routeSagas.routeRedirect, getState),
     takeEvery(c.ROUTE_UPDATED, routeSagas.routeUpdated, getState),
     // bucket
     takeEvery(c.BUCKET_CREATE_REQUEST, bucketSagas.createBucket, getState),

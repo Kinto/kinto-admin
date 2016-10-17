@@ -1,10 +1,10 @@
 import { expect } from "chai";
-import { push as updatePath } from "react-router-redux";
 import { put, call } from "redux-saga/effects";
 
 import { notifyError, notifySuccess } from "../../src/actions/notifications";
 import * as collectionActions from "../../src/actions/collection";
 import * as recordActions from "../../src/actions/record";
+import { redirectTo } from "../../src/actions/route";
 import * as saga from "../../src/sagas/collection";
 import { setClient } from "../../src/client";
 
@@ -199,7 +199,10 @@ describe("collection sagas", () => {
 
       it("should update the route path", () => {
         expect(createRecord.next().value)
-          .eql(put(updatePath("/buckets/bucket/collections/collection/records")));
+          .eql(put(redirectTo("collection:records", {
+            bid: "bucket",
+            cid: "collection",
+          })));
       });
 
       it("should dispatch a notification", () => {
@@ -239,7 +242,10 @@ describe("collection sagas", () => {
 
       it("should update the route path", () => {
         expect(createRecord.next().value)
-          .eql(put(updatePath("/buckets/bucket/collections/collection/records")));
+          .eql(put(redirectTo("collection:records", {
+            bid: "bucket",
+            cid: "collection",
+          })));
       });
 
       it("should dispatch a notification", () => {
@@ -329,7 +335,10 @@ describe("collection sagas", () => {
 
         it("should update the route path", () => {
           expect(updateRecord.next().value)
-            .eql(put(updatePath("/buckets/bucket/collections/collection/records")));
+            .eql(put(redirectTo("collection:records", {
+              bid: "bucket",
+              cid: "collection",
+            })));
         });
 
         it("should dispatch a notification", () => {
@@ -373,7 +382,11 @@ describe("collection sagas", () => {
 
         it("should update the route path", () => {
           expect(updateRecord.next().value)
-            .eql(put(updatePath("/buckets/bucket/collections/collection/records/1/permissions")));
+            .eql(put(redirectTo("record:permissions", {
+              bid: "bucket",
+              cid: "collection",
+              rid: 1,
+            })));
         });
 
         it("should dispatch a notification", () => {
@@ -468,7 +481,10 @@ describe("collection sagas", () => {
 
         it("should update the route path", () => {
           expect(updateRecord.next().value)
-            .eql(put(updatePath("/buckets/bucket/collections/collection/records")));
+            .eql(put(redirectTo("collection:records", {
+              bid: "bucket",
+              cid: "collection",
+            })));
         });
 
         it("should dispatch a notification", () => {
@@ -535,7 +551,10 @@ describe("collection sagas", () => {
 
       it("should update the route path", () => {
         expect(deleteRecord.next().value)
-          .eql(put(updatePath("/buckets/bucket/collections/collection/records")));
+          .eql(put(redirectTo("collection:records", {
+            bid: "bucket",
+            cid: "collection",
+          })));
       });
 
       it("should dispatch a notification", () => {
@@ -595,7 +614,11 @@ describe("collection sagas", () => {
 
     it("should update the route path", () => {
       expect(deleteAttachment.next().value)
-        .eql(put(updatePath("/buckets/bucket/collections/collection/records/record/attributes")));
+        .eql(put(redirectTo("record:attributes", {
+          bid: "bucket",
+          cid: "collection",
+          rid: "record",
+        })));
     });
 
     it("should dispatch a notification", () => {
@@ -649,7 +672,10 @@ describe("collection sagas", () => {
 
       it("should update the route path", () => {
         expect(bulkCreateRecords.next({published: records, errors: []}).value)
-          .eql(put(updatePath("/buckets/bucket/collections/collection/records")));
+          .eql(put(redirectTo("collection:records", {
+            bid: "bucket",
+            cid: "collection",
+          })));
       });
 
       it("should dispatch a notification", () => {
@@ -703,7 +729,10 @@ describe("collection sagas", () => {
           published: recordsWithAttachment,
           errors: [],
         }).value)
-          .eql(put(updatePath("/buckets/bucket/collections/collection/records")));
+          .eql(put(redirectTo("collection:records", {
+            bid: "bucket",
+            cid: "collection",
+          })));
       });
 
       it("should dispatch a notification", () => {

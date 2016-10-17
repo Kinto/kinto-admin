@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { Link } from "react-router";
 import Form from "react-jsonschema-form";
 
+import AdminLink from "../AdminLink";
 import Spinner from "../Spinner";
 import JSONEditor from "../JSONEditor";
 import {
@@ -75,7 +75,7 @@ export default class RecordBulk extends Component {
               <input type="submit" className="btn btn-primary"
                 value="Bulk create" />
               {" or "}
-              <Link to={`/buckets/${bid}/collections/${cid}/records`}>Cancel</Link>
+              <AdminLink name="collection:records" params={{bid, cid}}>Cancel</AdminLink>
             </Form>
           </div>
         </div>}

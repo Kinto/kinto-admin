@@ -6,6 +6,7 @@ import { storeRedirectURL } from "../actions/session";
 import { routeLoadRequest, routeLoadSuccess, routeLoadFailure } from "../actions/route";
 import { notifyInfo, notifyError, clearNotifications } from "../actions/notifications";
 import { SESSION_AUTHENTICATED } from "../constants";
+import url from "../url";
 
 
 function getBatchLoadFn(bid, cid, gid, rid) {
@@ -104,4 +105,9 @@ export function* routeUpdated(getState, action) {
     // Side effect: scroll to page top on each route change
     yield call([window, window.scrollTo], 0, 0);
   }
+}
+
+export function* routeRedirect(getState, action) {
+  const {name, params} = action;
+  yield put(updatePath(url(name, params)));
 }

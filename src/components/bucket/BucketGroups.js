@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { Link } from "react-router";
 
-import BucketTabs from "./BucketTabs";
 import { timeago } from "../../utils";
+import AdminLink from "../AdminLink";
+import BucketTabs from "./BucketTabs";
 
 
 function DataList(props) {
@@ -19,30 +19,30 @@ function DataList(props) {
       </thead>
       <tbody className={!groupsLoaded ? "loading" : ""}>{
         data.map((group, index) => {
-          const {id, members, last_modified} = group;
+          const {id: gid, members, last_modified} = group;
           const date = new Date(last_modified).toISOString();
           return (
             <tr key={index}>
               <td>
-                <Link to={`/buckets/${bid}/groups/${id}/attributes`}>
-                  {id}
-                </Link>
+                <AdminLink name="group:attributes" params={{bid, gid}}>
+                  {gid}
+                </AdminLink>
               </td>
               <td>{members.join(", ")}</td>
               <td><span title={date}>{timeago(date)}</span></td>
               <td className="actions">
                 <div className="btn-group">
                   {"history" in capabilities ?
-                    <Link to={`/buckets/${bid}/groups/${id}/history`}
+                    <AdminLink name="group:history" params={{bid, gid}}
                           className="btn btn-xs btn-default"
                           title="View group history">
                       <i className="glyphicon glyphicon-time" />
-                    </Link> : null}
-                  <Link to={`/buckets/${bid}/groups/${id}/attributes`}
+                    </AdminLink> : null}
+                  <AdminLink name="group:attributes" params={{bid, gid}}
                         className="btn btn-xs btn-default"
                         title="Edit groups attributes">
                     <i className="glyphicon glyphicon-cog" />
-                  </Link>
+                  </AdminLink>
                 </div>
               </td>
             </tr>
@@ -61,8 +61,8 @@ function ListActions(props) {
   }
   return (
     <div className="list-actions">
-      <Link to={`/buckets/${bid}/groups/create`}
-            className="btn btn-info btn-group-add">Add</Link>
+      <AdminLink name="group:create" params={{bid}}
+            className="btn btn-info btn-group-add">Add</AdminLink>
     </div>
   );
 }

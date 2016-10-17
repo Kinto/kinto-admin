@@ -1,40 +1,49 @@
 import React, { Component } from "react";
-import { Link } from "react-router";
+
+import AdminLink from "./AdminLink";
+import url from "../url";
 
 
-function activeIfPathname(location, pathname) {
-  const active = location.pathname === pathname ? "active" : "";
-  return `list-group-item ${active}`;
+function SideBarLink(props) {
+  const {currentPath, name, params, children, className, ...otherProps} = props;
+  const targetUrl = url(name, params);
+  const active = currentPath === targetUrl ? "active" : "";
+  const classes = className !== undefined ? className : `list-group-item ${active}`;
+
+  return (
+    <AdminLink {...otherProps} name={name} params={params} className={classes}>
+      {children}
+    </AdminLink>
+  );
 }
 
+
 function CollectionMenuEntry(props) {
-  const {bucket, collection, active, currentPath} = props;
-  const {id} = collection;
+  const {bucket: {id: bid}, collection, currentPath, active} = props;
+  const {id: cid} = collection;
   const classes = [
     "list-group-item",
     "collections-menu-entry",
     active ? "active" : "",
   ].join(" ");
-  const listPath = `/buckets/${bucket.id}/collections/${id}`;
-  const editPath = `/buckets/${bucket.id}/collections/${id}/attributes`;
-
   return (
     <div className={classes}>
       <i className="glyphicon glyphicon-align-justify"/>
-      {
-        currentPath === listPath ? id : <Link to={listPath}>{id}</Link>
-      }
-      <Link to={editPath}
+      <SideBarLink name="collection:records" params={{bid, cid}} currentPath={currentPath}
+        className="">
+        {cid}
+      </SideBarLink>
+      <SideBarLink name="collection:attributes" params={{bid, cid}} currentPath={currentPath}
         className="collections-menu-entry-edit"
         title="Edit collection attributes">
         <i className="glyphicon glyphicon-cog" />
-      </Link>
+      </SideBarLink>
     </div>
   );
 }
 
 function BucketCollectionsMenu(props) {
-  const {active, currentPath, bucket, collections, bid, cid} = props;
+  const {currentPath, bucket, collections, bid, cid} = props;
   return (
     <div className="collections-menu list-group">
       {
@@ -42,32 +51,31 @@ function BucketCollectionsMenu(props) {
           return (
             <CollectionMenuEntry
               key={index}
+              currentPath={currentPath}
               active={bid === bucket.id && cid === collection.id}
               bucket={bucket}
-              collection={collection}
-              currentPath={currentPath} />
+              collection={collection} />
           );
         })
       }
-      <Link className={active(`/buckets/${bucket.id}/collections/create`)}
-        to={`/buckets/${bucket.id}/collections/create`}>
+      <SideBarLink name="collection:create" params={{bid: bucket.id}} currentPath={currentPath}>
         <i className="glyphicon glyphicon-plus"/>
         Create collection
-      </Link>
+      </SideBarLink>
     </div>
   );
 }
 
 function BucketsMenu(props) {
-  const {active, currentPath, buckets, bid, cid} = props;
+  const {currentPath, buckets, bid, cid} = props;
   return (
     <div>
       <div className="panel panel-default">
         <div className="list-group">
-          <Link to="/buckets/create" className={active("/buckets/create")}>
+          <SideBarLink name="bucket:create" currentPath={currentPath}>
             <i className="glyphicon glyphicon-plus"/>
             Create bucket
-          </Link>
+          </SideBarLink>
         </div>
       </div>
       {
@@ -75,20 +83,19 @@ function BucketsMenu(props) {
           const {id, collections} = bucket;
           const current = bid === id;
           return (
-            <div key={i} className="panel panel-default bucket-menu">
+            <div key={i} className={`panel panel-${current ? "info": "default"} bucket-menu`}>
               <div className="panel-heading">
                 <i className={`glyphicon glyphicon-folder-${current ? "open" : "close"}`} />
                 <strong>{id}</strong> bucket
-                <Link to={`/buckets/${id}/attributes`}
+                <SideBarLink name="bucket:attributes" params={{bid: id}} currentPath={currentPath}
                   className="bucket-menu-entry-edit"
                   title="Manage bucket">
                   <i className="glyphicon glyphicon-cog"/>
-                </Link>
+                </SideBarLink>
               </div>
               <BucketCollectionsMenu
                 bucket={bucket}
                 collections={collections}
-                active={active}
                 currentPath={currentPath}
                 bid={bid}
                 cid={cid} />
@@ -107,21 +114,20 @@ export default class Sidebar extends Component {
 
   render() {
     const {session, params, location} = this.props;
+    const {pathname: currentPath} = location;
     const {bid, cid} = params;
     const {buckets=[]} = session;
-    const active = activeIfPathname.bind(null, location);
     return (
       <div>
         <div className="panel panel-default">
           <div className="list-group">
-            <Link to="/" className={active("/")}>Home</Link>
+            <SideBarLink name="home" currentPath={currentPath}>Home</SideBarLink>
           </div>
         </div>
         {session.authenticated ?
           <BucketsMenu
             buckets={buckets}
-            active={active}
-            currentPath={location.pathname}
+            currentPath={currentPath}
             bid={bid}
             cid={cid} /> : null}
       </div>
