@@ -3,7 +3,6 @@ import type {
   SessionState,
   BucketState,
   CollectionState,
-  RouteParams,
   CollectionData,
 } from "../../types";
 
