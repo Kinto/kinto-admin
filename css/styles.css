@@ -351,6 +351,10 @@ form button[type="submit"].btn-primary {
   box-shadow: inset 0px 0px 0px 1px #fff;
 }
 
+.record-form-buttons .delete {
+  margin-top: 12px;
+}
+
 /* Permissions form */
 
 .permissions-form .array-item:not(:last-child) fieldset {
