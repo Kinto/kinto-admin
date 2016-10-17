@@ -236,9 +236,9 @@ function ListActions(props) {
   }
   const defaultButtons = [
     <AdminLink key="__1" name="record:create" params={{bid, cid}}
-      className="btn btn-info btn-record-add">Add</AdminLink>,
+      className="btn btn-info btn-record-add">Create</AdminLink>,
     <AdminLink key="__2" name="record:bulk" params={{bid, cid}}
-      className="btn btn-info btn-record-bulk-add">Bulk add</AdminLink>,
+      className="btn btn-info btn-record-bulk-add">Bulk create</AdminLink>,
   ];
   return (
     <div className="list-actions">
