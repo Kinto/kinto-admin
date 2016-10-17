@@ -254,7 +254,7 @@ export default class CollectionRecords extends Component {
   // minified; see https://github.com/facebook/react/issues/4915
   static displayName = "CollectionRecords";
 
-  updateSort = (sort) => {
+  updateSort = (sort: string) => {
     const {params, listRecords} = this.props;
     const {bid, cid} = params;
     listRecords(bid, cid, sort);

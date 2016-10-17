@@ -149,10 +149,10 @@ export type RecordResource = {
 };
 
 export type RouteParams = {
-  bid: ?string,
-  cid: ?string,
-  gid: ?string,
-  rid: ?string,
+  bid?: string,
+  cid?: string,
+  gid?: string,
+  rid?: string,
 };
 
 export type RouteResources = {
