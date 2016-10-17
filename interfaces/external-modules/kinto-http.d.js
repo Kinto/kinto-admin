@@ -11,7 +11,7 @@ declare module "kinto-http" {
   declare class Bucket {
     constructor(): void;
     collection(): Collection;
-    setData(): Promise;
+    setData(): Promise<*>;
   }
 
   declare class Collection {

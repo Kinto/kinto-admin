@@ -13,12 +13,12 @@ function getErrorDetails(error: ?(Error | ClientError)): string[] {
   if (!error) {
     return [];
   }
-  const {message} = error;
+  const {data: errorData, message} = {data: {}, ...error};
   let details = [message];
-  if (!error.data) {
+  const {code, message: errorMessage, details: errorDetails} = errorData;
+  if (!code) {
     return details;
   }
-  const {code, message: errorMessage, details: errorDetails} = error.data;
   switch(code) {
     case 412: {
       if (errorDetails && errorDetails.existing && errorDetails.existing.id) {
