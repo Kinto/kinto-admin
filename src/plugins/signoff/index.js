@@ -12,6 +12,7 @@ import { notifySuccess, notifyError } from "../../actions/notifications";
 import ProgressBar from "./ProgressBar.js";
 import * as constants from "../../constants";
 
+import "./styles.css";
 
 //
 // Constants
