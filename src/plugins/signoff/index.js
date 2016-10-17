@@ -72,11 +72,11 @@ function *onCollectionRecordsRequest(getState, action) {
 
   const {source, preview={}, destination} = resource;
 
-  const client = getClient().bucket(bid);
+  const client = getClient();
   const fetchInfos = (batch) => {
-    batch.collection(source.collection).getData();
-    batch.collection(preview.collection).getData();
-    batch.collection(destination.collection).getData();
+    batch.bucket(source.bucket).collection(source.collection).getData();
+    batch.bucket(preview.bucket).collection(preview.collection).getData();
+    batch.bucket(destination.bucket).collection(destination.collection).getData();
   };
   const resp = yield call([client, client.batch], fetchInfos);
 
@@ -86,7 +86,7 @@ function *onCollectionRecordsRequest(getState, action) {
     destinationData] = resp.map(({status, body: {data}}, index) => data);
 
   const lastSigned = destinationData ? `${destinationData.last_modified}` : "0";  // everything
-  const colClient = client.collection(cid);
+  const colClient = client.bucket(bid).collection(cid);
   const {data: sourceChanges} = yield call([colClient, colClient.listRecords], {
     since: lastSigned
   });
@@ -179,8 +179,6 @@ export const reducers = {
 class SignoffToolBar extends React.Component {
   render() {
     const {
-      // Global state
-      collectionState,
       // Plugin state
       signoff={},
       // Actions
@@ -195,18 +193,8 @@ class SignoffToolBar extends React.Component {
       return null;
     }
 
-    const {data: {
-      status,
-      last_author,
-      last_editor,
-      last_reviewer
-    }} = collectionState;
-
     const {source, preview, destination} = resource;
-    const {changes} = source;
-    const {last_modified: sourceLastModified} = changes[0];
-    const {last_modified: previewLastModified} = preview;
-    const {last_modified: destLastModified} = destination;
+    const {status} = source;
 
     // Default status is request review
     const step = {"to-review": 1, "signed": 2}[status] || 0;
@@ -214,32 +202,34 @@ class SignoffToolBar extends React.Component {
       label: "Work in progress",
       details: <WorkInProgress active={step === 0}
                                requestReview={requestReview}
-                               lastAuthor={last_author}
-                               lastChange={sourceLastModified} />
+                               source={source} />
     }, {
       label: "Waiting review",
       details: <Review active={step === 1}
-                       preview={preview}
                        approveChanges={approveChanges}
                        declineChanges={declineChanges}
-                       lastEditor={last_editor}
-                       lastChange={previewLastModified}
-                       sourceChanges={changes} />
+                       source={source}
+                       preview={preview} />
     }, {
       label: "Signed",
       details: <Signed active={step === 2}
                        approveChanges={approveChanges}
-                       lastReviewer={last_reviewer}
-                       lastChange={destLastModified} />
+                       source={source}
+                       destination={destination} />
     }];
     return <ProgressBar active={step} steps={steps}/>;
   }
 }
 
-function WorkInProgress({active, requestReview, lastAuthor, lastChange}) {
+function WorkInProgress({active, requestReview, source}) {
+  const {
+    last_author: lastAuthor,
+    changes=[{}]
+  } = source;
+  const {last_modified: lastChange} = changes[0];
   return (
     <div>
-      {lastChange ?
+      {lastAuthor ?
        <ul>
          <li><strong>Author: </strong> {lastAuthor}</li>
          <li><strong>Updated: </strong><span title={humanDate(lastChange)}>{timeago(lastChange)}</span></li>
@@ -253,24 +243,43 @@ function WorkInProgress({active, requestReview, lastAuthor, lastChange}) {
   );
 }
 
-function Review({active, preview, approveChanges, declineChanges, lastEditor, lastChange, sourceChanges}) {
+function Review({active, approveChanges, declineChanges, source, preview}) {
+  const {
+    bucket: bid,
+    collection: cid,
+    last_editor: lastEditor,
+    last_modifed: sourceLastModified,
+    changes = [{}],
+  } = source;
+
+  // XXX: take from destination?
+  const {last_modified: oldestChange} = changes[changes.length - 1];
+
   let link = "Preview disabled";
+  let lastChange = sourceLastModified;
   if (preview) {
+    const {last_modified, bucket: bid, collection: cid} = preview;
     // XXX: AdminLink
-    const previewURL = `/buckets/${preview.bucket}/collections/${preview.collection}/records`;
+    const previewURL = `/buckets/${bid}/collections/${cid}/records`;
     link = <Link to={previewURL}>{previewURL}</Link>;
+    lastChange = last_modified;
   }
+
   return (
     <div>
-      {lastChange ?
+      {lastEditor ?
        <ul>
          <li><strong>Editor: </strong> {lastEditor}</li>
          <li><strong>Requested: </strong><span title={humanDate(lastChange)}>{timeago(lastChange)}</span></li>
-         <li><strong>Changes: </strong> <ChangesInfo changes={sourceChanges}/></li>
+         <li>
+           <strong>Changes: </strong>
+           <DiffStats changes={changes} />
+           {` `}<Link to={`/buckets/${bid}/collections/${cid}/history?since=${oldestChange}`}>details...</Link>
+         </li>
          <li><strong>Preview URL: </strong> {link}</li>
        </ul> : null}
       {active ?
-       <span>
+       <div className="btn-group">
          <button className="btn btn-success"
                  onClick={approveChanges}>
            <i className="glyphicon glyphicon-ok"></i> Approve
@@ -279,20 +288,25 @@ function Review({active, preview, approveChanges, declineChanges, lastEditor, la
                  onClick={declineChanges}>
            <i className="glyphicon glyphicon-remove"></i> Decline
          </button>
-       </span> : null}
+       </div> : null}
     </div>
   );
 }
 
-function ChangesInfo({changes}) {
+function DiffStats({changes}) {
   const deleted = changes.filter((r) => r.deleted).length;
   const updated = changes.length - deleted;
   return (
-    <span><a title="See history" href="">+{updated} / -{deleted}</a></span>
+    <span className="diffstats">
+      {updated > 0 ? <span className="text-green">+{updated}</span> : null}
+      {deleted > 0 ? <span className="text-red">-{deleted}</span> : null}
+    </span>
   );
 }
 
-function Signed({active, approveChanges, lastReviewer, lastChange}) {
+function Signed({active, approveChanges, source, destination}) {
+  const {last_reviewer: lastReviewer} = source;
+  const {last_modified: lastChange} = destination;
   return (
     <div>
       {lastChange ?
@@ -315,14 +329,8 @@ function Signed({active, approveChanges, lastReviewer, lastChange}) {
 //
 
 function mapStateToProps(state) {
-  const {
-    collection: collectionState,
-    signoff
-  } = state;
-  return {
-    collectionState,
-    signoff
-  };
+  const {signoff} = state;
+  return {signoff};
 }
 
 function mapDispatchToProps(dispatch) {

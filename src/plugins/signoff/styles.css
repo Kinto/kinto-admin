@@ -28,3 +28,13 @@
     max-width: 250px;
     text-align: left;
 }
+
+.diffstats {
+  font-weight: 600;
+}
+  .diffstats .text-green { color: #55a532 ; }
+  .diffstats .text-red {
+    color: #bd2c00 ;
+    padding-left: 4px;
+    padding-right: 4px;
+  }
