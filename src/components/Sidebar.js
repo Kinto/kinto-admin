@@ -19,12 +19,12 @@ function SideBarLink(props) {
 
 
 function CollectionMenuEntry(props) {
-  const {bucket: {id: bid}, collection, currentPath, selected} = props;
+  const {bucket: {id: bid}, collection, currentPath, active} = props;
   const {id: cid} = collection;
   const classes = [
     "list-group-item",
     "collections-menu-entry",
-    selected ? "active" : "",
+    active ? "active" : "",
   ].join(" ");
   return (
     <div className={classes}>
@@ -52,7 +52,7 @@ function BucketCollectionsMenu(props) {
             <CollectionMenuEntry
               key={index}
               currentPath={currentPath}
-              selected={bid === bucket.id && cid === collection.id}
+              active={bid === bucket.id && cid === collection.id}
               bucket={bucket}
               collection={collection} />
           );
@@ -83,7 +83,7 @@ function BucketsMenu(props) {
           const {id, collections} = bucket;
           const current = bid === id;
           return (
-            <div key={i} className="panel panel-default bucket-menu">
+            <div key={i} className={`panel panel-${current ? "info": "default"} bucket-menu`}>
               <div className="panel-heading">
                 <i className={`glyphicon glyphicon-folder-${current ? "open" : "close"}`} />
                 <strong>{id}</strong> bucket
