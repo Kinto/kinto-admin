@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router";
 import { takeEvery } from "redux-saga";
 import { call, put } from "redux-saga/effects";
-import { push as updatePath } from "react-router-redux";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
@@ -40,7 +39,7 @@ const SignoffActions = {
   workflowInfo(answer) {
     return {type: SIGNOFF_WORKFLOW_INFO, answer};
   }
-}
+};
 
 //
 // Sagas
@@ -127,7 +126,7 @@ export const reducers = {
 // Components
 //
 
-class SignoffButton extends React.Component {
+class SignoffToolBar extends React.Component {
   render() {
     const {
       // Global state
@@ -143,9 +142,15 @@ class SignoffButton extends React.Component {
 
     const {serverInfo} = sessionState;
     const {data: {id: bid}} = bucketState;
-    const {data: {id: cid}} = collectionState;
+    const {data: {
+      id: cid,
+      status,
+      last_author,
+      last_editor,
+      last_reviewer
+    }} = collectionState;
 
-    // Hide button if server has not kinto-signer plugin.
+    // Hide toolbar if server has not kinto-signer plugin.
     const capability = serverInfo.capabilities.signer;
     if (!capability) {
       return null;
@@ -154,89 +159,94 @@ class SignoffButton extends React.Component {
     const currentResource = capability.resources.filter((r) => {
       return r.source.bucket == bid && r.source.collection == cid;
     })[0];
-
-    // Hide button if this collection is not configured to be signed.
+    // Hide toolbar if this collection is not configured to be signed.
     if (!currentResource) {
       return null;
     }
 
     const {preview} = currentResource;
 
-    const {
-      status,
-      last_author,
-      last_editor,
-      last_reviewer } = collectionState.data;
-
-    // Default to request review
-    let step = 0;
-    if (status === "to-review") {
-      step = 1;
-    } else if (status === "signed") {
-      step = 2;
-    }
-
-    const wipDetails = (
-      <div>
-        <ul>
-          <li><strong>Author: </strong> {last_author}</li>
-          <li><strong>Prout: </strong> {signoff.answer}</li>
-        </ul>
-        {step == 0 ?
-         <button className="btn btn-info"
-                onClick={requestReview}>
-          <i className="glyphicon glyphicon-comment"></i> Request review
-         </button> : null}
-      </div>
-    );
-
-    let link = "Preview disabled";
-    if (preview) {
-      const previewURL = `/buckets/${preview.bucket}/collections/${preview.collection}/records`;
-      link = <Link to={previewURL}>{previewURL}</Link>;
-    }
-    const reviewDetails = (
-      <div>
-        <ul>
-          <li><strong>Editor: </strong> {last_editor}</li>
-          <li><strong>Preview URL: </strong> {link}</li>
-        </ul>
-        {step == 1 ?
-         <span>
-           <button className="btn btn-success"
-                   onClick={approveChanges}>
-             <i className="glyphicon glyphicon-ok"></i> Approve
-           </button>
-           <button className="btn btn-danger"
-                   onClick={declineChanges}>
-             <i className="glyphicon glyphicon-remove"></i> Decline
-           </button>
-         </span> : null}
-      </div>
-    );
-
-    const signedDetails = (
-      <div>
-        <ul>
-          <li><strong>Reviewer: </strong>{last_reviewer}</li>
-        </ul>
-        {step == 2 ?
-         <button className="btn btn-info"
-                 onClick={approveChanges}>
-           <i className="glyphicon glyphicon-repeat"></i> Re-sign
-         </button> : null}
-      </div>
-    );
-
-    const steps = [
-      {label: "Work in progress", details: wipDetails},
-      {label: "Waiting review", details: reviewDetails},
-      {label: "Signed", details: signedDetails},
-    ];
-
+    // Default status is request review
+    const step = {"to-review": 1, "signed": 2}[status] || 0;
+    const steps = [{
+      label: "Work in progress",
+      details: <WorkInProgress active={step === 0}
+                               requestReview={requestReview}
+                               last_author={last_author} />
+    }, {
+      label: "Waiting review",
+      details: <Review active={step === 1}
+                       preview={preview}
+                       approveChanges={approveChanges}
+                       declineChanges={declineChanges}
+                       last_editor={last_editor} />
+    }, {
+      label: "Signed",
+      details: <Signed active={step === 2}
+                       approveChanges={approveChanges}
+                       last_reviewer={last_reviewer} />
+    }];
     return <ProgressBar active={step} steps={steps}/>;
   }
 }
+
+function WorkInProgress({active, requestReview, last_author}) {
+  return (
+    <div>
+      <ul>
+        <li><strong>Author: </strong> {last_author}</li>
+      </ul>
+      {active ?
+       <button className="btn btn-info"
+               onClick={requestReview}>
+        <i className="glyphicon glyphicon-comment"></i> Request review
+       </button> : null}
+    </div>
+  );
+}
+
+function Review({active, preview, approveChanges, declineChanges, last_editor}) {
+  let link = "Preview disabled";
+  if (preview) {
+    const previewURL = `/buckets/${preview.bucket}/collections/${preview.collection}/records`;
+    link = <Link to={previewURL}>{previewURL}</Link>;
+  }
+  return (
+    <div>
+      <ul>
+        <li><strong>Editor: </strong> {last_editor}</li>
+        <li><strong>Preview URL: </strong> {link}</li>
+      </ul>
+      {active ?
+       <span>
+         <button className="btn btn-success"
+                 onClick={approveChanges}>
+           <i className="glyphicon glyphicon-ok"></i> Approve
+         </button>
+         <button className="btn btn-danger"
+                 onClick={declineChanges}>
+           <i className="glyphicon glyphicon-remove"></i> Decline
+         </button>
+       </span> : null}
+    </div>
+  );
+}
+
+function Signed({active, approveChanges, last_reviewer}) {
+  return (
+    <div>
+      <ul>
+        <li><strong>Reviewer: </strong>{last_reviewer}</li>
+      </ul>
+      {active ?
+       <button className="btn btn-info"
+               onClick={approveChanges}>
+         <i className="glyphicon glyphicon-repeat"></i> Re-sign
+       </button> : null}
+    </div>
+  );
+}
+
 
 //
 // Container
@@ -254,7 +264,7 @@ function mapStateToProps(state) {
     bucketState,
     sessionState,
     signoff
-  }
+  };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -264,7 +274,7 @@ function mapDispatchToProps(dispatch) {
 const SignoffContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(SignoffButton);
+)(SignoffToolBar);
 
 
 //
@@ -275,7 +285,7 @@ export function register(store) {
   const hooks = {
     CollectionRecords: {
       ListActions: [
-        <SignoffContainer key="request-signoff-btn" />
+        <SignoffContainer key="request-signoff-toolbar" />
       ]
     }
   };
