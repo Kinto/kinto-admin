@@ -18,7 +18,7 @@ class HistoryRow extends Component {
     const {open} = this.state;
     const {entry, bid} = this.props;
     const {
-      date,
+      last_modified,
       action,
       resource_name,
       target,
@@ -41,7 +41,7 @@ class HistoryRow extends Component {
       <tbody>
         <tr>
           <td>
-            <span title={date}>{timeago(date + "Z")}</span>
+            <span title={humanDate(last_modified)}>{timeago(last_modified)}</span>
           </td>
           <td>{action}</td>
           <td>{resource_name}</td>
