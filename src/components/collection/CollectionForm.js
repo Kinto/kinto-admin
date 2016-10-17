@@ -64,7 +64,10 @@ function DeleteForm({cid, onSubmit}) {
           schema={deleteSchema}
           validate={validate}
           onSubmit={({formData}) => onSubmit(formData)}>
-          <button type="submit" className="btn btn-danger">Delete collection</button>
+          <button type="submit" className="btn btn-danger">
+            <i className="glyphicon glyphicon-trash"/>{" "}
+            Delete collection
+          </button>
         </Form>
       </div>
     </div>
@@ -270,8 +273,11 @@ export default class CollectionForm extends Component {
 
     const buttons = (
       <div>
-        <input type="submit" className="btn btn-primary" disabled={!this.allowEditing}
-          value={`${creation ? "Create" : "Update"} collection`} />
+        <button type="submit" disabled={!this.allowEditing}
+          className="btn btn-primary">
+          <i className="glyphicon glyphicon-ok"/>
+          {` ${creation ? "Create" : "Update"} collection`}
+        </button>
         {" or "}
         <Link to="/">Cancel</Link>
       </div>

@@ -69,7 +69,10 @@ function DeleteForm({gid, onSubmit}) {
           schema={deleteSchema}
           validate={validate}
           onSubmit={({formData}) => onSubmit(formData)}>
-          <button type="submit" className="btn btn-danger">Delete group</button>
+          <button type="submit" className="btn btn-danger">
+            <i className="glyphicon glyphicon-trash"/>{" "}
+            Delete group
+          </button>
         </Form>
       </div>
     </div>
@@ -119,9 +122,11 @@ export default class GroupForm extends Component {
 
     const buttons = (
       <div>
-        <input type="submit" disabled={!formIsEditable}
-          className="btn btn-primary"
-          value={`${creation ? "Create" : "Update"} group`} />
+        <button type="submit" disabled={!formIsEditable}
+          className="btn btn-primary">
+          <i className="glyphicon glyphicon-ok"/>
+          {` ${creation ? "Create" : "Update"} group`}
+        </button>
         {" or "}
         <Link to="/">Cancel</Link>
       </div>
