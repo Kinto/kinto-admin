@@ -48,11 +48,11 @@ const SignoffActions = {
 
 function _updateCollectionAttributes(getState, data) {
   const client = getClient();
-  const {bucket: bucketState, collection: collectionState} = getState();
-  const {id: bid} = bucketState;
-  const {id: cid} = collectionState;
+  const {
+    bucket: {data: {id: bid}},
+    collection: {data: {id: cid, last_modified}}
+  } = getState();
   const coll = client.bucket(bid).collection(cid);
-  const {last_modified} = collectionState.data;
   return coll.setData(data, {safe: true, patch: true, last_modified});
 }
 
@@ -64,8 +64,7 @@ function *onCollectionRecordsRequest(getState, action) {
 }
 
 function* handleRequestReview(getState, action) {
-  const {bucket: bucketState} = getState();
-  const bucket = {data: bucketState, permissions: {}};
+  const {bucket} = getState();
   try {
     const collection = yield call([this, _updateCollectionAttributes], getState, {status: "to-review"});
     yield put(routeLoadSuccess({bucket, collection}));
@@ -76,8 +75,7 @@ function* handleRequestReview(getState, action) {
 }
 
 function* handleDeclineChanges(getState, action) {
-  const {bucket: bucketState} = getState();
-  const bucket = {data: bucketState, permissions: {}};
+  const {bucket} = getState();
   try {
     const collection = yield call([this, _updateCollectionAttributes], getState, {status: "work-in-progress"});
     yield put(routeLoadSuccess({bucket, collection}));
@@ -88,8 +86,7 @@ function* handleDeclineChanges(getState, action) {
 }
 
 function* handleApproveChanges(getState, action) {
-  const {bucket: bucketState} = getState();
-  const bucket = {data: bucketState, permissions: {}};
+  const {bucket} = getState();
   try {
     const collection = yield call([this, _updateCollectionAttributes], getState, {status: "to-sign"});
     yield put(routeLoadSuccess({bucket, collection}));
@@ -145,8 +142,8 @@ class SignoffButton extends React.Component {
       declineChanges} = this.props;
 
     const {serverInfo} = sessionState;
-    const {id: bid} = bucketState;
-    const {id: cid} = collectionState;
+    const {data: {id: bid}} = bucketState;
+    const {data: {id: cid}} = collectionState;
 
     // Hide button if server has not kinto-signer plugin.
     const capability = serverInfo.capabilities.signer;
