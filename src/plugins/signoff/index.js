@@ -230,9 +230,9 @@ class SignoffToolBar extends React.Component {
 function WorkInProgress({active, requestReview, source}) {
   const {
     last_author: lastAuthor,
-    changes=[{}]
+    changes=[]
   } = source;
-  const {last_modified: lastChange} = changes[0];
+  const {last_modified: lastChange} = changes[0] || {};
   return (
     <div>
       {lastAuthor ?
@@ -255,11 +255,11 @@ function Review({active, approveChanges, declineChanges, source, preview}) {
     collection: cid,
     last_editor: lastEditor,
     last_modifed: sourceLastModified,
-    changes = [{}],
+    changes=[],
   } = source;
 
   // XXX: take from destination?
-  const {last_modified: oldestChange} = changes[changes.length - 1];
+  const {last_modified: oldestChange} = changes.length > 0 ? changes[changes.length - 1] : {};
 
   let link = "Preview disabled";
   let lastChange = sourceLastModified;
