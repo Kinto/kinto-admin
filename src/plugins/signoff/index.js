@@ -179,6 +179,8 @@ export const reducers = {
 class SignoffToolBar extends React.Component {
   render() {
     const {
+      // Global state
+      collectionState,
       // Plugin state
       signoff={},
       // Actions
@@ -186,6 +188,11 @@ class SignoffToolBar extends React.Component {
       approveChanges,
       declineChanges} = this.props;
 
+    // The above sagas refresh the global state via `routeLoadSuccess` actions.
+    // Use the global so that the toolbar is refreshed when status changes.
+    const {data: {status}} = collectionState;
+
+    // Information loaded via this plugin.
     const {resource} = signoff;
     // Hide toolbar if server has not kinto-signer plugin,
     // or if this collection is not configured to be signed.
@@ -194,7 +201,6 @@ class SignoffToolBar extends React.Component {
     }
 
     const {source, preview, destination} = resource;
-    const {status} = source;
 
     // Default status is request review
     const step = {"to-review": 1, "signed": 2}[status] || 0;
@@ -271,12 +277,13 @@ function Review({active, approveChanges, declineChanges, source, preview}) {
        <ul>
          <li><strong>Editor: </strong> {lastEditor}</li>
          <li><strong>Requested: </strong><span title={humanDate(lastChange)}>{timeago(lastChange)}</span></li>
-         <li>
-           <strong>Changes: </strong>
-           <DiffStats changes={changes} />
-           {` `}<Link to={`/buckets/${bid}/collections/${cid}/history?since=${oldestChange}`}>details...</Link>
-         </li>
          <li><strong>Preview URL: </strong> {link}</li>
+         {active ?
+          <li>
+            <strong>Changes: </strong>
+            <DiffStats changes={changes} />
+            {" "}<Link to={`/buckets/${bid}/collections/${cid}/history?since=${oldestChange}`}>details...</Link>
+          </li> : null}
        </ul> : null}
       {active ?
        <div className="btn-group">
@@ -329,8 +336,13 @@ function Signed({active, approveChanges, source, destination}) {
 //
 
 function mapStateToProps(state) {
-  const {signoff} = state;
-  return {signoff};
+  const {
+    collection: collectionState,
+    signoff} = state;
+  return {
+    collectionState,
+    signoff
+  };
 }
 
 function mapDispatchToProps(dispatch) {
