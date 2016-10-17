@@ -51,6 +51,8 @@ const URLS = {
     `/buckets/${bid}/collections/${cid}/records/bulk`,
   "record:attributes": ({bid, cid, rid}) =>
     `/buckets/${bid}/collections/${cid}/records/${rid}/attributes`,
+  "record:history": ({bid, cid, rid}) =>
+    `/buckets/${bid}/collections/${cid}/records/${rid}/history`,
   "record:permissions": ({bid, cid, rid}) =>
     `/buckets/${bid}/collections/${cid}/records/${rid}/permissions`,
 };

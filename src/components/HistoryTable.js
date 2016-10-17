@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router";
 
 import { timeago, humanDate } from "../utils";
-import url from "../url";
+import AdminLink from "./AdminLink";
 
 
 class HistoryRow extends Component {
@@ -32,8 +32,6 @@ class HistoryRow extends Component {
 
     const {data: {id: objectId}} = target;
 
-    const link = url(resource_name, {bid, cid, gid, rid});
-
     return (
       <tbody>
         <tr>
@@ -42,7 +40,11 @@ class HistoryRow extends Component {
           </td>
           <td>{action}</td>
           <td>{resource_name}</td>
-          <td>{link ? <Link to={link}>{objectId}</Link> : objectId}</td>
+          <td>
+            <AdminLink
+              name={`${resource_name}:attributes`}
+              params={{bid, cid, gid, rid}}>{objectId}</AdminLink>
+          </td>
           <td>{user_id}</td>
           <td className="text-center">
             <a href="." className="btn btn-xs btn-default"
