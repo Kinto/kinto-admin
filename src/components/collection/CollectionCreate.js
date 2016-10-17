@@ -1,3 +1,11 @@
+/* @flow */
+import type {
+  SessionState,
+  BucketState,
+  CollectionState,
+  RouteParams,
+} from "../../types";
+
 import React, { Component } from "react";
 
 import Spinner from "../Spinner";
@@ -5,6 +13,15 @@ import CollectionForm from "./CollectionForm";
 
 
 export default class CollectionCreate extends Component {
+  props: {
+    session: SessionState,
+    bucket: BucketState,
+    collection: CollectionState,
+    capabilities: Object,
+    params: RouteParams,
+    createCollection: Function,
+  };
+
   render() {
     const {params, session, bucket, collection, createCollection} = this.props;
     const {bid} = params;

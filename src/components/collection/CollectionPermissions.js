@@ -1,3 +1,12 @@
+/* @flow */
+import type {
+  SessionState,
+  BucketState,
+  CollectionState,
+  CollectionPermissions,
+  RouteParams,
+} from "../../types";
+
 import React, { Component } from "react";
 
 import Spinner from "../Spinner";
@@ -6,14 +15,23 @@ import PermissionsForm from "../PermissionsForm";
 import { canEditCollection } from "../../permission";
 
 
-export default class CollectionPermissions extends Component {
-  onSubmit = ({formData}) => {
+export default class CollectionPermissions_ extends Component {
+  props: {
+    session: SessionState,
+    bucket: BucketState,
+    collection: CollectionState,
+    capabilities: Object,
+    params: RouteParams,
+    updateCollection: Function,
+  };
+
+  onSubmit = ({formData}: {formData: CollectionPermissions}) => {
     const {params, updateCollection} = this.props;
     const {bid, cid} = params;
     updateCollection(bid, cid, {permissions: formData});
   }
 
-  get readonly() {
+  get readonly(): boolean {
     const {session, bucket, collection} = this.props;
     return !canEditCollection(session, bucket, collection);
   }
@@ -22,7 +40,7 @@ export default class CollectionPermissions extends Component {
     const {params, capabilities, collection} = this.props;
     const {bid, cid} = params;
     const {busy, permissions} = collection;
-    const acls = [
+    const acls: string[] = [
       "read",
       "write",
       "record:create",

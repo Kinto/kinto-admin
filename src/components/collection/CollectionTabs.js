@@ -1,9 +1,18 @@
+/* @flow */
 import React, { Component } from "react";
 
 import AdminLink from "../AdminLink";
 
 
 export default class CollectionTabs extends Component {
+  props: {
+    bid: string,
+    cid: string,
+    selected: "records" | "attributes" | "permissions" | "history",
+    capabilities: Object,
+    children?: any,
+  };
+
   render() {
     const {bid, cid, selected, capabilities, children} = this.props;
 

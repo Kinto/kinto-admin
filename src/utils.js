@@ -187,7 +187,10 @@ export function renderDisplayField(record: Object, displayField: string): any {
   return "<unknown>";
 }
 
-export function humanDate(since: string): string {
+export function humanDate(since: ?string): string {
+  if (!since) {
+    return "";
+  }
   return new Date(parseInt(since, 10)).toLocaleDateString("en-GB", {
     timeZone: "UTC",
     weekday: "long",

@@ -155,6 +155,11 @@ export type RouteParams = {
   rid?: string,
 };
 
+export type RouteLocation = {
+  pathname: string,
+  query: {since?: string}
+};
+
 export type RouteResources = {
   bucket: BucketResource,
   collection: ?CollectionResource,

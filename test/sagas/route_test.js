@@ -181,7 +181,7 @@ describe("route sagas", () => {
         expect(loadRoute.next().value)
           .eql(put(notificationActions.notifyError(
             "Couldn't retrieve route resources.",
-            {message: "Bucket bucket does not exist."})));
+            new Error("Bucket bucket does not exist."))));
       });
     });
   });
