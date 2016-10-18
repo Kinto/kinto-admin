@@ -96,6 +96,7 @@ export type CollectionResource = {
 };
 
 export type GroupState = {
+  busy: boolean,
   data?: Object,
   permissions: GroupPermissions,
   history: Object[],

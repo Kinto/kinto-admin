@@ -1,3 +1,11 @@
+/* @flow */
+import type {
+  SessionState,
+  BucketState,
+  GroupState,
+  RouteParams,
+} from "../../types";
+
 import React, { Component } from "react";
 
 import GroupForm from "./GroupForm";
@@ -5,6 +13,15 @@ import Spinner from "../Spinner";
 
 
 export default class GroupCreate extends Component {
+  props: {
+    params: RouteParams,
+    session: SessionState,
+    bucket: BucketState,
+    group: GroupState,
+    capabilities: Object,
+    createGroup: Function,
+  };
+
   render() {
     const {params, session, bucket, group, createGroup} = this.props;
     const {bid} = params;

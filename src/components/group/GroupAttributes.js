@@ -1,3 +1,12 @@
+/* @flow */
+import type {
+  SessionState,
+  BucketState,
+  GroupState,
+  GroupData,
+  RouteParams,
+} from "../../types";
+
 import React, { Component } from "react";
 
 import Spinner from "../Spinner";
@@ -6,13 +15,23 @@ import GroupTabs from "./GroupTabs";
 
 
 export default class GroupAttributes extends Component {
-  onSubmit = (formData) => {
+  props: {
+    params: RouteParams,
+    session: SessionState,
+    bucket: BucketState,
+    group: GroupState,
+    capabilities: Object,
+    updateGroup: Function,
+    deleteGroup: Function,
+  };
+
+  onSubmit = (formData: GroupData) => {
     const {params, updateGroup} = this.props;
     const {bid, gid} = params;
     updateGroup(bid, gid, {data: formData});
   };
 
-  deleteGroup = (gid) => {
+  deleteGroup = (gid: string) => {
     const {deleteGroup, params} = this.props;
     const {bid} = params;
     if (confirm("This will delete the group. Are you sure?")) {

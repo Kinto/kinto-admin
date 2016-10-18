@@ -1,9 +1,18 @@
+/* @flow */
 import React, { Component } from "react";
 
 import AdminLink from "../AdminLink";
 
 
 export default class GroupTabs extends Component {
+  props: {
+    bid: string,
+    gid: string,
+    selected: "attributes" | "permissions" | "history",
+    capabilities: Object,
+    children?: any,
+  };
+
   render() {
     const {bid, gid, selected, capabilities, children} = this.props;
 
