@@ -8,6 +8,7 @@ import { bindActionCreators } from "redux";
 import { getClient } from "../../client";
 import { routeLoadSuccess } from "../../actions/route";
 import { notifySuccess, notifyError } from "../../actions/notifications";
+import { canEditCollection } from "../../permission";
 import ProgressBar from "./ProgressBar.js";
 import * as constants from "../../constants";
 import { timeago, humanDate } from "../../utils";
@@ -180,6 +181,8 @@ class SignoffToolBar extends React.Component {
   render() {
     const {
       // Global state
+      sessionState,
+      bucketState,
       collectionState,
       // Plugin state
       signoff={},
@@ -187,6 +190,8 @@ class SignoffToolBar extends React.Component {
       requestReview,
       approveChanges,
       declineChanges} = this.props;
+
+    const canEdit = canEditCollection(sessionState, bucketState, collectionState);
 
     // The above sagas refresh the global state via `routeLoadSuccess` actions.
     // Use the global so that the toolbar is refreshed when status changes.
@@ -206,19 +211,19 @@ class SignoffToolBar extends React.Component {
     const step = {"to-review": 1, "signed": 2}[status] || 0;
     const steps = [{
       label: "Work in progress",
-      details: <WorkInProgress active={step === 0}
+      details: <WorkInProgress active={step === 0 && canEdit}
                                requestReview={requestReview}
                                source={source} />
     }, {
       label: "Waiting review",
-      details: <Review active={step === 1}
+      details: <Review active={step === 1 && canEdit}
                        approveChanges={approveChanges}
                        declineChanges={declineChanges}
                        source={source}
                        preview={preview} />
     }, {
       label: "Signed",
-      details: <Signed active={step === 2}
+      details: <Signed active={step === 2 && canEdit}
                        approveChanges={approveChanges}
                        source={source}
                        destination={destination} />
@@ -337,9 +342,13 @@ function Signed({active, approveChanges, source, destination}) {
 
 function mapStateToProps(state) {
   const {
+    session: sessionState,
+    bucket: bucketState,
     collection: collectionState,
     signoff} = state;
   return {
+    sessionState,
+    bucketState,
     collectionState,
     signoff
   };
