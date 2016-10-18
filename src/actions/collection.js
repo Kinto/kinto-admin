@@ -42,7 +42,7 @@ export function listRecordsSuccess(
   return {type: COLLECTION_RECORDS_SUCCESS, records, hasNextRecords, listNextRecords};
 }
 
-export function listCollectionHistory(bid: string, cid: string, params={}: Object): Action {
+export function listCollectionHistory(bid: string, cid: string, params: Object = {}): Action {
   return {type: COLLECTION_HISTORY_REQUEST, bid, cid, params};
 }
 

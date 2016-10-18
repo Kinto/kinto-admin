@@ -18,7 +18,7 @@ export function resetGroup(): Action {
   return {type: GROUP_RESET};
 }
 
-export function listGroupHistory(bid: string, gid: string, params={}: Object): Action {
+export function listGroupHistory(bid: string, gid: string, params: Object = {}): Action {
   return {type: GROUP_HISTORY_REQUEST, bid, gid, params};
 }
 
