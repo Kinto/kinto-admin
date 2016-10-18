@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Link } from "react-router";
+
+import AdminLink from "../AdminLink";
 
 
 export default class BucketTabs extends Component {
@@ -10,35 +11,35 @@ export default class BucketTabs extends Component {
       <div className="tabs-container">
         <ul className="nav nav-tabs nav-justified">
           <li role="presentation" className={selected === "collections" ? "active" : ""}>
-            <Link to={`/buckets/${bid}/collections`}>
+            <AdminLink name="bucket:collections" params={{bid}}>
               <i className="glyphicon glyphicon-align-justify" />
               Collections
-            </Link>
+            </AdminLink>
           </li>
           <li role="presentation" className={selected === "groups" ? "active" : ""}>
-            <Link to={`/buckets/${bid}/groups`}>
+            <AdminLink name="bucket:groups" params={{bid}}>
               <i className="glyphicon glyphicon-user" />
               Groups
-            </Link>
+            </AdminLink>
           </li>
           <li role="presentation" className={selected === "attributes" ? "active" : ""}>
-            <Link to={`/buckets/${bid}/attributes`}>
+            <AdminLink name="bucket:attributes" params={{bid}}>
               <i className="glyphicon glyphicon-cog" />
               Attributes
-            </Link>
+            </AdminLink>
           </li>
           <li role="presentation" className={selected === "permissions" ? "active" : ""}>
-            <Link to={`/buckets/${bid}/permissions`}>
+            <AdminLink name="bucket:permissions" params={{bid}}>
               <i className="glyphicon glyphicon-lock" />
               Permissions
-            </Link>
+            </AdminLink>
           </li>
           {"history" in capabilities ?
             <li role="presentation" className={selected === "history" ? "active" : ""}>
-              <Link to={`/buckets/${bid}/history`}>
+              <AdminLink name="bucket:history" params={{bid}}>
                 <i className="glyphicon glyphicon-time" />
                 History
-              </Link>
+              </AdminLink>
             </li> : null}
         </ul>
         <div className="panel panel-default">

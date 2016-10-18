@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
+
 import { timeago, humanDate } from "../utils";
+import AdminLink from "./AdminLink";
 
 
 class HistoryRow extends Component {
@@ -18,7 +20,7 @@ class HistoryRow extends Component {
     const {open} = this.state;
     const {entry, bid} = this.props;
     const {
-      date,
+      last_modified,
       action,
       resource_name,
       target,
@@ -30,22 +32,19 @@ class HistoryRow extends Component {
 
     const {data: {id: objectId}} = target;
 
-    const link = {
-      bucket: `/buckets/${bid}/attributes`,
-      collection: `/buckets/${bid}/collections/${cid}/attributes`,
-      group: `/buckets/${bid}/groups/${gid}/attributes`,
-      record: `/buckets/${bid}/collections/${cid}/records/${rid}/attributes`
-    }[resource_name];
-
     return (
       <tbody>
         <tr>
           <td>
-            <span title={date}>{timeago(date + "Z")}</span>
+            <span title={humanDate(last_modified)}>{timeago(last_modified)}</span>
           </td>
           <td>{action}</td>
           <td>{resource_name}</td>
-          <td>{link ? <Link to={link}>{objectId}</Link> : objectId}</td>
+          <td>
+            <AdminLink
+              name={`${resource_name}:attributes`}
+              params={{bid, cid, gid, rid}}>{objectId}</AdminLink>
+          </td>
           <td>{user_id}</td>
           <td className="text-center">
             <a href="." className="btn btn-xs btn-default"

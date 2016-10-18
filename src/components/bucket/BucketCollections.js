@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { Link } from "react-router";
 
-import BucketTabs from "./BucketTabs";
 import { timeago } from "../../utils";
+import AdminLink from "../AdminLink";
+import BucketTabs from "./BucketTabs";
 
 
 function DataList(props) {
@@ -20,32 +20,29 @@ function DataList(props) {
       </thead>
       <tbody className={!collectionsLoaded ? "loading" : ""}>{
         data.map((collection, index) => {
-          const {id, schema, cache_expires, last_modified} = collection;
+          const {id: cid, schema, cache_expires, last_modified} = collection;
           const date = new Date(last_modified).toISOString();
           return (
             <tr key={index}>
-              <td>{id}</td>
+              <td>{cid}</td>
               <td>{schema ? "Yes" : "No"}</td>
               <td>{cache_expires ? `${cache_expires} seconds` : "No" }</td>
               <td><span title={date}>{timeago(date)}</span></td>
               <td className="actions">
                 <div className="btn-group">
-                  <Link to={`/buckets/${bid}/collections/${id}`}
-                        className="btn btn-xs btn-default"
-                        title="Browse collection">
+                  <AdminLink name="collection:records" params={{bid, cid}}
+                    className="btn btn-xs btn-default" title="Browse collection">
                     <i className="glyphicon glyphicon-align-justify" />
-                  </Link>
+                  </AdminLink>
                   {"history" in capabilities ?
-                    <Link to={`/buckets/${bid}/collections/${id}/history`}
-                          className="btn btn-xs btn-default"
-                          title="View collection history">
+                    <AdminLink name="collection:history" params={{bid, cid}}
+                      className="btn btn-xs btn-default" title="View collection history">
                       <i className="glyphicon glyphicon-time" />
-                    </Link> : null}
-                  <Link to={`/buckets/${bid}/collections/${id}/attributes`}
-                        className="btn btn-xs btn-default"
-                        title="Edit collection attributes">
+                    </AdminLink> : null}
+                  <AdminLink name="collection:attributes" params={{bid, cid}}
+                     className="btn btn-xs btn-default" title="Edit collection attributes">
                     <i className="glyphicon glyphicon-cog" />
-                  </Link>
+                  </AdminLink>
                 </div>
               </td>
             </tr>
@@ -64,8 +61,8 @@ function ListActions(props) {
   }
   return (
     <div className="list-actions">
-      <Link to={`/buckets/${bid}/collections/create`}
-            className="btn btn-info btn-collection-add">Add</Link>
+      <AdminLink name="collection:create" params={{bid}}
+            className="btn btn-info btn-collection-add">Add</AdminLink>
     </div>
   );
 }

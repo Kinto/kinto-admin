@@ -239,7 +239,7 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                   onEnter={onCollectionRecordsEnter.bind(null, store)}
                   onChange={onCollectionRecordsEnter.bind(null, store)} />
                 {/* /buckets/:bid/collections/:cid/records/create */}
-                <Route name="create" path="add"
+                <Route name="create" path="create"
                   components={{...common, content: RecordCreatePage}} />
                 {/* /buckets/:bid/collections/:cid/records/bulk */}
                 <Route name="bulk create" path="bulk"

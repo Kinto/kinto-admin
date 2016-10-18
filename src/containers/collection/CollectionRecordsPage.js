@@ -5,6 +5,7 @@ import { push as updatePath } from "react-router-redux";
 import CollectionRecords from "../../components/collection/CollectionRecords";
 import * as CollectionActions from "../../actions/collection";
 import * as NotificationsActions from "../../actions/notifications";
+import * as RouteActions from "../../actions/route";
 
 
 function mapStateToProps(state) {
@@ -20,6 +21,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     ...CollectionActions,
     ...NotificationsActions,
+    ...RouteActions,
     updatePath
   }, dispatch);
 }
