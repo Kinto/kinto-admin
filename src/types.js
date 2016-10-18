@@ -179,7 +179,7 @@ export type SessionState = {
 
 export type ServerInfo = {
   capabilities: Object,
-  user: {
+  user?: {
     id?: string,
     bucket?: string,
   }

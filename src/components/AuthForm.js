@@ -50,7 +50,7 @@ class ServerHistory extends Component {
         <div className={`input-group-btn ${menuOpened ? "open" : ""}`}>
           <button type="button" className="btn btn-default dropdown-toggle"
             onClick={this.toggleMenu}>
-            <span className="caret"></span>
+            <span className="caret" />
           </button>
           <ul className="dropdown-menu dropdown-menu-right">
             {
@@ -190,7 +190,7 @@ function extendUiSchemaWithHistory(uiSchema, history, clearHistory) {
 export default class AuthForm extends Component {
   props: {
     session: SessionState,
-    history: Object[],
+    history: string[],
     setup: Function,
     navigateToExternalAuth: Function,
     clearHistory: Function,
