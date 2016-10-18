@@ -1,3 +1,12 @@
+/* @flow */
+import type {
+  SessionState,
+  BucketState,
+  RecordState,
+  RouteParams,
+  RouteLocation,
+} from "../../types";
+
 import React, { Component } from "react";
 
 import Spinner from "../Spinner";
@@ -6,6 +15,15 @@ import RecordTabs from "./RecordTabs";
 
 
 export default class RecordHistory extends Component {
+  props: {
+    params: RouteParams,
+    session: SessionState,
+    capabilities: Object,
+    bucket: BucketState,
+    record: RecordState,
+    location: RouteLocation,
+  };
+
   render() {
     const {params, record, capabilities, location} = this.props;
     const {bid, cid, rid} = params;

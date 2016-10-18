@@ -4,6 +4,14 @@ export type Action = {
   type: string
 };
 
+export type Attachment = {
+  location: string,
+  filename: string,
+  size: number,
+  hash: string,
+  mimetype: string,
+};
+
 export type AuthData = BasicAuth | TokenAuth;
 
 export type BasicAuth = {
@@ -132,12 +140,15 @@ export type RecordState = {
   busy: boolean,
   data: RecordData,
   permissions: RecordPermissions,
+  history: [],
+  historyLoaded: boolean,
 };
 
 export type RecordData = {
   id?: string,
   last_modified?: number,
-  schema?: number
+  schema?: number,
+  attachment?: Attachment,
 };
 
 export type RecordPermissions = {

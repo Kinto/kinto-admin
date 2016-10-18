@@ -1,3 +1,12 @@
+/* @flow */
+import type {
+  SessionState,
+  BucketState,
+  CollectionState,
+  RecordState,
+  RouteParams,
+} from "../../types";
+
 import React, { Component } from "react";
 
 import Spinner from "../Spinner";
@@ -7,13 +16,23 @@ import { canEditRecord } from "../../permission";
 
 
 export default class RecordPermissions extends Component {
-  onSubmit = ({formData}) => {
+  props: {
+    params: RouteParams,
+    session: SessionState,
+    capabilities: Object,
+    bucket: BucketState,
+    collection: CollectionState,
+    record: RecordState,
+    updateRecord: Function,
+  };
+
+  onSubmit = ({formData}: {formData: Object}) => {
     const {params, updateRecord} = this.props;
     const {bid, cid, rid} = params;
     updateRecord(bid, cid, rid, {permissions: formData});
   }
 
-  get readonly() {
+  get readonly(): boolean {
     const {session, bucket, collection, record} = this.props;
     return !canEditRecord(session, bucket, collection, record);
   }

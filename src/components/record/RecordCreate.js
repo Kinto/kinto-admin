@@ -1,10 +1,26 @@
+/* @flow */
+import type {
+  SessionState,
+  BucketState,
+  CollectionState,
+  RouteParams,
+} from "../../types";
+
 import React, { Component } from "react";
 
 import RecordForm from "./RecordForm";
 
 
 export default class RecordCreate extends Component {
-  onSubmit = ({__attachment__: attachment, ...record}) => {
+  props: {
+    params: RouteParams,
+    session: SessionState,
+    bucket: BucketState,
+    collection: CollectionState,
+    createRecord: Function,
+  };
+
+  onSubmit = ({__attachment__: attachment, ...record}: Object) => {
     const {params, createRecord} = this.props;
     const {bid, cid} = params;
     createRecord(bid, cid, record, attachment);
