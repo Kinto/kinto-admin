@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router";
 import { takeEvery } from "redux-saga";
 import { call, put } from "redux-saga/effects";
 import { connect } from "react-redux";
@@ -12,6 +11,7 @@ import { canEditCollection } from "../../permission";
 import ProgressBar from "./ProgressBar.js";
 import * as constants from "../../constants";
 import { timeago, humanDate } from "../../utils";
+import AdminLink from "../../components/AdminLink";
 
 import "./styles.css";
 
@@ -259,20 +259,18 @@ function Review({active, approveChanges, declineChanges, source, preview}) {
     bucket: bid,
     collection: cid,
     last_editor: lastEditor,
-    last_modifed: sourceLastModified,
+    last_modified: sourceLastModified,
     changes=[],
   } = source;
 
   // XXX: take from destination?
   const {last_modified: oldestChange} = changes.length > 0 ? changes[changes.length - 1] : {};
 
-  let link = "Preview disabled";
-  let lastChange = sourceLastModified;
+  let link = "disabled";
+  let lastChange = sourceLastModified;  // If preview disabled, use source timestamp as review request datetime.
   if (preview) {
     const {last_modified, bucket: bid, collection: cid} = preview;
-    // XXX: AdminLink
-    const previewURL = `/buckets/${bid}/collections/${cid}/records`;
-    link = <Link to={previewURL}>{previewURL}</Link>;
+    link = <AdminLink name="collection:records" params={{bid, cid}}>{`${bid}/${cid}`}</AdminLink>;
     lastChange = last_modified;
   }
 
@@ -282,12 +280,14 @@ function Review({active, approveChanges, declineChanges, source, preview}) {
        <ul>
          <li><strong>Editor: </strong> {lastEditor}</li>
          <li><strong>Requested: </strong><span title={humanDate(lastChange)}>{timeago(lastChange)}</span></li>
-         <li><strong>Preview URL: </strong> {link}</li>
+         <li><strong>Preview: </strong> {link}</li>
          {active ?
           <li>
             <strong>Changes: </strong>
-            <DiffStats changes={changes} />
-            {" "}<Link to={`/buckets/${bid}/collections/${cid}/history?since=${oldestChange}`}>details...</Link>
+            <DiffStats changes={changes} />{" "}
+            <AdminLink name="collection:history"
+                       params={{bid, cid}}
+                       query={{since: oldestChange, resource_name: "record"}}>details...</AdminLink>
           </li> : null}
        </ul> : null}
       {active ?
