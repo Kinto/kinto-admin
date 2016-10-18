@@ -65,8 +65,8 @@ export function listBucketGroupsSuccess(groups: Object[]): Action {
   return {type: BUCKET_GROUPS_SUCCESS, groups};
 }
 
-export function listBucketHistory(bid: string, since: Number): Action {
-  return {type: BUCKET_HISTORY_REQUEST, bid, since};
+export function listBucketHistory(bid: string, params={}: Object): Action {
+  return {type: BUCKET_HISTORY_REQUEST, bid, params};
 }
 
 export function listBucketHistorySuccess(history: Object[]): Action {

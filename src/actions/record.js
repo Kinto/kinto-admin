@@ -18,8 +18,8 @@ export function resetRecord(): Action {
   return {type: RECORD_RESET};
 }
 
-export function listRecordHistory(bid: string, cid: string, rid: string, since: number): Action {
-  return {type: RECORD_HISTORY_REQUEST, bid, cid, rid, since};
+export function listRecordHistory(bid: string, cid: string, rid: string, params={}: Object): Action {
+  return {type: RECORD_HISTORY_REQUEST, bid, cid, rid, params};
 }
 
 export function listRecordHistorySuccess(history: Object[]): Action {

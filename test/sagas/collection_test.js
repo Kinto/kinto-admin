@@ -775,4 +775,77 @@ describe("collection sagas", () => {
       });
     });
   });
+
+  describe("listHistory()", () => {
+    describe("Success", () => {
+      let client, listHistory;
+
+      before(() => {
+        client = {listHistory() {}};
+        setClient({bucket(){ return client; }});
+        const action = collectionActions.listCollectionHistory("bucket", "collection", "record");
+        listHistory = saga.listHistory(() => {}, action);
+      });
+
+      it("should fetch history on cpllection", () => {
+        expect(listHistory.next().value)
+          .eql(call([client, client.listHistory], {
+            since: undefined,
+            filters: {
+              resource_name: undefined,
+              collection_id: "collection",
+            }
+          }));
+      });
+
+      it("should filter from timestamp if provided", () => {
+        const action = collectionActions.listCollectionHistory("bucket", "collection", {since: 42});
+        const historySaga = saga.listHistory(() => {}, action);
+        expect(historySaga.next().value)
+          .eql(call([client, client.listHistory], {
+            filters: {
+              resource_name: undefined,
+              collection_id: "collection",
+            },
+            since: 42
+          }));
+      });
+
+      it("should filter from resource_name if provided", () => {
+        const action = collectionActions.listCollectionHistory("bucket", "collection", {since: 42, resource_name: "record"});
+        const historySaga = saga.listHistory(() => {}, action);
+        expect(historySaga.next().value)
+          .eql(call([client, client.listHistory], {
+            filters: {
+              resource_name: "record",
+              collection_id: "collection",
+            },
+            since: 42
+          }));
+      });
+
+      it("should dispatch the listCollectionHistorySuccess action", () => {
+        const history = [];
+        const result = {data: history};
+        expect(listHistory.next(result).value)
+          .eql(put(collectionActions.listCollectionHistorySuccess(history)));
+      });
+
+    });
+
+    describe("Failure", () => {
+      let listHistory;
+
+      before(() => {
+        const action = collectionActions.listCollectionHistory("bucket", "collection", "record");
+        listHistory = saga.listHistory(() => {}, action);
+        listHistory.next();
+      });
+
+      it("should dispatch an error notification action", () => {
+        expect(listHistory.throw("error").value)
+          .eql(put(notifyError("Couldn't list collection history.", "error", {clear: true})));
+      });
+    });
+  });
 });
