@@ -1,3 +1,5 @@
+/* @flow */
+
 import React, { Component } from "react";
 import Form from "react-jsonschema-form";
 
@@ -8,7 +10,13 @@ import {
 } from "../permission";
 
 export default class PermissionsForm extends Component {
-  onSubmit = ({formData}) => {
+  props: {
+    permissions: Object,
+    acls: string[],
+    onSubmit: Function,
+  };
+
+  onSubmit = ({formData}: {formData: Object}) => {
     this.props.onSubmit({formData: formDataToPermissions(formData)});
   }
 

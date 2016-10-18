@@ -1,3 +1,6 @@
+/* @flow */
+import type { SessionState, RouteParams, RouteLocation } from "../types";
+
 import React, { Component } from "react";
 
 import AdminLink from "./AdminLink";
@@ -111,6 +114,12 @@ export default class Sidebar extends Component {
   // This is useful to identify wrapped component for plugin hooks when code is
   // minified; see https://github.com/facebook/react/issues/4915
   static displayName = "Sidebar";
+
+  props: {
+    session: SessionState,
+    params: RouteParams,
+    location: RouteLocation,
+  };
 
   render() {
     const {session, params, location} = this.props;
