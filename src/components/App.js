@@ -1,3 +1,6 @@
+/* @flow */
+import type { SessionState, RouteParams, Notifications } from "../types";
+
 import React, { Component } from "react";
 import Breadcrumbs from "react-breadcrumbs";
 
@@ -16,6 +19,17 @@ function SessionInfoBar({session, logout}) {
 }
 
 export default class App extends Component {
+  props: {
+    session: SessionState,
+    logout: Function,
+    notificationList: Notifications,
+    routes: Element[],
+    params: RouteParams,
+    sidebar: Element,
+    notifications: Element,
+    content: Element,
+  };
+
   render() {
     const {
       sidebar,
@@ -24,7 +38,6 @@ export default class App extends Component {
       notifications,
       content,
       notificationList,
-      linkBack,
       routes,
       params,
     } = this.props;
@@ -39,7 +52,6 @@ export default class App extends Component {
           <div className="row">
             <div className="col-sm-3 sidebar">
               <h1 className="kinto-admin-title">Kinto admin</h1>
-              {linkBack}
               {sidebar || <p>Sidebar.</p>}
             </div>
             <div className={contentClasses}>
