@@ -1,3 +1,10 @@
+/* @flow */
+import type {
+  BucketState,
+  RouteParams,
+  RouteLocation,
+} from "../../types";
+
 import React, { Component } from "react";
 
 import Spinner from "../Spinner";
@@ -6,6 +13,13 @@ import HistoryTable from "../HistoryTable";
 
 
 export default class BucketHistory extends Component {
+  props: {
+    params: RouteParams,
+    bucket: BucketState,
+    capabilities: Object,
+    location: RouteLocation,
+  };
+
   render() {
     const {params, bucket, capabilities, location} = this.props;
     const {bid} = params;

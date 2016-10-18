@@ -1,3 +1,11 @@
+/* @flow */
+import type {
+  BucketState,
+  BucketData,
+  SessionState,
+  RouteParams,
+} from "../../types";
+
 import React, { Component } from "react";
 
 import Spinner from "../Spinner";
@@ -6,7 +14,16 @@ import BucketTabs from "./BucketTabs";
 
 
 export default class BucketAttributes extends Component {
-  deleteBucket = (bid) => {
+  props: {
+    params: RouteParams,
+    session: SessionState,
+    bucket: BucketState,
+    capabilities: Object,
+    updateBucket: Function,
+    deleteBucket: Function,
+  };
+
+  deleteBucket = (bid: string) => {
     const {deleteBucket} = this.props;
     if (confirm("This will delete the bucket and all the collections and " +
                 "records it contains. Are you sure?")) {
@@ -14,7 +31,7 @@ export default class BucketAttributes extends Component {
     }
   };
 
-  onSubmit = (formData) => {
+  onSubmit = (formData: BucketData) => {
     const {params, updateBucket} = this.props;
     const {bid} = params;
     updateBucket(bid, {data: formData});

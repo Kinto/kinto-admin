@@ -1,3 +1,10 @@
+/* @flow */
+import type {
+  BucketState,
+  BucketData,
+  SessionState,
+} from "../../types";
+
 import React, { Component } from "react";
 import { Link } from "react-router";
 import Form from "react-jsonschema-form";
@@ -63,7 +70,11 @@ function DeleteForm({bid, onSubmit}) {
         <Form
           schema={deleteSchema}
           validate={validate}
-          onSubmit={({formData}) => onSubmit(formData)}>
+          onSubmit={({formData}) => {
+            if (typeof onSubmit === "function") {
+              onSubmit(formData);
+            }
+          }}>
           <button type="submit" className="btn btn-danger">
             <i className="glyphicon glyphicon-trash"/>{" "}Delete bucket
           </button>
@@ -74,7 +85,16 @@ function DeleteForm({bid, onSubmit}) {
 }
 
 export default class BucketForm extends Component {
-  onSubmit = ({formData}) => {
+  props: {
+    bid?: string,
+    session: SessionState,
+    bucket: BucketState,
+    formData?: BucketData,
+    deleteBucket?: Function,
+    onSubmit: Function,
+  };
+
+  onSubmit = ({formData}: {formData: Object}) => {
     const {id, data} = formData;
     // Parse JSON fields so they can be sent to the server
     const attributes = JSON.parse(data);

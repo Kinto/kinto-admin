@@ -1,3 +1,6 @@
+/* @flow */
+import type { BucketState, SessionState, RouteParams } from "../../types";
+
 import React, { Component } from "react";
 
 import { timeago } from "../../utils";
@@ -6,7 +9,7 @@ import BucketTabs from "./BucketTabs";
 
 
 function DataList(props) {
-  const {bid, data, capabilities, groupsLoaded} = props;
+  const {bid, groups, capabilities, groupsLoaded} = props;
   return (
     <table className="table table-striped table-bordered record-list">
       <thead>
@@ -18,7 +21,7 @@ function DataList(props) {
         </tr>
       </thead>
       <tbody className={!groupsLoaded ? "loading" : ""}>{
-        data.map((group, index) => {
+        groups.map((group, index) => {
           const {id: gid, members, last_modified} = group;
           const date = new Date(last_modified).toISOString();
           return (
@@ -54,8 +57,7 @@ function DataList(props) {
 }
 
 
-function ListActions(props) {
-  const {bid, session, bucket} = props;
+function ListActions({bid, session, bucket}) {
   if (session.busy || bucket.busy) {
     return null;
   }
@@ -69,6 +71,13 @@ function ListActions(props) {
 
 
 export default class BucketCollections extends Component {
+  props: {
+    params: RouteParams,
+    session: SessionState,
+    bucket: BucketState,
+    capabilities: Object,
+  };
+
   render() {
     const {params, session, bucket, capabilities} = this.props;
     const {bid} = params;
@@ -95,7 +104,7 @@ export default class BucketCollections extends Component {
             </div>
             :
             <DataList bid={bid}
-                      data={groups}
+                      groups={groups}
                       groupsLoaded={groupsLoaded}
                       capabilities={capabilities} />
           }

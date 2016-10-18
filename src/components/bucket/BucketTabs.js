@@ -1,9 +1,17 @@
+/* @flow */
 import React, { Component } from "react";
 
 import AdminLink from "../AdminLink";
 
 
 export default class BucketTabs extends Component {
+  props: {
+    bid: string,
+    selected: "collections" | "groups" | "attributes" | "permissions" | "history",
+    capabilities: Object,
+    children?: any,
+  };
+
   render() {
     const {bid, selected, capabilities, children} = this.props;
 

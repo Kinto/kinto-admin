@@ -1,3 +1,11 @@
+/* @flow */
+import type {
+  BucketState,
+  BucketPermissions,
+  SessionState,
+  RouteParams,
+} from "../../types";
+
 import React, { Component } from "react";
 
 import Spinner from "../Spinner";
@@ -6,14 +14,22 @@ import PermissionsForm from "../PermissionsForm";
 import { canEditBucket } from "../../permission";
 
 
-export default class BucketPermissions extends Component {
-  onSubmit = ({formData}) => {
+export default class BucketPermissions_ extends Component {
+  props: {
+    params: RouteParams,
+    session: SessionState,
+    bucket: BucketState,
+    capabilities: Object,
+    updateBucket: Function,
+  };
+
+  onSubmit = ({formData}: {formData: BucketPermissions}) => {
     const {params, updateBucket} = this.props;
     const {bid} = params;
     updateBucket(bid, {permissions: formData});
   }
 
-  get readonly() {
+  get readonly(): boolean {
     const {session, bucket} = this.props;
     return !canEditBucket(session, bucket);
   }

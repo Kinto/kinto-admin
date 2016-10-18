@@ -81,6 +81,7 @@ export type CollectionData = {
   },
   displayFields?: ?string[],
   sort?: string,
+  cache_expires?: number,
 };
 
 export type CollectionPermissions = {
@@ -104,7 +105,7 @@ export type GroupState = {
 export type GroupData = {
   id?: string,
   last_modified?: number,
-  members?: ?string[],
+  members: string[],
 };
 
 export type GroupPermissions = {
