@@ -1,7 +1,15 @@
+/* @flow */
+import type {
+  SessionState,
+  BucketState,
+  GroupState,
+  GroupData,
+} from "../../types";
+
 import React, { Component } from "react";
-import { Link } from "react-router";
 import Form from "react-jsonschema-form";
 
+import AdminLink from "../AdminLink";
 import JSONEditor from "../JSONEditor";
 import { canCreateGroup, canEditGroup } from "../../permission";
 import { validJSON, omit } from "../../utils";
@@ -68,7 +76,11 @@ function DeleteForm({gid, onSubmit}) {
         <Form
           schema={deleteSchema}
           validate={validate}
-          onSubmit={({formData}) => onSubmit(formData)}>
+          onSubmit={({formData}) => {
+            if (typeof onSubmit === "function") {
+              onSubmit(formData);
+            }
+          }}>
           <button type="submit" className="btn btn-danger">
             <i className="glyphicon glyphicon-trash"/>{" "}
             Delete group
@@ -80,7 +92,17 @@ function DeleteForm({gid, onSubmit}) {
 }
 
 export default class GroupForm extends Component {
-  onSubmit = ({formData}) => {
+  props: {
+    gid?: string,
+    session: SessionState,
+    bucket: BucketState,
+    group: GroupState,
+    formData?: GroupData,
+    onSubmit: (formData: GroupData) => void,
+    deleteGroup?: (gid: string) => void,
+  };
+
+  onSubmit = ({formData}: {formData: {data: string}}) => {
     const {data} = formData;
     // Parse JSON fields so they can be sent to the server
     const attributes = JSON.parse(data);
@@ -128,7 +150,7 @@ export default class GroupForm extends Component {
           {` ${creation ? "Create" : "Update"} group`}
         </button>
         {" or "}
-        <Link to="/">Cancel</Link>
+        <AdminLink name="home" params={{}}>Cancel</AdminLink>
       </div>
     );
 

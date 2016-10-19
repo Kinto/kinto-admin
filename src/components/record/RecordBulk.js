@@ -1,3 +1,10 @@
+/* @flow */
+import type {
+  CollectionState,
+  RecordData,
+  CollectionRouteParams,
+} from "../../types";
+
 import React, { Component } from "react";
 import Form from "react-jsonschema-form";
 
@@ -11,7 +18,14 @@ import {
 
 
 export default class RecordBulk extends Component {
-  onSubmit = ({formData}) => {
+  props: {
+    params: CollectionRouteParams,
+    collection: CollectionState,
+    bulkCreateRecords: (bid: string, cid: string, formData: RecordData[]) => void,
+    notifyError: (msg: string, error: ?Error) => void,
+  };
+
+  onSubmit = ({formData}: {formData: any[]}) => {
     const {params, collection, notifyError, bulkCreateRecords} = this.props;
     const {bid, cid} = params;
     const {data: {schema={}}} = collection;
@@ -29,7 +43,7 @@ export default class RecordBulk extends Component {
 
   render() {
     const {params, collection} = this.props;
-    const {data: {busy, schema={}, uiSchema={}, attachment={}}} = collection;
+    const {busy, data: {schema={}, uiSchema={}, attachment}} = collection;
     const {bid, cid} = params;
 
     let bulkSchema, bulkUiSchema, bulkFormData;

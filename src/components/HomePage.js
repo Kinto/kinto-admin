@@ -1,24 +1,27 @@
+/* @flow */
+import type { SessionState } from "../types";
+
 import React, { Component } from "react";
 
 import Spinner from "./Spinner";
 import AuthForm from "./AuthForm";
 
 
-function ServerProps({serverInfo}) {
+function ServerProps({node}: {node: Object}) {
   return (
     <table className="table table-condensed">
       <tbody>{
-        Object.keys(serverInfo).map((prop, i) => {
-          const serverProp = serverInfo[prop];
+        Object.keys(node).map((key, i) => {
+          const childNode = node[key];
           return (
             <tr key={i}>
-              <th>{prop}</th>
+              <th>{key}</th>
               <td style={{width: "100%"}}>{
-                typeof serverProp === "object" ?
-                  <ServerProps serverInfo={serverProp} /> :
-                  typeof serverProp === "string" && serverProp.startsWith("http") ?
-                    <a href={serverProp} target="_blank">{serverProp}</a> :
-                    String(serverProp)
+                typeof childNode === "object" ?
+                  <ServerProps node={childNode} /> :
+                  typeof childNode === "string" && childNode.startsWith("http") ?
+                    <a href={childNode} target="_blank">{childNode}</a> :
+                    String(childNode)
               }</td>
             </tr>
           );
@@ -28,16 +31,14 @@ function ServerProps({serverInfo}) {
   );
 }
 
-function SessionInfo(props) {
-  const {session} = props;
-  const {busy, serverInfo} = session;
+function SessionInfo({session: {busy, serverInfo}}) {
   return (
     <div>
       {busy ? <Spinner /> :
         <div className="panel server-info-panel panel-default">
           <div className="panel-heading"><b>Server information</b></div>
           <div className="panel-body">
-            <ServerProps serverInfo={serverInfo} />
+            <ServerProps node={serverInfo} />
           </div>
         </div>}
     </div>
@@ -45,6 +46,14 @@ function SessionInfo(props) {
 }
 
 export default class HomePage extends Component {
+  props: {
+    session: SessionState,
+    history: string[],
+    clearHistory: () => void,
+    setup: (session: Object) => void,
+    navigateToExternalAuth: (authFormData: Object) => void,
+  };
+
   render() {
     const {
       session,

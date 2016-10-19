@@ -1,3 +1,12 @@
+/* @flow */
+import type {
+  SessionState,
+  BucketState,
+  CollectionState,
+  RecordState,
+  RecordData,
+} from "../../types";
+
 import React, { Component } from "react";
 import Form from "react-jsonschema-form";
 import filesize from "filesize";
@@ -9,12 +18,16 @@ import { canCreateRecord, canEditRecord } from "../../permission";
 import { cleanRecord, linkify } from "../../utils";
 
 
-export function extendSchemaWithAttachment(schema, attachment, edit=false) {
-  if (!attachment.enabled) {
+export function extendSchemaWithAttachment(
+  schema: Object,
+  attachmentConfig: ?{enabled: boolean, required: boolean},
+  edit: boolean = false
+): Object {
+  if (!attachmentConfig || !attachmentConfig.enabled) {
     return schema;
   }
   const schemaRequired = schema.required || [];
-  const required = attachment.required && !edit ?
+  const required = attachmentConfig.required && !edit ?
                    schemaRequired.concat("__attachment__") :
                    schemaRequired;
   return {
@@ -31,8 +44,12 @@ export function extendSchemaWithAttachment(schema, attachment, edit=false) {
   };
 }
 
-export function extendUiSchemaWithAttachment(uiSchema, attachment) {
-  if (!attachment.enabled || !uiSchema.hasOwnProperty("ui:order")) {
+export function extendUiSchemaWithAttachment(
+  uiSchema: Object,
+  attachmentConfig: ?{enabled: boolean, required: boolean}
+): Object {
+
+  if (!attachmentConfig || !attachmentConfig.enabled || !uiSchema.hasOwnProperty("ui:order")) {
     return uiSchema;
   }
   return {
@@ -41,7 +58,7 @@ export function extendUiSchemaWithAttachment(uiSchema, attachment) {
   };
 }
 
-export function extendUiSchemaWhenDisabled(uiSchema, disabled) {
+export function extendUiSchemaWhenDisabled(uiSchema: Object, disabled: boolean) {
   return {...uiSchema, "ui:disabled": disabled};
 }
 
@@ -59,8 +76,10 @@ function AttachmentPreview({attachment}) {
 
 function AttachmentInfo(props) {
   const {record, attachmentRequired, deleteAttachment} = props;
-  const {data} = record;
-  const {attachment} = data;
+  if (!record) {
+    return null;
+  }
+  const {data: {attachment}} = record;
   if (!attachment) {
     return null;
   }
@@ -115,16 +134,33 @@ function AttachmentInfo(props) {
 }
 
 export default class RecordForm extends Component {
-  constructor(props) {
+  props: {
+    bid: string,
+    cid: string,
+    rid?: string,
+    session: SessionState,
+    bucket: BucketState,
+    collection: CollectionState,
+    record?: RecordState,
+    deleteRecord?: (bid: string, cid: string, rid: string) => void,
+    deleteAttachment?: (bid: string, cid: string, rid: string) => void,
+    onSubmit: (data: RecordData) => void,
+  };
+
+  state: {
+    asJSON: boolean,
+  };
+
+  constructor(props: Object) {
     super(props);
     this.state = {asJSON: false};
   }
 
-  onSubmit = ({formData}) => {
+  onSubmit = ({formData}: {formData: Object}) => {
     this.props.onSubmit(formData);
   }
 
-  get allowEditing() {
+  get allowEditing(): boolean {
     const {session, bucket, collection, record} = this.props;
     if (record) {
       return canEditRecord(session, bucket, collection, record);
@@ -135,7 +171,7 @@ export default class RecordForm extends Component {
 
   deleteRecord = () => {
     const {deleteRecord, bid, cid, rid} = this.props;
-    if (confirm("Are you sure?")) {
+    if (rid && deleteRecord && confirm("Are you sure?")) {
       deleteRecord(bid, cid, rid);
     }
   }
@@ -143,7 +179,7 @@ export default class RecordForm extends Component {
   getForm() {
     const {asJSON} = this.state;
     const {bid, cid, collection, record} = this.props;
-    const {data: {schema={}, uiSchema={}, attachment={}}} = collection;
+    const {data: {schema={}, uiSchema={}, attachment}} = collection;
     const recordData = record && record.data || {};
     const emptySchema = Object.keys(schema).length === 0;
 
@@ -212,17 +248,20 @@ export default class RecordForm extends Component {
 
   deleteAttachment = () => {
     const {bid, cid, rid, deleteAttachment} = this.props;
-    deleteAttachment(bid, cid, rid);
+    if (rid && deleteAttachment) {
+      deleteAttachment(bid, cid, rid);
+    }
   }
 
-  toggleJSON = (event) => {
+  toggleJSON = (event: Event) => {
     event.preventDefault();
     this.setState({asJSON: !this.state.asJSON});
   }
 
   render() {
     const {collection, record} = this.props;
-    const {data: {attachment={}}} = collection;
+    const {data: {attachment: attachmentConfig}} = collection;
+    const attachmentRequired = attachmentConfig && attachmentConfig.required;
     const creation = !record;
 
     const alert = this.allowEditing || collection.busy ? null : (
@@ -238,7 +277,7 @@ export default class RecordForm extends Component {
         {creation ? null :
           <AttachmentInfo
             record={record}
-            attachmentRequired={attachment.required}
+            attachmentRequired={attachmentRequired}
             deleteAttachment={this.deleteAttachment} />}
         {this.getForm()}
       </div>

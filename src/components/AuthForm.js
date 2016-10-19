@@ -1,9 +1,16 @@
+/* @flow */
+import type { SessionState } from "../types";
+
 import React, { Component } from "react";
 
 import Form from "react-jsonschema-form";
 
 
 class ServerHistory extends Component {
+  state: {
+    menuOpened: boolean,
+  };
+
   constructor(props) {
     super(props);
     this.state = {menuOpened: false};
@@ -43,7 +50,7 @@ class ServerHistory extends Component {
         <div className={`input-group-btn ${menuOpened ? "open" : ""}`}>
           <button type="button" className="btn btn-default dropdown-toggle"
             onClick={this.toggleMenu}>
-            <span className="caret"></span>
+            <span className="caret" />
           </button>
           <ul className="dropdown-menu dropdown-menu-right">
             {
@@ -181,11 +188,25 @@ function extendUiSchemaWithHistory(uiSchema, history, clearHistory) {
 }
 
 export default class AuthForm extends Component {
+  props: {
+    session: SessionState,
+    history: string[],
+    setup: (session: Object) => void,
+    navigateToExternalAuth: (authFormData: Object) => void,
+    clearHistory: () => void,
+  };
+
+  state: {
+    schema: Object,
+    uiSchema: Object,
+    formData: Object,
+  };
+
   defaultProps = {
     history: []
   };
 
-  constructor(props) {
+  constructor(props: Object) {
     super(props);
     this.state = {
       schema: basicAuthSchema,
@@ -194,7 +215,7 @@ export default class AuthForm extends Component {
     };
   }
 
-  onChange = ({formData}) => {
+  onChange = ({formData}: {formData: Object}) => {
     const {server, authType, credentials={}} = formData;
     switch(authType) {
       case "fxa": {
@@ -215,7 +236,7 @@ export default class AuthForm extends Component {
     }
   }
 
-  onSubmit = ({formData}) => {
+  onSubmit = ({formData}: {formData: Object}) => {
     const {session, setup, navigateToExternalAuth} = this.props;
     const {authType} = formData;
     const {redirectURL} = session;

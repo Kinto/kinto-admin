@@ -1,3 +1,14 @@
+/* @flow */
+import type {
+  Capabilities,
+  SessionState,
+  BucketState,
+  CollectionState,
+  RecordState,
+  RecordData,
+  RecordRouteParams,
+} from "../../types";
+
 import React, { Component } from "react";
 
 import RecordForm from "./RecordForm";
@@ -5,7 +16,25 @@ import RecordTabs from "./RecordTabs";
 
 
 export default class RecordAttributes extends Component {
-  onSubmit = ({__attachment__: attachment, ...record}) => {
+  props: {
+    params: RecordRouteParams,
+    session: SessionState,
+    capabilities: Capabilities,
+    bucket: BucketState,
+    collection: CollectionState,
+    record: RecordState,
+    deleteRecord: (bid: string, cid: string, rid: string) => void,
+    deleteAttachment: (bid: string, cid: string, rid: string) => void,
+    updateRecord: (
+      bid: string,
+      cid: string,
+      rid: string,
+      data: RecordData,
+      attachment: ?string
+    ) => void,
+  };
+
+  onSubmit = ({__attachment__: attachment, ...record}: Object) => {
     const {params, updateRecord} = this.props;
     const {bid, cid, rid} = params;
     updateRecord(bid, cid, rid, {data: record}, attachment);

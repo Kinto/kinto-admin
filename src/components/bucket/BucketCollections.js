@@ -1,3 +1,11 @@
+/* @flow */
+import type {
+  Capabilities,
+  BucketState,
+  SessionState,
+  BucketRouteParams,
+} from "../../types";
+
 import React, { Component } from "react";
 
 import { timeago } from "../../utils";
@@ -69,6 +77,13 @@ function ListActions(props) {
 
 
 export default class BucketCollections extends Component {
+  props: {
+    params: BucketRouteParams,
+    session: SessionState,
+    bucket: BucketState,
+    capabilities: Capabilities,
+  };
+
   render() {
     const {params, session, bucket, capabilities} = this.props;
     const {bid} = params;

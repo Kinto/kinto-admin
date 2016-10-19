@@ -1,3 +1,13 @@
+/* @flow */
+import type {
+  Capabilities,
+  SessionState,
+  BucketState,
+  CollectionState,
+  CollectionRouteParams,
+  CollectionData,
+} from "../../types";
+
 import React, { Component } from "react";
 
 import Spinner from "../Spinner";
@@ -6,13 +16,23 @@ import CollectionTabs from "./CollectionTabs";
 
 
 export default class CollectionAttributes extends Component {
-  onSubmit = (formData) => {
+  props: {
+    session: SessionState,
+    bucket: BucketState,
+    collection: CollectionState,
+    capabilities: Capabilities,
+    params: CollectionRouteParams,
+    updateCollection: (bid: string, cid: string, data: CollectionData) => void,
+    deleteCollection: (bid: string, cid: string) => void,
+  };
+
+  onSubmit = (formData: CollectionData) => {
     const {params, updateCollection} = this.props;
     const {bid, cid} = params;
     updateCollection(bid, cid, {data: formData});
   };
 
-  deleteCollection = (cid) => {
+  deleteCollection = (cid: string) => {
     const {deleteCollection, params} = this.props;
     const {bid} = params;
     if (confirm("This will delete the collection and all the records it contains. Are you sure?")) {

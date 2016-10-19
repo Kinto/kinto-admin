@@ -1,3 +1,11 @@
+/* @flow */
+import type {
+  Capabilities,
+  GroupState,
+  GroupRouteParams,
+  RouteLocation,
+} from "../../types";
+
 import React, { Component } from "react";
 
 import Spinner from "../Spinner";
@@ -6,6 +14,13 @@ import CollectionTabs from "./GroupTabs";
 
 
 export default class GroupHistory extends Component {
+  props: {
+    params: GroupRouteParams,
+    group: GroupState,
+    capabilities: Capabilities,
+    location: RouteLocation,
+  };
+
   render() {
     const {params, group, capabilities, location} = this.props;
     const {bid, gid} = params;

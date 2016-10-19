@@ -1,3 +1,6 @@
+/* @flow */
+import type { Notifications } from "../types";
+
 import React, { Component} from "react";
 
 
@@ -23,12 +26,23 @@ export class Notification extends Component {
     details: [],
   }
 
-  constructor(props) {
+  props: {
+    type: string,
+    message: string,
+    details: string[],
+    close: () => void,
+  };
+
+  state: {
+    expanded: boolean,
+  };
+
+  constructor(props: Object) {
     super(props);
     this.state = {expanded: false};
   }
 
-  onCloseClick(event) {
+  onCloseClick(event: Event) {
     event.preventDefault();
     this.props.close();
   }
@@ -44,7 +58,7 @@ export class Notification extends Component {
     return messages[type];
   }
 
-  expand = (event) => {
+  expand = (event: Event) => {
     event.preventDefault();
     this.setState({expanded: !this.state.expanded});
   }
@@ -70,10 +84,15 @@ export class Notification extends Component {
   }
 }
 
-export default class Notifications extends Component {
+export default class Notifications_ extends Component {
   // This is useful to identify wrapped component for plugin hooks when code is
   // minified; see https://github.com/facebook/react/issues/4915
   static displayName = "Notifications";
+
+  props: {
+    notifications: Notifications,
+    removeNotification: (index: number) => void,
+  };
 
   render() {
     const {notifications, removeNotification} = this.props;

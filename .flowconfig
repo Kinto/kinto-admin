@@ -6,10 +6,11 @@
 ./node_modules/
 
 [libs]
-./node_modules/flow-interfaces/interfaces/
 ./node_modules/iflow-react-router/index.js.flow
+./node_modules/iflow-react-router-redux/index.js.flow
 ./interfaces/
 
 [options]
 esproposal.class_instance_fields=enable
 esproposal.class_static_fields=enable
+unsafe.enable_getters_and_setters=true

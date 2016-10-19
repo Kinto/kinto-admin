@@ -1,9 +1,20 @@
+/* @flow */
+import type { Capabilities } from "../../types";
+
 import React, { Component } from "react";
 
 import AdminLink from "../AdminLink";
 
 
 export default class CollectionTabs extends Component {
+  props: {
+    bid: string,
+    cid: string,
+    selected: "records" | "attributes" | "permissions" | "history",
+    capabilities: Capabilities,
+    children?: any,
+  };
+
   render() {
     const {bid, cid, selected, capabilities, children} = this.props;
 
