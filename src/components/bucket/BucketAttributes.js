@@ -4,7 +4,7 @@ import type {
   BucketState,
   BucketData,
   SessionState,
-  RouteParams,
+  BucketRouteParams,
 } from "../../types";
 
 import React, { Component } from "react";
@@ -16,12 +16,12 @@ import BucketTabs from "./BucketTabs";
 
 export default class BucketAttributes extends Component {
   props: {
-    params: RouteParams,
+    params: BucketRouteParams,
     session: SessionState,
     bucket: BucketState,
     capabilities: Capabilities,
-    updateBucket: (bid: ?string, data: BucketData) => void,
-    deleteBucket: (bid: ?string) => void,
+    updateBucket: (bid: string, data: BucketData) => void,
+    deleteBucket: (bid: string) => void,
   };
 
   deleteBucket = (bid: string) => {

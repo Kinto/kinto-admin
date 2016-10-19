@@ -5,7 +5,7 @@ import type {
   BucketState,
   CollectionState,
   RecordState,
-  RouteParams,
+  RecordRouteParams,
   RecordPermissions,
 } from "../../types";
 
@@ -19,16 +19,16 @@ import { canEditRecord } from "../../permission";
 
 export default class RecordPermissions_ extends Component {
   props: {
-    params: RouteParams,
+    params: RecordRouteParams,
     session: SessionState,
     capabilities: Capabilities,
     bucket: BucketState,
     collection: CollectionState,
     record: RecordState,
     updateRecord: (
-      bid: ?string,
-      cid: ?string,
-      rid: ?string,
+      bid: string,
+      cid: string,
+      rid: string,
       data: {permissions: RecordPermissions}
     ) => void,
   };

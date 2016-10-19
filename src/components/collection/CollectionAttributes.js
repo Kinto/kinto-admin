@@ -4,7 +4,7 @@ import type {
   SessionState,
   BucketState,
   CollectionState,
-  RouteParams,
+  CollectionRouteParams,
   CollectionData,
 } from "../../types";
 
@@ -21,9 +21,9 @@ export default class CollectionAttributes extends Component {
     bucket: BucketState,
     collection: CollectionState,
     capabilities: Capabilities,
-    params: RouteParams,
-    updateCollection: (bid: ?string, cid: ?string, data: CollectionData) => void,
-    deleteCollection: (bid: ?string, cid: ?string) => void,
+    params: CollectionRouteParams,
+    updateCollection: (bid: string, cid: string, data: CollectionData) => void,
+    deleteCollection: (bid: string, cid: string) => void,
   };
 
   onSubmit = (formData: CollectionData) => {

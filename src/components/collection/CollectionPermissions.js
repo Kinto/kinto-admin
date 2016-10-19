@@ -5,7 +5,7 @@ import type {
   BucketState,
   CollectionState,
   CollectionPermissions,
-  RouteParams,
+  CollectionRouteParams,
 } from "../../types";
 
 import React, { Component } from "react";
@@ -22,10 +22,10 @@ export default class CollectionPermissions_ extends Component {
     bucket: BucketState,
     collection: CollectionState,
     capabilities: Capabilities,
-    params: RouteParams,
+    params: CollectionRouteParams,
     updateCollection: (
-      bid: ?string,
-      cid: ?string,
+      bid: string,
+      cid: string,
       data: {permissions: CollectionPermissions}
     ) => void,
   };

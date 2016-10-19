@@ -3,7 +3,7 @@ import type {
   Capabilities,
   BucketState,
   SessionState,
-  RouteParams,
+  BucketRouteParams,
 } from "../../types";
 
 import React, { Component } from "react";
@@ -77,7 +77,7 @@ function ListActions({bid, session, bucket}) {
 
 export default class BucketCollections extends Component {
   props: {
-    params: RouteParams,
+    params: BucketRouteParams,
     session: SessionState,
     bucket: BucketState,
     capabilities: Capabilities,

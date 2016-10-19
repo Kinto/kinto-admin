@@ -5,7 +5,7 @@ import type {
   BucketState,
   GroupState,
   GroupData,
-  RouteParams,
+  GroupRouteParams,
 } from "../../types";
 
 import React, { Component } from "react";
@@ -17,13 +17,13 @@ import GroupTabs from "./GroupTabs";
 
 export default class GroupAttributes extends Component {
   props: {
-    params: RouteParams,
+    params: GroupRouteParams,
     session: SessionState,
     bucket: BucketState,
     group: GroupState,
     capabilities: Capabilities,
-    updateGroup: (bid: ?string, gid: ?string, payload: {data: GroupData}) => void,
-    deleteGroup: (bid: ?string, gid: ?string) => void,
+    updateGroup: (bid: string, gid: string, payload: {data: GroupData}) => void,
+    deleteGroup: (bid: string, gid: string) => void,
   };
 
   onSubmit = (formData: GroupData) => {

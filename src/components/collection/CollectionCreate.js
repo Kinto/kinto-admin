@@ -5,7 +5,7 @@ import type {
   BucketState,
   CollectionState,
   CollectionData,
-  RouteParams,
+  BucketRouteParams,
 } from "../../types";
 
 import React, { Component } from "react";
@@ -20,8 +20,8 @@ export default class CollectionCreate extends Component {
     bucket: BucketState,
     collection: CollectionState,
     capabilities: Capabilities,
-    params: RouteParams,
-    createCollection: (bid: ?string, data: CollectionData) => void,
+    params: BucketRouteParams,
+    createCollection: (bid: string, data: CollectionData) => void,
   };
 
   render() {

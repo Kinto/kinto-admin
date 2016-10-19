@@ -4,7 +4,7 @@ import type {
   SessionState,
   BucketState,
   RecordState,
-  RouteParams,
+  RecordRouteParams,
   RouteLocation,
 } from "../../types";
 
@@ -17,7 +17,7 @@ import RecordTabs from "./RecordTabs";
 
 export default class RecordHistory extends Component {
   props: {
-    params: RouteParams,
+    params: RecordRouteParams,
     session: SessionState,
     capabilities: Capabilities,
     bucket: BucketState,

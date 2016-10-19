@@ -6,7 +6,7 @@ import type {
   CollectionState,
   RecordState,
   RecordData,
-  RouteParams,
+  RecordRouteParams,
 } from "../../types";
 
 import React, { Component } from "react";
@@ -17,7 +17,7 @@ import RecordTabs from "./RecordTabs";
 
 export default class RecordAttributes extends Component {
   props: {
-    params: RouteParams,
+    params: RecordRouteParams,
     session: SessionState,
     capabilities: Capabilities,
     bucket: BucketState,
@@ -26,9 +26,9 @@ export default class RecordAttributes extends Component {
     deleteRecord: (bid: string, cid: string, rid: string) => void,
     deleteAttachment: (bid: string, cid: string, rid: string) => void,
     updateRecord: (
-      bid: ?string,
-      cid: ?string,
-      rid: ?string,
+      bid: string,
+      cid: string,
+      rid: string,
       data: RecordData,
       attachment: ?string
     ) => void,

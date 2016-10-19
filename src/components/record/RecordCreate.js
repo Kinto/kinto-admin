@@ -4,7 +4,7 @@ import type {
   BucketState,
   CollectionState,
   RecordData,
-  RouteParams,
+  CollectionRouteParams,
 } from "../../types";
 
 import React, { Component } from "react";
@@ -14,13 +14,13 @@ import RecordForm from "./RecordForm";
 
 export default class RecordCreate extends Component {
   props: {
-    params: RouteParams,
+    params: CollectionRouteParams,
     session: SessionState,
     bucket: BucketState,
     collection: CollectionState,
     createRecord: (
-      bid: ?string,
-      cid: ?string,
+      bid: string,
+      cid: string,
       record: RecordData,
       attachment: ?string,
     ) => void,

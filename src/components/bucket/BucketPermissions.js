@@ -4,7 +4,7 @@ import type {
   BucketState,
   BucketPermissions,
   SessionState,
-  RouteParams,
+  BucketRouteParams,
 } from "../../types";
 
 import React, { Component } from "react";
@@ -17,11 +17,11 @@ import { canEditBucket } from "../../permission";
 
 export default class BucketPermissions_ extends Component {
   props: {
-    params: RouteParams,
+    params: BucketRouteParams,
     session: SessionState,
     bucket: BucketState,
     capabilities: Capabilities,
-    updateBucket: (bid: ?string, data: {permissions: BucketPermissions}) => void,
+    updateBucket: (bid: string, data: {permissions: BucketPermissions}) => void,
   };
 
   onSubmit = ({formData}: {formData: BucketPermissions}) => {

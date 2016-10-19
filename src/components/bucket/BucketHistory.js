@@ -2,7 +2,7 @@
 import type {
   Capabilities,
   BucketState,
-  RouteParams,
+  BucketRouteParams,
   RouteLocation,
 } from "../../types";
 
@@ -15,7 +15,7 @@ import HistoryTable from "../HistoryTable";
 
 export default class BucketHistory extends Component {
   props: {
-    params: RouteParams,
+    params: BucketRouteParams,
     bucket: BucketState,
     capabilities: Capabilities,
     location: RouteLocation,

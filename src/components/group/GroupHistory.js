@@ -2,7 +2,7 @@
 import type {
   Capabilities,
   GroupState,
-  RouteParams,
+  GroupRouteParams,
   RouteLocation,
 } from "../../types";
 
@@ -15,7 +15,7 @@ import CollectionTabs from "./GroupTabs";
 
 export default class GroupHistory extends Component {
   props: {
-    params: RouteParams,
+    params: GroupRouteParams,
     group: GroupState,
     capabilities: Capabilities,
     location: RouteLocation,

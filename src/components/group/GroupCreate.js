@@ -5,7 +5,7 @@ import type {
   BucketState,
   GroupState,
   GroupData,
-  RouteParams,
+  BucketRouteParams,
 } from "../../types";
 
 import React, { Component } from "react";
@@ -16,12 +16,12 @@ import Spinner from "../Spinner";
 
 export default class GroupCreate extends Component {
   props: {
-    params: RouteParams,
+    params: BucketRouteParams,
     session: SessionState,
     bucket: BucketState,
     group: GroupState,
     capabilities: Capabilities,
-    createGroup: (bid: ?string, data: GroupData) => void,
+    createGroup: (bid: string, data: GroupData) => void,
   };
 
   render() {

@@ -4,7 +4,7 @@ import type {
   SessionState,
   BucketState,
   GroupState,
-  RouteParams,
+  GroupRouteParams,
   GroupPermissions,
 } from "../../types";
 
@@ -18,14 +18,14 @@ import { canEditGroup } from "../../permission";
 
 export default class GroupPermissions_ extends Component {
   props: {
-    params: RouteParams,
+    params: GroupRouteParams,
     session: SessionState,
     bucket: BucketState,
     group: GroupState,
     capabilities: Capabilities,
     updateGroup: (
-      bid: ?string,
-      gid: ?string,
+      bid: string,
+      gid: string,
       data: {permissions: GroupPermissions}
     ) => void,
   };

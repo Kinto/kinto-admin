@@ -177,6 +177,28 @@ export type RecordResource = {
   permissions: RecordPermissions,
 };
 
+export type EmptyRouteParams = {};
+
+export type BucketRouteParams = {
+  bid: string,
+};
+
+export type CollectionRouteParams = {
+  bid: string,
+  cid: string,
+};
+
+export type GroupRouteParams = {
+  bid: string,
+  gid: string,
+};
+
+export type RecordRouteParams = {
+  bid: string,
+  cid: string,
+  rid: string,
+};
+
 export type RouteParams = {
   bid?: string,
   cid?: string,

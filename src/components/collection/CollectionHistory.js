@@ -4,7 +4,7 @@ import type {
   SessionState,
   BucketState,
   CollectionState,
-  RouteParams,
+  CollectionRouteParams,
   RouteLocation,
 } from "../../types";
 
@@ -21,7 +21,7 @@ export default class CollectionHistory extends Component {
     bucket: BucketState,
     collection: CollectionState,
     capabilities: Capabilities,
-    params: RouteParams,
+    params: CollectionRouteParams,
     location: RouteLocation,
   };
 

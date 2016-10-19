@@ -1,6 +1,6 @@
 /* @flow */
 import type {
-  RouteParams,
+  CollectionRouteParams,
   SessionState,
   BucketState,
   CollectionState,
@@ -260,14 +260,14 @@ export default class CollectionRecords extends Component {
   props: {
     capabilities: Capabilities,
     pluginHooks: Object,
-    params: RouteParams,
+    params: CollectionRouteParams,
     session: SessionState,
     bucket: BucketState,
     collection: CollectionState,
     deleteRecord: (bid: string, cid: string, rid: string) => void,
-    listRecords: (bid: ?string, cid: ?string, sort: ?string) => void,
+    listRecords: (bid: string, cid: string, sort: ?string) => void,
     listNextRecords: () => void,
-    redirectTo: (name: string, params: RouteParams) => void,
+    redirectTo: (name: string, params: CollectionRouteParams) => void,
   };
 
   updateSort = (sort: string) => {

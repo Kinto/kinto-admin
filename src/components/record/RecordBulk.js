@@ -2,7 +2,7 @@
 import type {
   CollectionState,
   RecordData,
-  RouteParams,
+  CollectionRouteParams,
 } from "../../types";
 
 import React, { Component } from "react";
@@ -19,9 +19,9 @@ import {
 
 export default class RecordBulk extends Component {
   props: {
-    params: RouteParams,
+    params: CollectionRouteParams,
     collection: CollectionState,
-    bulkCreateRecords: (bid: ?string, cid: ?string, formData: RecordData[]) => void,
+    bulkCreateRecords: (bid: string, cid: string, formData: RecordData[]) => void,
     notifyError: (msg: string, error: ?Error) => void,
   };
 
