@@ -1,5 +1,6 @@
 /* @flow */
 import type {
+  Capabilities,
   BucketState,
   BucketPermissions,
   SessionState,
@@ -19,7 +20,7 @@ export default class BucketPermissions_ extends Component {
     params: RouteParams,
     session: SessionState,
     bucket: BucketState,
-    capabilities: Object,
+    capabilities: Capabilities,
     updateBucket: Function,
   };
 

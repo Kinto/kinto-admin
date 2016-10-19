@@ -1,4 +1,6 @@
 /* @flow */
+import type { Capabilities } from "../../types";
+
 import React, { Component } from "react";
 
 import AdminLink from "../AdminLink";
@@ -8,7 +10,7 @@ export default class BucketTabs extends Component {
   props: {
     bid: string,
     selected: "collections" | "groups" | "attributes" | "permissions" | "history",
-    capabilities: Object,
+    capabilities: Capabilities,
     children?: any,
   };
 

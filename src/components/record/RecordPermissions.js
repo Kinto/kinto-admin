@@ -1,5 +1,6 @@
 /* @flow */
 import type {
+  Capabilities,
   SessionState,
   BucketState,
   CollectionState,
@@ -19,7 +20,7 @@ export default class RecordPermissions extends Component {
   props: {
     params: RouteParams,
     session: SessionState,
-    capabilities: Object,
+    capabilities: Capabilities,
     bucket: BucketState,
     collection: CollectionState,
     record: RecordState,

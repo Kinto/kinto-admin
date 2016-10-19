@@ -1,5 +1,6 @@
 /* @flow */
 import type {
+  Capabilities,
   BucketState,
   BucketData,
   SessionState,
@@ -18,7 +19,7 @@ export default class BucketAttributes extends Component {
     params: RouteParams,
     session: SessionState,
     bucket: BucketState,
-    capabilities: Object,
+    capabilities: Capabilities,
     updateBucket: Function,
     deleteBucket: Function,
   };

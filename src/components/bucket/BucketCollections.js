@@ -1,5 +1,10 @@
 /* @flow */
-import type { BucketState, SessionState, RouteParams } from "../../types";
+import type {
+  Capabilities,
+  BucketState,
+  SessionState,
+  RouteParams,
+} from "../../types";
 
 import React, { Component } from "react";
 
@@ -76,7 +81,7 @@ export default class BucketCollections extends Component {
     params: RouteParams,
     session: SessionState,
     bucket: BucketState,
-    capabilities: Object,
+    capabilities: Capabilities,
   };
 
   render() {

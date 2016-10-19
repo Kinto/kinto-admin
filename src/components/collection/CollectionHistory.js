@@ -1,5 +1,6 @@
 /* @flow */
 import type {
+  Capabilities,
   SessionState,
   BucketState,
   CollectionState,
@@ -19,7 +20,7 @@ export default class CollectionHistory extends Component {
     session: SessionState,
     bucket: BucketState,
     collection: CollectionState,
-    capabilities: Object,
+    capabilities: Capabilities,
     params: RouteParams,
     location: RouteLocation,
   };

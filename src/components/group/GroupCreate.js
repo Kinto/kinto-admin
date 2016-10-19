@@ -1,5 +1,6 @@
 /* @flow */
 import type {
+  Capabilities,
   SessionState,
   BucketState,
   GroupState,
@@ -18,7 +19,7 @@ export default class GroupCreate extends Component {
     session: SessionState,
     bucket: BucketState,
     group: GroupState,
-    capabilities: Object,
+    capabilities: Capabilities,
     createGroup: Function,
   };
 

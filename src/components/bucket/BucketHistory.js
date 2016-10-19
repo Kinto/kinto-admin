@@ -1,5 +1,6 @@
 /* @flow */
 import type {
+  Capabilities,
   BucketState,
   RouteParams,
   RouteLocation,
@@ -16,7 +17,7 @@ export default class BucketHistory extends Component {
   props: {
     params: RouteParams,
     bucket: BucketState,
-    capabilities: Object,
+    capabilities: Capabilities,
     location: RouteLocation,
   };
 

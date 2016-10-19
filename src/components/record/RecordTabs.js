@@ -1,4 +1,6 @@
 /* @flow */
+import type { Capabilities } from "../../types";
+
 import React, { Component } from "react";
 
 import AdminLink from "../AdminLink";
@@ -10,7 +12,7 @@ export default class RecordTabs extends Component {
     cid: string,
     rid: string,
     selected: "attributes" | "permissions" | "history",
-    capabilities: Object,
+    capabilities: Capabilities,
     children?: any,
   };
 

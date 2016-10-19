@@ -52,6 +52,16 @@ export type BucketResource = {
   permissions: BucketPermissions,
 };
 
+export type Capabilities = {
+  attachements?: Object,
+  changes?: Object,
+  default_bucket?: Object,
+  fxa?: Object,
+  history?: Object,
+  permissions_endpoint?: Object,
+  schema?: Object,
+};
+
 export type ClientError = {
   message: string,
   data: {
@@ -191,7 +201,7 @@ export type SessionState = {
 };
 
 export type ServerInfo = {
-  capabilities: Object,
+  capabilities: Capabilities,
   user?: {
     id?: string,
     bucket?: string,

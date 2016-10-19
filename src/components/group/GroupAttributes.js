@@ -1,5 +1,6 @@
 /* @flow */
 import type {
+  Capabilities,
   SessionState,
   BucketState,
   GroupState,
@@ -20,7 +21,7 @@ export default class GroupAttributes extends Component {
     session: SessionState,
     bucket: BucketState,
     group: GroupState,
-    capabilities: Object,
+    capabilities: Capabilities,
     updateGroup: Function,
     deleteGroup: Function,
   };

@@ -1,5 +1,6 @@
 /* @flow */
 import type {
+  Capabilities,
   SessionState,
   BucketState,
   CollectionState,
@@ -17,7 +18,7 @@ export default class CollectionCreate extends Component {
     session: SessionState,
     bucket: BucketState,
     collection: CollectionState,
-    capabilities: Object,
+    capabilities: Capabilities,
     params: RouteParams,
     createCollection: Function,
   };

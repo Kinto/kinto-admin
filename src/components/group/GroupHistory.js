@@ -1,5 +1,6 @@
 /* @flow */
 import type {
+  Capabilities,
   GroupState,
   RouteParams,
   RouteLocation,
@@ -16,7 +17,7 @@ export default class GroupHistory extends Component {
   props: {
     params: RouteParams,
     group: GroupState,
-    capabilities: Object,
+    capabilities: Capabilities,
     location: RouteLocation,
   };
 

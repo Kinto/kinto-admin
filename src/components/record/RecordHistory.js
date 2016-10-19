@@ -1,5 +1,6 @@
 /* @flow */
 import type {
+  Capabilities,
   SessionState,
   BucketState,
   RecordState,
@@ -18,7 +19,7 @@ export default class RecordHistory extends Component {
   props: {
     params: RouteParams,
     session: SessionState,
-    capabilities: Object,
+    capabilities: Capabilities,
     bucket: BucketState,
     record: RecordState,
     location: RouteLocation,
