@@ -23,8 +23,11 @@ export default class GroupPermissions_ extends Component {
     bucket: BucketState,
     group: GroupState,
     capabilities: Capabilities,
-    updateGroup: Function,
-    deleteGroup: Function,
+    updateGroup: (
+      bid: ?string,
+      gid: ?string,
+      data: {permissions: GroupPermissions}
+    ) => void,
   };
 
   onSubmit = ({formData}: {formData: GroupPermissions}) => {

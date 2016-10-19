@@ -22,8 +22,8 @@ export default class GroupAttributes extends Component {
     bucket: BucketState,
     group: GroupState,
     capabilities: Capabilities,
-    updateGroup: Function,
-    deleteGroup: Function,
+    updateGroup: (bid: ?string, gid: ?string, payload: {data: GroupData}) => void,
+    deleteGroup: (bid: ?string, gid: ?string) => void,
   };
 
   onSubmit = (formData: GroupData) => {

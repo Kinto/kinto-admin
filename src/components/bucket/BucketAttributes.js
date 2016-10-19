@@ -20,8 +20,8 @@ export default class BucketAttributes extends Component {
     session: SessionState,
     bucket: BucketState,
     capabilities: Capabilities,
-    updateBucket: Function,
-    deleteBucket: Function,
+    updateBucket: (bid: ?string, data: BucketData) => void,
+    deleteBucket: (bid: ?string) => void,
   };
 
   deleteBucket = (bid: string) => {

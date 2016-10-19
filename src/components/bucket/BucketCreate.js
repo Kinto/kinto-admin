@@ -1,5 +1,5 @@
 /* @flow */
-import type { SessionState, BucketState } from "../../types";
+import type { SessionState, BucketState, BucketData } from "../../types";
 
 import React, { Component } from "react";
 
@@ -11,7 +11,7 @@ export default class BucketCreate extends Component {
   props: {
     session: SessionState,
     bucket: BucketState,
-    createBucket: Function,
+    createBucket: (bid: string, data: BucketData) => void,
   };
 
   render() {

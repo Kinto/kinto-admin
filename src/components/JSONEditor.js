@@ -41,7 +41,7 @@ export default class JSONEditor extends Component {
     readonly: boolean,
     disabled: boolean,
     value: any,
-    onChange: Function,
+    onChange: (code: string) => {},
   };
 
   onCodeChange = (code: string) => {

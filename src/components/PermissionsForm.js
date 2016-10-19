@@ -1,5 +1,7 @@
 /* @flow */
 
+import type { Permissions } from "../types";
+
 import React, { Component } from "react";
 import Form from "react-jsonschema-form";
 
@@ -11,9 +13,9 @@ import {
 
 export default class PermissionsForm extends Component {
   props: {
-    permissions: Object,
+    permissions: Permissions,
     acls: string[],
-    onSubmit: Function,
+    onSubmit: (data: {formData: Object}) => void,
   };
 
   onSubmit = ({formData}: {formData: Object}) => {

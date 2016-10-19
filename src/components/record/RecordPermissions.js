@@ -6,6 +6,7 @@ import type {
   CollectionState,
   RecordState,
   RouteParams,
+  RecordPermissions,
 } from "../../types";
 
 import React, { Component } from "react";
@@ -16,7 +17,7 @@ import PermissionsForm from "../PermissionsForm";
 import { canEditRecord } from "../../permission";
 
 
-export default class RecordPermissions extends Component {
+export default class RecordPermissions_ extends Component {
   props: {
     params: RouteParams,
     session: SessionState,
@@ -24,7 +25,12 @@ export default class RecordPermissions extends Component {
     bucket: BucketState,
     collection: CollectionState,
     record: RecordState,
-    updateRecord: Function,
+    updateRecord: (
+      bid: ?string,
+      cid: ?string,
+      rid: ?string,
+      data: {permissions: RecordPermissions}
+    ) => void,
   };
 
   onSubmit = ({formData}: {formData: Object}) => {

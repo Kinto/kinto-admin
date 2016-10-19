@@ -23,7 +23,11 @@ export default class CollectionPermissions_ extends Component {
     collection: CollectionState,
     capabilities: Capabilities,
     params: RouteParams,
-    updateCollection: Function,
+    updateCollection: (
+      bid: ?string,
+      cid: ?string,
+      data: {permissions: CollectionPermissions}
+    ) => void,
   };
 
   onSubmit = ({formData}: {formData: CollectionPermissions}) => {

@@ -4,6 +4,7 @@ import type {
   SessionState,
   BucketState,
   GroupState,
+  GroupData,
   RouteParams,
 } from "../../types";
 
@@ -20,7 +21,7 @@ export default class GroupCreate extends Component {
     bucket: BucketState,
     group: GroupState,
     capabilities: Capabilities,
-    createGroup: Function,
+    createGroup: (bid: ?string, data: GroupData) => void,
   };
 
   render() {

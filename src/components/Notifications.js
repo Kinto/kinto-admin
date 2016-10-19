@@ -30,7 +30,7 @@ export class Notification extends Component {
     type: string,
     message: string,
     details: string[],
-    close: Function,
+    close: () => void,
   };
 
   state: {
@@ -91,7 +91,7 @@ export default class Notifications_ extends Component {
 
   props: {
     notifications: Notifications,
-    removeNotification: Function,
+    removeNotification: (index: number) => void,
   };
 
   render() {

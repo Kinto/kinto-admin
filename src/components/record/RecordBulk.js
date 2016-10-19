@@ -1,5 +1,9 @@
 /* @flow */
-import type { CollectionState, RouteParams } from "../../types";
+import type {
+  CollectionState,
+  RecordData,
+  RouteParams,
+} from "../../types";
 
 import React, { Component } from "react";
 import Form from "react-jsonschema-form";
@@ -17,11 +21,11 @@ export default class RecordBulk extends Component {
   props: {
     params: RouteParams,
     collection: CollectionState,
-    bulkCreateRecords: Function,
-    notifyError: Function,
+    bulkCreateRecords: (bid: ?string, cid: ?string, formData: RecordData[]) => void,
+    notifyError: (msg: string, error: ?Error) => void,
   };
 
-  onSubmit = ({formData}: {formData: string[]}) => {
+  onSubmit = ({formData}: {formData: any[]}) => {
     const {params, collection, notifyError, bulkCreateRecords} = this.props;
     const {bid, cid} = params;
     const {data: {schema={}}} = collection;

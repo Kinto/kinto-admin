@@ -146,6 +146,12 @@ export type Notification = {
 
 export type Notifications = Notification[];
 
+export type Permissions =
+  BucketPermissions
+  | GroupPermissions
+  | CollectionPermissions
+  | RecordPermissions;
+
 export type RecordState = {
   busy: boolean,
   data: RecordData,

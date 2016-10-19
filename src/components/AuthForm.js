@@ -191,9 +191,9 @@ export default class AuthForm extends Component {
   props: {
     session: SessionState,
     history: string[],
-    setup: Function,
-    navigateToExternalAuth: Function,
-    clearHistory: Function,
+    setup: (session: Object) => void,
+    navigateToExternalAuth: (authFormData: Object) => void,
+    clearHistory: () => void,
   };
 
   state: {

@@ -98,8 +98,8 @@ export default class GroupForm extends Component {
     bucket: BucketState,
     group: GroupState,
     formData?: GroupData,
-    onSubmit: Function,
-    deleteGroup?: Function,
+    onSubmit: (formData: GroupData) => void,
+    deleteGroup?: (gid: string) => void,
   };
 
   onSubmit = ({formData}: {formData: {data: string}}) => {

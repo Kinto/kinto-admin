@@ -21,7 +21,7 @@ export default class BucketPermissions_ extends Component {
     session: SessionState,
     bucket: BucketState,
     capabilities: Capabilities,
-    updateBucket: Function,
+    updateBucket: (bid: ?string, data: {permissions: BucketPermissions}) => void,
   };
 
   onSubmit = ({formData}: {formData: BucketPermissions}) => {

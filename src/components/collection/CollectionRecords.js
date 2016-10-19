@@ -1,4 +1,12 @@
 /* @flow */
+import type {
+  RouteParams,
+  SessionState,
+  BucketState,
+  CollectionState,
+  Capabilities,
+} from "../../types";
+
 import React, { Component } from "react";
 
 import { renderDisplayField, timeago } from "../../utils";
@@ -11,7 +19,6 @@ import CollectionTabs from "./CollectionTabs";
 class Row extends Component {
   static defaultProps = {
     schema: {},
-    displayFields: ["__json"],
     record: {},
   };
 
@@ -35,9 +42,9 @@ class Row extends Component {
 
   onDeleteClick(event) {
     const {bid, cid, record, deleteRecord} = this.props;
-    const {id, last_modified} = record;
+    const {id: rid, last_modified} = record;
     if (confirm("Are you sure?")) {
-      deleteRecord(bid, cid, id, last_modified);
+      deleteRecord(bid, cid, rid, last_modified);
     }
   }
 
@@ -124,10 +131,6 @@ function ColumnSortLink(props) {
 }
 
 class Table extends Component {
-  static defaultProps = {
-    displayFields: ["__json"]
-  }
-
   getFieldTitle(displayField) {
     const {schema} = this.props;
     if (displayField === "__json") {
@@ -254,6 +257,19 @@ export default class CollectionRecords extends Component {
   // minified; see https://github.com/facebook/react/issues/4915
   static displayName = "CollectionRecords";
 
+  props: {
+    capabilities: Capabilities,
+    pluginHooks: Object,
+    params: RouteParams,
+    session: SessionState,
+    bucket: BucketState,
+    collection: CollectionState,
+    deleteRecord: (bid: string, cid: string, rid: string) => void,
+    listRecords: (bid: ?string, cid: ?string, sort: ?string) => void,
+    listNextRecords: () => void,
+    redirectTo: (name: string, params: RouteParams) => void,
+  };
+
   updateSort = (sort: string) => {
     const {params, listRecords} = this.props;
     const {bid, cid} = params;
@@ -312,7 +328,7 @@ export default class CollectionRecords extends Component {
             listNextRecords={listNextRecords}
             currentSort={currentSort}
             schema={schema}
-            displayFields={displayFields}
+            displayFields={displayFields || ["__json"]}
             deleteRecord={deleteRecord}
             updateSort={this.updateSort}
             redirectTo={redirectTo} />

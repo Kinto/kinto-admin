@@ -4,6 +4,7 @@ import type {
   BucketState,
   CollectionState,
   RecordState,
+  RecordData,
 } from "../../types";
 
 import React, { Component } from "react";
@@ -141,9 +142,9 @@ export default class RecordForm extends Component {
     bucket: BucketState,
     collection: CollectionState,
     record?: RecordState,
-    deleteRecord?: Function,
-    deleteAttachment?: Function,
-    onSubmit: Function,
+    deleteRecord?: (bid: string, cid: string, rid: string) => void,
+    deleteAttachment?: (bid: string, cid: string, rid: string) => void,
+    onSubmit: (data: RecordData) => void,
   };
 
   state: {
@@ -170,7 +171,7 @@ export default class RecordForm extends Component {
 
   deleteRecord = () => {
     const {deleteRecord, bid, cid, rid} = this.props;
-    if (deleteRecord && confirm("Are you sure?")) {
+    if (rid && deleteRecord && confirm("Are you sure?")) {
       deleteRecord(bid, cid, rid);
     }
   }
@@ -247,7 +248,7 @@ export default class RecordForm extends Component {
 
   deleteAttachment = () => {
     const {bid, cid, rid, deleteAttachment} = this.props;
-    if (deleteAttachment) {
+    if (rid && deleteAttachment) {
       deleteAttachment(bid, cid, rid);
     }
   }

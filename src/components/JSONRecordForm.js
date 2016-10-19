@@ -28,7 +28,7 @@ export default class JSONRecordForm extends Component {
   props: {
     disabled: boolean,
     record: string, // JSON string representation of a record data
-    onSubmit: Function,
+    onSubmit: (data: Object) => void,
     children?: any,
   };
 

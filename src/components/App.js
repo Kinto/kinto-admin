@@ -21,7 +21,7 @@ function SessionInfoBar({session, logout}) {
 export default class App extends Component {
   props: {
     session: SessionState,
-    logout: Function,
+    logout: () => {},
     notificationList: Notifications,
     routes: Element[],
     params: RouteParams,

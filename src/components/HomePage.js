@@ -49,9 +49,9 @@ export default class HomePage extends Component {
   props: {
     session: SessionState,
     history: string[],
-    clearHistory: Function,
-    setup: Function,
-    navigateToExternalAuth: Function,
+    clearHistory: () => void,
+    setup: (session: Object) => void,
+    navigateToExternalAuth: (authFormData: Object) => void,
   };
 
   render() {

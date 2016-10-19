@@ -22,8 +22,8 @@ export default class CollectionAttributes extends Component {
     collection: CollectionState,
     capabilities: Capabilities,
     params: RouteParams,
-    updateCollection: Function,
-    deleteCollection: Function,
+    updateCollection: (bid: ?string, cid: ?string, data: CollectionData) => void,
+    deleteCollection: (bid: ?string, cid: ?string) => void,
   };
 
   onSubmit = (formData: CollectionData) => {

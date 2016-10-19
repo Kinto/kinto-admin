@@ -90,8 +90,8 @@ export default class BucketForm extends Component {
     session: SessionState,
     bucket: BucketState,
     formData?: BucketData,
-    deleteBucket?: Function,
-    onSubmit: Function,
+    deleteBucket?: (bid: string) => void,
+    onSubmit: (data: Object) => void,
   };
 
   onSubmit = ({formData}: {formData: Object}) => {

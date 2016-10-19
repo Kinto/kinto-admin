@@ -242,8 +242,8 @@ export default class CollectionForm extends Component {
     session: SessionState,
     bucket: BucketState,
     collection: CollectionState,
-    deleteCollection?: Function,
-    onSubmit: Function,
+    deleteCollection?: (cid: string) => void,
+    onSubmit: (formData: CollectionData) => void,
     formData?: CollectionData,
   };
 

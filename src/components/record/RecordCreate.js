@@ -3,6 +3,7 @@ import type {
   SessionState,
   BucketState,
   CollectionState,
+  RecordData,
   RouteParams,
 } from "../../types";
 
@@ -17,7 +18,12 @@ export default class RecordCreate extends Component {
     session: SessionState,
     bucket: BucketState,
     collection: CollectionState,
-    createRecord: Function,
+    createRecord: (
+      bid: ?string,
+      cid: ?string,
+      record: RecordData,
+      attachment: ?string,
+    ) => void,
   };
 
   onSubmit = ({__attachment__: attachment, ...record}: Object) => {

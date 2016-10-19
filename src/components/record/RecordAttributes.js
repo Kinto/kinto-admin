@@ -5,6 +5,7 @@ import type {
   BucketState,
   CollectionState,
   RecordState,
+  RecordData,
   RouteParams,
 } from "../../types";
 
@@ -22,9 +23,15 @@ export default class RecordAttributes extends Component {
     bucket: BucketState,
     collection: CollectionState,
     record: RecordState,
-    deleteRecord: Function,
-    deleteAttachment: Function,
-    updateRecord: Function,
+    deleteRecord: (bid: string, cid: string, rid: string) => void,
+    deleteAttachment: (bid: string, cid: string, rid: string) => void,
+    updateRecord: (
+      bid: ?string,
+      cid: ?string,
+      rid: ?string,
+      data: RecordData,
+      attachment: ?string
+    ) => void,
   };
 
   onSubmit = ({__attachment__: attachment, ...record}: Object) => {
