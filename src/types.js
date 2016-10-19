@@ -27,7 +27,7 @@ export type BucketState = {
   busy: boolean,
   data: BucketData,
   permissions: BucketPermissions,
-  history: Object[],
+  history: ResourceHistoryEntry[],
   historyLoaded: boolean,
   collections: CollectionData[],
   collectionsLoaded: boolean,
@@ -84,7 +84,7 @@ export type CollectionState = {
   recordsLoaded: boolean,
   hasNextRecords: boolean,
   listNextRecords: ?Function,
-  history: Object[],
+  history: ResourceHistoryEntry[],
   historyLoaded: boolean,
 };
 
@@ -117,7 +117,7 @@ export type GroupState = {
   busy: boolean,
   data?: Object,
   permissions: GroupPermissions,
-  history: Object[],
+  history: ResourceHistoryEntry[],
   historyLoaded: boolean,
 };
 
@@ -156,7 +156,7 @@ export type RecordState = {
   busy: boolean,
   data: RecordData,
   permissions: RecordPermissions,
-  history: [],
+  history: ResourceHistoryEntry[],
   historyLoaded: boolean,
 };
 
@@ -175,6 +175,21 @@ export type RecordPermissions = {
 export type RecordResource = {
   data: RecordData,
   permissions: RecordPermissions,
+};
+
+export type ResourceHistoryEntry = {
+  action: "create" | "update" | "delete",
+  collection_id?: string,
+  group_id?: string,
+  record_id?: string,
+  date: string,
+  id: string,
+  last_modified: number,
+  resource_name: string,
+  target: Object,
+  timestamp: number,
+  uri: string,
+  user_id: string,
 };
 
 export type EmptyRouteParams = {};

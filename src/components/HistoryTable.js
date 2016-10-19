@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { RouteLocation } from "../types";
+import type { ResourceHistoryEntry, RouteLocation } from "../types";
 
 import React, { Component } from "react";
 import { Link } from "react-router";
@@ -12,7 +12,7 @@ import AdminLink from "./AdminLink";
 class HistoryRow extends Component {
   props: {
     bid: string,
-    entry: Object,
+    entry: ResourceHistoryEntry,
   };
 
   state: {
@@ -84,7 +84,7 @@ function FilterInfo(props) {
   const {pathname, query: {since}} = location;
   return (
     <p>
-      Since {humanDate(since)}.
+      Since {since ? humanDate(since) : ""}.
       {" "}
       <Link to={pathname}>View all entries</Link>
     </p>
