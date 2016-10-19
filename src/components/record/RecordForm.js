@@ -19,7 +19,7 @@ import { cleanRecord, linkify } from "../../utils";
 
 export function extendSchemaWithAttachment(
   schema: Object,
-  attachmentConfig: ?{enabled: boolean},
+  attachmentConfig: ?{enabled: boolean, required: boolean},
   edit: boolean = false
 ): Object {
   if (!attachmentConfig || !attachmentConfig.enabled) {
@@ -45,7 +45,7 @@ export function extendSchemaWithAttachment(
 
 export function extendUiSchemaWithAttachment(
   uiSchema: Object,
-  attachmentConfig: ?{enabled: boolean}
+  attachmentConfig: ?{enabled: boolean, required: boolean}
 ): Object {
 
   if (!attachmentConfig || !attachmentConfig.enabled || !uiSchema.hasOwnProperty("ui:order")) {
