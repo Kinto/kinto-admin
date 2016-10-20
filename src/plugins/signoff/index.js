@@ -73,6 +73,7 @@ function *onCollectionRecordsRequest(getState, action) {
 
   const {source, preview={}, destination} = resource;
 
+  // Obtain collections attributes for source, preview and destination.
   const client = getClient();
   const fetchInfos = (batch) => {
     batch.bucket(source.bucket).collection(source.collection).getData();
@@ -80,32 +81,41 @@ function *onCollectionRecordsRequest(getState, action) {
     batch.bucket(destination.bucket).collection(destination.collection).getData();
   };
   const resp = yield call([client, client.batch], fetchInfos);
-
-  const [
-    sourceData,
-    previewData,
-    destinationData] = resp.map(({status, body: {data}}, index) => data);
-
-  const lastSigned = destinationData ? `${destinationData.last_modified}` : "0";  // everything
+  // Extract the `data` attribute from each response body, and defaults to
+  // empty {} if missing (eg. if preview or destination don't exist yet).
+  const respData = resp.map(({status, body: {data={}}}, index) => data);
+  const [sourceData, previewData, destinationData] = respData;
+  // Fetch the source changes made since the last signature (since=0 means everything).
+  const lastSigned = String(destinationData.last_modified || 0);
   const colClient = client.bucket(bid).collection(cid);
   const {data: sourceChanges} = yield call([colClient, colClient.listRecords], {
     since: lastSigned
   });
 
+  // Workflow component state.
+  const {
+    last_author,
+    last_editor,
+    last_reviewer,
+  } = sourceData;
+
   const information = {
     resource: {
       source: {
         ...source,
-        ...sourceData,
+        last_author,
+        last_editor,
+        last_reviewer,
+        last_modified: sourceData.last_modified,
         changes: sourceChanges
       },
       preview: {
         ...preview,
-        ...previewData
+        last_modified: previewData.last_modified,
       },
       destination: {
         ...destination,
-        ...destinationData
+        last_modified: destinationData.last_modified,
       }
     }
   };
@@ -156,7 +166,13 @@ export const sagas = [
 // Reducers
 //
 
-const INITIAL_STATE = {};
+const INITIAL_STATE = {
+  resource: {
+    source: {},
+    preview: {},
+    destination: {},
+  }
+};
 
 export const reducers = {
   signoff(state=INITIAL_STATE, action) {
@@ -268,7 +284,7 @@ function Review({active, approveChanges, declineChanges, source, preview}) {
 
   let link = "disabled";
   let lastChange = sourceLastModified;  // If preview disabled, use source timestamp as review request datetime.
-  if (preview) {
+  if (preview.bucket && preview.collection) {
     const {last_modified, bucket: bid, collection: cid} = preview;
     link = <AdminLink name="collection:records" params={{bid, cid}}>{`${bid}/${cid}`}</AdminLink>;
     lastChange = last_modified;
