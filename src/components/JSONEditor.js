@@ -1,3 +1,4 @@
+/* @flow */
 import React, { Component } from "react";
 import Codemirror from "react-codemirror";
 import "codemirror/mode/javascript/javascript";
@@ -36,7 +37,14 @@ const cmOptions = {
 };
 
 export default class JSONEditor extends Component {
-  onCodeChange = (code) => {
+  props: {
+    readonly: boolean,
+    disabled: boolean,
+    value: any,
+    onChange: (code: string) => {},
+  };
+
+  onCodeChange = (code: string) => {
     this.props.onChange(code);
   };
 

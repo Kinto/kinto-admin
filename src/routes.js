@@ -80,7 +80,7 @@ function onCollectionHistoryEnter(store: Object, {params}) {
     // occurs when users refresh the page and lose their session.
     return;
   }
-  store.dispatch(collectionActions.listCollectionHistory(bid, cid, since));
+  store.dispatch(collectionActions.listCollectionHistory(bid, cid, {since}));
 }
 
 function onBucketPageEnter(store: Object, action: Function, {params}) {
@@ -102,7 +102,7 @@ function onBucketHistoryEnter(store: Object, {params}) {
     // occurs when users refresh the page and lose their session.
     return;
   }
-  store.dispatch(bucketActions.listBucketHistory(bid, since));
+  store.dispatch(bucketActions.listBucketHistory(bid, {since}));
 }
 
 function onGroupHistoryEnter(store: Object, {params}) {
@@ -113,7 +113,7 @@ function onGroupHistoryEnter(store: Object, {params}) {
     // occurs when users refresh the page and lose their session.
     return;
   }
-  store.dispatch(groupActions.listGroupHistory(bid, gid, since));
+  store.dispatch(groupActions.listGroupHistory(bid, gid, {since}));
 }
 
 function onRecordHistoryEnter(store: Object, {params}) {
@@ -122,7 +122,7 @@ function onRecordHistoryEnter(store: Object, {params}) {
   if (!session.authenticated) {
     return;
   }
-  store.dispatch(recordActions.listRecordHistory(bid, cid, rid, since));
+  store.dispatch(recordActions.listRecordHistory(bid, cid, rid, {since}));
 }
 
 function registerPluginsComponentHooks(PageContainer, plugins) {

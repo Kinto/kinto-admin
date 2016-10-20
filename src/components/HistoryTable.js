@@ -1,3 +1,7 @@
+/* @flow */
+
+import type { ResourceHistoryEntry, RouteLocation } from "../types";
+
 import React, { Component } from "react";
 import { Link } from "react-router";
 
@@ -6,6 +10,15 @@ import AdminLink from "./AdminLink";
 
 
 class HistoryRow extends Component {
+  props: {
+    bid: string,
+    entry: ResourceHistoryEntry,
+  };
+
+  state: {
+    open: boolean
+  };
+
   constructor(props) {
     super(props);
     this.state = {open: false};
@@ -66,11 +79,12 @@ class HistoryRow extends Component {
 }
 
 
-function FilterInfo({location}) {
+function FilterInfo(props) {
+  const {location}: {location: RouteLocation} = props;
   const {pathname, query: {since}} = location;
   return (
     <p>
-      Since {humanDate(since)}.
+      Since {since ? humanDate(since) : ""}.
       {" "}
       <Link to={pathname}>View all entries</Link>
     </p>
@@ -78,6 +92,12 @@ function FilterInfo({location}) {
 }
 
 export default class HistoryTable extends Component {
+  props: {
+    bid: string,
+    location: RouteLocation,
+    history: Object[],
+  };
+
   render() {
     const {history, bid, location} = this.props;
     const isFiltered = !!location.query.since;

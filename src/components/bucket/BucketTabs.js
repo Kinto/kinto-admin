@@ -1,9 +1,19 @@
+/* @flow */
+import type { Capabilities } from "../../types";
+
 import React, { Component } from "react";
 
 import AdminLink from "../AdminLink";
 
 
 export default class BucketTabs extends Component {
+  props: {
+    bid: string,
+    selected: "collections" | "groups" | "attributes" | "permissions" | "history",
+    capabilities: Capabilities,
+    children?: any,
+  };
+
   render() {
     const {bid, selected, capabilities, children} = this.props;
 

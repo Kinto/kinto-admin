@@ -1,3 +1,4 @@
+/* @flow */
 import React, { Component } from "react";
 import Form from "react-jsonschema-form";
 
@@ -24,7 +25,14 @@ function validate(json, errors) {
 }
 
 export default class JSONRecordForm extends Component {
-  onSubmit = (data) => {
+  props: {
+    disabled: boolean,
+    record: string, // JSON string representation of a record data
+    onSubmit: (data: Object) => void,
+    children?: any,
+  };
+
+  onSubmit = (data: {formData: string}) => {
     this.props.onSubmit({...data, formData: JSON.parse(data.formData)});
   }
 

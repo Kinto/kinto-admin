@@ -1,3 +1,6 @@
+/* @flow */
+import type { SessionState, BucketState, BucketData } from "../../types";
+
 import React, { Component } from "react";
 
 import BucketForm from "./BucketForm";
@@ -5,6 +8,12 @@ import Spinner from "../Spinner";
 
 
 export default class BucketCreate extends Component {
+  props: {
+    session: SessionState,
+    bucket: BucketState,
+    createBucket: (bid: string, data: BucketData) => void,
+  };
+
   render() {
     const {session, bucket, createBucket} = this.props;
     const {busy} = session;

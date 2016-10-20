@@ -1,3 +1,11 @@
+/* @flow */
+import type {
+  SessionState,
+  BucketState,
+  CollectionState,
+  CollectionData,
+} from "../../types";
+
 import React, { Component } from "react";
 import { Link } from "react-router";
 import Form from "react-jsonschema-form";
@@ -63,7 +71,11 @@ function DeleteForm({cid, onSubmit}) {
         <Form
           schema={deleteSchema}
           validate={validate}
-          onSubmit={({formData}) => onSubmit(formData)}>
+          onSubmit={({formData}) => {
+            if (typeof onSubmit === "function") {
+              onSubmit(formData);
+            }
+          }}>
           <button type="submit" className="btn btn-danger">
             <i className="glyphicon glyphicon-trash"/>{" "}
             Delete collection
@@ -225,7 +237,17 @@ function validate({schema, uiSchema, displayFields}, errors) {
 }
 
 export default class CollectionForm extends Component {
-  onSubmit = ({formData}) => {
+  props: {
+    cid?: string,
+    session: SessionState,
+    bucket: BucketState,
+    collection: CollectionState,
+    deleteCollection?: (cid: string) => void,
+    onSubmit: (formData: CollectionData) => void,
+    formData?: CollectionData,
+  };
+
+  onSubmit = ({formData}: {formData: Object}) => {
     this.props.onSubmit({
       ...formData,
       // Parse JSON fields so they can be sent to the server
@@ -234,7 +256,7 @@ export default class CollectionForm extends Component {
     });
   }
 
-  get allowEditing() {
+  get allowEditing(): boolean {
     const {formData, session, bucket, collection} = this.props;
     const creation = !formData;
     if (creation) {

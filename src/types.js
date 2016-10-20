@@ -4,6 +4,14 @@ export type Action = {
   type: string
 };
 
+export type Attachment = {
+  location: string,
+  filename: string,
+  size: number,
+  hash: string,
+  mimetype: string,
+};
+
 export type AuthData = BasicAuth | TokenAuth;
 
 export type BasicAuth = {
@@ -19,7 +27,7 @@ export type BucketState = {
   busy: boolean,
   data: BucketData,
   permissions: BucketPermissions,
-  history: Object[],
+  history: ResourceHistoryEntry[],
   historyLoaded: boolean,
   collections: CollectionData[],
   collectionsLoaded: boolean,
@@ -44,6 +52,16 @@ export type BucketResource = {
   permissions: BucketPermissions,
 };
 
+export type Capabilities = {
+  attachements?: Object,
+  changes?: Object,
+  default_bucket?: Object,
+  fxa?: Object,
+  history?: Object,
+  permissions_endpoint?: Object,
+  schema?: Object,
+};
+
 export type ClientError = {
   message: string,
   data: {
@@ -57,6 +75,11 @@ export type ClientError = {
   }
 };
 
+export type HistoryFilters = {
+  since?: string,
+  resource_name?: string,
+};
+
 export type CollectionState = {
   busy: boolean,
   data: CollectionData,
@@ -66,7 +89,7 @@ export type CollectionState = {
   recordsLoaded: boolean,
   hasNextRecords: boolean,
   listNextRecords: ?Function,
-  history: Object[],
+  history: ResourceHistoryEntry[],
   historyLoaded: boolean,
 };
 
@@ -81,6 +104,7 @@ export type CollectionData = {
   },
   displayFields?: ?string[],
   sort?: string,
+  cache_expires?: number,
 };
 
 export type CollectionPermissions = {
@@ -95,16 +119,17 @@ export type CollectionResource = {
 };
 
 export type GroupState = {
+  busy: boolean,
   data?: Object,
   permissions: GroupPermissions,
-  history: Object[],
+  history: ResourceHistoryEntry[],
   historyLoaded: boolean,
 };
 
 export type GroupData = {
   id?: string,
   last_modified?: number,
-  members?: ?string[],
+  members: string[],
 };
 
 export type GroupPermissions = {
@@ -126,16 +151,25 @@ export type Notification = {
 
 export type Notifications = Notification[];
 
+export type Permissions =
+  BucketPermissions
+  | GroupPermissions
+  | CollectionPermissions
+  | RecordPermissions;
+
 export type RecordState = {
   busy: boolean,
   data: RecordData,
   permissions: RecordPermissions,
+  history: ResourceHistoryEntry[],
+  historyLoaded: boolean,
 };
 
 export type RecordData = {
   id?: string,
   last_modified?: number,
-  schema?: number
+  schema?: number,
+  attachment?: Attachment,
 };
 
 export type RecordPermissions = {
@@ -148,11 +182,53 @@ export type RecordResource = {
   permissions: RecordPermissions,
 };
 
+export type ResourceHistoryEntry = {
+  action: "create" | "update" | "delete",
+  collection_id?: string,
+  group_id?: string,
+  record_id?: string,
+  date: string,
+  id: string,
+  last_modified: number,
+  resource_name: string,
+  target: Object,
+  timestamp: number,
+  uri: string,
+  user_id: string,
+};
+
+export type EmptyRouteParams = {};
+
+export type BucketRouteParams = {
+  bid: string,
+};
+
+export type CollectionRouteParams = {
+  bid: string,
+  cid: string,
+};
+
+export type GroupRouteParams = {
+  bid: string,
+  gid: string,
+};
+
+export type RecordRouteParams = {
+  bid: string,
+  cid: string,
+  rid: string,
+};
+
 export type RouteParams = {
-  bid: ?string,
-  cid: ?string,
-  gid: ?string,
-  rid: ?string,
+  bid?: string,
+  cid?: string,
+  gid?: string,
+  rid?: string,
+};
+
+export type RouteLocation = {
+  pathname: string,
+  query: {since?: string}
 };
 
 export type RouteResources = {
@@ -173,8 +249,8 @@ export type SessionState = {
 };
 
 export type ServerInfo = {
-  capabilities: Object,
-  user: {
+  capabilities: Capabilities,
+  user?: {
     id?: string,
     bucket?: string,
   }

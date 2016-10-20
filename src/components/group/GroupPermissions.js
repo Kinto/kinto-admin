@@ -1,3 +1,13 @@
+/* @flow */
+import type {
+  Capabilities,
+  SessionState,
+  BucketState,
+  GroupState,
+  GroupRouteParams,
+  GroupPermissions,
+} from "../../types";
+
 import React, { Component } from "react";
 
 import Spinner from "../Spinner";
@@ -6,14 +16,27 @@ import PermissionsForm from "../PermissionsForm";
 import { canEditGroup } from "../../permission";
 
 
-export default class GroupPermissions extends Component {
-  onSubmit = ({formData}) => {
+export default class GroupPermissions_ extends Component {
+  props: {
+    params: GroupRouteParams,
+    session: SessionState,
+    bucket: BucketState,
+    group: GroupState,
+    capabilities: Capabilities,
+    updateGroup: (
+      bid: string,
+      gid: string,
+      data: {permissions: GroupPermissions}
+    ) => void,
+  };
+
+  onSubmit = ({formData}: {formData: GroupPermissions}) => {
     const {params, updateGroup} = this.props;
     const {bid, gid} = params;
     updateGroup(bid, gid, {permissions: formData});
   }
 
-  get readonly() {
+  get readonly(): boolean {
     const {session, bucket, group} = this.props;
     return !canEditGroup(session, bucket, group);
   }

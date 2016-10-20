@@ -566,6 +566,7 @@ describe("bucket sagas", () => {
         expect(listBucketHistory.next().value)
           .eql(call([bucket, bucket.listHistory], {
             filters: {
+              resource_name: undefined,
               exclude_resource_name: "record"
             },
             since: undefined,
@@ -579,11 +580,25 @@ describe("bucket sagas", () => {
       });
 
       it("should filter from timestamp if provided", () => {
-        const action = actions.listBucketHistory("bucket", 42);
+        const action = actions.listBucketHistory("bucket", {since: 42});
         const historySaga = saga.listBucketHistory(() => {}, action);
         expect(historySaga.next().value)
           .eql(call([bucket, bucket.listHistory], {
             filters: {
+              resource_name: undefined,
+              exclude_resource_name: "record"
+            },
+            since: 42,
+          }));
+      });
+
+      it("should filter by resource_name if provided", () => {
+        const action = actions.listBucketHistory("bucket", {since: 42, resource_name: "bucket"});
+        const historySaga = saga.listBucketHistory(() => {}, action);
+        expect(historySaga.next().value)
+          .eql(call([bucket, bucket.listHistory], {
+            filters: {
+              resource_name: "bucket",
               exclude_resource_name: "record"
             },
             since: 42,

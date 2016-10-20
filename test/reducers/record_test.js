@@ -80,7 +80,9 @@ describe("record reducer", () => {
         permissions: {
           write: [1],
           read: [2],
-        }
+        },
+        history: [1, 2],
+        historyLoaded: true,
       }, {type: RECORD_RESET}))
         .eql({
           busy: false,
@@ -88,7 +90,9 @@ describe("record reducer", () => {
           permissions: {
             write: [],
             read: [],
-          }
+          },
+          history: [],
+          historyLoaded: false,
         });
     });
   });

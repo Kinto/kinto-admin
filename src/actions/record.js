@@ -1,6 +1,9 @@
 /* @flow */
 
-import type { Action } from "../types";
+import type {
+  Action,
+  HistoryFilters
+} from "../types";
 
 import {
   RECORD_BUSY,
@@ -18,8 +21,8 @@ export function resetRecord(): Action {
   return {type: RECORD_RESET};
 }
 
-export function listRecordHistory(bid: string, cid: string, rid: string, since: number): Action {
-  return {type: RECORD_HISTORY_REQUEST, bid, cid, rid, since};
+export function listRecordHistory(bid: string, cid: string, rid: string, filters: HistoryFilters = {}): Action {
+  return {type: RECORD_HISTORY_REQUEST, bid, cid, rid, filters};
 }
 
 export function listRecordHistorySuccess(history: Object[]): Action {

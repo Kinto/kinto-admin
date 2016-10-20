@@ -21,7 +21,9 @@ const INITIAL_STATE: RecordState = {
   permissions: {
     read: [],
     write: [],
-  }
+  },
+  history: [],
+  historyLoaded: false,
 };
 
 function load(state: RecordState, record: RecordResource): RecordState {

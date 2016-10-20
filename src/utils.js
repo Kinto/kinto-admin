@@ -19,7 +19,7 @@ export function isObject(thing: any): boolean {
   return typeof thing === "object" && thing !== null && !Array.isArray(thing);
 }
 
-export function timeago(date: string): string {
+export function timeago(date: string | number): string {
   // Show relative time according to current timezone.
   return _timeago().format(new Date(date));
 }
@@ -187,7 +187,7 @@ export function renderDisplayField(record: Object, displayField: string): any {
   return "<unknown>";
 }
 
-export function humanDate(since: string): string {
+export function humanDate(since: string | number): string {
   return new Date(parseInt(since, 10)).toLocaleDateString("en-GB", {
     timeZone: "UTC",
     weekday: "long",
