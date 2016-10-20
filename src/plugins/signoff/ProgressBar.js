@@ -16,7 +16,7 @@ export class ProgressBar extends Component {
 
 export function ProgressStep({label, currentStep, step, children}) {
   const status = currentStep == step ? "active"
-                                     : currentStep < step ? "complete"
+                                     : step < currentStep ? "complete"
                                                           : "disabled";
   return (
     <div className={`col-xs-3 bs-wizard-step ${status}`} key={step}>

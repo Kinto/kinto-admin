@@ -255,14 +255,14 @@ class SignoffToolBar extends React.Component {
   }
 }
 
-function WorkInProgress({active, requestReview, source}) {
+function WorkInProgress({label, active, currentStep, step, requestReview, source}) {
   const {
     last_author: lastAuthor,
     changes=[]
   } = source;
   const {last_modified: lastChange} = changes[0] || {};
   return (
-    <ProgressStep>
+    <ProgressStep label={label} currentStep={currentStep} step={step}>
       {lastAuthor ?
        <ul>
          <li><strong>Author: </strong> {lastAuthor}</li>
@@ -277,7 +277,7 @@ function WorkInProgress({active, requestReview, source}) {
   );
 }
 
-function Review({active, approveChanges, declineChanges, source, preview}) {
+function Review({label, active, currentStep, step, approveChanges, declineChanges, source, preview}) {
   const {
     bucket: bid,
     collection: cid,
@@ -298,7 +298,7 @@ function Review({active, approveChanges, declineChanges, source, preview}) {
   }
 
   return (
-    <ProgressStep>
+    <ProgressStep label={label} currentStep={currentStep} step={step}>
       {lastEditor ?
        <ul>
          <li><strong>Editor: </strong> {lastEditor}</li>
@@ -339,11 +339,11 @@ function DiffStats({changes}) {
   );
 }
 
-function Signed({active, approveChanges, source, destination}) {
+function Signed({label, active, currentStep, step, approveChanges, source, destination}) {
   const {last_reviewer: lastReviewer} = source;
   const {last_modified: lastChange} = destination;
   return (
-    <ProgressStep>
+    <ProgressStep label={label} currentStep={currentStep} step={step}>
       {lastChange ?
        <ul>
          <li><strong>Reviewer: </strong>{lastReviewer}</li>
