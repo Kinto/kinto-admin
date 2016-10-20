@@ -1,6 +1,11 @@
 /* @flow */
 
-import type { Action, RecordData, RecordResource } from "../types";
+import type {
+  Action,
+  RecordData,
+  RecordResource,
+  HistoryFilters
+} from "../types";
 
 import {
   ATTACHMENT_DELETE_REQUEST,
@@ -42,8 +47,8 @@ export function listRecordsSuccess(
   return {type: COLLECTION_RECORDS_SUCCESS, records, hasNextRecords, listNextRecords};
 }
 
-export function listCollectionHistory(bid: string, cid: string, params: Object = {}): Action {
-  return {type: COLLECTION_HISTORY_REQUEST, bid, cid, params};
+export function listCollectionHistory(bid: string, cid: string, filters: HistoryFilters = {}): Action {
+  return {type: COLLECTION_HISTORY_REQUEST, bid, cid, filters};
 }
 
 export function listCollectionHistorySuccess(history: Object[]): Action {

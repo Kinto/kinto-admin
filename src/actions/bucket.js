@@ -7,7 +7,10 @@ import type {
   CollectionData,
   CollectionResource,
   GroupData,
-  GroupResource } from "../types";
+  GroupResource,
+  HistoryFilters
+} from "../types";
+
 import {
   BUCKET_BUSY,
   BUCKET_COLLECTIONS_REQUEST,
@@ -65,8 +68,8 @@ export function listBucketGroupsSuccess(groups: Object[]): Action {
   return {type: BUCKET_GROUPS_SUCCESS, groups};
 }
 
-export function listBucketHistory(bid: string, params: Object = {}): Action {
-  return {type: BUCKET_HISTORY_REQUEST, bid, params};
+export function listBucketHistory(bid: string, filters: HistoryFilters = {}): Action {
+  return {type: BUCKET_HISTORY_REQUEST, bid, filters};
 }
 
 export function listBucketHistorySuccess(history: Object[]): Action {
