@@ -94,6 +94,7 @@ function *onCollectionRecordsRequest(getState, action) {
 
   // Workflow component state.
   const {
+    status,
     last_author,
     last_editor,
     last_reviewer,
@@ -106,6 +107,7 @@ function *onCollectionRecordsRequest(getState, action) {
         last_author,
         last_editor,
         last_reviewer,
+        status,
         last_modified: sourceData.last_modified,
         changes: sourceChanges
       },
