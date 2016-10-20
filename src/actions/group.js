@@ -1,6 +1,9 @@
 /* @flow */
 
-import type { Action } from "../types";
+import type {
+  Action,
+  HistoryFilters
+} from "../types";
 
 import {
   GROUP_BUSY,
@@ -18,8 +21,8 @@ export function resetGroup(): Action {
   return {type: GROUP_RESET};
 }
 
-export function listGroupHistory(bid: string, gid: string, since: number): Action {
-  return {type: GROUP_HISTORY_REQUEST, bid, gid, since};
+export function listGroupHistory(bid: string, gid: string, filters: HistoryFilters = {}): Action {
+  return {type: GROUP_HISTORY_REQUEST, bid, gid, filters};
 }
 
 export function listGroupHistorySuccess(history: Object[]): Action {

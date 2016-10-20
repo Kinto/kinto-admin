@@ -75,6 +75,11 @@ export type ClientError = {
   }
 };
 
+export type HistoryFilters = {
+  since?: string,
+  resource_name?: string,
+};
+
 export type CollectionState = {
   busy: boolean,
   data: CollectionData,

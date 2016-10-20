@@ -31,7 +31,7 @@ describe("record sagas", () => {
       });
 
       it("should filter from timestamp if provided", () => {
-        const action = actions.listRecordHistory("bucket", "collection", "record", 42);
+        const action = actions.listRecordHistory("bucket", "collection", "record", {since: 42});
         const historySaga = saga.listHistory(() => {}, action);
         expect(historySaga.next().value)
           .eql(call([client, client.listHistory], {
