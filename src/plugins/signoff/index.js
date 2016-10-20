@@ -8,7 +8,7 @@ import { getClient } from "../../client";
 import { routeLoadSuccess } from "../../actions/route";
 import { notifySuccess, notifyError } from "../../actions/notifications";
 import { canEditCollection } from "../../permission";
-import ProgressBar from "./ProgressBar.js";
+import { ProgressBar, ProgressStep } from "./ProgressBar.js";
 import * as constants from "../../constants";
 import { timeago, humanDate } from "../../utils";
 import AdminLink from "../../components/AdminLink";
@@ -225,26 +225,31 @@ class SignoffToolBar extends React.Component {
 
     // Default status is request review
     const step = {"to-review": 1, "signed": 2}[status] || 0;
-    const steps = [{
-      label: "Work in progress",
-      details: <WorkInProgress active={step === 0 && canEdit}
-                               requestReview={requestReview}
-                               source={source} />
-    }, {
-      label: "Waiting review",
-      details: <Review active={step === 1 && canEdit}
-                       approveChanges={approveChanges}
-                       declineChanges={declineChanges}
-                       source={source}
-                       preview={preview} />
-    }, {
-      label: "Signed",
-      details: <Signed active={step === 2 && canEdit}
-                       approveChanges={approveChanges}
-                       source={source}
-                       destination={destination} />
-    }];
-    return <ProgressBar active={step} steps={steps}/>;
+    return (
+      <ProgressBar>
+        <WorkInProgress label="Work in progress"
+                        step={0}
+                        currentStep={step}
+                        active={step == 0 && canEdit}
+                        requestReview={requestReview}
+                        source={source} />
+        <Review label="Waiting review"
+                step={1}
+                currentStep={step}
+                active={step == 1 && canEdit}
+                approveChanges={approveChanges}
+                declineChanges={declineChanges}
+                source={source}
+                preview={preview} />
+        <Signed label="Signed"
+                step={2}
+                currentStep={step}
+                active={step == 2 && canEdit}
+                approveChanges={approveChanges}
+                source={source}
+                destination={destination} />
+      </ProgressBar>
+    );
   }
 }
 
@@ -255,7 +260,7 @@ function WorkInProgress({active, requestReview, source}) {
   } = source;
   const {last_modified: lastChange} = changes[0] || {};
   return (
-    <div>
+    <ProgressStep>
       {lastAuthor ?
        <ul>
          <li><strong>Author: </strong> {lastAuthor}</li>
@@ -266,7 +271,7 @@ function WorkInProgress({active, requestReview, source}) {
                onClick={requestReview}>
         <i className="glyphicon glyphicon-comment"></i> Request review
        </button> : null}
-    </div>
+    </ProgressStep>
   );
 }
 
@@ -291,7 +296,7 @@ function Review({active, approveChanges, declineChanges, source, preview}) {
   }
 
   return (
-    <div>
+    <ProgressStep>
       {lastEditor ?
        <ul>
          <li><strong>Editor: </strong> {lastEditor}</li>
@@ -317,7 +322,7 @@ function Review({active, approveChanges, declineChanges, source, preview}) {
            <i className="glyphicon glyphicon-remove"></i> Decline
          </button>
        </div> : null}
-    </div>
+    </ProgressStep>
   );
 }
 
@@ -336,7 +341,7 @@ function Signed({active, approveChanges, source, destination}) {
   const {last_reviewer: lastReviewer} = source;
   const {last_modified: lastChange} = destination;
   return (
-    <div>
+    <ProgressStep>
       {lastChange ?
        <ul>
          <li><strong>Reviewer: </strong>{lastReviewer}</li>
@@ -347,7 +352,7 @@ function Signed({active, approveChanges, source, destination}) {
                onClick={approveChanges}>
          <i className="glyphicon glyphicon-repeat"></i> Re-sign
        </button> : null}
-    </div>
+    </ProgressStep>
   );
 }
 
