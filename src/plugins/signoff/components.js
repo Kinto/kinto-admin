@@ -158,7 +158,7 @@ function Review({label, canEdit, currentStep, step, approveChanges, declineChang
   // We use the source last status change as review request datetime.
   let link = "disabled";
   let {lastStatusChanged: lastRequested} = source;
-  if (preview.bid && preview.cid) {
+  if (preview && preview.bid && preview.cid) {
     lastRequested = preview.lastRequested;
     const {bid, cid} = preview;
     link = <AdminLink name="collection:records" params={{bid, cid}}>{`${bid}/${cid}`}</AdminLink>;

@@ -89,9 +89,10 @@ function* fetchWorkflowInfo(source, preview, destination) {
   // Here, `lastChange` gives us the timestamp of the most recently changed record.
   // Which can be different from `sourceAttributes.last_modified` since the collection
   // attributes can be changed independently from the records.
+  const lastUpdated = sourceChanges.length > 0 ? sourceChanges[0].last_modified : null;
   const changes = {
     since: lastSigned,
-    lastUpdated: sourceChanges[0].last_modified,
+    lastUpdated,
     deleted: sourceChanges.filter((r) => r.deleted).length,
     updated: sourceChanges.filter((r) => !r.deleted).length,
   };
