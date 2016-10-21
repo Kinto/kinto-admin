@@ -85,6 +85,14 @@ export default class SignoffToolBar extends React.Component {
   }
 }
 
+function Date({date} : {date: number}) {
+  return <span title={humanDate(date)}>{timeago(date)}</span>;
+}
+
+//
+// Work in progress
+//
+
 function WorkInProgress({label,
                          canEdit,
                          currentStep,
@@ -100,20 +108,33 @@ function WorkInProgress({label,
   const {lastAuthor, changes={}} = source;
   const {lastUpdated} = changes;
   return (
-    <ProgressStep label={label} currentStep={currentStep} step={step}>
-      {lastAuthor ?
-       <ul>
-         <li><strong>Author: </strong> {lastAuthor}</li>
-         <li><strong>Updated: </strong><span title={humanDate(lastUpdated)}>{timeago(lastUpdated)}</span></li>
-       </ul> : null}
-      {active ?
-       <button className="btn btn-info"
-               onClick={requestReview}>
-        <i className="glyphicon glyphicon-comment"></i> Request review
-       </button> : null}
+    <ProgressStep {...{label, currentStep, step}}>
+      {lastAuthor ? <WorkInProgressInfos {...{lastAuthor, lastUpdated}}/> : null}
+      {active ? <RequestReviewButton onClick={requestReview}/> : null}
     </ProgressStep>
   );
 }
+
+function WorkInProgressInfos({lastAuthor, lastUpdated}) {
+  return (
+    <ul>
+      <li><strong>Author: </strong> {lastAuthor}</li>
+      <li><strong>Updated: </strong><Date date={lastUpdated}/></li>
+    </ul>
+  );
+}
+
+function RequestReviewButton(props : Object) {
+  return (
+    <button className="btn btn-info" {...props}>
+     <i className="glyphicon glyphicon-comment"></i> Request review
+    </button>
+  );
+}
+
+//
+// Review
+//
 
 function Review({label,
                  canEdit,
@@ -142,36 +163,32 @@ function Review({label,
     link = <AdminLink name="collection:records" params={{bid, cid}}>{`${bid}/${cid}`}</AdminLink>;
   }
 
+  const {lastEditor} = source;
+  return (
+    <ProgressStep {...{label, currentStep, step}}>
+      {lastEditor ? <ReviewInfos {...{active, source, lastRequested, link}}/> : null}
+      {active ? <ReviewButtons onApprove={approveChanges} onDecline={declineChanges}/> : null}
+    </ProgressStep>
+  );
+}
+
+function ReviewInfos({active, source, lastRequested, link} : {active: boolean, source: SourceInfo, lastRequested: number, link: any}) {
   const {bid, cid, lastEditor, changes={}} = source;
   const {since, deleted, updated} = changes;
   return (
-    <ProgressStep label={label} currentStep={currentStep} step={step}>
-      {lastEditor ?
-       <ul>
-         <li><strong>Editor: </strong> {lastEditor}</li>
-         <li><strong>Requested: </strong><span title={humanDate(lastRequested)}>{timeago(lastRequested)}</span></li>
-         <li><strong>Preview: </strong> {link}</li>
-         {active ?
-          <li>
-            <strong>Changes: </strong>
-            <DiffStats updated={updated} deleted={deleted}/>{" "}
-            <AdminLink name="collection:history"
-                       params={{bid, cid}}
-                       query={{since, resource_name: "record"}}>details...</AdminLink>
-          </li> : null}
-       </ul> : null}
+    <ul>
+      <li><strong>Editor: </strong> {lastEditor}</li>
+      <li><strong>Requested: </strong><Date date={lastRequested}/></li>
+      <li><strong>Preview: </strong> {link}</li>
       {active ?
-       <div className="btn-group">
-         <button className="btn btn-success"
-                 onClick={approveChanges}>
-           <i className="glyphicon glyphicon-ok"></i> Approve
-         </button>
-         <button className="btn btn-danger"
-                 onClick={declineChanges}>
-           <i className="glyphicon glyphicon-remove"></i> Decline
-         </button>
-       </div> : null}
-    </ProgressStep>
+       <li>
+         <strong>Changes: </strong>
+         <DiffStats updated={updated} deleted={deleted}/>{" "}
+         <AdminLink name="collection:history"
+                    params={{bid, cid}}
+                    query={{since, resource_name: "record"}}>details...</AdminLink>
+       </li> : null}
+    </ul>
   );
 }
 
@@ -183,6 +200,25 @@ function DiffStats({updated, deleted} : {updated: number, deleted: number}) {
     </span>
   );
 }
+
+function ReviewButtons({onApprove, onDecline} : {onApprove: () => void, onDecline: () => void}) {
+  return (
+    <div className="btn-group">
+      <button className="btn btn-success"
+              onClick={onApprove}>
+        <i className="glyphicon glyphicon-ok"></i> Approve
+      </button>
+      <button className="btn btn-danger"
+              onClick={onDecline}>
+        <i className="glyphicon glyphicon-remove"></i> Decline
+      </button>
+    </div>
+  );
+}
+
+//
+// Signed
+//
 
 function Signed({label,
                  canEdit,
@@ -199,23 +235,33 @@ function Signed({label,
                                  destination: DestinationInfo}) {
   const active = (step == currentStep && canEdit);
   const {lastReviewer} = source;
+  const {lastSigned} = destination;
+  return (
+    <ProgressStep {...{label, currentStep, step}}>
+      {lastSigned ? <SignedInfos {...{lastReviewer, destination}} /> : null}
+      {active ? <ReSignButton onClick={reSign}/> : null}
+    </ProgressStep>
+  );
+}
+
+function SignedInfos({lastReviewer, destination} : {lastReviewer: string, destination: DestinationInfo}) {
   const {lastSigned, bid, cid} = destination;
   return (
-    <ProgressStep label={label} currentStep={currentStep} step={step}>
-      {lastSigned ?
-       <ul>
-         <li><strong>Reviewer: </strong>{lastReviewer}</li>
-         <li><strong>Signed: </strong><span title={humanDate(lastSigned)}>{timeago(lastSigned)}</span></li>
-         <li>
-           <strong>Destination: </strong>
-           <AdminLink name="collection:records" params={{bid, cid}}>{`${bid}/${cid}`}</AdminLink>
-         </li>
-      </ul> : null}
-      {active ?
-       <button className="btn btn-info"
-               onClick={reSign}>
-         <i className="glyphicon glyphicon-repeat"></i> Re-sign
-       </button> : null}
-    </ProgressStep>
+    <ul>
+      <li><strong>Reviewer: </strong>{lastReviewer}</li>
+      <li><strong>Signed: </strong><Date date={lastSigned}/></li>
+      <li>
+        <strong>Destination: </strong>
+        <AdminLink name="collection:records" params={{bid, cid}}>{`${bid}/${cid}`}</AdminLink>
+      </li>
+    </ul>
+  );
+}
+
+function ReSignButton(props: Object) {
+  return (
+    <button className="btn btn-info" {...props}>
+      <i className="glyphicon glyphicon-repeat"></i> Re-sign
+    </button>
   );
 }
