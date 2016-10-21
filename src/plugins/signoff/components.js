@@ -37,7 +37,8 @@ export default class SignoffToolBar extends React.Component {
       // Actions
       requestReview,
       approveChanges,
-      declineChanges} = this.props;
+      declineChanges
+    } = this.props;
 
     const canEdit = canEditCollection(sessionState, bucketState, collectionState);
 
@@ -85,26 +86,23 @@ export default class SignoffToolBar extends React.Component {
   }
 }
 
-function Date({date} : {date: number}) {
-  return <span title={humanDate(date)}>{timeago(date)}</span>;
+function HumanDate({timestamp} : {timestamp: number}) {
+  return <span title={humanDate(timestamp)}>{timeago(timestamp)}</span>;
 }
 
 //
 // Work in progress
 //
 
-function WorkInProgress({label,
-                         canEdit,
-                         currentStep,
-                         step,
-                         requestReview,
-                         source} : {label: string,
-                                    canEdit: boolean,
-                                    currentStep: number,
-                                    step: number,
-                                    requestReview: () => void,
-                                    source: SourceInfo}) {
-  const active = (step == currentStep && canEdit);
+type WorkInProgressProps = {
+  label: string,
+  canEdit: boolean,
+  currentStep: number,
+  step: number,
+  requestReview: () => void,
+  source: SourceInfo};
+function WorkInProgress({label, canEdit, currentStep, step, requestReview, source} : WorkInProgressProps) {
+  const active = step == currentStep && canEdit;
   const {lastAuthor, changes={}} = source;
   const {lastUpdated} = changes;
   return (
@@ -119,7 +117,7 @@ function WorkInProgressInfos({lastAuthor, lastUpdated}) {
   return (
     <ul>
       <li><strong>Author: </strong> {lastAuthor}</li>
-      <li><strong>Updated: </strong><Date date={lastUpdated}/></li>
+      <li><strong>Updated: </strong><HumanDate timestamp={lastUpdated}/></li>
     </ul>
   );
 }
@@ -127,7 +125,7 @@ function WorkInProgressInfos({lastAuthor, lastUpdated}) {
 function RequestReviewButton(props : Object) {
   return (
     <button className="btn btn-info" {...props}>
-     <i className="glyphicon glyphicon-comment"></i> Request review
+     <i className="glyphicon glyphicon-comment"/> Request review
     </button>
   );
 }
@@ -136,22 +134,17 @@ function RequestReviewButton(props : Object) {
 // Review
 //
 
-function Review({label,
-                 canEdit,
-                 currentStep,
-                 step,
-                 approveChanges,
-                 declineChanges,
-                 source,
-                 preview} : {label: string,
-                             canEdit: boolean,
-                             currentStep: number,
-                             step: number,
-                             approveChanges: () => void,
-                             declineChanges: () => void,
-                             source: SourceInfo,
-                             preview: PreviewInfo}) {
-  const active = (step == currentStep && canEdit);
+type ReviewProps = {
+  label: string,
+  canEdit: boolean,
+  currentStep: number,
+  step: number,
+  approveChanges: () => void,
+  declineChanges: () => void,
+  source: SourceInfo,
+  preview: PreviewInfo};
+function Review({label, canEdit, currentStep, step, approveChanges, declineChanges, source, preview} : ReviewProps) {
+  const active = step == currentStep && canEdit;
 
   // If preview disabled, the preview object is empty.
   // We use the source last status change as review request datetime.
@@ -172,13 +165,18 @@ function Review({label,
   );
 }
 
-function ReviewInfos({active, source, lastRequested, link} : {active: boolean, source: SourceInfo, lastRequested: number, link: any}) {
+type ReviewInfosProps = {
+  active: boolean,
+  source: SourceInfo,
+  lastRequested: number,
+  link: any};
+function ReviewInfos({active, source, lastRequested, link} : ReviewInfosProps) {
   const {bid, cid, lastEditor, changes={}} = source;
   const {since, deleted, updated} = changes;
   return (
     <ul>
       <li><strong>Editor: </strong> {lastEditor}</li>
-      <li><strong>Requested: </strong><Date date={lastRequested}/></li>
+      <li><strong>Requested: </strong><HumanDate timestamp={lastRequested}/></li>
       <li><strong>Preview: </strong> {link}</li>
       {active ?
        <li>
@@ -220,20 +218,16 @@ function ReviewButtons({onApprove, onDecline} : {onApprove: () => void, onDeclin
 // Signed
 //
 
-function Signed({label,
-                 canEdit,
-                 currentStep,
-                 step,
-                 reSign,
-                 source,
-                 destination} : {label: string,
-                                 canEdit: boolean,
-                                 currentStep: number,
-                                 step: number,
-                                 reSign: () => void,
-                                 source: SourceInfo,
-                                 destination: DestinationInfo}) {
-  const active = (step == currentStep && canEdit);
+type SignedProps = {
+  label: string,
+  canEdit: boolean,
+  currentStep: number,
+  step: number,
+  reSign: () => void,
+  source: SourceInfo,
+  destination: DestinationInfo};
+function Signed({label, canEdit, currentStep, step, reSign, source, destination} : SignedProps) {
+  const active = step == currentStep && canEdit;
   const {lastReviewer} = source;
   const {lastSigned} = destination;
   return (
@@ -244,12 +238,16 @@ function Signed({label,
   );
 }
 
-function SignedInfos({lastReviewer, destination} : {lastReviewer: string, destination: DestinationInfo}) {
+
+type SignedInfosProps = {
+  lastReviewer: string,
+  destination: DestinationInfo};
+function SignedInfos({lastReviewer, destination} : SignedInfosProps) {
   const {lastSigned, bid, cid} = destination;
   return (
     <ul>
       <li><strong>Reviewer: </strong>{lastReviewer}</li>
-      <li><strong>Signed: </strong><Date date={lastSigned}/></li>
+      <li><strong>Signed: </strong><HumanDate timestamp={lastSigned}/></li>
       <li>
         <strong>Destination: </strong>
         <AdminLink name="collection:records" params={{bid, cid}}>{`${bid}/${cid}`}</AdminLink>

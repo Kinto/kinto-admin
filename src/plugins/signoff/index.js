@@ -3,8 +3,8 @@ import { takeEvery } from "redux-saga";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import * as globalConstants from "../../constants";
-import * as constants from "./constants";
+import * as adminConstants from "../../plugingConstants";
+import * as pluginConstants from "./constants";
 import * as SignoffActions from "./actions";
 import SignoffToolBar from "./components.js";
 import {
@@ -21,10 +21,10 @@ import "./styles.css";
 //
 
 export const sagas = [
-  [takeEvery, globalConstants.COLLECTION_RECORDS_REQUEST, onCollectionRecordsRequest],
-  [takeEvery, constants.PLUGIN_REVIEW_REQUEST, handleRequestReview],
-  [takeEvery, constants.PLUGIN_DECLINE_REQUEST, handleDeclineChanges],
-  [takeEvery, constants.PLUGIN_SIGNOFF_REQUEST, handleApproveChanges],
+  [takeEvery, adminConstants.COLLECTION_RECORDS_REQUEST, onCollectionRecordsRequest],
+  [takeEvery, pluginConstants.PLUGIN_REVIEW_REQUEST, handleRequestReview],
+  [takeEvery, pluginConstants.PLUGIN_DECLINE_REQUEST, handleDeclineChanges],
+  [takeEvery, pluginConstants.PLUGIN_SIGNOFF_REQUEST, handleApproveChanges],
 ];
 
 //
@@ -42,7 +42,7 @@ const INITIAL_STATE = {
 export const reducers = {
   signoff(state=INITIAL_STATE, action) {
     switch(action.type) {
-      case constants.SIGNOFF_WORKFLOW_INFO: {
+      case pluginConstants.SIGNOFF_WORKFLOW_INFO: {
         const {info: {resource}} = action;
         return {...state, resource};
       }
