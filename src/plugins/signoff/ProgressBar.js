@@ -1,7 +1,12 @@
+/* @flow */
+
 import React, { Component } from "react";
 
-
 export class ProgressBar extends Component {
+  props: {
+    children?: any
+  };
+
   render() {
     const {children} = this.props;
     return (
@@ -14,7 +19,7 @@ export class ProgressBar extends Component {
   }
 }
 
-export function ProgressStep({label, currentStep, step, children}) {
+export function ProgressStep({label, currentStep, step, children} : {label: string, currentStep: number, step: number, children?: any}) {
   const status = currentStep == step ? "active"
                                      : step < currentStep ? "complete"
                                                           : "disabled";

@@ -105,6 +105,7 @@ export type CollectionData = {
   displayFields?: ?string[],
   sort?: string,
   cache_expires?: number,
+  status?: string,
 };
 
 export type CollectionPermissions = {

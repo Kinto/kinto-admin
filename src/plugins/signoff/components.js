@@ -1,3 +1,12 @@
+/* @flow */
+import type { BucketState, SessionState, CollectionState } from "../../types";
+import type {
+  SignoffState,
+  SourceInfo,
+  PreviewInfo,
+  DestinationInfo,
+} from "./types";
+
 import React from "react";
 
 import { canEditCollection } from "../../permission";
@@ -7,6 +16,16 @@ import { ProgressBar, ProgressStep } from "./ProgressBar.js";
 
 
 export default class SignoffToolBar extends React.Component {
+  props: {
+    sessionState: SessionState,
+    bucketState: BucketState,
+    collectionState: CollectionState,
+    signoff: SignoffState,
+    requestReview: () => void,
+    approveChanges: () => void,
+    declineChanges: () => void,
+  };
+
   render() {
     const {
       // Global state
@@ -37,7 +56,7 @@ export default class SignoffToolBar extends React.Component {
     const {source, preview, destination} = resource;
 
     // Default status is request review
-    const step = {"to-review": 1, "signed": 2}[status] || 0;
+    const step = status == "to-review" ? 1 : status == "signed" ? 2 : 0;
     return (
       <ProgressBar>
         <WorkInProgress label="Work in progress"
@@ -58,7 +77,7 @@ export default class SignoffToolBar extends React.Component {
                 step={2}
                 currentStep={step}
                 canEdit={canEdit}
-                approveChanges={approveChanges}
+                reSign={approveChanges}
                 source={source}
                 destination={destination} />
       </ProgressBar>
@@ -66,7 +85,17 @@ export default class SignoffToolBar extends React.Component {
   }
 }
 
-function WorkInProgress({label, canEdit, currentStep, step, requestReview, source}) {
+function WorkInProgress({label,
+                         canEdit,
+                         currentStep,
+                         step,
+                         requestReview,
+                         source} : {label: string,
+                                    canEdit: boolean,
+                                    currentStep: number,
+                                    step: number,
+                                    requestReview: () => void,
+                                    source: SourceInfo}) {
   const active = (step == currentStep && canEdit);
   const {lastAuthor, changes={}} = source;
   const {lastUpdated} = changes;
@@ -86,7 +115,21 @@ function WorkInProgress({label, canEdit, currentStep, step, requestReview, sourc
   );
 }
 
-function Review({label, canEdit, currentStep, step, approveChanges, declineChanges, source, preview}) {
+function Review({label,
+                 canEdit,
+                 currentStep,
+                 step,
+                 approveChanges,
+                 declineChanges,
+                 source,
+                 preview} : {label: string,
+                             canEdit: boolean,
+                             currentStep: number,
+                             step: number,
+                             approveChanges: () => void,
+                             declineChanges: () => void,
+                             source: SourceInfo,
+                             preview: PreviewInfo}) {
   const active = (step == currentStep && canEdit);
 
   // If preview disabled, the preview object is empty.
@@ -132,7 +175,7 @@ function Review({label, canEdit, currentStep, step, approveChanges, declineChang
   );
 }
 
-function DiffStats({updated, deleted}) {
+function DiffStats({updated, deleted} : {updated: number, deleted: number}) {
   return (
     <span className="diffstats">
       {updated > 0 ? <span className="text-green">+{updated}</span> : null}
@@ -141,7 +184,19 @@ function DiffStats({updated, deleted}) {
   );
 }
 
-function Signed({label, canEdit, currentStep, step, approveChanges, source, destination}) {
+function Signed({label,
+                 canEdit,
+                 currentStep,
+                 step,
+                 reSign,
+                 source,
+                 destination} : {label: string,
+                                 canEdit: boolean,
+                                 currentStep: number,
+                                 step: number,
+                                 reSign: () => void,
+                                 source: SourceInfo,
+                                 destination: DestinationInfo}) {
   const active = (step == currentStep && canEdit);
   const {lastReviewer} = source;
   const {lastSigned, bid, cid} = destination;
@@ -158,7 +213,7 @@ function Signed({label, canEdit, currentStep, step, approveChanges, source, dest
       </ul> : null}
       {active ?
        <button className="btn btn-info"
-               onClick={approveChanges}>
+               onClick={reSign}>
          <i className="glyphicon glyphicon-repeat"></i> Re-sign
        </button> : null}
     </ProgressStep>
