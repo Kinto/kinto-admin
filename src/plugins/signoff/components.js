@@ -1,5 +1,9 @@
 /* @flow */
-import type { BucketState, SessionState, CollectionState } from "../../types";
+import type {
+  BucketState,
+  SessionState,
+  CollectionState,
+} from "../../types";
 import type {
   SignoffState,
   SourceInfo,
@@ -100,7 +104,9 @@ type WorkInProgressProps = {
   currentStep: number,
   step: number,
   requestReview: () => void,
-  source: SourceInfo};
+  source: SourceInfo
+};
+
 function WorkInProgress({label, canEdit, currentStep, step, requestReview, source} : WorkInProgressProps) {
   const active = step == currentStep && canEdit;
   const {lastAuthor, changes={}} = source;
@@ -142,7 +148,9 @@ type ReviewProps = {
   approveChanges: () => void,
   declineChanges: () => void,
   source: SourceInfo,
-  preview: PreviewInfo};
+  preview: PreviewInfo
+};
+
 function Review({label, canEdit, currentStep, step, approveChanges, declineChanges, source, preview} : ReviewProps) {
   const active = step == currentStep && canEdit;
 
@@ -169,7 +177,9 @@ type ReviewInfosProps = {
   active: boolean,
   source: SourceInfo,
   lastRequested: number,
-  link: any};
+  link: any,
+};
+
 function ReviewInfos({active, source, lastRequested, link} : ReviewInfosProps) {
   const {bid, cid, lastEditor, changes={}} = source;
   const {since, deleted, updated} = changes;
@@ -225,7 +235,9 @@ type SignedProps = {
   step: number,
   reSign: () => void,
   source: SourceInfo,
-  destination: DestinationInfo};
+  destination: DestinationInfo
+};
+
 function Signed({label, canEdit, currentStep, step, reSign, source, destination} : SignedProps) {
   const active = step == currentStep && canEdit;
   const {lastReviewer} = source;
@@ -241,7 +253,9 @@ function Signed({label, canEdit, currentStep, step, reSign, source, destination}
 
 type SignedInfosProps = {
   lastReviewer: string,
-  destination: DestinationInfo};
+  destination: DestinationInfo,
+};
+
 function SignedInfos({lastReviewer, destination} : SignedInfosProps) {
   const {lastSigned, bid, cid} = destination;
   return (

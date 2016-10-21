@@ -3,10 +3,11 @@ import { takeEvery } from "redux-saga";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import * as adminConstants from "../../plugingConstants";
+import * as adminConstants from "../../constants";
 import * as pluginConstants from "./constants";
 import * as SignoffActions from "./actions";
 import SignoffToolBar from "./components.js";
+import signoffReducer from "./reducer";
 import {
   onCollectionRecordsRequest,
   handleRequestReview,
@@ -15,6 +16,14 @@ import {
 } from "./sagas";
 
 import "./styles.css";
+
+//
+// Reducers
+//
+
+export const reducers = {
+  signoff: signoffReducer
+};
 
 //
 // Sagas
@@ -26,32 +35,6 @@ export const sagas = [
   [takeEvery, pluginConstants.PLUGIN_DECLINE_REQUEST, handleDeclineChanges],
   [takeEvery, pluginConstants.PLUGIN_SIGNOFF_REQUEST, handleApproveChanges],
 ];
-
-//
-// Reducers
-//
-
-const INITIAL_STATE = {
-  resource: {
-    source: {},
-    preview: {},
-    destination: {},
-  }
-};
-
-export const reducers = {
-  signoff(state=INITIAL_STATE, action) {
-    switch(action.type) {
-      case pluginConstants.SIGNOFF_WORKFLOW_INFO: {
-        const {info: {resource}} = action;
-        return {...state, resource};
-      }
-      default: {
-        return state;
-      }
-    }
-  }
-};
 
 //
 // Container
@@ -79,7 +62,6 @@ const SignoffContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(SignoffToolBar);
-
 
 //
 // Plugin register
