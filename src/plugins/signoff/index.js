@@ -232,13 +232,13 @@ class SignoffToolBar extends React.Component {
         <WorkInProgress label="Work in progress"
                         step={0}
                         currentStep={step}
-                        active={step == 0 && canEdit}
+                        canEdit={canEdit}
                         requestReview={requestReview}
                         source={source} />
         <Review label="Waiting review"
                 step={1}
                 currentStep={step}
-                active={step == 1 && canEdit}
+                canEdit={canEdit}
                 approveChanges={approveChanges}
                 declineChanges={declineChanges}
                 source={source}
@@ -246,7 +246,7 @@ class SignoffToolBar extends React.Component {
         <Signed label="Signed"
                 step={2}
                 currentStep={step}
-                active={step == 2 && canEdit}
+                canEdit={canEdit}
                 approveChanges={approveChanges}
                 source={source}
                 destination={destination} />
@@ -255,11 +255,12 @@ class SignoffToolBar extends React.Component {
   }
 }
 
-function WorkInProgress({label, active, currentStep, step, requestReview, source}) {
+function WorkInProgress({label, canEdit, currentStep, step, requestReview, source}) {
   const {
     last_author: lastAuthor,
     changes=[]
   } = source;
+  const active = (step == currentStep && canEdit);
   const {last_modified: lastChange} = changes[0] || {};
   return (
     <ProgressStep label={label} currentStep={currentStep} step={step}>
@@ -277,7 +278,7 @@ function WorkInProgress({label, active, currentStep, step, requestReview, source
   );
 }
 
-function Review({label, active, currentStep, step, approveChanges, declineChanges, source, preview}) {
+function Review({label, canEdit, currentStep, step, approveChanges, declineChanges, source, preview}) {
   const {
     bucket: bid,
     collection: cid,
@@ -286,6 +287,7 @@ function Review({label, active, currentStep, step, approveChanges, declineChange
     changes=[],
   } = source;
 
+  const active = (step == currentStep && canEdit);
   // XXX: take from destination?
   const {last_modified: oldestChange} = changes.length > 0 ? changes[changes.length - 1] : {};
 
@@ -339,9 +341,10 @@ function DiffStats({changes}) {
   );
 }
 
-function Signed({label, active, currentStep, step, approveChanges, source, destination}) {
+function Signed({label, canEdit, currentStep, step, approveChanges, source, destination}) {
   const {last_reviewer: lastReviewer} = source;
   const {last_modified: lastChange} = destination;
+  const active = (step == currentStep && canEdit);
   return (
     <ProgressStep label={label} currentStep={currentStep} step={step}>
       {lastChange ?
