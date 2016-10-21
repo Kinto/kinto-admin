@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { Permissions } from "../types";
+import type { Permissions, GroupData } from "../types";
 
 import React, { Component } from "react";
 import Form from "react-jsonschema-form";
@@ -14,6 +14,7 @@ import {
 export default class PermissionsForm extends Component {
   props: {
     permissions: Permissions,
+    groups: GroupData[],
     acls: string[],
     onSubmit: (data: {formData: Object}) => void,
   };
@@ -31,9 +32,9 @@ export default class PermissionsForm extends Component {
       );
     }
 
-    const {permissions, acls} = this.props;
+    const {permissions, acls, groups} = this.props;
     const formData = permissionsToFormData(permissions);
-    const {schema, uiSchema} = preparePermissionsForm(acls);
+    const {schema, uiSchema} = preparePermissionsForm(acls, groups);
     return (
       <Form className="permissions-form"
             schema={schema}

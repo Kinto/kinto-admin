@@ -42,9 +42,10 @@ export default class CollectionPermissions_ extends Component {
   }
 
   render() {
-    const {params, capabilities, collection} = this.props;
+    const {params, capabilities, collection, bucket} = this.props;
     const {bid, cid} = params;
     const {busy, permissions} = collection;
+    const {groups} = bucket;
     const acls: string[] = [
       "read",
       "write",
@@ -62,6 +63,7 @@ export default class CollectionPermissions_ extends Component {
           capabilities={capabilities}
           selected="permissions">
           <PermissionsForm
+            groups={groups}
             permissions={permissions}
             acls={acls}
             readonly={this.readonly}

@@ -5,6 +5,7 @@ import type {
   BucketState,
   CollectionState,
   GroupState,
+  GroupData,
   RecordState,
 } from "./types";
 
@@ -183,8 +184,9 @@ export function formDataToPermissions(formData: Object) : Object {
   }, {});
 }
 
-export function preparePermissionsForm(permissions: string[]) {
+export function preparePermissionsForm(permissions: string[], groups=[]: GroupData[]) {
   const apiDocURI = "https://kinto.readthedocs.io/en/stable/api/1.x/permissions.html#api-principals";
+  console.log(groups);
   const schema = {
     definitions: {
       permissions: {
@@ -207,6 +209,21 @@ export function preparePermissionsForm(permissions: string[]) {
         title: "Authenticated",
         description: "Permissions for authenticated users",
         $ref: "#/definitions/permissions"
+      },
+      groups: {
+        title: "Groups",
+        type: "object",
+        properties: {
+          ...groups.reduce((acc, group) => {
+            const {id: gid} = group;
+            acc[gid] = {
+              title: gid,
+              description: `Permissions for users of ${gid} group`,
+              $ref: "#/definitions/permissions"
+            };
+            return acc;
+          }, {}),
+        }
       },
       principals: {
         title: "Principals",
@@ -252,6 +269,14 @@ export function preparePermissionsForm(permissions: string[]) {
         }
       }
     },
+    groups: {
+      classNames: "field-groups",
+      ...groups.reduce((acc, group) => {
+        const {id: gid} = group;
+        acc[gid] = {"ui:widget": "checkboxes"};
+        return acc;
+      }, {})
+    }
   };
 
   return {schema, uiSchema};

@@ -393,9 +393,16 @@ form button[type="submit"].btn-primary {
     padding-left: 1em;
     margin-top: -60px;  /* \o/ */
   }
-  .permissions-form .field-principals fieldset {
+  .permissions-form .field-groups fieldset {
     clear: left;
   }
+  .permissions-form .field-groups .checkboxes {
+    float: right;
+    width: 50%;
+    padding-left: 1em;
+    margin-top: -60px;  /* \o/ */
+  }
+
   .permissions-form .field-principals .checkboxes {
     margin-top: -35px;  /* \o/ */
   }

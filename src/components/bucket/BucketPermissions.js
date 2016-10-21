@@ -38,7 +38,7 @@ export default class BucketPermissions_ extends Component {
   render() {
     const {params, capabilities, bucket} = this.props;
     const {bid} = params;
-    const {busy, permissions} = bucket;
+    const {busy, permissions, groups} = bucket;
     const acls = [
       "read",
       "write",
@@ -56,6 +56,7 @@ export default class BucketPermissions_ extends Component {
           capabilities={capabilities}
           selected="permissions">
           <PermissionsForm
+            groups={groups}
             permissions={permissions}
             acls={acls}
             readonly={this.readonly}
