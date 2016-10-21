@@ -91,33 +91,45 @@ function *onCollectionRecordsRequest(getState, action) {
   const {data: sourceChanges} = yield call([colClient, colClient.listRecords], {
     since: lastSigned
   });
+  // Here, `lastChange` gives us the timestamp of the most recently changed record.
+  // Which can be different from `sourceData.last_modified` since the collection
+  // attributes can be changed independently from the records.
+  const changes = {
+    since: lastSigned,
+    lastUpdated: sourceChanges[0].last_modified,
+    deleted: sourceChanges.filter((r) => r.deleted).length,
+    updated: sourceChanges.filter((r) => !r.deleted).length,
+  };
 
   // Workflow component state.
   const {
     status,
-    last_author,
-    last_editor,
-    last_reviewer,
+    last_author: lastAuthor,
+    last_editor: lastEditor,
+    last_reviewer: lastReviewer,
   } = sourceData;
 
   const information = {
     resource: {
       source: {
-        ...source,
-        last_author,
-        last_editor,
-        last_reviewer,
+        bid: source.bucket,
+        cid: source.collection,
+        lastAuthor,
+        lastEditor,
+        lastReviewer,
         status,
-        last_modified: sourceData.last_modified,
-        changes: sourceChanges
+        lastStatusChanged: sourceData.last_modified,
+        changes,
       },
       preview: {
-        ...preview,
-        last_modified: previewData.last_modified,
+        bid: preview.bucket,
+        cid: preview.collection,
+        lastRequested: previewData.last_modified,
       },
       destination: {
-        ...destination,
-        last_modified: destinationData.last_modified,
+        bid: destination.bucket,
+        cid: destination.collection,
+        lastSigned: destinationData.last_modified,
       }
     }
   };
@@ -256,18 +268,15 @@ class SignoffToolBar extends React.Component {
 }
 
 function WorkInProgress({label, canEdit, currentStep, step, requestReview, source}) {
-  const {
-    last_author: lastAuthor,
-    changes=[]
-  } = source;
   const active = (step == currentStep && canEdit);
-  const {last_modified: lastChange} = changes[0] || {};
+  const {lastAuthor, changes={}} = source;
+  const {lastUpdated} = changes;
   return (
     <ProgressStep label={label} currentStep={currentStep} step={step}>
       {lastAuthor ?
        <ul>
          <li><strong>Author: </strong> {lastAuthor}</li>
-         <li><strong>Updated: </strong><span title={humanDate(lastChange)}>{timeago(lastChange)}</span></li>
+         <li><strong>Updated: </strong><span title={humanDate(lastUpdated)}>{timeago(lastUpdated)}</span></li>
        </ul> : null}
       {active ?
        <button className="btn btn-info"
@@ -279,40 +288,34 @@ function WorkInProgress({label, canEdit, currentStep, step, requestReview, sourc
 }
 
 function Review({label, canEdit, currentStep, step, approveChanges, declineChanges, source, preview}) {
-  const {
-    bucket: bid,
-    collection: cid,
-    last_editor: lastEditor,
-    last_modified: sourceLastModified,
-    changes=[],
-  } = source;
-
   const active = (step == currentStep && canEdit);
-  // XXX: take from destination?
-  const {last_modified: oldestChange} = changes.length > 0 ? changes[changes.length - 1] : {};
 
+  // If preview disabled, the preview object is empty.
+  // We use the source last status change as review request datetime.
   let link = "disabled";
-  let lastChange = sourceLastModified;  // If preview disabled, use source timestamp as review request datetime.
-  if (preview.bucket && preview.collection) {
-    const {last_modified, bucket: bid, collection: cid} = preview;
+  let {lastStatusChanged: lastRequested} = source;
+  if (preview.bid && preview.cid) {
+    lastRequested = preview.lastRequested;
+    const {bid, cid} = preview;
     link = <AdminLink name="collection:records" params={{bid, cid}}>{`${bid}/${cid}`}</AdminLink>;
-    lastChange = last_modified;
   }
 
+  const {bid, cid, lastEditor, changes={}} = source;
+  const {since, deleted, updated} = changes;
   return (
     <ProgressStep label={label} currentStep={currentStep} step={step}>
       {lastEditor ?
        <ul>
          <li><strong>Editor: </strong> {lastEditor}</li>
-         <li><strong>Requested: </strong><span title={humanDate(lastChange)}>{timeago(lastChange)}</span></li>
+         <li><strong>Requested: </strong><span title={humanDate(lastRequested)}>{timeago(lastRequested)}</span></li>
          <li><strong>Preview: </strong> {link}</li>
          {active ?
           <li>
             <strong>Changes: </strong>
-            <DiffStats changes={changes} />{" "}
+            <DiffStats updated={updated} deleted={deleted}/>{" "}
             <AdminLink name="collection:history"
                        params={{bid, cid}}
-                       query={{since: oldestChange, resource_name: "record"}}>details...</AdminLink>
+                       query={{since, resource_name: "record"}}>details...</AdminLink>
           </li> : null}
        </ul> : null}
       {active ?
@@ -330,9 +333,7 @@ function Review({label, canEdit, currentStep, step, approveChanges, declineChang
   );
 }
 
-function DiffStats({changes}) {
-  const deleted = changes.filter((r) => r.deleted).length;
-  const updated = changes.length - deleted;
+function DiffStats({updated, deleted}) {
   return (
     <span className="diffstats">
       {updated > 0 ? <span className="text-green">+{updated}</span> : null}
@@ -342,15 +343,19 @@ function DiffStats({changes}) {
 }
 
 function Signed({label, canEdit, currentStep, step, approveChanges, source, destination}) {
-  const {last_reviewer: lastReviewer} = source;
-  const {last_modified: lastChange} = destination;
   const active = (step == currentStep && canEdit);
+  const {lastReviewer} = source;
+  const {lastSigned, bid, cid} = destination;
   return (
     <ProgressStep label={label} currentStep={currentStep} step={step}>
-      {lastChange ?
+      {lastSigned ?
        <ul>
          <li><strong>Reviewer: </strong>{lastReviewer}</li>
-         <li><strong>Signed: </strong><span title={humanDate(lastChange)}>{timeago(lastChange)}</span></li>
+         <li><strong>Signed: </strong><span title={humanDate(lastSigned)}>{timeago(lastSigned)}</span></li>
+         <li>
+           <strong>Destination: </strong>
+           <AdminLink name="collection:records" params={{bid, cid}}>{`${bid}/${cid}`}</AdminLink>
+         </li>
       </ul> : null}
       {active ?
        <button className="btn btn-info"
