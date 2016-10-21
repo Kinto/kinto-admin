@@ -6,7 +6,6 @@ import { sessionBusy, listBuckets } from "../actions/session";
 import { redirectTo } from "../actions/route";
 import {
   listBucketCollectionsSuccess,
-  listBucketGroupsSuccess,
   listBucketHistorySuccess,
 } from "../actions/bucket";
 
@@ -142,17 +141,6 @@ export function* listBucketCollections(getState, action) {
     yield put(listBucketCollectionsSuccess(data));
   } catch(error) {
     yield put(notifyError("Couldn't list bucket collections.", error));
-  }
-}
-
-export function* listBucketGroups(getState, action) {
-  const {bid} = action;
-  try {
-    const bucket = getBucket(bid);
-    const {data} = yield call([bucket, bucket.listGroups]);
-    yield put(listBucketGroupsSuccess(data));
-  } catch(error) {
-    yield put(notifyError("Couldn't list bucket groups.", error));
   }
 }
 

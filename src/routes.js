@@ -176,9 +176,7 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
           <Route name="groups" path="groups">
             <IndexRoute
               name="groups"
-              components={{...common, content: BucketGroupsPage}}
-              onEnter={onBucketPageEnter.bind(null, store, bucketActions.listBucketGroups)}
-              onChange={onBucketPageEnter.bind(null, store, bucketActions.listBucketGroups)} />
+              components={{...common, content: BucketGroupsPage}} />
             {/* /buckets/:bid/groups/create */}
             <Route name="create" path="create"
               components={{...common, content: GroupCreatePage}} />

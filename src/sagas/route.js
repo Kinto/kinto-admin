@@ -14,6 +14,7 @@ function getBatchLoadFn(bid, cid, gid, rid) {
     if (bid) {
       const bucket = batch.bucket(bid);
       bucket.getData();
+      bucket.listGroups();
       if (gid) {
         bucket.getGroup(gid);
       }
@@ -31,11 +32,12 @@ function getBatchLoadFn(bid, cid, gid, rid) {
 function identifyResponse(index, bid, cid, gid, rid) {
   switch(index) {
     case 0: return {type: "Bucket", id: bid};
-    case 1: return {
+    case 1: return {type: "Groups", id: bid};
+    case 2: return {
       type: cid ? "Collection" : "Group",
       id: cid ? cid : gid,
     };
-    case 2: return {type: "Record", id: rid};
+    case 3: return {type: "Record", id: rid};
   }
 }
 
@@ -65,11 +67,12 @@ export function* loadRoute(params) {
     });
     // Map them to state
     const bucket     = bid ?               responses[0] : null;
-    const collection = bid && cid ?        responses[1] : null;
-    const group      = bid && gid ?        responses[1] : null;
-    const record     = bid && cid && rid ? responses[2] : null;
+    const groups     = bid ?               responses[1].data : null;
+    const collection = bid && cid ?        responses[2] : null;
+    const group      = bid && gid ?        responses[2] : null;
+    const record     = bid && cid && rid ? responses[3] : null;
 
-    yield put(routeLoadSuccess({bucket, collection, group, record}));
+    yield put(routeLoadSuccess({bucket, groups, collection, group, record}));
   } catch(error) {
     yield put(routeLoadFailure());
     yield put(notifyError("Couldn't retrieve route resources.", error));

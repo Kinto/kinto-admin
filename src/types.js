@@ -32,7 +32,6 @@ export type BucketState = {
   collections: CollectionData[],
   collectionsLoaded: boolean,
   groups: GroupData[],
-  groupsLoaded: boolean,
 };
 
 export type BucketData = {
@@ -233,6 +232,7 @@ export type RouteLocation = {
 
 export type RouteResources = {
   bucket: BucketResource,
+  groups: GroupData[],
   collection: ?CollectionResource,
   record: ?RecordResource,
   group: ?GroupResource,

@@ -1,13 +1,11 @@
 /* @flow */
 
-import type { BucketState, BucketResource } from "../types";
+import type { BucketState, BucketResource, GroupData } from "../types";
 import {
   BUCKET_BUSY,
   BUCKET_RESET,
   BUCKET_COLLECTIONS_REQUEST,
   BUCKET_COLLECTIONS_SUCCESS,
-  BUCKET_GROUPS_REQUEST,
-  BUCKET_GROUPS_SUCCESS,
   BUCKET_HISTORY_REQUEST,
   BUCKET_HISTORY_SUCCESS,
   ROUTE_LOAD_REQUEST,
@@ -26,19 +24,18 @@ const INITIAL_STATE: BucketState = {
     "group:create": [],
   },
   groups: [],
-  groupsLoaded: false,
   collections: [],
   collectionsLoaded: false,
   history: [],
   historyLoaded: false,
 };
 
-function load(state: BucketState, bucket: BucketResource): BucketState {
+function load(state: BucketState, bucket: BucketResource, groups: GroupData[]): BucketState {
   if (!bucket) {
     return {...state, busy: false};
   }
   const {data, permissions} = bucket;
-  return {...state, busy: false, data, permissions};
+  return {...state, busy: false, data, permissions, groups};
 }
 
 export function bucket(state: BucketState = INITIAL_STATE, action: Object) {
@@ -51,7 +48,8 @@ export function bucket(state: BucketState = INITIAL_STATE, action: Object) {
       return {...INITIAL_STATE, busy: true};
     }
     case ROUTE_LOAD_SUCCESS: {
-      return load(state, action.bucket);
+      const {bucket, groups} = action;
+      return load(state, bucket, groups);
     }
     case ROUTE_LOAD_FAILURE: {
       return {...state, busy: false};
@@ -62,13 +60,6 @@ export function bucket(state: BucketState = INITIAL_STATE, action: Object) {
     case BUCKET_COLLECTIONS_SUCCESS: {
       const {collections} = action;
       return {...state, collections, collectionsLoaded: true};
-    }
-    case BUCKET_GROUPS_REQUEST: {
-      return {...state, groupsLoaded: false};
-    }
-    case BUCKET_GROUPS_SUCCESS: {
-      const {groups} = action;
-      return {...state, groups, groupsLoaded: true};
     }
     case BUCKET_HISTORY_REQUEST: {
       return {...state, historyLoaded: false};
