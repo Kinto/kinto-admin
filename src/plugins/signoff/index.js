@@ -1,82 +1,77 @@
 import React from "react";
 import { takeEvery } from "redux-saga";
-import { call, put } from "redux-saga/effects";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
-import { getClient } from "../../client";
-import { notifySuccess, notifyError } from "../../actions/notifications";
+import * as adminConstants from "../../constants";
+import * as pluginConstants from "./constants";
+import * as SignoffActions from "./actions";
+import SignoffToolBar from "./components.js";
+import signoffReducer from "./reducer";
+import {
+  onCollectionRecordsRequest,
+  handleRequestReview,
+  handleDeclineChanges,
+  handleApproveChanges
+} from "./sagas";
 
+import "./styles.css";
 
-const PLUGIN_SIGNOFF_REQUEST = "PLUGIN_SIGNOFF_REQUEST";
+//
+// Reducers
+//
 
-// Actions
-function requestSignoff() {
-  return {type: PLUGIN_SIGNOFF_REQUEST};
-}
+export const reducers = {
+  signoff: signoffReducer
+};
 
-
-function* handleSignoffRequest(getState, action) {
-  // Obtain current bucket and collection ids from state.
-  const {collection:collectionState} = getState();
-  const {bucket: bid, name: cid} = collectionState;
-
-  // XXX: Currently the signoff feature does not exist on the server.
-  // Meanwhile we will just trigger a signature.
-  const client = getClient();
-  // Set "status" metadata to trigger the signature.
-  const coll = client.bucket(bid).collection(cid);
-  try {
-    yield call([coll, coll.setData], {status: "to-sign"}, {patch: true});
-    yield put(notifySuccess("Signature requested."));
-  } catch (e) {
-    yield put(notifyError("Couldn't sign collection.", e));
-  }
-}
-
-
-class SignoffButton extends React.Component {
-  render() {
-    const {getState, dispatch} = this.props;
-    const {collection:collectionState, session: sessionState} = getState();
-    const {serverInfo} = sessionState;
-    const {bucket: bid, name: cid} = collectionState;
-
-    // Hide button if server does not support signoff.
-    const capability = serverInfo.capabilities.signer;
-    if (!capability) {
-      return null;
-    }
-
-    // Hide button if this collection is not configured to be signed.
-    const sources = capability.resources.map((r) => `${r.source.bucket}/${r.source.collection}`);
-    if (!sources.includes(`${bid}/${cid}`)) {
-      return null;
-    }
-
-    return (
-      <a className="btn btn-info"
-         href="#"
-         onClick={(event) => {
-           event.preventDefault();
-           dispatch(requestSignoff());
-         }}>Request signoff</a>
-    );
-  }
-}
-
+//
+// Sagas
+//
 
 export const sagas = [
-  [takeEvery, PLUGIN_SIGNOFF_REQUEST, handleSignoffRequest]
+  [takeEvery, adminConstants.COLLECTION_RECORDS_REQUEST, onCollectionRecordsRequest],
+  [takeEvery, pluginConstants.PLUGIN_REVIEW_REQUEST, handleRequestReview],
+  [takeEvery, pluginConstants.PLUGIN_DECLINE_REQUEST, handleDeclineChanges],
+  [takeEvery, pluginConstants.PLUGIN_SIGNOFF_REQUEST, handleApproveChanges],
 ];
 
-export const reducers = {};
+//
+// Container
+//
+
+function mapStateToProps(state) {
+  const {
+    session: sessionState,
+    bucket: bucketState,
+    collection: collectionState,
+    signoff} = state;
+  return {
+    sessionState,
+    bucketState,
+    collectionState,
+    signoff
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(SignoffActions, dispatch);
+}
+
+const SignoffContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SignoffToolBar);
+
+//
+// Plugin register
+//
 
 export function register(store) {
   const hooks = {
     CollectionRecords: {
       ListActions: [
-        <SignoffButton key="request-signoff-btn"
-                       getState={store.getState.bind(store)}
-                       dispatch={store.dispatch.bind(store)} />
+        <SignoffContainer key="request-signoff-toolbar" />
       ]
     }
   };
