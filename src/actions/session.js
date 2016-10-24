@@ -9,6 +9,7 @@ import {
   SESSION_SETUP_COMPLETE,
   SESSION_STORE_REDIRECT_URL,
   SESSION_SERVERINFO_SUCCESS,
+  SESSION_PERMISSIONS_SUCCESS,
   SESSION_BUCKETS_REQUEST,
   SESSION_BUCKETS_SUCCESS,
   SESSION_AUTHENTICATED,
@@ -34,6 +35,10 @@ export function storeRedirectURL(redirectURL: string): Action {
 
 export function serverInfoSuccess(serverInfo: ServerInfo): Action {
   return {type: SESSION_SERVERINFO_SUCCESS, serverInfo};
+}
+
+export function permissionsListSuccess(permissions: Object[]): Action {
+  return {type: SESSION_PERMISSIONS_SUCCESS, permissions};
 }
 
 export function listBuckets(): Action {

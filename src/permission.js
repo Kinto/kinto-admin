@@ -27,16 +27,32 @@ export function can(session: SessionState): Object {
   const {authenticated, serverInfo} = session;
   const {user={}} = serverInfo;
 
+  const {permissions: permissionsList} = session;
+
   let api = {};
 
   for (const method: string in permMethodMap) {
-    api[method] = (resource) => {
+    api[method] = (filter: (Object) => boolean) => {
+      // The permissions endpoint is not enabled.
+      // Do not try to guess.
+      if (!permissionsList) {
+        return true;
+      }
+      // Check the list of available permissions:
+      //
+      // {
+      //   bucket_id: "source",
+      //   collection_id: "source",
+      //   record_id: "65891bfe-1400-4b6e-aef1-b041d6997625",
+      //   id: "65891bfe-1400-4b6e-aef1-b041d6997625",
+      //   permissions: ["write", "read"],
+      //   resource_name: "record",
+      //   uri: "/buckets/source/collections/source/records/65891bfe-1400-4b6e-aef1-b041d6997625"
+      // }
+      //
+      const permEntry = permissionsList.filter(filter)[0];
       const permission: string = permMethodMap[method];
-      const allowed: string[] = resource.permissions[permission] || [];
-
-      return allowed.includes(EVERYONE) ||
-        (authenticated && allowed.includes(AUTHENTICATED)) ||
-        (user && user.id && allowed.includes(user.id));
+      return permEntry.permissions.includes(permission);
     };
   }
 
@@ -44,48 +60,45 @@ export function can(session: SessionState): Object {
 }
 
 export function canEditBucket(session: SessionState, bucket: BucketState): boolean {
-  // You can edit a bucket if you can write in it.
-  return can(session).write(bucket);
+  return can(session).write((perm) => {
+    return perm.resource_name == "bucket" && perm.bucket_id == bucket.data.id;
+  });
 }
 
 export function canCreateCollection(session: SessionState, bucket: BucketState): boolean {
-  // You can create a collection if you can write in the bucket or create a collection in it.
-  const canSession = can(session);
-  return canSession.write(bucket) || canSession.createCollection(bucket);
+  return can(session).createCollection((perm) => {
+    return perm.resource_name == "bucket" && perm.bucket_id == bucket.data.id;
+  });
 }
 
 export function canEditCollection(session: SessionState, bucket: BucketState, collection: CollectionState): boolean {
-  // You can edit a collection if you can write in the bucket or in the collection.
-  return [bucket, collection].some(can(session).write);
+  return can(session).write((perm) => {
+    return perm.resource_name == "collection" && perm.bucket_id == bucket.data.id && perm.collection_id == collection.data.id;
+  });
 }
 
 export function canCreateGroup(session: SessionState, bucket: BucketState): boolean {
-  // You can create a group if you can write in the bucket or create a group in it.
-  const canSession = can(session);
-  return canSession.write(bucket) || canSession.createGroup(bucket);
+  return can(session).createCollection((perm) => {
+    return perm.resource_name == "bucket" && perm.bucket_id == bucket.data.id;
+  });
 }
 
 export function canEditGroup(session: SessionState, bucket: BucketState, group: GroupState): boolean {
-  // You can edit if you can write in the group or in the bucket
-  return [bucket, group].some(can(session).write);
+  return can(session).write((perm) => {
+    return perm.resource_name == "group" && perm.bucket_id == bucket.data.id && perm.group_id == group.data.id;
+  });
 }
 
 export function canCreateRecord(session: SessionState, bucket: BucketState, collection: CollectionState): boolean {
-  const canSession = can(session);
-
-  return [
-    // You can create if you can write in the collection.
-    canSession.write(collection),
-    // You can create if you can create a record in the collection.
-    canSession.createRecord(collection),
-    // You can create if you can write in the bucket
-    canSession.write(bucket)
-  ].some(condition => condition);
+  return can(session).createRecord((perm) => {
+    return perm.resource_name == "collection" && perm.bucket_id == bucket.data.id && perm.collection_id == collection.data.id;
+  });
 }
 
 export function canEditRecord(session: SessionState, bucket: BucketState, collection: CollectionState, record: RecordState): boolean {
-  // You can edit if you can write in the bucket, collection or record
-  return [bucket, collection, record].some(can(session).write);
+  return can(session).write((perm) => {
+    return perm.resource_name == "group" && perm.bucket_id == bucket.data.id && perm.collection_id == collection.data.id && perm.record_id == record.data.id;
+  });
 }
 
 /**

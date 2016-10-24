@@ -31,7 +31,7 @@ export function* sessionLogout(getState, action) {
   yield call(clearSession);
 }
 
-function handlePermissions(buckets, permissions) {
+function expandBucketsCollections(buckets, permissions) {
   // Create a copy to avoid mutating the source object
   const bucketsCopy = clone(buckets);
 
@@ -83,7 +83,11 @@ export function* listBuckets(getState, action) {
     // If the Kinto API version allows it, retrieves all permissions
     if ("permissions_endpoint" in serverInfo.capabilities) {
       const {data: permissions} = yield call([client, client.listPermissions]);
-      buckets = handlePermissions(buckets, permissions);
+      buckets = expandBucketsCollections(buckets, permissions);
+      yield put(sessionActions.permissionsListSuccess(permissions));
+    }
+    else {
+      console.warn("Permissions endpoint is not enabled on server.");
     }
 
     yield put(sessionActions.bucketsSuccess(buckets));
