@@ -96,7 +96,7 @@ export function canEditRecord(session: SessionState, bucket: BucketState, collec
  *   ```
  *     {
  *       "write": ["basicauth:cbd37", "github:bob"],
- *       "read": ["system.Everyone"]}
+ *       "read": ["system.Everyone", "/buckets/test/groups/abc"]}
  *     }
  *   ```
  * becomes
@@ -104,6 +104,9 @@ export function canEditRecord(session: SessionState, bucket: BucketState, collec
  *   {
  *     anonymous: ["read"],
  *     authenticated: [],
+ *     groups: {
+ *       abs: ["read"]
+ *     },
  *     principals: [
  *       {principal: "basicauth:cbd37": permissions: ["write"]},
  *       {principals: "github:bob", permissions: ["write"]}
