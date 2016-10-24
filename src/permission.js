@@ -120,7 +120,7 @@ export function permissionsToFormData(bid: string, permissionsObject: Object): O
     .reduce((acc, permissionName) => {
       const principals = permissionsObject[permissionName];
       for (const principal of principals) {
-        if(principal == EVERYONE) {
+        if (principal == EVERYONE) {
           acc.anonymous = [...acc.anonymous, permissionName];
         } else if (principal == AUTHENTICATED) {
           acc.authenticated = [...acc.authenticated, permissionName];
@@ -170,9 +170,11 @@ export function permissionsToFormData(bid: string, permissionsObject: Object): O
  */
 export function formDataToPermissions(bid: string, formData: Object) : Object {
   const {anonymous, authenticated, groups, principals} = formData;
-  const fromGeneric = [
-    {principal: EVERYONE, permissions: anonymous},
-    {principal: AUTHENTICATED, permissions: authenticated}];
+  const fromGeneric = [{
+    principal: EVERYONE, permissions: anonymous
+  }, {
+    principal: AUTHENTICATED, permissions: authenticated
+  }];
   const fromGroups = Object.keys(groups).map((gid) => ({
     principal: `/buckets/${bid}/groups/${gid}`, permissions: groups[gid]}
   ));
@@ -276,9 +278,7 @@ export function preparePermissionsForm(permissions: string[], groups: GroupData[
     groups: {
       classNames: "field-groups",
       ...groups.reduce((acc, group) => {
-        const {id: gid} = group;
-        acc[gid] = {"ui:widget": "checkboxes"};
-        return acc;
+        return {...acc, [group.id]: {"ui:widget": "checkboxes"}};
       }, {})
     }
   };

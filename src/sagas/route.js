@@ -67,11 +67,11 @@ export function* loadRoute(params) {
     });
     // Map them to state
     const bucket     = bid ?               responses[0] : null;
-    const groups     = bid ?               responses[1].data : null;
+    const groupsResp = bid ?               responses[1] : null;
     const collection = bid && cid ?        responses[2] : null;
     const group      = bid && gid ?        responses[2] : null;
     const record     = bid && cid && rid ? responses[3] : null;
-
+    const {data: groups} = groupsResp;
     yield put(routeLoadSuccess({bucket, groups, collection, group, record}));
   } catch(error) {
     yield put(routeLoadFailure());
