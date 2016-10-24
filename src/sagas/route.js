@@ -31,13 +31,13 @@ function getBatchLoadFn(bid, cid, gid, rid) {
 
 function identifyResponse(index, bid, cid, gid, rid) {
   switch(index) {
-    case 0: return {type: "Bucket", id: bid};
-    case 1: return {type: "Groups", id: bid};
+    case 0: return {type: "Bucket", data: {id: bid}};
+    case 1: return {type: "Groups", data: []};
     case 2: return {
       type: cid ? "Collection" : "Group",
-      id: cid ? cid : gid,
+      data: {id: cid ? cid : gid},
     };
-    case 3: return {type: "Record", id: rid};
+    case 3: return {type: "Record", data: {id: rid}};
   }
 }
 
@@ -57,11 +57,11 @@ export function* loadRoute(params) {
     // Fetch all currently selected resource data in a single batch request
     const res = yield call([client, client.batch], getBatchLoadFn(bid, cid, gid, rid));
     const responses = res.map(({status, body}, index) => {
-      const {id, type} = identifyResponse(index, bid, cid, gid, rid);
+      const {type, ...data} = identifyResponse(index, bid, cid, gid, rid);
       if (status === 404) {
-        throw new Error(`${type} ${id} does not exist.`);
+        throw new Error(`${type} ${data.id} does not exist.`);
       } else if (status === 403) {
-        return {data: {id}, permissions: {read: [], write: []}};
+        return {...data, permissions: {read: [], write: []}};
       }
       return body;
     });

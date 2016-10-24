@@ -828,44 +828,4 @@ describe("bucket sagas", () => {
       });
     });
   });
-
-
-  describe("listBucketGroups()", () => {
-    describe("Success", () => {
-      let bucket, listBucketGroups;
-
-      before(() => {
-        bucket = {listGroups() {}};
-        setClient({bucket() {return bucket;}});
-        const action = actions.listBucketGroups("bucket");
-        listBucketGroups = saga.listBucketGroups(() => {}, action);
-      });
-
-      it("should list the groups", () => {
-        expect(listBucketGroups.next().value)
-          .eql(call([bucket, bucket.listGroups]));
-      });
-
-      it("should dispatch the listBucketGroupsSuccess action", () => {
-        const results = [];
-        expect(listBucketGroups.next({data: results}).value)
-          .eql(put(actions.listBucketGroupsSuccess(results)));
-      });
-    });
-
-    describe("Failure", () => {
-      let listBucketGroups;
-
-      before(() => {
-        const action = actions.listBucketGroups("bucket");
-        listBucketGroups = saga.listBucketGroups(() => {}, action);
-        listBucketGroups.next();
-      });
-
-      it("should dispatch an error notification action", () => {
-        expect(listBucketGroups.throw("error").value)
-          .eql(put(notifyError("Couldn't list bucket groups.", "error", {clear: true})));
-      });
-    });
-  });
 });

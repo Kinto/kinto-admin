@@ -57,6 +57,10 @@ describe("route sagas", () => {
         permissions: {write: [1], read: [2]}
       };
 
+      const groups = {
+        data: [{id: "gid1", members: ["a", "b"]}]
+      };
+
       const collection = {
         data: {id: "collection", a: 1},
         permissions: {write: [1], read: [2]}
@@ -88,6 +92,7 @@ describe("route sagas", () => {
       it("should update bucket state from response data", () => {
         const responses = [
           {status: 200, body: bucket},
+          {status: 200, body: groups},
           {status: 200, body: collection},
           {status: 200, body: record},
         ];
@@ -95,6 +100,7 @@ describe("route sagas", () => {
         expect(loadRoute.next(responses).value)
           .eql(put(actions.routeLoadSuccess({
             bucket,
+            groups: groups.data,
             collection,
             record,
             group: null,
@@ -129,14 +135,16 @@ describe("route sagas", () => {
 
       it("should update bucket state from response data", () => {
         const responses = [
-          {status: 403, body: {}}
+          {status: 403, body: {}},
+          {status: 403, body: {}},
         ];
         expect(loadRoute.next(responses).value)
           .eql(put(actions.routeLoadSuccess({
             bucket: {
               data: {id: "bucket"},
-              permissions: {read: [], write: []}
+              permissions: {read: [], write: []},
             },
+            groups: [],
             collection: null,
             group: null,
             record: null,

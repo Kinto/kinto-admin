@@ -100,37 +100,6 @@ describe("bucket reducer", () => {
     });
   });
 
-  describe("BUCKET_GROUPS_REQUEST", () => {
-    it("should update the groupsLoaded flag", () => {
-      const state = {groupsLoaded: true};
-      const action = {type: BUCKET_GROUPS_REQUEST};
-
-      expect(bucket(state, action))
-        .to.have.property("groupsLoaded").eql(false);
-    });
-  });
-
-  describe("BUCKET_GROUPS_SUCCESS", () => {
-    const state = {
-      groups: [],
-      groupsLoaded: false,
-    };
-    const action = {
-      type: BUCKET_GROUPS_SUCCESS,
-      groups: [1, 2, 3],
-    };
-
-    it("should update the list of groups", () => {
-      expect(bucket(state, action))
-        .to.have.property("groups").eql(action.groups);
-    });
-
-    it("should update the groupLoaded flag", () => {
-      expect(bucket(state, action))
-        .to.have.property("groupsLoaded").eql(true);
-    });
-  });
-
   describe("BUCKET_HISTORY_REQUEST", () => {
     it("should update the historyLoaded flag", () => {
       const state = {historyLoaded: true};
