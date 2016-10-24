@@ -126,8 +126,8 @@ export type GroupState = {
 };
 
 export type GroupData = {
-  id?: string,
-  last_modified?: number,
+  id: string,
+  last_modified: number,
   members: string[],
 };
 

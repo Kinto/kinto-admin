@@ -42,9 +42,10 @@ export default class GroupPermissions_ extends Component {
   }
 
   render() {
-    const {params, capabilities, group} = this.props;
+    const {params, capabilities, bucket, group} = this.props;
     const {bid, gid} = params;
     const {busy, permissions} = group;
+    const {groups} = bucket;
     const acls = ["read", "write"];
     if (busy) {
       return <Spinner />;
@@ -58,6 +59,8 @@ export default class GroupPermissions_ extends Component {
           capabilities={capabilities}
           selected="permissions">
           <PermissionsForm
+            bid={bid}
+            groups={groups}
             permissions={permissions}
             acls={acls}
             readonly={this.readonly}

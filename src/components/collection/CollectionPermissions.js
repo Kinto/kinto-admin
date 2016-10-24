@@ -63,6 +63,7 @@ export default class CollectionPermissions_ extends Component {
           capabilities={capabilities}
           selected="permissions">
           <PermissionsForm
+            bid={bid}
             groups={groups}
             permissions={permissions}
             acls={acls}

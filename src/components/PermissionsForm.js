@@ -13,6 +13,8 @@ import {
 
 export default class PermissionsForm extends Component {
   props: {
+    bid: string,
+    readonly: boolean,
     permissions: Permissions,
     groups: GroupData[],
     acls: string[],
@@ -20,11 +22,13 @@ export default class PermissionsForm extends Component {
   };
 
   onSubmit = ({formData}: {formData: Object}) => {
-    this.props.onSubmit({formData: formDataToPermissions(formData)});
+    const {bid, onSubmit} = this.props;
+    onSubmit({formData: formDataToPermissions(bid, formData)});
   }
 
   render() {
-    if (this.props.readonly) {
+    const {bid, readonly} = this.props;
+    if (readonly) {
       return (
         <div className="alert alert-warning">
           You don't have the required permission to edit the permissions for this resource.
@@ -33,7 +37,7 @@ export default class PermissionsForm extends Component {
     }
 
     const {permissions, acls, groups} = this.props;
-    const formData = permissionsToFormData(permissions);
+    const formData = permissionsToFormData(bid, permissions);
     const {schema, uiSchema} = preparePermissionsForm(acls, groups);
     return (
       <Form className="permissions-form"
