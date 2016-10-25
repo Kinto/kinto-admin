@@ -121,7 +121,7 @@ describe("session sagas", () => {
           .eql(call([client, client.listPermissions]));
       });
 
-      it("should dispatch the list of buckets", () => {
+      it("should dispatch list of permissions", () => {
         const permissions = {
           data: [
             {
@@ -130,8 +130,12 @@ describe("session sagas", () => {
             }
           ]
         };
-
         expect(listBuckets.next(permissions).value)
+          .eql(put(actions.permissionsListSuccess(permissions.data)));
+      });
+
+      it("should dispatch the list of buckets", () => {
+        expect(listBuckets.next().value)
           .eql(put(actions.bucketsSuccess([
             {
               id: "b1",

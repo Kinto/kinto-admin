@@ -5,6 +5,7 @@ import {
   SESSION_BUSY,
   SESSION_SETUP_COMPLETE,
   SESSION_SERVERINFO_SUCCESS,
+  SESSION_PERMISSIONS_SUCCESS,
   SESSION_AUTHENTICATED,
   SESSION_BUCKETS_SUCCESS,
   SESSION_LOGOUT,
@@ -39,6 +40,7 @@ describe("session reducer", () => {
       authType: setup.authType,
       credentials: setup.credentials,
       buckets: [],
+      permissions: null,
       redirectURL: null,
       serverInfo: {
         capabilities: {},
@@ -63,6 +65,19 @@ describe("session reducer", () => {
     });
 
     expect(state).to.have.property("serverInfo").eql(serverInfo);
+  });
+
+  it("SESSION_PERMISSIONS_SUCCESS", () => {
+    const permissions = [{
+      uri: "/some/object",
+    }];
+
+    const state = session(undefined, {
+      type: SESSION_PERMISSIONS_SUCCESS,
+      permissions
+    });
+
+    expect(state).to.have.property("permissions").eql(permissions);
   });
 
   it("SESSION_BUCKETS_SUCCESS", () => {
