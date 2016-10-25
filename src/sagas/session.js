@@ -76,7 +76,7 @@ export function* listBuckets(getState, action) {
       }
     });
     let buckets = data.map((bucket, index) => {
-      const collections = responses[index].body.data;
+      const {data: collections=[]} = responses[index].body;
       return {id: bucket.id, collections};
     });
 
