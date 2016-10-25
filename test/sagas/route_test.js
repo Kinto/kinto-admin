@@ -43,14 +43,8 @@ describe("route sagas", () => {
       });
     });
 
-    describe("Bucket + Collection + Record", () => {
+    describe("Route loading", () => {
       let batch, loadRoute;
-
-      const params = {
-        bid: "bucket",
-        cid: "collection",
-        rid: "record",
-      };
 
       const bucket = {
         data: {id: "bucket", a: 1},
@@ -66,45 +60,186 @@ describe("route sagas", () => {
         permissions: {write: [1], read: [2]}
       };
 
+      const group = {
+        data: {id: "group", members: ["ha"]},
+        permissions: {write: [1], read: [2]}
+      };
+
       const record = {
         data: {id: "record", a: 1},
         permissions: {write: [1], read: [2]}
       };
 
-      before(() => {
-        batch = () => {};
-        setClient({batch});
-        loadRoute = saga.loadRoute(params);
+      describe("Bucket", () => {
+
+        const params = {
+          bid: "bucket"
+        };
+
+        before(() => {
+          batch = () => {};
+          setClient({batch});
+          loadRoute = saga.loadRoute(params);
+        });
+
+        it("should dispatch the routeLoadRequest action", () => {
+          expect(loadRoute.next().value)
+            .eql(put(actions.routeLoadRequest(params)));
+        });
+
+        it("should batch fetch resources data", () => {
+          expect(loadRoute.next().value)
+            .to.have.property("CALL")
+            .to.have.property("context")
+            .to.have.property("batch").eql(batch);
+        });
+
+        it("should update bucket state from response data", () => {
+          const responses = [
+            {status: 200, body: bucket},
+            {status: 200, body: groups},
+          ];
+
+          expect(loadRoute.next(responses).value)
+            .eql(put(actions.routeLoadSuccess({
+              bucket,
+              groups: groups.data,
+              collection: null,
+              record: null,
+              group: null,
+            })));
+        });
       });
 
-      it("should dispatch the routeLoadRequest action", () => {
-        expect(loadRoute.next().value)
-          .eql(put(actions.routeLoadRequest(params)));
+      describe("Bucket + Collection", () => {
+
+        const params = {
+          bid: "bucket",
+          cid: "collection",
+        };
+
+        before(() => {
+          batch = () => {};
+          setClient({batch});
+          loadRoute = saga.loadRoute(params);
+        });
+
+        it("should dispatch the routeLoadRequest action", () => {
+          expect(loadRoute.next().value)
+            .eql(put(actions.routeLoadRequest(params)));
+        });
+
+        it("should batch fetch resources data", () => {
+          expect(loadRoute.next().value)
+            .to.have.property("CALL")
+            .to.have.property("context")
+            .to.have.property("batch").eql(batch);
+        });
+
+        it("should update bucket state from response data", () => {
+          const responses = [
+            {status: 200, body: bucket},
+            {status: 200, body: groups},
+            {status: 200, body: collection},
+          ];
+
+          expect(loadRoute.next(responses).value)
+            .eql(put(actions.routeLoadSuccess({
+              bucket,
+              groups: groups.data,
+              collection,
+              record: null,
+              group: null,
+            })));
+        });
       });
 
-      it("should batch fetch resources data", () => {
-        expect(loadRoute.next().value)
-          .to.have.property("CALL")
-          .to.have.property("context")
-          .to.have.property("batch").eql(batch);
+      describe("Bucket + Group", () => {
+
+        const params = {
+          bid: "bucket",
+          gid: "group",
+        };
+
+        before(() => {
+          batch = () => {};
+          setClient({batch});
+          loadRoute = saga.loadRoute(params);
+        });
+
+        it("should dispatch the routeLoadRequest action", () => {
+          expect(loadRoute.next().value)
+            .eql(put(actions.routeLoadRequest(params)));
+        });
+
+        it("should batch fetch resources data", () => {
+          expect(loadRoute.next().value)
+            .to.have.property("CALL")
+            .to.have.property("context")
+            .to.have.property("batch").eql(batch);
+        });
+
+        it("should update bucket state from response data", () => {
+          const responses = [
+            {status: 200, body: bucket},
+            {status: 200, body: groups},
+            {status: 200, body: group},
+          ];
+
+          expect(loadRoute.next(responses).value)
+            .eql(put(actions.routeLoadSuccess({
+              bucket,
+              groups: groups.data,
+              collection: null,
+              record: null,
+              group,
+            })));
+        });
       });
 
-      it("should update bucket state from response data", () => {
-        const responses = [
-          {status: 200, body: bucket},
-          {status: 200, body: groups},
-          {status: 200, body: collection},
-          {status: 200, body: record},
-        ];
+      describe("Bucket + Collection + Record", () => {
 
-        expect(loadRoute.next(responses).value)
-          .eql(put(actions.routeLoadSuccess({
-            bucket,
-            groups: groups.data,
-            collection,
-            record,
-            group: null,
-          })));
+        const params = {
+          bid: "bucket",
+          cid: "collection",
+          rid: "record",
+        };
+
+        before(() => {
+          batch = () => {};
+          setClient({batch});
+          loadRoute = saga.loadRoute(params);
+        });
+
+        it("should dispatch the routeLoadRequest action", () => {
+          expect(loadRoute.next().value)
+            .eql(put(actions.routeLoadRequest(params)));
+        });
+
+        it("should batch fetch resources data", () => {
+          expect(loadRoute.next().value)
+            .to.have.property("CALL")
+            .to.have.property("context")
+            .to.have.property("batch").eql(batch);
+        });
+
+        it("should update bucket state from response data", () => {
+          const responses = [
+            {status: 200, body: bucket},
+            {status: 200, body: groups},
+            {status: 200, body: collection},
+            {status: 200, body: record},
+          ];
+
+          expect(loadRoute.next(responses).value)
+            .eql(put(actions.routeLoadSuccess({
+              bucket,
+              groups: groups.data,
+              collection,
+              record,
+              group: null,
+            })));
+        });
       });
     });
 
@@ -179,7 +314,8 @@ describe("route sagas", () => {
 
       it("should dispatch the failure action", () => {
         const responses = [
-          {status: 404, body: {}}
+          {status: 404, body: {}},
+          {status: 404, body: {}},
         ];
         expect(loadRoute.next(responses).value)
           .eql(put(actions.routeLoadFailure()));
