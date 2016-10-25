@@ -14,7 +14,7 @@ import BucketTabs from "./BucketTabs";
 
 
 function DataList(props) {
-  const {bid, groups, capabilities, groupsLoaded} = props;
+  const {bid, groups, capabilities} = props;
   return (
     <table className="table table-striped table-bordered record-list">
       <thead>
@@ -25,7 +25,7 @@ function DataList(props) {
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody className={!groupsLoaded ? "loading" : ""}>{
+      <tbody>{
         groups.map((group, index) => {
           const {id: gid, members, last_modified} = group;
           const date = new Date(last_modified).toISOString();
@@ -86,7 +86,7 @@ export default class BucketCollections extends Component {
   render() {
     const {params, session, bucket, capabilities} = this.props;
     const {bid} = params;
-    const {groups, groupsLoaded} = bucket;
+    const {groups} = bucket;
 
     const listActions = (
       <ListActions
@@ -103,14 +103,13 @@ export default class BucketCollections extends Component {
           selected="groups"
           capabilities={capabilities}>
           {listActions }
-          {groupsLoaded && groups.length === 0 ?
+          {groups.length === 0 ?
             <div className="alert alert-info">
               <p>This bucket has no groups.</p>
             </div>
             :
             <DataList bid={bid}
                       groups={groups}
-                      groupsLoaded={groupsLoaded}
                       capabilities={capabilities} />
           }
           {listActions}

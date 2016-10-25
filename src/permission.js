@@ -5,6 +5,7 @@ import type {
   BucketState,
   CollectionState,
   GroupState,
+  GroupData,
   RecordState,
 } from "./types";
 
@@ -95,7 +96,7 @@ export function canEditRecord(session: SessionState, bucket: BucketState, collec
  *   ```
  *     {
  *       "write": ["basicauth:cbd37", "github:bob"],
- *       "read": ["system.Everyone"]}
+ *       "read": ["system.Everyone", "/buckets/test/groups/abc"]}
  *     }
  *   ```
  * becomes
@@ -103,6 +104,9 @@ export function canEditRecord(session: SessionState, bucket: BucketState, collec
  *   {
  *     anonymous: ["read"],
  *     authenticated: [],
+ *     groups: {
+ *       abs: ["read"]
+ *     },
  *     principals: [
  *       {principal: "basicauth:cbd37": permissions: ["write"]},
  *       {principals: "github:bob", permissions: ["write"]}
@@ -110,46 +114,45 @@ export function canEditRecord(session: SessionState, bucket: BucketState, collec
  *   }
  *   ```
  */
-export function permissionsToFormData(permissionsObject: Object): Object {
+export function permissionsToFormData(bid: string, permissionsObject: Object): Object {
+  const groupRegexp = new RegExp(`^/buckets/${bid}/groups/([^/]+)$`);
   const formData = Object.keys(permissionsObject)
     .reduce((acc, permissionName) => {
       const principals = permissionsObject[permissionName];
       for (const principal of principals) {
-        switch (principal) {
-          case EVERYONE: {
-            acc.anonymous = [...acc.anonymous, permissionName];
-            break;
+        if (principal == EVERYONE) {
+          acc.anonymous = [...acc.anonymous, permissionName];
+        } else if (principal == AUTHENTICATED) {
+          acc.authenticated = [...acc.authenticated, permissionName];
+        } else if (groupRegexp.test(principal)) {
+          const gid = principal.match(groupRegexp)[1];
+          acc.groups[gid] = (acc.groups[gid] || []).concat(permissionName);
+        } else {
+          let {principals: principalsList} = acc;
+          const existing = principalsList.find(x => x.principal === principal);
+          if (existing) {
+            principalsList = principalsList.map(perm => {
+              if (perm.principal === principal) {
+                return {
+                  ...existing,
+                  permissions: [...existing.permissions, permissionName]
+                };
+              } else {
+                return perm;
+              }
+            });
+          } else {
+            principalsList = [...principalsList, {principal, permissions: [permissionName]}];
           }
-          case AUTHENTICATED: {
-            acc.authenticated = [...acc.authenticated, permissionName];
-            break;
-          }
-          default: {
-            let {principals: principalsList} = acc;
-            const existing = principalsList.find(x => x.principal === principal);
-            if (existing) {
-              principalsList = principalsList.map(perm => {
-                if (perm.principal === principal) {
-                  return {
-                    ...existing,
-                    permissions: [...existing.permissions, permissionName]
-                  };
-                } else {
-                  return perm;
-                }
-              });
-            } else {
-              principalsList = [...principalsList, {principal, permissions: [permissionName]}];
-            }
-            acc.principals = principalsList;
-          }
+          acc.principals = principalsList;
         }
       }
       return acc;
     }, {
       anonymous: [],
       authenticated: [],
-      principals: []
+      principals: [],
+      groups: {}
     });
 
   const {principals} = formData;
@@ -165,13 +168,18 @@ export function permissionsToFormData(permissionsObject: Object): Object {
  * Transform the permissions form result into data processable by the API.
  * See `permissionsToFormData()` and `preparePermissionsForm()`.
  */
-export function formDataToPermissions(formData: Object) : Object {
-  const {anonymous, authenticated, principals} = formData;
-  const permissionsList = [
-    ...principals,
-    {principal: EVERYONE, permissions: anonymous},
-    {principal: AUTHENTICATED, permissions: authenticated}];
-  return permissionsList.reduce((acc, {principal, permissions}) => {
+export function formDataToPermissions(bid: string, formData: Object) : Object {
+  const {anonymous, authenticated, groups, principals} = formData;
+  const fromGeneric = [{
+    principal: EVERYONE, permissions: anonymous
+  }, {
+    principal: AUTHENTICATED, permissions: authenticated
+  }];
+  const fromGroups = Object.keys(groups).map((gid) => ({
+    principal: `/buckets/${bid}/groups/${gid}`, permissions: groups[gid]}
+  ));
+  const permissionsList = principals.concat(fromGroups).concat(fromGeneric);
+  return permissionsList.reduce((acc, {principal, permissions=[]}) => {
     for (const permissionName of permissions) {
       if (!acc.hasOwnProperty(permissionName)) {
         acc[permissionName] = [principal];
@@ -183,7 +191,7 @@ export function formDataToPermissions(formData: Object) : Object {
   }, {});
 }
 
-export function preparePermissionsForm(permissions: string[]) {
+export function preparePermissionsForm(permissions: string[], groups: GroupData[]) {
   const apiDocURI = "https://kinto.readthedocs.io/en/stable/api/1.x/permissions.html#api-principals";
   const schema = {
     definitions: {
@@ -207,6 +215,21 @@ export function preparePermissionsForm(permissions: string[]) {
         title: "Authenticated",
         description: "Permissions for authenticated users",
         $ref: "#/definitions/permissions"
+      },
+      groups: {
+        title: "Groups",
+        type: "object",
+        properties: {
+          ...groups.reduce((acc, group) => {
+            const {id: gid} = group;
+            acc[gid] = {
+              title: gid,
+              description: `Permissions for users of the ${gid} group`,
+              $ref: "#/definitions/permissions"
+            };
+            return acc;
+          }, {}),
+        }
       },
       principals: {
         title: "Principals",
@@ -252,6 +275,12 @@ export function preparePermissionsForm(permissions: string[]) {
         }
       }
     },
+    groups: {
+      classNames: "field-groups",
+      ...groups.reduce((acc, group) => {
+        return {...acc, [group.id]: {"ui:widget": "checkboxes"}};
+      }, {})
+    }
   };
 
   return {schema, uiSchema};

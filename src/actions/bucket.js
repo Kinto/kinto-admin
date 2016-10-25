@@ -15,8 +15,6 @@ import {
   BUCKET_BUSY,
   BUCKET_COLLECTIONS_REQUEST,
   BUCKET_COLLECTIONS_SUCCESS,
-  BUCKET_GROUPS_REQUEST,
-  BUCKET_GROUPS_SUCCESS,
   BUCKET_HISTORY_REQUEST,
   BUCKET_HISTORY_SUCCESS,
   BUCKET_CREATE_REQUEST,
@@ -58,14 +56,6 @@ export function listBucketCollections(bid: string): Action {
 
 export function listBucketCollectionsSuccess(collections: Object[]): Action {
   return {type: BUCKET_COLLECTIONS_SUCCESS, collections};
-}
-
-export function listBucketGroups(bid: string): Action {
-  return {type: BUCKET_GROUPS_REQUEST, bid};
-}
-
-export function listBucketGroupsSuccess(groups: Object[]): Action {
-  return {type: BUCKET_GROUPS_SUCCESS, groups};
 }
 
 export function listBucketHistory(bid: string, filters: HistoryFilters = {}): Action {

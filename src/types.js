@@ -32,7 +32,6 @@ export type BucketState = {
   collections: CollectionData[],
   collectionsLoaded: boolean,
   groups: GroupData[],
-  groupsLoaded: boolean,
 };
 
 export type BucketData = {
@@ -128,8 +127,8 @@ export type GroupState = {
 };
 
 export type GroupData = {
-  id?: string,
-  last_modified?: number,
+  id: string,
+  last_modified: number,
   members: string[],
 };
 
@@ -234,6 +233,7 @@ export type RouteLocation = {
 
 export type RouteResources = {
   bucket: BucketResource,
+  groups: GroupData[],
   collection: ?CollectionResource,
   record: ?RecordResource,
   group: ?GroupResource,

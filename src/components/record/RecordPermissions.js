@@ -45,8 +45,9 @@ export default class RecordPermissions_ extends Component {
   }
 
   render() {
-    const {params, capabilities, record} = this.props;
+    const {params, capabilities, bucket, record} = this.props;
     const {bid, cid, rid} = params;
+    const {groups} = bucket;
     const {busy, permissions} = record;
     const acls = ["read", "write"];
     if (busy) {
@@ -62,6 +63,8 @@ export default class RecordPermissions_ extends Component {
           capabilities={capabilities}
           selected="permissions">
           <PermissionsForm
+            bid={bid}
+            groups={groups}
             permissions={permissions}
             acls={acls}
             readonly={this.readonly}
