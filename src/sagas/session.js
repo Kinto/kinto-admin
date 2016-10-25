@@ -87,7 +87,7 @@ export function* listBuckets(getState, action) {
       yield put(sessionActions.permissionsListSuccess(permissions));
     }
     else {
-      console.warn("Permissions endpoint is not enabled on server.");
+      yield put(notificationActions.notifyInfo("Permissions endpoint is not enabled on server."));
     }
 
     yield put(sessionActions.bucketsSuccess(buckets));

@@ -15,7 +15,7 @@ export const EVERYONE = "system.Everyone";
 export const AUTHENTICATED = "system.Authenticated";
 
 
-export function can(session: SessionState, filter: (Object) => boolean): boolean {
+export function can(session: SessionState, filter: (x: Object) => boolean): boolean {
   const {permissions: permissionsList} = session;
   // The permissions endpoint is not enabled.
   // Do not try to guess.
