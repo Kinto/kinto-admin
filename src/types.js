@@ -121,15 +121,15 @@ export type CollectionResource = {
 
 export type GroupState = {
   busy: boolean,
-  data?: Object,
+  data: Object,
   permissions: GroupPermissions,
   history: ResourceHistoryEntry[],
   historyLoaded: boolean,
 };
 
 export type GroupData = {
-  id?: string,
-  last_modified?: number,
+  id: string,
+  last_modified: number,
   members: string[],
 };
 
@@ -244,6 +244,7 @@ export type SessionState = {
   authenticated: boolean,
   server: ?string,
   credentials: Object,
+  permissions: ?PermissionsListEntry[],
   buckets: Object[],
   serverInfo: ServerInfo,
   redirectURL: ?string,
@@ -267,4 +268,15 @@ export type TokenAuth = {
   credentials: {
     token: string
   }
+};
+
+export type PermissionsListEntry = {
+  bucket_id: string,
+  collection_id?: string,
+  group_id?: string,
+  record_id?: string,
+  id: string,
+  permissions: string[],
+  resource_name: string,
+  uri: string,
 };

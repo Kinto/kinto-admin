@@ -6,6 +6,7 @@ import type {
   CollectionState,
   GroupState,
   RecordState,
+  PermissionsListEntry,
 } from "./types";
 
 import React from "react";  /* import to enable JSX transpilation */
@@ -15,7 +16,7 @@ export const EVERYONE = "system.Everyone";
 export const AUTHENTICATED = "system.Authenticated";
 
 
-export function can(session: SessionState, filter: (x: Object) => boolean): boolean {
+export function can(session: SessionState, filter: (perm: PermissionsListEntry) => boolean): boolean {
   const {permissions: permissionsList} = session;
   // The permissions endpoint is not enabled.
   // Do not try to guess.
@@ -27,7 +28,7 @@ export function can(session: SessionState, filter: (x: Object) => boolean): bool
 }
 
 export function canEditBucket(session: SessionState, bucket: BucketState): boolean {
-  return can(session, (perm) => {
+  return can(session, (perm: PermissionsListEntry) => {
     return perm.resource_name == "bucket"
         && perm.bucket_id == bucket.data.id
         && perm.permissions.includes("write");
@@ -35,7 +36,7 @@ export function canEditBucket(session: SessionState, bucket: BucketState): boole
 }
 
 export function canCreateCollection(session: SessionState, bucket: BucketState): boolean {
-  return can(session, (perm) => {
+  return can(session, (perm: PermissionsListEntry) => {
     return perm.resource_name == "bucket"
         && perm.bucket_id == bucket.data.id
         && perm.permissions.includes("collection:create");
@@ -43,7 +44,7 @@ export function canCreateCollection(session: SessionState, bucket: BucketState):
 }
 
 export function canEditCollection(session: SessionState, bucket: BucketState, collection: CollectionState): boolean {
-  return can(session, (perm) => {
+  return can(session, (perm: PermissionsListEntry) => {
     return perm.resource_name == "collection"
         && perm.bucket_id == bucket.data.id
         && perm.collection_id == collection.data.id
@@ -52,7 +53,7 @@ export function canEditCollection(session: SessionState, bucket: BucketState, co
 }
 
 export function canCreateGroup(session: SessionState, bucket: BucketState): boolean {
-  return can(session, (perm) => {
+  return can(session, (perm: PermissionsListEntry) => {
     return perm.resource_name == "bucket"
         && perm.bucket_id == bucket.data.id
         && perm.permissions.includes("group:create");
@@ -60,7 +61,7 @@ export function canCreateGroup(session: SessionState, bucket: BucketState): bool
 }
 
 export function canEditGroup(session: SessionState, bucket: BucketState, group: GroupState): boolean {
-  return can(session, (perm) => {
+  return can(session, (perm: PermissionsListEntry) => {
     return perm.resource_name == "group"
         && perm.bucket_id == bucket.data.id
         && perm.group_id == group.data.id
@@ -69,7 +70,7 @@ export function canEditGroup(session: SessionState, bucket: BucketState, group: 
 }
 
 export function canCreateRecord(session: SessionState, bucket: BucketState, collection: CollectionState): boolean {
-  return can(session, (perm) => {
+  return can(session, (perm: PermissionsListEntry) => {
     return perm.resource_name == "collection"
         && perm.bucket_id == bucket.data.id
         && perm.collection_id == collection.data.id
@@ -78,7 +79,7 @@ export function canCreateRecord(session: SessionState, bucket: BucketState, coll
 }
 
 export function canEditRecord(session: SessionState, bucket: BucketState, collection: CollectionState, record: RecordState): boolean {
-  return can(session, (perm) => {
+  return can(session, (perm: PermissionsListEntry) => {
     return perm.resource_name == "record"
         && perm.bucket_id == bucket.data.id
         && perm.collection_id == collection.data.id
