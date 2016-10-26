@@ -10,7 +10,7 @@ module.exports = {
     app: path.resolve(__dirname, "index.js"),
   },
   output: {
-    path: path.join(__dirname, "gh-pages"),
+    path: path.join(__dirname, "build"),
     filename: "bundle.js",
     publicPath: "/kinto-admin/",
   },

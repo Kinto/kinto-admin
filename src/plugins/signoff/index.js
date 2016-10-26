@@ -15,7 +15,7 @@ import {
   handleApproveChanges
 } from "./sagas";
 
-import "./styles.css";
+import "../../../css/plugins/signoff/styles.css";
 
 //
 // Reducers
