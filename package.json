@@ -1,6 +1,6 @@
 {
   "name": "kinto-admin",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Kinto Web Administration Console in React.js",
   "scripts": {
     "build:gh-pages": "rimraf gh-pages && NODE_ENV=production node_modules/.bin/webpack --progress --config webpack.prod.js && cp html/prod.html gh-pages/index.html",

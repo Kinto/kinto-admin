@@ -2,6 +2,8 @@ var path = require("path");
 var webpack = require("webpack");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
+const KINTO_ADMIN_PUBLIC_PATH = process.env.KINTO_ADMIN_PUBLIC_PATH || "/kinto-admin/";
+
 module.exports = {
   devServer: {
     stats: "errors-only",
@@ -12,7 +14,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, "gh-pages"),
     filename: "bundle.js",
-    publicPath: "/kinto-admin/",
+    publicPath: KINTO_ADMIN_PUBLIC_PATH,
   },
   plugins: [
     new webpack.IgnorePlugin(/^(buffertools)$/), // unwanted "deeper" dependency
