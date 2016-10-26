@@ -169,7 +169,7 @@ The browser test suite uses [NightmareJS](http://www.nightmarejs.org/) and
 [Electron](http://electron.atom.io/). To run browser tests:
 
 ```
-$ npm run dist
+$ npm run build
 $ npm run test-browser
 ```
 
@@ -232,6 +232,14 @@ For instance:
 
 If you use `target.merkle.tree.file.name` it will render the string
 `foobar` and `target.proof.hash` will render `abcd`.
+
+### How to specify the public root URL for public assets?
+
+If you're not using create-react-app as suggested in the [Installation](#installation) section, you can build a static, production-ready version of the admin using a custom public asset path root by specifying the `KINTO_ADMIN_PUBLIC_PATH` environment variable and running the `npm run build` command:
+
+```
+$ KINTO_ADMIN_PUBLIC_PATH='/admin/' npm run build
+```
 
 ## License
 
