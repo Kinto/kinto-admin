@@ -122,31 +122,31 @@ describe("CollectionRecords component", () => {
   });
 
   describe("List actions", () => {
+    const collection = {
+      busy: false,
+      data: {
+        schema: {
+          type: "object",
+          properties: {
+            foo: {type: "string"}
+          }
+        },
+        displayFields: ["foo"],
+      },
+      permissions: {
+        write: ["basicauth:plop"]
+      },
+      recordsLoaded: true,
+      records: [],
+    };
+
     describe("Collection write permission", () => {
       let node;
-
-      const collection = {
-        busy: false,
-        data: {
-          schema: {
-            type: "object",
-            properties: {
-              foo: {type: "string"}
-            }
-          },
-          displayFields: ["foo"],
-        },
-        permissions: {
-          write: ["basicauth:plop"]
-        },
-        recordsLoaded: true,
-        records: [],
-      };
 
       beforeEach(() => {
         node = createComponent(CollectionRecords, {
           params: {bid: "bucket", cid: "collection"},
-          session: {authenticated: true, serverInfo: {user: {id: "basicauth:plop"}}},
+          session: {permissions: null},
           pluginHooks: {},
           bucket,
           collection,
@@ -163,28 +163,10 @@ describe("CollectionRecords component", () => {
     describe("No collection write permission", () => {
       let node;
 
-      const collection = {
-        busy: false,
-        data: {
-          schema: {
-            type: "object",
-            properties: {
-              foo: {type: "string"}
-            }
-          },
-          displayFields: ["foo"],
-        },
-        permissions: {
-          write: ["basicauth:other"]
-        },
-        recordsLoaded: true,
-        records: [],
-      };
-
       beforeEach(() => {
         node = createComponent(CollectionRecords, {
           params: {bid: "bucket", cid: "collection"},
-          session: {authenticated: true, serverInfo: {user: {id: "basicauth:plop"}}},
+          session: {permissions: []},
           pluginHooks: {},
           bucket,
           collection,
