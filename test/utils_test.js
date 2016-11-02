@@ -171,12 +171,12 @@ describe("humanDate", () => {
 describe("buildAttachmentUrl", () => {
   it("should return nothing if no attachment is part of the record", () => {
     expect(buildAttachmentUrl({}, {attachments: {}}))
-      .to.be.a("undefined")
+      .to.be.a("undefined");
   });
 
   it("should return nothing if the attachments capability isn't enabled", () => {
     expect(buildAttachmentUrl({attachment: {}}, {}))
-      .to.be.a("undefined")
+      .to.be.a("undefined");
   });
 
   it("should build an attachment url from the capability config", () => {
