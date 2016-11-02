@@ -6,6 +6,7 @@ import {
   validateSchema,
   validateUiSchema,
   humanDate,
+  buildAttachmentUrl,
 } from "../src/utils";
 
 
@@ -164,5 +165,32 @@ describe("humanDate", () => {
   it("should format a last_modified string to an English date string", () => {
     expect(humanDate("1475851921581"))
       .eql("Friday, October 7, 2016, 2:52:01 PM UTC");
+  });
+});
+
+describe("buildAttachmentUrl", () => {
+  it("should return nothing if no attachment is part of the record", () => {
+    expect(buildAttachmentUrl({}, {attachments: {}}))
+      .to.be.a("undefined")
+  });
+
+  it("should return nothing if the attachments capability isn't enabled", () => {
+    expect(buildAttachmentUrl({attachment: {}}, {}))
+      .to.be.a("undefined")
+  });
+
+  it("should build an attachment url from the capability config", () => {
+    expect(buildAttachmentUrl({attachment: {location: "/file"}}, {attachments: {base_url: "http://cdn"}}))
+      .eql("http://cdn/file");
+  });
+
+  it("should return attachment location if it's already an http url", () => {
+    expect(buildAttachmentUrl({attachment: {location: "http://cdn/file"}}, {attachments: {}}))
+      .eql("http://cdn/file");
+  });
+
+  it("should build an attachment url from the capability config", () => {
+    expect(buildAttachmentUrl({attachment: {location: "/file"}}, {attachments: {base_url: "http://cdn"}}))
+      .eql("http://cdn/file");
   });
 });

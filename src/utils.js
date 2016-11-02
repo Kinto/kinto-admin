@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { RecordData } from "./types";
+import type { RecordData, Capabilities } from "./types";
 import React from "react";
 import _timeago  from "timeago.js";
 
@@ -198,4 +198,13 @@ export function humanDate(since: string | number): string {
     minute: "2-digit",
     second: "2-digit",
   }) + " UTC";
+}
+
+export function buildAttachmentUrl(record: RecordData, capabilities: Capabilities): ?string {
+  if (!record.attachment || typeof capabilities.attachments !== "object") {
+    return;
+  }
+  const {base_url} = capabilities.attachments;
+  const {location} = record.attachment;
+  return location.startsWith("http") ? location : base_url + location;
 }
