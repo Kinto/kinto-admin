@@ -83,7 +83,10 @@ export function* createRecord(getState, action) {
   try {
     const coll = getCollection(bid, cid);
     if ("attachments" in session.serverInfo.capabilities && attachment) {
-      yield call([coll, coll.addAttachment], attachment, record, {safe: true});
+      yield call([coll, coll.addAttachment], attachment, record, {
+        safe: true,
+        last_modified: 1, // #299: creation; oldest acceptable timestamp
+      });
     } else {
       yield call([coll, coll.createRecord], record, {safe: true});
     }
