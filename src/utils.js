@@ -204,7 +204,10 @@ export function buildAttachmentUrl(record: RecordData, capabilities: Capabilitie
   if (!record.attachment || typeof capabilities.attachments !== "object") {
     return;
   }
-  const {base_url} = capabilities.attachments;
+  const {base_url=""} = capabilities.attachments;
   const {location} = record.attachment;
-  return location.startsWith("http") ? location : base_url + location;
+  const ensureTrailingSlash = str => str.endsWith("/") ? str : str + "/";
+  const dropStartingSlash = str => str.startsWith("/") ? str.slice(1) : str;
+  return location.startsWith(base_url) ?
+    location : ensureTrailingSlash(base_url) + dropStartingSlash(location);
 }

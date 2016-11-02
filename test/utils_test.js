@@ -193,4 +193,11 @@ describe("buildAttachmentUrl", () => {
     expect(buildAttachmentUrl({attachment: {location: "/file"}}, {attachments: {base_url: "http://cdn"}}))
       .eql("http://cdn/file");
   });
+
+  it("should ensure a valid url is built", () => {
+    expect(buildAttachmentUrl({attachment: {location: "file"}}, {attachments: {base_url: "http://cdn"}}))
+      .eql("http://cdn/file");
+    expect(buildAttachmentUrl({attachment: {location: "/file"}}, {attachments: {base_url: "http://cdn/"}}))
+      .eql("http://cdn/file");
+  });
 });
