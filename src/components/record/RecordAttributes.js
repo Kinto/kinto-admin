@@ -74,7 +74,7 @@ export default class RecordAttributes extends Component {
             deleteAttachment={deleteAttachment}
             onSubmit={this.onSubmit}
             capabilities={capabilities} />
-        </RecordTabs >
+        </RecordTabs>
       </div>
     );
   }
