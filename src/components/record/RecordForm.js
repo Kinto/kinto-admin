@@ -5,6 +5,7 @@ import type {
   CollectionState,
   RecordState,
   RecordData,
+  Capabilities,
 } from "../../types";
 
 import React, { Component } from "react";
@@ -15,7 +16,7 @@ import AdminLink from "../AdminLink";
 import Spinner from "../Spinner";
 import JSONRecordForm from "../JSONRecordForm";
 import { canCreateRecord, canEditRecord } from "../../permission";
-import { cleanRecord, linkify } from "../../utils";
+import { cleanRecord, linkify, buildAttachmentUrl } from "../../utils";
 
 
 export function extendSchemaWithAttachment(
@@ -62,24 +63,25 @@ export function extendUiSchemaWhenDisabled(uiSchema: Object, disabled: boolean) 
   return {...uiSchema, "ui:disabled": disabled};
 }
 
-function AttachmentPreview({attachment}) {
-  const {mimetype, location} = attachment;
-  if (mimetype.startsWith("image/")) {
+function AttachmentPreview({mimetype, location}) {
+  if (!mimetype.startsWith("image/")) {
+    return null;
+  } else {
     return (
       <div className="attachment-img">
         <a href={location} target="_blank"><img src={location} /></a>
       </div>
     );
   }
-  return null;
 }
 
 function AttachmentInfo(props) {
-  const {record, attachmentRequired, deleteAttachment} = props;
-  if (!record) {
+  const {record: recordState, attachmentRequired, deleteAttachment, capabilities} = props;
+  if (recordState == null) {
     return null;
   }
-  const {data: {attachment}} = record;
+  const {data: record} = recordState;
+  const {attachment} = record;
   if (!attachment) {
     return null;
   }
@@ -98,7 +100,9 @@ function AttachmentInfo(props) {
               below.
             </p>
           </div>}
-        <AttachmentPreview attachment={attachment} />
+        <AttachmentPreview
+          mimetype={attachment.mimetype}
+          location={buildAttachmentUrl(record, capabilities)} />
         <table className="table table-condensed">
           <tbody>
             <tr>
@@ -145,6 +149,7 @@ export default class RecordForm extends Component {
     deleteRecord?: (bid: string, cid: string, rid: string) => void,
     deleteAttachment?: (bid: string, cid: string, rid: string) => void,
     onSubmit: (data: RecordData) => void,
+    capabilities: Capabilities,
   };
 
   state: {
@@ -259,7 +264,7 @@ export default class RecordForm extends Component {
   }
 
   render() {
-    const {collection, record} = this.props;
+    const {collection, record, capabilities} = this.props;
     const {data: {attachment: attachmentConfig}} = collection;
     const attachmentRequired = attachmentConfig && attachmentConfig.required;
     const creation = !record;
@@ -276,6 +281,7 @@ export default class RecordForm extends Component {
         {alert}
         {creation ? null :
           <AttachmentInfo
+            capabilitie={capabilities}
             record={record}
             attachmentRequired={attachmentRequired}
             deleteAttachment={this.deleteAttachment} />}

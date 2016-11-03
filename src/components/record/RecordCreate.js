@@ -5,6 +5,7 @@ import type {
   CollectionState,
   RecordData,
   CollectionRouteParams,
+  Capabilities,
 } from "../../types";
 
 import React, { Component } from "react";
@@ -16,6 +17,7 @@ export default class RecordCreate extends Component {
   props: {
     params: CollectionRouteParams,
     session: SessionState,
+    capabilities: Capabilities,
     bucket: BucketState,
     collection: CollectionState,
     createRecord: (
@@ -33,7 +35,7 @@ export default class RecordCreate extends Component {
   }
 
   render() {
-    const {params, session, bucket, collection} = this.props;
+    const {params, session, bucket, collection, capabilities} = this.props;
     const {bid, cid} = params;
     return (
       <div>
@@ -46,7 +48,8 @@ export default class RecordCreate extends Component {
               session={session}
               bucket={bucket}
               collection={collection}
-              onSubmit={this.onSubmit} />
+              onSubmit={this.onSubmit}
+              capabilities={capabilities} />
           </div>
         </div>
       </div>
