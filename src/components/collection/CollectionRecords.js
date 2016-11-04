@@ -9,7 +9,7 @@ import type {
 
 import React, { Component } from "react";
 
-import { renderDisplayField, timeago } from "../../utils";
+import { renderDisplayField, timeago, buildAttachmentUrl } from "../../utils";
 import { canCreateRecord } from "../../permission";
 import AdminLink from "../AdminLink";
 import Spinner from "../Spinner";
@@ -49,8 +49,9 @@ class Row extends Component {
   }
 
   render() {
-    const {bid, cid, record, displayFields} = this.props;
+    const {bid, cid, record, displayFields, capabilities} = this.props;
     const {id: rid} = record;
+    const attachmentUrl = buildAttachmentUrl(record, capabilities);
     return <tr onDoubleClick={this.onDoubleClick.bind(this)}>
       {
         displayFields.map((displayField, index) => {
@@ -60,8 +61,8 @@ class Row extends Component {
       <td className="lastmod">{this.lastModified}</td>
       <td className="actions text-right">
         <div className="btn-group">
-          {record.attachment && record.attachment.location ?
-            <a href={record.attachment.location} className="btn btn-sm btn-default"
+          {attachmentUrl ?
+            <a href={attachmentUrl} className="btn btn-sm btn-default"
               title="The record has an attachment"
               target="_blank">
               <i className="glyphicon glyphicon-paperclip" />
@@ -163,7 +164,8 @@ class Table extends Component {
       displayFields,
       deleteRecord,
       updateSort,
-      redirectTo
+      redirectTo,
+      capabilities,
     } = this.props;
 
     if (recordsLoaded && records.length === 0) {
@@ -212,7 +214,8 @@ class Table extends Component {
                 schema={schema}
                 displayFields={displayFields}
                 deleteRecord={deleteRecord}
-                redirectTo={redirectTo} />
+                redirectTo={redirectTo}
+                capabilities={capabilities} />
             );
           })
         }</tbody>
@@ -331,7 +334,8 @@ export default class CollectionRecords extends Component {
             displayFields={displayFields || ["__json"]}
             deleteRecord={deleteRecord}
             updateSort={this.updateSort}
-            redirectTo={redirectTo} />
+            redirectTo={redirectTo}
+            capabilities={capabilities} />
           {listActions}
         </CollectionTabs>
       </div>

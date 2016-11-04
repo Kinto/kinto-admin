@@ -52,7 +52,7 @@ export type BucketResource = {
 };
 
 export type Capabilities = {
-  attachements?: Object,
+  attachments?: Object,
   changes?: Object,
   default_bucket?: Object,
   fxa?: Object,
