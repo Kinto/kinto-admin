@@ -237,10 +237,7 @@ describe("collection sagas", () => {
 
       it("should post the attachment", () => {
         expect(createRecord.next().value)
-          .eql(call([collection, collection.addAttachment], attachment, record, {
-            safe: true,
-            last_modified: 1,
-          }));
+          .eql(call([collection, collection.addAttachment], attachment, record, {safe: true}));
       });
 
       it("should update the route path", () => {
