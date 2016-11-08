@@ -11,6 +11,7 @@ const corePlugins = [
 
 const settings = {
   maxPerPage: 200,
+  singleServer: null,
 };
 
 render(<KintoAdmin plugins={corePlugins} settings={settings} />,

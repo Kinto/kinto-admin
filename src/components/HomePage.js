@@ -58,6 +58,7 @@ export default class HomePage extends Component {
     const {
       session,
       history,
+      settings,
       clearHistory,
       setup,
       navigateToExternalAuth
@@ -71,6 +72,7 @@ export default class HomePage extends Component {
             <SessionInfo session={session} /> :
             <AuthForm setup={setup}
                       session={session}
+                      settings={settings}
                       history={history}
                       clearHistory={clearHistory}
                       navigateToExternalAuth={navigateToExternalAuth} />}

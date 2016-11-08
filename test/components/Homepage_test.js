@@ -27,6 +27,9 @@ describe("HomePage component", () => {
         node = createComponent(HomePage, {
           setup,
           history: ["http://server.test/v1"],
+          settings: {
+            singleServer: null
+          },
           navigateToExternalAuth,
           session: {authenticated: false},
         });
@@ -34,6 +37,26 @@ describe("HomePage component", () => {
 
       it("should render a setup form", () => {
         expect(node.querySelector("form")).to.exist;
+      });
+
+      describe("Single server", () => {
+        const serverURL = "http://server.test/v1";
+
+        beforeEach(() => {
+          node = createComponent(HomePage, {
+            setup,
+            history: [],
+            settings: {
+              singleServer: serverURL
+            },
+            navigateToExternalAuth,
+            session: {authenticated: false},
+          });
+        });
+
+        it("should set the server url value in hidden field", () => {
+          expect(node.querySelector("input[type='hidden']").value).eql(serverURL);
+        });
       });
 
       describe("Basic Auth", () => {
@@ -88,6 +111,7 @@ describe("HomePage component", () => {
       it("should set the server field value using latest entry from history", () => {
         const node = createComponent(HomePage, {
           history: [],
+          settings: {},
           session: {authenticated: false},
         });
 
@@ -98,6 +122,7 @@ describe("HomePage component", () => {
       it("should set the server field value using latest entry from history", () => {
         const node = createComponent(HomePage, {
           history: ["http://server.test/v1"],
+          settings: {},
           session: {authenticated: false},
         });
 
