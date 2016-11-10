@@ -10,6 +10,7 @@ import * as HistoryActions from "../actions/history";
 function mapStateToProps(state) {
   return {
     session: state.session,
+    settings: state.settings,
     history: state.history,
   };
 }

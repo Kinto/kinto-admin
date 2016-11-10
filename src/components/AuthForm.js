@@ -1,5 +1,5 @@
 /* @flow */
-import type { SessionState } from "../types";
+import type { SessionState, SettingsState } from "../types";
 
 import React, { Component } from "react";
 
@@ -78,7 +78,6 @@ const baseAuthSchema = {
       type: "string",
       title: "Server",
       format: "uri",
-      default: "https://kinto.dev.mozaws.net/v1/",
     },
     authType: {
       type: "string",
@@ -158,14 +157,16 @@ const btnLabels = {
 /**
  * Use the server history for the default server field value when available.
  */
-function extendSchemaWithHistory(schema, history) {
+function extendSchemaWithHistory(schema, history, singleServer) {
+  const defaultServer = "https://kinto.dev.mozaws.net/v1/";
+  const serverURL = singleServer || history[0] || defaultServer;
   return {
     ...schema,
     properties: {
       ...schema.properties,
       server: {
         ...schema.properties.server,
-        default: history[0] || schema.properties.server.default
+        default: serverURL
       }
     }
   };
@@ -174,7 +175,15 @@ function extendSchemaWithHistory(schema, history) {
 /**
  * Use the server history for the default server field value when available.
  */
-function extendUiSchemaWithHistory(uiSchema, history, clearHistory) {
+function extendUiSchemaWithHistory(uiSchema, history, clearHistory, singleServer) {
+  if (singleServer) {
+    return {
+      ...uiSchema,
+      server: {
+        "ui:widget": "hidden"
+      }
+    };
+  }
   return {
     ...uiSchema,
     server: {
@@ -191,6 +200,7 @@ export default class AuthForm extends Component {
   props: {
     session: SessionState,
     history: string[],
+    settings: SettingsState,
     setup: (session: Object) => void,
     navigateToExternalAuth: (authFormData: Object) => void,
     clearHistory: () => void,
@@ -253,14 +263,15 @@ export default class AuthForm extends Component {
   };
 
   render() {
-    const {history, clearHistory} = this.props;
+    const {history, clearHistory, settings} = this.props;
     const {schema, uiSchema, formData} = this.state;
+    const {singleServer} = settings;
     return (
       <div className="panel panel-default">
         <div className="panel-body">
           <Form
-            schema={extendSchemaWithHistory(schema, history)}
-            uiSchema={extendUiSchemaWithHistory(uiSchema, history, clearHistory)}
+            schema={extendSchemaWithHistory(schema, history, singleServer)}
+            uiSchema={extendUiSchemaWithHistory(uiSchema, history, clearHistory, singleServer)}
             formData={formData}
             onChange={this.onChange}
             onSubmit={this.onSubmit}>

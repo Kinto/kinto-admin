@@ -1,5 +1,5 @@
 /* @flow */
-import type { SessionState } from "../types";
+import type { SessionState, SettingsState } from "../types";
 
 import React, { Component } from "react";
 
@@ -48,6 +48,7 @@ function SessionInfo({session: {busy, serverInfo}}) {
 export default class HomePage extends Component {
   props: {
     session: SessionState,
+    settings: SettingsState,
     history: string[],
     clearHistory: () => void,
     setup: (session: Object) => void,
@@ -58,6 +59,7 @@ export default class HomePage extends Component {
     const {
       session,
       history,
+      settings,
       clearHistory,
       setup,
       navigateToExternalAuth
@@ -71,6 +73,7 @@ export default class HomePage extends Component {
             <SessionInfo session={session} /> :
             <AuthForm setup={setup}
                       session={session}
+                      settings={settings}
                       history={history}
                       clearHistory={clearHistory}
                       navigateToExternalAuth={navigateToExternalAuth} />}
