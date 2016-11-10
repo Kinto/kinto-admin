@@ -1,5 +1,5 @@
 /* @flow */
-import type { SessionState } from "../types";
+import type { SessionState, SettingsState } from "../types";
 
 import React, { Component } from "react";
 
@@ -200,6 +200,7 @@ export default class AuthForm extends Component {
   props: {
     session: SessionState,
     history: string[],
+    settings: SettingsState,
     setup: (session: Object) => void,
     navigateToExternalAuth: (authFormData: Object) => void,
     clearHistory: () => void,
