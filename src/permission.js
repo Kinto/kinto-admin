@@ -46,10 +46,13 @@ export function canCreateCollection(session: SessionState, bucket: BucketState):
 
 export function canEditCollection(session: SessionState, bucket: BucketState, collection: CollectionState): boolean {
   return can(session, (perm: PermissionsListEntry) => {
-    return perm.resource_name == "collection"
-        && perm.bucket_id == bucket.data.id
-        && perm.collection_id == collection.data.id
-        && perm.permissions.includes("write");
+    return (
+      (perm.resource_name == "bucket") ||
+      (perm.resource_name == "collection" &&
+       perm.collection_id == collection.data.id)
+    ) &&
+    perm.bucket_id == bucket.data.id &&
+    perm.permissions.includes("write");
   });
 }
 
@@ -63,29 +66,41 @@ export function canCreateGroup(session: SessionState, bucket: BucketState): bool
 
 export function canEditGroup(session: SessionState, bucket: BucketState, group: GroupState): boolean {
   return can(session, (perm: PermissionsListEntry) => {
-    return perm.resource_name == "group"
-        && perm.bucket_id == bucket.data.id
-        && perm.group_id == group.data.id
-        && perm.permissions.includes("write");
+    return (
+      (perm.resource_name == "bucket") ||
+      (perm.resource_name == "group" &&
+       perm.group_id == group.data.id)
+    ) &&
+    perm.bucket_id == bucket.data.id &&
+    perm.permissions.includes("write");
   });
 }
 
 export function canCreateRecord(session: SessionState, bucket: BucketState, collection: CollectionState): boolean {
   return can(session, (perm: PermissionsListEntry) => {
-    return perm.resource_name == "collection"
-        && perm.bucket_id == bucket.data.id
-        && perm.collection_id == collection.data.id
-        && perm.permissions.includes("record:create");
+    return (
+      (perm.resource_name == "bucket" &&
+       perm.permissions.includes("write")) ||
+      (perm.resource_name == "collection" &&
+       perm.collection_id == collection.data.id &&
+       perm.permissions.includes("record:create"))
+    ) &&
+    perm.bucket_id == bucket.data.id;
   });
 }
 
 export function canEditRecord(session: SessionState, bucket: BucketState, collection: CollectionState, record: RecordState): boolean {
   return can(session, (perm: PermissionsListEntry) => {
-    return perm.resource_name == "record"
-        && perm.bucket_id == bucket.data.id
-        && perm.collection_id == collection.data.id
-        && perm.record_id == record.data.id
-        && perm.permissions.includes("write");
+    return (
+      (perm.resource_name == "bucket") ||
+      (perm.resource_name == "collection" &&
+       perm.collection_id == collection.data.id) ||
+      (perm.resource_name == "record" &&
+       perm.collection_id == collection.data.id &&
+       perm.record_id == record.data.id)
+    ) &&
+    perm.permissions.includes("write") &&
+    perm.bucket_id == bucket.data.id;
   });
 }
 
