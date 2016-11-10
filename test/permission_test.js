@@ -162,6 +162,17 @@ describe("canEditCollection", () => {
     const collection = {data: {id: "foo"}};
     expect(canEditCollection(session, bucket, collection)).eql(true);
   });
+
+  it("should return true if permission on bucket is listed", () => {
+    const session = {permissions: [{
+      resource_name: "bucket",
+      bucket_id: "xyz",
+      permissions: ["write"]
+    }]};
+    const bucket = {data: {id: "xyz"}};
+    const collection = {data: {id: "foo"}};
+    expect(canEditCollection(session, bucket, collection)).eql(true);
+  });
 });
 
 
@@ -198,6 +209,17 @@ describe("canEditGroup", () => {
       resource_name: "group",
       bucket_id: "xyz",
       group_id: "foo",
+      permissions: ["write"]
+    }]};
+    const bucket = {data: {id: "xyz"}};
+    const group = {data: {id: "foo"}};
+    expect(canEditGroup(session, bucket, group)).eql(true);
+  });
+
+  it("should return true if permission on bucket is listed", () => {
+    const session = {permissions: [{
+      resource_name: "bucket",
+      bucket_id: "xyz",
       permissions: ["write"]
     }]};
     const bucket = {data: {id: "xyz"}};
@@ -246,6 +268,17 @@ describe("canCreateRecord", () => {
     const collection = {data: {id: "foo"}};
     expect(canCreateRecord(session, bucket, collection)).eql(true);
   });
+
+  it("should return true if permission on bucket is listed", () => {
+    const session = {permissions: [{
+      resource_name: "bucket",
+      bucket_id: "xyz",
+      permissions: ["write"]
+    }]};
+    const bucket = {data: {id: "xyz"}};
+    const collection = {data: {id: "foo"}};
+    expect(canCreateRecord(session, bucket, collection)).eql(true);
+  });
 });
 
 
@@ -289,6 +322,31 @@ describe("canEditRecord", () => {
       bucket_id: "xyz",
       collection_id: "foo",
       record_id: "blah",
+      permissions: ["write"]
+    }]};
+    const bucket = {data: {id: "xyz"}};
+    const collection = {data: {id: "foo"}};
+    const record = {data: {id: "blah"}};
+    expect(canEditRecord(session, bucket, collection, record)).eql(true);
+  });
+
+  it("should return true if permission on bucket is listed", () => {
+    const session = {permissions: [{
+      resource_name: "bucket",
+      bucket_id: "xyz",
+      permissions: ["write"]
+    }]};
+    const bucket = {data: {id: "xyz"}};
+    const collection = {data: {id: "foo"}};
+    const record = {data: {id: "blah"}};
+    expect(canEditRecord(session, bucket, collection, record)).eql(true);
+  });
+
+  it("should return true if permission on collection is listed", () => {
+    const session = {permissions: [{
+      resource_name: "collection",
+      bucket_id: "xyz",
+      collection_id: "foo",
       permissions: ["write"]
     }]};
     const bucket = {data: {id: "xyz"}};
