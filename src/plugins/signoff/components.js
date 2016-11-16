@@ -19,8 +19,8 @@ import AdminLink from "../../components/AdminLink";
 import { ProgressBar, ProgressStep } from "./ProgressBar.js";
 
 
-function isEditor(sessionState, bucketState) {
-  if (typeof sessionState.serverInfo.user !== "object") {
+function isMember(groupkey, source, sessionState, bucketState) {
+  if (sessionState.serverInfo.user == null) {
     return false;
   }
   const {serverInfo: {user, capabilities}} = sessionState;
@@ -28,14 +28,23 @@ function isEditor(sessionState, bucketState) {
     return false;
   }
   const {signer={}} = capabilities;
-  const {editors_group: groupName} = signer;
+  const {[groupkey]: defaultGroupName} = signer;
+  const {[groupkey]: groupName=defaultGroupName} = source;
   const {id: userId} = user;
   const {groups} = bucketState;
   const editorGroup = groups.find(g => g.id === groupName);
-  if (!editorGroup) {
+  if (editorGroup == null) {
     return false;
   }
   return editorGroup.members.includes(userId);
+}
+
+function isEditor(source, sessionState, bucketState) {
+  return isMember("editors_group", source, sessionState, bucketState);
+}
+
+function isReviewer(source, sessionState, bucketState) {
+  return isMember("reviewers_group", source, sessionState, bucketState);
 }
 
 export default class SignoffToolBar extends React.Component {
@@ -86,13 +95,13 @@ export default class SignoffToolBar extends React.Component {
         <WorkInProgress label="Work in progress"
                         step={0}
                         currentStep={step}
-                        canEdit={canEdit && isEditor(sessionState, bucketState)}
+                        canEdit={canEdit && isEditor(source, sessionState, bucketState)}
                         requestReview={requestReview}
                         source={source} />
         <Review label="Waiting review"
                 step={1}
                 currentStep={step}
-                canEdit={canEdit && isEditor(sessionState, bucketState)}
+                canEdit={canEdit && isEditor(source, sessionState, bucketState)}
                 approveChanges={approveChanges}
                 declineChanges={declineChanges}
                 source={source}
@@ -100,7 +109,7 @@ export default class SignoffToolBar extends React.Component {
         <Signed label="Signed"
                 step={2}
                 currentStep={step}
-                canEdit={canEdit}
+                canEdit={canEdit && isReviewer(source, sessionState, bucketState)}
                 reSign={approveChanges}
                 source={source}
                 destination={destination} />
