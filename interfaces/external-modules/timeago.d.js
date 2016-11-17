@@ -1,6 +1,6 @@
 declare module "timeago.js" {
   declare class timeagoApi {
-    format(date: Date): string;
+    format(date: Date | number | string): string;
   }
   declare function timeago(): timeagoApi
 

@@ -21,7 +21,12 @@ export function isObject(thing: any): boolean {
 
 export function timeago(date: string | number): string {
   // Show relative time according to current timezone.
-  return _timeago().format(new Date(date));
+  const nowUTC = (new Date()).getTime();
+  const timestamp = parseInt(date, 10);
+  // In our use case, we should never show relative time in the future.
+  // For example, if local computer is late, the server timestamp will appear
+  // to be in the future. Hence use "now" as a maximum.
+  return _timeago().format(Math.min(nowUTC, timestamp));
 }
 
 export function validJSON(string: string): boolean {
