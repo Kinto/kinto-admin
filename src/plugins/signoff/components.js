@@ -97,35 +97,38 @@ export default class SignoffToolBar extends React.Component {
     }
 
     const {source, preview, destination} = resource;
+    const canRequestReview = canEdit && isEditor(source, sessionState, bucketState);
     const canReview = canEdit &&
                       isReviewer(source, sessionState, bucketState) &&
                       !isLastEditor(source, sessionState);
+    const canSign = canEdit && isReviewer(source, sessionState, bucketState);
 
     // Default status is request review
     const step = status == "to-review" ? 1 : status == "signed" ? 2 : 0;
     return (
       <ProgressBar>
-        <WorkInProgress label="Work in progress"
-                        step={0}
-                        currentStep={step}
-                        canEdit={canEdit && isEditor(source, sessionState, bucketState)}
-                        requestReview={requestReview}
-                        source={source} />
+        <WorkInProgress
+          label="Work in progress"
+          step={0}
+          currentStep={step}
+          canEdit={canRequestReview}
+          requestReview={requestReview}
+          source={source} />
         <Review label="Waiting review"
-                step={1}
-                currentStep={step}
-                canEdit={canReview}
-                approveChanges={approveChanges}
-                declineChanges={declineChanges}
-                source={source}
-                preview={preview} />
+          step={1}
+          currentStep={step}
+          canEdit={canReview}
+          approveChanges={approveChanges}
+          declineChanges={declineChanges}
+          source={source}
+          preview={preview} />
         <Signed label="Signed"
-                step={2}
-                currentStep={step}
-                canEdit={canEdit && isReviewer(source, sessionState, bucketState)}
-                reSign={approveChanges}
-                source={source}
-                destination={destination} />
+          step={2}
+          currentStep={step}
+          canEdit={canSign}
+          reSign={approveChanges}
+          source={source}
+          destination={destination} />
       </ProgressBar>
     );
   }
