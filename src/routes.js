@@ -1,4 +1,10 @@
 /* @flow */
+import type {
+  BucketRoute,
+  CollectionRoute,
+  GroupRoute,
+  RecordRoute
+} from "./types";
 
 import React, { Component } from "react";
 import { Route, IndexRoute, IndexRedirect } from "react-router";
@@ -72,15 +78,15 @@ function onCollectionRecordsEnter(store: Object, {params}) {
   store.dispatch(collectionActions.listRecords(bid, cid, sort));
 }
 
-function onCollectionHistoryEnter(store: Object, {params}) {
+export function onCollectionHistoryEnter(store: Object, {params}: CollectionRoute) {
   const {bid, cid} = params;
-  const {session, routing: {locationBeforeTransitions: {query: {since}}}} = store.getState();
+  const {session, routing: {locationBeforeTransitions: {query: filters}}} = store.getState();
   if (!session.authenticated) {
     // We're not authenticated, skip requesting the list of records. This likely
     // occurs when users refresh the page and lose their session.
     return;
   }
-  store.dispatch(collectionActions.listCollectionHistory(bid, cid, {since}));
+  store.dispatch(collectionActions.listCollectionHistory(bid, cid, filters));
 }
 
 function onBucketPageEnter(store: Object, action: Function, {params}) {
@@ -94,35 +100,35 @@ function onBucketPageEnter(store: Object, action: Function, {params}) {
   store.dispatch(action(bid));
 }
 
-function onBucketHistoryEnter(store: Object, {params}) {
+export function onBucketHistoryEnter(store: Object, {params}: BucketRoute) {
   const {bid} = params;
-  const {session, routing: {locationBeforeTransitions: {query: {since}}}} = store.getState();
+  const {session, routing: {locationBeforeTransitions: {query: filters}}} = store.getState();
   if (!session.authenticated) {
     // We're not authenticated, skip requesting the list of records. This likely
     // occurs when users refresh the page and lose their session.
     return;
   }
-  store.dispatch(bucketActions.listBucketHistory(bid, {since}));
+  store.dispatch(bucketActions.listBucketHistory(bid, filters));
 }
 
-function onGroupHistoryEnter(store: Object, {params}) {
+export function onGroupHistoryEnter(store: Object, {params}: GroupRoute) {
   const {bid, gid} = params;
-  const {session, routing: {locationBeforeTransitions: {query: {since}}}} = store.getState();
+  const {session, routing: {locationBeforeTransitions: {query: filters}}} = store.getState();
   if (!session.authenticated) {
     // We're not authenticated, skip requesting the list of records. This likely
     // occurs when users refresh the page and lose their session.
     return;
   }
-  store.dispatch(groupActions.listGroupHistory(bid, gid, {since}));
+  store.dispatch(groupActions.listGroupHistory(bid, gid, filters));
 }
 
-function onRecordHistoryEnter(store: Object, {params}) {
+export function onRecordHistoryEnter(store: Object, {params}: RecordRoute) {
   const {bid, cid, rid} = params;
-  const {session, routing: {locationBeforeTransitions: {query: {since}}}} = store.getState();
+  const {session, routing: {locationBeforeTransitions: {query: filters}}} = store.getState();
   if (!session.authenticated) {
     return;
   }
-  store.dispatch(recordActions.listRecordHistory(bid, cid, rid, {since}));
+  store.dispatch(recordActions.listRecordHistory(bid, cid, rid, filters));
 }
 
 function registerPluginsComponentHooks(PageContainer, plugins) {

@@ -203,9 +203,17 @@ export type BucketRouteParams = {
   bid: string,
 };
 
+export type BucketRoute = {
+  params: BucketRouteParams
+};
+
 export type CollectionRouteParams = {
   bid: string,
   cid: string,
+};
+
+export type CollectionRoute = {
+  params: CollectionRouteParams
 };
 
 export type GroupRouteParams = {
@@ -213,10 +221,18 @@ export type GroupRouteParams = {
   gid: string,
 };
 
+export type GroupRoute = {
+  params: GroupRouteParams
+};
+
 export type RecordRouteParams = {
   bid: string,
   cid: string,
   rid: string,
+};
+
+export type RecordRoute = {
+  params: RecordRouteParams
 };
 
 export type RouteParams = {
@@ -228,7 +244,10 @@ export type RouteParams = {
 
 export type RouteLocation = {
   pathname: string,
-  query: {since?: string}
+  query: {
+    since?: string,
+    resource_name?: string
+  }
 };
 
 export type RouteResources = {
