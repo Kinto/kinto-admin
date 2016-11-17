@@ -121,11 +121,7 @@ function WorkInProgress({label, canEdit, currentStep, step, requestReview, sourc
 
 function WorkInProgressInfos({lastAuthor, lastUpdated}) {
   if (!lastUpdated) {
-    return (
-      <ul>
-        <li>Never updated</li>
-      </ul>
-    );
+    return <ul><li>Never updated</li></ul>;
   }
   return (
     <ul>
