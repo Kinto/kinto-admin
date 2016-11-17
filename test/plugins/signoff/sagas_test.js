@@ -11,13 +11,17 @@ import * as saga from "../../../src/plugins/signoff/sagas";
 describe("signoff plugin sagas", () => {
   let bucket, collection, getState;
 
-  beforeEach(() => {
+  before(() => {
     collection = {
       getData() {},
       setData() {},
     };
     bucket = {collection() {return collection;}};
     setClient({bucket() {return bucket;}});
+    getState = () => ({
+      bucket: {data: {id: "buck"}},
+      collection: {data: {id: "coll", last_modified: 42}}
+    });
   });
 
   describe("handleRequestReview()", () => {
@@ -25,10 +29,6 @@ describe("signoff plugin sagas", () => {
 
     before(() => {
       const action = actions.requestReview();
-      getState = () => ({
-        bucket: {data: {id: "buck"}},
-        collection: {data: {id: "coll", last_modified: 42}}
-      });
       handleRequestReview = saga.handleRequestReview(getState, action);
     });
 
@@ -58,10 +58,6 @@ describe("signoff plugin sagas", () => {
 
     before(() => {
       const action = actions.declineChanges();
-      getState = () => ({
-        bucket: {data: {id: "buck"}},
-        collection: {data: {id: "coll", last_modified: 42}}
-      });
       handleDeclineChanges = saga.handleDeclineChanges(getState, action);
     });
 
@@ -91,10 +87,6 @@ describe("signoff plugin sagas", () => {
 
     before(() => {
       const action = actions.approveChanges();
-      getState = () => ({
-        bucket: {data: {id: "buck"}},
-        collection: {data: {id: "coll", last_modified: 42}}
-      });
       handleApproveChanges = saga.handleApproveChanges(getState, action);
     });
 
