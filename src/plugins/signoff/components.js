@@ -19,6 +19,43 @@ import AdminLink from "../../components/AdminLink";
 import { ProgressBar, ProgressStep } from "./ProgressBar.js";
 
 
+function isMember(groupKey, source, sessionState, bucketState) {
+  const {serverInfo: {user={}, capabilities}} = sessionState;
+  if (!user.id) {
+    return false;
+  }
+  const {signer={}} = capabilities;
+  const {[groupKey]: defaultGroupName} = signer;
+  const {[groupKey]: groupName=defaultGroupName} = source;
+  const {id: userId} = user;
+  const {groups} = bucketState;
+  const group = groups.find(g => g.id === groupName);
+  if (group == null) {
+    // XXX for now if we can't access the group it's probably because the user
+    // doesn't have the permission to read it, so we mark the user has a member
+    // of the group.
+    // Later when https://github.com/Kinto/kinto/pull/891/files lands, we'll
+    // have access to the principals attached to a given authentication, so we'll
+    // be able to properly check for membership.
+    return true;
+  }
+  return group.members.includes(userId);
+}
+
+function isEditor(source, sessionState, bucketState) {
+  return isMember("editors_group", source, sessionState, bucketState);
+}
+
+function isReviewer(source, sessionState, bucketState) {
+  return isMember("reviewers_group", source, sessionState, bucketState);
+}
+
+function isLastEditor(source, sessionState) {
+  const {serverInfo: {user={}}} = sessionState;
+  const {lastEditor} = source;
+  return user.id === lastEditor;
+}
+
 export default class SignoffToolBar extends React.Component {
   props: {
     sessionState: SessionState,
@@ -59,32 +96,38 @@ export default class SignoffToolBar extends React.Component {
     }
 
     const {source, preview, destination} = resource;
+    const canRequestReview = canEdit && isEditor(source, sessionState, bucketState);
+    const canReview = canEdit &&
+                      isReviewer(source, sessionState, bucketState) &&
+                      !isLastEditor(source, sessionState);
+    const canSign = canEdit && isReviewer(source, sessionState, bucketState);
 
     // Default status is request review
     const step = status == "to-review" ? 1 : status == "signed" ? 2 : 0;
     return (
       <ProgressBar>
-        <WorkInProgress label="Work in progress"
-                        step={0}
-                        currentStep={step}
-                        canEdit={canEdit}
-                        requestReview={requestReview}
-                        source={source} />
+        <WorkInProgress
+          label="Work in progress"
+          step={0}
+          currentStep={step}
+          canEdit={canRequestReview}
+          requestReview={requestReview}
+          source={source} />
         <Review label="Waiting review"
-                step={1}
-                currentStep={step}
-                canEdit={canEdit}
-                approveChanges={approveChanges}
-                declineChanges={declineChanges}
-                source={source}
-                preview={preview} />
+          step={1}
+          currentStep={step}
+          canEdit={canReview}
+          approveChanges={approveChanges}
+          declineChanges={declineChanges}
+          source={source}
+          preview={preview} />
         <Signed label="Signed"
-                step={2}
-                currentStep={step}
-                canEdit={canEdit}
-                reSign={approveChanges}
-                source={source}
-                destination={destination} />
+          step={2}
+          currentStep={step}
+          canEdit={canSign}
+          reSign={approveChanges}
+          source={source}
+          destination={destination} />
       </ProgressBar>
     );
   }

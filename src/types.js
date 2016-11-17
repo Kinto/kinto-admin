@@ -59,6 +59,7 @@ export type Capabilities = {
   history?: Object,
   permissions_endpoint?: Object,
   schema?: Object,
+  signer?: Object,
 };
 
 export type ClientError = {
@@ -272,7 +273,7 @@ export type SessionState = {
 export type ServerInfo = {
   capabilities: Capabilities,
   user?: {
-    id?: string,
+    id: string,
     bucket?: string,
   }
 };

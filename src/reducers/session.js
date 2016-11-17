@@ -22,7 +22,6 @@ const DEFAULT: SessionState = {
   buckets: [],
   serverInfo: {
     capabilities: {},
-    user: {},
   },
   redirectURL: null,
 };

@@ -17,6 +17,8 @@ export type SourceInfo = {
   lastEditor: string,
   lastReviewer: string,
   lastStatusChanged: number,
+  editors_group?: string,
+  reviewers_group?: string,
 };
 
 export type PreviewInfo = {
