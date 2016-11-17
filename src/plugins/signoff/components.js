@@ -19,19 +19,18 @@ import AdminLink from "../../components/AdminLink";
 import { ProgressBar, ProgressStep } from "./ProgressBar.js";
 
 
-function isMember(groupkey, source, sessionState, bucketState) {
+function isMember(groupKey, source, sessionState, bucketState) {
   const {serverInfo: {user={}, capabilities}} = sessionState;
   if (!user.id) {
     return false;
   }
   const {signer={}} = capabilities;
-  const {[groupkey]: defaultGroupName} = signer;
-  const {[groupkey]: groupName=defaultGroupName} = source;
+  const {[groupKey]: defaultGroupName} = signer;
+  const {[groupKey]: groupName=defaultGroupName} = source;
   const {id: userId} = user;
-  console.log(bucketState);
   const {groups} = bucketState;
-  const editorGroup = groups.find(g => g.id === groupName);
-  if (editorGroup == null) {
+  const group = groups.find(g => g.id === groupName);
+  if (group == null) {
     // XXX for now if we can't access the group it's probably because the user
     // doesn't have the permission to read it, so we mark the user has a member
     // of the group.
@@ -40,7 +39,7 @@ function isMember(groupkey, source, sessionState, bucketState) {
     // be able to properly check for membership.
     return true;
   }
-  return editorGroup.members.includes(userId);
+  return group.members.includes(userId);
 }
 
 function isEditor(source, sessionState, bucketState) {

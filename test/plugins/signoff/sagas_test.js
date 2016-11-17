@@ -9,16 +9,21 @@ import * as saga from "../../../src/plugins/signoff/sagas";
 
 
 describe("signoff plugin sagas", () => {
+  let bucket, collection, getState;
+
+  beforeEach(() => {
+    collection = {
+      getData() {},
+      setData() {},
+    };
+    bucket = {collection() {return collection;}};
+    setClient({bucket() {return bucket;}});
+  });
+
   describe("handleRequestReview()", () => {
-    let bucket, collection, getState, handleRequestReview;
+    let handleRequestReview;
 
     before(() => {
-      collection = {
-        getData() {},
-        setData() {},
-      };
-      bucket = {collection() {return collection;}};
-      setClient({bucket() {return bucket;}});
       const action = actions.requestReview();
       getState = () => ({
         bucket: {data: {id: "buck"}},
@@ -49,16 +54,10 @@ describe("signoff plugin sagas", () => {
   });
 
   describe("handleDeclineChanges()", () => {
-    let bucket, collection, getState, handleDeclineChanges;
+    let handleDeclineChanges;
 
     before(() => {
-      collection = {
-        getData() {},
-        setData() {},
-      };
-      bucket = {collection() {return collection;}};
-      setClient({bucket() {return bucket;}});
-      const action = actions.requestReview();
+      const action = actions.declineChanges();
       getState = () => ({
         bucket: {data: {id: "buck"}},
         collection: {data: {id: "coll", last_modified: 42}}
@@ -88,16 +87,10 @@ describe("signoff plugin sagas", () => {
   });
 
   describe("handleApproveChanges()", () => {
-    let bucket, collection, getState, handleApproveChanges;
+    let handleApproveChanges;
 
     before(() => {
-      collection = {
-        getData() {},
-        setData() {},
-      };
-      bucket = {collection() {return collection;}};
-      setClient({bucket() {return bucket;}});
-      const action = actions.requestReview();
+      const action = actions.approveChanges();
       getState = () => ({
         bucket: {data: {id: "buck"}},
         collection: {data: {id: "coll", last_modified: 42}}
