@@ -46,13 +46,6 @@ describe("bucket reducer", () => {
         .eql(initial);
     });
 
-    it("should preserve state when no groups are passed", () => {
-      const initial = bucket(undefined, {type: null});
-
-      expect(bucket({groups: []}, {type: ROUTE_LOAD_SUCCESS, bucket: {}}))
-        .to.have.property("groups").eql([]);
-    });
-
     it("should update state when a bucket is passed", () => {
       const state = bucket(undefined, {
         type: ROUTE_LOAD_SUCCESS,

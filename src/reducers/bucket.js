@@ -48,7 +48,7 @@ export function bucket(state: BucketState = INITIAL_STATE, action: Object) {
       return {...INITIAL_STATE, busy: true};
     }
     case ROUTE_LOAD_SUCCESS: {
-      const {bucket, groups=state.groups} = action;
+      const {bucket, groups} = action;
       return load(state, bucket, groups);
     }
     case ROUTE_LOAD_FAILURE: {
