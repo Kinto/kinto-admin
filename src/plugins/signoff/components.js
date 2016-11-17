@@ -20,21 +20,25 @@ import { ProgressBar, ProgressStep } from "./ProgressBar.js";
 
 
 function isMember(groupkey, source, sessionState, bucketState) {
-  if (sessionState.serverInfo.user == null) {
-    return false;
-  }
-  const {serverInfo: {user, capabilities}} = sessionState;
-  if (user == null) {
+  const {serverInfo: {user={}, capabilities}} = sessionState;
+  if (!user.id) {
     return false;
   }
   const {signer={}} = capabilities;
   const {[groupkey]: defaultGroupName} = signer;
   const {[groupkey]: groupName=defaultGroupName} = source;
   const {id: userId} = user;
+  console.log(bucketState);
   const {groups} = bucketState;
   const editorGroup = groups.find(g => g.id === groupName);
   if (editorGroup == null) {
-    return false;
+    // XXX for now if we can't access the group it's probably because the user
+    // doesn't have the permission to read it, so we mark the user has a member
+    // of the group.
+    // Later when https://github.com/Kinto/kinto/pull/891/files lands, we'll
+    // have access to the principals attached to a given authentication, so we'll
+    // be able to properly check for membership.
+    return true;
   }
   return editorGroup.members.includes(userId);
 }
@@ -45,6 +49,12 @@ function isEditor(source, sessionState, bucketState) {
 
 function isReviewer(source, sessionState, bucketState) {
   return isMember("reviewers_group", source, sessionState, bucketState);
+}
+
+function isLastEditor(source, sessionState) {
+  const {serverInfo: {user={}}} = sessionState;
+  const {lastEditor} = source;
+  return user.id === lastEditor;
 }
 
 export default class SignoffToolBar extends React.Component {
@@ -87,6 +97,9 @@ export default class SignoffToolBar extends React.Component {
     }
 
     const {source, preview, destination} = resource;
+    const canReview = canEdit &&
+                      isReviewer(source, sessionState, bucketState) &&
+                      !isLastEditor(source, sessionState);
 
     // Default status is request review
     const step = status == "to-review" ? 1 : status == "signed" ? 2 : 0;
@@ -101,7 +114,7 @@ export default class SignoffToolBar extends React.Component {
         <Review label="Waiting review"
                 step={1}
                 currentStep={step}
-                canEdit={canEdit && isEditor(source, sessionState, bucketState)}
+                canEdit={canReview}
                 approveChanges={approveChanges}
                 declineChanges={declineChanges}
                 source={source}

@@ -107,7 +107,7 @@ function* fetchWorkflowInfo(source, preview, destination) {
 export function* handleRequestReview(getState, action) {
   const {bucket} = getState();
   try {
-    const collection = yield call([this, _updateCollectionAttributes], getState, {status: "to-review"});
+    const collection = yield call(_updateCollectionAttributes, getState, {status: "to-review"});
     yield put(routeLoadSuccess({bucket, collection}));
     yield put(notifySuccess("Review requested."));
   } catch(e) {
@@ -118,7 +118,7 @@ export function* handleRequestReview(getState, action) {
 export function* handleDeclineChanges(getState, action) {
   const {bucket} = getState();
   try {
-    const collection = yield call([this, _updateCollectionAttributes], getState, {status: "work-in-progress"});
+    const collection = yield call(_updateCollectionAttributes, getState, {status: "work-in-progress"});
     yield put(routeLoadSuccess({bucket, collection}));
     yield put(notifySuccess("Changes declined."));
   } catch(e) {
@@ -129,7 +129,7 @@ export function* handleDeclineChanges(getState, action) {
 export function* handleApproveChanges(getState, action) {
   const {bucket} = getState();
   try {
-    const collection = yield call([this, _updateCollectionAttributes], getState, {status: "to-sign"});
+    const collection = yield call(_updateCollectionAttributes, getState, {status: "to-sign"});
     yield put(routeLoadSuccess({bucket, collection}));
     yield put(notifySuccess("Signature requested."));
   } catch(e) {
@@ -144,5 +144,9 @@ function _updateCollectionAttributes(getState, data) {
     collection: {data: {id: cid, last_modified}}
   } = getState();
   const coll = client.bucket(bid).collection(cid);
-  return coll.setData(data, {safe: true, patch: true, last_modified});
+  return coll.setData(data, {safe: true, patch: true, last_modified})
+    .then(() => {
+      return coll.getData();
+    })
+    .then(attributes => ({data: attributes}));
 }
