@@ -122,8 +122,8 @@ function WorkInProgress({label, canEdit, currentStep, step, requestReview, sourc
 function WorkInProgressInfos({lastAuthor, lastUpdated}) {
   return (
     <ul>
-      <li><strong>Author: </strong> {lastAuthor}</li>
       <li><strong>Updated: </strong><HumanDate timestamp={lastUpdated}/></li>
+      <li><strong>By: </strong> {lastAuthor}</li>
     </ul>
   );
 }
@@ -185,8 +185,8 @@ function ReviewInfos({active, source, lastRequested, link} : ReviewInfosProps) {
   const {since, deleted, updated} = changes;
   return (
     <ul>
-      <li><strong>Editor: </strong> {lastEditor}</li>
       <li><strong>Requested: </strong><HumanDate timestamp={lastRequested}/></li>
+      <li><strong>By: </strong> {lastEditor}</li>
       <li><strong>Preview: </strong> {link}</li>
       {active ?
        <li>
@@ -260,8 +260,8 @@ function SignedInfos({lastReviewer, destination} : SignedInfosProps) {
   const {lastSigned, bid, cid} = destination;
   return (
     <ul>
-      <li><strong>Reviewer: </strong>{lastReviewer}</li>
       <li><strong>Signed: </strong><HumanDate timestamp={lastSigned}/></li>
+      <li><strong>By: </strong>{lastReviewer}</li>
       <li>
         <strong>Destination: </strong>
         <AdminLink name="collection:records" params={{bid, cid}}>{`${bid}/${cid}`}</AdminLink>
