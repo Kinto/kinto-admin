@@ -145,8 +145,7 @@ function _updateCollectionAttributes(getState, data) {
   } = getState();
   const coll = client.bucket(bid).collection(cid);
   return coll.setData(data, {safe: true, patch: true, last_modified})
-    .then(() => {
-      return coll.getData();
-    })
+    .then(() => coll.getData())
+    // FIXME: https://github.com/Kinto/kinto-http.js/issues/150
     .then(attributes => ({data: attributes}));
 }
