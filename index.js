@@ -9,10 +9,7 @@ const corePlugins = [
   signoffPlugin
 ];
 
-const settings = {
-  maxPerPage: 200,
-  singleServer: null,
-};
+const settings = {};
 
 render(<KintoAdmin plugins={corePlugins} settings={settings} />,
        document.getElementById("app"));

@@ -9,5 +9,5 @@ const INITIAL_STATE: SettingsState = {
 
 // This is basically a noop as we don't support settings update at runtime (yet).
 export default function settings(state: SettingsState = INITIAL_STATE): SettingsState {
-  return state;
+  return {...INITIAL_STATE, ...state};
 }
