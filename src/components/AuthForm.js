@@ -1,6 +1,8 @@
 /* @flow */
 import type { SessionState, SettingsState } from "../types";
 
+import { omit } from "../utils";
+
 import React, { Component } from "react";
 
 import Form from "react-jsonschema-form";
@@ -82,41 +84,8 @@ const baseAuthSchema = {
     authType: {
       type: "string",
       title: "Authentication method",
-      enum: ["basicauth", "fxa"],
-      enumNames: ["Basic Auth", "Firefox Account"],
+      enum: ["basicauth", "fxa", "ldap"],
     }
-  }
-};
-
-const basicAuthSchema = {
-  ...baseAuthSchema,
-  required: [...baseAuthSchema.required, "credentials"],
-  properties: {
-    ...baseAuthSchema.properties,
-    credentials: {
-      type: "object",
-      title: "BasicAuth credentials",
-      required: ["username", "password"],
-      properties: {
-        username: {
-          type: "string",
-          title: "Username",
-          default: "test",
-        },
-        password: {
-          type: "string",
-          title: "Password",
-          default: "test",
-        }
-      }
-    }
-  }
-};
-
-const fxaSchema = {
-  ...baseAuthSchema,
-  properties: {
-    ...baseAuthSchema.properties,
   }
 };
 
@@ -129,41 +98,113 @@ const baseUISchema = {
   }
 };
 
-const basicAuthUISchema = {
-  ...baseUISchema,
-  credentials: {
-    password: {"ui:widget": "password"}
+const authSchemas = {
+  basicauth: {
+    schema: {
+      ...baseAuthSchema,
+      required: [...baseAuthSchema.required, "credentials"],
+      properties: {
+        ...baseAuthSchema.properties,
+        credentials: {
+          type: "object",
+          title: "BasicAuth credentials",
+          required: ["username", "password"],
+          properties: {
+            username: {
+              type: "string",
+              title: "Username",
+              default: "test",
+            },
+            password: {
+              type: "string",
+              title: "Password",
+              default: "test",
+            }
+          }
+        }
+      }
+    },
+    uiSchema: {
+      ...baseUISchema,
+      credentials: {
+        password: {"ui:widget": "password"}
+      }
+    }
+  },
+  fxa: {
+    schema: {
+      ...baseAuthSchema,
+      properties: {
+        ...baseAuthSchema.properties,
+      }
+    },
+    uiSchema: {
+      authType: {
+        ...baseUISchema.authType,
+        "ui:help": (
+          <span>
+            <b>Note:</b> The
+            <a href="https://github.com/mozilla-services/kinto-fxa">{" kinto-fxa "}</a>
+            plugin must be installed on the target server.
+          </span>
+        )
+      }
+    }
+  },
+  ldap: {
+    schema: {
+      ...baseAuthSchema,
+      required: [...baseAuthSchema.required, "credentials"],
+      properties: {
+        ...baseAuthSchema.properties,
+        credentials: {
+          type: "object",
+          title: "LDAP credentials",
+          required: ["username", "password"],
+          properties: {
+            username: {
+              type: "string",
+              title: "Email",
+              default: "jdoe@mozilla.com",
+            },
+            password: {
+              type: "string",
+              title: "Password"
+            }
+          }
+        }
+      }
+    },
+    uiSchema: {
+      ...baseUISchema,
+      credentials: {
+        password: {"ui:widget": "password"}
+      }
+    }
   }
 };
 
-const fxaUISchema = {
-  authType: {
-    ...baseUISchema.authType,
-    "ui:help": (
-      <span>
-        <b>Note:</b> The
-        <a href="https://github.com/mozilla-services/kinto-fxa">{" kinto-fxa "}</a>
-        plugin must be installed on the target server.
-      </span>
-    )
-  }
-};
-
-const btnLabels = {
-  "basicauth": "Sign in using Basic Auth",
-  "fxa": "Sign in using your Firefox Account",
+const authLabels = {
+  "basicauth": "Basic Auth",
+  "fxa": "Firefox Account",
+  "ldap": "LDAP",
 };
 
 /**
  * Use the server history for the default server field value when available.
  */
-function extendSchemaWithHistory(schema, history, singleServer) {
+function extendSchemaWithHistory(schema, history, authMethods, singleServer) {
   const defaultServer = "https://kinto.dev.mozaws.net/v1/";
   const serverURL = singleServer || history[0] || defaultServer;
   return {
     ...schema,
     properties: {
       ...schema.properties,
+      authType: {
+        ...schema.properties.authType,
+        enum: authMethods,
+        enumNames: authMethods.map(a => authLabels[a]),
+      },
       server: {
         ...schema.properties.server,
         default: serverURL
@@ -218,32 +259,26 @@ export default class AuthForm extends Component {
 
   constructor(props: Object) {
     super(props);
+    const {settings: {authMethods}} = this.props;
+    const defaultAuth = authMethods[0];
+    const {schema, uiSchema} = authSchemas[defaultAuth];
     this.state = {
-      schema: basicAuthSchema,
-      uiSchema: basicAuthUISchema,
-      formData: {authType: "basicauth"},
+      schema,
+      uiSchema,
+      formData: {authType: defaultAuth},
     };
   }
 
   onChange = ({formData}: {formData: Object}) => {
-    const {server, authType, credentials={}} = formData;
-    switch(authType) {
-      case "fxa": {
-        return this.setState({
-          schema: fxaSchema,
-          uiSchema: fxaUISchema,
-          formData: {authType, server},
-        });
-      }
-      default:
-      case "basicauth": {
-        return this.setState({
-          schema: basicAuthSchema,
-          uiSchema: basicAuthUISchema,
-          formData: {authType, server, credentials},
-        });
-      }
-    }
+    const {authType} = formData;
+    const {schema, uiSchema} = authSchemas[authType];
+    const specificFormData = authType === "fxa" ? omit(formData, "credentials")
+                                                : {credentials: {}, ...formData};
+    return this.setState({
+      schema,
+      uiSchema,
+      formData: specificFormData
+    });
   }
 
   onSubmit = ({formData}: {formData: Object}) => {
@@ -255,8 +290,9 @@ export default class AuthForm extends Component {
       case "fxa": {
         return navigateToExternalAuth(extendedFormData);
       }
-      default:
-      case "basicauth": {
+      // case "ldap":
+      // case "basicauth":
+      default: {
         return setup(extendedFormData);
       }
     }
@@ -265,18 +301,18 @@ export default class AuthForm extends Component {
   render() {
     const {history, clearHistory, settings} = this.props;
     const {schema, uiSchema, formData} = this.state;
-    const {singleServer} = settings;
+    const {singleServer, authMethods} = settings;
     return (
       <div className="panel panel-default">
         <div className="panel-body">
           <Form
-            schema={extendSchemaWithHistory(schema, history, singleServer)}
+            schema={extendSchemaWithHistory(schema, history, authMethods, singleServer)}
             uiSchema={extendUiSchemaWithHistory(uiSchema, history, clearHistory, singleServer)}
             formData={formData}
             onChange={this.onChange}
             onSubmit={this.onSubmit}>
             <button type="submit" className="btn btn-info">
-              {btnLabels[formData.authType]}
+              {"Sign in using "}{authLabels[formData.authType]}
             </button>
           </Form>
         </div>

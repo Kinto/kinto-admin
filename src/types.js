@@ -280,7 +280,8 @@ export type ServerInfo = {
 
 export type SettingsState = {
   maxPerPage: number,
-  singleServer: ?string
+  singleServer: ?string,
+  authMethods: string[]
 };
 
 export type TokenAuth = {
