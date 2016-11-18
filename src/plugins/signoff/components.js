@@ -106,31 +106,41 @@ export default class SignoffToolBar extends React.Component {
     // Default status is request review
     const step = status == "to-review" ? 1 : status == "signed" ? 2 : 0;
     return (
-      <ProgressBar>
-        <WorkInProgress
-          label="Work in progress"
-          step={0}
-          currentStep={step}
-          canEdit={canRequestReview}
-          requestReview={requestReview}
-          source={source} />
-        <Review label="Waiting review"
-          step={1}
-          currentStep={step}
-          canEdit={canReview}
-          hasHistory={hasHistory}
-          approveChanges={approveChanges}
-          declineChanges={declineChanges}
-          source={source}
-          preview={preview} />
-        <Signed label="Signed"
-          step={2}
-          currentStep={step}
-          canEdit={canSign}
-          reSign={approveChanges}
-          source={source}
-          destination={destination} />
-      </ProgressBar>
+      <div>
+        {hasHistory ? null : (
+          <div className="alert alert-warning">
+            <p>
+              <b>Collection history is not tracked on this server</b>.
+              Please reach to the server administrator.
+            </p>
+          </div>
+        )}
+        <ProgressBar>
+          <WorkInProgress
+            label="Work in progress"
+            step={0}
+            currentStep={step}
+            canEdit={canRequestReview}
+            requestReview={requestReview}
+            source={source} />
+          <Review label="Waiting review"
+            step={1}
+            currentStep={step}
+            canEdit={canReview}
+            hasHistory={hasHistory}
+            approveChanges={approveChanges}
+            declineChanges={declineChanges}
+            source={source}
+            preview={preview} />
+          <Signed label="Signed"
+            step={2}
+            currentStep={step}
+            canEdit={canSign}
+            reSign={approveChanges}
+            source={source}
+            destination={destination} />
+        </ProgressBar>
+      </div>
     );
   }
 }
