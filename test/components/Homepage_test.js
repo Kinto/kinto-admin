@@ -28,7 +28,8 @@ describe("HomePage component", () => {
           setup,
           history: ["http://server.test/v1"],
           settings: {
-            singleServer: null
+            singleServer: null,
+            authMethods: ["basicauth", "fxa", "ldap"]
           },
           navigateToExternalAuth,
           session: {authenticated: false},
@@ -47,7 +48,8 @@ describe("HomePage component", () => {
             setup,
             history: [],
             settings: {
-              singleServer: serverURL
+              singleServer: serverURL,
+              authMethods: ["basicauth"]
             },
             navigateToExternalAuth,
             session: {authenticated: false},
@@ -86,6 +88,36 @@ describe("HomePage component", () => {
         });
       });
 
+      describe("LDAP", () => {
+        it("should submit setup data", () => {
+          Simulate.change(node.querySelector("#root_server"), {
+            target: {value: "http://test.server/v1"}
+          });
+          Simulate.change(node.querySelectorAll("[type=radio]")[2], {
+            target: {value: "ldap"}
+          });
+          Simulate.change(node.querySelector("#root_credentials_username"), {
+            target: {value: "you@email.com"}
+          });
+          Simulate.change(node.querySelector("#root_credentials_password"), {
+            target: {value: "pass"}
+          });
+
+          return new Promise(setImmediate).then(() => {
+            Simulate.submit(node.querySelector("form"));
+            sinon.assert.calledWithExactly(setup, {
+              server: "http://test.server/v1",
+              authType: "ldap",
+              credentials: {
+                username: "you@email.com",
+                password: "pass",
+              },
+              redirectURL: undefined,
+            });
+          });
+        });
+      });
+
       describe("FxA", () => {
         it("should navigate to external auth URL", () => {
           Simulate.change(node.querySelector("#root_server"), {
@@ -111,7 +143,9 @@ describe("HomePage component", () => {
       it("should set the server field value using latest entry from history", () => {
         const node = createComponent(HomePage, {
           history: [],
-          settings: {},
+          settings: {
+            authMethods: ["basicauth"]
+          },
           session: {authenticated: false},
         });
 
@@ -122,7 +156,9 @@ describe("HomePage component", () => {
       it("should set the server field value using latest entry from history", () => {
         const node = createComponent(HomePage, {
           history: ["http://server.test/v1"],
-          settings: {},
+          settings: {
+            authMethods: ["basicauth"]
+          },
           session: {authenticated: false},
         });
 

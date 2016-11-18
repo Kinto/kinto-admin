@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { Action, ServerInfo } from "../types";
+import type { Action, AuthData, ServerInfo } from "../types";
 
 import { notifyError } from "./notifications";
 import {
@@ -21,12 +21,12 @@ export function sessionBusy(busy: boolean): Action {
   return {type: SESSION_BUSY, busy};
 }
 
-export function setup(session: Object): Action {
-  return {type: SESSION_SETUP, session};
+export function setup(auth: Object): Action {
+  return {type: SESSION_SETUP, auth};
 }
 
-export function setupComplete(session: Object): Action {
-  return {type: SESSION_SETUP_COMPLETE, session};
+export function setupComplete(auth: AuthData): Action {
+  return {type: SESSION_SETUP_COMPLETE, auth};
 }
 
 export function storeRedirectURL(redirectURL: string): Action {

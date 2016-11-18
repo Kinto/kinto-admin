@@ -13,7 +13,12 @@ function getAuthHeader(auth: AuthData): ?string {
       const {token}: {token: string} = auth.credentials;
       return "Bearer " + token;
     }
-    case "basicauth": {
+    case "anonymous": {
+      return undefined;
+    }
+    // case "ldap": {
+    // case "basicauth":
+    default: {
       const {username, password}: {
         username: string,
         password: string,
@@ -23,10 +28,10 @@ function getAuthHeader(auth: AuthData): ?string {
   }
 }
 
-export function setupClient(session: AuthData): KintoClient {
-  const {server}: {server: string} = session;
+export function setupClient(auth: AuthData): KintoClient {
+  const {server}: {server: string} = auth;
   return setClient(new KintoClient(server, {
-    headers: {Authorization: getAuthHeader(session)}
+    headers: {Authorization: getAuthHeader(auth)}
   }));
 }
 

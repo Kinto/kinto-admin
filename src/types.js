@@ -12,17 +12,6 @@ export type Attachment = {
   mimetype: string,
 };
 
-export type AuthData = BasicAuth | TokenAuth;
-
-export type BasicAuth = {
-  authType: "basicauth",
-  server: string,
-  credentials: {
-    username: string,
-    password: string,
-  }
-};
-
 export type BucketState = {
   busy: boolean,
   data: BucketData,
@@ -259,11 +248,51 @@ export type RouteResources = {
   group: ?GroupResource,
 };
 
+export type AuthMethod = "anonymous" | "fxa" | "ldap" | "basicauth";
+
+export type SettingsState = {
+  maxPerPage: number,
+  singleServer: ?string,
+  authMethods: AuthMethod[]
+};
+
+export type AuthData = AnonymousAuth | LDAPAuth | BasicAuth | TokenAuth;
+
+export type AnonymousAuth = {
+  authType: "anonymous",
+  server: string,
+};
+
+export type LDAPAuth = {
+  authType: "ldap",
+  server: string,
+  credentials: {
+    username: string,
+    password: string,
+  }
+};
+
+export type BasicAuth = {
+  authType: "basicauth",
+  server: string,
+  credentials: {
+    username: string,
+    password: string,
+  }
+};
+
+export type TokenAuth = {
+  authType: "fxa",
+  server: string,
+  credentials: {
+    token: string
+  }
+};
+
 export type SessionState = {
   busy: boolean,
+  auth: ?AuthData;
   authenticated: boolean,
-  server: ?string,
-  credentials: Object,
   permissions: ?PermissionsListEntry[],
   buckets: Object[],
   serverInfo: ServerInfo,
@@ -276,19 +305,6 @@ export type ServerInfo = {
   user?: {
     id: string,
     bucket?: string,
-  }
-};
-
-export type SettingsState = {
-  maxPerPage: number,
-  singleServer: ?string
-};
-
-export type TokenAuth = {
-  authType: "fxa",
-  server: string,
-  credentials: {
-    token: string
   }
 };
 

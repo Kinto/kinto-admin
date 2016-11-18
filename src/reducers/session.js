@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { SessionState } from "../types";
+import type { SessionState, AuthData } from "../types";
 import {
   SESSION_BUSY,
   SESSION_SETUP_COMPLETE,
@@ -15,10 +15,9 @@ import {
 
 const DEFAULT: SessionState = {
   busy: false,
+  auth: null,
   authenticated: false,
-  server: null,
   permissions: null,
-  credentials: {},
   buckets: [],
   serverInfo: {
     url: "",
@@ -37,8 +36,8 @@ export default function session(
       return {...state, busy};
     }
     case SESSION_SETUP_COMPLETE: {
-      const {session}: {session: SessionState} = action;
-      return {...state, ...session};
+      const {auth}: {auth: AuthData} = action;
+      return {...state, auth};
     }
     case SESSION_STORE_REDIRECT_URL: {
       const {redirectURL}: {redirectURL: string} = action;
