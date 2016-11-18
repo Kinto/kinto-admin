@@ -63,6 +63,8 @@ export function* listBuckets(getState, action) {
     // Fetch server information
     const serverInfo = yield call([client, client.fetchServerInfo]);
     // We got a valid response; officially declare current user authenticated
+    // XXX: authenticated here means that we have setup the client, not
+    // that the credentials are valid :/
     yield put(sessionActions.setAuthenticated());
     // Store this valid server url in the history
     yield put(historyActions.addHistory(getState().session.server));

@@ -43,6 +43,7 @@ describe("session reducer", () => {
       permissions: null,
       redirectURL: null,
       serverInfo: {
+        url: "",
         capabilities: {},
       },
     });
