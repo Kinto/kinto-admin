@@ -110,7 +110,7 @@ export default class SignoffToolBar extends React.Component {
         {hasHistory ? null : (
           <div className="alert alert-warning">
             <p>
-              <b>Collection history is not tracked on this server</b>.
+              <b>Plugin which tracks history of changes is not enable on this server.</b>
               Please reach to the server administrator.
             </p>
           </div>
