@@ -26,6 +26,33 @@ export function* setupSession(
   try {
     setupClient(auth);
     yield put(notificationActions.clearNotifications({ force: true }));
+
+    // Fetch server information
+    const client = getClient();
+    const serverInfo = yield call([client, client.fetchServerInfo]);
+
+    // Check that current user was authenticated as expected.
+    // Distinguish anonymous from failed authentication using the user info
+    // in the server info endpoint.
+    const { user: { id: userId } = {} } = serverInfo;
+    const { authType } = auth;
+    if (
+      authType != "anonymous" &&
+      (!userId || !userId.startsWith(authType + ":"))
+    ) {
+      yield put(
+        notificationActions.notifyError("Authentication failed.", "error")
+      );
+      return;
+    }
+
+    // We got a valid response; officially declare current user authenticated
+    yield put(actions.setAuthenticated());
+    // Store this valid server url in the history
+    yield put(historyActions.addHistory(serverInfo.url));
+    // Notify they're received
+    yield put(actions.serverInfoSuccess(serverInfo));
+
     yield put(actions.listBuckets());
     yield put(actions.setupComplete(auth));
   } catch (error) {
@@ -111,19 +138,11 @@ export function* listBuckets(
   action: ActionType<typeof actions.listBuckets>
 ): SagaGen {
   try {
-    // retrieve sidebarMaxListedCollections setting
-    const client = getClient();
-    // Fetch server information
-    const serverInfo = yield call([client, client.fetchServerInfo]);
-    // We got a valid response; officially declare current user authenticated
-    // XXX: authenticated here means that we have setup the client, not
-    // that the credentials are valid :/
-    yield put(actions.setAuthenticated());
-    // Store this valid server url in the history
-    yield put(historyActions.addHistory(serverInfo.url));
-    // Notify they're received
-    yield put(actions.serverInfoSuccess(serverInfo));
+    const {
+      session: { serverInfo: { capabilities: serverCapabilities } },
+    } = getState();
     // Retrieve and build the list of buckets
+    const client = getClient();
     let data;
     try {
       data = (yield call([client, client.listBuckets])).data;
@@ -163,7 +182,7 @@ export function* listBuckets(
     });
 
     // If the Kinto API version allows it, retrieves all permissions
-    if ("permissions_endpoint" in serverInfo.capabilities) {
+    if ("permissions_endpoint" in serverCapabilities) {
       const { data: permissions } = yield call(
         [client, client.listPermissions],
         { pages: Infinity }
