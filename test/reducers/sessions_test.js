@@ -21,7 +21,7 @@ describe("session reducer", () => {
   });
 
   it("SESSION_SETUP_COMPLETE", () => {
-    const setup = {
+    const auth = {
       server: "http://test",
       authType: "basicauth",
       credentials: {
@@ -32,13 +32,13 @@ describe("session reducer", () => {
 
     expect(session(undefined, {
       type: SESSION_SETUP_COMPLETE,
-      session: setup
+      auth
     })).eql({
       busy: false,
       authenticated: false,
-      server: setup.server,
-      authType: setup.authType,
-      credentials: setup.credentials,
+      server: auth.server,
+      authType: auth.authType,
+      credentials: auth.credentials,
       buckets: [],
       permissions: null,
       redirectURL: null,

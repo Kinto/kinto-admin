@@ -281,8 +281,8 @@ export default class AuthForm extends Component {
   onChange = ({formData}: {formData: Object}) => {
     const {authType} = formData;
     const {schema, uiSchema} = authSchemas[authType];
-    const specificFormData = authType === "fxa" ? omit(formData, ["credentials"])
-                                                : {...formData, credentials: {}};
+    const specificFormData = /fxa|anonymous/.test(authType) ? omit(formData, ["credentials"])
+                                                            : {credentials: {}, ...formData};
     return this.setState({
       schema,
       uiSchema,

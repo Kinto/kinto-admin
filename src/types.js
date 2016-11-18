@@ -12,7 +12,21 @@ export type Attachment = {
   mimetype: string,
 };
 
-export type AuthData = BasicAuth | TokenAuth;
+export type AuthData = AnonymousAuth | LDAPAuth | BasicAuth | TokenAuth;
+
+export type AnonymousAuth = {
+  authType: "anonymous",
+  server: string,
+};
+
+export type LDAPAuth = {
+  authType: "ldap",
+  server: string,
+  credentials: {
+    username: string,
+    password: string,
+  }
+};
 
 export type BasicAuth = {
   authType: "basicauth",

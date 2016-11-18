@@ -10,13 +10,13 @@ import { getClient, setupClient, resetClient } from "../client";
 
 
 export function* setupSession(getState, action) {
-  const {session} = action;
+  const {auth} = action;
   try {
-    setupClient(session);
+    setupClient(auth);
     yield put(notificationActions.clearNotifications({force: true}));
     yield put(sessionActions.sessionBusy(true));
     yield put(sessionActions.listBuckets());
-    yield put(sessionActions.setupComplete(session));
+    yield put(sessionActions.setupComplete(auth));
   } catch(error) {
     yield put(notificationActions.notifyError("Couldn't complete session setup.", error));
   } finally {
@@ -65,7 +65,7 @@ export function* listBuckets(getState, action) {
     // We got a valid response; officially declare current user authenticated
     yield put(sessionActions.setAuthenticated());
     // Store this valid server url in the history
-    yield put(historyActions.addHistory(getState().session.server));
+    yield put(historyActions.addHistory(getState().session.serverInfo.url));
     // Notify they're received
     yield put(sessionActions.serverInfoSuccess(serverInfo));
     // Retrieve and build the list of buckets

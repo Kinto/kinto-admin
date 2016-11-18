@@ -11,10 +11,12 @@ import * as saga from "../../src/sagas/session";
 import { getClient, setClient, resetClient } from "../../src/client";
 
 
-const session = {
+const authData = {
   server: "http://server.test/v1",
-  username: "user",
-  password: "pass",
+  credentials: {
+    username: "user",
+    password: "pass",
+  }
 };
 
 describe("session sagas", () => {
@@ -23,13 +25,13 @@ describe("session sagas", () => {
 
     before(() => {
       resetClient();
-      const action = actions.setup(session);
+      const action = actions.setup(authData);
       setupSession = saga.setupSession(() => {}, action);
       setupSession.next();
     });
 
     it("should configure the client", () => {
-      expect(getClient().remote).eql(session.server);
+      expect(getClient().remote).eql(authData.server);
     });
 
     it("should mark the session as busy", () => {
@@ -44,7 +46,7 @@ describe("session sagas", () => {
 
     it("should mark the session setup as completed", () => {
       expect(setupSession.next().value)
-        .eql(put(actions.setupComplete(session)));
+        .eql(put(actions.setupComplete(authData)));
     });
 
     it("should mark the session as not busy anymore", () => {
@@ -58,6 +60,7 @@ describe("session sagas", () => {
       let client, listBuckets;
 
       const serverInfo = {
+        url: "http://server.test/v1",
         user: {
           bucket: "defaultBucketId"
         },
@@ -66,6 +69,8 @@ describe("session sagas", () => {
         }
       };
 
+      const sessionState = {serverInfo};
+
       before(() => {
         client = setClient({
           batch() {},
@@ -73,7 +78,7 @@ describe("session sagas", () => {
           listBuckets() {},
           listPermissions() {},
         });
-        const getState = () => ({session});
+        const getState = () => ({session: sessionState});
         const action = actions.listBuckets();
         listBuckets = saga.listBuckets(getState, action);
       });
@@ -154,7 +159,7 @@ describe("session sagas", () => {
 
       it("should save the session", () => {
         expect(listBuckets.next().value)
-          .eql(call(saveSession, session));
+          .eql(call(saveSession, sessionState));
       });
     });
 

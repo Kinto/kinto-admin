@@ -28,10 +28,10 @@ function getAuthHeader(auth: AuthData): ?string {
   }
 }
 
-export function setupClient(session: AuthData): KintoClient {
-  const {server}: {server: string} = session;
+export function setupClient(auth: AuthData): KintoClient {
+  const {server}: {server: string} = auth;
   return setClient(new KintoClient(server, {
-    headers: {Authorization: getAuthHeader(session)}
+    headers: {Authorization: getAuthHeader(auth)}
   }));
 }
 
