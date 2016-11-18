@@ -13,7 +13,9 @@ function getAuthHeader(auth: AuthData): ?string {
       const {token}: {token: string} = auth.credentials;
       return "Bearer " + token;
     }
-    case "basicauth": {
+    // case "ldap": {
+    // case "basicauth":
+    default: {
       const {username, password}: {
         username: string,
         password: string,
