@@ -15,10 +15,9 @@ import {
 
 const DEFAULT: SessionState = {
   busy: false,
+  auth: null,
   authenticated: false,
-  server: null,
   permissions: null,
-  credentials: {},
   buckets: [],
   serverInfo: {
     url: "",
@@ -38,7 +37,7 @@ export default function session(
     }
     case SESSION_SETUP_COMPLETE: {
       const {auth}: {auth: AuthData} = action;
-      return {...state, ...auth};
+      return {...state, auth};
     }
     case SESSION_STORE_REDIRECT_URL: {
       const {redirectURL}: {redirectURL: string} = action;

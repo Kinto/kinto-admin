@@ -36,9 +36,7 @@ describe("session reducer", () => {
     })).eql({
       busy: false,
       authenticated: false,
-      server: auth.server,
-      authType: auth.authType,
-      credentials: auth.credentials,
+      auth,
       buckets: [],
       permissions: null,
       redirectURL: null,
