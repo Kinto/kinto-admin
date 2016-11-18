@@ -29,6 +29,26 @@ describe("App component", () => {
       expect(node.querySelector(".session-info-bar")).to.not.exist;
     });
 
+    it("should render a session top bar when anonymous", () => {
+      const session = {
+        authenticated: true,
+        serverInfo: {
+          url: "http://test.server/v1/"
+        }
+      };
+      const node = createComponent(App, {
+        session,
+        logout: {},
+        notificationList: [],
+        routes: [{name: "Home"}],
+      });
+      const infoBar = node.querySelector(".session-info-bar");
+      const content = infoBar.textContent;
+
+      expect(content).to.contain("Anonymous");
+      expect(content).to.contain(session.serverInfo.url);
+    });
+
     it("should render a session top bar when authenticated", () => {
       const session = {
         authenticated: true,
