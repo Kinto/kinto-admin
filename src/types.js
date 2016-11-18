@@ -278,10 +278,12 @@ export type ServerInfo = {
   }
 };
 
+export type AuthMethod = "anonymous" | "fxa" | "ldap" | "basicauth";
+
 export type SettingsState = {
   maxPerPage: number,
   singleServer: ?string,
-  authMethods: string[]
+  authMethods: AuthMethod[]
 };
 
 export type TokenAuth = {
