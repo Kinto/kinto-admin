@@ -101,34 +101,46 @@ export default class SignoffToolBar extends React.Component {
                       isReviewer(source, sessionState, bucketState) &&
                       !isLastEditor(source, sessionState);
     const canSign = canEdit && isReviewer(source, sessionState, bucketState);
+    const hasHistory = "history" in sessionState.serverInfo.capabilities;
 
     // Default status is request review
     const step = status == "to-review" ? 1 : status == "signed" ? 2 : 0;
     return (
-      <ProgressBar>
-        <WorkInProgress
-          label="Work in progress"
-          step={0}
-          currentStep={step}
-          canEdit={canRequestReview}
-          requestReview={requestReview}
-          source={source} />
-        <Review label="Waiting review"
-          step={1}
-          currentStep={step}
-          canEdit={canReview}
-          approveChanges={approveChanges}
-          declineChanges={declineChanges}
-          source={source}
-          preview={preview} />
-        <Signed label="Signed"
-          step={2}
-          currentStep={step}
-          canEdit={canSign}
-          reSign={approveChanges}
-          source={source}
-          destination={destination} />
-      </ProgressBar>
+      <div>
+        {hasHistory ? null : (
+          <div className="alert alert-warning">
+            <p>
+              <b>Plugin which tracks history of changes is not enabled on this server.</b>
+              Please reach to the server administrator.
+            </p>
+          </div>
+        )}
+        <ProgressBar>
+          <WorkInProgress
+            label="Work in progress"
+            step={0}
+            currentStep={step}
+            canEdit={canRequestReview}
+            requestReview={requestReview}
+            source={source} />
+          <Review label="Waiting review"
+            step={1}
+            currentStep={step}
+            canEdit={canReview}
+            hasHistory={hasHistory}
+            approveChanges={approveChanges}
+            declineChanges={declineChanges}
+            source={source}
+            preview={preview} />
+          <Signed label="Signed"
+            step={2}
+            currentStep={step}
+            canEdit={canSign}
+            reSign={approveChanges}
+            source={source}
+            destination={destination} />
+        </ProgressBar>
+      </div>
     );
   }
 }
@@ -189,6 +201,7 @@ function RequestReviewButton(props : Object) {
 type ReviewProps = {
   label: string,
   canEdit: boolean,
+  hasHistory: boolean,
   currentStep: number,
   step: number,
   approveChanges: () => void,
@@ -197,7 +210,18 @@ type ReviewProps = {
   preview: PreviewInfo
 };
 
-function Review({label, canEdit, currentStep, step, approveChanges, declineChanges, source, preview} : ReviewProps) {
+function Review(props: ReviewProps) {
+  const {
+    label,
+    canEdit,
+    hasHistory,
+    currentStep,
+    step,
+    approveChanges,
+    declineChanges,
+    source,
+    preview,
+  } = props;
   const active = step == currentStep && canEdit;
 
   // If preview disabled, the preview object is empty.
@@ -213,7 +237,7 @@ function Review({label, canEdit, currentStep, step, approveChanges, declineChang
   const {lastEditor} = source;
   return (
     <ProgressStep {...{label, currentStep, step}}>
-      {lastEditor ? <ReviewInfos {...{active, source, lastRequested, link}}/> : null}
+      {lastEditor ? <ReviewInfos {...{active, source, lastRequested, link, hasHistory}}/> : null}
       {active ? <ReviewButtons onApprove={approveChanges} onDecline={declineChanges}/> : null}
     </ProgressStep>
   );
@@ -224,11 +248,18 @@ type ReviewInfosProps = {
   source: SourceInfo,
   lastRequested: number,
   link: any,
+  hasHistory: boolean,
 };
 
-function ReviewInfos({active, source, lastRequested, link} : ReviewInfosProps) {
+function ReviewInfos({active, source, lastRequested, link, hasHistory} : ReviewInfosProps) {
   const {bid, cid, lastEditor, changes={}} = source;
   const {since, deleted, updated} = changes;
+  const detailsLink = hasHistory ? (
+    <AdminLink name="collection:history"
+               params={{bid, cid}}
+               query={{since, resource_name: "record"}}>details...</AdminLink>
+  ) : null;
+
   return (
     <ul>
       <li><strong>Requested: </strong><HumanDate timestamp={lastRequested}/></li>
@@ -238,9 +269,7 @@ function ReviewInfos({active, source, lastRequested, link} : ReviewInfosProps) {
        <li>
          <strong>Changes: </strong>
          <DiffStats updated={updated} deleted={deleted}/>{" "}
-         <AdminLink name="collection:history"
-                    params={{bid, cid}}
-                    query={{since, resource_name: "record"}}>details...</AdminLink>
+         {detailsLink}
        </li> : null}
     </ul>
   );
