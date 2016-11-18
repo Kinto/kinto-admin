@@ -131,6 +131,14 @@ const authSchemas = {
       }
     }
   },
+  anonymous: {
+    schema: {
+      ...baseAuthSchema,
+    },
+    uiSchema: {
+      ...baseUISchema
+    }
+  },
   fxa: {
     schema: {
       ...baseAuthSchema,
@@ -185,6 +193,7 @@ const authSchemas = {
 };
 
 const authLabels = {
+  "anonymous": "Anonymous",
   "basicauth": "Basic Auth",
   "fxa": "Firefox Account",
   "ldap": "LDAP",
@@ -273,7 +282,7 @@ export default class AuthForm extends Component {
     const {authType} = formData;
     const {schema, uiSchema} = authSchemas[authType];
     const specificFormData = authType === "fxa" ? omit(formData, ["credentials"])
-                                                : {credentials: {}, ...formData};
+                                                : {...formData, credentials: {}};
     return this.setState({
       schema,
       uiSchema,
@@ -290,6 +299,7 @@ export default class AuthForm extends Component {
       case "fxa": {
         return navigateToExternalAuth(extendedFormData);
       }
+      // case "anonymous":
       // case "ldap":
       // case "basicauth":
       default: {
