@@ -21,6 +21,7 @@ const DEFAULT: SessionState = {
   credentials: {},
   buckets: [],
   serverInfo: {
+    url: "",
     capabilities: {},
   },
   redirectURL: null,

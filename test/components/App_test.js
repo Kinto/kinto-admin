@@ -32,7 +32,12 @@ describe("App component", () => {
     it("should render a session top bar when authenticated", () => {
       const session = {
         authenticated: true,
-        server: "http://test.server/v1",
+        serverInfo: {
+          url: "http://test.server/v1/",
+          user: {
+            id: "fxa:1234"
+          }
+        },
         credentials: {
           username: "user",
           password: "pass",
@@ -50,8 +55,8 @@ describe("App component", () => {
       expect(infoBar).to.exist;
 
       const content = infoBar.textContent;
-      expect(content).to.contain(session.server);
-      expect(content).to.contain(session.credentials.username);
+      expect(content).to.contain(session.serverInfo.url);
+      expect(content).to.contain(session.serverInfo.user.id);
       expect(content).to.not.contain(session.credentials.password);
 
       Simulate.click(node.querySelector(".btn-logout"));
