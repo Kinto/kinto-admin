@@ -285,6 +285,7 @@ export type SessionState = {
 };
 
 export type ServerInfo = {
+  url: string,
   capabilities: Capabilities,
   user?: {
     id: string,

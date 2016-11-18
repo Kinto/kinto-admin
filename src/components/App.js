@@ -5,13 +5,20 @@ import React, { Component } from "react";
 import Breadcrumbs from "react-breadcrumbs";
 
 
+function UserInfo({session}) {
+  const {serverInfo: {user={}}} = session;
+  if (!user.id) {
+    return <strong>Anonymous</strong>;
+  }
+  return <span>Connected as <strong>{user.id}</strong></span>;
+}
+
+
 function SessionInfoBar({session, logout}) {
-  const {server, credentials={}} = session;
-  const {username} = credentials;
-  const userInfo = username ? <span>as <strong>{username}</strong></span> : "";
+  const {serverInfo: {url}} = session;
   return (
     <div className="session-info-bar text-right">
-      Connected {userInfo} on <strong>{server}</strong>
+      <UserInfo session={session}/> on <strong>{url}</strong>
       <a href="" className="btn btn-xs btn-success btn-logout"
         onClick={(event) => event.preventDefault() || logout()}>logout</a>
     </div>
