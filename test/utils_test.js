@@ -7,6 +7,7 @@ import {
   validateUiSchema,
   humanDate,
   buildAttachmentUrl,
+  timeago,
 } from "../src/utils";
 
 
@@ -199,5 +200,21 @@ describe("buildAttachmentUrl", () => {
       .eql("http://cdn/file");
     expect(buildAttachmentUrl({attachment: {location: "/file"}}, {attachments: {base_url: "http://cdn/"}}))
       .eql("http://cdn/file");
+  });
+});
+
+describe("timeago", function() {
+  it("should convert a timestamp", () => {
+    expect(timeago(new Date().getTime() - 86400000)).eql("1 day ago");
+  });
+
+  it("should convert a date string", () => {
+    expect(timeago("2016-12-01T00:00:00.000Z",
+           new Date("2016-12-02T00:00:00.000Z"))).eql("1 day ago");
+  });
+
+  it("should prevent rendering future events", () => {
+    expect(timeago("2016-12-02T00:00:00.000Z",
+           new Date("2016-12-01T00:00:00.000Z"))).eql("just now");
   });
 });
