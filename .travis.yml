@@ -14,7 +14,7 @@ cache:
   - node_modules
 before_install:
 - export PATH=$HOME/.local/bin:$PATH
-- pip install --user `whoami` virtualenv
+- pip install --user virtualenv
 - virtualenv .venv
 - .venv/bin/pip install https://github.com/Kinto/kinto/zipball/master
 install:
