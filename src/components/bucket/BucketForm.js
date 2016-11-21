@@ -98,10 +98,7 @@ export default class BucketForm extends Component {
     const {id, data} = formData;
     // Parse JSON fields so they can be sent to the server
     const attributes = JSON.parse(data);
-    this.props.onSubmit({
-      id,
-      ...attributes
-    });
+    this.props.onSubmit({id, ...attributes});
   }
 
   render() {
