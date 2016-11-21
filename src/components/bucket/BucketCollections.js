@@ -29,13 +29,13 @@ function DataList(props) {
       <tbody className={!collectionsLoaded ? "loading" : ""}>{
         data.map((collection, index) => {
           const {id: cid, schema, cache_expires, last_modified} = collection;
-          const date = new Date(last_modified).toISOString();
+          const date = new Date(last_modified);
           return (
             <tr key={index}>
               <td>{cid}</td>
               <td>{schema ? "Yes" : "No"}</td>
               <td>{cache_expires ? `${cache_expires} seconds` : "No" }</td>
-              <td><span title={date}>{timeago(date)}</span></td>
+              <td><span title={date.toISOString()}>{timeago(date.getTime())}</span></td>
               <td className="actions">
                 <div className="btn-group">
                   <AdminLink name="collection:records" params={{bid, cid}}

@@ -19,14 +19,14 @@ export function isObject(thing: any): boolean {
   return typeof thing === "object" && thing !== null && !Array.isArray(thing);
 }
 
-export function timeago(date: string | number): string {
-  // Show relative time according to current timezone.
-  const nowUTC = (new Date()).getTime();
-  const timestamp = parseInt(date, 10);
+export function timeago(timestamp: number, now: ?number): string {
+  // Show relative time according to current timezone. The now value is used
+  // for testing.
+  const nowUTC = now || new Date().getTime();
   // In our use case, we should never show relative time in the future.
   // For example, if local computer is late, the server timestamp will appear
   // to be in the future. Hence use "now" as a maximum.
-  return _timeago().format(Math.min(nowUTC, timestamp));
+  return _timeago(nowUTC).format(new Date(Math.min(nowUTC, timestamp)));
 }
 
 export function validJSON(string: string): boolean {
