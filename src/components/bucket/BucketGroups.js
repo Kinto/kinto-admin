@@ -28,7 +28,7 @@ function DataList(props) {
       <tbody>{
         groups.map((group, index) => {
           const {id: gid, members, last_modified} = group;
-          const date = new Date(last_modified).toISOString();
+          const date = new Date(last_modified);
           return (
             <tr key={index}>
               <td>
@@ -37,7 +37,7 @@ function DataList(props) {
                 </AdminLink>
               </td>
               <td>{members.join(", ")}</td>
-              <td><span title={date}>{timeago(date)}</span></td>
+              <td><span title={date.toISOString()}>{timeago(date.getTime())}</span></td>
               <td className="actions">
                 <div className="btn-group">
                   {"history" in capabilities ?

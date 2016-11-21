@@ -205,16 +205,12 @@ describe("buildAttachmentUrl", () => {
 
 describe("timeago", function() {
   it("should convert a timestamp", () => {
-    expect(timeago(new Date().getTime() - 86400000)).eql("1 day ago");
-  });
-
-  it("should convert a date string", () => {
-    expect(timeago("2016-12-01T00:00:00.000Z",
-           new Date("2016-12-02T00:00:00.000Z"))).eql("1 day ago");
+    const now = new Date().getTime();
+    expect(timeago(now - 86400000, now)).eql("1 day ago");
   });
 
   it("should prevent rendering future events", () => {
-    expect(timeago("2016-12-02T00:00:00.000Z",
-           new Date("2016-12-01T00:00:00.000Z"))).eql("just now");
+    const now = new Date().getTime();
+    expect(timeago(now + 86400000, now)).eql("just now");
   });
 });
