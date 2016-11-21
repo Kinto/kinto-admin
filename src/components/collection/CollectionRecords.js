@@ -28,7 +28,7 @@ class Row extends Component {
       return null;
     }
     const date = new Date(lastModified);
-    return Number.isNaN(date.getTime()) ? null : (
+    return date.toJSON() == null ? null : (
       <span title={date.toISOString()}>{timeago(date.getTime())}</span>
     );
   }
