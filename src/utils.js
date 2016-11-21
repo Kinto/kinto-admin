@@ -20,7 +20,8 @@ export function isObject(thing: any): boolean {
 }
 
 export function timeago(datesrc: string | number, now: ?Date): string {
-  // Show relative time according to current timezone.
+  // Show relative time according to current timezone. The now value is used
+  // for testing.
   const nowUTC = (now || new Date()).getTime();
   const timestamp = new Date(datesrc).getTime();
   // In our use case, we should never show relative time in the future.
