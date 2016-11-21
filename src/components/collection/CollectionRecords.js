@@ -28,7 +28,6 @@ class Row extends Component {
       return null;
     }
     const date = new Date(lastModified).toISOString();
-    console.log(date);
     return (
       <span title={date}>{timeago(date)}</span>
     );
