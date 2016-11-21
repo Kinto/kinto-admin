@@ -1,6 +1,7 @@
 var path = require("path");
 var webpack = require("webpack");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var version = require("./package.json").version;
 
 module.exports = {
   devServer: {
@@ -20,6 +21,7 @@ module.exports = {
     new webpack.DefinePlugin({
       "process.env": {
         NODE_ENV: JSON.stringify("production"),
+        KINTO_ADMIN_VERSION: JSON.stringify(version),
       }
     }),
     new webpack.optimize.UglifyJsPlugin({
