@@ -74,7 +74,11 @@ export default class App extends Component {
           <hr/>
           <p className="text-center">
             <a href="https://github.com/Kinto/kinto-admin">Powered by kinto-admin</a>
-            {version ? ` version ${version}` : null}.
+            {!version ? null : (
+              <span>&nbsp;v
+                <a href={`https://github.com/Kinto/kinto-admin/releases/tag/v${version}`}>{version}</a>
+              </span>
+            )}.
           </p>
         </div>
       </div>
