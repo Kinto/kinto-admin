@@ -51,6 +51,7 @@ export default class App extends Component {
     const notificationsClass = notificationList.length ?
                                " with-notifications" : "";
     const contentClasses = `col-sm-9 content${notificationsClass}`;
+    const version = process.env.KINTO_ADMIN_VERSION;
     return (
       <div>
         {session.authenticated ?
@@ -73,6 +74,11 @@ export default class App extends Component {
           <hr/>
           <p className="text-center">
             <a href="https://github.com/Kinto/kinto-admin">Powered by kinto-admin</a>
+            {!version ? null : (
+              <span>&nbsp;v
+                <a href={`https://github.com/Kinto/kinto-admin/releases/tag/v${version}`}>{version}</a>
+              </span>
+            )}.
           </p>
         </div>
       </div>
