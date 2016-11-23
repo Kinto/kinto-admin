@@ -1,4 +1,5 @@
 /* @flow */
+import type { Reducer, Store } from "redux";
 
 export type Action = {
   type: string
@@ -146,6 +147,14 @@ export type Permissions =
   | GroupPermissions
   | CollectionPermissions
   | RecordPermissions;
+
+export type Plugin = {
+  reducers: {[key: string]: Reducer<any, any>},
+  register: (store: Store) => {
+    hooks?: Object,
+    routes?: Object[],
+  },
+};
 
 export type RecordState = {
   busy: boolean,

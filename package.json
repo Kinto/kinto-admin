@@ -72,7 +72,6 @@
     "flow-bin": "^0.33.0",
     "gh-pages": "^0.11.0",
     "html": "0.0.10",
-    "iflow-react-router": "^1.1.17",
     "iflow-react-router-redux": "^1.0.15",
     "ignore-styles": "^5.0.1",
     "jsdom": "^9.2.1",

@@ -1,3 +1,5 @@
+import type { Store } from "redux";
+
 import React from "react";
 import { takeEvery } from "redux-saga";
 import { connect } from "react-redux";
@@ -67,7 +69,7 @@ const SignoffContainer = connect(
 // Plugin register
 //
 
-export function register(store) {
+export function register(store: Store) {
   const hooks = {
     CollectionRecords: {
       ListActions: [
