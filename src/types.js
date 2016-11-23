@@ -149,7 +149,10 @@ export type Permissions =
   | RecordPermissions;
 
 export type Plugin = {
-  reducers: {[key: string]: Reducer<any, any>},
+  hooks?: Object,
+  routes?: Object[],
+  reducers?: {[key: string]: Reducer<any, any>},
+  sagas: [][],
   register: (store: Store) => {
     hooks?: Object,
     routes?: Object[],
