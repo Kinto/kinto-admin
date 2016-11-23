@@ -29,7 +29,7 @@ export default class KintoAdmin extends Component {
     // Restore saved session, if any
     const session = loadSession();
     if (session) {
-      this.store.dispatch(sessionActions.setup(session));
+      this.store.dispatch(sessionActions.setup(session.auth));
     }
   }
 
