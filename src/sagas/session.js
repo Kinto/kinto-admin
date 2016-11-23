@@ -67,7 +67,7 @@ export function* listBuckets(getState, action) {
     // that the credentials are valid :/
     yield put(sessionActions.setAuthenticated());
     // Store this valid server url in the history
-    yield put(historyActions.addHistory(getState().session.serverInfo.url));
+    yield put(historyActions.addHistory(serverInfo.url));
     // Notify they're received
     yield put(sessionActions.serverInfoSuccess(serverInfo));
     // Retrieve and build the list of buckets
