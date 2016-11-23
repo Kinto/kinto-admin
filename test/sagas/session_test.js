@@ -60,6 +60,7 @@ describe("session sagas", () => {
       let client, listBuckets;
 
       const serverInfo = {
+        url: "http://server.test/v1",
         user: {
           bucket: "defaultBucketId"
         },
@@ -68,10 +69,7 @@ describe("session sagas", () => {
         }
       };
 
-      const sessionState = {
-        auth: {server: "http://server.test/v1"},
-        serverInfo,
-      };
+      const sessionState = {serverInfo};
 
       before(() => {
         client = setClient({
