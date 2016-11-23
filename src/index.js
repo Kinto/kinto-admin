@@ -1,3 +1,6 @@
+/* @flow */
+import type { Plugin } from "./types";
+
 import React, { Component } from "react";
 import { Provider } from "react-redux";
 import { Router, hashHistory } from "react-router";
@@ -14,12 +17,21 @@ import "codemirror/lib/codemirror.css";
 import "../css/styles.css";
 
 
+type Props = {
+  plugins: Plugin[],
+  settings: Object,
+};
+
 export default class KintoAdmin extends Component {
+  store: Object;
+
+  props: Props;
+
   static defaultProps = {
     plugins: [],
   }
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
 
     const {plugins, settings} = props;
@@ -29,7 +41,7 @@ export default class KintoAdmin extends Component {
     // Restore saved session, if any
     const session = loadSession();
     if (session) {
-      this.store.dispatch(sessionActions.setup(session));
+      this.store.dispatch(sessionActions.setup(session.auth));
     }
   }
 

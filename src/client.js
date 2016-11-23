@@ -16,13 +16,10 @@ function getAuthHeader(auth: AuthData): ?string {
     case "anonymous": {
       return undefined;
     }
-    // case "ldap": {
-    // case "basicauth":
+    case "ldap":
+    case "basicauth":
     default: {
-      const {username, password}: {
-        username: string,
-        password: string,
-      } = auth.credentials;
+      const {username, password} = auth.credentials;
       return "Basic " + btoa([username, password].join(":"));
     }
   }
