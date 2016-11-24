@@ -2,7 +2,8 @@
 import type { Reducer, Store } from "redux";
 
 export type Action = {
-  type: string
+  type: string,
+  [key: string]: any,
 };
 
 export type AppState = {
