@@ -1,15 +1,29 @@
 declare module "kinto-http" {
-  declare type ObjectResponseBody = {
-    data: Object,
-    permissions: Object,
-  }
-
-  declare type ListResponseBody = {
-    data: Object[],
-  }
-
   declare type Options = Object;
-  declare type Permissions = Object;
+  declare type PermissionType =
+      "write"
+    | "read"
+    | "bucket:create"
+    | "group:create"
+    | "collection:create"
+    | "record:create";
+  declare type Principal = string;
+  declare type Permissions = {[key: PermissionType]: Principal[]};
+
+  declare type Resource = {
+    id: string,
+    last_modified: number,
+    [key: string]: any,
+  };
+
+  declare type ObjectResponseBody<T> = {
+    data: T,
+    permissions: Permissions,
+  }
+
+  declare type ListResponseBody<T> = {
+    data: T[],
+  }
 
   declare class KintoClient {
     remote: string;
@@ -18,29 +32,29 @@ declare module "kinto-http" {
     };
     constructor(): void;
     bucket(): Bucket;
-    createBucket(id: string, options?: Options): Promise<ObjectResponseBody>,
-    deleteBucket(id: string, options?: Options): Promise<ObjectResponseBody>,
+    createBucket(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>,
+    deleteBucket(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>,
   }
 
   declare class Bucket {
     constructor(): void;
     collection(): Collection;
     setData(): Promise<*>;
-    setPermissions(permissions: Permissions): Promise<ObjectResponseBody>,
-    createCollection(id: string, options?: Options): Promise<ObjectResponseBody>,
-    deleteCollection(id: string, options?: Options): Promise<ObjectResponseBody>,
-    listCollections(options?: Options): Promise<ListResponseBody>,
+    setPermissions(permissions: Permissions): Promise<ObjectResponseBody<Resource>>,
+    createCollection(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>,
+    deleteCollection(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>,
+    listCollections(options?: Options): Promise<ListResponseBody<Resource>>,
     setData(data: Object, options?: Options): Promise<Object>,
-    listHistory(): Promise<ListResponseBody>,
-    createGroup(id: string, options?: Options): Promise<ObjectResponseBody>,
-    updateGroup(group: Object, options?: Options): Promise<ObjectResponseBody>,
-    deleteGroup(id: string, options?: Options): Promise<ObjectResponseBody>,
+    listHistory(): Promise<ListResponseBody<Object>>,
+    createGroup(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>,
+    updateGroup(group: Object, options?: Options): Promise<ObjectResponseBody<Resource>>,
+    deleteGroup(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>,
   }
 
   declare class Collection {
     constructor(): void;
     setData(data: Object, options?: Options): Promise<Object>,
-    setPermissions(permissions: Permissions): Promise<ObjectResponseBody>,
+    setPermissions(permissions: Permissions): Promise<ObjectResponseBody<Resource>>,
   }
 
   declare var exports: typeof KintoClient
