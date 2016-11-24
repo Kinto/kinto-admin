@@ -1,3 +1,6 @@
+/* @flow */
+import type { Plugin } from "../types";
+
 import { createStore, applyMiddleware, compose } from "redux";
 import { hashHistory } from "react-router";
 import { routerMiddleware } from "react-router-redux";
@@ -13,7 +16,7 @@ const finalCreateStore = compose(
   window.devToolsExtension ? window.devToolsExtension() : f => f
 )(createStore);
 
-export default function configureStore(initialState, plugins=[]) {
+export default function configureStore(initialState: Object, plugins: Plugin[]=[]) {
   // Each plugin exports a `reducers` attribute.
   const pluginReducers = plugins.map(({reducers={}}) => reducers);
   // Each plugin exports a `sagas` attribute.

@@ -72,7 +72,6 @@
     "flow-bin": "^0.36.0",
     "gh-pages": "^0.11.0",
     "html": "0.0.10",
-    "iflow-react-router-redux": "^1.0.15",
     "ignore-styles": "^5.0.1",
     "jsdom": "^9.2.1",
     "kinto-node-test-server": "0.0.1",
