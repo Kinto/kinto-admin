@@ -9,6 +9,9 @@ declare module "kinto-http" {
     | "record:create";
   declare type Principal = string;
   declare type Permissions = {[key: PermissionType]: Principal[]};
+  declare type BatchResultAggregate = {
+    errors: Object[],
+  };
 
   declare type Resource = {
     id: string,
@@ -32,29 +35,36 @@ declare module "kinto-http" {
     };
     constructor(): void;
     bucket(): Bucket;
-    createBucket(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>,
-    deleteBucket(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>,
+    createBucket(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>;
+    deleteBucket(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>;
   }
 
   declare class Bucket {
     constructor(): void;
     collection(): Collection;
     setData(): Promise<*>;
-    setPermissions(permissions: Permissions): Promise<ObjectResponseBody<Resource>>,
-    createCollection(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>,
-    deleteCollection(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>,
-    listCollections(options?: Options): Promise<ListResponseBody<Resource>>,
+    setPermissions(permissions: Permissions): Promise<ObjectResponseBody<Resource>>;
+    createCollection(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>;
+    deleteCollection(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>;
+    listCollections(options?: Options): Promise<ListResponseBody<Resource>>;
     setData(data: Object, options?: Options): Promise<Object>,
-    listHistory(): Promise<ListResponseBody<Object>>,
-    createGroup(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>,
-    updateGroup(group: Object, options?: Options): Promise<ObjectResponseBody<Resource>>,
-    deleteGroup(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>,
+    listHistory(): Promise<ListResponseBody<Object>>;
+    createGroup(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>;
+    updateGroup(group: Object, options?: Options): Promise<ObjectResponseBody<Resource>>;
+    deleteGroup(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>;
   }
 
   declare class Collection {
     constructor(): void;
-    setData(data: Object, options?: Options): Promise<Object>,
-    setPermissions(permissions: Permissions): Promise<ObjectResponseBody<Resource>>,
+    setData(data: Object, options?: Options): Promise<Object>;
+    setPermissions(permissions: Permissions): Promise<ObjectResponseBody<Resource>>;
+    removeAttachment(): Promise<ObjectResponseBody<Resource>>;
+    listRecords(): Promise<ListResponseBody<Resource>>;
+    addAttachment(attachment: string, record: Object, options?: Options): Promise<ObjectResponseBody<Resource>>;
+    createRecord(record: Object, options?: Options): Promise<ObjectResponseBody<Resource>>;
+    updateRecord(record: Object, options?: Options): Promise<ObjectResponseBody<Resource>>;
+    deleteRecord(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>;
+    batch(batchFn: (batch: Object) => void, options: Options): Promise<BatchResultAggregate>;
   }
 
   declare var exports: typeof KintoClient

@@ -1,3 +1,6 @@
+/* @flow */
+import type { Action, GetStateFn, SagaGen } from "../types";
+
 import { call, put } from "redux-saga/effects";
 
 import { getClient } from "../client";
@@ -15,7 +18,7 @@ function getCollection(bid, cid) {
   return getBucket(bid).collection(cid);
 }
 
-export function* deleteAttachment(getState, action) {
+export function* deleteAttachment(getState: GetStateFn, action: Action): SagaGen {
   const {bid, cid, rid} = action;
   try {
     const coll = getCollection(bid, cid);
@@ -30,7 +33,7 @@ export function* deleteAttachment(getState, action) {
   }
 }
 
-export function* listRecords(getState, action) {
+export function* listRecords(getState: GetStateFn, action: Action): SagaGen {
   const {
     collection: {currentSort, data: {sort: defaultSort}},
     settings: {maxPerPage},
@@ -48,11 +51,17 @@ export function* listRecords(getState, action) {
   }
 }
 
-export function* listNextRecords(getState) {
-  const {collection} = getState();
-  const {listNextRecords} = collection;
+export function* listNextRecords(getState: GetStateFn): SagaGen {
+  const {collection: {listNextRecords}} = getState();
+  if (listNextRecords == null) {
+    return;
+  }
   try {
-    const {data, hasNextPage, next} = yield call(listNextRecords);
+    const result = yield call(listNextRecords);
+    if (result == null) {
+      throw new Error("Empty result.");
+    }
+    const {data, hasNextPage, next} = result;
     yield put(actions.listRecordsSuccess(data, hasNextPage, next));
     yield call([window, window.scrollTo], 0, window.document.body.scrollHeight);
   } catch(error) {
@@ -60,7 +69,7 @@ export function* listNextRecords(getState) {
   }
 }
 
-export function* listHistory(getState, action) {
+export function* listHistory(getState: GetStateFn, action: Action): SagaGen {
   const {bid, cid, filters: {since, resource_name}} = action;
   try {
     const bucket = getBucket(bid);
@@ -77,7 +86,7 @@ export function* listHistory(getState, action) {
   }
 }
 
-export function* createRecord(getState, action) {
+export function* createRecord(getState: GetStateFn, action: Action): SagaGen {
   const {session} = getState();
   const {bid, cid, record, attachment} = action;
   try {
@@ -96,7 +105,7 @@ export function* createRecord(getState, action) {
   }
 }
 
-export function* updateRecord(getState, action) {
+export function* updateRecord(getState: GetStateFn, action: Action): SagaGen {
   const {session, record: {data: currentRecord}} = getState();
   const {bid, cid, rid, record: {data, permissions}, attachment} = action;
   const {last_modified} = currentRecord;
@@ -130,7 +139,7 @@ export function* updateRecord(getState, action) {
   }
 }
 
-export function* deleteRecord(getState, action) {
+export function* deleteRecord(getState: GetStateFn, action: Action): SagaGen {
   const {bid, cid, rid, last_modified: actionLastModified} = action;
   const {record: currentRecord={data: {}}} = getState();
   const {last_modified=actionLastModified} = currentRecord.data;
@@ -146,7 +155,7 @@ export function* deleteRecord(getState, action) {
   }
 }
 
-export function* bulkCreateRecords(getState, action) {
+export function* bulkCreateRecords(getState: GetStateFn, action: Action): SagaGen {
   const {session} = getState();
   const {bid, cid, records} = action;
   let errorDetails = [];
