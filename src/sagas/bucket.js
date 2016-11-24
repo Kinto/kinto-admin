@@ -140,11 +140,8 @@ export function* listBucketCollections(getState: GetStateFn, action: Action): Sa
   const {bid} = action;
   try {
     const bucket = getBucket(bid);
-    const result = yield call([bucket, bucket.listCollections]);
-    if (result == null) {
-      throw new Error("Empty result.");
-    }
-    yield put(listBucketCollectionsSuccess(result.data));
+    const {data} = yield call([bucket, bucket.listCollections]);
+    yield put(listBucketCollectionsSuccess(data));
   } catch(error) {
     yield put(notifyError("Couldn't list bucket collections.", error));
   }
@@ -154,17 +151,14 @@ export function* listBucketHistory(getState: GetStateFn, action: Action): SagaGe
   const {bid, filters: {resource_name, since}} = action;
   try {
     const bucket = getBucket(bid);
-    const result = yield call([bucket, bucket.listHistory], {
+    const {data} = yield call([bucket, bucket.listHistory], {
       since,
       filters: {
         resource_name,
         exclude_resource_name: "record"
       }
     });
-    if (result == null) {
-      throw new Error("Empty result.");
-    }
-    yield put(listBucketHistorySuccess(result.data));
+    yield put(listBucketHistorySuccess(data));
   } catch(error) {
     yield put(notifyError("Couldn't list bucket history.", error));
   }
