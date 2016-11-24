@@ -5,6 +5,18 @@ export type Action = {
   type: string
 };
 
+export type AppState = {
+  routing: Object,
+  session: SessionState,
+  bucket: BucketState,
+  collection: CollectionState,
+  group: GroupState,
+  record: RecordState,
+  notifications: Notifications,
+  history: string[],
+  settings: SettingsState,
+};
+
 export type Attachment = {
   location: string,
   filename: string,
@@ -108,6 +120,8 @@ export type CollectionResource = {
   data: CollectionData,
   permissions: CollectionPermissions,
 };
+
+export type GetStateFn = () => AppState;
 
 export type GroupState = {
   busy: boolean,
@@ -300,6 +314,8 @@ export type TokenAuth = {
     token: string
   }
 };
+
+export type SagaGen = Generator<*,*,*>;
 
 export type SessionState = {
   busy: boolean,

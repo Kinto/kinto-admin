@@ -1,3 +1,6 @@
+/* @flow */
+import type { GetStateFn, SagaGen } from "../types";
+
 import { call, put } from "redux-saga/effects";
 
 import { getClient } from "../client";
@@ -18,7 +21,7 @@ function getCollection(bid, cid) {
   return getBucket(bid).collection(cid);
 }
 
-export function* createBucket(getState, action) {
+export function* createBucket(getState: GetStateFn, action: Object): SagaGen {
   const {bid, data} = action;
   try {
     const client = getClient();
@@ -34,7 +37,7 @@ export function* createBucket(getState, action) {
   }
 }
 
-export function* updateBucket(getState, action) {
+export function* updateBucket(getState: GetStateFn, action: Object): SagaGen {
   const {bid, bucket: {data, permissions}} = action;
   const {bucket: {data: {last_modified}}} = getState();
   try {
@@ -63,7 +66,7 @@ export function* updateBucket(getState, action) {
   }
 }
 
-export function* deleteBucket(getState, action) {
+export function* deleteBucket(getState: GetStateFn, action: Object): SagaGen {
   const {bid} = action;
   const {bucket: {data: {last_modified}}} = getState();
   try {
@@ -71,7 +74,7 @@ export function* deleteBucket(getState, action) {
     yield put(sessionBusy(true));
     yield call([client, client.deleteBucket], bid, {safe: true, last_modified});
     yield put(listBuckets());
-    yield put(redirectTo("home"));
+    yield put(redirectTo("home", {}));
     yield put(notifySuccess("Bucket deleted."));
   } catch(error) {
     yield put(notifyError("Couldn't delete bucket.", error));
@@ -80,7 +83,7 @@ export function* deleteBucket(getState, action) {
   }
 }
 
-export function* createCollection(getState, action) {
+export function* createCollection(getState: GetStateFn, action: Object): SagaGen {
   const {bid, collectionData} = action;
   try {
     const {id: cid, ...data} = collectionData;
@@ -94,7 +97,7 @@ export function* createCollection(getState, action) {
   }
 }
 
-export function* updateCollection(getState, action) {
+export function* updateCollection(getState: GetStateFn, action: Object): SagaGen {
   const {bid, cid, collection: {data, permissions}} = action;
   const {collection: {data: {last_modified}}} = getState();
   try {
@@ -119,7 +122,7 @@ export function* updateCollection(getState, action) {
   }
 }
 
-export function* deleteCollection(getState, action) {
+export function* deleteCollection(getState: GetStateFn, action: Object): SagaGen {
   const {bid, cid} = action;
   const {collection: {data: {last_modified}}} = getState();
   try {
@@ -133,35 +136,41 @@ export function* deleteCollection(getState, action) {
   }
 }
 
-export function* listBucketCollections(getState, action) {
+export function* listBucketCollections(getState: GetStateFn, action: Object): SagaGen {
   const {bid} = action;
   try {
     const bucket = getBucket(bid);
-    const {data} = yield call([bucket, bucket.listCollections]);
-    yield put(listBucketCollectionsSuccess(data));
+    const result = yield call([bucket, bucket.listCollections]);
+    if (result == null) {
+      throw new Error("Empty result.");
+    }
+    yield put(listBucketCollectionsSuccess(result.data));
   } catch(error) {
     yield put(notifyError("Couldn't list bucket collections.", error));
   }
 }
 
-export function* listBucketHistory(getState, action) {
+export function* listBucketHistory(getState: GetStateFn, action: Object): SagaGen {
   const {bid, filters: {resource_name, since}} = action;
   try {
     const bucket = getBucket(bid);
-    const {data} = yield call([bucket, bucket.listHistory], {
+    const result = yield call([bucket, bucket.listHistory], {
       since,
       filters: {
         resource_name,
         exclude_resource_name: "record"
       }
     });
-    yield put(listBucketHistorySuccess(data));
+    if (result == null) {
+      throw new Error("Empty result.");
+    }
+    yield put(listBucketHistorySuccess(result.data));
   } catch(error) {
     yield put(notifyError("Couldn't list bucket history.", error));
   }
 }
 
-export function* createGroup(getState, action) {
+export function* createGroup(getState: GetStateFn, action: Object): SagaGen {
   const {bid, groupData} = action;
   try {
     const {
@@ -180,7 +189,7 @@ export function* createGroup(getState, action) {
   }
 }
 
-export function* updateGroup(getState, action) {
+export function* updateGroup(getState: GetStateFn, action: Object): SagaGen {
   const {bid, gid, group: {data, permissions}} = action;
   const {group: {data: loadedData}} = getState();
   const {last_modified} = loadedData;
@@ -206,7 +215,7 @@ export function* updateGroup(getState, action) {
   }
 }
 
-export function* deleteGroup(getState, action) {
+export function* deleteGroup(getState: GetStateFn, action: Object): SagaGen {
   const {bid, gid} = action;
   const {group: {data: {last_modified}}} = getState();
   try {
