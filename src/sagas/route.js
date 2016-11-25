@@ -1,3 +1,6 @@
+/* @flow */
+import type { Action, GetStateFn, SagaGen, RouteParams } from "../types";
+
 import { call, put, take } from "redux-saga/effects";
 import { push as updatePath } from "react-router-redux";
 
@@ -38,10 +41,11 @@ function identifyResponse(index, bid, cid, gid, rid) {
       data: {id: cid ? cid : gid},
     };
     case 3: return {type: "Record", data: {id: rid}};
+    default: return {type: "Unknown", data: []};
   }
 }
 
-export function* loadRoute(params) {
+export function* loadRoute(params: RouteParams): Generator<*,void,*> {
   const {bid, cid, gid, rid} = params;
 
   // If we don't have anything to load, exit
@@ -58,7 +62,9 @@ export function* loadRoute(params) {
     const res = yield call([client, client.batch], getBatchLoadFn(bid, cid, gid, rid));
     const responses = res.map(({status, body}, index) => {
       const {type, ...data} = identifyResponse(index, bid, cid, gid, rid);
-      if (status === 404) {
+      if (type === "Unknown") {
+        throw new Error("Unknown route resource.");
+      } else if (status === 404) {
         throw new Error(`${type} ${data.id} does not exist.`);
       } else if (status === 403) {
         return {...data, permissions: {read: [], write: []}};
@@ -67,11 +73,15 @@ export function* loadRoute(params) {
     });
     // Map them to state
     const bucket     = bid ?               responses[0] : null;
+    // No bucket? Stop processing further as it should never happen!
+    if (bucket == null) {
+      return;
+    }
     const groupsResp = bid ?               responses[1] : null;
     const collection = bid && cid ?        responses[2] : null;
     const group      = bid && gid ?        responses[2] : null;
     const record     = bid && cid && rid ? responses[3] : null;
-    const {data: groups} = groupsResp;
+    const groups = groupsResp !== null ? groupsResp.data : [];
     yield put(routeLoadSuccess({bucket, groups, collection, group, record}));
   } catch(error) {
     yield put(routeLoadFailure());
@@ -79,7 +89,7 @@ export function* loadRoute(params) {
   }
 }
 
-export function* routeUpdated(getState, action) {
+export function* routeUpdated(getState: GetStateFn, action: Action): SagaGen {
   const {session: {authenticated}} = getState();
   const {params, location} = action;
   const {token} = params;
@@ -110,7 +120,7 @@ export function* routeUpdated(getState, action) {
   }
 }
 
-export function* routeRedirect(getState, action) {
+export function* routeRedirect(getState: GetStateFn, action: Action): SagaGen {
   const {name, params} = action;
   yield put(updatePath(url(name, params)));
 }

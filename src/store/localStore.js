@@ -40,13 +40,15 @@ export function loadSession(): ?Object {
   }
 }
 
-export function saveSession(sessionState: SessionState) {
+export function saveSession(sessionState: SessionState): Promise<any> {
   localStorage.setItem(SESSION_KEY, JSON.stringify({
     ...sessionState,
     buckets: [],
   }));
+  return Promise.resolve();
 }
 
-export function clearSession() {
+export function clearSession(): Promise<any> {
   localStorage.removeItem(SESSION_KEY);
+  return Promise.resolve();
 }

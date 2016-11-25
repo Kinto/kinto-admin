@@ -5,5 +5,6 @@ declare module "react-router-redux" {
     routerMiddleware: Middleware,
     routerReducer: Function,
     syncHistoryWithStore: Function,
+    push: Function,
   };
 }

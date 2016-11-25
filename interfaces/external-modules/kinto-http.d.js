@@ -22,11 +22,16 @@ declare module "kinto-http" {
   declare type ObjectResponseBody<T> = {
     data: T,
     permissions: Permissions,
-  }
+  };
 
   declare type ListResponseBody<T> = {
     data: T[],
-  }
+  };
+
+  declare type BatchResponse = {
+    status: number,
+    body: Object,
+  };
 
   declare class KintoClient {
     remote: string;
@@ -37,6 +42,10 @@ declare module "kinto-http" {
     bucket(): Bucket;
     createBucket(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>;
     deleteBucket(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>;
+    batch(): Promise<BatchResponse[]>;
+    fetchServerInfo(): Promise<Object>;
+    listBuckets(): Promise<ListResponseBody<Resource>>;
+    listPermissions(): Promise<ListResponseBody<Object>>;
   }
 
   declare class Bucket {

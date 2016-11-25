@@ -57,11 +57,7 @@ export function* listNextRecords(getState: GetStateFn): SagaGen {
     return;
   }
   try {
-    const result = yield call(listNextRecords);
-    if (result == null) {
-      throw new Error("Empty result.");
-    }
-    const {data, hasNextPage, next} = result;
+    const {data, hasNextPage, next} = yield call(listNextRecords);
     yield put(actions.listRecordsSuccess(data, hasNextPage, next));
     yield call([window, window.scrollTo], 0, window.document.body.scrollHeight);
   } catch(error) {
