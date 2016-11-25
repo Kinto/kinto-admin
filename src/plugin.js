@@ -1,5 +1,7 @@
 /* @flow */
 
+import type { GetStateFn, PluginSagas } from "./types";
+
 /**
  * Note: The plugin API is experimental and likely to change over time. Don't
  * use it if you bet on stability.
@@ -26,8 +28,8 @@ export function flattenPluginsRoutes(
 }
 
 export function flattenPluginsSagas(
-  pluginsSagas: Array<Array<any>>,
-  getState: Function
+  pluginsSagas: PluginSagas,
+  getState: GetStateFn
 ): Object[] {
   return pluginsSagas.reduce((acc, sagaDefs = []) => {
     // Create the saga watchers for this plugin, passing them the getState
@@ -73,4 +75,3 @@ export function flattenPluginsReducers(
     ...extendReducers(pluginReducers, standardReducers)
   }), {});
 }
-

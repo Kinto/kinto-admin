@@ -1,3 +1,6 @@
+/* @flow */
+import type { Action, GetStateFn, SagaGen } from "../types";
+
 import { push as updatePath } from "react-router-redux";
 import { call, put } from "redux-saga/effects";
 
@@ -9,7 +12,7 @@ import { clone } from "../utils";
 import { getClient, setupClient, resetClient } from "../client";
 
 
-export function* setupSession(getState, action) {
+export function* setupSession(getState: GetStateFn, action: Action): SagaGen {
   const {auth} = action;
   try {
     setupClient(auth);
@@ -24,7 +27,7 @@ export function* setupSession(getState, action) {
   }
 }
 
-export function* sessionLogout(getState, action) {
+export function* sessionLogout(getState: GetStateFn, action: Action): SagaGen {
   resetClient();
   yield put(updatePath("/"));
   yield put(notificationActions.notifySuccess("Logged out.", {persistent: true}));
@@ -57,7 +60,7 @@ function expandBucketsCollections(buckets, permissions) {
   return bucketsCopy;
 }
 
-export function* listBuckets(getState, action) {
+export function* listBuckets(getState: GetStateFn, action: Action): SagaGen {
   try {
     const client = getClient();
     // Fetch server information

@@ -13,7 +13,8 @@ function getErrorDetails(error: ?(Error | ClientError)): string[] {
   if (!error) {
     return [];
   }
-  const {data: errorData, message} = {data: {}, ...error};
+  const {toString, ...rawError} = error; // eslint-disable-line
+  const {data: errorData, message} = {data: {}, ...rawError};
   let details = [message];
   const {code, message: errorMessage, details: errorDetails} = errorData;
   if (!code) {

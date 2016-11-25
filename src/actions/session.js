@@ -29,7 +29,7 @@ export function setupComplete(auth: AuthData): Action {
   return {type: SESSION_SETUP_COMPLETE, auth};
 }
 
-export function storeRedirectURL(redirectURL: string): Action {
+export function storeRedirectURL(redirectURL: ?string): Action {
   return {type: SESSION_STORE_REDIRECT_URL, redirectURL};
 }
 

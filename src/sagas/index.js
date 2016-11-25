@@ -1,3 +1,6 @@
+/* @flow */
+import type { GetStateFn, PluginSagas, SagaGen } from "../types";
+
 import { takeEvery } from "redux-saga";
 
 import { flattenPluginsSagas } from "../plugin";
@@ -15,7 +18,7 @@ import * as recordSagas from "./record";
  * @param {Function} getState Function to obtain the current store state.
  * @param {Array}    sagas  The list of plugin sagas.
  */
-export default function* rootSaga(getState, pluginsSagas=[]) {
+export default function* rootSaga(getState: GetStateFn, pluginsSagas: PluginSagas=[]): SagaGen {
   const standardSagas = [
     // session
     takeEvery(c.SESSION_SETUP, sessionSagas.setupSession, getState),

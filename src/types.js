@@ -2,7 +2,20 @@
 import type { Reducer, Store } from "redux";
 
 export type Action = {
-  type: string
+  type: string,
+  [key: string]: any,
+};
+
+export type AppState = {
+  routing: Object,
+  session: SessionState,
+  bucket: BucketState,
+  collection: CollectionState,
+  group: GroupState,
+  record: RecordState,
+  notifications: Notifications,
+  history: string[],
+  settings: SettingsState,
 };
 
 export type Attachment = {
@@ -109,6 +122,8 @@ export type CollectionResource = {
   permissions: CollectionPermissions,
 };
 
+export type GetStateFn = () => AppState;
+
 export type GroupState = {
   busy: boolean,
   data: Object,
@@ -158,6 +173,8 @@ export type Plugin = {
     routes?: Object[],
   },
 };
+
+export type PluginSagas = Array<Array<any>>;
 
 export type RecordState = {
   busy: boolean,
@@ -300,6 +317,8 @@ export type TokenAuth = {
     token: string
   }
 };
+
+export type SagaGen = Generator<*,void,*>;
 
 export type SessionState = {
   busy: boolean,

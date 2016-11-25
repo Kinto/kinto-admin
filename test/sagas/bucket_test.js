@@ -250,7 +250,7 @@ describe("bucket sagas", () => {
 
       it("should update the route path", () => {
         expect(deleteBucket.next().value)
-          .eql(put(redirectTo("home")));
+          .eql(put(redirectTo("home", {})));
       });
 
       it("should dispatch a notification", () => {
