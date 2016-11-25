@@ -174,6 +174,8 @@ export type Plugin = {
   },
 };
 
+export type PluginSagas = Array<Array<any>>;
+
 export type RecordState = {
   busy: boolean,
   data: RecordData,
@@ -316,7 +318,7 @@ export type TokenAuth = {
   }
 };
 
-export type SagaGen = Generator<*,*,*>;
+export type SagaGen = Generator<*,void,*>;
 
 export type SessionState = {
   busy: boolean,

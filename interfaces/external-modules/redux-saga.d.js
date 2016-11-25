@@ -78,6 +78,13 @@ declare module 'redux-saga' {
    * Saga stuff
    */
 
+  // kinto specific
+  declare type KintoAction = {
+    type: string,
+    [key: string]: any,
+  };
+  declare type KintoAdminSaga<Y: IOEffect, R, N> = (getState: Function, action: KintoAction) => Generator<Y, R, N>;
+  // end
   declare type SagaSpread<Y: IOEffect, R, N, T> = (...args: Array<T>) => Generator<Y, R, N>;
   declare type SagaList<Y: IOEffect[], R, N> = () => Generator<Y, R, N>;
   declare type Saga0<Y: IOEffect, R, N> = () => Generator<Y, R, N>;
@@ -93,6 +100,9 @@ declare module 'redux-saga' {
   }
 
   declare type TakeXFn =
+     // Kinto specific
+     & (<Function, Y, R, N, Fn: KintoAdminSaga<Y, R, N>>(pattern: Pattern, saga: Fn, getState: Function) => TakeXRet)
+     // end
      & (<Y, R, N, Fn: Saga0<Y, R, N>>(pattern: Pattern, saga: Fn) => TakeXRet)
      & (<T1, Y, R, N, Fn: Saga1<Y, R, N, T1>>(pattern: Pattern, saga: Fn, t1: T1) => TakeXRet)
      & (<T1, T2, Y, R, N, Fn: Saga2<Y, R, N, T1, T2>>(pattern: Pattern, saga: Fn, t1: T1, t2: T2) => TakeXRet)
