@@ -1,14 +1,14 @@
 /* @flow */
 
 import type {
-  Action,
   BucketData,
   BucketResource,
   CollectionData,
   CollectionResource,
   GroupData,
   GroupResource,
-  HistoryFilters
+  HistoryFilters,
+  ResourceHistoryEntry,
 } from "../types";
 
 import {
@@ -29,58 +29,108 @@ import {
 } from "../constants";
 
 
-export function createBucket(bid: string, data: BucketData): Action {
+export function createBucket(bid: string, data: BucketData): {
+  type: "BUCKET_CREATE_REQUEST",
+  bid: string,
+  data: BucketData,
+} {
   return {type: BUCKET_CREATE_REQUEST, bid, data};
 }
 
-export function updateBucket(bid: string, bucket: BucketResource): Action {
+export function updateBucket(bid: string, bucket: BucketResource): {
+  type: "BUCKET_UPDATE_REQUEST",
+  bid: string,
+  bucket: BucketResource,
+} {
   return {type: BUCKET_UPDATE_REQUEST, bid, bucket};
 }
 
-export function deleteBucket(bid: string): Action {
+export function deleteBucket(bid: string): {
+  type: "BUCKET_DELETE_REQUEST",
+  bid: string,
+} {
   return {type: BUCKET_DELETE_REQUEST, bid};
 }
 
-export function resetBucket(): Action {
+export function resetBucket(): {type: "BUCKET_RESET"} {
   return {type: BUCKET_RESET};
 }
 
-export function listBucketCollections(bid: string): Action {
+export function listBucketCollections(bid: string): {
+  type: "BUCKET_COLLECTIONS_REQUEST",
+  bid: string,
+} {
   return {type: BUCKET_COLLECTIONS_REQUEST, bid};
 }
 
-export function listBucketCollectionsSuccess(collections: Object[]): Action {
+export function listBucketCollectionsSuccess(collections: CollectionData[]): {
+  type: "BUCKET_COLLECTIONS_SUCCESS",
+  collections: CollectionData[],
+} {
   return {type: BUCKET_COLLECTIONS_SUCCESS, collections};
 }
 
-export function listBucketHistory(bid: string, filters: HistoryFilters = {}): Action {
+export function listBucketHistory(bid: string, filters: HistoryFilters = {}): {
+  type: "BUCKET_HISTORY_REQUEST",
+  bid: string,
+  filters: HistoryFilters,
+} {
   return {type: BUCKET_HISTORY_REQUEST, bid, filters};
 }
 
-export function listBucketHistorySuccess(history: Object[]): Action {
+export function listBucketHistorySuccess(history: ResourceHistoryEntry[]): {
+  type: "BUCKET_HISTORY_SUCCESS",
+  history: ResourceHistoryEntry[],
+} {
   return {type: BUCKET_HISTORY_SUCCESS, history};
 }
 
-export function createCollection(bid: string, collectionData: CollectionData): Action {
+export function createCollection(bid: string, collectionData: CollectionData): {
+  type: "COLLECTION_CREATE_REQUEST",
+  bid: string,
+  collectionData: CollectionData,
+} {
   return {type: COLLECTION_CREATE_REQUEST, bid, collectionData};
 }
 
-export function updateCollection(bid: string, cid: string, collection: CollectionResource): Action {
+export function updateCollection(bid: string, cid: string, collection: CollectionResource): {
+  type: "COLLECTION_UPDATE_REQUEST",
+  bid: string,
+  cid: string,
+  collection: CollectionResource,
+} {
   return {type: COLLECTION_UPDATE_REQUEST, bid, cid, collection};
 }
 
-export function deleteCollection(bid: string, cid: string): Action {
+export function deleteCollection(bid: string, cid: string): {
+  type: "COLLECTION_DELETE_REQUEST",
+  bid: string,
+  cid: string,
+} {
   return {type: COLLECTION_DELETE_REQUEST, bid, cid};
 }
 
-export function createGroup(bid: string, groupData: GroupData): Action {
+export function createGroup(bid: string, groupData: GroupData): {
+  type: "GROUP_CREATE_REQUEST",
+  bid: string,
+  groupData: GroupData,
+} {
   return {type: GROUP_CREATE_REQUEST, bid, groupData};
 }
 
-export function updateGroup(bid: string, gid: string, group: GroupResource): Action {
+export function updateGroup(bid: string, gid: string, group: GroupResource): {
+  type: "GROUP_UPDATE_REQUEST",
+  bid: string,
+  gid: string,
+  group: GroupResource,
+} {
   return {type: GROUP_UPDATE_REQUEST, bid, gid, group};
 }
 
-export function deleteGroup(bid: string, gid: string): Action {
+export function deleteGroup(bid: string, gid: string): {
+  type: "GROUP_DELETE_REQUEST",
+  bid: string,
+  gid: string,
+} {
   return {type: GROUP_DELETE_REQUEST, bid, gid};
 }

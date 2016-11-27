@@ -2,10 +2,16 @@
 import type { Reducer, Store } from "redux";
 
 
+type _$ReturnType<B, F: (...args: any[]) => B> = B; // eslint-disable-line
+export type $ReturnType<F> = _$ReturnType<*, F>;
+
+export type ActionType<T> = $ReturnType<T>;
+
 export type Action = {
   type: string,
   [key: string]: any,
 };
+
 
 export type AppState = {
   routing: Object,
