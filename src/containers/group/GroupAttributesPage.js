@@ -1,3 +1,7 @@
+/* @flow */
+import type { AppState } from "../../types";
+import type { Dispatch, ActionCreatorOrObjectOfACs } from "redux";
+
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
@@ -5,7 +9,7 @@ import GroupAttributes from "../../components/group/GroupAttributes";
 import * as BucketActions from "../../actions/bucket";
 
 
-function mapStateToProps(state) {
+function mapStateToProps(state: AppState) {
   return {
     bucket: state.bucket,
     group: state.group,
@@ -14,7 +18,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
   return bindActionCreators(BucketActions, dispatch);
 }
 
