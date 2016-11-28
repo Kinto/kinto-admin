@@ -12,7 +12,6 @@ export type Action = {
   [key: string]: any,
 };
 
-
 export type AppState = {
   routing: Object,
   session: SessionState,
@@ -196,6 +195,7 @@ export type RecordData = {
   last_modified?: number,
   schema?: number,
   attachment?: Attachment,
+  __attachment__?: string,
 };
 
 export type RecordPermissions = {

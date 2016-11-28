@@ -1,10 +1,10 @@
 /* @flow */
 
 import type {
-  Action,
   RecordData,
   RecordResource,
-  HistoryFilters
+  HistoryFilters,
+  ResourceHistoryEntry,
 } from "../types";
 
 import {
@@ -23,54 +23,104 @@ import {
 } from "../constants";
 
 
-export function collectionBusy(busy: boolean): Action {
+export function collectionBusy(busy: boolean): {
+  type: "COLLECTION_BUSY",
+  busy: boolean,
+} {
   return {type: COLLECTION_BUSY, busy};
 }
 
-export function resetCollection(): Action {
+export function resetCollection(): {
+  type: "COLLECTION_RESET",
+} {
   return {type: COLLECTION_RESET};
 }
 
-export function listRecords(bid: string, cid: string, sort: string): Action {
+export function listRecords(bid: string, cid: string, sort: string): {
+  type: "COLLECTION_RECORDS_REQUEST",
+  bid: string,
+  cid: string,
+  sort: string,
+} {
   return {type: COLLECTION_RECORDS_REQUEST, bid, cid, sort};
 }
 
-export function listNextRecords(): Action {
+export function listNextRecords(): {
+  type: "COLLECTION_RECORDS_NEXT_REQUEST",
+} {
   return {type: COLLECTION_RECORDS_NEXT_REQUEST};
 }
 
-export function listRecordsSuccess(
+export function listRecordsSuccess(records: RecordData[], hasNextRecords: boolean, listNextRecords: ?Function): {
+  type: "COLLECTION_RECORDS_SUCCESS",
   records: RecordData[],
   hasNextRecords: boolean,
-  listNextRecords: ?Function
-): Action {
+  listNextRecords: ?Function,
+} {
   return {type: COLLECTION_RECORDS_SUCCESS, records, hasNextRecords, listNextRecords};
 }
 
-export function listCollectionHistory(bid: string, cid: string, filters: HistoryFilters = {}): Action {
+export function listCollectionHistory(bid: string, cid: string, filters: HistoryFilters = {}): {
+  type: "COLLECTION_HISTORY_REQUEST",
+  bid: string,
+  cid: string,
+  filters: HistoryFilters,
+} {
   return {type: COLLECTION_HISTORY_REQUEST, bid, cid, filters};
 }
 
-export function listCollectionHistorySuccess(history: Object[]): Action {
+export function listCollectionHistorySuccess(history: ResourceHistoryEntry[]): {
+  type: "COLLECTION_HISTORY_SUCCESS",
+  history: ResourceHistoryEntry[],
+} {
   return {type: COLLECTION_HISTORY_SUCCESS, history};
 }
 
-export function createRecord(bid: string, cid: string, record: RecordData, attachment?: String): Action {
+export function createRecord(bid: string, cid: string, record: RecordData, attachment?: string): {
+  type: "RECORD_CREATE_REQUEST",
+  bid: string,
+  cid: string,
+  record: RecordData,
+  attachment?: string,
+} {
   return {type: RECORD_CREATE_REQUEST, bid, cid, record, attachment};
 }
 
-export function updateRecord(bid: string, cid: string, rid: string, record: RecordResource, attachment?: String): Action {
+export function updateRecord(bid: string, cid: string, rid: string, record: RecordResource, attachment?: string): {
+  type: "RECORD_UPDATE_REQUEST",
+  bid: string,
+  cid: string,
+  rid: string,
+  record: RecordResource,
+  attachment?: string,
+} {
   return {type: RECORD_UPDATE_REQUEST, bid, cid, rid, record, attachment};
 }
 
-export function deleteRecord(bid: string, cid: string, rid: string, last_modified: number): Action {
+export function deleteRecord(bid: string, cid: string, rid: string, last_modified: number): {
+  type: "RECORD_DELETE_REQUEST",
+  bid: string,
+  cid: string,
+  rid: string,
+  last_modified: number,
+} {
   return {type: RECORD_DELETE_REQUEST, bid, cid, rid, last_modified};
 }
 
-export function deleteAttachment(bid: string, cid: string, rid: string): Action {
+export function deleteAttachment(bid: string, cid: string, rid: string): {
+  type: "ATTACHMENT_DELETE_REQUEST",
+  bid: string,
+  cid: string,
+  rid: string,
+} {
   return {type: ATTACHMENT_DELETE_REQUEST, bid, cid, rid};
 }
 
-export function bulkCreateRecords(bid: string, cid: string, records: RecordData[]): Action {
+export function bulkCreateRecords(bid: string, cid: string, records: RecordData[]): {
+  type: "RECORD_BULK_CREATE_REQUEST",
+  bid: string,
+  cid: string,
+  records: RecordData[],
+} {
   return {type: RECORD_BULK_CREATE_REQUEST, bid, cid, records};
 }

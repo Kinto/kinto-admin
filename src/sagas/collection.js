@@ -1,5 +1,5 @@
 /* @flow */
-import type { Action, GetStateFn, SagaGen } from "../types";
+import type { ActionType, GetStateFn, SagaGen } from "../types";
 
 import { call, put } from "redux-saga/effects";
 
@@ -18,7 +18,7 @@ function getCollection(bid, cid) {
   return getBucket(bid).collection(cid);
 }
 
-export function* deleteAttachment(getState: GetStateFn, action: Action): SagaGen {
+export function* deleteAttachment(getState: GetStateFn, action: ActionType<typeof actions.deleteAttachment>): SagaGen {
   const {bid, cid, rid} = action;
   try {
     const coll = getCollection(bid, cid);
@@ -33,7 +33,7 @@ export function* deleteAttachment(getState: GetStateFn, action: Action): SagaGen
   }
 }
 
-export function* listRecords(getState: GetStateFn, action: Action): SagaGen {
+export function* listRecords(getState: GetStateFn, action: ActionType<typeof actions.listRecords>): SagaGen {
   const {
     collection: {currentSort, data: {sort: defaultSort}},
     settings: {maxPerPage},
@@ -65,7 +65,7 @@ export function* listNextRecords(getState: GetStateFn): SagaGen {
   }
 }
 
-export function* listHistory(getState: GetStateFn, action: Action): SagaGen {
+export function* listHistory(getState: GetStateFn, action: ActionType<typeof actions.listCollectionHistory>): SagaGen {
   const {bid, cid, filters: {since, resource_name}} = action;
   try {
     const bucket = getBucket(bid);
@@ -82,7 +82,7 @@ export function* listHistory(getState: GetStateFn, action: Action): SagaGen {
   }
 }
 
-export function* createRecord(getState: GetStateFn, action: Action): SagaGen {
+export function* createRecord(getState: GetStateFn, action: ActionType<typeof actions.createRecord>): SagaGen {
   const {session} = getState();
   const {bid, cid, record, attachment} = action;
   try {
@@ -101,7 +101,7 @@ export function* createRecord(getState: GetStateFn, action: Action): SagaGen {
   }
 }
 
-export function* updateRecord(getState: GetStateFn, action: Action): SagaGen {
+export function* updateRecord(getState: GetStateFn, action: ActionType<typeof actions.updateRecord>): SagaGen {
   const {session, record: {data: currentRecord}} = getState();
   const {bid, cid, rid, record: {data, permissions}, attachment} = action;
   const {last_modified} = currentRecord;
@@ -135,7 +135,7 @@ export function* updateRecord(getState: GetStateFn, action: Action): SagaGen {
   }
 }
 
-export function* deleteRecord(getState: GetStateFn, action: Action): SagaGen {
+export function* deleteRecord(getState: GetStateFn, action: ActionType<typeof actions.deleteRecord>): SagaGen {
   const {bid, cid, rid, last_modified: actionLastModified} = action;
   const {record: currentRecord={data: {}}} = getState();
   const {last_modified=actionLastModified} = currentRecord.data;
@@ -151,7 +151,7 @@ export function* deleteRecord(getState: GetStateFn, action: Action): SagaGen {
   }
 }
 
-export function* bulkCreateRecords(getState: GetStateFn, action: Action): SagaGen {
+export function* bulkCreateRecords(getState: GetStateFn, action: ActionType<typeof actions.bulkCreateRecords>): SagaGen {
   const {session} = getState();
   const {bid, cid, records} = action;
   let errorDetails = [];
