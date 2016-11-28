@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { Action, AuthData, ServerInfo } from "../types";
+import type { ActionType, AuthData, ServerInfo } from "../types";
 
 import { notifyError } from "./notifications";
 import {
@@ -17,43 +17,70 @@ import {
 } from "../constants";
 
 
-export function sessionBusy(busy: boolean): Action {
+export function sessionBusy(busy: boolean): {
+  type: "SESSION_BUSY",
+  busy: boolean,
+} {
   return {type: SESSION_BUSY, busy};
 }
 
-export function setup(auth: Object): Action {
+export function setup(auth: Object): {
+  type: "SESSION_SETUP",
+  auth: Object,
+} {
   return {type: SESSION_SETUP, auth};
 }
 
-export function setupComplete(auth: AuthData): Action {
+export function setupComplete(auth: AuthData): {
+  type: "SESSION_SETUP_COMPLETE",
+  auth: AuthData,
+} {
   return {type: SESSION_SETUP_COMPLETE, auth};
 }
 
-export function storeRedirectURL(redirectURL: ?string): Action {
+export function storeRedirectURL(redirectURL: ?string): {
+  type: "SESSION_STORE_REDIRECT_URL",
+  redirectURL: ?string,
+} {
   return {type: SESSION_STORE_REDIRECT_URL, redirectURL};
 }
 
-export function serverInfoSuccess(serverInfo: ServerInfo): Action {
+export function serverInfoSuccess(serverInfo: ServerInfo): {
+  type: "SESSION_SERVERINFO_SUCCESS",
+  serverInfo: ServerInfo,
+} {
   return {type: SESSION_SERVERINFO_SUCCESS, serverInfo};
 }
 
-export function permissionsListSuccess(permissions: Object[]): Action {
+export function permissionsListSuccess(permissions: Object[]): {
+  type: "SESSION_PERMISSIONS_SUCCESS",
+  permissions: Object[],
+} {
   return {type: SESSION_PERMISSIONS_SUCCESS, permissions};
 }
 
-export function listBuckets(): Action {
+export function listBuckets(): {
+  type: "SESSION_BUCKETS_REQUEST",
+} {
   return {type: SESSION_BUCKETS_REQUEST};
 }
 
-export function bucketsSuccess(buckets: Object[]): Action {
+export function bucketsSuccess(buckets: Object[]): {
+  type: "SESSION_BUCKETS_SUCCESS",
+  buckets: Object[],
+} {
   return {type: SESSION_BUCKETS_SUCCESS, buckets};
 }
 
-export function setAuthenticated(): Action {
+export function setAuthenticated(): {
+  type: "SESSION_AUTHENTICATED",
+} {
   return {type: SESSION_AUTHENTICATED};
 }
 
-export function logout(): Action {
+export function logout(): {
+  type: "SESSION_LOGOUT",
+} {
   return {type: SESSION_LOGOUT};
 }
 
@@ -61,7 +88,7 @@ export function logout(): Action {
  * Massive side effect: this will navigate away from the current page to perform
  * authentication to a third-party service, like FxA.
  */
-export function navigateToExternalAuth(authFormData: Object): ?Action {
+export function navigateToExternalAuth(authFormData: Object): ?ActionType<typeof notifyError> {
   const {origin, pathname} = document.location;
   const {server} = authFormData;
   try {

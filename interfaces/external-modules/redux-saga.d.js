@@ -83,7 +83,7 @@ declare module 'redux-saga' {
     type: string,
     [key: string]: any,
   };
-  declare type KintoAdminSaga<Y: IOEffect, R, N> = (getState: Function, action: KintoAction) => Generator<Y, R, N>;
+  declare type KintoAdminSaga<Y: IOEffect, R, N> = (getState: Function, action: Object) => Generator<Y, R, N>;
   // end
   declare type SagaSpread<Y: IOEffect, R, N, T> = (...args: Array<T>) => Generator<Y, R, N>;
   declare type SagaList<Y: IOEffect[], R, N> = () => Generator<Y, R, N>;

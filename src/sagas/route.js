@@ -1,12 +1,12 @@
 /* @flow */
-import type { Action, GetStateFn, SagaGen, RouteParams } from "../types";
+import type { ActionType, GetStateFn, SagaGen, RouteParams } from "../types";
 
 import { call, put, take } from "redux-saga/effects";
 import { push as updatePath } from "react-router-redux";
 
 import { getClient } from "../client";
 import { storeRedirectURL } from "../actions/session";
-import { routeLoadRequest, routeLoadSuccess, routeLoadFailure } from "../actions/route";
+import * as actions from "../actions/route";
 import { notifyInfo, notifyError, clearNotifications } from "../actions/notifications";
 import { SESSION_AUTHENTICATED } from "../constants";
 import url from "../url";
@@ -45,7 +45,7 @@ function identifyResponse(index, bid, cid, gid, rid) {
   }
 }
 
-export function* loadRoute(params: RouteParams): Generator<*,void,*> {
+export function* loadRoute(params: RouteParams): SagaGen {
   const {bid, cid, gid, rid} = params;
 
   // If we don't have anything to load, exit
@@ -56,7 +56,7 @@ export function* loadRoute(params: RouteParams): Generator<*,void,*> {
   try {
     const client = getClient();
 
-    yield put(routeLoadRequest(params));
+    yield put(actions.routeLoadRequest(params));
 
     // Fetch all currently selected resource data in a single batch request
     const res = yield call([client, client.batch], getBatchLoadFn(bid, cid, gid, rid));
@@ -82,14 +82,14 @@ export function* loadRoute(params: RouteParams): Generator<*,void,*> {
     const group      = bid && gid ?        responses[2] : null;
     const record     = bid && cid && rid ? responses[3] : null;
     const groups = groupsResp !== null ? groupsResp.data : [];
-    yield put(routeLoadSuccess({bucket, groups, collection, group, record}));
+    yield put(actions.routeLoadSuccess({bucket, groups, collection, group, record}));
   } catch(error) {
-    yield put(routeLoadFailure());
+    yield put(actions.routeLoadFailure());
     yield put(notifyError("Couldn't retrieve route resources.", error));
   }
 }
 
-export function* routeUpdated(getState: GetStateFn, action: Action): SagaGen {
+export function* routeUpdated(getState: GetStateFn, action: ActionType<typeof actions.routeUpdated>): SagaGen {
   const {session: {authenticated}} = getState();
   const {params, location} = action;
   const {token} = params;
@@ -120,7 +120,7 @@ export function* routeUpdated(getState: GetStateFn, action: Action): SagaGen {
   }
 }
 
-export function* routeRedirect(getState: GetStateFn, action: Action): SagaGen {
+export function* routeRedirect(getState: GetStateFn, action: ActionType<typeof actions.redirectTo>): SagaGen {
   const {name, params} = action;
   yield put(updatePath(url(name, params)));
 }

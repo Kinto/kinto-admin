@@ -40,7 +40,7 @@ declare module "kinto-http" {
     };
     constructor(): void;
     bucket(): Bucket;
-    createBucket(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>;
+    createBucket(id: ?string, options?: Options): Promise<ObjectResponseBody<Resource>>;
     deleteBucket(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>;
     batch(): Promise<BatchResponse[]>;
     fetchServerInfo(): Promise<Object>;
@@ -53,12 +53,12 @@ declare module "kinto-http" {
     collection(): Collection;
     setData(): Promise<*>;
     setPermissions(permissions: Permissions): Promise<ObjectResponseBody<Resource>>;
-    createCollection(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>;
+    createCollection(id: ?string, options?: Options): Promise<ObjectResponseBody<Resource>>;
     deleteCollection(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>;
     listCollections(options?: Options): Promise<ListResponseBody<Resource>>;
     setData(data: Object, options?: Options): Promise<Object>,
     listHistory(): Promise<ListResponseBody<Object>>;
-    createGroup(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>;
+    createGroup(id: ?string, members: string[], options?: Options): Promise<ObjectResponseBody<Resource>>;
     updateGroup(group: Object, options?: Options): Promise<ObjectResponseBody<Resource>>;
     deleteGroup(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>;
   }

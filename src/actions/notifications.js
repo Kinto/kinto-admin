@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { Action, ClientError } from "../types";
+import type { ClientError } from "../types";
 
 import {
   NOTIFICATION_ADDED,
@@ -35,7 +35,21 @@ function getErrorDetails(error: ?(Error | ClientError)): string[] {
   }
 }
 
-function notify(type: string, message: string, options: Object = {}): Action {
+type NotificationAction = {
+  type: "NOTIFICATION_ADDED",
+  clear: boolean,
+  notification: {
+    type: Levels,
+    message: string,
+    persistent: boolean,
+    message: string,
+    details: string[],
+  },
+};
+
+type Levels = "info" | "success" | "danger";
+
+function notify(type: Levels, message: string, options: Object = {}): NotificationAction {
   const {
     clear = true,
     persistent = false,
@@ -53,11 +67,11 @@ function notify(type: string, message: string, options: Object = {}): Action {
   };
 }
 
-export function notifyInfo(message: string, options: Object={}): Action {
+export function notifyInfo(message: string, options: Object={}): NotificationAction {
   return notify("info", message, options);
 }
 
-export function notifySuccess(message: string, options: Object={}): Action {
+export function notifySuccess(message: string, options: Object={}): NotificationAction {
   return notify("success", message, options);
 }
 
@@ -65,17 +79,23 @@ export function notifyError(
   message: string,
   error:   ?(Error | ClientError),
   options: Object={}
-): Action {
+): NotificationAction {
   console.error(error);
   return notify("danger", message, {
     details: options.details || getErrorDetails(error),
   });
 }
 
-export function removeNotification(index: number): Action {
+export function removeNotification(index: number): {
+  type: "NOTIFICATION_REMOVED",
+  index: number,
+} {
   return {type: NOTIFICATION_REMOVED, index};
 }
 
-export function clearNotifications(options: Object={}): Action {
+export function clearNotifications(options: Object={}): {
+  type: "NOTIFICATION_CLEAR",
+  force: boolean,
+} {
   return {type: NOTIFICATION_CLEAR, force: !!options.force};
 }

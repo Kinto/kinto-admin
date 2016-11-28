@@ -1,6 +1,14 @@
 /* @flow */
 
-import type { RouteParams, RouteResources, Action } from "../types";
+import type {
+  RouteParams,
+  RouteResources,
+  BucketResource,
+  GroupData,
+  CollectionResource,
+  RecordResource,
+  GroupResource,
+} from "../types";
 
 import {
   ROUTE_UPDATED,
@@ -11,25 +19,42 @@ import {
 } from "../constants";
 
 
-export function routeUpdated(
+export function routeUpdated(params: Object, location: Object): {
+  type: "ROUTE_UPDATED",
   params: Object,
-  location: Object
-): Action {
+  location: Object,
+} {
   return {type: ROUTE_UPDATED, params, location};
 }
 
-export function routeLoadRequest(params: RouteParams): Action {
+export function routeLoadRequest(params: RouteParams): {
+  type: "ROUTE_LOAD_REQUEST",
+  params: RouteParams,
+} {
   return {type: ROUTE_LOAD_REQUEST, params};
 }
 
-export function routeLoadSuccess(routeResources: RouteResources): Action {
+export function routeLoadSuccess(routeResources: RouteResources): {
+  type: "ROUTE_LOAD_SUCCESS",
+  bucket: BucketResource,
+  groups: GroupData[],
+  collection: ?CollectionResource,
+  record: ?RecordResource,
+  group: ?GroupResource,
+} {
   return {type: ROUTE_LOAD_SUCCESS, ...routeResources};
 }
 
-export function routeLoadFailure(): Action {
+export function routeLoadFailure(): {
+  type: "ROUTE_LOAD_FAILURE",
+} {
   return {type: ROUTE_LOAD_FAILURE};
 }
 
-export function redirectTo(name: string, params: RouteParams): Action {
+export function redirectTo(name: string, params: RouteParams): {
+  type: "ROUTE_REDIRECT",
+  name: string,
+  params: RouteParams,
+} {
   return {type: ROUTE_REDIRECT, name, params};
 }
