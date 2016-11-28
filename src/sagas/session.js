@@ -1,33 +1,33 @@
 /* @flow */
-import type { Action, GetStateFn, SagaGen } from "../types";
+import type { ActionType, GetStateFn, SagaGen } from "../types";
 
 import { push as updatePath } from "react-router-redux";
 import { call, put } from "redux-saga/effects";
 
 import { saveSession, clearSession } from "../store/localStore";
 import * as notificationActions from "../actions/notifications";
-import * as sessionActions from "../actions/session";
+import * as actions from "../actions/session";
 import * as historyActions from "../actions/history";
 import { clone } from "../utils";
 import { getClient, setupClient, resetClient } from "../client";
 
 
-export function* setupSession(getState: GetStateFn, action: Action): SagaGen {
+export function* setupSession(getState: GetStateFn, action: ActionType<typeof actions.setup>): SagaGen {
   const {auth} = action;
   try {
     setupClient(auth);
     yield put(notificationActions.clearNotifications({force: true}));
-    yield put(sessionActions.sessionBusy(true));
-    yield put(sessionActions.listBuckets());
-    yield put(sessionActions.setupComplete(auth));
+    yield put(actions.sessionBusy(true));
+    yield put(actions.listBuckets());
+    yield put(actions.setupComplete(auth));
   } catch(error) {
     yield put(notificationActions.notifyError("Couldn't complete session setup.", error));
   } finally {
-    yield put(sessionActions.sessionBusy(false));
+    yield put(actions.sessionBusy(false));
   }
 }
 
-export function* sessionLogout(getState: GetStateFn, action: Action): SagaGen {
+export function* sessionLogout(getState: GetStateFn, action: ActionType<typeof actions.logout>): SagaGen {
   resetClient();
   yield put(updatePath("/"));
   yield put(notificationActions.notifySuccess("Logged out.", {persistent: true}));
@@ -60,7 +60,7 @@ function expandBucketsCollections(buckets, permissions) {
   return bucketsCopy;
 }
 
-export function* listBuckets(getState: GetStateFn, action: Action): SagaGen {
+export function* listBuckets(getState: GetStateFn, action: ActionType<typeof actions.listBuckets>): SagaGen {
   try {
     const client = getClient();
     // Fetch server information
@@ -68,11 +68,11 @@ export function* listBuckets(getState: GetStateFn, action: Action): SagaGen {
     // We got a valid response; officially declare current user authenticated
     // XXX: authenticated here means that we have setup the client, not
     // that the credentials are valid :/
-    yield put(sessionActions.setAuthenticated());
+    yield put(actions.setAuthenticated());
     // Store this valid server url in the history
     yield put(historyActions.addHistory(serverInfo.url));
     // Notify they're received
-    yield put(sessionActions.serverInfoSuccess(serverInfo));
+    yield put(actions.serverInfoSuccess(serverInfo));
     // Retrieve and build the list of buckets
     const {data} = yield call([client, client.listBuckets]);
     const responses = yield call([client, client.batch], (batch) => {
@@ -89,13 +89,13 @@ export function* listBuckets(getState: GetStateFn, action: Action): SagaGen {
     if ("permissions_endpoint" in serverInfo.capabilities) {
       const {data: permissions} = yield call([client, client.listPermissions]);
       buckets = expandBucketsCollections(buckets, permissions);
-      yield put(sessionActions.permissionsListSuccess(permissions));
+      yield put(actions.permissionsListSuccess(permissions));
     }
     else {
       yield put(notificationActions.notifyInfo("Permissions endpoint is not enabled on server."));
     }
 
-    yield put(sessionActions.bucketsSuccess(buckets));
+    yield put(actions.bucketsSuccess(buckets));
 
     // Save current app state
     yield call(saveSession, getState().session);

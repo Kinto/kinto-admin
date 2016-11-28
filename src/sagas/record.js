@@ -1,5 +1,5 @@
 /* @flow */
-import type { Action, GetStateFn, SagaGen } from "../types";
+import type { ActionType, GetStateFn, SagaGen } from "../types";
 
 import { call, put } from "redux-saga/effects";
 
@@ -12,7 +12,7 @@ function getBucket(bid) {
   return getClient().bucket(bid);
 }
 
-export function* listHistory(getState: GetStateFn, action: Action): SagaGen {
+export function* listHistory(getState: GetStateFn, action: ActionType<typeof actions.listRecordHistory>): SagaGen {
   const {bid, cid, rid, filters: {since}} = action;
   try {
     const bucket = getBucket(bid);

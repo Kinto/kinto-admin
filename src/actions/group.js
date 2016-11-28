@@ -1,9 +1,6 @@
 /* @flow */
 
-import type {
-  Action,
-  HistoryFilters
-} from "../types";
+import type { HistoryFilters, ResourceHistoryEntry } from "../types";
 
 import {
   GROUP_BUSY,
@@ -13,18 +10,31 @@ import {
 } from "../constants";
 
 
-export function groupBusy(busy: boolean): Action {
+export function groupBusy(busy: boolean): {
+  type: "GROUP_BUSY",
+  busy: boolean,
+} {
   return {type: GROUP_BUSY, busy};
 }
 
-export function resetGroup(): Action {
+export function resetGroup(): {
+  type: "GROUP_RESET",
+} {
   return {type: GROUP_RESET};
 }
 
-export function listGroupHistory(bid: string, gid: string, filters: HistoryFilters = {}): Action {
+export function listGroupHistory(bid: string, gid: string, filters: HistoryFilters = {}): {
+  type: "GROUP_HISTORY_REQUEST",
+  bid: string,
+  gid: string,
+  filters: HistoryFilters,
+} {
   return {type: GROUP_HISTORY_REQUEST, bid, gid, filters};
 }
 
-export function listGroupHistorySuccess(history: Object[]): Action {
+export function listGroupHistorySuccess(history: ResourceHistoryEntry[]): {
+  type: "GROUP_HISTORY_SUCCESS",
+  history: ResourceHistoryEntry[],
+} {
   return {type: GROUP_HISTORY_SUCCESS, history};
 }
