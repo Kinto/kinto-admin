@@ -1,3 +1,7 @@
+/* @flow */
+import type { AppState } from "../types";
+import type { Dispatch, ActionCreatorOrObjectOfACs } from "redux";
+
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
@@ -7,7 +11,7 @@ import * as SessionActions from "../actions/session";
 import * as HistoryActions from "../actions/history";
 
 
-function mapStateToProps(state) {
+function mapStateToProps(state: AppState) {
   return {
     session: state.session,
     settings: state.settings,
@@ -15,7 +19,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
   return bindActionCreators({
     ...SessionActions,
     ...NotificationActions,

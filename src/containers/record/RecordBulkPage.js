@@ -1,3 +1,7 @@
+/* @flow */
+import type { AppState } from "../../types";
+import type { Dispatch, ActionCreatorOrObjectOfACs } from "redux";
+
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { push as updatePath } from "react-router-redux";
@@ -7,14 +11,14 @@ import * as CollectionActions from "../../actions/collection";
 import * as NotificationsActions from "../../actions/notifications";
 
 
-function mapStateToProps(state) {
+function mapStateToProps(state: AppState) {
   return {
     collection: state.collection,
     session: state.session,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
   return bindActionCreators({
     ...CollectionActions,
     ...NotificationsActions,

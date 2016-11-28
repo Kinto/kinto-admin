@@ -12,7 +12,6 @@ import type {
 } from "../types";
 
 import {
-  BUCKET_BUSY,
   BUCKET_COLLECTIONS_REQUEST,
   BUCKET_COLLECTIONS_SUCCESS,
   BUCKET_HISTORY_REQUEST,
@@ -29,10 +28,6 @@ import {
   GROUP_DELETE_REQUEST,
 } from "../constants";
 
-
-export function bucketBusy(busy: boolean): Action {
-  return {type: BUCKET_BUSY, busy};
-}
 
 export function createBucket(bid: string, data: BucketData): Action {
   return {type: BUCKET_CREATE_REQUEST, bid, data};
