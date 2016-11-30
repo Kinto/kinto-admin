@@ -190,14 +190,16 @@ export function* updateGroup(getState: GetStateFn, action: ActionType<typeof act
       const updatedGroup = {...data, id: gid, last_modified};
       yield call([bucket, bucket.updateGroup], updatedGroup, {
         patch: true,
-        safe: true});
+        safe: true,
+      });
       yield put(redirectTo("group:attributes", {bid, gid}));
       yield put(notifySuccess("Group attributes updated."));
     } else if (permissions) {
       yield call([bucket, bucket.updateGroup], loadedData, {
         permissions,
         last_modified,
-        safe: true});
+        safe: true,
+      });
       yield put(redirectTo("group:permissions", {bid, gid}));
       yield put(notifySuccess("Group permissions updated."));
     }
