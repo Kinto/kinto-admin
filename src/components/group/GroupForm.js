@@ -108,7 +108,9 @@ export default class GroupForm extends Component {
     const attributes = JSON.parse(data);
     this.props.onSubmit({
       ...omit(formData, ["data"]),
-      ...attributes
+      // #273: Ensure omitting "members" value from entered JSON data so we
+      // don't override the ones entered in the dedicated field
+      ...omit(attributes, ["members"]),
     });
   }
 
