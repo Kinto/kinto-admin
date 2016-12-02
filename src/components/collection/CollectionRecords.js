@@ -12,8 +12,8 @@ import React, { Component } from "react";
 import { renderDisplayField, timeago, buildAttachmentUrl } from "../../utils";
 import { canCreateRecord } from "../../permission";
 import AdminLink from "../AdminLink";
-import Spinner from "../Spinner";
 import CollectionTabs from "./CollectionTabs";
+import PaginatedTable from "../PaginatedTable";
 
 
 class Row extends Component {
@@ -128,28 +128,6 @@ function ColumnSortLink(props) {
       dir={direction}
       column={column}
       updateSort={updateSort} />
-  );
-}
-
-function PaginatedTable(props) {
-  const {thead, tbody, dataLoaded, colSpan, hasNextPage, listNextPage} = props;
-  return (
-    <table className="table table-striped table-bordered record-list">
-      {thead}
-      {tbody}
-      { hasNextPage ?
-        <tfoot>
-          <tr>
-            <td colSpan={colSpan} className="load-more text-center">
-              {!dataLoaded ?  <Spinner /> :
-                <a href="." key="__3" onClick={(event) => {
-                  event.preventDefault();
-                  listNextPage();
-                }}>Load more</a>}
-            </td>
-          </tr>
-        </tfoot> : null }
-    </table>
   );
 }
 
