@@ -132,7 +132,7 @@ export type GetStateFn = () => AppState;
 
 export type GroupState = {
   busy: boolean,
-  data: Object,
+  data: ?GroupData,
   permissions: GroupPermissions,
   history: Paginator<ResourceHistoryEntry>,
 };
@@ -141,6 +141,7 @@ export type GroupData = {
   id: string,
   last_modified: number,
   members: string[],
+  [key: string]: any,
 };
 
 export type GroupPermissions = {

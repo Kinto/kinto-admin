@@ -98,6 +98,9 @@ export function canEditGroup(
   group: GroupState
 ): boolean {
   return can(session, (perm: PermissionsListEntry) => {
+    if (group.data == null) {
+      return false;
+    }
     return (
       (perm.resource_name == "bucket" ||
         (perm.resource_name == "group" && perm.group_id == group.data.id)) &&

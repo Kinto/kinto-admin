@@ -296,6 +296,9 @@ export function* updateGroup(
   const {
     group: { data: loadedData },
   } = getState();
+  if (!loadedData) {
+    return;
+  }
   const { last_modified } = loadedData;
   try {
     const bucket = getBucket(bid);
@@ -324,10 +327,12 @@ export function* deleteGroup(
 ): SagaGen {
   const { bid, gid } = action;
   const {
-    group: {
-      data: { last_modified },
-    },
+    group: { data: loadedData },
   } = getState();
+  if (!loadedData) {
+    return;
+  }
+  const { last_modified } = loadedData;
   try {
     const bucket = getBucket(bid);
     yield call([bucket, bucket.deleteGroup], gid, {
