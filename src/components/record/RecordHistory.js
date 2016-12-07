@@ -42,6 +42,8 @@ export default class RecordHistory extends Component {
             bid={bid}
             historyLoaded={historyLoaded}
             history={history}
+            hasNextHistory={false}
+            listNextHistory={null}
             location={location} />
         </RecordTabs>
       </div>

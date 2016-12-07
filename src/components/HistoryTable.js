@@ -98,10 +98,19 @@ export default class HistoryTable extends Component {
     location: RouteLocation,
     history: ResourceHistoryEntry[],
     historyLoaded: boolean,
+    hasNextHistory: boolean,
+    listNextHistory: ?Function,
   };
 
   render() {
-    const {history, historyLoaded, bid, location} = this.props;
+    const {
+      history,
+      historyLoaded,
+      hasNextHistory,
+      listNextHistory,
+      bid,
+      location,
+    } = this.props;
     const isFiltered = !!location.query.since;
 
     const thead = (
@@ -125,9 +134,12 @@ export default class HistoryTable extends Component {
       <div>
         {isFiltered ? <FilterInfo location={location} /> : null}
         <PaginatedTable
+          colSpan={6}
           thead={thead}
           tbody={tbody}
-          dataLoaded={historyLoaded} />
+          dataLoaded={historyLoaded}
+          hasNextPage={hasNextHistory}
+          listNextPage={listNextHistory} />
       </div>
     );
   }

@@ -37,6 +37,8 @@ export default class GroupHistory extends Component {
             bid={bid}
             historyLoaded={historyLoaded}
             history={history}
+            hasNextHistory={false}
+            listNextHistory={null}
             location={location} />
         </CollectionTabs>
       </div>

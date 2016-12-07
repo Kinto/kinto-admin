@@ -95,6 +95,8 @@ export type CollectionState = {
   listNextRecords: ?Function,
   history: ResourceHistoryEntry[],
   historyLoaded: boolean,
+  hasNextHistory: boolean,
+  listNextHistory: ?Function,
 };
 
 export type CollectionData = {

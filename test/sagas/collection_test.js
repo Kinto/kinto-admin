@@ -784,13 +784,15 @@ describe("collection sagas", () => {
         client = {listHistory() {}};
         setClient({bucket(){ return client; }});
         const action = collectionActions.listCollectionHistory("bucket", "collection", "record");
-        listHistory = saga.listHistory(() => {}, action);
+        const getState = () => ({settings});
+        listHistory = saga.listHistory(getState, action);
       });
 
-      it("should fetch history on cpllection", () => {
+      it("should fetch history on collection", () => {
         expect(listHistory.next().value)
           .eql(call([client, client.listHistory], {
             since: undefined,
+            limit: 42,
             filters: {
               resource_name: undefined,
               collection_id: "collection",
@@ -800,27 +802,29 @@ describe("collection sagas", () => {
 
       it("should filter from timestamp if provided", () => {
         const action = collectionActions.listCollectionHistory("bucket", "collection", {since: 42});
-        const historySaga = saga.listHistory(() => {}, action);
+        const historySaga = saga.listHistory(() => ({settings}), action);
         expect(historySaga.next().value)
           .eql(call([client, client.listHistory], {
             filters: {
               resource_name: undefined,
               collection_id: "collection",
             },
-            since: 42
+            since: 42,
+            limit: 42,
           }));
       });
 
       it("should filter from resource_name if provided", () => {
         const action = collectionActions.listCollectionHistory("bucket", "collection", {since: 42, resource_name: "record"});
-        const historySaga = saga.listHistory(() => {}, action);
+        const historySaga = saga.listHistory(() => ({settings}), action);
         expect(historySaga.next().value)
           .eql(call([client, client.listHistory], {
             filters: {
               resource_name: "record",
               collection_id: "collection",
             },
-            since: 42
+            since: 42,
+            limit: 42,
           }));
       });
 
@@ -838,7 +842,8 @@ describe("collection sagas", () => {
 
       before(() => {
         const action = collectionActions.listCollectionHistory("bucket", "collection", "record");
-        listHistory = saga.listHistory(() => {}, action);
+        const getState = () => ({settings});
+        listHistory = saga.listHistory(getState, action);
         listHistory.next();
       });
 

@@ -66,19 +66,35 @@ export function* listNextRecords(getState: GetStateFn): SagaGen {
 }
 
 export function* listHistory(getState: GetStateFn, action: ActionType<typeof actions.listCollectionHistory>): SagaGen {
+  const {settings: {maxPerPage}} = getState();
   const {bid, cid, filters: {since, resource_name}} = action;
   try {
     const bucket = getBucket(bid);
-    const {data} = yield call([bucket, bucket.listHistory], {
+    const {data, hasNextPage, next} = yield call([bucket, bucket.listHistory], {
       since,
+      limit: maxPerPage,
       filters: {
         resource_name,
         collection_id: cid,
       }
     });
-    yield put(actions.listCollectionHistorySuccess(data));
+    yield put(actions.listCollectionHistorySuccess(data, hasNextPage, next));
   } catch(error) {
     yield put(notifyError("Couldn't list collection history.", error));
+  }
+}
+
+export function* listNextHistory(getState: GetStateFn): SagaGen {
+  const {collection: {listNextHistory}} = getState();
+  if (listNextHistory == null) {
+    return;
+  }
+  try {
+    const {data, hasNextPage, next} = yield call(listNextHistory);
+    yield put(actions.listCollectionHistorySuccess(data, hasNextPage, next));
+    yield call([window, window.scrollTo], 0, window.document.body.scrollHeight);
+  } catch(error) {
+    yield put(notifyError("Couldn't process next page.", error));
   }
 }
 

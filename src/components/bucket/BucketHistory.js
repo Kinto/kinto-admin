@@ -36,6 +36,8 @@ export default class BucketHistory extends Component {
             bid={bid}
             historyLoaded={historyLoaded}
             history={history}
+            hasNextHistory={false}
+            listNextHistory={null}
             location={location} />
         </BucketTabs>
       </div>

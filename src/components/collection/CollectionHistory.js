@@ -22,12 +22,13 @@ export default class CollectionHistory extends Component {
     capabilities: Capabilities,
     params: CollectionRouteParams,
     location: RouteLocation,
+    listCollectionNextHistory: () => void,
   };
 
   render() {
-    const {params, collection, capabilities, location} = this.props;
+    const {params, collection, capabilities, location, listCollectionNextHistory} = this.props;
     const {bid, cid} = params;
-    const {history, historyLoaded} = collection;
+    const {history, historyLoaded, hasNextHistory} = collection;
 
     return (
       <div>
@@ -41,6 +42,8 @@ export default class CollectionHistory extends Component {
             bid={bid}
             historyLoaded={historyLoaded}
             history={history}
+            hasNextHistory={hasNextHistory}
+            listNextHistory={listCollectionNextHistory}
             location={location} />
         </CollectionTabs>
       </div>

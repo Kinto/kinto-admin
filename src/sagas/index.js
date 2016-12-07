@@ -46,6 +46,7 @@ export default function* rootSaga(getState: GetStateFn, pluginsSagas: PluginSaga
     takeEvery(c.COLLECTION_RECORDS_REQUEST, collectionSagas.listRecords, getState),
     takeEvery(c.COLLECTION_RECORDS_NEXT_REQUEST, collectionSagas.listNextRecords, getState),
     takeEvery(c.COLLECTION_HISTORY_REQUEST, collectionSagas.listHistory, getState),
+    takeEvery(c.COLLECTION_HISTORY_NEXT_REQUEST, collectionSagas.listNextHistory, getState),
     takeEvery(c.RECORD_CREATE_REQUEST, collectionSagas.createRecord, getState),
     takeEvery(c.RECORD_BULK_CREATE_REQUEST, collectionSagas.bulkCreateRecords, getState),
     takeEvery(c.RECORD_UPDATE_REQUEST, collectionSagas.updateRecord, getState),
