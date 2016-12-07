@@ -8,7 +8,6 @@ import type {
 
 import React, { Component } from "react";
 
-import Spinner from "../Spinner";
 import HistoryTable from "../HistoryTable";
 import CollectionTabs from "./GroupTabs";
 
@@ -34,8 +33,11 @@ export default class GroupHistory extends Component {
           gid={gid}
           selected="history"
           capabilities={capabilities}>
-          { !historyLoaded ? <Spinner /> :
-            <HistoryTable bid={bid} history={history} location={location} />}
+          <HistoryTable
+            bid={bid}
+            historyLoaded={historyLoaded}
+            history={history}
+            location={location} />
         </CollectionTabs>
       </div>
     );

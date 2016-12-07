@@ -7,6 +7,7 @@ import { Link } from "react-router";
 
 import { timeago, humanDate } from "../utils";
 import AdminLink from "./AdminLink";
+import PaginatedTable from "./PaginatedTable";
 
 
 class HistoryRow extends Component {
@@ -95,32 +96,38 @@ export default class HistoryTable extends Component {
   props: {
     bid: string,
     location: RouteLocation,
-    history: Object[],
+    history: ResourceHistoryEntry[],
+    historyLoaded: boolean,
   };
 
   render() {
-    const {history, bid, location} = this.props;
+    const {history, historyLoaded, bid, location} = this.props;
     const isFiltered = !!location.query.since;
+
+    const thead = (
+      <thead>
+        <tr>
+          <th>When</th>
+          <th>Action</th>
+          <th>Resource</th>
+          <th>Id</th>
+          <th>Author</th>
+          <th></th>
+        </tr>
+      </thead>
+    );
+
+    const tbody = history.map((entry, index) => {
+      return <HistoryRow key={index} bid={bid} entry={entry} />;
+    });
+
     return (
       <div>
         {isFiltered ? <FilterInfo location={location} /> : null}
-        <table className="table table-striped table-bordered record-list">
-          <thead>
-            <tr>
-              <th>When</th>
-              <th>Action</th>
-              <th>Resource</th>
-              <th>Id</th>
-              <th>Author</th>
-              <th></th>
-            </tr>
-          </thead>
-          {
-            history.map((entry, index) => {
-              return <HistoryRow key={index} bid={bid} entry={entry} />;
-            })
-          }
-        </table>
+        <PaginatedTable
+          thead={thead}
+          tbody={tbody}
+          dataLoaded={historyLoaded} />
       </div>
     );
   }

@@ -10,7 +10,6 @@ import type {
 
 import React, { Component } from "react";
 
-import Spinner from "../Spinner";
 import HistoryTable from "../HistoryTable";
 import RecordTabs from "./RecordTabs";
 
@@ -39,8 +38,11 @@ export default class RecordHistory extends Component {
           rid={rid}
           selected="history"
           capabilities={capabilities}>
-          { !historyLoaded ? <Spinner /> :
-            <HistoryTable bid={bid} history={history} location={location} />}
+          <HistoryTable
+            bid={bid}
+            historyLoaded={historyLoaded}
+            history={history}
+            location={location} />
         </RecordTabs>
       </div>
     );

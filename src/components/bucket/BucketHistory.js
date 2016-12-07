@@ -8,7 +8,6 @@ import type {
 
 import React, { Component } from "react";
 
-import Spinner from "../Spinner";
 import BucketTabs from "./BucketTabs";
 import HistoryTable from "../HistoryTable";
 
@@ -33,8 +32,11 @@ export default class BucketHistory extends Component {
           bid={bid}
           selected="history"
           capabilities={capabilities}>
-          { !historyLoaded ? <Spinner /> :
-            <HistoryTable bid={bid} history={history} location={location} />}
+          <HistoryTable
+            bid={bid}
+            historyLoaded={historyLoaded}
+            history={history}
+            location={location} />
         </BucketTabs>
       </div>
     );

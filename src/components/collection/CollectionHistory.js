@@ -10,7 +10,6 @@ import type {
 
 import React, { Component } from "react";
 
-import Spinner from "../Spinner";
 import HistoryTable from "../HistoryTable";
 import CollectionTabs from "./CollectionTabs";
 
@@ -38,8 +37,11 @@ export default class CollectionHistory extends Component {
           cid={cid}
           selected="history"
           capabilities={capabilities}>
-          { !historyLoaded ? <Spinner /> :
-            <HistoryTable bid={bid} history={history} location={location} />}
+          <HistoryTable
+            bid={bid}
+            historyLoaded={historyLoaded}
+            history={history}
+            location={location} />
         </CollectionTabs>
       </div>
     );
