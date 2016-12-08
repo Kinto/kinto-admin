@@ -134,13 +134,18 @@ describe("collection reducer", () => {
   describe("COLLECTION_HISTORY_SUCCESS", () => {
     it("should update history state", () => {
       const history = [1, 2, 3];
+      const fakeNext = () => {};
       const state = collection(undefined, {
         type: COLLECTION_HISTORY_SUCCESS,
-        history
+        history,
+        hasNextHistory: true,
+        listNextHistory: fakeNext,
       });
 
       expect(state.history).eql(history);
       expect(state.historyLoaded).eql(true);
+      expect(state.hasNextHistory).eql(true);
+      expect(state.listNextHistory).eql(fakeNext);
     });
   });
 });

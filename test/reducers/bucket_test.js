@@ -117,10 +117,15 @@ describe("bucket reducer", () => {
     const state = {
       history: [],
       historyLoaded: false,
+      hasNextHistory: false,
+      listNextHistory: null,
     };
+    const fakeNext = () => {};
     const action = {
       type: BUCKET_HISTORY_SUCCESS,
       history: [1, 2, 3],
+      hasNextHistory: true,
+      listNextHistory: fakeNext,
     };
 
     it("should update the list of history", () => {
@@ -131,6 +136,16 @@ describe("bucket reducer", () => {
     it("should update the historyLoaded flag", () => {
       expect(bucket(state, action))
         .to.have.property("historyLoaded").eql(true);
+    });
+
+    it("should update the hasNextHistory flag", () => {
+      expect(bucket(state, action))
+        .to.have.property("hasNextHistory").eql(true);
+    });
+
+    it("should update the listNextHistory flag", () => {
+      expect(bucket(state, action))
+        .to.have.property("listNextHistory").eql(fakeNext);
     });
   });
 });
