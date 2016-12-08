@@ -7,6 +7,7 @@ import { redirectTo } from "../../src/actions/route";
 import * as actions from "../../src/actions/bucket";
 import * as saga from "../../src/sagas/bucket";
 import { setClient } from "../../src/client";
+import { scrollToBottom } from "../../src/utils";
 
 
 const collectionData = {
@@ -653,9 +654,7 @@ describe("bucket sagas", () => {
 
     it("should scroll the window to the bottom", () => {
       expect(listNextHistory.next().value)
-        .to.have.property("CALL")
-        .to.have.property("fn")
-        .eql(window.scrollTo);
+        .eql(call(scrollToBottom));
     });
   });
 

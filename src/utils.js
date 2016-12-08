@@ -216,3 +216,8 @@ export function buildAttachmentUrl(record: RecordData, capabilities: Capabilitie
   return location.startsWith(base_url) ?
     location : ensureTrailingSlash(base_url) + dropStartingSlash(location);
 }
+
+export function scrollToBottom(): Promise<void> {
+  window.scrollTo(0, window.document.body.scrollHeight);
+  return Promise.resolve();
+}

@@ -5,6 +5,7 @@ import { notifyError } from "../../src/actions/notifications";
 import * as actions from "../../src/actions/record";
 import * as saga from "../../src/sagas/record";
 import { setClient } from "../../src/client";
+import { scrollToBottom } from "../../src/utils";
 
 
 describe("record sagas", () => {
@@ -97,9 +98,7 @@ describe("record sagas", () => {
 
     it("should scroll the window to the bottom", () => {
       expect(listNextHistory.next().value)
-        .to.have.property("CALL")
-        .to.have.property("fn")
-        .eql(window.scrollTo);
+        .eql(call(scrollToBottom));
     });
   });
 });

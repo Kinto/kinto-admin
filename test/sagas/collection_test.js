@@ -7,6 +7,7 @@ import * as recordActions from "../../src/actions/record";
 import { redirectTo } from "../../src/actions/route";
 import * as saga from "../../src/sagas/collection";
 import { setClient } from "../../src/client";
+import { scrollToBottom } from "../../src/utils";
 
 
 const record = {id: 1, foo: "bar1"};
@@ -142,7 +143,7 @@ describe("collection sagas", () => {
       it("should scroll to page bottom", () => {
         window.document.body.scrollHeight = 42;
         expect(listNextRecords.next().value)
-          .eql(call([window, window.scrollTo], 0, 42));
+          .eql(call(scrollToBottom));
       });
     });
 
