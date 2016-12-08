@@ -8,6 +8,10 @@ import { setClient } from "../../src/client";
 
 
 describe("group sagas", () => {
+  const settings = {
+    maxPerPage: 42,
+  };
+
   describe("listHistory()", () => {
     describe("Success", () => {
       let client, listHistory;
@@ -16,7 +20,7 @@ describe("group sagas", () => {
         client = {listHistory() {}};
         setClient({bucket(){ return client; }});
         const action = actions.listGroupHistory("bucket", "group");
-        listHistory = saga.listHistory(() => {}, action);
+        listHistory = saga.listHistory(() => ({settings}), action);
       });
 
       it("should fetch history on group", () => {
@@ -25,6 +29,7 @@ describe("group sagas", () => {
             filters: {
               group_id: "group",
             },
+            limit: 42,
             since: undefined
           }));
       });
@@ -38,13 +43,14 @@ describe("group sagas", () => {
 
       it("should filter from timestamp if provided", () => {
         const action = actions.listGroupHistory("bucket", "group", {since: 42});
-        const historySaga = saga.listHistory(() => {}, action);
+        const historySaga = saga.listHistory(() => ({settings}), action);
         expect(historySaga.next().value)
           .eql(call([client, client.listHistory], {
             filters: {
               group_id: "group",
             },
-            since: 42
+            since: 42,
+            limit: 42,
           }));
       });
     });
@@ -54,7 +60,7 @@ describe("group sagas", () => {
 
       before(() => {
         const action = actions.listGroupHistory("bucket", "group");
-        listHistory = saga.listHistory(() => {}, action);
+        listHistory = saga.listHistory(() => ({settings}), action);
         listHistory.next();
       });
 

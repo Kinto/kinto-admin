@@ -6,6 +6,7 @@ import {
   GROUP_BUSY,
   GROUP_RESET,
   GROUP_HISTORY_REQUEST,
+  GROUP_HISTORY_NEXT_REQUEST,
   GROUP_HISTORY_SUCCESS,
 } from "../constants";
 
@@ -32,9 +33,17 @@ export function listGroupHistory(bid: string, gid: string, filters: HistoryFilte
   return {type: GROUP_HISTORY_REQUEST, bid, gid, filters};
 }
 
-export function listGroupHistorySuccess(history: ResourceHistoryEntry[]): {
+export function listGroupNextHistory(): {
+  type: "GROUP_HISTORY_NEXT_REQUEST",
+} {
+  return {type: GROUP_HISTORY_NEXT_REQUEST};
+}
+
+export function listGroupHistorySuccess(history: ResourceHistoryEntry[], hasNextHistory: boolean, listNextHistory: ?Function): {
   type: "GROUP_HISTORY_SUCCESS",
   history: ResourceHistoryEntry[],
+  hasNextHistory: boolean,
+  listNextHistory: ?Function,
 } {
-  return {type: GROUP_HISTORY_SUCCESS, history};
+  return {type: GROUP_HISTORY_SUCCESS, history, hasNextHistory, listNextHistory};
 }

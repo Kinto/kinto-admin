@@ -43,7 +43,7 @@ export default function* rootSaga(getState: GetStateFn, pluginsSagas: PluginSaga
     takeEvery(c.GROUP_UPDATE_REQUEST, bucketSagas.updateGroup, getState),
     takeEvery(c.GROUP_DELETE_REQUEST, bucketSagas.deleteGroup, getState),
     takeEvery(c.GROUP_HISTORY_REQUEST, groupSagas.listHistory, getState),
-    // takeEvery(c.GROUP_HISTORY_NEXT_REQUEST, groupSagas.listNextHistory, getState),
+    takeEvery(c.GROUP_HISTORY_NEXT_REQUEST, groupSagas.listNextHistory, getState),
     // collection/records
     takeEvery(c.COLLECTION_RECORDS_REQUEST, collectionSagas.listRecords, getState),
     takeEvery(c.COLLECTION_RECORDS_NEXT_REQUEST, collectionSagas.listNextRecords, getState),

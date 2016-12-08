@@ -22,6 +22,8 @@ export const INITIAL_STATE: GroupState = {
   },
   history: [],
   historyLoaded: false,
+  hasNextHistory: false,
+  listNextHistory: null,
 };
 
 function load(state: GroupState, group: GroupResource): GroupState {
@@ -57,7 +59,14 @@ export function group(
       return {...state, historyLoaded: false};
     }
     case GROUP_HISTORY_SUCCESS: {
-      return {...state, history: action.history, historyLoaded: true};
+      const {history, hasNextHistory, listNextHistory} = action;
+      return {
+        ...state,
+        history: [...state.history, ...history],
+        historyLoaded: true,
+        hasNextHistory,
+        listNextHistory,
+      };
     }
     default: {
       return state;

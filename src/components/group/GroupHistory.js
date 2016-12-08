@@ -18,12 +18,20 @@ export default class GroupHistory extends Component {
     group: GroupState,
     capabilities: Capabilities,
     location: RouteLocation,
+    hasNextHistory: boolean,
+    listGroupNextHistory: ?Function,
   };
 
   render() {
-    const {params, group, capabilities, location} = this.props;
+    const {
+      params,
+      group,
+      capabilities,
+      location,
+      listGroupNextHistory,
+    } = this.props;
     const {bid, gid} = params;
-    const {history, historyLoaded} = group;
+    const {history, historyLoaded, hasNextHistory} = group;
 
     return (
       <div>
@@ -37,8 +45,8 @@ export default class GroupHistory extends Component {
             bid={bid}
             historyLoaded={historyLoaded}
             history={history}
-            hasNextHistory={false}
-            listNextHistory={null}
+            hasNextHistory={hasNextHistory}
+            listNextHistory={listGroupNextHistory}
             location={location} />
         </CollectionTabs>
       </div>

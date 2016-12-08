@@ -135,6 +135,8 @@ export type GroupState = {
   permissions: GroupPermissions,
   history: ResourceHistoryEntry[],
   historyLoaded: boolean,
+  hasNextHistory: boolean,
+  listNextHistory: ?Function,
 };
 
 export type GroupData = {
