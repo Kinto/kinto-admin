@@ -22,12 +22,19 @@ export default class RecordHistory extends Component {
     bucket: BucketState,
     record: RecordState,
     location: RouteLocation,
+    listRecordNextHistory: () => void,
   };
 
   render() {
-    const {params, record, capabilities, location} = this.props;
+    const {
+      params,
+      record,
+      capabilities,
+      location,
+      listRecordNextHistory,
+    } = this.props;
     const {bid, cid, rid} = params;
-    const {history, historyLoaded} = record;
+    const {history, historyLoaded, hasNextHistory} = record;
 
     return (
       <div>
@@ -42,8 +49,8 @@ export default class RecordHistory extends Component {
             bid={bid}
             historyLoaded={historyLoaded}
             history={history}
-            hasNextHistory={false}
-            listNextHistory={null}
+            hasNextHistory={hasNextHistory}
+            listNextHistory={listRecordNextHistory}
             location={location} />
         </RecordTabs>
       </div>

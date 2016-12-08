@@ -24,6 +24,8 @@ const INITIAL_STATE: RecordState = {
   },
   history: [],
   historyLoaded: false,
+  hasNextHistory: false,
+  listNextHistory: null,
 };
 
 function load(state: RecordState, record: RecordResource): RecordState {
@@ -63,7 +65,14 @@ export default function record(
       return {...state, historyLoaded: false};
     }
     case RECORD_HISTORY_SUCCESS: {
-      return {...state, history: action.history, historyLoaded: true};
+      const {history, hasNextHistory, listNextHistory} = action;
+      return {
+        ...state,
+        history: [...state.history, ...history],
+        historyLoaded: true,
+        hasNextHistory,
+        listNextHistory,
+      };
     }
     default: {
       return state;

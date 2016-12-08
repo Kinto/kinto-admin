@@ -6,6 +6,7 @@ import {
   RECORD_BUSY,
   RECORD_RESET,
   RECORD_HISTORY_REQUEST,
+  RECORD_HISTORY_NEXT_REQUEST,
   RECORD_HISTORY_SUCCESS,
 } from "../constants";
 
@@ -33,9 +34,17 @@ export function listRecordHistory(bid: string, cid: string, rid: string, filters
   return {type: RECORD_HISTORY_REQUEST, bid, cid, rid, filters};
 }
 
-export function listRecordHistorySuccess(history: ResourceHistoryEntry[]): {
+export function listRecordNextHistory(): {
+  type: "RECORD_HISTORY_NEXT_REQUEST",
+} {
+  return {type: RECORD_HISTORY_NEXT_REQUEST};
+}
+
+export function listRecordHistorySuccess(history: ResourceHistoryEntry[], hasNextHistory: boolean, listNextHistory: ?Function): {
   type: "RECORD_HISTORY_SUCCESS",
   history: ResourceHistoryEntry[],
+  hasNextHistory: boolean,
+  listNextHistory: ?Function,
 } {
-  return {type: RECORD_HISTORY_SUCCESS, history};
+  return {type: RECORD_HISTORY_SUCCESS, history, hasNextHistory, listNextHistory};
 }

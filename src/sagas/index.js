@@ -54,6 +54,7 @@ export default function* rootSaga(getState: GetStateFn, pluginsSagas: PluginSaga
     takeEvery(c.RECORD_UPDATE_REQUEST, collectionSagas.updateRecord, getState),
     takeEvery(c.RECORD_DELETE_REQUEST, collectionSagas.deleteRecord, getState),
     takeEvery(c.RECORD_HISTORY_REQUEST, recordSagas.listHistory, getState),
+    takeEvery(c.RECORD_HISTORY_NEXT_REQUEST, recordSagas.listNextHistory, getState),
     // attachments
     takeEvery(c.ATTACHMENT_DELETE_REQUEST, collectionSagas.deleteAttachment, getState),
   ];

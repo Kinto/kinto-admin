@@ -93,6 +93,8 @@ describe("record reducer", () => {
           },
           history: [],
           historyLoaded: false,
+          hasNextHistory: false,
+          listNextHistory: null,
         });
     });
   });

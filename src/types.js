@@ -189,6 +189,8 @@ export type RecordState = {
   permissions: RecordPermissions,
   history: ResourceHistoryEntry[],
   historyLoaded: boolean,
+  hasNextHistory: boolean,
+  listNextHistory: ?Function,
 };
 
 export type RecordData = {
