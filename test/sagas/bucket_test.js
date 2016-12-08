@@ -555,20 +555,20 @@ describe("bucket sagas", () => {
   });
 
 
-  describe("listBucketHistory()", () => {
+  describe("listHistory()", () => {
     describe("Success", () => {
-      let bucket, listBucketHistory;
+      let bucket, listHistory;
 
       before(() => {
         bucket = {listHistory() {}};
         setClient({bucket() {return bucket;}});
         const action = actions.listBucketHistory("bucket");
         const getState = () => ({settings});
-        listBucketHistory = saga.listBucketHistory(getState, action);
+        listHistory = saga.listHistory(getState, action);
       });
 
       it("should list the history", () => {
-        expect(listBucketHistory.next().value)
+        expect(listHistory.next().value)
           .eql(call([bucket, bucket.listHistory], {
             filters: {
               resource_name: undefined,
@@ -581,13 +581,13 @@ describe("bucket sagas", () => {
 
       it("should dispatch the listBucketHistorySuccess action", () => {
         const results = [];
-        expect(listBucketHistory.next({data: results}).value)
+        expect(listHistory.next({data: results}).value)
           .eql(put(actions.listBucketHistorySuccess(results)));
       });
 
       it("should filter from timestamp if provided", () => {
         const action = actions.listBucketHistory("bucket", {since: 42});
-        const historySaga = saga.listBucketHistory(() => ({settings}), action);
+        const historySaga = saga.listHistory(() => ({settings}), action);
         expect(historySaga.next().value)
           .eql(call([bucket, bucket.listHistory], {
             filters: {
@@ -601,7 +601,7 @@ describe("bucket sagas", () => {
 
       it("should filter by resource_name if provided", () => {
         const action = actions.listBucketHistory("bucket", {since: 42, resource_name: "bucket"});
-        const historySaga = saga.listBucketHistory(() => ({settings}), action);
+        const historySaga = saga.listHistory(() => ({settings}), action);
         expect(historySaga.next().value)
           .eql(call([bucket, bucket.listHistory], {
             filters: {
@@ -615,16 +615,16 @@ describe("bucket sagas", () => {
     });
 
     describe("Failure", () => {
-      let listBucketHistory;
+      let listHistory;
 
       before(() => {
         const action = actions.listBucketHistory("bucket");
-        listBucketHistory = saga.listBucketHistory(() => ({settings}), action);
-        listBucketHistory.next();
+        listHistory = saga.listHistory(() => ({settings}), action);
+        listHistory.next();
       });
 
       it("should dispatch an error notification action", () => {
-        expect(listBucketHistory.throw("error").value)
+        expect(listHistory.throw("error").value)
           .eql(put(notifyError("Couldn't list bucket history.", "error", {clear: true})));
       });
     });

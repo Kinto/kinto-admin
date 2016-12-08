@@ -106,8 +106,8 @@ describe("root saga", () => {
       expectSagaCalled(saga, action);
     });
 
-    it("should watch for the listBucketHistory action", () => {
-      const saga = sandbox.stub(bucketSagas, "listBucketHistory");
+    it("should watch for the listHistory action", () => {
+      const saga = sandbox.stub(bucketSagas, "listHistory");
       const action = bucketActions.listBucketHistory();
 
       expectSagaCalled(saga, action);

@@ -144,7 +144,7 @@ export function* listBucketCollections(getState: GetStateFn, action: ActionType<
   }
 }
 
-export function* listBucketHistory(getState: GetStateFn, action: ActionType<typeof actions.listBucketHistory>): SagaGen {
+export function* listHistory(getState: GetStateFn, action: ActionType<typeof actions.listBucketHistory>): SagaGen {
   const {settings: {maxPerPage}} = getState();
   const {bid, filters: {resource_name, since}} = action;
   try {
@@ -163,7 +163,7 @@ export function* listBucketHistory(getState: GetStateFn, action: ActionType<type
   }
 }
 
-export function* listBucketNextHistory(getState: GetStateFn): SagaGen {
+export function* listNextHistory(getState: GetStateFn): SagaGen {
   const {bucket: {listNextHistory}} = getState();
   if (listNextHistory == null) {
     return;
