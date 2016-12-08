@@ -73,4 +73,33 @@ describe("record sagas", () => {
       });
     });
   });
+
+  describe("listNextHistory()", () => {
+    let listNextHistory;
+
+    const fakeNext = () => {};
+
+    before(() => {
+      const action = actions.listRecordNextHistory();
+      const getState = () => ({record: {listNextHistory: fakeNext}});
+      listNextHistory = saga.listNextHistory(getState, action);
+    });
+
+    it("should fetch the next history page", () => {
+      expect(listNextHistory.next().value)
+        .eql(call(fakeNext));
+    });
+
+    it("should dispatch the listBucketHistorySuccess action", () => {
+      expect(listNextHistory.next({data: [], hasNextPage: true, next: fakeNext}).value)
+        .eql(put(actions.listRecordHistorySuccess([], true, fakeNext)));
+    });
+
+    it("should scroll the window to the bottom", () => {
+      expect(listNextHistory.next().value)
+        .to.have.property("CALL")
+        .to.have.property("fn")
+        .eql(window.scrollTo);
+    });
+  });
 });
