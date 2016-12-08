@@ -112,6 +112,13 @@ describe("root saga", () => {
 
       expectSagaCalled(saga, action);
     });
+
+    it("should watch for the listNextHistory action", () => {
+      const saga = sandbox.stub(bucketSagas, "listNextHistory");
+      const action = bucketActions.listBucketNextHistory();
+
+      expectSagaCalled(saga, action);
+    });
   });
 
   describe("Collection watchers registration", () => {
@@ -153,6 +160,20 @@ describe("root saga", () => {
     it("should watch for the bulkCreateRecords action", () => {
       const saga = sandbox.stub(collectionSagas, "bulkCreateRecords");
       const action = collectionActions.bulkCreateRecords();
+
+      expectSagaCalled(saga, action);
+    });
+
+    it("should watch for the listHistory action", () => {
+      const saga = sandbox.stub(collectionSagas, "listHistory");
+      const action = collectionActions.listCollectionHistory();
+
+      expectSagaCalled(saga, action);
+    });
+
+    it("should watch for the listNextHistory action", () => {
+      const saga = sandbox.stub(collectionSagas, "listNextHistory");
+      const action = collectionActions.listCollectionNextHistory();
 
       expectSagaCalled(saga, action);
     });
