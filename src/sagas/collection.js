@@ -65,6 +65,7 @@ export function* listNextRecords(getState: GetStateFn): SagaGen {
   }
 }
 
+// XXX: possibly confusing name, maybe listCollectionHistory
 export function* listHistory(getState: GetStateFn, action: ActionType<typeof actions.listCollectionHistory>): SagaGen {
   const {settings: {maxPerPage}} = getState();
   const {bid, cid, filters: {since, resource_name}} = action;
@@ -84,6 +85,7 @@ export function* listHistory(getState: GetStateFn, action: ActionType<typeof act
   }
 }
 
+// XXX: possibly confusing name, maybe listCollectionNextHistory
 export function* listNextHistory(getState: GetStateFn): SagaGen {
   const {collection: {listNextHistory}} = getState();
   if (listNextHistory == null) {

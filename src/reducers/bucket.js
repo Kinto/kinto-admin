@@ -28,6 +28,8 @@ const INITIAL_STATE: BucketState = {
   collectionsLoaded: false,
   history: [],
   historyLoaded: false,
+  hasNextHistory: false,
+  listNextHistory: null,
 };
 
 function load(state: BucketState, bucket: BucketResource, groups: GroupData[]): BucketState {
@@ -65,7 +67,14 @@ export function bucket(state: BucketState = INITIAL_STATE, action: Object) {
       return {...state, historyLoaded: false};
     }
     case BUCKET_HISTORY_SUCCESS: {
-      return {...state, history: action.history, historyLoaded: true};
+      const {history, hasNextHistory, listNextHistory} = action;
+      return {
+        ...state,
+        history: [...state.history, ...history],
+        historyLoaded: true,
+        hasNextHistory,
+        listNextHistory,
+      };
     }
     case BUCKET_RESET: {
       return INITIAL_STATE;

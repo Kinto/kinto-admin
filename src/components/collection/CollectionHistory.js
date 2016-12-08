@@ -26,7 +26,13 @@ export default class CollectionHistory extends Component {
   };
 
   render() {
-    const {params, collection, capabilities, location, listCollectionNextHistory} = this.props;
+    const {
+      params,
+      collection,
+      capabilities,
+      location,
+      listCollectionNextHistory,
+    } = this.props;
     const {bid, cid} = params;
     const {history, historyLoaded, hasNextHistory} = collection;
 

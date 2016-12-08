@@ -18,12 +18,19 @@ export default class BucketHistory extends Component {
     bucket: BucketState,
     capabilities: Capabilities,
     location: RouteLocation,
+    listBucketNextHistory: () => void,
   };
 
   render() {
-    const {params, bucket, capabilities, location} = this.props;
+    const {
+      params,
+      bucket,
+      capabilities,
+      location,
+      listBucketNextHistory,
+    } = this.props;
     const {bid} = params;
-    const {history, historyLoaded} = bucket;
+    const {history, historyLoaded, hasNextHistory} = bucket;
 
     return (
       <div>
@@ -36,8 +43,8 @@ export default class BucketHistory extends Component {
             bid={bid}
             historyLoaded={historyLoaded}
             history={history}
-            hasNextHistory={false}
-            listNextHistory={null}
+            hasNextHistory={hasNextHistory}
+            listNextHistory={listBucketNextHistory}
             location={location} />
         </BucketTabs>
       </div>

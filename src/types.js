@@ -33,6 +33,8 @@ export type BucketState = {
   permissions: BucketPermissions,
   history: ResourceHistoryEntry[],
   historyLoaded: boolean,
+  hasNextHistory: boolean,
+  listNextHistory: ?Function,
   collections: CollectionData[],
   collectionsLoaded: boolean,
   groups: GroupData[],
