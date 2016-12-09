@@ -39,11 +39,11 @@ export function listGroupNextHistory(): {
   return {type: GROUP_HISTORY_NEXT_REQUEST};
 }
 
-export function listGroupHistorySuccess(history: ResourceHistoryEntry[], hasNextHistory: boolean, listNextHistory: ?Function): {
+export function listGroupHistorySuccess(entries: ResourceHistoryEntry[], hasNextPage: boolean, next: ?Function): {
   type: "GROUP_HISTORY_SUCCESS",
-  history: ResourceHistoryEntry[],
-  hasNextHistory: boolean,
-  listNextHistory: ?Function,
+  entries: ResourceHistoryEntry[],
+  hasNextPage: boolean,
+  next: ?Function,
 } {
-  return {type: GROUP_HISTORY_SUCCESS, history, hasNextHistory, listNextHistory};
+  return {type: GROUP_HISTORY_SUCCESS, entries, hasNextPage, next};
 }

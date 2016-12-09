@@ -128,10 +128,7 @@ export type GroupState = {
   busy: boolean,
   data: Object,
   permissions: GroupPermissions,
-  history: ResourceHistoryEntry[],
-  historyLoaded: boolean,
-  hasNextHistory: boolean,
-  listNextHistory: ?Function,
+  history: Paginator<ResourceHistoryEntry>,
 };
 
 export type GroupData = {

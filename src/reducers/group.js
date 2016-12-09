@@ -5,6 +5,7 @@ import {
   GROUP_BUSY,
   GROUP_RESET,
   GROUP_HISTORY_REQUEST,
+  GROUP_HISTORY_NEXT_REQUEST,
   GROUP_HISTORY_SUCCESS,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
@@ -20,7 +21,12 @@ export const INITIAL_STATE: GroupState = {
     "read": [],
     "write": []
   },
-  history: [],
+  history: {
+    loaded: false,
+    entries: [],
+    hasNextPage: false,
+    next: null,
+  },
   historyLoaded: false,
   hasNextHistory: false,
   listNextHistory: null,
@@ -55,17 +61,20 @@ export function group(
     case GROUP_RESET: {
       return INITIAL_STATE;
     }
-    case GROUP_HISTORY_REQUEST: {
-      return {...state, historyLoaded: false};
+    case GROUP_HISTORY_REQUEST:
+    case GROUP_HISTORY_NEXT_REQUEST: {
+      return {...state, history: {...state.history, loaded: false}};
     }
     case GROUP_HISTORY_SUCCESS: {
-      const {history, hasNextHistory, listNextHistory} = action;
+      const {entries, hasNextPage, next} = action;
       return {
         ...state,
-        history: [...state.history, ...history],
-        historyLoaded: true,
-        hasNextHistory,
-        listNextHistory,
+        history: {
+          entries: [...state.history.entries, ...entries],
+          loaded: true,
+          hasNextPage,
+          next,
+        }
       };
     }
     default: {

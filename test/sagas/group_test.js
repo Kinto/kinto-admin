@@ -79,7 +79,7 @@ describe("group sagas", () => {
 
     before(() => {
       const action = actions.listGroupNextHistory();
-      const getState = () => ({group: {listNextHistory: fakeNext}});
+      const getState = () => ({group: {history: {next: fakeNext}}});
       listNextHistory = saga.listNextHistory(getState, action);
     });
 
