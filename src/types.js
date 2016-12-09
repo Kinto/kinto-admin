@@ -93,10 +93,7 @@ export type CollectionState = {
   recordsLoaded: boolean,
   hasNextRecords: boolean,
   listNextRecords: ?Function,
-  history: ResourceHistoryEntry[],
-  historyLoaded: boolean,
-  hasNextHistory: boolean,
-  listNextHistory: ?Function,
+  history: Paginator<ResourceHistoryEntry>,
 };
 
 export type CollectionData = {

@@ -32,10 +32,12 @@ export const INITIAL_STATE: CollectionState = {
   recordsLoaded: false,
   hasNextRecords: false,
   listNextRecords: null,
-  history: [],
-  historyLoaded: false,
-  hasNextHistory: false,
-  listNextHistory: null,
+  history: {
+    entries: [],
+    loaded: false,
+    hasNextPage: false,
+    next: null,
+  }
 };
 
 function load(state: CollectionState, collection: CollectionResource): CollectionState {
@@ -88,20 +90,20 @@ export function collection(
         listNextRecords,
       };
     }
-    case COLLECTION_HISTORY_REQUEST: {
-      return {...state, historyLoaded: false};
-    }
+    case COLLECTION_HISTORY_REQUEST:
     case COLLECTION_HISTORY_NEXT_REQUEST: {
-      return {...state, historyLoaded: false};
+      return {...state, history: {...state.history, loaded: false}};
     }
     case COLLECTION_HISTORY_SUCCESS: {
-      const {history, hasNextHistory, listNextHistory} = action;
+      const {entries, hasNextPage, next} = action;
       return {
         ...state,
-        history: [...state.history, ...history],
-        historyLoaded: true,
-        hasNextHistory,
-        listNextHistory,
+        history: {
+          entries: [...state.history.entries, ...entries],
+          loaded: true,
+          hasNextPage,
+          next,
+        }
       };
     }
     default: {

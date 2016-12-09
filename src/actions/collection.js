@@ -76,13 +76,13 @@ export function listCollectionNextHistory(): {
   return {type: COLLECTION_HISTORY_NEXT_REQUEST};
 }
 
-export function listCollectionHistorySuccess(history: ResourceHistoryEntry[], hasNextHistory: boolean, listNextHistory: ?Function): {
+export function listCollectionHistorySuccess(entries: ResourceHistoryEntry[], hasNextPage: boolean, next: ?Function): {
   type: "COLLECTION_HISTORY_SUCCESS",
-  history: ResourceHistoryEntry[],
-  hasNextHistory: boolean,
-  listNextHistory: ?Function,
+  entries: ResourceHistoryEntry[],
+  hasNextPage: boolean,
+  next: ?Function,
 } {
-  return {type: COLLECTION_HISTORY_SUCCESS, history, hasNextHistory, listNextHistory};
+  return {type: COLLECTION_HISTORY_SUCCESS, entries, hasNextPage, next};
 }
 
 export function createRecord(bid: string, cid: string, record: RecordData, attachment?: string): {

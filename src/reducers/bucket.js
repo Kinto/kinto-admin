@@ -7,6 +7,7 @@ import {
   BUCKET_COLLECTIONS_REQUEST,
   BUCKET_COLLECTIONS_SUCCESS,
   BUCKET_HISTORY_REQUEST,
+  BUCKET_HISTORY_NEXT_REQUEST,
   BUCKET_HISTORY_SUCCESS,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
@@ -65,8 +66,9 @@ export function bucket(state: BucketState = INITIAL_STATE, action: Object) {
       const {collections} = action;
       return {...state, collections, collectionsLoaded: true};
     }
-    case BUCKET_HISTORY_REQUEST: {
-      return {...state, historyLoaded: false};
+    case BUCKET_HISTORY_REQUEST:
+    case BUCKET_HISTORY_NEXT_REQUEST: {
+      return {...state, history: {...state.history, loaded: false}};
     }
     case BUCKET_HISTORY_SUCCESS: {
       const {entries, hasNextPage, next} = action;

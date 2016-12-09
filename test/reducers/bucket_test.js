@@ -7,6 +7,7 @@ import {
   BUCKET_COLLECTIONS_REQUEST,
   BUCKET_COLLECTIONS_SUCCESS,
   BUCKET_HISTORY_REQUEST,
+  BUCKET_HISTORY_NEXT_REQUEST,
   BUCKET_HISTORY_SUCCESS,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
@@ -104,12 +105,24 @@ describe("bucket reducer", () => {
   });
 
   describe("BUCKET_HISTORY_REQUEST", () => {
-    it("should update the historyLoaded flag", () => {
+    it("should update the history loaded flag", () => {
       const state = {historyLoaded: true};
       const action = {type: BUCKET_HISTORY_REQUEST};
 
       expect(bucket(state, action))
-        .to.have.property("historyLoaded").eql(false);
+        .to.have.property("history")
+        .to.have.property("loaded").eql(false);
+    });
+  });
+
+  describe("BUCKET_HISTORY_NEXT_REQUEST", () => {
+    it("should update the history loaded flag", () => {
+      const state = {historyLoaded: true};
+      const action = {type: BUCKET_HISTORY_NEXT_REQUEST};
+
+      expect(bucket(state, action))
+        .to.have.property("history")
+        .to.have.property("loaded").eql(false);
     });
   });
 

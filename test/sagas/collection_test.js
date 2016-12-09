@@ -862,7 +862,7 @@ describe("collection sagas", () => {
 
     before(() => {
       const action = actions.listCollectionNextHistory();
-      const getState = () => ({collection: {listNextHistory: fakeNext}});
+      const getState = () => ({collection: {history: {next: fakeNext}}});
       listNextHistory = saga.listNextHistory(getState, action);
     });
 
@@ -878,9 +878,7 @@ describe("collection sagas", () => {
 
     it("should scroll the window to the bottom", () => {
       expect(listNextHistory.next().value)
-        .to.have.property("CALL")
-        .to.have.property("fn")
-        .eql(window.scrollTo);
+        .eql(call(scrollToBottom));
     });
   });
 });

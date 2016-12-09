@@ -9,6 +9,7 @@ import { storeRedirectURL } from "../actions/session";
 import * as actions from "../actions/route";
 import { notifyInfo, notifyError, clearNotifications } from "../actions/notifications";
 import { SESSION_AUTHENTICATED } from "../constants";
+import { scrollToTop } from "../utils.js";
 import url from "../url";
 
 
@@ -116,7 +117,7 @@ export function* routeUpdated(getState: GetStateFn, action: ActionType<typeof ac
     yield call(loadRoute, params);
 
     // Side effect: scroll to page top on each route change
-    yield call([window, window.scrollTo], 0, 0);
+    yield call(scrollToTop);
   }
 }
 
