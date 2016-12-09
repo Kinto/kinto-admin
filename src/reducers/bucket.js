@@ -13,6 +13,7 @@ import {
   ROUTE_LOAD_SUCCESS,
   ROUTE_LOAD_FAILURE,
 } from "../constants";
+import { history } from "./shared";
 
 
 const INITIAL_STATE: BucketState = {
@@ -67,20 +68,9 @@ export function bucket(state: BucketState = INITIAL_STATE, action: Object) {
       return {...state, collections, collectionsLoaded: true};
     }
     case BUCKET_HISTORY_REQUEST:
-    case BUCKET_HISTORY_NEXT_REQUEST: {
-      return {...state, history: {...state.history, loaded: false}};
-    }
+    case BUCKET_HISTORY_NEXT_REQUEST:
     case BUCKET_HISTORY_SUCCESS: {
-      const {entries, hasNextPage, next} = action;
-      return {
-        ...state,
-        history: {
-          entries: [...state.history.entries, ...entries],
-          loaded: true,
-          hasNextPage,
-          next,
-        }
-      };
+      return {...state, history: history(state.history, action)};
     }
     case BUCKET_RESET: {
       return INITIAL_STATE;

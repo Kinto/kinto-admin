@@ -15,6 +15,7 @@ import {
   ROUTE_LOAD_SUCCESS,
   ROUTE_LOAD_FAILURE,
 } from "../constants";
+import { history } from "./shared";
 
 
 const DEFAULT_SORT: string = "-last_modified";
@@ -91,20 +92,9 @@ export function collection(
       };
     }
     case COLLECTION_HISTORY_REQUEST:
-    case COLLECTION_HISTORY_NEXT_REQUEST: {
-      return {...state, history: {...state.history, loaded: false}};
-    }
+    case COLLECTION_HISTORY_NEXT_REQUEST:
     case COLLECTION_HISTORY_SUCCESS: {
-      const {entries, hasNextPage, next} = action;
-      return {
-        ...state,
-        history: {
-          entries: [...state.history.entries, ...entries],
-          loaded: true,
-          hasNextPage,
-          next,
-        }
-      };
+      return {...state, history: history(state.history, action)};
     }
     default: {
       return state;

@@ -94,7 +94,7 @@ describe("record reducer", () => {
       const state = record(undefined, {
         type: RECORD_HISTORY_REQUEST,
       });
-      expect(state.historyLoaded).eql(false);
+      expect(state.history.loaded).eql(false);
     });
   });
 
