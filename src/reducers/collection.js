@@ -15,7 +15,7 @@ import {
   ROUTE_LOAD_SUCCESS,
   ROUTE_LOAD_FAILURE,
 } from "../constants";
-import { history } from "./shared";
+import { paginator } from "./shared";
 
 
 const DEFAULT_SORT: string = "-last_modified";
@@ -33,12 +33,7 @@ export const INITIAL_STATE: CollectionState = {
   recordsLoaded: false,
   hasNextRecords: false,
   listNextRecords: null,
-  history: {
-    entries: [],
-    loaded: false,
-    hasNextPage: false,
-    next: null,
-  }
+  history: paginator(undefined, {type: "@@INIT"}),
 };
 
 function load(state: CollectionState, collection: CollectionResource): CollectionState {
@@ -94,7 +89,7 @@ export function collection(
     case COLLECTION_HISTORY_REQUEST:
     case COLLECTION_HISTORY_NEXT_REQUEST:
     case COLLECTION_HISTORY_SUCCESS: {
-      return {...state, history: history(state.history, action)};
+      return {...state, history: paginator(state.history, action)};
     }
     default: {
       return state;

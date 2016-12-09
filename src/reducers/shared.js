@@ -25,8 +25,9 @@ const INITIAL_STATE: Paginator<*> = {
   next: null,
 };
 
-export function history(state: Paginator<*> = INITIAL_STATE, action: Object): Paginator<*> {
+export function paginator(state: Paginator<*> = INITIAL_STATE, action: Object): Paginator<*> {
   switch (action.type) {
+    // history requests
     case BUCKET_HISTORY_REQUEST:
     case BUCKET_HISTORY_NEXT_REQUEST:
     case GROUP_HISTORY_REQUEST:
@@ -37,7 +38,8 @@ export function history(state: Paginator<*> = INITIAL_STATE, action: Object): Pa
     case RECORD_HISTORY_NEXT_REQUEST: {
       return {...state, loaded: false};
     }
-    
+
+    // history responses
     case BUCKET_HISTORY_SUCCESS:
     case GROUP_HISTORY_SUCCESS:
     case COLLECTION_HISTORY_SUCCESS:

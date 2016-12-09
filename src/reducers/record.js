@@ -14,7 +14,7 @@ import {
   ROUTE_LOAD_SUCCESS,
   ROUTE_LOAD_FAILURE,
 } from "../constants";
-import { history } from "./shared";
+import { paginator } from "./shared";
 
 
 const INITIAL_STATE: RecordState = {
@@ -24,12 +24,7 @@ const INITIAL_STATE: RecordState = {
     read: [],
     write: [],
   },
-  history: {
-    entries: [],
-    loaded: false,
-    hasNextPage: false,
-    next: null,
-  },
+  history: paginator(undefined, {type: "@@INIT"}),
 };
 
 function load(state: RecordState, record: RecordResource): RecordState {
@@ -68,7 +63,7 @@ export default function record(
     case RECORD_HISTORY_REQUEST:
     case RECORD_HISTORY_NEXT_REQUEST:
     case RECORD_HISTORY_SUCCESS: {
-      return {...state, history: history(state.history, action)};
+      return {...state, history: paginator(state.history, action)};
     }
     default: {
       return state;

@@ -11,7 +11,7 @@ import {
   ROUTE_LOAD_SUCCESS,
   ROUTE_LOAD_FAILURE,
 } from "../constants";
-import { history } from "./shared";
+import { paginator } from "./shared";
 
 
 export const INITIAL_STATE: GroupState = {
@@ -23,12 +23,7 @@ export const INITIAL_STATE: GroupState = {
     "read": [],
     "write": []
   },
-  history: {
-    loaded: false,
-    entries: [],
-    hasNextPage: false,
-    next: null,
-  },
+  history: paginator(undefined, {type: "@@INIT"}),
   historyLoaded: false,
   hasNextHistory: false,
   listNextHistory: null,
@@ -66,7 +61,7 @@ export function group(
     case GROUP_HISTORY_REQUEST:
     case GROUP_HISTORY_NEXT_REQUEST:
     case GROUP_HISTORY_SUCCESS: {
-      return {...state, history: history(state.history, action)};
+      return {...state, history: paginator(state.history, action)};
     }
     default: {
       return state;

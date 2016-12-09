@@ -13,7 +13,7 @@ import {
   ROUTE_LOAD_SUCCESS,
   ROUTE_LOAD_FAILURE,
 } from "../constants";
-import { history } from "./shared";
+import { paginator } from "./shared";
 
 
 const INITIAL_STATE: BucketState = {
@@ -28,12 +28,7 @@ const INITIAL_STATE: BucketState = {
   groups: [],
   collections: [],
   collectionsLoaded: false,
-  history: {
-    entries: [],
-    loaded: false,
-    hasNextPage: false,
-    next: null,
-  }
+  history: paginator(undefined, {type: "@@INIT"}),
 };
 
 function load(state: BucketState, bucket: BucketResource, groups: GroupData[]): BucketState {
@@ -70,7 +65,7 @@ export function bucket(state: BucketState = INITIAL_STATE, action: Object) {
     case BUCKET_HISTORY_REQUEST:
     case BUCKET_HISTORY_NEXT_REQUEST:
     case BUCKET_HISTORY_SUCCESS: {
-      return {...state, history: history(state.history, action)};
+      return {...state, history: paginator(state.history, action)};
     }
     case BUCKET_RESET: {
       return INITIAL_STATE;
