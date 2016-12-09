@@ -186,10 +186,7 @@ export type RecordState = {
   busy: boolean,
   data: RecordData,
   permissions: RecordPermissions,
-  history: ResourceHistoryEntry[],
-  historyLoaded: boolean,
-  hasNextHistory: boolean,
-  listNextHistory: ?Function,
+  history: Paginator<ResourceHistoryEntry>,
 };
 
 export type RecordData = {

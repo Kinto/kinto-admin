@@ -33,12 +33,12 @@ export function* listHistory(getState: GetStateFn, action: ActionType<typeof act
 }
 
 export function* listNextHistory(getState: GetStateFn): SagaGen {
-  const {record: {listNextHistory}} = getState();
-  if (listNextHistory == null) {
+  const {record: {history: {next: fetchNextHistory}}} = getState();
+  if (fetchNextHistory == null) {
     return;
   }
   try {
-    const {data, hasNextPage, next} = yield call(listNextHistory);
+    const {data, hasNextPage, next} = yield call(fetchNextHistory);
     yield put(actions.listRecordHistorySuccess(data, hasNextPage, next));
     yield call(scrollToBottom);
   } catch(error) {

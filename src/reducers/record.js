@@ -7,6 +7,7 @@ import {
   RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
   RECORD_HISTORY_REQUEST,
+  RECORD_HISTORY_NEXT_REQUEST,
   RECORD_HISTORY_SUCCESS,
   RECORD_RESET,
   ROUTE_LOAD_REQUEST,
@@ -22,10 +23,12 @@ const INITIAL_STATE: RecordState = {
     read: [],
     write: [],
   },
-  history: [],
-  historyLoaded: false,
-  hasNextHistory: false,
-  listNextHistory: null,
+  history: {
+    entries: [],
+    loaded: false,
+    hasNextPage: false,
+    next: null,
+  },
 };
 
 function load(state: RecordState, record: RecordResource): RecordState {
@@ -61,17 +64,20 @@ export default function record(
     case RECORD_RESET: {
       return INITIAL_STATE;
     }
+    case RECORD_HISTORY_NEXT_REQUEST:
     case RECORD_HISTORY_REQUEST: {
       return {...state, historyLoaded: false};
     }
     case RECORD_HISTORY_SUCCESS: {
-      const {history, hasNextHistory, listNextHistory} = action;
+      const {entries, hasNextPage, next} = action;
       return {
         ...state,
-        history: [...state.history, ...history],
-        historyLoaded: true,
-        hasNextHistory,
-        listNextHistory,
+        history: {
+          entries: [...state.history.entries, ...entries],
+          loaded: true,
+          hasNextPage,
+          next,
+        }
       };
     }
     default: {

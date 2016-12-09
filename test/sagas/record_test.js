@@ -82,7 +82,7 @@ describe("record sagas", () => {
 
     before(() => {
       const action = actions.listRecordNextHistory();
-      const getState = () => ({record: {listNextHistory: fakeNext}});
+      const getState = () => ({record: {history: {next: fakeNext}}});
       listNextHistory = saga.listNextHistory(getState, action);
     });
 
