@@ -638,7 +638,7 @@ describe("bucket sagas", () => {
 
     before(() => {
       const action = actions.listBucketNextHistory();
-      const getState = () => ({bucket: {listNextHistory: fakeNext}});
+      const getState = () => ({bucket: {history: {next: fakeNext}}});
       listNextHistory = saga.listNextHistory(getState, action);
     });
 

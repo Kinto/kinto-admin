@@ -115,37 +115,43 @@ describe("bucket reducer", () => {
 
   describe("BUCKET_HISTORY_SUCCESS", () => {
     const state = {
-      history: [],
-      historyLoaded: false,
-      hasNextHistory: false,
-      listNextHistory: null,
+      history: {
+        entries: [],
+        loaded: false,
+        hasNextPage: true,
+        next: fakeNext,
+      }
     };
     const fakeNext = () => {};
     const action = {
       type: BUCKET_HISTORY_SUCCESS,
-      history: [1, 2, 3],
-      hasNextHistory: true,
-      listNextHistory: fakeNext,
+      entries: [1, 2, 3],
+      hasNextPage: true,
+      next: fakeNext,
     };
 
     it("should update the list of history", () => {
       expect(bucket(state, action))
-        .to.have.property("history").eql(action.history);
+        .to.have.property("history")
+        .to.have.property("entries").eql(action.entries);
     });
 
     it("should update the historyLoaded flag", () => {
       expect(bucket(state, action))
-        .to.have.property("historyLoaded").eql(true);
+        .to.have.property("history")
+        .to.have.property("loaded").eql(true);
     });
 
     it("should update the hasNextHistory flag", () => {
       expect(bucket(state, action))
-        .to.have.property("hasNextHistory").eql(true);
+        .to.have.property("history")
+        .to.have.property("hasNextPage").eql(true);
     });
 
     it("should update the listNextHistory flag", () => {
       expect(bucket(state, action))
-        .to.have.property("listNextHistory").eql(fakeNext);
+        .to.have.property("history")
+        .to.have.property("next").eql(fakeNext);
     });
   });
 });

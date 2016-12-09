@@ -31,10 +31,8 @@ export type BucketState = {
   busy: boolean,
   data: BucketData,
   permissions: BucketPermissions,
-  history: ResourceHistoryEntry[],
-  historyLoaded: boolean,
-  hasNextHistory: boolean,
-  listNextHistory: ?Function,
+  history: Paginator<ResourceHistoryEntry>,
+  // collections: Paginator<CollectionData>,
   collections: CollectionData[],
   collectionsLoaded: boolean,
   groups: GroupData[],
@@ -163,6 +161,13 @@ export type Notification = {
 };
 
 export type Notifications = Notification[];
+
+export type Paginator<T> = {
+  entries: T[],
+  loaded: boolean,
+  hasNextPage: boolean,
+  next: ?Function,
+};
 
 export type Permissions =
   BucketPermissions

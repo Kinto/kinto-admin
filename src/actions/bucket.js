@@ -85,13 +85,13 @@ export function listBucketNextHistory(): {
   return {type: BUCKET_HISTORY_NEXT_REQUEST};
 }
 
-export function listBucketHistorySuccess(history: ResourceHistoryEntry[], hasNextHistory: boolean, listNextHistory: ?Function): {
+export function listBucketHistorySuccess(entries: ResourceHistoryEntry[], hasNextPage: boolean, next: ?Function): {
   type: "BUCKET_HISTORY_SUCCESS",
-  history: ResourceHistoryEntry[],
-  hasNextHistory: boolean,
-  listNextHistory: ?Function,
+  entries: ResourceHistoryEntry[],
+  hasNextPage: boolean,
+  next: ?Function,
 } {
-  return {type: BUCKET_HISTORY_SUCCESS, history, hasNextHistory, listNextHistory};
+  return {type: BUCKET_HISTORY_SUCCESS, entries, hasNextPage, next};
 }
 
 export function createCollection(bid: string, collectionData: CollectionData): {

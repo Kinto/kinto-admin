@@ -26,10 +26,12 @@ const INITIAL_STATE: BucketState = {
   groups: [],
   collections: [],
   collectionsLoaded: false,
-  history: [],
-  historyLoaded: false,
-  hasNextHistory: false,
-  listNextHistory: null,
+  history: {
+    entries: [],
+    loaded: false,
+    hasNextPage: false,
+    next: null,
+  }
 };
 
 function load(state: BucketState, bucket: BucketResource, groups: GroupData[]): BucketState {
@@ -67,13 +69,15 @@ export function bucket(state: BucketState = INITIAL_STATE, action: Object) {
       return {...state, historyLoaded: false};
     }
     case BUCKET_HISTORY_SUCCESS: {
-      const {history, hasNextHistory, listNextHistory} = action;
+      const {entries, hasNextPage, next} = action;
       return {
         ...state,
-        history: [...state.history, ...history],
-        historyLoaded: true,
-        hasNextHistory,
-        listNextHistory,
+        history: {
+          entries: [...state.history.entries, ...entries],
+          loaded: true,
+          hasNextPage,
+          next,
+        }
       };
     }
     case BUCKET_RESET: {
