@@ -3,6 +3,8 @@
 import type { Paginator } from "../types";
 
 import {
+  BUCKET_COLLECTIONS_REQUEST,
+  BUCKET_COLLECTIONS_NEXT_REQUEST,
   BUCKET_HISTORY_REQUEST,
   BUCKET_HISTORY_NEXT_REQUEST,
   GROUP_HISTORY_REQUEST,
@@ -12,6 +14,7 @@ import {
   RECORD_HISTORY_REQUEST,
   RECORD_HISTORY_NEXT_REQUEST,
   BUCKET_HISTORY_SUCCESS,
+  BUCKET_COLLECTIONS_SUCCESS,
   GROUP_HISTORY_SUCCESS,
   COLLECTION_HISTORY_SUCCESS,
   RECORD_HISTORY_SUCCESS,
@@ -27,7 +30,8 @@ const INITIAL_STATE: Paginator<*> = {
 
 export function paginator(state: Paginator<*> = INITIAL_STATE, action: Object): Paginator<*> {
   switch (action.type) {
-    // history requests
+    case BUCKET_COLLECTIONS_REQUEST:
+    case BUCKET_COLLECTIONS_NEXT_REQUEST:
     case BUCKET_HISTORY_REQUEST:
     case BUCKET_HISTORY_NEXT_REQUEST:
     case GROUP_HISTORY_REQUEST:
@@ -40,6 +44,7 @@ export function paginator(state: Paginator<*> = INITIAL_STATE, action: Object): 
     }
 
     // history responses
+    case BUCKET_COLLECTIONS_SUCCESS:
     case BUCKET_HISTORY_SUCCESS:
     case GROUP_HISTORY_SUCCESS:
     case COLLECTION_HISTORY_SUCCESS:

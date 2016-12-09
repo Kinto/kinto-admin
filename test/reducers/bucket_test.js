@@ -75,32 +75,37 @@ describe("bucket reducer", () => {
 
   describe("BUCKET_COLLECTIONS_REQUEST", () => {
     it("should update the collectionsLoaded flag", () => {
-      const state = {collectionsLoaded: true};
+      const state = {collections: {loaded: true}};
       const action = {type: BUCKET_COLLECTIONS_REQUEST};
 
       expect(bucket(state, action))
-        .to.have.property("collectionsLoaded").eql(false);
+        .to.have.property("collections")
+        .to.have.property("loaded").eql(false);
     });
   });
 
   describe("BUCKET_COLLECTIONS_SUCCESS", () => {
     const state = {
-      collections: [],
-      collectionsLoaded: false,
+      collections: {
+        loaded: false,
+        entries: [],
+      }
     };
     const action = {
       type: BUCKET_COLLECTIONS_SUCCESS,
-      collections: [1, 2, 3],
+      entries: [1, 2, 3],
     };
 
     it("should update the list of bucket collections", () => {
       expect(bucket(state, action))
-        .to.have.property("collections").eql(action.collections);
+        .to.have.property("collections")
+        .to.have.property("entries").eql(action.entries);
     });
 
     it("should update the collectionsLoaded flag", () => {
       expect(bucket(state, action))
-        .to.have.property("collectionsLoaded").eql(true);
+        .to.have.property("collections")
+        .to.have.property("loaded").eql(true);
     });
   });
 

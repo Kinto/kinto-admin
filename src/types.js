@@ -32,9 +32,7 @@ export type BucketState = {
   data: BucketData,
   permissions: BucketPermissions,
   history: Paginator<ResourceHistoryEntry>,
-  // collections: Paginator<CollectionData>,
-  collections: CollectionData[],
-  collectionsLoaded: boolean,
+  collections: Paginator<CollectionData>,
   groups: GroupData[],
 };
 

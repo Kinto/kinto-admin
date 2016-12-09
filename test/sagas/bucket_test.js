@@ -524,12 +524,14 @@ describe("bucket sagas", () => {
         bucket = {listCollections() {}};
         setClient({bucket() {return bucket;}});
         const action = actions.listBucketCollections("bucket");
-        listBucketCollections = saga.listBucketCollections(() => {}, action);
+        listBucketCollections = saga.listBucketCollections(() => ({settings}), action);
       });
 
       it("should list the collections", () => {
         expect(listBucketCollections.next().value)
-          .eql(call([bucket, bucket.listCollections]));
+          .eql(call([bucket, bucket.listCollections], {
+            limit: 42,
+          }));
       });
 
       it("should dispatch the listBucketCollectionsSuccess action", () => {
@@ -544,7 +546,7 @@ describe("bucket sagas", () => {
 
       before(() => {
         const action = actions.listBucketCollections("bucket");
-        listBucketCollections = saga.listBucketCollections(() => {}, action);
+        listBucketCollections = saga.listBucketCollections(() => ({settings}), action);
         listBucketCollections.next();
       });
 

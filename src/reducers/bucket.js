@@ -5,6 +5,7 @@ import {
   BUCKET_BUSY,
   BUCKET_RESET,
   BUCKET_COLLECTIONS_REQUEST,
+  BUCKET_COLLECTIONS_NEXT_REQUEST,
   BUCKET_COLLECTIONS_SUCCESS,
   BUCKET_HISTORY_REQUEST,
   BUCKET_HISTORY_NEXT_REQUEST,
@@ -26,8 +27,7 @@ const INITIAL_STATE: BucketState = {
     "group:create": [],
   },
   groups: [],
-  collections: [],
-  collectionsLoaded: false,
+  collections: paginator(undefined, {type: "@@INIT"}),
   history: paginator(undefined, {type: "@@INIT"}),
 };
 
@@ -55,12 +55,10 @@ export function bucket(state: BucketState = INITIAL_STATE, action: Object) {
     case ROUTE_LOAD_FAILURE: {
       return {...state, busy: false};
     }
-    case BUCKET_COLLECTIONS_REQUEST: {
-      return {...state, collectionsLoaded: false};
-    }
+    case BUCKET_COLLECTIONS_REQUEST:
+    case BUCKET_COLLECTIONS_NEXT_REQUEST:
     case BUCKET_COLLECTIONS_SUCCESS: {
-      const {collections} = action;
-      return {...state, collections, collectionsLoaded: true};
+      return {...state, collections: paginator(state.collections, action)};
     }
     case BUCKET_HISTORY_REQUEST:
     case BUCKET_HISTORY_NEXT_REQUEST:

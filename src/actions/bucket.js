@@ -13,6 +13,7 @@ import type {
 
 import {
   BUCKET_COLLECTIONS_REQUEST,
+  BUCKET_COLLECTIONS_NEXT_REQUEST,
   BUCKET_COLLECTIONS_SUCCESS,
   BUCKET_HISTORY_REQUEST,
   BUCKET_HISTORY_NEXT_REQUEST,
@@ -64,11 +65,19 @@ export function listBucketCollections(bid: string): {
   return {type: BUCKET_COLLECTIONS_REQUEST, bid};
 }
 
-export function listBucketCollectionsSuccess(collections: CollectionData[]): {
-  type: "BUCKET_COLLECTIONS_SUCCESS",
-  collections: CollectionData[],
+export function listBucketNextCollections(): {
+  type: "BUCKET_COLLECTIONS_NEXT_REQUEST",
 } {
-  return {type: BUCKET_COLLECTIONS_SUCCESS, collections};
+  return {type: BUCKET_COLLECTIONS_NEXT_REQUEST};
+}
+
+export function listBucketCollectionsSuccess(entries: CollectionData[], hasNextPage: boolean, next: ?Function): {
+  type: "BUCKET_COLLECTIONS_SUCCESS",
+  entries: CollectionData[],
+  hasNextPage: boolean,
+  next: ?Function,
+} {
+  return {type: BUCKET_COLLECTIONS_SUCCESS, entries, hasNextPage, next};
 }
 
 export function listBucketHistory(bid: string, filters: HistoryFilters = {}): {
