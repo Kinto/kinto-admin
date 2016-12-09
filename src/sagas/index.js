@@ -33,7 +33,8 @@ export default function* rootSaga(getState: GetStateFn, pluginsSagas: PluginSaga
     takeEvery(c.BUCKET_DELETE_REQUEST, bucketSagas.deleteBucket, getState),
     // bucket/collections
     takeEvery(c.BUCKET_COLLECTIONS_REQUEST, bucketSagas.listBucketCollections, getState),
-    takeEvery(c.BUCKET_HISTORY_REQUEST, bucketSagas.listBucketHistory, getState),
+    takeEvery(c.BUCKET_HISTORY_REQUEST, bucketSagas.listHistory, getState),
+    takeEvery(c.BUCKET_HISTORY_NEXT_REQUEST, bucketSagas.listNextHistory, getState),
     takeEvery(c.COLLECTION_CREATE_REQUEST, bucketSagas.createCollection, getState),
     takeEvery(c.COLLECTION_UPDATE_REQUEST, bucketSagas.updateCollection, getState),
     takeEvery(c.COLLECTION_DELETE_REQUEST, bucketSagas.deleteCollection, getState),
@@ -42,15 +43,18 @@ export default function* rootSaga(getState: GetStateFn, pluginsSagas: PluginSaga
     takeEvery(c.GROUP_UPDATE_REQUEST, bucketSagas.updateGroup, getState),
     takeEvery(c.GROUP_DELETE_REQUEST, bucketSagas.deleteGroup, getState),
     takeEvery(c.GROUP_HISTORY_REQUEST, groupSagas.listHistory, getState),
+    takeEvery(c.GROUP_HISTORY_NEXT_REQUEST, groupSagas.listNextHistory, getState),
     // collection/records
     takeEvery(c.COLLECTION_RECORDS_REQUEST, collectionSagas.listRecords, getState),
     takeEvery(c.COLLECTION_RECORDS_NEXT_REQUEST, collectionSagas.listNextRecords, getState),
     takeEvery(c.COLLECTION_HISTORY_REQUEST, collectionSagas.listHistory, getState),
+    takeEvery(c.COLLECTION_HISTORY_NEXT_REQUEST, collectionSagas.listNextHistory, getState),
     takeEvery(c.RECORD_CREATE_REQUEST, collectionSagas.createRecord, getState),
     takeEvery(c.RECORD_BULK_CREATE_REQUEST, collectionSagas.bulkCreateRecords, getState),
     takeEvery(c.RECORD_UPDATE_REQUEST, collectionSagas.updateRecord, getState),
     takeEvery(c.RECORD_DELETE_REQUEST, collectionSagas.deleteRecord, getState),
     takeEvery(c.RECORD_HISTORY_REQUEST, recordSagas.listHistory, getState),
+    takeEvery(c.RECORD_HISTORY_NEXT_REQUEST, recordSagas.listNextHistory, getState),
     // attachments
     takeEvery(c.ATTACHMENT_DELETE_REQUEST, collectionSagas.deleteAttachment, getState),
   ];

@@ -8,7 +8,6 @@ import type {
 
 import React, { Component } from "react";
 
-import Spinner from "../Spinner";
 import HistoryTable from "../HistoryTable";
 import CollectionTabs from "./GroupTabs";
 
@@ -19,12 +18,20 @@ export default class GroupHistory extends Component {
     group: GroupState,
     capabilities: Capabilities,
     location: RouteLocation,
+    hasNextHistory: boolean,
+    listGroupNextHistory: ?Function,
   };
 
   render() {
-    const {params, group, capabilities, location} = this.props;
+    const {
+      params,
+      group,
+      capabilities,
+      location,
+      listGroupNextHistory,
+    } = this.props;
     const {bid, gid} = params;
-    const {history, historyLoaded} = group;
+    const {history, historyLoaded, hasNextHistory} = group;
 
     return (
       <div>
@@ -34,8 +41,13 @@ export default class GroupHistory extends Component {
           gid={gid}
           selected="history"
           capabilities={capabilities}>
-          { !historyLoaded ? <Spinner /> :
-            <HistoryTable bid={bid} history={history} location={location} />}
+          <HistoryTable
+            bid={bid}
+            historyLoaded={historyLoaded}
+            history={history}
+            hasNextHistory={hasNextHistory}
+            listNextHistory={listGroupNextHistory}
+            location={location} />
         </CollectionTabs>
       </div>
     );

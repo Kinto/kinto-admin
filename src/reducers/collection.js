@@ -9,6 +9,7 @@ import {
   COLLECTION_RECORDS_NEXT_REQUEST,
   COLLECTION_RECORDS_SUCCESS,
   COLLECTION_HISTORY_REQUEST,
+  COLLECTION_HISTORY_NEXT_REQUEST,
   COLLECTION_HISTORY_SUCCESS,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
@@ -33,6 +34,8 @@ export const INITIAL_STATE: CollectionState = {
   listNextRecords: null,
   history: [],
   historyLoaded: false,
+  hasNextHistory: false,
+  listNextHistory: null,
 };
 
 function load(state: CollectionState, collection: CollectionResource): CollectionState {
@@ -88,8 +91,18 @@ export function collection(
     case COLLECTION_HISTORY_REQUEST: {
       return {...state, historyLoaded: false};
     }
+    case COLLECTION_HISTORY_NEXT_REQUEST: {
+      return {...state, historyLoaded: false};
+    }
     case COLLECTION_HISTORY_SUCCESS: {
-      return {...state, history: action.history, historyLoaded: true};
+      const {history, hasNextHistory, listNextHistory} = action;
+      return {
+        ...state,
+        history: [...state.history, ...history],
+        historyLoaded: true,
+        hasNextHistory,
+        listNextHistory,
+      };
     }
     default: {
       return state;

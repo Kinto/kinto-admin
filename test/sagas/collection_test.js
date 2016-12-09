@@ -2,11 +2,12 @@ import { expect } from "chai";
 import { put, call } from "redux-saga/effects";
 
 import { notifyError, notifySuccess } from "../../src/actions/notifications";
-import * as collectionActions from "../../src/actions/collection";
+import * as actions from "../../src/actions/collection";
 import * as recordActions from "../../src/actions/record";
 import { redirectTo } from "../../src/actions/route";
 import * as saga from "../../src/sagas/collection";
 import { setClient } from "../../src/client";
+import { scrollToBottom } from "../../src/utils";
 
 
 const record = {id: 1, foo: "bar1"};
@@ -39,7 +40,7 @@ describe("collection sagas", () => {
         let listRecords;
 
         before(() => {
-          const action = collectionActions.listRecords("bucket", "collection");
+          const action = actions.listRecords("bucket", "collection");
           const getState = () => ({settings, collection: {data: {sort: "-last_modified"}}});
           listRecords = saga.listRecords(getState, action);
         });
@@ -51,7 +52,7 @@ describe("collection sagas", () => {
 
         it("should dispatch the listRecordsSuccess action", () => {
           expect(listRecords.next({data: records}).value)
-            .eql(put(collectionActions.listRecordsSuccess(records)));
+            .eql(put(actions.listRecordsSuccess(records)));
         });
       });
 
@@ -59,7 +60,7 @@ describe("collection sagas", () => {
         let listRecords;
 
         before(() => {
-          const action = collectionActions.listRecords("bucket", "collection");
+          const action = actions.listRecords("bucket", "collection");
           const getState = () => ({settings, collection: {currentSort: "title", data: {sort: "nope"}}});
           listRecords = saga.listRecords(getState, action);
         });
@@ -71,7 +72,7 @@ describe("collection sagas", () => {
 
         it("should dispatch the listRecordsSuccess action", () => {
           expect(listRecords.next({data: records}).value)
-            .eql(put(collectionActions.listRecordsSuccess(records)));
+            .eql(put(actions.listRecordsSuccess(records)));
         });
       });
 
@@ -79,7 +80,7 @@ describe("collection sagas", () => {
         let listRecords;
 
         before(() => {
-          const action = collectionActions.listRecords("bucket", "collection", "title");
+          const action = actions.listRecords("bucket", "collection", "title");
           const getState = () => ({settings, collection: {currentSort: "nope", data: {sort: "nope"}}});
           listRecords = saga.listRecords(getState, action);
         });
@@ -91,7 +92,7 @@ describe("collection sagas", () => {
 
         it("should dispatch the listRecordsSuccess action", () => {
           expect(listRecords.next({data: records}).value)
-            .eql(put(collectionActions.listRecordsSuccess(records)));
+            .eql(put(actions.listRecordsSuccess(records)));
         });
       });
     });
@@ -104,7 +105,7 @@ describe("collection sagas", () => {
         const bucket = {collection() {return collection;}};
         setClient({bucket() {return bucket;}});
         const getState = () => ({settings, collection: {data: {sort: "nope"}}});
-        const action = collectionActions.listRecords("bucket", "collection");
+        const action = actions.listRecords("bucket", "collection");
         listRecords = saga.listRecords(getState, action);
         listRecords.next();
       });
@@ -121,7 +122,7 @@ describe("collection sagas", () => {
       let listNextRecords, collection;
 
       before(() => {
-        const action = collectionActions.listNextRecords();
+        const action = actions.listNextRecords();
         collection = {listNextRecords() {}};
         const getState = () => ({settings, collection});
         listNextRecords = saga.listNextRecords(getState, action);
@@ -136,13 +137,13 @@ describe("collection sagas", () => {
         const fakeNext = () => {};
         const result = {data: records, hasNextPage: false, next: fakeNext};
         expect(listNextRecords.next(result).value)
-          .eql(put(collectionActions.listRecordsSuccess(records, false, fakeNext)));
+          .eql(put(actions.listRecordsSuccess(records, false, fakeNext)));
       });
 
       it("should scroll to page bottom", () => {
         window.document.body.scrollHeight = 42;
         expect(listNextRecords.next().value)
-          .eql(call([window, window.scrollTo], 0, 42));
+          .eql(call(scrollToBottom));
       });
     });
 
@@ -150,7 +151,7 @@ describe("collection sagas", () => {
       let listNextRecords, collection;
 
       before(() => {
-        const action = collectionActions.listNextRecords();
+        const action = actions.listNextRecords();
         collection = {listNextRecords() {}};
         const getState = () => ({settings, collection});
         listNextRecords = saga.listNextRecords(getState, action);
@@ -188,7 +189,7 @@ describe("collection sagas", () => {
             }
           }
         });
-        const action = collectionActions.createRecord("bucket", "collection", record);
+        const action = actions.createRecord("bucket", "collection", record);
         createRecord = saga.createRecord(getState, action);
       });
 
@@ -230,7 +231,7 @@ describe("collection sagas", () => {
             }
           }
         });
-        const action = collectionActions.createRecord(
+        const action = actions.createRecord(
           "bucket", "collection", record, attachment);
         createRecord = saga.createRecord(getState, action);
       });
@@ -264,7 +265,7 @@ describe("collection sagas", () => {
 
       before(() => {
         const getState = () => ({settings, session: {serverInfo: {capabilities: {}}}});
-        const action = collectionActions.createRecord("bucket", "collection", record);
+        const action = actions.createRecord("bucket", "collection", record);
         createRecord = saga.createRecord(getState, action);
         createRecord.next();
       });
@@ -303,7 +304,7 @@ describe("collection sagas", () => {
       describe("Success, attributes", () => {
         let collection, updateRecord;
 
-        const action = collectionActions.updateRecord("bucket", "collection", 1, {
+        const action = actions.updateRecord("bucket", "collection", 1, {
           data: {
             ...record,
             last_modified: 42,
@@ -357,7 +358,7 @@ describe("collection sagas", () => {
 
         const permissions = {a: 1};
 
-        const action = collectionActions.updateRecord("bucket", "collection", 1, {
+        const action = actions.updateRecord("bucket", "collection", 1, {
           permissions
         });
 
@@ -403,7 +404,7 @@ describe("collection sagas", () => {
       describe("Failure", () => {
         let updateRecord;
 
-        const action = collectionActions.updateRecord("bucket", "collection", 1, {
+        const action = actions.updateRecord("bucket", "collection", 1, {
           data: {
             ...record,
             last_modified: 42,
@@ -446,7 +447,7 @@ describe("collection sagas", () => {
 
       const attachment = "data:test/fake";
 
-      const action = collectionActions.updateRecord("bucket", "collection", 1, {
+      const action = actions.updateRecord("bucket", "collection", 1, {
         data: {
           ...record,
           last_modified: 42,
@@ -527,7 +528,7 @@ describe("collection sagas", () => {
         collection = {deleteRecord() {}};
         const bucket = {collection() {return collection;}};
         setClient({bucket() {return bucket;}});
-        const action = collectionActions.deleteRecord("bucket", "collection", 1);
+        const action = actions.deleteRecord("bucket", "collection", 1);
         deleteRecord = saga.deleteRecord(() => ({
           record: {
             data: {last_modified: 42}
@@ -542,7 +543,7 @@ describe("collection sagas", () => {
       });
 
       it("should accept it from the action too", () => {
-        const action = collectionActions.deleteRecord("bucket", "collection", 1, 43);
+        const action = actions.deleteRecord("bucket", "collection", 1, 43);
         const deleteSaga = saga.deleteRecord(() => ({}), action);
         expect(deleteSaga.next().value)
           .eql(call([collection, collection.deleteRecord], 1, {
@@ -572,7 +573,7 @@ describe("collection sagas", () => {
       let deleteRecord;
 
       before(() => {
-        const action = collectionActions.deleteRecord("bucket", "collection", 1);
+        const action = actions.deleteRecord("bucket", "collection", 1);
         deleteRecord = saga.deleteRecord(() => ({
           record: {data: {}}
         }), action);
@@ -598,13 +599,13 @@ describe("collection sagas", () => {
       collection = {removeAttachment() {}};
       const bucket = {collection() {return collection;}};
       setClient({bucket() {return bucket;}});
-      const action = collectionActions.deleteAttachment("bucket", "collection", "record");
+      const action = actions.deleteAttachment("bucket", "collection", "record");
       deleteAttachment = saga.deleteAttachment(() => {}, action);
     });
 
     it("should mark the current collection as busy", () => {
       expect(deleteAttachment.next().value)
-        .eql(put(collectionActions.collectionBusy(true)));
+        .eql(put(actions.collectionBusy(true)));
     });
 
     it("should send a request for deleting the record attachment", () => {
@@ -652,13 +653,13 @@ describe("collection sagas", () => {
             }
           }
         });
-        const action = collectionActions.bulkCreateRecords("bucket", "collection", records);
+        const action = actions.bulkCreateRecords("bucket", "collection", records);
         bulkCreateRecords = saga.bulkCreateRecords(getState, action);
       });
 
       it("should mark the current collection as busy", () => {
         expect(bulkCreateRecords.next().value)
-          .eql(put(collectionActions.collectionBusy(true)));
+          .eql(put(actions.collectionBusy(true)));
       });
 
       it("should batch create records", () => {
@@ -685,7 +686,7 @@ describe("collection sagas", () => {
 
       it("should unmark the current collection as busy", () => {
         expect(bulkCreateRecords.next().value)
-          .eql(put(collectionActions.collectionBusy(false)));
+          .eql(put(actions.collectionBusy(false)));
       });
     });
 
@@ -701,14 +702,14 @@ describe("collection sagas", () => {
             }
           }
         });
-        const action = collectionActions.bulkCreateRecords(
+        const action = actions.bulkCreateRecords(
           "bucket", "collection", recordsWithAttachment);
         bulkCreateRecords = saga.bulkCreateRecords(getState, action);
       });
 
       it("should mark the current collection as busy", () => {
         expect(bulkCreateRecords.next().value)
-          .eql(put(collectionActions.collectionBusy(true)));
+          .eql(put(actions.collectionBusy(true)));
       });
 
       it("should send the first attachment", () => {
@@ -742,7 +743,7 @@ describe("collection sagas", () => {
 
       it("should unmark the current collection as busy", () => {
         expect(bulkCreateRecords.next().value)
-          .eql(put(collectionActions.collectionBusy(false)));
+          .eql(put(actions.collectionBusy(false)));
       });
     });
 
@@ -758,7 +759,7 @@ describe("collection sagas", () => {
             }
           }
         });
-        const action = collectionActions.bulkCreateRecords(
+        const action = actions.bulkCreateRecords(
           "bucket", "collection", records);
         bulkCreateRecords = saga.bulkCreateRecords(getState, action);
         bulkCreateRecords.next();
@@ -771,7 +772,7 @@ describe("collection sagas", () => {
 
       it("should unmark the current collection as busy", () => {
         expect(bulkCreateRecords.next().value)
-          .eql(put(collectionActions.collectionBusy(false)));
+          .eql(put(actions.collectionBusy(false)));
       });
     });
   });
@@ -783,14 +784,16 @@ describe("collection sagas", () => {
       before(() => {
         client = {listHistory() {}};
         setClient({bucket(){ return client; }});
-        const action = collectionActions.listCollectionHistory("bucket", "collection", "record");
-        listHistory = saga.listHistory(() => {}, action);
+        const action = actions.listCollectionHistory("bucket", "collection", "record");
+        const getState = () => ({settings});
+        listHistory = saga.listHistory(getState, action);
       });
 
-      it("should fetch history on cpllection", () => {
+      it("should fetch history on collection", () => {
         expect(listHistory.next().value)
           .eql(call([client, client.listHistory], {
             since: undefined,
+            limit: 42,
             filters: {
               resource_name: undefined,
               collection_id: "collection",
@@ -799,28 +802,30 @@ describe("collection sagas", () => {
       });
 
       it("should filter from timestamp if provided", () => {
-        const action = collectionActions.listCollectionHistory("bucket", "collection", {since: 42});
-        const historySaga = saga.listHistory(() => {}, action);
+        const action = actions.listCollectionHistory("bucket", "collection", {since: 42});
+        const historySaga = saga.listHistory(() => ({settings}), action);
         expect(historySaga.next().value)
           .eql(call([client, client.listHistory], {
             filters: {
               resource_name: undefined,
               collection_id: "collection",
             },
-            since: 42
+            since: 42,
+            limit: 42,
           }));
       });
 
       it("should filter from resource_name if provided", () => {
-        const action = collectionActions.listCollectionHistory("bucket", "collection", {since: 42, resource_name: "record"});
-        const historySaga = saga.listHistory(() => {}, action);
+        const action = actions.listCollectionHistory("bucket", "collection", {since: 42, resource_name: "record"});
+        const historySaga = saga.listHistory(() => ({settings}), action);
         expect(historySaga.next().value)
           .eql(call([client, client.listHistory], {
             filters: {
               resource_name: "record",
               collection_id: "collection",
             },
-            since: 42
+            since: 42,
+            limit: 42,
           }));
       });
 
@@ -828,7 +833,7 @@ describe("collection sagas", () => {
         const history = [];
         const result = {data: history};
         expect(listHistory.next(result).value)
-          .eql(put(collectionActions.listCollectionHistorySuccess(history)));
+          .eql(put(actions.listCollectionHistorySuccess(history)));
       });
 
     });
@@ -837,8 +842,9 @@ describe("collection sagas", () => {
       let listHistory;
 
       before(() => {
-        const action = collectionActions.listCollectionHistory("bucket", "collection", "record");
-        listHistory = saga.listHistory(() => {}, action);
+        const action = actions.listCollectionHistory("bucket", "collection", "record");
+        const getState = () => ({settings});
+        listHistory = saga.listHistory(getState, action);
         listHistory.next();
       });
 
@@ -846,6 +852,35 @@ describe("collection sagas", () => {
         expect(listHistory.throw("error").value)
           .eql(put(notifyError("Couldn't list collection history.", "error", {clear: true})));
       });
+    });
+  });
+
+  describe("listNextHistory()", () => {
+    let listNextHistory;
+
+    const fakeNext = () => {};
+
+    before(() => {
+      const action = actions.listCollectionNextHistory();
+      const getState = () => ({collection: {listNextHistory: fakeNext}});
+      listNextHistory = saga.listNextHistory(getState, action);
+    });
+
+    it("should fetch the next history page", () => {
+      expect(listNextHistory.next().value)
+        .eql(call(fakeNext));
+    });
+
+    it("should dispatch the listBucketHistorySuccess action", () => {
+      expect(listNextHistory.next({data: [], hasNextPage: true, next: fakeNext}).value)
+        .eql(put(actions.listCollectionHistorySuccess([], true, fakeNext)));
+    });
+
+    it("should scroll the window to the bottom", () => {
+      expect(listNextHistory.next().value)
+        .to.have.property("CALL")
+        .to.have.property("fn")
+        .eql(window.scrollTo);
     });
   });
 });

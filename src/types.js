@@ -33,6 +33,8 @@ export type BucketState = {
   permissions: BucketPermissions,
   history: ResourceHistoryEntry[],
   historyLoaded: boolean,
+  hasNextHistory: boolean,
+  listNextHistory: ?Function,
   collections: CollectionData[],
   collectionsLoaded: boolean,
   groups: GroupData[],
@@ -95,6 +97,8 @@ export type CollectionState = {
   listNextRecords: ?Function,
   history: ResourceHistoryEntry[],
   historyLoaded: boolean,
+  hasNextHistory: boolean,
+  listNextHistory: ?Function,
 };
 
 export type CollectionData = {
@@ -131,6 +135,8 @@ export type GroupState = {
   permissions: GroupPermissions,
   history: ResourceHistoryEntry[],
   historyLoaded: boolean,
+  hasNextHistory: boolean,
+  listNextHistory: ?Function,
 };
 
 export type GroupData = {
@@ -183,6 +189,8 @@ export type RecordState = {
   permissions: RecordPermissions,
   history: ResourceHistoryEntry[],
   historyLoaded: boolean,
+  hasNextHistory: boolean,
+  listNextHistory: ?Function,
 };
 
 export type RecordData = {

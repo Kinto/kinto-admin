@@ -15,6 +15,7 @@ import {
   BUCKET_COLLECTIONS_REQUEST,
   BUCKET_COLLECTIONS_SUCCESS,
   BUCKET_HISTORY_REQUEST,
+  BUCKET_HISTORY_NEXT_REQUEST,
   BUCKET_HISTORY_SUCCESS,
   BUCKET_CREATE_REQUEST,
   BUCKET_UPDATE_REQUEST,
@@ -78,11 +79,19 @@ export function listBucketHistory(bid: string, filters: HistoryFilters = {}): {
   return {type: BUCKET_HISTORY_REQUEST, bid, filters};
 }
 
-export function listBucketHistorySuccess(history: ResourceHistoryEntry[]): {
+export function listBucketNextHistory(): {
+  type: "BUCKET_HISTORY_NEXT_REQUEST",
+} {
+  return {type: BUCKET_HISTORY_NEXT_REQUEST};
+}
+
+export function listBucketHistorySuccess(history: ResourceHistoryEntry[], hasNextHistory: boolean, listNextHistory: ?Function): {
   type: "BUCKET_HISTORY_SUCCESS",
   history: ResourceHistoryEntry[],
+  hasNextHistory: boolean,
+  listNextHistory: ?Function,
 } {
-  return {type: BUCKET_HISTORY_SUCCESS, history};
+  return {type: BUCKET_HISTORY_SUCCESS, history, hasNextHistory, listNextHistory};
 }
 
 export function createCollection(bid: string, collectionData: CollectionData): {

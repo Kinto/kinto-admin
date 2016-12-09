@@ -67,13 +67,18 @@ describe("group reducer", () => {
   describe("GROUP_HISTORY_SUCCESS", () => {
     it("should update group history state", () => {
       const history = [1, 2, 3];
+      const fakeNext = () => {};
       const state = group(undefined, {
         type: GROUP_HISTORY_SUCCESS,
-        history
+        history,
+        hasNextHistory: true,
+        listNextHistory: fakeNext,
       });
 
       expect(state.history).eql(history);
       expect(state.historyLoaded).eql(true);
+      expect(state.hasNextHistory).eql(true);
+      expect(state.listNextHistory).eql(fakeNext);
     });
   });
 });

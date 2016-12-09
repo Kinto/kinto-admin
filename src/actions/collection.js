@@ -12,6 +12,7 @@ import {
   COLLECTION_BUSY,
   COLLECTION_RESET,
   COLLECTION_HISTORY_REQUEST,
+  COLLECTION_HISTORY_NEXT_REQUEST,
   COLLECTION_HISTORY_SUCCESS,
   COLLECTION_RECORDS_REQUEST,
   COLLECTION_RECORDS_NEXT_REQUEST,
@@ -69,11 +70,19 @@ export function listCollectionHistory(bid: string, cid: string, filters: History
   return {type: COLLECTION_HISTORY_REQUEST, bid, cid, filters};
 }
 
-export function listCollectionHistorySuccess(history: ResourceHistoryEntry[]): {
+export function listCollectionNextHistory(): {
+  type: "COLLECTION_HISTORY_NEXT_REQUEST",
+} {
+  return {type: COLLECTION_HISTORY_NEXT_REQUEST};
+}
+
+export function listCollectionHistorySuccess(history: ResourceHistoryEntry[], hasNextHistory: boolean, listNextHistory: ?Function): {
   type: "COLLECTION_HISTORY_SUCCESS",
   history: ResourceHistoryEntry[],
+  hasNextHistory: boolean,
+  listNextHistory: ?Function,
 } {
-  return {type: COLLECTION_HISTORY_SUCCESS, history};
+  return {type: COLLECTION_HISTORY_SUCCESS, history, hasNextHistory, listNextHistory};
 }
 
 export function createRecord(bid: string, cid: string, record: RecordData, attachment?: string): {

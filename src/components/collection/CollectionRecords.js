@@ -12,8 +12,8 @@ import React, { Component } from "react";
 import { renderDisplayField, timeago, buildAttachmentUrl } from "../../utils";
 import { canCreateRecord } from "../../permission";
 import AdminLink from "../AdminLink";
-import Spinner from "../Spinner";
 import CollectionTabs from "./CollectionTabs";
+import PaginatedTable from "../PaginatedTable";
 
 
 class Row extends Component {
@@ -176,62 +176,61 @@ class Table extends Component {
       );
     }
 
+    const thead = (
+      <thead>
+        <tr>
+          {
+            displayFields.map((displayField, index) => {
+              return (
+                <th key={index}>
+                  {this.getFieldTitle(displayField)}
+                  {this.isSchemaProperty(displayField) ?
+                    <ColumnSortLink
+                      currentSort={currentSort}
+                      column={displayField}
+                      updateSort={updateSort} /> : null}
+                </th>
+              );
+            })
+          }
+          <th>
+            Last mod.
+            <ColumnSortLink
+              currentSort={currentSort}
+              column="last_modified"
+              updateSort={updateSort} />
+          </th>
+          <th></th>
+        </tr>
+      </thead>
+    );
+
+    const tbody = (
+      <tbody className={!recordsLoaded ? "loading" : ""}>{
+        records.map((record, index) => {
+          return (
+            <Row key={index}
+              bid={bid}
+              cid={cid}
+              record={record}
+              schema={schema}
+              displayFields={displayFields}
+              deleteRecord={deleteRecord}
+              redirectTo={redirectTo}
+              capabilities={capabilities} />
+          );
+        })
+      }</tbody>
+    );
+
     return (
-      <table className="table table-striped table-bordered record-list">
-        <thead>
-          <tr>
-            {
-              displayFields.map((displayField, index) => {
-                return (
-                  <th key={index}>
-                    {this.getFieldTitle(displayField)}
-                    {this.isSchemaProperty(displayField) ?
-                      <ColumnSortLink
-                        currentSort={currentSort}
-                        column={displayField}
-                        updateSort={updateSort} /> : null}
-                  </th>
-                );
-              })
-            }
-            <th>
-              Last mod.
-              <ColumnSortLink
-                currentSort={currentSort}
-                column="last_modified"
-                updateSort={updateSort} />
-            </th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody className={!recordsLoaded ? "loading" : ""}>{
-          records.map((record, index) => {
-            return (
-              <Row key={index}
-                bid={bid}
-                cid={cid}
-                record={record}
-                schema={schema}
-                displayFields={displayFields}
-                deleteRecord={deleteRecord}
-                redirectTo={redirectTo}
-                capabilities={capabilities} />
-            );
-          })
-        }</tbody>
-        { hasNextRecords ?
-          <tfoot>
-            <tr>
-              <td colSpan={displayFields.length + 2} className="load-more text-center">
-                {!recordsLoaded ?  <Spinner /> :
-                  <a href="." key="__3" onClick={(event) => {
-                    event.preventDefault();
-                    listNextRecords();
-                  }}>Load more</a>}
-              </td>
-            </tr>
-          </tfoot> : null }
-      </table>
+      <PaginatedTable
+        thead={thead}
+        tbody={tbody}
+        dataLoaded={recordsLoaded}
+        colSpan={displayFields.length + 2}
+        hasNextPage={hasNextRecords}
+        listNextPage={listNextRecords} />
     );
   }
 }

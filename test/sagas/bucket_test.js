@@ -7,6 +7,7 @@ import { redirectTo } from "../../src/actions/route";
 import * as actions from "../../src/actions/bucket";
 import * as saga from "../../src/sagas/bucket";
 import { setClient } from "../../src/client";
+import { scrollToBottom } from "../../src/utils";
 
 
 const collectionData = {
@@ -24,6 +25,10 @@ const groupData = {
 
 
 describe("bucket sagas", () => {
+  const settings = {
+    maxPerPage: 42,
+  };
+
   describe("createBucket()", () => {
     describe("Success", () => {
       let client, createBucket;
@@ -551,77 +556,107 @@ describe("bucket sagas", () => {
   });
 
 
-  describe("listBucketHistory()", () => {
+  describe("listHistory()", () => {
     describe("Success", () => {
-      let bucket, listBucketHistory;
+      let bucket, listHistory;
 
       before(() => {
         bucket = {listHistory() {}};
         setClient({bucket() {return bucket;}});
         const action = actions.listBucketHistory("bucket");
-        listBucketHistory = saga.listBucketHistory(() => {}, action);
+        const getState = () => ({settings});
+        listHistory = saga.listHistory(getState, action);
       });
 
       it("should list the history", () => {
-        expect(listBucketHistory.next().value)
+        expect(listHistory.next().value)
           .eql(call([bucket, bucket.listHistory], {
             filters: {
               resource_name: undefined,
               exclude_resource_name: "record"
             },
+            limit: 42,
             since: undefined,
           }));
       });
 
       it("should dispatch the listBucketHistorySuccess action", () => {
         const results = [];
-        expect(listBucketHistory.next({data: results}).value)
+        expect(listHistory.next({data: results}).value)
           .eql(put(actions.listBucketHistorySuccess(results)));
       });
 
       it("should filter from timestamp if provided", () => {
         const action = actions.listBucketHistory("bucket", {since: 42});
-        const historySaga = saga.listBucketHistory(() => {}, action);
+        const historySaga = saga.listHistory(() => ({settings}), action);
         expect(historySaga.next().value)
           .eql(call([bucket, bucket.listHistory], {
             filters: {
               resource_name: undefined,
               exclude_resource_name: "record"
             },
+            limit: 42,
             since: 42,
           }));
       });
 
       it("should filter by resource_name if provided", () => {
         const action = actions.listBucketHistory("bucket", {since: 42, resource_name: "bucket"});
-        const historySaga = saga.listBucketHistory(() => {}, action);
+        const historySaga = saga.listHistory(() => ({settings}), action);
         expect(historySaga.next().value)
           .eql(call([bucket, bucket.listHistory], {
             filters: {
               resource_name: "bucket",
               exclude_resource_name: "record"
             },
+            limit: 42,
             since: 42,
           }));
       });
     });
 
     describe("Failure", () => {
-      let listBucketHistory;
+      let listHistory;
 
       before(() => {
         const action = actions.listBucketHistory("bucket");
-        listBucketHistory = saga.listBucketHistory(() => {}, action);
-        listBucketHistory.next();
+        listHistory = saga.listHistory(() => ({settings}), action);
+        listHistory.next();
       });
 
       it("should dispatch an error notification action", () => {
-        expect(listBucketHistory.throw("error").value)
+        expect(listHistory.throw("error").value)
           .eql(put(notifyError("Couldn't list bucket history.", "error", {clear: true})));
       });
     });
   });
 
+  describe("listNextHistory()", () => {
+    let listNextHistory;
+
+    const fakeNext = () => {};
+
+    before(() => {
+      const action = actions.listBucketNextHistory();
+      const getState = () => ({bucket: {listNextHistory: fakeNext}});
+      listNextHistory = saga.listNextHistory(getState, action);
+    });
+
+    it("should fetch the next history page", () => {
+      expect(listNextHistory.next().value)
+        .eql(call(fakeNext));
+    });
+
+    it("should dispatch the listBucketHistorySuccess action", () => {
+      expect(listNextHistory.next({data: [], hasNextPage: true, next: fakeNext}).value)
+        .eql(put(actions.listBucketHistorySuccess([], true, fakeNext)));
+    });
+
+    it("should scroll the window to the bottom", () => {
+      expect(listNextHistory.next().value)
+        .eql(call(scrollToBottom));
+    });
+  });
 
   describe("createGroup()", () => {
     describe("Success", () => {

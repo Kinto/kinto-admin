@@ -8,7 +8,6 @@ import type {
 
 import React, { Component } from "react";
 
-import Spinner from "../Spinner";
 import BucketTabs from "./BucketTabs";
 import HistoryTable from "../HistoryTable";
 
@@ -19,12 +18,19 @@ export default class BucketHistory extends Component {
     bucket: BucketState,
     capabilities: Capabilities,
     location: RouteLocation,
+    listBucketNextHistory: () => void,
   };
 
   render() {
-    const {params, bucket, capabilities, location} = this.props;
+    const {
+      params,
+      bucket,
+      capabilities,
+      location,
+      listBucketNextHistory,
+    } = this.props;
     const {bid} = params;
-    const {history, historyLoaded} = bucket;
+    const {history, historyLoaded, hasNextHistory} = bucket;
 
     return (
       <div>
@@ -33,8 +39,13 @@ export default class BucketHistory extends Component {
           bid={bid}
           selected="history"
           capabilities={capabilities}>
-          { !historyLoaded ? <Spinner /> :
-            <HistoryTable bid={bid} history={history} location={location} />}
+          <HistoryTable
+            bid={bid}
+            historyLoaded={historyLoaded}
+            history={history}
+            hasNextHistory={hasNextHistory}
+            listNextHistory={listBucketNextHistory}
+            location={location} />
         </BucketTabs>
       </div>
     );

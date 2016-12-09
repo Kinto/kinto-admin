@@ -93,6 +93,8 @@ describe("record reducer", () => {
           },
           history: [],
           historyLoaded: false,
+          hasNextHistory: false,
+          listNextHistory: null,
         });
     });
   });
@@ -109,13 +111,18 @@ describe("record reducer", () => {
   describe("RECORD_HISTORY_SUCCESS", () => {
     it("should update record history state", () => {
       const history = [1, 2, 3];
+      const fakeNext = () => {};
       const state = record(undefined, {
         type: RECORD_HISTORY_SUCCESS,
-        history
+        history,
+        hasNextHistory: true,
+        listNextHistory: fakeNext,
       });
 
       expect(state.history).eql(history);
       expect(state.historyLoaded).eql(true);
+      expect(state.hasNextHistory).eql(true);
+      expect(state.listNextHistory).eql(fakeNext);
     });
   });
 });

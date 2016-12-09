@@ -8,6 +8,7 @@ import { notifySuccess, notifyError } from "../actions/notifications";
 import { sessionBusy, listBuckets } from "../actions/session";
 import { redirectTo } from "../actions/route";
 import * as actions from "../actions/bucket";
+import { scrollToBottom } from "../utils.js";
 
 
 function getBucket(bid) {
@@ -144,20 +145,36 @@ export function* listBucketCollections(getState: GetStateFn, action: ActionType<
   }
 }
 
-export function* listBucketHistory(getState: GetStateFn, action: ActionType<typeof actions.listBucketHistory>): SagaGen {
+export function* listHistory(getState: GetStateFn, action: ActionType<typeof actions.listBucketHistory>): SagaGen {
+  const {settings: {maxPerPage}} = getState();
   const {bid, filters: {resource_name, since}} = action;
   try {
     const bucket = getBucket(bid);
-    const {data} = yield call([bucket, bucket.listHistory], {
+    const {data, hasNextPage, next} = yield call([bucket, bucket.listHistory], {
       since,
+      limit: maxPerPage,
       filters: {
         resource_name,
         exclude_resource_name: "record"
       }
     });
-    yield put(actions.listBucketHistorySuccess(data));
+    yield put(actions.listBucketHistorySuccess(data, hasNextPage, next));
   } catch(error) {
     yield put(notifyError("Couldn't list bucket history.", error));
+  }
+}
+
+export function* listNextHistory(getState: GetStateFn): SagaGen {
+  const {bucket: {listNextHistory}} = getState();
+  if (listNextHistory == null) {
+    return;
+  }
+  try {
+    const {data, hasNextPage, next} = yield call(listNextHistory);
+    yield put(actions.listBucketHistorySuccess(data, hasNextPage, next));
+    yield call(scrollToBottom);
+  } catch(error) {
+    yield put(notifyError("Couldn't process next page.", error));
   }
 }
 

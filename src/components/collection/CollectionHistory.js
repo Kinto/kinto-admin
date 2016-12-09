@@ -10,7 +10,6 @@ import type {
 
 import React, { Component } from "react";
 
-import Spinner from "../Spinner";
 import HistoryTable from "../HistoryTable";
 import CollectionTabs from "./CollectionTabs";
 
@@ -23,12 +22,19 @@ export default class CollectionHistory extends Component {
     capabilities: Capabilities,
     params: CollectionRouteParams,
     location: RouteLocation,
+    listCollectionNextHistory: () => void,
   };
 
   render() {
-    const {params, collection, capabilities, location} = this.props;
+    const {
+      params,
+      collection,
+      capabilities,
+      location,
+      listCollectionNextHistory,
+    } = this.props;
     const {bid, cid} = params;
-    const {history, historyLoaded} = collection;
+    const {history, historyLoaded, hasNextHistory} = collection;
 
     return (
       <div>
@@ -38,8 +44,13 @@ export default class CollectionHistory extends Component {
           cid={cid}
           selected="history"
           capabilities={capabilities}>
-          { !historyLoaded ? <Spinner /> :
-            <HistoryTable bid={bid} history={history} location={location} />}
+          <HistoryTable
+            bid={bid}
+            historyLoaded={historyLoaded}
+            history={history}
+            hasNextHistory={hasNextHistory}
+            listNextHistory={listCollectionNextHistory}
+            location={location} />
         </CollectionTabs>
       </div>
     );
