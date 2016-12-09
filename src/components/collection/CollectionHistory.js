@@ -34,7 +34,7 @@ export default class CollectionHistory extends Component {
       listCollectionNextHistory,
     } = this.props;
     const {bid, cid} = params;
-    const {history, historyLoaded, hasNextHistory} = collection;
+    const {history: {entries, loaded, hasNextPage}} = collection;
 
     return (
       <div>
@@ -46,9 +46,9 @@ export default class CollectionHistory extends Component {
           capabilities={capabilities}>
           <HistoryTable
             bid={bid}
-            historyLoaded={historyLoaded}
-            history={history}
-            hasNextHistory={hasNextHistory}
+            historyLoaded={loaded}
+            history={entries}
+            hasNextHistory={hasNextPage}
             listNextHistory={listCollectionNextHistory}
             location={location} />
         </CollectionTabs>

@@ -5,11 +5,14 @@ import {
   GROUP_BUSY,
   GROUP_RESET,
   GROUP_HISTORY_REQUEST,
+  GROUP_HISTORY_NEXT_REQUEST,
   GROUP_HISTORY_SUCCESS,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
   ROUTE_LOAD_FAILURE,
 } from "../constants";
+import { paginator } from "./shared";
+
 
 export const INITIAL_STATE: GroupState = {
   data: {
@@ -20,7 +23,7 @@ export const INITIAL_STATE: GroupState = {
     "read": [],
     "write": []
   },
-  history: [],
+  history: paginator(undefined, {type: "@@INIT"}),
   historyLoaded: false,
   hasNextHistory: false,
   listNextHistory: null,
@@ -55,18 +58,10 @@ export function group(
     case GROUP_RESET: {
       return INITIAL_STATE;
     }
-    case GROUP_HISTORY_REQUEST: {
-      return {...state, historyLoaded: false};
-    }
+    case GROUP_HISTORY_REQUEST:
+    case GROUP_HISTORY_NEXT_REQUEST:
     case GROUP_HISTORY_SUCCESS: {
-      const {history, hasNextHistory, listNextHistory} = action;
-      return {
-        ...state,
-        history: [...state.history, ...history],
-        historyLoaded: true,
-        hasNextHistory,
-        listNextHistory,
-      };
+      return {...state, history: paginator(state.history, action)};
     }
     default: {
       return state;

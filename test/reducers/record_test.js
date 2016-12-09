@@ -74,6 +74,7 @@ describe("record reducer", () => {
 
   describe("RECORD_RESET", () => {
     it("should reset record to initial state", () => {
+      const initial = record(undefined, {type: "@@INIT"});
       expect(record({
         busy: true,
         data: {foo: "bar"},
@@ -84,18 +85,7 @@ describe("record reducer", () => {
         history: [1, 2],
         historyLoaded: true,
       }, {type: RECORD_RESET}))
-        .eql({
-          busy: false,
-          data: {},
-          permissions: {
-            write: [],
-            read: [],
-          },
-          history: [],
-          historyLoaded: false,
-          hasNextHistory: false,
-          listNextHistory: null,
-        });
+        .eql(initial);
     });
   });
 
@@ -104,25 +94,34 @@ describe("record reducer", () => {
       const state = record(undefined, {
         type: RECORD_HISTORY_REQUEST,
       });
-      expect(state.historyLoaded).eql(false);
+      expect(state.history.loaded).eql(false);
     });
   });
 
   describe("RECORD_HISTORY_SUCCESS", () => {
     it("should update record history state", () => {
-      const history = [1, 2, 3];
       const fakeNext = () => {};
-      const state = record(undefined, {
+      const initial = {
+        history: {
+          entries: [],
+          loaded: false,
+          hasNextPage: true,
+          next: fakeNext,
+        },
+      };
+      const action = {
         type: RECORD_HISTORY_SUCCESS,
-        history,
-        hasNextHistory: true,
-        listNextHistory: fakeNext,
-      });
+        entries: [1, 2, 3],
+        hasNextPage: true,
+        next: fakeNext,
+      };
 
-      expect(state.history).eql(history);
-      expect(state.historyLoaded).eql(true);
-      expect(state.hasNextHistory).eql(true);
-      expect(state.listNextHistory).eql(fakeNext);
+      const state = record(initial, action);
+
+      expect(state.history.entries).eql([1, 2, 3]);
+      expect(state.history.loaded).eql(true);
+      expect(state.history.hasNextPage).eql(true);
+      expect(state.history.next).eql(fakeNext);
     });
   });
 });

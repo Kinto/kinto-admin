@@ -7,6 +7,7 @@ import {
   BUCKET_COLLECTIONS_REQUEST,
   BUCKET_COLLECTIONS_SUCCESS,
   BUCKET_HISTORY_REQUEST,
+  BUCKET_HISTORY_NEXT_REQUEST,
   BUCKET_HISTORY_SUCCESS,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
@@ -74,78 +75,101 @@ describe("bucket reducer", () => {
 
   describe("BUCKET_COLLECTIONS_REQUEST", () => {
     it("should update the collectionsLoaded flag", () => {
-      const state = {collectionsLoaded: true};
+      const state = {collections: {loaded: true}};
       const action = {type: BUCKET_COLLECTIONS_REQUEST};
 
       expect(bucket(state, action))
-        .to.have.property("collectionsLoaded").eql(false);
+        .to.have.property("collections")
+        .to.have.property("loaded").eql(false);
     });
   });
 
   describe("BUCKET_COLLECTIONS_SUCCESS", () => {
     const state = {
-      collections: [],
-      collectionsLoaded: false,
+      collections: {
+        loaded: false,
+        entries: [],
+      }
     };
     const action = {
       type: BUCKET_COLLECTIONS_SUCCESS,
-      collections: [1, 2, 3],
+      entries: [1, 2, 3],
     };
 
     it("should update the list of bucket collections", () => {
       expect(bucket(state, action))
-        .to.have.property("collections").eql(action.collections);
+        .to.have.property("collections")
+        .to.have.property("entries").eql(action.entries);
     });
 
     it("should update the collectionsLoaded flag", () => {
       expect(bucket(state, action))
-        .to.have.property("collectionsLoaded").eql(true);
+        .to.have.property("collections")
+        .to.have.property("loaded").eql(true);
     });
   });
 
   describe("BUCKET_HISTORY_REQUEST", () => {
-    it("should update the historyLoaded flag", () => {
+    it("should update the history loaded flag", () => {
       const state = {historyLoaded: true};
       const action = {type: BUCKET_HISTORY_REQUEST};
 
       expect(bucket(state, action))
-        .to.have.property("historyLoaded").eql(false);
+        .to.have.property("history")
+        .to.have.property("loaded").eql(false);
+    });
+  });
+
+  describe("BUCKET_HISTORY_NEXT_REQUEST", () => {
+    it("should update the history loaded flag", () => {
+      const state = {historyLoaded: true};
+      const action = {type: BUCKET_HISTORY_NEXT_REQUEST};
+
+      expect(bucket(state, action))
+        .to.have.property("history")
+        .to.have.property("loaded").eql(false);
     });
   });
 
   describe("BUCKET_HISTORY_SUCCESS", () => {
     const state = {
-      history: [],
-      historyLoaded: false,
-      hasNextHistory: false,
-      listNextHistory: null,
+      history: {
+        entries: [],
+        loaded: false,
+        hasNextPage: true,
+        next: fakeNext,
+      }
     };
     const fakeNext = () => {};
     const action = {
       type: BUCKET_HISTORY_SUCCESS,
-      history: [1, 2, 3],
-      hasNextHistory: true,
-      listNextHistory: fakeNext,
+      entries: [1, 2, 3],
+      hasNextPage: true,
+      next: fakeNext,
     };
 
     it("should update the list of history", () => {
       expect(bucket(state, action))
-        .to.have.property("history").eql(action.history);
+        .to.have.property("history")
+        .to.have.property("entries").eql(action.entries);
     });
 
     it("should update the historyLoaded flag", () => {
       expect(bucket(state, action))
-        .to.have.property("historyLoaded").eql(true);
+        .to.have.property("history")
+        .to.have.property("loaded").eql(true);
     });
 
     it("should update the hasNextHistory flag", () => {
       expect(bucket(state, action))
-        .to.have.property("hasNextHistory").eql(true);
+        .to.have.property("history")
+        .to.have.property("hasNextPage").eql(true);
     });
 
     it("should update the listNextHistory flag", () => {
       expect(bucket(state, action))
-        .to.have.property("listNextHistory").eql(fakeNext);
+        .to.have.property("history")
+        .to.have.property("next").eql(fakeNext);
     });
   });
 });

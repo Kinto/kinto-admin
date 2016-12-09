@@ -11,53 +11,66 @@ import React, { Component } from "react";
 import { timeago } from "../../utils";
 import AdminLink from "../AdminLink";
 import BucketTabs from "./BucketTabs";
+import PaginatedTable from "../PaginatedTable";
 
 
 function DataList(props) {
-  const {bid, data, capabilities, collectionsLoaded} = props;
+  const {bid, collections, capabilities, listBucketNextCollections} = props;
+  const {loaded, entries, hasNextPage} = collections;
+  const thead = (
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Schema</th>
+        <th>Cache Expires</th>
+        <th>Last mod.</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+  );
+
+  const tbody = (
+    <tbody className={!loaded ? "loading" : ""}>{
+      entries.map((collection, index) => {
+        const {id: cid, schema, cache_expires, last_modified} = collection;
+        const date = new Date(last_modified);
+        return (
+          <tr key={index}>
+            <td>{cid}</td>
+            <td>{schema ? "Yes" : "No"}</td>
+            <td>{cache_expires ? `${cache_expires} seconds` : "No" }</td>
+            <td><span title={date.toISOString()}>{timeago(date.getTime())}</span></td>
+            <td className="actions">
+              <div className="btn-group">
+                <AdminLink name="collection:records" params={{bid, cid}}
+                  className="btn btn-xs btn-default" title="Browse collection">
+                  <i className="glyphicon glyphicon-align-justify" />
+                </AdminLink>
+                {"history" in capabilities ?
+                  <AdminLink name="collection:history" params={{bid, cid}}
+                    className="btn btn-xs btn-default" title="View collection history">
+                    <i className="glyphicon glyphicon-time" />
+                  </AdminLink> : null}
+                <AdminLink name="collection:attributes" params={{bid, cid}}
+                   className="btn btn-xs btn-default" title="Edit collection attributes">
+                  <i className="glyphicon glyphicon-cog" />
+                </AdminLink>
+              </div>
+            </td>
+          </tr>
+        );
+      })
+    }</tbody>
+  );
+
   return (
-    <table className="table table-striped table-bordered record-list">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Schema</th>
-          <th>Cache Expires</th>
-          <th>Last mod.</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody className={!collectionsLoaded ? "loading" : ""}>{
-        data.map((collection, index) => {
-          const {id: cid, schema, cache_expires, last_modified} = collection;
-          const date = new Date(last_modified);
-          return (
-            <tr key={index}>
-              <td>{cid}</td>
-              <td>{schema ? "Yes" : "No"}</td>
-              <td>{cache_expires ? `${cache_expires} seconds` : "No" }</td>
-              <td><span title={date.toISOString()}>{timeago(date.getTime())}</span></td>
-              <td className="actions">
-                <div className="btn-group">
-                  <AdminLink name="collection:records" params={{bid, cid}}
-                    className="btn btn-xs btn-default" title="Browse collection">
-                    <i className="glyphicon glyphicon-align-justify" />
-                  </AdminLink>
-                  {"history" in capabilities ?
-                    <AdminLink name="collection:history" params={{bid, cid}}
-                      className="btn btn-xs btn-default" title="View collection history">
-                      <i className="glyphicon glyphicon-time" />
-                    </AdminLink> : null}
-                  <AdminLink name="collection:attributes" params={{bid, cid}}
-                     className="btn btn-xs btn-default" title="Edit collection attributes">
-                    <i className="glyphicon glyphicon-cog" />
-                  </AdminLink>
-                </div>
-              </td>
-            </tr>
-          );
-        })
-      }</tbody>
-    </table>
+    <PaginatedTable
+      thead={thead}
+      tbody={tbody}
+      dataLoaded={loaded}
+      colSpan={5}
+      hasNextPage={hasNextPage}
+      listNextPage={listBucketNextCollections} />
   );
 }
 
@@ -82,12 +95,19 @@ export default class BucketCollections extends Component {
     session: SessionState,
     bucket: BucketState,
     capabilities: Capabilities,
+    listBucketNextCollections: () => void,
   };
 
   render() {
-    const {params, session, bucket, capabilities} = this.props;
+    const {
+      params,
+      session,
+      bucket,
+      capabilities,
+      listBucketNextCollections,
+    } = this.props;
     const {bid} = params;
-    const {collections, collectionsLoaded} = bucket;
+    const {collections} = bucket;
 
     const listActions = (
       <ListActions
@@ -104,15 +124,16 @@ export default class BucketCollections extends Component {
           selected="collections"
           capabilities={capabilities}>
           {listActions}
-          {collectionsLoaded && collections.length === 0 ?
+          {collections.loaded && collections.entries.length === 0 ?
             <div className="alert alert-info">
               <p>This bucket has no collections.</p>
             </div>
             :
-            <DataList bid={bid}
-                      data={collections}
-                      collectionsLoaded={collectionsLoaded}
-                      capabilities={capabilities} />
+            <DataList
+              bid={bid}
+              collections={collections}
+              listBucketNextCollections={listBucketNextCollections}
+              capabilities={capabilities} />
           }
           {listActions}
         </BucketTabs>

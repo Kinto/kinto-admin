@@ -86,14 +86,14 @@ export function* listHistory(getState: GetStateFn, action: ActionType<typeof act
 }
 
 export function* listNextHistory(getState: GetStateFn): SagaGen {
-  const {collection: {listNextHistory}} = getState();
-  if (listNextHistory == null) {
+  const {collection: {history: {next: fetchNextHistory}}} = getState();
+  if (fetchNextHistory == null) {
     return;
   }
   try {
-    const {data, hasNextPage, next} = yield call(listNextHistory);
+    const {data, hasNextPage, next} = yield call(fetchNextHistory);
     yield put(actions.listCollectionHistorySuccess(data, hasNextPage, next));
-    yield call([window, window.scrollTo], 0, window.document.body.scrollHeight);
+    yield call(scrollToBottom);
   } catch(error) {
     yield put(notifyError("Couldn't process next page.", error));
   }

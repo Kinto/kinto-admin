@@ -31,12 +31,8 @@ export type BucketState = {
   busy: boolean,
   data: BucketData,
   permissions: BucketPermissions,
-  history: ResourceHistoryEntry[],
-  historyLoaded: boolean,
-  hasNextHistory: boolean,
-  listNextHistory: ?Function,
-  collections: CollectionData[],
-  collectionsLoaded: boolean,
+  history: Paginator<ResourceHistoryEntry>,
+  collections: Paginator<CollectionData>,
   groups: GroupData[],
 };
 
@@ -95,10 +91,7 @@ export type CollectionState = {
   recordsLoaded: boolean,
   hasNextRecords: boolean,
   listNextRecords: ?Function,
-  history: ResourceHistoryEntry[],
-  historyLoaded: boolean,
-  hasNextHistory: boolean,
-  listNextHistory: ?Function,
+  history: Paginator<ResourceHistoryEntry>,
 };
 
 export type CollectionData = {
@@ -133,10 +126,7 @@ export type GroupState = {
   busy: boolean,
   data: Object,
   permissions: GroupPermissions,
-  history: ResourceHistoryEntry[],
-  historyLoaded: boolean,
-  hasNextHistory: boolean,
-  listNextHistory: ?Function,
+  history: Paginator<ResourceHistoryEntry>,
 };
 
 export type GroupData = {
@@ -164,6 +154,13 @@ export type Notification = {
 
 export type Notifications = Notification[];
 
+export type Paginator<T> = {
+  entries: T[],
+  loaded: boolean,
+  hasNextPage: boolean,
+  next: ?Function,
+};
+
 export type Permissions =
   BucketPermissions
   | GroupPermissions
@@ -187,10 +184,7 @@ export type RecordState = {
   busy: boolean,
   data: RecordData,
   permissions: RecordPermissions,
-  history: ResourceHistoryEntry[],
-  historyLoaded: boolean,
-  hasNextHistory: boolean,
-  listNextHistory: ?Function,
+  history: Paginator<ResourceHistoryEntry>,
 };
 
 export type RecordData = {

@@ -31,7 +31,7 @@ export default class GroupHistory extends Component {
       listGroupNextHistory,
     } = this.props;
     const {bid, gid} = params;
-    const {history, historyLoaded, hasNextHistory} = group;
+    const {history: {entries, loaded, hasNextPage}} = group;
 
     return (
       <div>
@@ -43,9 +43,9 @@ export default class GroupHistory extends Component {
           capabilities={capabilities}>
           <HistoryTable
             bid={bid}
-            historyLoaded={historyLoaded}
-            history={history}
-            hasNextHistory={hasNextHistory}
+            historyLoaded={loaded}
+            history={entries}
+            hasNextHistory={hasNextPage}
             listNextHistory={listGroupNextHistory}
             location={location} />
         </CollectionTabs>

@@ -8,7 +8,7 @@ import * as actions from "../../src/actions/route";
 import * as notificationActions from "../../src/actions/notifications";
 import * as sessionActions from "../../src/actions/session";
 import * as saga from "../../src/sagas/route";
-
+import { scrollToTop } from "../../src/utils";
 import { SESSION_AUTHENTICATED } from "../../src/constants";
 
 
@@ -405,7 +405,7 @@ describe("route sagas", () => {
 
       it("should scroll window to top", () => {
         expect(routeUpdated.next().value)
-          .eql(call([window, window.scrollTo], 0, 0));
+          .eql(call(scrollToTop));
       });
     });
   });

@@ -32,12 +32,12 @@ export function* listHistory(getState: GetStateFn, action: ActionType<typeof act
 }
 
 export function* listNextHistory(getState: GetStateFn): SagaGen {
-  const {group: {listNextHistory}} = getState();
-  if (listNextHistory == null) {
+  const {group: {history: {next: fetchNextHistory}}} = getState();
+  if (fetchNextHistory == null) {
     return;
   }
   try {
-    const {data, hasNextPage, next} = yield call(listNextHistory);
+    const {data, hasNextPage, next} = yield call(fetchNextHistory);
     yield put(actions.listGroupHistorySuccess(data, hasNextPage, next));
     yield call(scrollToBottom);
   } catch(error) {

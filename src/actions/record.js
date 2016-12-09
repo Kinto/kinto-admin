@@ -40,11 +40,11 @@ export function listRecordNextHistory(): {
   return {type: RECORD_HISTORY_NEXT_REQUEST};
 }
 
-export function listRecordHistorySuccess(history: ResourceHistoryEntry[], hasNextHistory: boolean, listNextHistory: ?Function): {
+export function listRecordHistorySuccess(entries: ResourceHistoryEntry[], hasNextPage: boolean, next: ?Function): {
   type: "RECORD_HISTORY_SUCCESS",
-  history: ResourceHistoryEntry[],
-  hasNextHistory: boolean,
-  listNextHistory: ?Function,
+  entries: ResourceHistoryEntry[],
+  hasNextPage: boolean,
+  next: ?Function,
 } {
-  return {type: RECORD_HISTORY_SUCCESS, history, hasNextHistory, listNextHistory};
+  return {type: RECORD_HISTORY_SUCCESS, entries, hasNextPage, next};
 }

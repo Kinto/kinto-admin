@@ -34,7 +34,7 @@ export default class RecordHistory extends Component {
       listRecordNextHistory,
     } = this.props;
     const {bid, cid, rid} = params;
-    const {history, historyLoaded, hasNextHistory} = record;
+    const {history: {entries, loaded, hasNextPage}} = record;
 
     return (
       <div>
@@ -47,9 +47,9 @@ export default class RecordHistory extends Component {
           capabilities={capabilities}>
           <HistoryTable
             bid={bid}
-            historyLoaded={historyLoaded}
-            history={history}
-            hasNextHistory={hasNextHistory}
+            historyLoaded={loaded}
+            history={entries}
+            hasNextHistory={hasNextPage}
             listNextHistory={listRecordNextHistory}
             location={location} />
         </RecordTabs>

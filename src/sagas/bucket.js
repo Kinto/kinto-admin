@@ -135,13 +135,30 @@ export function* deleteCollection(getState: GetStateFn, action: ActionType<typeo
 }
 
 export function* listBucketCollections(getState: GetStateFn, action: ActionType<typeof actions.listBucketCollections>): SagaGen {
+  const {settings: {maxPerPage}} = getState();
   const {bid} = action;
   try {
     const bucket = getBucket(bid);
-    const {data} = yield call([bucket, bucket.listCollections]);
-    yield put(actions.listBucketCollectionsSuccess(data));
+    const {data, hasNextPage, next} = yield call([bucket, bucket.listCollections], {
+      limit: maxPerPage,
+    });
+    yield put(actions.listBucketCollectionsSuccess(data, hasNextPage, next));
   } catch(error) {
     yield put(notifyError("Couldn't list bucket collections.", error));
+  }
+}
+
+export function* listBucketNextCollections(getState: GetStateFn): SagaGen {
+  const {bucket: {collections: {next: fetchNextCollections}}} = getState();
+  if (fetchNextCollections == null) {
+    return;
+  }
+  try {
+    const {data, hasNextPage, next} = yield call(fetchNextCollections);
+    yield put(actions.listBucketCollectionsSuccess(data, hasNextPage, next));
+    yield call(scrollToBottom);
+  } catch(error) {
+    yield put(notifyError("Couldn't process next page.", error));
   }
 }
 
@@ -165,12 +182,12 @@ export function* listHistory(getState: GetStateFn, action: ActionType<typeof act
 }
 
 export function* listNextHistory(getState: GetStateFn): SagaGen {
-  const {bucket: {listNextHistory}} = getState();
-  if (listNextHistory == null) {
+  const {bucket: {history: {next: fetchNextHistory}}} = getState();
+  if (fetchNextHistory == null) {
     return;
   }
   try {
-    const {data, hasNextPage, next} = yield call(listNextHistory);
+    const {data, hasNextPage, next} = yield call(fetchNextHistory);
     yield put(actions.listBucketHistorySuccess(data, hasNextPage, next));
     yield call(scrollToBottom);
   } catch(error) {
