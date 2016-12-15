@@ -281,7 +281,7 @@ export default class RecordForm extends Component {
         {alert}
         {creation ? null :
           <AttachmentInfo
-            capabilitie={capabilities}
+            capabilities={capabilities}
             record={record}
             attachmentRequired={attachmentRequired}
             deleteAttachment={this.deleteAttachment} />}
