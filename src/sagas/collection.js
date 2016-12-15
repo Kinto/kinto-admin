@@ -100,12 +100,20 @@ export function* listNextHistory(getState: GetStateFn): SagaGen {
 }
 
 export function* createRecord(getState: GetStateFn, action: ActionType<typeof actions.createRecord>): SagaGen {
-  const {session} = getState();
+  const {session, collection} = getState();
   const {bid, cid, record, attachment} = action;
   try {
     const coll = getCollection(bid, cid);
     if ("attachments" in session.serverInfo.capabilities && attachment) {
-      yield call([coll, coll.addAttachment], attachment, record, {safe: true});
+      let attachmentOptions;
+
+      if (collection.data != null && collection.data.attachment != null) {
+        attachmentOptions = {safe: true, gzipped: collection.data.attachment.gzipped};
+      } else {
+        attachmentOptions = {safe: true};
+      }
+
+      yield call([coll, coll.addAttachment], attachment, record, attachmentOptions);
     } else {
       yield call([coll, coll.createRecord], record, {safe: true});
     }

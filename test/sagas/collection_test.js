@@ -218,6 +218,7 @@ describe("collection sagas", () => {
     });
 
     describe("Attachments enabled", () => {
+
       let createRecord;
 
       const attachment = "data:test/fake";
@@ -229,7 +230,8 @@ describe("collection sagas", () => {
             serverInfo: {
               capabilities: {attachments: {}}
             }
-          }
+          },
+          collection: {}
         });
         const action = actions.createRecord(
           "bucket", "collection", record, attachment);
@@ -258,6 +260,62 @@ describe("collection sagas", () => {
         expect(createRecord.next().value)
           .eql(put(recordActions.recordBusy(false)));
       });
+    });
+
+    describe("Attachments enabled with gzip set to false", () => {
+
+      let createRecord;
+
+      const attachment = "data:test/fake";
+
+      before(() => {
+        const getState = () => ({
+          settings,
+          session: {
+            serverInfo: {
+              capabilities: {attachments: {}}
+            }
+          },
+          collection: {data: {attachment: {gzipped: false}}}
+        });
+        const action = actions.createRecord(
+          "bucket", "collection", record, attachment);
+        createRecord = saga.createRecord(getState, action);
+      });
+
+      it("should post the attachment", () => {
+        expect(createRecord.next().value)
+          .eql(call([collection, collection.addAttachment], attachment, record, {safe: true, gzipped: false}));
+      });
+
+    });
+
+    describe("Attachments enabled with gzip set to true", () => {
+
+      let createRecord;
+
+      const attachment = "data:test/fake";
+
+      before(() => {
+        const getState = () => ({
+          settings,
+          session: {
+            serverInfo: {
+              capabilities: {attachments: {}}
+            }
+          },
+          collection: {data: {attachment: {gzipped: true}}}
+        });
+        const action = actions.createRecord(
+          "bucket", "collection", record, attachment);
+        createRecord = saga.createRecord(getState, action);
+      });
+
+      it("should post the attachment", () => {
+        expect(createRecord.next().value)
+          .eql(call([collection, collection.addAttachment], attachment, record, {safe: true, gzipped: true}));
+      });
+
     });
 
     describe("Failure", () => {
