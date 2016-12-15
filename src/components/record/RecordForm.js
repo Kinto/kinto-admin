@@ -75,7 +75,14 @@ function AttachmentPreview({mimetype, location}) {
   }
 }
 
-function AttachmentInfo(props) {
+type AttachmentInfoProps = {
+  record?: RecordState,
+  attachmentRequired: ?boolean,
+  deleteAttachment : () => void,
+  capabilities: Capabilities,
+};
+
+function AttachmentInfo(props : AttachmentInfoProps) {
   const {record: recordState, attachmentRequired, deleteAttachment, capabilities} = props;
   if (recordState == null) {
     return null;
