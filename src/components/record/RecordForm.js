@@ -75,7 +75,14 @@ function AttachmentPreview({mimetype, location}) {
   }
 }
 
-function AttachmentInfo(props) {
+type AttachmentInfoProps = {
+  record?: RecordState,
+  attachmentRequired: ?boolean,
+  deleteAttachment : () => void,
+  capabilities: Capabilities,
+};
+
+function AttachmentInfo(props : AttachmentInfoProps) {
   const {record: recordState, attachmentRequired, deleteAttachment, capabilities} = props;
   if (recordState == null) {
     return null;
@@ -281,7 +288,7 @@ export default class RecordForm extends Component {
         {alert}
         {creation ? null :
           <AttachmentInfo
-            capabilitie={capabilities}
+            capabilities={capabilities}
             record={record}
             attachmentRequired={attachmentRequired}
             deleteAttachment={this.deleteAttachment} />}
