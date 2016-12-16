@@ -99,20 +99,31 @@ export function* listNextHistory(getState: GetStateFn): SagaGen {
   }
 }
 
+function getAttachmentOptions(attachmentsCapability, collectionData) {
+  const {gzipped: defaultGzipped} = attachmentsCapability;
+  let attachmentOptions;
+  if (collectionData != null && collectionData.attachment != null) {
+    let gzipped;
+    if (collectionData.attachment.gzipped != null) {
+      gzipped = collectionData.attachment.gzipped;
+    } else {
+      gzipped = defaultGzipped;
+    }
+    attachmentOptions = {safe: true, gzipped};
+  } else {
+    attachmentOptions = {safe: true};
+  }
+  return attachmentOptions;
+}
+
 export function* createRecord(getState: GetStateFn, action: ActionType<typeof actions.createRecord>): SagaGen {
   const {session, collection} = getState();
   const {bid, cid, record, attachment} = action;
   try {
     const coll = getCollection(bid, cid);
-    if ("attachments" in session.serverInfo.capabilities && attachment) {
-      let attachmentOptions;
-
-      if (collection.data != null && collection.data.attachment != null) {
-        attachmentOptions = {safe: true, gzipped: collection.data.attachment.gzipped};
-      } else {
-        attachmentOptions = {safe: true};
-      }
-
+    if (session.serverInfo.capabilities.attachments != null && attachment) {
+      const attachmentCapability = session.serverInfo.capabilities.attachments;
+      const attachmentOptions = getAttachmentOptions(attachmentCapability, collection.data);
       yield call([coll, coll.addAttachment], attachment, record, attachmentOptions);
     } else {
       yield call([coll, coll.createRecord], record, {safe: true});
@@ -127,15 +138,17 @@ export function* createRecord(getState: GetStateFn, action: ActionType<typeof ac
 }
 
 export function* updateRecord(getState: GetStateFn, action: ActionType<typeof actions.updateRecord>): SagaGen {
-  const {session, record: {data: currentRecord}} = getState();
+  const {session, collection, record: {data: currentRecord}} = getState();
   const {bid, cid, rid, record: {data, permissions}, attachment} = action;
   const {last_modified} = currentRecord;
   try {
     const coll = getCollection(bid, cid);
     if (data) {
       const updatedRecord = {...data, id: rid, last_modified};
-      if ("attachments" in session.serverInfo.capabilities && attachment) {
-        yield call([coll, coll.addAttachment], attachment, updatedRecord, {safe: true});
+      if (session.serverInfo.capabilities.attachments != null && attachment) {
+        const attachmentCapability = session.serverInfo.capabilities.attachments;
+        const attachmentOptions = getAttachmentOptions(attachmentCapability, collection.data);
+        yield call([coll, coll.addAttachment], attachment, updatedRecord, attachmentOptions);
       } else {
         // Note: We update using PATCH to keep existing record attributes possibly
         // not defined by the JSON schema, if any.
