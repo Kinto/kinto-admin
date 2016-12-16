@@ -206,7 +206,7 @@ export function humanDate(since: string | number): string {
 }
 
 export function buildAttachmentUrl(record: RecordData, capabilities: Capabilities): ?string {
-  if (typeof record.attachment !== "object" || typeof capabilities.attachments !== "object") {
+  if (record.attachment == null || capabilities.attachments == null) {
     return;
   }
   const {base_url=""} = capabilities.attachments;
