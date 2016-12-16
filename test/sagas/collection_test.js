@@ -490,6 +490,7 @@ describe("collection sagas", () => {
       // Expose the attachment capability in server info state
       const getState = () => {
         return {
+          collection: {data: {}},
           session: {
             serverInfo: {
               capabilities: {
@@ -555,6 +556,85 @@ describe("collection sagas", () => {
           expect(updateRecord.next().value)
             .eql(put(recordActions.recordBusy(false)));
         });
+      });
+
+
+      describe("Conf gzipped force enabled", () => {
+        let collection, updateRecord;
+
+        before(() => {
+          collection = {
+            updateRecord() {},
+            addAttachment() {},
+          };
+          const bucket = {collection() {return collection;}};
+          setClient({bucket() {return bucket;}});
+          const getState = function() {
+            return {
+              collection: {data: {attachment: {gzipped: true}}},
+              session: {
+                serverInfo: {
+                  capabilities: {
+                    attachments: {}
+                  }
+                }
+              },
+              record: {
+                data: {last_modified: 42}
+              }
+            };
+          };
+          updateRecord = saga.updateRecord(getState, action);
+        });
+
+        it("should update the record with its attachment and force gzipped", () => {
+          expect(updateRecord.next().value)
+            .eql(call([collection, collection.addAttachment], attachment, {
+              ...record,
+              last_modified: 42
+            }, {safe: true, gzipped: true}));
+        });
+
+
+      });
+
+      describe("Conf gzipped force disabled", () => {
+        let collection, updateRecord;
+
+        before(() => {
+          collection = {
+            updateRecord() {},
+            addAttachment() {},
+          };
+          const bucket = {collection() {return collection;}};
+          setClient({bucket() {return bucket;}});
+          const getState = function() {
+            return {
+              collection: {data: {attachment: {gzipped: false}}},
+              session: {
+                serverInfo: {
+                  capabilities: {
+                    attachments: {}
+                  }
+                }
+              },
+              record: {
+                data: {last_modified: 42}
+              }
+            };
+          };
+          updateRecord = saga.updateRecord(getState, action);
+        });
+
+        it("should update the record with its attachment and force gzipped", () => {
+          expect(updateRecord.next().value)
+            .eql(call([collection, collection.addAttachment], attachment, {
+              ...record,
+              last_modified: 42
+            }, {safe: true, gzipped: false}));
+        });
+
+
       });
 
       describe("Failure", () => {
