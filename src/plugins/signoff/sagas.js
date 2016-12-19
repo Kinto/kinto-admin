@@ -108,6 +108,10 @@ export function* handleRequestReview(getState, action) {
   const {bucket} = getState();
   try {
     const collection = yield call(_updateCollectionAttributes, getState, {status: "to-review"});
+    const {data: {id: bid}} = bucket;
+    const {data: {id: cid}} = collection;
+    // Simulate page refresh to update new timestamps
+    yield call(onCollectionRecordsRequest, getState, {bid, cid});
     yield put(routeLoadSuccess({bucket, collection}));
     yield put(notifySuccess("Review requested."));
   } catch(e) {
@@ -131,8 +135,9 @@ export function* handleApproveChanges(getState, action) {
   try {
     const collection = yield call(_updateCollectionAttributes, getState, {status: "to-sign"});
 
-    const {data: {id: bid}} = bucket.data.id;
+    const {data: {id: bid}} = bucket;
     const {data: {id: cid}} = collection;
+    // Simulate page refresh to update new timestamps
     yield call(onCollectionRecordsRequest, getState, {bid, cid});
     yield put(routeLoadSuccess({bucket, collection}));
     yield put(notifySuccess("Signature requested."));

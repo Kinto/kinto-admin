@@ -40,6 +40,13 @@ describe("signoff plugin sagas", () => {
         .to.include({status: "to-review"});
     });
 
+    it("should refresh signoff resources status", () => {
+      expect(handleRequestReview.next({data: {id: "coll", status: "to-review"}}).value)
+        .to.have.property("CALL")
+        .to.have.property("args")
+        .to.include({bid: "buck", cid: "coll"});
+    });
+
     it("should dispatch the routeLoadSuccess action", () => {
       expect(handleRequestReview.next({data: {id: "coll", status: "to-review"}}).value)
         .eql(put(routeLoadSuccess({
