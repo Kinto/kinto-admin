@@ -86,10 +86,17 @@ function* fetchWorkflowInfo(source, preview, destination) {
   const {data: sourceChanges} = yield call([colClient, colClient.listRecords], {
     since: lastSigned
   });
-  // Here, `lastChange` gives us the timestamp of the most recently changed record.
+  // Here, `lastUpdated` gives us the timestamp of the most recently changed record.
   // Which can be different from `sourceAttributes.last_modified` since the collection
   // attributes can be changed independently from the records.
-  const lastUpdated = sourceChanges.length > 0 ? sourceChanges[0].last_modified : null;
+  let lastUpdated;
+  if (sourceChanges.length > 0) {
+    // Some changes exist. Easy, take latest timestamp.
+    lastUpdated = sourceChanges[0].last_modified;
+  } else {
+    // Empty changes list: either never signed, or not changed since last signature.
+    lastUpdated = lastSigned === "0" ? null : sourceAttributes.last_modified;
+  }
   const changes = {
     since: lastSigned,
     lastUpdated,
