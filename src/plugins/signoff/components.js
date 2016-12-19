@@ -168,8 +168,8 @@ function WorkInProgress({label, canEdit, currentStep, step, requestReview, sourc
   const {lastUpdated} = changes;
   return (
     <ProgressStep {...{label, currentStep, step}}>
-      {lastAuthor ? <WorkInProgressInfos {...{lastAuthor, lastUpdated}}/> : null}
-      {active ? <RequestReviewButton onClick={requestReview}/> : null}
+      <WorkInProgressInfos {...{lastAuthor, lastUpdated}}/>
+      {active && lastUpdated ? <RequestReviewButton onClick={requestReview}/> : null}
     </ProgressStep>
   );
 }
