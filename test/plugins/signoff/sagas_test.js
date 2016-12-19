@@ -83,7 +83,7 @@ describe("signoff plugin sagas", () => {
     });
   });
 
-  describe.only("handleApproveChanges()", () => {
+  describe("handleApproveChanges()", () => {
     let handleApproveChanges;
 
     before(() => {

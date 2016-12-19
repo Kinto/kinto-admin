@@ -131,11 +131,12 @@ export function* handleApproveChanges(getState, action) {
   try {
     const collection = yield call(_updateCollectionAttributes, getState, {status: "to-sign"});
 
-    yield call(onCollectionRecordsRequest, getState, {bid: bucket.data.id, cid: collection.data.id});
+    const {data: {id: bid}} = bucket.data.id;
+    const {data: {id: cid}} = collection;
+    yield call(onCollectionRecordsRequest, getState, {bid, cid});
     yield put(routeLoadSuccess({bucket, collection}));
     yield put(notifySuccess("Signature requested."));
   } catch(e) {
-    console.log(e);
     yield put(notifyError("Couldn't approve changes.", e));
   }
 }
