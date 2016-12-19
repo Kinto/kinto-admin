@@ -131,8 +131,7 @@ export function* handleApproveChanges(getState, action) {
   try {
     const collection = yield call(_updateCollectionAttributes, getState, {status: "to-sign"});
 
-    const newResource = {...resource, destination: {...resource.destination, lastSigned: collection.data.last_modified}};
-    yield put(SignoffActions.workflowInfo({resource: newResource}));
+    yield call(onCollectionRecordsRequest, getState, {bid: bucket.data.id, cid: collection.data.id});
     yield put(routeLoadSuccess({bucket, collection}));
     yield put(notifySuccess("Signature requested."));
   } catch(e) {

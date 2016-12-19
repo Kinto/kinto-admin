@@ -83,7 +83,7 @@ describe("signoff plugin sagas", () => {
     });
   });
 
-  describe("handleApproveChanges()", () => {
+  describe.only("handleApproveChanges()", () => {
     let handleApproveChanges;
 
     before(() => {
@@ -98,18 +98,18 @@ describe("signoff plugin sagas", () => {
         .to.include({status: "to-sign"});
     });
 
-    it("should update the workflowInfo with lastSigned", () => {
-      expect(handleApproveChanges.next({data: {id: "coll", status: "to-sign", last_modified: 75}}).value)
-        .eql(put(actions.workflowInfo({
-          resource: {destination: {lastSigned: 75}},
-        })));
+    it("should refresh signoff resources status", () => {
+      expect(handleApproveChanges.next({data: {id: "coll", status: "to-sign"}}).value)
+        .to.have.property("CALL")
+        .to.have.property("args")
+        .to.include({bid: "buck", cid: "coll"});
     });
 
     it("should dispatch the routeLoadSuccess action", () => {
       expect(handleApproveChanges.next({data: {id: "coll", status: "to-sign"}}).value)
         .eql(put(routeLoadSuccess({
           bucket: {data: {id: "buck"}},
-          collection: {data: {id: "coll", status: "to-sign", last_modified: 75}},
+          collection: {data: {id: "coll", status: "to-sign"}},
         })));
     });
 
