@@ -20,7 +20,8 @@ describe("signoff plugin sagas", () => {
     setClient({bucket() {return bucket;}});
     getState = () => ({
       bucket: {data: {id: "buck"}},
-      collection: {data: {id: "coll", last_modified: 42}}
+      collection: {data: {id: "coll", last_modified: 42}},
+      signoff: {resource: {destination: {lastSigned: 53}}}
     });
   });
 
@@ -97,11 +98,18 @@ describe("signoff plugin sagas", () => {
         .to.include({status: "to-sign"});
     });
 
+    it("should update the workflowInfo with lastSigned", () => {
+      expect(handleApproveChanges.next({data: {id: "coll", status: "to-sign", last_modified: 75}}).value)
+        .eql(put(actions.workflowInfo({
+          resource: {destination: {lastSigned: 75}},
+        })));
+    });
+
     it("should dispatch the routeLoadSuccess action", () => {
       expect(handleApproveChanges.next({data: {id: "coll", status: "to-sign"}}).value)
         .eql(put(routeLoadSuccess({
           bucket: {data: {id: "buck"}},
-          collection: {data: {id: "coll", status: "to-sign"}},
+          collection: {data: {id: "coll", status: "to-sign", last_modified: 75}},
         })));
     });
 

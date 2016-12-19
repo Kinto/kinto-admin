@@ -136,6 +136,7 @@ export function* handleApproveChanges(getState, action) {
     yield put(routeLoadSuccess({bucket, collection}));
     yield put(notifySuccess("Signature requested."));
   } catch(e) {
+    console.log(e);
     yield put(notifyError("Couldn't approve changes.", e));
   }
 }
