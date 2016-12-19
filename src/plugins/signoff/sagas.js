@@ -127,7 +127,7 @@ export function* handleDeclineChanges(getState, action) {
 }
 
 export function* handleApproveChanges(getState, action) {
-  const {bucket, signoff: {resource}} = getState();
+  const {bucket} = getState();
   try {
     const collection = yield call(_updateCollectionAttributes, getState, {status: "to-sign"});
 
