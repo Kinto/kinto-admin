@@ -20,7 +20,8 @@ describe("signoff plugin sagas", () => {
     setClient({bucket() {return bucket;}});
     getState = () => ({
       bucket: {data: {id: "buck"}},
-      collection: {data: {id: "coll", last_modified: 42}}
+      collection: {data: {id: "coll", last_modified: 42}},
+      signoff: {resource: {destination: {lastSigned: 53}}}
     });
   });
 
@@ -37,6 +38,13 @@ describe("signoff plugin sagas", () => {
         .to.have.property("CALL")
         .to.have.property("args")
         .to.include({status: "to-review"});
+    });
+
+    it("should refresh signoff resources status", () => {
+      expect(handleRequestReview.next({data: {id: "coll", status: "to-review"}}).value)
+        .to.have.property("CALL")
+        .to.have.property("args")
+        .to.include({bid: "buck", cid: "coll"});
     });
 
     it("should dispatch the routeLoadSuccess action", () => {
@@ -95,6 +103,13 @@ describe("signoff plugin sagas", () => {
         .to.have.property("CALL")
         .to.have.property("args")
         .to.include({status: "to-sign"});
+    });
+
+    it("should refresh signoff resources status", () => {
+      expect(handleApproveChanges.next({data: {id: "coll", status: "to-sign"}}).value)
+        .to.have.property("CALL")
+        .to.have.property("args")
+        .to.include({bid: "buck", cid: "coll"});
     });
 
     it("should dispatch the routeLoadSuccess action", () => {
