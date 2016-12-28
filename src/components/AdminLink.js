@@ -18,9 +18,10 @@ export default class AdminLink extends Component {
   props: Props;
 
   render() {
-    const {children, name, params, ...linkProps} = this.props;
+    const {children, name, params, query, ...linkProps} = this.props;
+    const pathname = url(name, params);
     return (
-      <Link {...linkProps} to={url(name, params)}>{children}</Link>
+      <Link {...linkProps} to={{pathname, query}}>{children}</Link>
     );
   }
 }
