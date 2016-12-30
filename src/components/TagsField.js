@@ -2,6 +2,14 @@
 import React, { Component } from "react";
 
 
+function toTagList(tagsString: string, unique: bool = false): string[] {
+  const list = tagsString.split(",")
+    .map(tag => tag.trim())
+    .filter(tag => tag !== "");
+  // we want unique values
+  return unique ? Array.from(new Set(list)) : list;
+}
+
 type Props = {
   schema: Object,
   uiSchema: Object,
@@ -27,14 +35,11 @@ export default class TagsField extends Component {
 
   constructor(props: Props) {
     super(props);
-    console.log(props);
     this.state = {tagsString: props.formData.join(", ")};
   }
 
   onChange = ({target: {value: tagsString}}: {target: {value: string}}) => {
-    const tags = tagsString.split(",")
-      .map(tag => tag.trim())
-      .filter(tag => tag !== "");
+    const tags = toTagList(tagsString, this.props.schema.uniqueItems);
     this.setState({tagsString});
     setImmediate(() => this.props.onChange(tags));
   }
