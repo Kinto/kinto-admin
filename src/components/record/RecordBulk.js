@@ -6,8 +6,8 @@ import type {
 } from "../../types";
 
 import React, { Component } from "react";
-import Form from "react-jsonschema-form";
 
+import BaseForm from "../BaseForm";
 import AdminLink from "../AdminLink";
 import Spinner from "../Spinner";
 import JSONEditor from "../JSONEditor";
@@ -81,7 +81,7 @@ export default class RecordBulk extends Component {
         {busy ? <Spinner /> :
           <div className="panel panel-default">
             <div className="panel-body">
-            <Form
+            <BaseForm
               schema={bulkSchema}
               uiSchema={bulkUiSchema}
               formData={bulkFormData}
@@ -90,7 +90,7 @@ export default class RecordBulk extends Component {
                 value="Bulk create" />
               {" or "}
               <AdminLink name="collection:records" params={{bid, cid}}>Cancel</AdminLink>
-            </Form>
+            </BaseForm>
           </div>
         </div>}
       </div>

@@ -7,8 +7,8 @@ import type {
 } from "../../types";
 
 import React, { Component } from "react";
-import Form from "react-jsonschema-form";
 
+import BaseForm from "../BaseForm";
 import AdminLink from "../AdminLink";
 import JSONEditor from "../JSONEditor";
 import { canCreateGroup, canEditGroup } from "../../permission";
@@ -73,7 +73,7 @@ function DeleteForm({gid, onSubmit}) {
         <p>
           Delete the <b>{gid}</b> group.
         </p>
-        <Form
+        <BaseForm
           schema={deleteSchema}
           validate={validate}
           onSubmit={({formData}) => {
@@ -85,7 +85,7 @@ function DeleteForm({gid, onSubmit}) {
             <i className="glyphicon glyphicon-trash"/>{" "}
             Delete group
           </button>
-        </Form>
+        </BaseForm>
       </div>
     </div>
   );
@@ -161,7 +161,7 @@ export default class GroupForm extends Component {
         {alert}
         {group.busy ?
           <Spinner/> :
-          <Form
+          <BaseForm
             schema={schema}
             uiSchema={formIsEditable ? _uiSchema :
                         {..._uiSchema, "ui:readonly": true}}
@@ -169,7 +169,7 @@ export default class GroupForm extends Component {
             validate={validate}
             onSubmit={this.onSubmit}>
             {buttons}
-          </Form>
+          </BaseForm>
             }
         {showDeleteForm ?
           <DeleteForm

@@ -1,11 +1,10 @@
 /* @flow */
 import type { SessionState, SettingsState } from "../types";
 
-import { omit } from "../utils";
-
 import React, { Component } from "react";
 
-import Form from "react-jsonschema-form";
+import BaseForm from "./BaseForm";
+import { omit } from "../utils";
 
 
 class ServerHistory extends Component {
@@ -238,10 +237,8 @@ function extendUiSchemaWithHistory(uiSchema, history, clearHistory, singleServer
     ...uiSchema,
     server: {
       ...uiSchema.server,
-      "ui:widget": {
-        component: ServerHistory,
-        options: {history, clearHistory}
-      }
+      "ui:widget": ServerHistory,
+      "ui:options": {history, clearHistory},
     }
   };
 }
@@ -315,7 +312,7 @@ export default class AuthForm extends Component {
     return (
       <div className="panel panel-default">
         <div className="panel-body">
-          <Form
+          <BaseForm
             schema={extendSchemaWithHistory(schema, history, authMethods, singleServer)}
             uiSchema={extendUiSchemaWithHistory(uiSchema, history, clearHistory, singleServer)}
             formData={formData}
@@ -324,7 +321,7 @@ export default class AuthForm extends Component {
             <button type="submit" className="btn btn-info">
               {"Sign in using "}{authLabels[formData.authType]}
             </button>
-          </Form>
+          </BaseForm>
         </div>
       </div>
     );
