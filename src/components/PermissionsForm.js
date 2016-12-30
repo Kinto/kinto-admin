@@ -3,8 +3,8 @@
 import type { Permissions, GroupData } from "../types";
 
 import React, { Component } from "react";
-import Form from "react-jsonschema-form";
 
+import BaseForm from "./BaseForm";
 import {
   permissionsToFormData,
   formDataToPermissions,
@@ -40,7 +40,7 @@ export default class PermissionsForm extends Component {
     const formData = permissionsToFormData(bid, permissions);
     const {schema, uiSchema} = preparePermissionsForm(acls, groups);
     return (
-      <Form className="permissions-form"
+      <BaseForm className="permissions-form"
             schema={schema}
             uiSchema={uiSchema}
             formData={formData}

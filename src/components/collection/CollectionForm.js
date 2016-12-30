@@ -8,8 +8,8 @@ import type {
 
 import React, { Component } from "react";
 import { Link } from "react-router";
-import Form from "react-jsonschema-form";
 
+import BaseForm from "../BaseForm";
 import JSONEditor from "../JSONEditor";
 import { canCreateCollection, canEditCollection } from "../../permission";
 import { validateSchema, validateUiSchema } from "../../utils";
@@ -68,7 +68,7 @@ function DeleteForm({cid, onSubmit}) {
         <p>
           Delete the <b>{cid}</b> collection and all the records it contains.
         </p>
-        <Form
+        <BaseForm
           schema={deleteSchema}
           validate={validate}
           onSubmit={({formData}) => {
@@ -80,7 +80,7 @@ function DeleteForm({cid, onSubmit}) {
             <i className="glyphicon glyphicon-trash"/>{" "}
             Delete collection
           </button>
-        </Form>
+        </BaseForm>
       </div>
     </div>
   );
@@ -316,7 +316,7 @@ export default class CollectionForm extends Component {
     return (
       <div>
         {alert}
-        <Form
+        <BaseForm
           schema={schema}
           formData={formDataSerialized}
           uiSchema={this.allowEditing ? _uiSchema :
@@ -324,7 +324,7 @@ export default class CollectionForm extends Component {
           validate={validate}
           onSubmit={this.onSubmit}>
           {buttons}
-        </Form>
+        </BaseForm>
         {showDeleteForm ?
           <DeleteForm
             cid={cid}

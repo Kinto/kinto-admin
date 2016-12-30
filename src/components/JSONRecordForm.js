@@ -1,7 +1,7 @@
 /* @flow */
 import React, { Component } from "react";
-import Form from "react-jsonschema-form";
 
+import BaseForm from "./BaseForm";
 import JSONEditor from "./JSONEditor";
 import { validJSON } from "./../utils";
 
@@ -40,14 +40,14 @@ export default class JSONRecordForm extends Component {
     const {record, disabled, children} = this.props;
     return (
       <div>
-        <Form
+        <BaseForm
           schema={schema}
           formData={record}
           uiSchema={disabled ? {...uiSchema, "ui:disabled": true} : uiSchema}
           validate={validate}
           onSubmit={this.onSubmit}>
           {children}
-        </Form>
+        </BaseForm>
       </div>
     );
   }

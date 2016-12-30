@@ -7,8 +7,8 @@ import type {
 
 import React, { Component } from "react";
 import { Link } from "react-router";
-import Form from "react-jsonschema-form";
 
+import BaseForm from "../BaseForm";
 import JSONEditor from "../JSONEditor";
 import Spinner from "../Spinner";
 import { canEditBucket } from "../../permission";
@@ -67,7 +67,7 @@ function DeleteForm({bid, onSubmit}) {
           Delete the <b>{bid}</b> bucket and all the collections and
           records it contains.
         </p>
-        <Form
+        <BaseForm
           schema={deleteSchema}
           validate={validate}
           onSubmit={({formData}) => {
@@ -78,7 +78,7 @@ function DeleteForm({bid, onSubmit}) {
           <button type="submit" className="btn btn-danger">
             <i className="glyphicon glyphicon-trash"/>{" "}Delete bucket
           </button>
-        </Form>
+        </BaseForm>
       </div>
     </div>
   );
@@ -147,7 +147,7 @@ export default class BucketForm extends Component {
         {alert}
         {bucket.busy ?
           <Spinner /> :
-          <Form
+          <BaseForm
             schema={schema}
             uiSchema={formIsEditable ? _uiSchema :
                         {..._uiSchema, "ui:readonly": true}}
@@ -155,7 +155,7 @@ export default class BucketForm extends Component {
             validate={validate}
             onSubmit={this.onSubmit}>
             {buttons}
-          </Form>
+          </BaseForm>
         }
         {showDeleteForm ?
           <DeleteForm

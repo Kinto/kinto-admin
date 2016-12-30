@@ -9,9 +9,9 @@ import type {
 } from "../../types";
 
 import React, { Component } from "react";
-import Form from "react-jsonschema-form";
 import filesize from "filesize";
 
+import BaseForm from "./../BaseForm";
 import AdminLink from "../AdminLink";
 import Spinner from "../Spinner";
 import JSONRecordForm from "../JSONRecordForm";
@@ -248,13 +248,13 @@ export default class RecordForm extends Component {
     _uiSchema = extendUiSchemaWhenDisabled(_uiSchema, !this.allowEditing);
 
     return (
-      <Form
+      <BaseForm
         schema={_schema}
         uiSchema={_uiSchema}
         formData={cleanRecord(recordData)}
         onSubmit={this.onSubmit}>
         {buttons}
-      </Form>
+      </BaseForm>
     );
   }
 
