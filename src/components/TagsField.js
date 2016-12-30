@@ -15,6 +15,10 @@ function toTagList(
   return unique ? Array.from(new Set(list)) : list;
 }
 
+function toTagsString(tags: string[], separator: string = ","): string {
+  return tags.join(separator += separator !== " " ? " " : "");
+}
+
 type Props = {
   schema: Object,
   uiSchema: Object,
@@ -48,7 +52,7 @@ export default class TagsField extends Component {
 
   constructor(props: Props) {
     super(props);
-    this.state = {tagsString: props.formData.join(this.separator + " ")};
+    this.state = {tagsString: toTagsString(props.formData, this.separator)};
   }
 
   onChange = ({target: {value: tagsString}}: {target: {value: string}}) => {
@@ -71,7 +75,8 @@ export default class TagsField extends Component {
           type="text"
           className="form-control"
           value={tagsString}
-          placeholder={uiSchema["ui:placeholder"] || ["tag1", "tag2", "tag3"].join(this.separator)}
+          placeholder={uiSchema["ui:placeholder"] ||
+                       toTagsString(["tag1", "tag2", "tag3"], this.separator)}
           onChange={this.onChange}
           required={required}
           readOnly={readonly} />

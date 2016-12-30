@@ -40,6 +40,19 @@ describe("TagsField component", () => {
       expect(node.querySelector("input").value)
         .eql("a: b: c");
     });
+
+    it("should special case the space separator", () => {
+      const node = createComponent(TagsField, {
+        schema: {},
+        formData: ["a", "b", "c"],
+        uiSchema: {
+          "ui:options": {separator: " "}
+        }
+      });
+
+      expect(node.querySelector("input").value)
+        .eql("a b c");
+    });
   });
 
   describe("Unique items", () => {
