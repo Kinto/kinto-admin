@@ -179,6 +179,8 @@ export function renderDisplayField(record: Object, displayField: string): any {
     const field = record[displayField];
     if (typeof field === "string") {
       return linkify(field);
+    } else if (Array.isArray(field) && field.every(x => typeof x === "string")) {
+      return field.join(", ");
     } else if (typeof field === "object") {
       return JSON.stringify(field);
     } else {

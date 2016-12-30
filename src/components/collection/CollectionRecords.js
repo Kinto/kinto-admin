@@ -52,36 +52,38 @@ class Row extends Component {
     const {bid, cid, record, displayFields, capabilities} = this.props;
     const {id: rid} = record;
     const attachmentUrl = buildAttachmentUrl(record, capabilities);
-    return <tr onDoubleClick={this.onDoubleClick.bind(this)}>
-      {
-        displayFields.map((displayField, index) => {
-          return <td key={index}>{renderDisplayField(record, displayField)}</td>;
-        })
-      }
-      <td className="lastmod">{this.lastModified}</td>
-      <td className="actions text-right">
-        <div className="btn-group">
-          {attachmentUrl ?
-            <a href={attachmentUrl} className="btn btn-sm btn-default"
-              title="The record has an attachment"
-              target="_blank">
-              <i className="glyphicon glyphicon-paperclip" />
-            </a> : null}
-          <AdminLink name="record:attributes" params={{bid, cid, rid}}
-            className="btn btn-sm btn-info" title="Edit record">
-            <i className="glyphicon glyphicon-pencil"/>
-          </AdminLink>
-          <AdminLink name="record:permissions" params={{bid, cid, rid}}
-            className="btn btn-sm btn-warning" title="Record permissions">
-            <i className="glyphicon glyphicon-lock"/>
-          </AdminLink>
-          <button type="button" className="btn btn-sm btn-danger"
-            onClick={this.onDeleteClick.bind(this)} title="Delete record">
-            <i className="glyphicon glyphicon-trash"/>
-          </button>
-        </div>
-      </td>
-    </tr>;
+    return (
+      <tr onDoubleClick={this.onDoubleClick.bind(this)}>
+        {
+          displayFields.map((displayField, index) => {
+            return <td key={index}>{renderDisplayField(record, displayField)}</td>;
+          })
+        }
+        <td className="lastmod">{this.lastModified}</td>
+        <td className="actions text-right">
+          <div className="btn-group">
+            {attachmentUrl ?
+              <a href={attachmentUrl} className="btn btn-sm btn-default"
+                title="The record has an attachment"
+                target="_blank">
+                <i className="glyphicon glyphicon-paperclip" />
+              </a> : null}
+            <AdminLink name="record:attributes" params={{bid, cid, rid}}
+              className="btn btn-sm btn-info" title="Edit record">
+              <i className="glyphicon glyphicon-pencil"/>
+            </AdminLink>
+            <AdminLink name="record:permissions" params={{bid, cid, rid}}
+              className="btn btn-sm btn-warning" title="Record permissions">
+              <i className="glyphicon glyphicon-lock"/>
+            </AdminLink>
+            <button type="button" className="btn btn-sm btn-danger"
+              onClick={this.onDeleteClick.bind(this)} title="Delete record">
+              <i className="glyphicon glyphicon-trash"/>
+            </button>
+          </div>
+        </td>
+      </tr>
+    );
   }
 }
 
