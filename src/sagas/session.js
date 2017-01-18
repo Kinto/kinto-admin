@@ -74,7 +74,11 @@ export function* listBuckets(getState: GetStateFn, action: ActionType<typeof act
     // Notify they're received
     yield put(actions.serverInfoSuccess(serverInfo));
     // Retrieve and build the list of buckets
-    const {data} = yield call([client, client.listBuckets]);
+    try {
+      const {data} = yield call([client, client.listBuckets]);
+    } catch(error) {
+      const data = [];
+    }
     const responses = yield call([client, client.batch], (batch) => {
       for (const {id} of data) {
         batch.bucket(id).listCollections();
