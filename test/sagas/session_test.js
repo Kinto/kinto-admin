@@ -177,10 +177,7 @@ describe("session sagas", () => {
 
         it("should support 403 errors when fetching list of buckets", () => {
           // listBucket fails with unauthorized error.
-          const error = new Error();
-          error.message = "HTTP 403";
-          listBuckets.throw(error);
-
+          listBuckets.throw(new Error("HTTP 403"));
           // Saga continues without failing.
           expect(listBuckets.next().value)
             .to.have.property("CALL")
