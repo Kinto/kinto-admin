@@ -161,17 +161,41 @@ describe("session sagas", () => {
         expect(listBuckets.next().value)
           .eql(call(saveSession, sessionState));
       });
-    });
 
-    describe("Failure", () => {
-      it("should dispatch an error notification action", () => {
-        const listBuckets = saga.listBuckets();
-        listBuckets.next();
+      describe("Forbidden list of buckets", () => {
+        before(() => {
+          const action = actions.listBuckets();
+          const getState = () => ({session: sessionState});
+          listBuckets = saga.listBuckets(getState, action);
 
-        expect(listBuckets.throw("error").value)
-          .eql(put(notifyError("Couldn't list buckets.", "error")));
+          listBuckets.next();
+          listBuckets.next(serverInfo); // fetch server info
+          listBuckets.next();           // mark user authenticated
+          listBuckets.next();           // add server to history
+          listBuckets.next();           // dispatch server info success
+        });
+
+        it("should support 403 errors when fetching list of buckets", () => {
+          // listBucket fails with unauthorized error.
+          listBuckets.throw(new Error("HTTP 403"));
+          // Saga continues without failing.
+          expect(listBuckets.next().value)
+            .to.have.property("CALL")
+            .to.have.property("fn").eql(client.listPermissions);
+        });
+      });
+
+      describe("Failure", () => {
+        it("should dispatch an error notification action", () => {
+          const listBuckets = saga.listBuckets();
+          listBuckets.next();
+
+          expect(listBuckets.throw("error").value)
+            .eql(put(notifyError("Couldn't list buckets.", "error")));
+        });
       });
     });
+
   });
 
   describe("sessionLogout()", () => {
