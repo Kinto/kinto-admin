@@ -74,10 +74,15 @@ export function* listBuckets(getState: GetStateFn, action: ActionType<typeof act
     // Notify they're received
     yield put(actions.serverInfoSuccess(serverInfo));
     // Retrieve and build the list of buckets
+    let data;
     try {
-      const {data} = yield call([client, client.listBuckets]);
+      {data} = yield call([client, client.listBuckets]);
     } catch(error) {
-      const data = [];
+      if (/HTTP 403/.test(error.message)) {
+        data = [];
+      } else {
+        throw error;
+      }
     }
     const responses = yield call([client, client.batch], (batch) => {
       for (const {id} of data) {
