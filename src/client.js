@@ -29,8 +29,8 @@ export function setupClient(auth: AuthData): KintoClient {
   const {server}: {server: string} = auth;
   return setClient(new KintoClient(server, {
     headers: {Authorization: getAuthHeader(auth)},
-    // Temporary fix for https://github.com/Kinto/kinto-admin/issues/359
     timeout: 30000,
+    retry: 1,
   }));
 }
 
