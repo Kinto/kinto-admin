@@ -76,13 +76,14 @@ export function* listBuckets(getState: GetStateFn, action: ActionType<typeof act
     // Retrieve and build the list of buckets
     let data;
     try {
-      {data} = yield call([client, client.listBuckets]);
+      data = (yield call([client, client.listBuckets])).data;
     } catch(error) {
-      if (/HTTP 403/.test(error.message)) {
-        data = [];
-      } else {
+      // If the user is not allowed to list the buckets, we want
+      // to show an empty list.
+      if (!/HTTP 403/.test(error.message)) {
         throw error;
       }
+      data = [];
     }
     const responses = yield call([client, client.batch], (batch) => {
       for (const {id} of data) {
