@@ -335,14 +335,6 @@ table.record-list td.load-more {
   max-height: 100%;
 }
 
-.instructions {
-  padding-left: 0;
-}
-
-.instructions ol {
-  margin: 0;
-}
-
 /* Generic forms */
 
 form button[type="submit"].btn-primary {

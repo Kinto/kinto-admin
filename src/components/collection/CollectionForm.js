@@ -31,23 +31,6 @@ const defaultUiSchema = JSON.stringify({
   }
 }, null, 2);
 
-function FormInstructions() {
-  return (
-    <div className="alert alert-info instructions">
-      <ol>
-        <li>First find a good name for your collection.</li>
-        <li>Create a <em>JSON schema</em> describing the fields the
-            collection records should have.</li>
-        <li>Define a <em>uiSchema</em> to customize the way forms for creating and
-            editing records are rendered.</li>
-        <li>List the record fields you want to display in the columns of the
-            collection records list.</li>
-        <li>Decide if you want to enable attaching a file to records.</li>
-      </ol>
-    </div>
-  );
-}
-
 const deleteSchema = {
   type: "string",
   title: "Please enter the collection name to delete as a confirmation",
@@ -89,12 +72,11 @@ function DeleteForm({cid, onSubmit}) {
 
 const schema = {
   type: "object",
-  description: FormInstructions(),
   required: ["id"],
   properties: {
     id: {
       type: "string",
-      title: "Collection name",
+      title: "Collection id",
       pattern: "^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
     },
     schema: {
@@ -293,6 +275,11 @@ export default class CollectionForm extends Component {
     window.scrollTo(0, 0);
   }
 
+  onSchemalessLinkClick = (event) => {
+    event.preventDefault();
+    this.setState({asJSON: true});
+  };
+
   render() {
     const {cid, bucket, collection, formData={}, deleteCollection} = this.props;
     const creation = !formData.id;
@@ -347,15 +334,30 @@ export default class CollectionForm extends Component {
             onSubmit={this.onSubmit}>
             {buttons}
           </JSONCollectionForm> :
-          <BaseForm
-            schema={schema}
-            formData={formDataSerialized}
-            uiSchema={this.allowEditing ? _uiSchema :
-                                          {..._uiSchema, "ui:disabled": true}}
-            validate={validate}
-            onSubmit={this.onSubmit}>
-            {buttons}
-          </BaseForm>}
+          <div>
+          <div className="alert alert-info">
+            <ol>
+              <li>First find a good name for your collection.</li>
+              <li>Create a <em>JSON schema</em> describing the fields the
+                  collection records should have.</li>
+              <li>Define a <em>uiSchema</em> to customize the way forms for creating and
+                  editing records are rendered.</li>
+              <li>List the record fields you want to display in the columns of the
+                  collection records list.</li>
+              <li>Decide if you want to enable attaching a file to records.</li>
+            </ol>
+            <p>Alternatively, you can create a <a href="" onClick={this.onSchemalessLinkClick}>schemaless collection</a>.</p>
+          </div>
+            <BaseForm
+              schema={schema}
+              formData={formDataSerialized}
+              uiSchema={this.allowEditing ? _uiSchema :
+                                            {..._uiSchema, "ui:disabled": true}}
+              validate={validate}
+              onSubmit={this.onSubmit}>
+              {buttons}
+            </BaseForm>
+          </div>}
         {showDeleteForm ?
           <DeleteForm
             cid={cid}
