@@ -17,6 +17,16 @@ const uiSchema = {
 };
 
 export default class extends Component {
+  props: {
+    children?: any, // XXX: would be nice to have an actual type here
+    formData: Object,
+    onSubmit: (data: {formData: Object}) => void,
+  };
+
+  onSubmit = ({formData}: {formData: string}) => {
+    this.props.onSubmit({formData: JSON.parse(formData)});
+  }
+
   render() {
     const {children, formData} = this.props;
     return (
@@ -24,7 +34,7 @@ export default class extends Component {
         schema={schema}
         uiSchema={uiSchema}
         formData={JSON.stringify(formData, null, 2)}
-        onSubmit={this.props.onSubmit}>
+        onSubmit={this.onSubmit}>
         {children}
       </Form>
     );

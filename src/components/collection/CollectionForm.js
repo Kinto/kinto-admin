@@ -268,7 +268,7 @@ export default class CollectionForm extends Component {
   }
 
   onSubmit = ({formData}: {formData: Object}) => {
-    const collectionData = this.state.asJSON ? JSON.parse(formData) : {
+    const collectionData = this.state.asJSON ? formData : {
       ...formData,
       // Parse JSON fields so they can be sent to the server
       schema: JSON.parse(formData.schema),
