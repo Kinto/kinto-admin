@@ -26,6 +26,10 @@ export default class CollectionAttributes extends Component {
     deleteCollection: (bid: string, cid: string) => void,
   };
 
+  state: {
+    raw: false
+  }
+
   onSubmit = (formData: CollectionData) => {
     const {params, updateCollection} = this.props;
     const {bid, cid} = params;

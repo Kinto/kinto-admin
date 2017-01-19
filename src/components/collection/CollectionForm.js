@@ -10,6 +10,7 @@ import React, { Component } from "react";
 import { Link } from "react-router";
 
 import BaseForm from "../BaseForm";
+import JSONCollectionForm from "./JSONCollectionForm";
 import JSONEditor from "../JSONEditor";
 import { canCreateCollection, canEditCollection } from "../../permission";
 import { validateSchema, validateUiSchema } from "../../utils";
@@ -244,24 +245,36 @@ function validate({schema, uiSchema, displayFields}, errors) {
   return errors;
 }
 
+type Props = {
+  cid?: string,
+  session: SessionState,
+  bucket: BucketState,
+  collection: CollectionState,
+  deleteCollection?: (cid: string) => void,
+  onSubmit: (formData: CollectionData) => void,
+  formData?: CollectionData,
+};
+
 export default class CollectionForm extends Component {
-  props: {
-    cid?: string,
-    session: SessionState,
-    bucket: BucketState,
-    collection: CollectionState,
-    deleteCollection?: (cid: string) => void,
-    onSubmit: (formData: CollectionData) => void,
-    formData?: CollectionData,
+  props: Props;
+
+  state: {
+    asJSON: bool,
   };
 
+  constructor(props: Props) {
+    super(props);
+    this.state = {asJSON: false};
+  }
+
   onSubmit = ({formData}: {formData: Object}) => {
-    this.props.onSubmit({
+    const collectionData = this.state.asJSON ? JSON.parse(formData) : {
       ...formData,
       // Parse JSON fields so they can be sent to the server
       schema: JSON.parse(formData.schema),
       uiSchema: JSON.parse(formData.uiSchema),
-    });
+    };
+    this.props.onSubmit(collectionData);
   }
 
   get allowEditing(): boolean {
@@ -274,10 +287,17 @@ export default class CollectionForm extends Component {
     }
   }
 
+  toggleJSON = (event: Event) => {
+    event.preventDefault();
+    this.setState({asJSON: !this.state.asJSON});
+    window.scrollTo(0, 0);
+  }
+
   render() {
     const {cid, bucket, collection, formData={}, deleteCollection} = this.props;
     const creation = !formData.id;
     const showDeleteForm = !creation && this.allowEditing;
+    const {asJSON} = this.state;
 
     // Disable edition of the collection id
     const _uiSchema = creation ? uiSchema : {
@@ -310,21 +330,31 @@ export default class CollectionForm extends Component {
         </button>
         {" or "}
         <Link to="/">Cancel</Link>
+        {" | "}
+        <a href="#" onClick={this.toggleJSON}>
+          {asJSON ? "Edit form" : "Edit raw JSON"}
+        </a>
       </div>
     );
 
     return (
       <div>
         {alert}
-        <BaseForm
-          schema={schema}
-          formData={formDataSerialized}
-          uiSchema={this.allowEditing ? _uiSchema :
-                                        {..._uiSchema, "ui:disabled": true}}
-          validate={validate}
-          onSubmit={this.onSubmit}>
-          {buttons}
-        </BaseForm>
+        {asJSON ?
+          <JSONCollectionForm
+            formData={collection.data}
+            onSubmit={this.onSubmit}>
+            {buttons}
+          </JSONCollectionForm> :
+          <BaseForm
+            schema={schema}
+            formData={formDataSerialized}
+            uiSchema={this.allowEditing ? _uiSchema :
+                                          {..._uiSchema, "ui:disabled": true}}
+            validate={validate}
+            onSubmit={this.onSubmit}>
+            {buttons}
+          </BaseForm>}
         {showDeleteForm ?
           <DeleteForm
             cid={cid}
