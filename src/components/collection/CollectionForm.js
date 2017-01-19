@@ -342,6 +342,7 @@ export default class CollectionForm extends Component {
         {alert}
         {asJSON ?
           <JSONCollectionForm
+            cid={cid}
             formData={collection.data}
             onSubmit={this.onSubmit}>
             {buttons}
