@@ -275,7 +275,7 @@ export default class CollectionForm extends Component {
     window.scrollTo(0, 0);
   }
 
-  onSchemalessLinkClick = (event) => {
+  onSchemalessLinkClick = (event: Event) => {
     event.preventDefault();
     this.setState({asJSON: true});
   };
