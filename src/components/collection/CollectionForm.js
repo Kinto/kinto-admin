@@ -218,11 +218,12 @@ function validate({schema, uiSchema, displayFields}, errors) {
     validateSchema(schema);
   } catch(error) {
     errors.schema.addError(error);
+    return errors;
   }
   try {
     validateUiSchema(uiSchema, schema);
   } catch(error) {
-    errors.schema.addError(error);
+    errors.uiSchema.addError(error);
   }
   return errors;
 }
