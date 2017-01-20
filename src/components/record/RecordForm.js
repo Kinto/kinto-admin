@@ -14,7 +14,7 @@ import filesize from "filesize";
 import BaseForm from "./../BaseForm";
 import AdminLink from "../AdminLink";
 import Spinner from "../Spinner";
-import JSONRecordForm from "../JSONRecordForm";
+import JSONRecordForm from "./JSONRecordForm";
 import { canCreateRecord, canEditRecord } from "../../permission";
 import { cleanRecord, linkify, buildAttachmentUrl } from "../../utils";
 

@@ -1,9 +1,9 @@
 /* @flow */
 import React, { Component } from "react";
 
-import BaseForm from "./BaseForm";
-import JSONEditor from "./JSONEditor";
-import { validJSON } from "./../utils";
+import BaseForm from "../BaseForm";
+import JSONEditor from "../JSONEditor";
+import { validJSON } from "../../utils";
 
 
 const schema = {
