@@ -14,7 +14,7 @@ import filesize from "filesize";
 import BaseForm from "./../BaseForm";
 import AdminLink from "../AdminLink";
 import Spinner from "../Spinner";
-import JSONRecordForm from "../JSONRecordForm";
+import JSONRecordForm from "./JSONRecordForm";
 import { canCreateRecord, canEditRecord } from "../../permission";
 import { cleanRecord, linkify, buildAttachmentUrl } from "../../utils";
 
@@ -209,10 +209,13 @@ export default class RecordForm extends Component {
           </button>
           {" or "}
           <AdminLink name="collection:records" params={{bid, cid}}>Cancel</AdminLink>
-          {" | "}
-          <a href="#" onClick={this.toggleJSON}>
-            {asJSON ? "Edit form" : "Edit raw JSON"}
-          </a>
+          {emptySchema ? null :
+            <span>
+              {" | "}
+              <a href="#" onClick={this.toggleJSON}>
+                {asJSON ? "Edit form" : "Edit raw JSON"}
+              </a>
+            </span>}
         </div>
         <div className="col-sm-6 text-right">
           {this.allowEditing && record ?
