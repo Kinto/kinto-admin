@@ -222,7 +222,7 @@ function Review(props: ReviewProps) {
     source,
     preview,
   } = props;
-  const active = step == currentStep && canEdit;
+  const active = step == currentStep;
 
   // If preview disabled, the preview object is empty.
   // We use the source last status change as review request datetime.
@@ -238,7 +238,7 @@ function Review(props: ReviewProps) {
   return (
     <ProgressStep {...{label, currentStep, step}}>
       {lastEditor ? <ReviewInfos {...{active, source, lastRequested, link, hasHistory}}/> : null}
-      {active ? <ReviewButtons onApprove={approveChanges} onDecline={declineChanges}/> : null}
+      {active  && canEdit ? <ReviewButtons onApprove={approveChanges} onDecline={declineChanges}/> : null}
     </ProgressStep>
   );
 }
