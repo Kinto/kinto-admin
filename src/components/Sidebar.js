@@ -31,9 +31,9 @@ function CollectionMenuEntry(props) {
   ].join(" ");
   return (
     <div className={classes}>
-      <i className="glyphicon glyphicon-align-justify"/>
       <SideBarLink name="collection:records" params={{bid, cid}} currentPath={currentPath}
         className="">
+        <i className="glyphicon glyphicon-align-justify"/>
         {cid}
       </SideBarLink>
       <SideBarLink name="collection:attributes" params={{bid, cid}} currentPath={currentPath}
