@@ -12,7 +12,7 @@ export default class CollectionTabs extends Component {
     cid: string,
     selected: "records" | "attributes" | "permissions" | "history",
     capabilities: Capabilities,
-    children?: any,
+    children?: React.Element<*>,
   };
 
   render() {

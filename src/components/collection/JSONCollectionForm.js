@@ -41,10 +41,10 @@ function validate({data}, errors) {
 
 export default class JSONCollectionForm extends Component {
   props: {
-    children?: any, // XXX: would be nice to have an actual type here
+    children?: React.Element<*>,
     cid: ?string,
     formData: CollectionData,
-    onSubmit: (data: {formData: Object}) => void,
+    onSubmit: (data: {formData: CollectionData}) => void,
   };
 
   onSubmit = ({formData}: {formData: {id: string, data: string}}): void => {
