@@ -10,6 +10,7 @@ import React, { Component } from "react";
 import { Link } from "react-router";
 
 import BaseForm from "../BaseForm";
+import JSONCollectionForm from "./JSONCollectionForm";
 import JSONEditor from "../JSONEditor";
 import { canCreateCollection, canEditCollection } from "../../permission";
 import { validateSchema, validateUiSchema } from "../../utils";
@@ -29,23 +30,6 @@ const defaultUiSchema = JSON.stringify({
     "ui:widget": "textarea"
   }
 }, null, 2);
-
-function FormInstructions() {
-  return (
-    <div className="alert alert-info instructions">
-      <ol>
-        <li>First find a good name for your collection.</li>
-        <li>Create a <em>JSON schema</em> describing the fields the
-            collection records should have.</li>
-        <li>Define a <em>uiSchema</em> to customize the way forms for creating and
-            editing records are rendered.</li>
-        <li>List the record fields you want to display in the columns of the
-            collection records list.</li>
-        <li>Decide if you want to enable attaching a file to records.</li>
-      </ol>
-    </div>
-  );
-}
 
 const deleteSchema = {
   type: "string",
@@ -88,12 +72,11 @@ function DeleteForm({cid, onSubmit}) {
 
 const schema = {
   type: "object",
-  description: FormInstructions(),
   required: ["id"],
   properties: {
     id: {
       type: "string",
-      title: "Collection name",
+      title: "Collection id",
       pattern: "^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
     },
     schema: {
@@ -244,24 +227,55 @@ function validate({schema, uiSchema, displayFields}, errors) {
   return errors;
 }
 
+function FormInstructions({onSchemalessLinkClick}) {
+  return (
+    <div className="alert alert-info">
+      <ol>
+        <li>First find a good name for your collection.</li>
+        <li>Create a <em>JSON schema</em> describing the fields the
+            collection records should have.</li>
+        <li>Define a <em>uiSchema</em> to customize the way forms for creating and
+            editing records are rendered.</li>
+        <li>List the record fields you want to display in the columns of the
+            collection records list.</li>
+        <li>Decide if you want to enable attaching a file to records.</li>
+      </ol>
+      <p>Alternatively, you can create a
+        <a href="" onClick={onSchemalessLinkClick}>schemaless collection</a>.</p>
+    </div>
+  );
+}
+
+type Props = {
+  cid?: string,
+  session: SessionState,
+  bucket: BucketState,
+  collection: CollectionState,
+  deleteCollection?: (cid: string) => void,
+  onSubmit: (formData: CollectionData) => void,
+  formData?: CollectionData,
+};
+
 export default class CollectionForm extends Component {
-  props: {
-    cid?: string,
-    session: SessionState,
-    bucket: BucketState,
-    collection: CollectionState,
-    deleteCollection?: (cid: string) => void,
-    onSubmit: (formData: CollectionData) => void,
-    formData?: CollectionData,
+  props: Props;
+
+  state: {
+    asJSON: bool,
   };
 
-  onSubmit = ({formData}: {formData: Object}) => {
-    this.props.onSubmit({
+  constructor(props: Props) {
+    super(props);
+    this.state = {asJSON: false};
+  }
+
+  onSubmit = ({formData}: {formData: Object}): void => {
+    const collectionData = this.state.asJSON ? formData : {
       ...formData,
       // Parse JSON fields so they can be sent to the server
       schema: JSON.parse(formData.schema),
       uiSchema: JSON.parse(formData.uiSchema),
-    });
+    };
+    this.props.onSubmit(collectionData);
   }
 
   get allowEditing(): boolean {
@@ -274,10 +288,22 @@ export default class CollectionForm extends Component {
     }
   }
 
+  toggleJSON = (event: Event): void => {
+    event.preventDefault();
+    this.setState({asJSON: !this.state.asJSON});
+    window.scrollTo(0, 0);
+  }
+
+  onSchemalessLinkClick = (event: Event): void => {
+    event.preventDefault();
+    this.setState({asJSON: true});
+  };
+
   render() {
     const {cid, bucket, collection, formData={}, deleteCollection} = this.props;
     const creation = !formData.id;
     const showDeleteForm = !creation && this.allowEditing;
+    const {asJSON} = this.state;
 
     // Disable edition of the collection id
     const _uiSchema = creation ? uiSchema : {
@@ -310,21 +336,35 @@ export default class CollectionForm extends Component {
         </button>
         {" or "}
         <Link to="/">Cancel</Link>
+        {" | "}
+        <a href="#" onClick={this.toggleJSON}>
+          {asJSON ? "Edit form" : "Edit raw JSON"}
+        </a>
       </div>
     );
 
     return (
       <div>
         {alert}
-        <BaseForm
-          schema={schema}
-          formData={formDataSerialized}
-          uiSchema={this.allowEditing ? _uiSchema :
-                                        {..._uiSchema, "ui:disabled": true}}
-          validate={validate}
-          onSubmit={this.onSubmit}>
-          {buttons}
-        </BaseForm>
+        {asJSON ?
+          <JSONCollectionForm
+            cid={cid}
+            formData={collection.data}
+            onSubmit={this.onSubmit}>
+            {buttons}
+          </JSONCollectionForm> :
+          <div>
+            <FormInstructions onSchemalessLinkClick={this.onSchemalessLinkClick} />
+            <BaseForm
+              schema={schema}
+              formData={formDataSerialized}
+              uiSchema={this.allowEditing ? _uiSchema :
+                                            {..._uiSchema, "ui:disabled": true}}
+              validate={validate}
+              onSubmit={this.onSubmit}>
+              {buttons}
+            </BaseForm>
+          </div>}
         {showDeleteForm ?
           <DeleteForm
             cid={cid}

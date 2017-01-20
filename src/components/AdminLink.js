@@ -11,7 +11,7 @@ import url from "../url";
 type Props = {
   name: string,
   params: RouteParams,
-  children?: any,
+  children?: React.Element<*>,
 };
 
 export default class AdminLink extends Component {

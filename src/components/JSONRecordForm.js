@@ -29,7 +29,7 @@ export default class JSONRecordForm extends Component {
     disabled: boolean,
     record: string, // JSON string representation of a record data
     onSubmit: (data: Object) => void,
-    children?: any,
+    children?: React.Element<*>,
   };
 
   onSubmit = (data: {formData: string}) => {

@@ -13,7 +13,7 @@ export default class RecordTabs extends Component {
     rid: string,
     selected: "attributes" | "permissions" | "history",
     capabilities: Capabilities,
-    children?: any,
+    children?: React.Element<*>,
   };
 
   render() {

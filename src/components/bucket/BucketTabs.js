@@ -11,7 +11,7 @@ export default class BucketTabs extends Component {
     bid: string,
     selected: "collections" | "groups" | "attributes" | "permissions" | "history",
     capabilities: Capabilities,
-    children?: any,
+    children?: React.Element<*>,
   };
 
   render() {
