@@ -259,12 +259,15 @@ table.record-list td.load-more {
   color: #333;
 }
 
-.collections-menu-entry a {
+.collections-menu-entry > a {
+  display: inline-block;
+  width: 100%;
+
   color: #555;
   text-decoration: none;
 }
 
-.collections-menu-entry.active > a {
+.collections-menu-entry.active a {
   color: #fff;
 }
 

@@ -31,15 +31,16 @@ function CollectionMenuEntry(props) {
   ].join(" ");
   return (
     <div className={classes}>
-      <i className="glyphicon glyphicon-align-justify"/>
       <SideBarLink name="collection:records" params={{bid, cid}} currentPath={currentPath}
         className="">
+        <i className="glyphicon glyphicon-align-justify"/>
         {cid}
-      </SideBarLink>
-      <SideBarLink name="collection:attributes" params={{bid, cid}} currentPath={currentPath}
-        className="collections-menu-entry-edit"
-        title="Edit collection attributes">
-        <i className="glyphicon glyphicon-cog" />
+
+        <SideBarLink name="collection:attributes" params={{bid, cid}} currentPath={currentPath}
+          className="collections-menu-entry-edit"
+          title="Edit collection attributes">
+          <i className="glyphicon glyphicon-cog" />
+        </SideBarLink>
       </SideBarLink>
     </div>
   );
