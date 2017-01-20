@@ -267,7 +267,7 @@ table.record-list td.load-more {
   text-decoration: none;
 }
 
-.collections-menu-entry.active a {
+.collections-menu-entry.active > a {
   color: #fff;
 }
 
