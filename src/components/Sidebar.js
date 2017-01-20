@@ -35,12 +35,11 @@ function CollectionMenuEntry(props) {
         className="">
         <i className="glyphicon glyphicon-align-justify"/>
         {cid}
-
-        <SideBarLink name="collection:attributes" params={{bid, cid}} currentPath={currentPath}
-          className="collections-menu-entry-edit"
-          title="Edit collection attributes">
-          <i className="glyphicon glyphicon-cog" />
-        </SideBarLink>
+      </SideBarLink>
+      <SideBarLink name="collection:attributes" params={{bid, cid}} currentPath={currentPath}
+        className="collections-menu-entry-edit"
+        title="Edit collection attributes">
+        <i className="glyphicon glyphicon-cog" />
       </SideBarLink>
     </div>
   );
