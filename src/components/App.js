@@ -51,7 +51,8 @@ export default class App extends Component {
     const notificationsClass = notificationList.length ?
                                " with-notifications" : "";
     const contentClasses = `col-sm-9 content${notificationsClass}`;
-    const version = process.env.KINTO_ADMIN_VERSION;
+    const version = process.env.REACT_APP_VERSION ||
+                    process.env.KINTO_ADMIN_VERSION;
     return (
       <div>
         {session.authenticated ?
