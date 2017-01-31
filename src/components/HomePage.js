@@ -5,6 +5,7 @@ import React, { Component } from "react";
 
 import Spinner from "./Spinner";
 import AuthForm from "./AuthForm";
+import { isObject } from "../utils";
 
 
 function ServerProps({node}: {node: Object}) {
@@ -17,7 +18,7 @@ function ServerProps({node}: {node: Object}) {
             <tr key={i}>
               <th>{key}</th>
               <td style={{width: "100%"}}>{
-                typeof childNode === "object" ?
+                isObject(childNode) ?
                   <ServerProps node={childNode} /> :
                   typeof childNode === "string" && childNode.startsWith("http") ?
                     <a href={childNode} target="_blank">{childNode}</a> :

@@ -114,7 +114,8 @@ describe("bucket sagas", () => {
         it("should post new bucket data", () => {
           expect(updateBucket.next().value)
             .eql(call([bucket, bucket.setData], {a: 1, last_modified: 42}, {
-              patch: true, safe: true}));
+              safe: true,
+            }));
         });
 
         it("should update the route path", () => {
@@ -374,7 +375,7 @@ describe("bucket sagas", () => {
             .eql(call([collection, collection.setData], {
               ...collectionData,
               last_modified: 42,
-            }, {patch: true, safe: true}));
+            }, {safe: true}));
         });
 
         it("should update the route path", () => {
@@ -733,7 +734,7 @@ describe("bucket sagas", () => {
             .eql(call([bucket, bucket.updateGroup], {
               ...groupData,
               last_modified: 42
-            }, {patch: true, safe: true}));
+            }, {safe: true}));
         });
 
         it("should update the route path", () => {

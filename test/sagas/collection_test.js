@@ -382,7 +382,6 @@ describe("collection sagas", () => {
               ...record,
               last_modified: 42
             }, {
-              patch: true,
               safe: true
             }));
         });
