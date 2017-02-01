@@ -4,16 +4,41 @@ import type { ResourceHistoryEntry, RouteLocation } from "../types";
 
 import React, { Component } from "react";
 import { Link } from "react-router";
+import { diffJson } from "diff";
 
 import { timeago, humanDate } from "../utils";
 import AdminLink from "./AdminLink";
 import PaginatedTable from "./PaginatedTable";
 
 
+function Diff({source, target}) {
+  const diff = diffJson(target, source);
+  return (
+    <pre className="json-record">{
+      diff.map((chunk, i) => {
+        const color = chunk.added ? "green" : chunk.removed ? "red" : "inherit";
+        const prefixedChunk = chunk.value.split("\n")
+          .filter(part => part !== "")
+          .map((part) => {
+            const prefix = chunk.added ? "+ " : chunk.removed ? "- " : "  ";
+            return prefix + part;
+          })
+          .join("\n");
+        return (
+          <div key={i}>
+            <code style={{color}}>{prefixedChunk}</code>
+          </div>
+        );
+      })
+    }</pre>
+  );
+}
+
 class HistoryRow extends Component {
   props: {
     bid: string,
-    entry: ResourceHistoryEntry,
+    current: ResourceHistoryEntry,
+    previous: ?ResourceHistoryEntry,
   };
 
   state: {
@@ -32,7 +57,7 @@ class HistoryRow extends Component {
 
   render() {
     const {open} = this.state;
-    const {entry, bid} = this.props;
+    const {current, previous, bid} = this.props;
     const {
       last_modified,
       action,
@@ -42,7 +67,7 @@ class HistoryRow extends Component {
       collection_id: cid,
       group_id: gid,
       record_id: rid
-    } = entry;
+    } = current;
 
     const {data: {id: objectId}} = target;
 
@@ -61,24 +86,25 @@ class HistoryRow extends Component {
           </td>
           <td>{user_id}</td>
           <td className="text-center">
-            <a href="." className="btn btn-xs btn-default"
-               onClick={this.toggle}
-               title="View entry details">
-              <i className={`glyphicon glyphicon-eye-${open ? "close" : "open"}`} />
-            </a>
+            {previous && (
+              <a href="." className="btn btn-xs btn-default"
+                 onClick={this.toggle}
+                 title="View entry details">
+                <i className={`glyphicon glyphicon-eye-${open ? "close" : "open"}`} />
+              </a>
+            )}
           </td>
         </tr>
         <tr className="history-row-details"
             style={{display: open ? "table-row" : "none"}}>
           <td colSpan="6">
-            <pre>{JSON.stringify(entry, null, 2)}</pre>
+            {previous && <Diff source={current.target} target={previous.target} />}
           </td>
         </tr>
       </tbody>
     );
   }
 }
-
 
 function FilterInfo(props) {
   const {location}: {location: RouteLocation} = props;
@@ -126,9 +152,26 @@ export default class HistoryTable extends Component {
       </thead>
     );
 
-    const tbody = history.map((entry, index) => {
-      return <HistoryRow key={index} bid={bid} entry={entry} />;
-    });
+    const tbody = history
+      .reduce((acc, entry) => {
+        const previous = acc[acc.length - 1];
+        return [
+          ...acc,
+          {
+            current: entry,
+            previous: previous ? previous.current : null,
+          }
+        ];
+      }, [])
+      .map(({current, previous}, index) => {
+        return (
+          <HistoryRow
+            key={index}
+            bid={bid}
+            current={current}
+            previous={previous} />
+        );
+      });
 
     return (
       <div>
