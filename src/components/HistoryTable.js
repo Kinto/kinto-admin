@@ -9,6 +9,7 @@ import { diffJson } from "diff";
 import { timeago, humanDate } from "../utils";
 import AdminLink from "./AdminLink";
 import PaginatedTable from "./PaginatedTable";
+import { getClient } from "../client";
 
 
 function Diff({source, target}) {
@@ -34,30 +35,48 @@ function Diff({source, target}) {
   );
 }
 
+function fetchPreviousVersion(bid, entry: ResourceHistoryEntry): Promise<?ResourceHistoryEntry> {
+  const {uri, last_modified} = entry;
+  return getClient().bucket(bid).listHistory({
+    filters: {uri, _before: last_modified},
+    limit: 1
+  }).then(res => res.data[0]);
+}
+
 class HistoryRow extends Component {
   props: {
     bid: string,
-    current: ResourceHistoryEntry,
-    previous: ?ResourceHistoryEntry,
+    entry: ResourceHistoryEntry,
   };
 
   state: {
-    open: boolean
+    open: boolean,
+    previous: ?ResourceHistoryEntry,
   };
 
   constructor(props) {
     super(props);
-    this.state = {open: false};
+    this.state = {open: false, previous: null};
   }
 
   toggle = (event) => {
+    const {bid, entry} = this.props;
     event.preventDefault();
-    this.setState({open: !this.state.open});
+    if (this.state.open) {
+      this.setState({open: false});
+    } else {
+      if (this.state.previous) {
+        this.setState({open: true});
+      } else {
+        fetchPreviousVersion(bid, entry)
+        .then((previous) => this.setState({open: true, previous}));
+      }
+    }
   };
 
   render() {
-    const {open} = this.state;
-    const {current, previous, bid} = this.props;
+    const {open, previous} = this.state;
+    const {entry, bid} = this.props;
     const {
       last_modified,
       action,
@@ -67,7 +86,7 @@ class HistoryRow extends Component {
       collection_id: cid,
       group_id: gid,
       record_id: rid
-    } = current;
+    } = entry;
 
     const {data: {id: objectId}} = target;
 
@@ -86,19 +105,19 @@ class HistoryRow extends Component {
           </td>
           <td>{user_id}</td>
           <td className="text-center">
-            {previous && (
-              <a href="." className="btn btn-xs btn-default"
-                 onClick={this.toggle}
-                 title="View entry details">
-                <i className={`glyphicon glyphicon-eye-${open ? "close" : "open"}`} />
-              </a>
-            )}
+            <a href="." className="btn btn-xs btn-default"
+               onClick={this.toggle}
+               title="View entry details">
+              <i className={`glyphicon glyphicon-eye-${open ? "close" : "open"}`} />
+            </a>
           </td>
         </tr>
         <tr className="history-row-details"
             style={{display: open ? "table-row" : "none"}}>
           <td colSpan="6">
-            {previous && <Diff source={current.target} target={previous.target} />}
+            {previous
+              ? <Diff source={entry.target} target={previous.target} />
+              : <p className="alert alert-info">This resource has no previous versions.</p>}
           </td>
         </tr>
       </tbody>
@@ -152,26 +171,9 @@ export default class HistoryTable extends Component {
       </thead>
     );
 
-    const tbody = history
-      .reduce((acc, entry) => {
-        const previous = acc[acc.length - 1];
-        return [
-          ...acc,
-          {
-            current: entry,
-            previous: previous ? previous.current : null,
-          }
-        ];
-      }, [])
-      .map(({current, previous}, index) => {
-        return (
-          <HistoryRow
-            key={index}
-            bid={bid}
-            current={current}
-            previous={previous} />
-        );
-      });
+    const tbody = history.map((entry, index) => {
+      return <HistoryRow key={index} bid={bid} entry={entry} />;
+    });
 
     return (
       <div>
