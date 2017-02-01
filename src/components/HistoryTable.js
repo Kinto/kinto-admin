@@ -52,30 +52,30 @@ class HistoryRow extends Component {
   state: {
     open: boolean,
     previous: ?ResourceHistoryEntry,
+    error: ?Error,
   };
 
   constructor(props) {
     super(props);
-    this.state = {open: false, previous: null};
+    this.state = {open: false, previous: null, error: null};
   }
 
   toggle = (event) => {
     const {bid, entry} = this.props;
     event.preventDefault();
     if (this.state.open) {
-      this.setState({open: false});
-    } else {
-      if (this.state.previous) {
-        this.setState({open: true});
-      } else {
-        fetchPreviousVersion(bid, entry)
-        .then((previous) => this.setState({open: true, previous}));
-      }
+      return this.setState({open: false});
     }
+    if (this.state.previous) {
+      return this.setState({open: true});
+    }
+    fetchPreviousVersion(bid, entry)
+      .then((previous) => this.setState({open: true, previous, error: null}))
+      .catch((error) => this.setState({open: true, previous: null, error}));
   };
 
   render() {
-    const {open, previous} = this.state;
+    const {open, previous, error} = this.state;
     const {entry, bid} = this.props;
     const {
       last_modified,
@@ -117,7 +117,9 @@ class HistoryRow extends Component {
           <td colSpan="6">
             {previous
               ? <Diff source={entry.target} target={previous.target} />
-              : <p className="alert alert-info">This resource has no previous versions.</p>}
+              : error
+                ? <p className="alert alert-danger">{error}</p>
+                : <p className="alert alert-info">This resource has no previous versions.</p>}
           </td>
         </tr>
       </tbody>

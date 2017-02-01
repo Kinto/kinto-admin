@@ -204,6 +204,11 @@ table.record-list td.load-more {
   margin: 0;
 }
 
+.history-row-details .alert {
+  margin: 0;
+  border-radius: 0;
+}
+
 .sort-link {
   float: right;
   margin-top: .1em;
