@@ -17,7 +17,7 @@ function Diff({source, target}) {
   return (
     <pre className="json-record">{
       diff.map((chunk, i) => {
-        const color = chunk.added ? "green" : chunk.removed ? "red" : "inherit";
+        const className = chunk.added ? "added" : chunk.removed ? "removed" : "";
         const prefixedChunk = chunk.value.split("\n")
           .filter(part => part !== "")
           .map((part) => {
@@ -26,8 +26,8 @@ function Diff({source, target}) {
           })
           .join("\n");
         return (
-          <div key={i}>
-            <code style={{color}}>{prefixedChunk}</code>
+          <div key={i} className={className}>
+            <code>{prefixedChunk}</code>
           </div>
         );
       })
@@ -40,7 +40,7 @@ function fetchPreviousVersion(bid, entry: ResourceHistoryEntry): Promise<?Resour
   return getClient().bucket(bid).listHistory({
     filters: {uri, _before: last_modified},
     limit: 1
-  }).then(res => res.data[0]);
+  }).then(({data}) => data[0]);
 }
 
 class HistoryRow extends Component {
@@ -63,12 +63,17 @@ class HistoryRow extends Component {
   toggle = (event) => {
     const {bid, entry} = this.props;
     event.preventDefault();
+    if (entry.action !== "update") {
+      return this.setState({open: !this.state.open});
+    }
     if (this.state.open) {
       return this.setState({open: false});
     }
     if (this.state.previous) {
       return this.setState({open: true});
     }
+    // We don't leverage redux store and dedicated action as this behavior is
+    // contextually specific to this local component.
     fetchPreviousVersion(bid, entry)
       .then((previous) => this.setState({open: true, previous, error: null}))
       .catch((error) => this.setState({open: true, previous: null, error}));
@@ -119,7 +124,7 @@ class HistoryRow extends Component {
               ? <Diff source={entry.target} target={previous.target} />
               : error
                 ? <p className="alert alert-danger">{error}</p>
-                : <p className="alert alert-info">This resource has no previous versions.</p>}
+                : <pre>{JSON.stringify(entry.target, null, 2)}</pre>}
           </td>
         </tr>
       </tbody>

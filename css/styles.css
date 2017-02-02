@@ -254,6 +254,20 @@ table.record-list td.load-more {
   min-height: 300px;
 }
 
+.json-record > div {
+  padding: 1px 0 1px 4px;
+}
+
+.json-record > div.added {
+  background: #cbeecb;
+  color: green;
+}
+
+.json-record > div.removed {
+  background: #f0c9c9;
+  color: red;
+}
+
 .panel-heading > .glyphicon,
 .list-group-item .glyphicon,
 .nav-tabs li .glyphicon {
