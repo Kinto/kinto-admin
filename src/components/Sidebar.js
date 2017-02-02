@@ -33,7 +33,9 @@ function CollectionMenuEntry(props) {
     <div className={classes}>
       <SideBarLink name="collection:records" params={{bid, cid}} currentPath={currentPath}
         className="">
-        <i className="glyphicon glyphicon-align-justify"/>
+        {collection.readonly
+          ? <i className="glyphicon glyphicon-lock"/>
+          : <i className="glyphicon glyphicon-align-justify"/>}
         {cid}
       </SideBarLink>
       <SideBarLink name="collection:attributes" params={{bid, cid}} currentPath={currentPath}
@@ -88,7 +90,9 @@ function BucketsMenu(props) {
           return (
             <div key={i} className={`panel panel-${current ? "info": "default"} bucket-menu`}>
               <div className="panel-heading">
-                <i className={`glyphicon glyphicon-folder-${current ? "open" : "close"}`} />
+                {bucket.readonly
+                  ? <i className="glyphicon glyphicon-lock"/>
+                  : <i className={`glyphicon glyphicon-folder-${current ? "open" : "close"}`} />}
                 <strong>{id}</strong> bucket
                 <SideBarLink name="bucket:attributes" params={{bid: id}} currentPath={currentPath}
                   className="bucket-menu-entry-edit"
@@ -110,16 +114,27 @@ function BucketsMenu(props) {
   );
 }
 
+type SidebarProps = {
+  session: SessionState,
+  params: RouteParams,
+  location: RouteLocation,
+};
+
 export default class Sidebar extends Component {
   // This is useful to identify wrapped component for plugin hooks when code is
   // minified; see https://github.com/facebook/react/issues/4915
   static displayName = "Sidebar";
 
-  props: {
-    session: SessionState,
-    params: RouteParams,
-    location: RouteLocation,
+  props: SidebarProps;
+
+  state: {
+    hideReadOnly: boolean,
   };
+
+  constructor(props: SidebarProps) {
+    super(props);
+    this.state = {hideReadOnly: false};
+  }
 
   render() {
     const {session, params, location} = this.props;

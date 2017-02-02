@@ -34,7 +34,7 @@ export function* sessionLogout(getState: GetStateFn, action: ActionType<typeof a
   yield call(clearSession);
 }
 
-function expandBucketsCollections(buckets, permissions) {
+export function expandBucketsCollections(buckets, permissions) {
   // Create a copy to avoid mutating the source object
   const bucketsCopy = clone(buckets);
 
@@ -42,17 +42,40 @@ function expandBucketsCollections(buckets, permissions) {
   // the /permissions endpoint
   for (const permission of permissions) {
     // Add any missing bucket to the current list
-    let bucket = bucketsCopy.find(x => x.id === permission.bucket_id);
+    let bucket = bucketsCopy.find(b => {
+      return b.id === permission.bucket_id;
+    });
     if (!bucket) {
-      bucket = {id: permission.bucket_id, collections: []};
+      bucket = {
+        id: permission.bucket_id,
+        collections: [],
+        permissions: [],
+        readonly: true,
+      };
       bucketsCopy.push(bucket);
+    }
+    if (permission.resource_name === "bucket") {
+      bucket.permissions = permission.permissions;
+      bucket.readonly = !bucket.permissions.some((bp) => ["write", "collection:create"].includes(bp));
     }
     // Add any missing collection to the current bucket collections list; note
     // that this will expose collections we have shared records within too.
     if ("collection_id" in permission) {
-      const collection = bucket.collections.find(x => x.id === permission.collection_id);
+      let collection = bucket.collections.find(x => x.id === permission.collection_id);
       if (!collection) {
-        bucket.collections.push({id: permission.collection_id});
+        collection = {
+          id: permission.collection_id,
+          permissions: [],
+          readonly: true,
+        };
+        bucket.collections.push(collection);
+      }
+      if (permission.resource_name === "collection") {
+        collection.permissions = permission.permissions;
+        collection.readonly = !collection.permissions.some((cp) => ["write", "record:create"].includes(cp));
+      }
+      if (!collection.readonly) {
+        bucket.readonly = false;
       }
     }
   }
@@ -92,7 +115,10 @@ export function* listBuckets(getState: GetStateFn, action: ActionType<typeof act
     });
     let buckets = data.map((bucket, index) => {
       const {data: collections=[]} = responses[index].body;
-      return {id: bucket.id, collections};
+      // We also initialize the list of permissions for this bucket; when the
+      // permissions endpoint is enabled, we'll fill these with the retrieved
+      // data.
+      return {id: bucket.id, collections, permissions: [], readonly: true};
     });
 
     // If the Kinto API version allows it, retrieves all permissions

@@ -227,3 +227,29 @@ describe("session sagas", () => {
     });
   });
 });
+
+describe.only("expandBucketsCollections()", () => {
+  it("should expand the list of buckets with readonly information", () => {
+    const buckets = [
+      {id: "b1", permissions: [], collections: []},
+      {id: "b2", permissions: [], collections: []},
+    ];
+    const permissions = [
+      {
+        resource_name: "bucket",
+        bucket_id: "b1",
+        collection_id: "b1c1",
+        permissions: ["read", "read:attributes"],
+      },
+      {
+        resource_name: "collection",
+        bucket_id: "b1",
+        collection_id: "b1c2",
+        permissions: ["read", "write"],
+      },
+    ];
+
+    expect(saga.expandBucketsCollections(buckets, permissions))
+      .eql([]);
+  });
+});
