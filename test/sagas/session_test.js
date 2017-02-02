@@ -278,6 +278,12 @@ describe("expandBucketsCollections()", () => {
       collection_id: "b2c1",
       permissions: ["read"],
     },
+    {
+      resource_name: "collection",
+      bucket_id: "b3",
+      collection_id: "b3c1",
+      permissions: ["read", "write"],
+    },
   ];
 
   const tree = saga.expandBucketsCollections(buckets, permissions);
@@ -298,9 +304,13 @@ describe("expandBucketsCollections()", () => {
   });
 
   it("should denote a collection as readonly", () => {
-    const b1c1 = tree
+    const b2c1 = tree
       .find(b => b.id === "b2").collections
       .find(c => c.id === "b2c1");
-    expect(b1c1.readonly).to.be.true;
+    expect(b2c1.readonly).to.be.true;
+  });
+
+  it("should infer an implicit bucket", () => {
+    expect(tree.find(b => b.id === "b3").readonly).to.be.false;
   });
 });

@@ -1,5 +1,6 @@
 /* @flow */
-import type { ActionType, GetStateFn, SagaGen } from "../types";
+import type { PermissionEntry } from "kinto-http";
+import type { ActionType, BucketEntry, GetStateFn, SagaGen } from "../types";
 
 import { push as updatePath } from "react-router-redux";
 import { call, put } from "redux-saga/effects";
@@ -34,7 +35,7 @@ export function* sessionLogout(getState: GetStateFn, action: ActionType<typeof a
   yield call(clearSession);
 }
 
-export function expandBucketsCollections(buckets: Object[], permissions: Object[]) {
+export function expandBucketsCollections(buckets: BucketEntry[], permissions: PermissionEntry[]): BucketEntry[] {
   // Create a copy to avoid mutating the source object
   const bucketsCopy = clone(buckets);
 
