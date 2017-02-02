@@ -44,7 +44,6 @@ export function* updateBucket(getState: GetStateFn, action: ActionType<typeof ac
     if (data) {
       const updatedBucket = {...data, last_modified};
       yield call([bucket, bucket.setData], updatedBucket, {
-        patch: true,
         safe: true,
       });
       yield put(redirectTo("bucket:attributes", {bid}));
@@ -102,9 +101,7 @@ export function* updateCollection(getState: GetStateFn, action: ActionType<typeo
     const coll = getCollection(bid, cid);
     if (data) {
       const updatedCollection = {...data, last_modified};
-      yield call([coll, coll.setData], updatedCollection, {
-        patch: true,
-        safe: true});
+      yield call([coll, coll.setData], updatedCollection, {safe: true});
       yield put(redirectTo("collection:records", {bid, cid}));
       yield put(notifySuccess("Collection attributes updated."));
     } else if (permissions) {
@@ -222,10 +219,7 @@ export function* updateGroup(getState: GetStateFn, action: ActionType<typeof act
     const bucket = getBucket(bid);
     if (data) {
       const updatedGroup = {...data, id: gid, last_modified};
-      yield call([bucket, bucket.updateGroup], updatedGroup, {
-        patch: true,
-        safe: true,
-      });
+      yield call([bucket, bucket.updateGroup], updatedGroup, {safe: true});
       yield put(redirectTo("group:attributes", {bid, gid}));
       yield put(notifySuccess("Group attributes updated."));
     } else if (permissions) {

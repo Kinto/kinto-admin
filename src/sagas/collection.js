@@ -150,9 +150,7 @@ export function* updateRecord(getState: GetStateFn, action: ActionType<typeof ac
         const attachmentOptions = getAttachmentOptions(attachmentCapability, collection.data);
         yield call([coll, coll.addAttachment], attachment, updatedRecord, attachmentOptions);
       } else {
-        // Note: We update using PATCH to keep existing record attributes possibly
-        // not defined by the JSON schema, if any.
-        yield call([coll, coll.updateRecord], updatedRecord, {patch: true, safe: true});
+        yield call([coll, coll.updateRecord], updatedRecord, {safe: true});
       }
       yield put(resetRecord());
       yield put(redirectTo("collection:records", {bid, cid}));
