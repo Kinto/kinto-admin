@@ -144,15 +144,37 @@ describe("session sagas", () => {
           .eql(put(actions.bucketsSuccess([
             {
               id: "b1",
-              collections: [{id: "b1c1"}, {id: "b1c2"}]
+              collections: [{
+                id: "b1c1",
+                permissions: [],
+                readonly: true,
+              }, {
+                id: "b1c2",
+                permissions: [],
+                readonly: true,
+              }],
+              permissions: [],
+              readonly: true,
             },
             {
               id: "b2",
-              collections: [{id: "b2c1"}]
+              collections: [{
+                id: "b2c1",
+                permissions: [],
+                readonly: true,
+              }],
+              permissions: [],
+              readonly: true,
             },
             {
               id: "Foo",
-              collections: [{id: "Bar"}]
+              collections: [{
+                id: "Bar",
+                permissions: [],
+                readonly: true,
+              }],
+              permissions: [],
+              readonly: true,
             }
           ])));
       });
@@ -228,28 +250,57 @@ describe("session sagas", () => {
   });
 });
 
-describe.only("expandBucketsCollections()", () => {
-  it("should expand the list of buckets with readonly information", () => {
-    const buckets = [
-      {id: "b1", permissions: [], collections: []},
-      {id: "b2", permissions: [], collections: []},
-    ];
-    const permissions = [
-      {
-        resource_name: "bucket",
-        bucket_id: "b1",
-        collection_id: "b1c1",
-        permissions: ["read", "read:attributes"],
-      },
-      {
-        resource_name: "collection",
-        bucket_id: "b1",
-        collection_id: "b1c2",
-        permissions: ["read", "write"],
-      },
-    ];
+describe("expandBucketsCollections()", () => {
+  const buckets = [
+    {id: "b1", permissions: [], collections: [], readonly: true},
+    {id: "b2", permissions: [], collections: [], readonly: true},
+  ];
+  const permissions = [
+    {
+      resource_name: "bucket",
+      bucket_id: "b1",
+      permissions: ["read"],
+    },
+    {
+      resource_name: "bucket",
+      bucket_id: "b2",
+      permissions: ["read"],
+    },
+    {
+      resource_name: "collection",
+      bucket_id: "b1",
+      collection_id: "b1c1",
+      permissions: ["read", "write"],
+    },
+    {
+      resource_name: "collection",
+      bucket_id: "b2",
+      collection_id: "b2c1",
+      permissions: ["read"],
+    },
+  ];
 
-    expect(saga.expandBucketsCollections(buckets, permissions))
-      .eql([]);
+  const tree = saga.expandBucketsCollections(buckets, permissions);
+
+  it("should denote a bucket as writable", () => {
+    expect(tree.find(b => b.id === "b1").readonly).to.be.false;
+  });
+
+  it("should denote a bucket as readonly", () => {
+    expect(tree.find(b => b.id === "b2").readonly).to.be.true;
+  });
+
+  it("should denote a collection as writable", () => {
+    const b1c1 = tree
+      .find(b => b.id === "b1").collections
+      .find(c => c.id === "b1c1");
+    expect(b1c1.readonly).to.be.false;
+  });
+
+  it("should denote a collection as readonly", () => {
+    const b1c1 = tree
+      .find(b => b.id === "b2").collections
+      .find(c => c.id === "b2c1");
+    expect(b1c1.readonly).to.be.true;
   });
 });

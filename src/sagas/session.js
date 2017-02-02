@@ -34,7 +34,7 @@ export function* sessionLogout(getState: GetStateFn, action: ActionType<typeof a
   yield call(clearSession);
 }
 
-export function expandBucketsCollections(buckets, permissions) {
+export function expandBucketsCollections(buckets: Object[], permissions: Object[]) {
   // Create a copy to avoid mutating the source object
   const bucketsCopy = clone(buckets);
 
@@ -42,9 +42,7 @@ export function expandBucketsCollections(buckets, permissions) {
   // the /permissions endpoint
   for (const permission of permissions) {
     // Add any missing bucket to the current list
-    let bucket = bucketsCopy.find(b => {
-      return b.id === permission.bucket_id;
-    });
+    let bucket = bucketsCopy.find(b => b.id === permission.bucket_id);
     if (!bucket) {
       bucket = {
         id: permission.bucket_id,
@@ -54,13 +52,16 @@ export function expandBucketsCollections(buckets, permissions) {
       };
       bucketsCopy.push(bucket);
     }
+    // We're dealing with bucket permissions
     if (permission.resource_name === "bucket") {
       bucket.permissions = permission.permissions;
-      bucket.readonly = !bucket.permissions.some((bp) => ["write", "collection:create"].includes(bp));
+      bucket.readonly = !bucket.permissions.some((bp) => {
+        return ["write", "collection:create"].includes(bp);
+      });
     }
-    // Add any missing collection to the current bucket collections list; note
-    // that this will expose collections we have shared records within too.
     if ("collection_id" in permission) {
+      // Add any missing collection to the current bucket collections list; note
+      // that this will expose collections we have shared records within too.
       let collection = bucket.collections.find(x => x.id === permission.collection_id);
       if (!collection) {
         collection = {
@@ -70,10 +71,14 @@ export function expandBucketsCollections(buckets, permissions) {
         };
         bucket.collections.push(collection);
       }
+      // We're dealing with collection permissions
       if (permission.resource_name === "collection") {
         collection.permissions = permission.permissions;
-        collection.readonly = !collection.permissions.some((cp) => ["write", "record:create"].includes(cp));
+        collection.readonly = !collection.permissions.some((cp) => {
+          return ["write", "record:create"].includes(cp);
+        });
       }
+      // If this collection is writable, mark its parent bucket writable
       if (!collection.readonly) {
         bucket.readonly = false;
       }
@@ -114,7 +119,15 @@ export function* listBuckets(getState: GetStateFn, action: ActionType<typeof act
       }
     });
     let buckets = data.map((bucket, index) => {
-      const {data: collections=[]} = responses[index].body;
+      // Initialize received collections with default permissions and readonly
+      // information.
+      const collections = responses[index].body.data.map(collection => {
+        return {
+          ...collection,
+          permissions: [],
+          readonly: true,
+        };
+      });
       // We also initialize the list of permissions for this bucket; when the
       // permissions endpoint is enabled, we'll fill these with the retrieved
       // data.
