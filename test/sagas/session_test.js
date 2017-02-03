@@ -255,35 +255,23 @@ describe("expandBucketsCollections()", () => {
     {id: "b1", permissions: [], collections: [], readonly: true},
     {id: "b2", permissions: [], collections: [], readonly: true},
   ];
+
+  function bucketPerm(bucket_id, permissions) {
+    return {resource_name: "bucket", bucket_id, permissions};
+  }
+
+  function collectionPerm(bucket_id, collection_id, permissions) {
+    return {resource_name: "collection", bucket_id, collection_id, permissions};
+  }
+
   const permissions = [
-    {
-      resource_name: "bucket",
-      bucket_id: "b1",
-      permissions: ["read"],
-    },
-    {
-      resource_name: "bucket",
-      bucket_id: "b2",
-      permissions: ["read"],
-    },
-    {
-      resource_name: "collection",
-      bucket_id: "b1",
-      collection_id: "b1c1",
-      permissions: ["read", "write"],
-    },
-    {
-      resource_name: "collection",
-      bucket_id: "b2",
-      collection_id: "b2c1",
-      permissions: ["read"],
-    },
-    {
-      resource_name: "collection",
-      bucket_id: "b3",
-      collection_id: "b3c1",
-      permissions: ["read", "write"],
-    },
+    bucketPerm("b1", ["read"]),
+    bucketPerm("b2", ["read"]),
+    collectionPerm("b1", "b1c1", ["read", "write"]),
+    collectionPerm("b2", "b2c1", ["read"]),
+    collectionPerm("b3", "b3c1", ["read", "write"]),
+    bucketPerm("foo", ["read"]),
+    collectionPerm("foo", "foo", ["read"]),
   ];
 
   const tree = saga.expandBucketsCollections(buckets, permissions);
@@ -312,5 +300,11 @@ describe("expandBucketsCollections()", () => {
 
   it("should infer an implicit bucket", () => {
     expect(tree.find(b => b.id === "b3").readonly).to.be.false;
+  });
+
+  it("should distinguish resource ids", () => {
+    const fooBucket = tree.find(b => b.id === "foo");
+    expect(fooBucket).to.exist;
+    expect(fooBucket.collections.find(c => c.id === "foo")).to.exist;
   });
 });
