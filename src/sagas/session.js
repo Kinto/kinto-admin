@@ -50,7 +50,6 @@ export function expandBucketsCollections(buckets: BucketEntry[], permissions: Pe
         collections: [],
         permissions: [],
         readonly: true,
-        last_modified: permission.last_modified,
       };
       bucketsCopy.push(bucket);
     }
@@ -70,7 +69,6 @@ export function expandBucketsCollections(buckets: BucketEntry[], permissions: Pe
           id: permission.collection_id,
           permissions: [],
           readonly: true,
-          last_modified: permission.last_modified,
         };
         bucket.collections.push(collection);
       }

@@ -79,19 +79,23 @@ type BucketsMenuProps = {
 };
 
 function filterBuckets(buckets, filters) {
-  const {hideReadOnly, sort} = filters;
+  const {hideReadOnly, search} = filters;
   return buckets.slice(0)
-    .sort((a, b) => {
-      switch (sort) {
-        case "id": {
-          return a.id <= b.id ? -1 : 1;
-        }
-        default:
-        case "last_modified": {
-          return a.last_modified >= b.last_modified ? -1 : 1;
-        }
+    .reduce((acc, bucket) => {
+      if (search == null || bucket.id.includes(search)) {
+        return [...acc, bucket];
+      } else if (bucket.collections.some(c => c.id.includes(search))) {
+        return [
+          ...acc,
+          {
+            ...bucket,
+            collections: bucket.collections.filter(c => c.id.includes(search))
+          }
+        ];
+      } else {
+        return acc;
       }
-    })
+    }, [])
     .filter((bucket) => !(hideReadOnly && bucket.readonly));
 }
 
@@ -100,22 +104,28 @@ class BucketsMenu extends Component {
 
   state: {
     hideReadOnly: boolean,
-    sort: "last_modified" | "id",
+    search: ?string,
   };
 
   constructor(props: BucketsMenuProps) {
     super(props);
-    this.state = {hideReadOnly: false, sort: "last_modified"};
+    this.state = {hideReadOnly: false, search: null};
   }
 
   toggleReadOnly = () => {
     this.setState({hideReadOnly: !this.state.hideReadOnly});
   };
 
-  toggleSort = (sort) => () => this.setState({sort});
+  resetSearch = (event) => {
+    event.preventDefault();
+    this.setState({search: null});
+  };
+
+  updateSearch = (event) => {
+    this.setState({search: event.target.value || null});
+  };
 
   render() {
-    const {sort} = this.state;
     const {currentPath, buckets, bid, cid} = this.props;
     const filteredBuckets = filterBuckets(buckets, this.state);
     return (
@@ -132,7 +142,16 @@ class BucketsMenu extends Component {
           <div className="panel-heading">
             <strong>Filters</strong>
           </div>
-          <div className="panel-body">
+          <form className="form panel-body">
+            <div className="input-group">
+              <input type="text" className="form-control" placeholder="Filter bucket/collection name"
+                value={this.state.search || ""} onInput={this.updateSearch}/>
+              <span className="input-group-addon">
+                <a href="" className="clear" onClick={this.resetSearch}>
+                  <i className="glyphicon glyphicon-remove-sign"/>
+                </a>
+              </span>
+            </div>
             <div className="checkbox">
               <label>
                 <input type="checkbox" value={this.state.hideReadOnly}
@@ -140,21 +159,7 @@ class BucketsMenu extends Component {
                 {" "}Hide readonly buckets
               </label>
             </div>
-            <div className="btn-group btn-group-sm" role="group">
-              <button type="button"
-                className={`btn btn-default ${sort === "id" ? "active" : ""}`}
-                onClick={this.toggleSort("id")}>
-                <i className="glyphicon glyphicon-sort-by-alphabet"/>
-                {" "}Id
-              </button>
-              <button type="button"
-                className={`btn btn-default ${sort === "last_modified" ? "active" : ""}`}
-                onClick={this.toggleSort("last_modified")}>
-                <i className="glyphicon glyphicon-sort-by-alphabet-alt"/>
-                {" "}Last modified
-              </button>
-            </div>
-          </div>
+          </form>
         </div>
         {
           filteredBuckets.map((bucket, i) => {
