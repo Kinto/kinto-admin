@@ -144,15 +144,37 @@ describe("session sagas", () => {
           .eql(put(actions.bucketsSuccess([
             {
               id: "b1",
-              collections: [{id: "b1c1"}, {id: "b1c2"}]
+              collections: [{
+                id: "b1c1",
+                permissions: [],
+                readonly: true,
+              }, {
+                id: "b1c2",
+                permissions: [],
+                readonly: true,
+              }],
+              permissions: [],
+              readonly: true,
             },
             {
               id: "b2",
-              collections: [{id: "b2c1"}]
+              collections: [{
+                id: "b2c1",
+                permissions: [],
+                readonly: true,
+              }],
+              permissions: [],
+              readonly: true,
             },
             {
               id: "Foo",
-              collections: [{id: "Bar"}]
+              collections: [{
+                id: "Bar",
+                permissions: [],
+                readonly: true,
+              }],
+              permissions: [],
+              readonly: true,
             }
           ])));
       });
@@ -225,5 +247,64 @@ describe("session sagas", () => {
     it("should reset the client", () => {
       expect(() => getClient()).to.throw(Error, /not configured/);
     });
+  });
+});
+
+describe("expandBucketsCollections()", () => {
+  const buckets = [
+    {id: "b1", permissions: [], collections: [], readonly: true},
+    {id: "b2", permissions: [], collections: [], readonly: true},
+  ];
+
+  function bucketPerm(bucket_id, permissions) {
+    return {resource_name: "bucket", bucket_id, permissions};
+  }
+
+  function collectionPerm(bucket_id, collection_id, permissions) {
+    return {resource_name: "collection", bucket_id, collection_id, permissions};
+  }
+
+  const permissions = [
+    bucketPerm("b1", ["read"]),
+    bucketPerm("b2", ["read"]),
+    collectionPerm("b1", "b1c1", ["read", "write"]),
+    collectionPerm("b2", "b2c1", ["read"]),
+    collectionPerm("b3", "b3c1", ["read", "write"]),
+    bucketPerm("foo", ["read"]),
+    collectionPerm("foo", "foo", ["read"]),
+  ];
+
+  const tree = saga.expandBucketsCollections(buckets, permissions);
+
+  it("should denote a bucket as writable", () => {
+    expect(tree.find(b => b.id === "b1").readonly).to.be.false;
+  });
+
+  it("should denote a bucket as readonly", () => {
+    expect(tree.find(b => b.id === "b2").readonly).to.be.true;
+  });
+
+  it("should denote a collection as writable", () => {
+    const b1c1 = tree
+      .find(b => b.id === "b1").collections
+      .find(c => c.id === "b1c1");
+    expect(b1c1.readonly).to.be.false;
+  });
+
+  it("should denote a collection as readonly", () => {
+    const b2c1 = tree
+      .find(b => b.id === "b2").collections
+      .find(c => c.id === "b2c1");
+    expect(b2c1.readonly).to.be.true;
+  });
+
+  it("should infer an implicit bucket", () => {
+    expect(tree.find(b => b.id === "b3").readonly).to.be.false;
+  });
+
+  it("should distinguish resource ids", () => {
+    const fooBucket = tree.find(b => b.id === "foo");
+    expect(fooBucket).to.exist;
+    expect(fooBucket.collections.find(c => c.id === "foo")).to.exist;
   });
 });

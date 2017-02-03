@@ -33,6 +33,14 @@ declare module "kinto-http" {
     body: Object,
   };
 
+  declare type PermissionEntry = {
+    resource_name: "bucket" | "group" | "collection" | "record",
+    id: string,
+    bucket_id: string,
+    collection_id?: string,
+    permissions: string[],
+  };
+
   declare class KintoClient {
     remote: string;
     defaultReqOptions: {
@@ -45,7 +53,7 @@ declare module "kinto-http" {
     batch(): Promise<BatchResponse[]>;
     fetchServerInfo(): Promise<Object>;
     listBuckets(): Promise<ListResponseBody<Resource>>;
-    listPermissions(): Promise<ListResponseBody<Object>>;
+    listPermissions(): Promise<ListResponseBody<PermissionEntry>>;
   }
 
   declare class Bucket {

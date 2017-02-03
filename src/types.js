@@ -325,12 +325,25 @@ export type TokenAuth = {
 
 export type SagaGen = Generator<*,void,*>;
 
+export type CollectionEntry = {
+  id: string,
+  permissions: string[],
+  readonly: boolean,
+};
+
+export type BucketEntry = {
+  id: string,
+  permissions: string[],
+  collections: CollectionEntry[],
+  readonly: boolean,
+};
+
 export type SessionState = {
   busy: boolean,
   auth: ?AuthData;
   authenticated: boolean,
   permissions: ?PermissionsListEntry[],
-  buckets: Object[],
+  buckets: BucketEntry[],
   serverInfo: ServerInfo,
   redirectURL: ?string,
 };

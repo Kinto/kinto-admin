@@ -20,6 +20,14 @@ h1 {
   padding-top: 1em;
 }
 
+.sidebar-filters > .panel-body {
+  padding: 0 15px 0 15px;
+}
+
+.list-group-item .glyphicon.glyphicon-lock {
+  color: #888;
+}
+
 .breadcrumbs {
   font-size: 1.2em;
   text-transform: lowercase;

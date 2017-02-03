@@ -1,5 +1,5 @@
 /* @flow */
-import type { SessionState, RouteParams, RouteLocation } from "../types";
+import type { SessionState, RouteParams, RouteLocation, BucketEntry } from "../types";
 
 import React, { Component } from "react";
 
@@ -33,7 +33,9 @@ function CollectionMenuEntry(props) {
     <div className={classes}>
       <SideBarLink name="collection:records" params={{bid, cid}} currentPath={currentPath}
         className="">
-        <i className="glyphicon glyphicon-align-justify"/>
+        {collection.readonly
+          ? <i className="glyphicon glyphicon-lock"/>
+          : <i className="glyphicon glyphicon-align-justify"/>}
         {cid}
       </SideBarLink>
       <SideBarLink name="collection:attributes" params={{bid, cid}} currentPath={currentPath}
@@ -69,45 +71,84 @@ function BucketCollectionsMenu(props) {
   );
 }
 
-function BucketsMenu(props) {
-  const {currentPath, buckets, bid, cid} = props;
-  return (
-    <div>
-      <div className="panel panel-default">
-        <div className="list-group">
-          <SideBarLink name="bucket:create" currentPath={currentPath}>
-            <i className="glyphicon glyphicon-plus"/>
-            Create bucket
-          </SideBarLink>
+type BucketsMenuProps = {
+  currentPath: string,
+  buckets: BucketEntry[],
+  bid: string,
+  cid: string,
+};
+
+class BucketsMenu extends Component {
+  props: BucketsMenuProps;
+
+  state: {
+    hideReadOnly: boolean,
+  };
+
+  constructor(props: BucketsMenuProps) {
+    super(props);
+    this.state = {hideReadOnly: false};
+  }
+
+  toggleReadOnly = () => {
+    this.setState({hideReadOnly: !this.state.hideReadOnly});
+  };
+
+  render() {
+    const {currentPath, buckets, bid, cid} = this.props;
+    const {hideReadOnly} = this.state;
+    console.log(buckets);
+    return (
+      <div>
+        <div className="panel panel-default">
+          <div className="list-group">
+            <SideBarLink name="bucket:create" currentPath={currentPath}>
+              <i className="glyphicon glyphicon-plus"/>
+              Create bucket
+            </SideBarLink>
+          </div>
         </div>
+        <div className="panel panel-default sidebar-filters">
+          <div className="panel-body checkbox">
+            <label>
+              <input type="checkbox" value={this.state.hideReadOnly}
+                onChange={this.toggleReadOnly}/>
+              {" "}Hide readonly buckets
+            </label>
+          </div>
+        </div>
+        {
+          buckets
+            .filter((bucket) => !(hideReadOnly && bucket.readonly))
+            .map((bucket, i) => {
+              const {id, collections} = bucket;
+              const current = bid === id;
+              return (
+                <div key={i} className={`panel panel-${current ? "info": "default"} bucket-menu`}>
+                  <div className="panel-heading">
+                    {bucket.readonly
+                      ? <i className="glyphicon glyphicon-lock"/>
+                      : <i className={`glyphicon glyphicon-folder-${current ? "open" : "close"}`} />}
+                    <strong>{id}</strong> bucket
+                    <SideBarLink name="bucket:attributes" params={{bid: id}} currentPath={currentPath}
+                      className="bucket-menu-entry-edit"
+                      title="Manage bucket">
+                      <i className="glyphicon glyphicon-cog"/>
+                    </SideBarLink>
+                  </div>
+                  <BucketCollectionsMenu
+                    bucket={bucket}
+                    collections={collections}
+                    currentPath={currentPath}
+                    bid={bid}
+                    cid={cid} />
+                </div>
+              );
+            })
+        }
       </div>
-      {
-        buckets.map((bucket, i) => {
-          const {id, collections} = bucket;
-          const current = bid === id;
-          return (
-            <div key={i} className={`panel panel-${current ? "info": "default"} bucket-menu`}>
-              <div className="panel-heading">
-                <i className={`glyphicon glyphicon-folder-${current ? "open" : "close"}`} />
-                <strong>{id}</strong> bucket
-                <SideBarLink name="bucket:attributes" params={{bid: id}} currentPath={currentPath}
-                  className="bucket-menu-entry-edit"
-                  title="Manage bucket">
-                  <i className="glyphicon glyphicon-cog"/>
-                </SideBarLink>
-              </div>
-              <BucketCollectionsMenu
-                bucket={bucket}
-                collections={collections}
-                currentPath={currentPath}
-                bid={bid}
-                cid={cid} />
-            </div>
-          );
-        })
-      }
-    </div>
-  );
+    );
+  }
 }
 
 export default class Sidebar extends Component {

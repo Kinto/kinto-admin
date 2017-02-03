@@ -1,5 +1,6 @@
 /* @flow */
-import type { ActionType, GetStateFn, SagaGen } from "../types";
+import type { PermissionEntry } from "kinto-http";
+import type { ActionType, BucketEntry, CollectionEntry, GetStateFn, SagaGen } from "../types";
 
 import { push as updatePath } from "react-router-redux";
 import { call, put } from "redux-saga/effects";
@@ -34,7 +35,7 @@ export function* sessionLogout(getState: GetStateFn, action: ActionType<typeof a
   yield call(clearSession);
 }
 
-function expandBucketsCollections(buckets, permissions) {
+export function expandBucketsCollections(buckets: BucketEntry[], permissions: PermissionEntry[]): BucketEntry[] {
   // Create a copy to avoid mutating the source object
   const bucketsCopy = clone(buckets);
 
@@ -42,17 +43,45 @@ function expandBucketsCollections(buckets, permissions) {
   // the /permissions endpoint
   for (const permission of permissions) {
     // Add any missing bucket to the current list
-    let bucket = bucketsCopy.find(x => x.id === permission.bucket_id);
+    let bucket = bucketsCopy.find(b => b.id === permission.bucket_id);
     if (!bucket) {
-      bucket = {id: permission.bucket_id, collections: []};
+      bucket = {
+        id: permission.bucket_id,
+        collections: [],
+        permissions: [],
+        readonly: true,
+      };
       bucketsCopy.push(bucket);
     }
-    // Add any missing collection to the current bucket collections list; note
-    // that this will expose collections we have shared records within too.
+    // We're dealing with bucket permissions
+    if (permission.resource_name === "bucket") {
+      bucket.permissions = permission.permissions;
+      bucket.readonly = !bucket.permissions.some((bp) => {
+        return ["write", "collection:create"].includes(bp);
+      });
+    }
     if ("collection_id" in permission) {
-      const collection = bucket.collections.find(x => x.id === permission.collection_id);
+      // Add any missing collection to the current bucket collections list; note
+      // that this will expose collections we have shared records within too.
+      let collection = bucket.collections.find(c => c.id === permission.collection_id);
       if (!collection) {
-        bucket.collections.push({id: permission.collection_id});
+        collection = {
+          id: permission.collection_id,
+          permissions: [],
+          readonly: true,
+        };
+        bucket.collections.push(collection);
+      }
+      // We're dealing with collection permissions
+      if (permission.resource_name === "collection") {
+        collection.permissions = permission.permissions;
+        collection.readonly = !collection.permissions.some((cp) => {
+          return ["write", "record:create"].includes(cp);
+        });
+      }
+      // If this collection is writable, mark its parent bucket writable
+      if (!collection.readonly) {
+        bucket.readonly = false;
       }
     }
   }
@@ -90,9 +119,21 @@ export function* listBuckets(getState: GetStateFn, action: ActionType<typeof act
         batch.bucket(id).listCollections();
       }
     });
-    let buckets = data.map((bucket, index) => {
-      const {data: collections=[]} = responses[index].body;
-      return {id: bucket.id, collections};
+    let buckets: BucketEntry[] = data.map((bucket, index) => {
+      // Initialize received collections with default permissions and readonly
+      // information.
+      const {data: rawCollections} = responses[index].body;
+      const collections: CollectionEntry[] = rawCollections.map(collection => {
+        return {
+          ...collection,
+          permissions: [],
+          readonly: true,
+        };
+      });
+      // Initialize the list of permissions and readonly flag for this bucket;
+      // when the permissions endpoint is enabled, we'll fill these with the
+      // retrieved data.
+      return {id: bucket.id, collections, permissions: [], readonly: true};
     });
 
     // If the Kinto API version allows it, retrieves all permissions
@@ -100,9 +141,11 @@ export function* listBuckets(getState: GetStateFn, action: ActionType<typeof act
       const {data: permissions} = yield call([client, client.listPermissions]);
       buckets = expandBucketsCollections(buckets, permissions);
       yield put(actions.permissionsListSuccess(permissions));
-    }
-    else {
-      yield put(notificationActions.notifyInfo("Permissions endpoint is not enabled on server."));
+    } else {
+      yield put(notificationActions.notifyInfo([
+        "Permissions endpoint is not enabled on server, ",
+        "listed resources in the sidebar might be incomplete."
+      ].join("")));
     }
 
     yield put(actions.bucketsSuccess(buckets));
