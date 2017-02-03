@@ -50,6 +50,7 @@ export function expandBucketsCollections(buckets: BucketEntry[], permissions: Pe
         collections: [],
         permissions: [],
         readonly: true,
+        last_modified: permission.last_modified,
       };
       bucketsCopy.push(bucket);
     }
@@ -69,6 +70,7 @@ export function expandBucketsCollections(buckets: BucketEntry[], permissions: Pe
           id: permission.collection_id,
           permissions: [],
           readonly: true,
+          last_modified: permission.last_modified,
         };
         bucket.collections.push(collection);
       }
@@ -133,7 +135,12 @@ export function* listBuckets(getState: GetStateFn, action: ActionType<typeof act
       // Initialize the list of permissions and readonly flag for this bucket;
       // when the permissions endpoint is enabled, we'll fill these with the
       // retrieved data.
-      return {id: bucket.id, collections, permissions: [], readonly: true};
+      return {
+        ...bucket,
+        collections,
+        permissions: [],
+        readonly: true,
+      };
     });
 
     // If the Kinto API version allows it, retrieves all permissions

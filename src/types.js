@@ -329,6 +329,7 @@ export type CollectionEntry = {
   id: string,
   permissions: string[],
   readonly: boolean,
+  last_modified: number,
 };
 
 export type BucketEntry = {
@@ -336,6 +337,7 @@ export type BucketEntry = {
   permissions: string[],
   collections: CollectionEntry[],
   readonly: boolean,
+  last_modified: number,
 };
 
 export type SessionState = {

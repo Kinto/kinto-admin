@@ -39,6 +39,7 @@ declare module "kinto-http" {
     bucket_id: string,
     collection_id?: string,
     permissions: string[],
+    last_modified: number,
   };
 
   declare class KintoClient {

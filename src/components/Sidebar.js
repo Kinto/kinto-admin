@@ -78,26 +78,46 @@ type BucketsMenuProps = {
   cid: string,
 };
 
+function filterBuckets(buckets, filters) {
+  const {hideReadOnly, sort} = filters;
+  return buckets.slice(0)
+    .sort((a, b) => {
+      switch (sort) {
+        case "id": {
+          return a.id <= b.id ? -1 : 1;
+        }
+        default:
+        case "last_modified": {
+          return a.last_modified >= b.last_modified ? -1 : 1;
+        }
+      }
+    })
+    .filter((bucket) => !(hideReadOnly && bucket.readonly));
+}
+
 class BucketsMenu extends Component {
   props: BucketsMenuProps;
 
   state: {
     hideReadOnly: boolean,
+    sort: "last_modified" | "id",
   };
 
   constructor(props: BucketsMenuProps) {
     super(props);
-    this.state = {hideReadOnly: false};
+    this.state = {hideReadOnly: false, sort: "last_modified"};
   }
 
   toggleReadOnly = () => {
     this.setState({hideReadOnly: !this.state.hideReadOnly});
   };
 
+  toggleSort = (sort) => () => this.setState({sort});
+
   render() {
+    const {sort} = this.state;
     const {currentPath, buckets, bid, cid} = this.props;
-    const {hideReadOnly} = this.state;
-    console.log(buckets);
+    const filteredBuckets = filterBuckets(buckets, this.state);
     return (
       <div>
         <div className="panel panel-default">
@@ -109,42 +129,59 @@ class BucketsMenu extends Component {
           </div>
         </div>
         <div className="panel panel-default sidebar-filters">
-          <div className="panel-body checkbox">
-            <label>
-              <input type="checkbox" value={this.state.hideReadOnly}
-                onChange={this.toggleReadOnly}/>
-              {" "}Hide readonly buckets
-            </label>
+          <div className="panel-heading">
+            <strong>Filters</strong>
+          </div>
+          <div className="panel-body">
+            <div className="checkbox">
+              <label>
+                <input type="checkbox" value={this.state.hideReadOnly}
+                  onChange={this.toggleReadOnly}/>
+                {" "}Hide readonly buckets
+              </label>
+            </div>
+            <div className="btn-group btn-group-sm" role="group">
+              <button type="button"
+                className={`btn btn-default ${sort === "id" ? "active" : ""}`}
+                onClick={this.toggleSort("id")}>
+                <i className="glyphicon glyphicon-sort-by-alphabet"/>
+                {" "}Id
+              </button>
+              <button type="button"
+                className={`btn btn-default ${sort === "last_modified" ? "active" : ""}`}
+                onClick={this.toggleSort("last_modified")}>
+                <i className="glyphicon glyphicon-sort-by-alphabet-alt"/>
+                {" "}Last modified
+              </button>
+            </div>
           </div>
         </div>
         {
-          buckets
-            .filter((bucket) => !(hideReadOnly && bucket.readonly))
-            .map((bucket, i) => {
-              const {id, collections} = bucket;
-              const current = bid === id;
-              return (
-                <div key={i} className={`panel panel-${current ? "info": "default"} bucket-menu`}>
-                  <div className="panel-heading">
-                    {bucket.readonly
-                      ? <i className="glyphicon glyphicon-lock"/>
-                      : <i className={`glyphicon glyphicon-folder-${current ? "open" : "close"}`} />}
-                    <strong>{id}</strong> bucket
-                    <SideBarLink name="bucket:attributes" params={{bid: id}} currentPath={currentPath}
-                      className="bucket-menu-entry-edit"
-                      title="Manage bucket">
-                      <i className="glyphicon glyphicon-cog"/>
-                    </SideBarLink>
-                  </div>
-                  <BucketCollectionsMenu
-                    bucket={bucket}
-                    collections={collections}
-                    currentPath={currentPath}
-                    bid={bid}
-                    cid={cid} />
+          filteredBuckets.map((bucket, i) => {
+            const {id, collections} = bucket;
+            const current = bid === id;
+            return (
+              <div key={i} className={`panel panel-${current ? "info": "default"} bucket-menu`}>
+                <div className="panel-heading">
+                  {bucket.readonly
+                    ? <i className="glyphicon glyphicon-lock"/>
+                    : <i className={`glyphicon glyphicon-folder-${current ? "open" : "close"}`} />}
+                  <strong>{id}</strong> bucket
+                  <SideBarLink name="bucket:attributes" params={{bid: id}} currentPath={currentPath}
+                    className="bucket-menu-entry-edit"
+                    title="Manage bucket">
+                    <i className="glyphicon glyphicon-cog"/>
+                  </SideBarLink>
                 </div>
-              );
-            })
+                <BucketCollectionsMenu
+                  bucket={bucket}
+                  collections={collections}
+                  currentPath={currentPath}
+                  bid={bid}
+                  cid={cid} />
+              </div>
+            );
+          })
         }
       </div>
     );

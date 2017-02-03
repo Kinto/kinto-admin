@@ -21,7 +21,7 @@ h1 {
 }
 
 .sidebar-filters > .panel-body {
-  padding: 0 15px 0 15px;
+  padding: 0 15px 15px 15px;
 }
 
 .list-group-item .glyphicon.glyphicon-lock {
