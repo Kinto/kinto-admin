@@ -119,13 +119,7 @@ class BucketsMenu extends Component {
         </div>
         {
           buckets
-            .filter((bucket) => {
-              if (hideReadOnly && bucket.readonly) {
-                return false;
-              } else {
-                return true;
-              }
-            })
+            .filter((bucket) => !(hideReadOnly && bucket.readonly))
             .map((bucket, i) => {
               const {id, collections} = bucket;
               const current = bid === id;
