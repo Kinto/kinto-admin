@@ -78,26 +78,56 @@ type BucketsMenuProps = {
   cid: string,
 };
 
+function filterBuckets(buckets, filters) {
+  const {hideReadOnly, search} = filters;
+  return buckets.slice(0)
+    .reduce((acc, bucket) => {
+      if (search == null || bucket.id.includes(search)) {
+        return [...acc, bucket];
+      } else if (bucket.collections.some(c => c.id.includes(search))) {
+        return [
+          ...acc,
+          {
+            ...bucket,
+            collections: bucket.collections.filter(c => c.id.includes(search))
+          }
+        ];
+      } else {
+        return acc;
+      }
+    }, [])
+    .filter((bucket) => !(hideReadOnly && bucket.readonly));
+}
+
 class BucketsMenu extends Component {
   props: BucketsMenuProps;
 
   state: {
     hideReadOnly: boolean,
+    search: ?string,
   };
 
   constructor(props: BucketsMenuProps) {
     super(props);
-    this.state = {hideReadOnly: false};
+    this.state = {hideReadOnly: false, search: null};
   }
 
   toggleReadOnly = () => {
     this.setState({hideReadOnly: !this.state.hideReadOnly});
   };
 
+  resetSearch = (event) => {
+    event.preventDefault();
+    this.setState({search: null});
+  };
+
+  updateSearch = (event) => {
+    this.setState({search: event.target.value || null});
+  };
+
   render() {
     const {currentPath, buckets, bid, cid} = this.props;
-    const {hideReadOnly} = this.state;
-    console.log(buckets);
+    const filteredBuckets = filterBuckets(buckets, this.state);
     return (
       <div>
         <div className="panel panel-default">
@@ -109,42 +139,54 @@ class BucketsMenu extends Component {
           </div>
         </div>
         <div className="panel panel-default sidebar-filters">
-          <div className="panel-body checkbox">
-            <label>
-              <input type="checkbox" value={this.state.hideReadOnly}
-                onChange={this.toggleReadOnly}/>
-              {" "}Hide readonly buckets
-            </label>
+          <div className="panel-heading">
+            <strong>Filters</strong>
           </div>
+          <form className="form panel-body">
+            <div className="input-group">
+              <input type="text" className="form-control" placeholder="Filter bucket/collection name"
+                value={this.state.search || ""} onInput={this.updateSearch}/>
+              <span className="input-group-addon">
+                <a href="" className="clear" onClick={this.resetSearch}>
+                  <i className="glyphicon glyphicon-remove-sign"/>
+                </a>
+              </span>
+            </div>
+            <div className="checkbox">
+              <label>
+                <input type="checkbox" value={this.state.hideReadOnly}
+                  onChange={this.toggleReadOnly}/>
+                {" "}Hide readonly buckets
+              </label>
+            </div>
+          </form>
         </div>
         {
-          buckets
-            .filter((bucket) => !(hideReadOnly && bucket.readonly))
-            .map((bucket, i) => {
-              const {id, collections} = bucket;
-              const current = bid === id;
-              return (
-                <div key={i} className={`panel panel-${current ? "info": "default"} bucket-menu`}>
-                  <div className="panel-heading">
-                    {bucket.readonly
-                      ? <i className="glyphicon glyphicon-lock"/>
-                      : <i className={`glyphicon glyphicon-folder-${current ? "open" : "close"}`} />}
-                    <strong>{id}</strong> bucket
-                    <SideBarLink name="bucket:attributes" params={{bid: id}} currentPath={currentPath}
-                      className="bucket-menu-entry-edit"
-                      title="Manage bucket">
-                      <i className="glyphicon glyphicon-cog"/>
-                    </SideBarLink>
-                  </div>
-                  <BucketCollectionsMenu
-                    bucket={bucket}
-                    collections={collections}
-                    currentPath={currentPath}
-                    bid={bid}
-                    cid={cid} />
+          filteredBuckets.map((bucket, i) => {
+            const {id, collections} = bucket;
+            const current = bid === id;
+            return (
+              <div key={i} className={`panel panel-${current ? "info": "default"} bucket-menu`}>
+                <div className="panel-heading">
+                  {bucket.readonly
+                    ? <i className="glyphicon glyphicon-lock"/>
+                    : <i className={`glyphicon glyphicon-folder-${current ? "open" : "close"}`} />}
+                  <strong>{id}</strong> bucket
+                  <SideBarLink name="bucket:attributes" params={{bid: id}} currentPath={currentPath}
+                    className="bucket-menu-entry-edit"
+                    title="Manage bucket">
+                    <i className="glyphicon glyphicon-cog"/>
+                  </SideBarLink>
                 </div>
-              );
-            })
+                <BucketCollectionsMenu
+                  bucket={bucket}
+                  collections={collections}
+                  currentPath={currentPath}
+                  bid={bid}
+                  cid={cid} />
+              </div>
+            );
+          })
         }
       </div>
     );
