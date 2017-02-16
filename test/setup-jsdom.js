@@ -6,8 +6,8 @@ global.document = jsdom.jsdom("<!doctype html><html><body></body></html>");
 global.window = document.defaultView;
 global.navigator = global.window.navigator;
 
-// Setup dumb localStorage for tests
-global.localStorage = (function() {
+// Setup dumb sessionStorage for tests
+global.sessionStorage = (function() {
   var _state = {};
   return {
     getItem(key) {
