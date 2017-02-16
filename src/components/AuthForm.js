@@ -224,10 +224,17 @@ function extendSchemaWithHistory(schema, history, authMethods, singleServer) {
 /**
  * Use the server history for the default server field value when available.
  */
-function extendUiSchemaWithHistory(uiSchema, history, clearHistory, singleServer) {
+function extendUiSchemaWithHistory(uiSchema, history, clearHistory, singleServer, singleAuthMethod) {
+  const authType = {
+    authType: {
+      "ui:widget": singleAuthMethod ? "hidden" : "radio",
+    }
+  };
+
   if (singleServer) {
     return {
       ...uiSchema,
+      ...authType,
       server: {
         "ui:widget": "hidden"
       }
@@ -235,11 +242,12 @@ function extendUiSchemaWithHistory(uiSchema, history, clearHistory, singleServer
   }
   return {
     ...uiSchema,
+    ...authType,
     server: {
       ...uiSchema.server,
       "ui:widget": ServerHistory,
       "ui:options": {history, clearHistory},
-    }
+    },
   };
 }
 
@@ -309,12 +317,13 @@ export default class AuthForm extends Component {
     const {history, clearHistory, settings} = this.props;
     const {schema, uiSchema, formData} = this.state;
     const {singleServer, authMethods} = settings;
+    const singleAuthMethod = authMethods.length === 1;
     return (
       <div className="panel panel-default">
         <div className="panel-body">
           <BaseForm
             schema={extendSchemaWithHistory(schema, history, authMethods, singleServer)}
-            uiSchema={extendUiSchemaWithHistory(uiSchema, history, clearHistory, singleServer)}
+            uiSchema={extendUiSchemaWithHistory(uiSchema, history, clearHistory, singleServer, singleAuthMethod)}
             formData={formData}
             onChange={this.onChange}
             onSubmit={this.onSubmit}>
