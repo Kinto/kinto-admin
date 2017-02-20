@@ -34,11 +34,6 @@ describe("session sagas", () => {
       expect(getClient().remote).eql(authData.server);
     });
 
-    it("should mark the session as busy", () => {
-      expect(setupSession.next().value)
-        .eql(put(actions.sessionBusy(true)));
-    });
-
     it("should retrieve buckets hierarchy", () => {
       expect(setupSession.next().value)
         .eql(put(actions.listBuckets()));
@@ -47,11 +42,6 @@ describe("session sagas", () => {
     it("should mark the session setup as completed", () => {
       expect(setupSession.next().value)
         .eql(put(actions.setupComplete(authData)));
-    });
-
-    it("should mark the session as not busy anymore", () => {
-      expect(setupSession.next().value)
-        .eql(put(actions.sessionBusy(false)));
     });
   });
 
