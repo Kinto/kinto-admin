@@ -1,10 +1,8 @@
 sudo: false
-language:
-- node_js
-node_js:
-- "6"
+dist: trusty
+language: python
 python:
-- "3.5"
+- "3.6"
 addons:
   apt:
     packages:
@@ -13,20 +11,22 @@ cache:
   directories:
   - node_modules
 before_install:
-- export PATH=$HOME/.local/bin:$PATH
-- pip install --user virtualenv
-- virtualenv .venv
-- .venv/bin/pip install https://github.com/Kinto/kinto/zipball/master
+before_install:
+  - wget https://raw.githubusercontent.com/creationix/nvm/v0.33.0/nvm.sh -O ~/.nvm/nvm.sh
+  - source ~/.nvm/nvm.sh
+  - nvm install 6 # for Node v6
+  - node --version
+  - pip install https://github.com/Kinto/kinto/zipball/master
 install:
-- export DISPLAY=':99.0'
-- Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-- npm install
-- npm run build
+  - export DISPLAY=':99.0'
+  - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+  - npm install
+  - npm run build
 env:
-- ACTION="build:lib"
-- ACTION="test-all"
-- ACTION="test-browser"
+  - ACTION="build:lib"
+  - ACTION="test-all"
+  - ACTION="test-browser"
 matrix:
   allow_failures:
-  - env: ACTION="test-browser"
+    - env: ACTION="test-browser"
 script: npm run $ACTION
