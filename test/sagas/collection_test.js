@@ -141,7 +141,6 @@ describe("collection sagas", () => {
       });
 
       it("should scroll to page bottom", () => {
-        window.document.body.scrollHeight = 42;
         expect(listNextRecords.next().value)
           .eql(call(scrollToBottom));
       });
