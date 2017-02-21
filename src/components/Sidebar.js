@@ -3,6 +3,7 @@ import type { SessionState, RouteParams, RouteLocation, BucketEntry } from "../t
 
 import React, { Component } from "react";
 
+import Spinner from "./Spinner";
 import AdminLink from "./AdminLink";
 import url from "../url";
 
@@ -73,6 +74,7 @@ function BucketCollectionsMenu(props) {
 
 type BucketsMenuProps = {
   currentPath: string,
+  busy: boolean,
   buckets: BucketEntry[],
   bid: string,
   cid: string,
@@ -126,7 +128,7 @@ class BucketsMenu extends Component {
   };
 
   render() {
-    const {currentPath, buckets, bid, cid} = this.props;
+    const {currentPath, busy, buckets, bid, cid} = this.props;
     const filteredBuckets = filterBuckets(buckets, this.state);
     return (
       <div>
@@ -162,7 +164,7 @@ class BucketsMenu extends Component {
           </form>
         </div>
         {
-          filteredBuckets.map((bucket, i) => {
+          busy ? <Spinner/> : filteredBuckets.map((bucket, i) => {
             const {id, collections} = bucket;
             const current = bid === id;
             return (
@@ -208,7 +210,7 @@ export default class Sidebar extends Component {
     const {session, params, location} = this.props;
     const {pathname: currentPath} = location;
     const {bid, cid} = params;
-    const {buckets=[]} = session;
+    const {busy, authenticated, buckets=[]} = session;
     return (
       <div>
         <div className="panel panel-default">
@@ -216,8 +218,9 @@ export default class Sidebar extends Component {
             <SideBarLink name="home" currentPath={currentPath}>Home</SideBarLink>
           </div>
         </div>
-        {session.authenticated ?
+        {authenticated ?
           <BucketsMenu
+            busy={busy}
             buckets={buckets}
             currentPath={currentPath}
             bid={bid}

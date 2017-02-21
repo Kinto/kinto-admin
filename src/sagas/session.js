@@ -18,13 +18,10 @@ export function* setupSession(getState: GetStateFn, action: ActionType<typeof ac
   try {
     setupClient(auth);
     yield put(notificationActions.clearNotifications({force: true}));
-    yield put(actions.sessionBusy(true));
     yield put(actions.listBuckets());
     yield put(actions.setupComplete(auth));
   } catch(error) {
     yield put(notificationActions.notifyError("Couldn't complete session setup.", error));
-  } finally {
-    yield put(actions.sessionBusy(false));
   }
 }
 

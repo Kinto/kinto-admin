@@ -8,6 +8,7 @@ import {
   SESSION_SERVERINFO_SUCCESS,
   SESSION_PERMISSIONS_SUCCESS,
   SESSION_AUTHENTICATED,
+  SESSION_BUCKETS_REQUEST,
   SESSION_BUCKETS_SUCCESS,
   SESSION_LOGOUT,
 } from "../constants";
@@ -43,11 +44,15 @@ export default function session(
       const {redirectURL}: {redirectURL: string} = action;
       return {...state, redirectURL};
     }
+    case SESSION_BUCKETS_REQUEST: {
+      return {...state, busy: true};
+    }
     case SESSION_BUCKETS_SUCCESS: {
       const {serverInfo} = state;
       const userBucket = serverInfo.user && serverInfo.user.bucket;
       return {
         ...state,
+        busy: false,
         buckets: action.buckets.map((bucket) => {
           return {
             ...bucket,

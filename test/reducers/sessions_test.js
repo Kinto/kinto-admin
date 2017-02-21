@@ -7,6 +7,7 @@ import {
   SESSION_SERVERINFO_SUCCESS,
   SESSION_PERMISSIONS_SUCCESS,
   SESSION_AUTHENTICATED,
+  SESSION_BUCKETS_REQUEST,
   SESSION_BUCKETS_SUCCESS,
   SESSION_LOGOUT,
 } from "../../src/constants";
@@ -78,6 +79,14 @@ describe("session reducer", () => {
     expect(state).to.have.property("permissions").eql(permissions);
   });
 
+  it("SESSION_BUCKETS_REQUEST", () => {
+    const state = session(undefined, {
+      type: SESSION_BUCKETS_REQUEST,
+    });
+
+    expect(state).to.have.property("busy").eql(true);
+  });
+
   it("SESSION_BUCKETS_SUCCESS", () => {
     const buckets = [];
 
@@ -87,6 +96,7 @@ describe("session reducer", () => {
     });
 
     expect(state).to.have.property("buckets").eql(buckets);
+    expect(state).to.have.property("busy").eql(false);
   });
 
   it("SESSION_AUTHENTICATED", () => {
