@@ -262,10 +262,6 @@ table.record-list td.load-more {
   color: #777;
 }
 
-.json-record {
-  min-height: 300px;
-}
-
 .json-record > div {
   padding: 1px 0 1px 4px;
 }

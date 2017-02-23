@@ -3,13 +3,13 @@
 import type { ResourceHistoryEntry, RouteLocation } from "../types";
 
 import React, { Component } from "react";
-import { Link } from "react-router";
 import { diffJson } from "diff";
 
 import { timeago, humanDate } from "../utils";
 import AdminLink from "./AdminLink";
 import PaginatedTable from "./PaginatedTable";
 import { getClient } from "../client";
+import { omit } from "../utils";
 
 
 function Diff({source, target}) {
@@ -41,6 +41,21 @@ function fetchPreviousVersion(bid, entry: ResourceHistoryEntry): Promise<?Resour
     filters: {uri, _before: last_modified},
     limit: 1
   }).then(({data}) => data[0]);
+}
+
+function fetchCollectionStateAt(bid: string, cid: string, timestamp: ?number): Promise<Object[]> {
+  const query = {
+    sort: "id",
+    filters: {
+      not_deleted: true,
+      _before: timestamp,
+    }
+  };
+  return getClient().bucket(bid).collection(cid).listRecords(query)
+    .then(({data: changes}) => {
+      // clean entries for easier review
+      return changes.map((change) => omit(change, ["last_modified", "schema"]));
+    });
 }
 
 class HistoryRow extends Component {
@@ -100,6 +115,7 @@ class HistoryRow extends Component {
         <tr>
           <td>
             <span title={humanDate(last_modified)}>{timeago(last_modified)}</span>
+            {" " + last_modified}
           </td>
           <td>{action}</td>
           <td>{resource_name}</td>
@@ -133,13 +149,26 @@ class HistoryRow extends Component {
 }
 
 function FilterInfo(props) {
-  const {location}: {location: RouteLocation} = props;
+  // XXX only provide diff for collections (maybe records), not buckets
+  const {location, onViewJournalClick, onViewDiffClick}: {
+    location: RouteLocation,
+    onViewDiffClick: () => void
+  } = props;
   const {pathname, query: {since}} = location;
   return (
     <p>
       Since {since ? humanDate(since) : ""}.
       {" "}
-      <Link to={pathname}>View all entries</Link>
+      <a href="#" onClick={(event) => {
+        event.preventDefault();
+        document.location.hash = pathname;
+        onViewJournalClick();
+      }}>View all entries</a>
+      {" | "}
+      <a href="#" onClick={(event) => {
+        event.preventDefault();
+        onViewDiffClick(since);
+      }}>View full diff</a>
     </p>
   );
 }
@@ -147,12 +176,34 @@ function FilterInfo(props) {
 export default class HistoryTable extends Component {
   props: {
     bid: string,
+    cid?: string,
     location: RouteLocation,
     history: ResourceHistoryEntry[],
     historyLoaded: boolean,
     hasNextHistory: boolean,
     listNextHistory: ?Function,
   };
+
+  constructor(props) {
+    super(props);
+    this.state = {fullDiff: false, current: null, previous: null};
+  }
+
+  onViewDiffClick = (since) => {
+    const {bid, cid} = this.props;
+    fetchCollectionStateAt(bid, cid)
+      .then((current) => {
+        this.setState({current});
+        return fetchCollectionStateAt(bid, cid, since);
+      })
+      .then((previous) => {
+        this.setState({previous, fullDiff: true});
+      });
+  };
+
+  onViewJournalClick = () => {
+    this.setState({fullDiff: false, current: null, previous: null});
+  }
 
   render() {
     const {
@@ -161,8 +212,10 @@ export default class HistoryTable extends Component {
       hasNextHistory,
       listNextHistory,
       bid,
+      cid,
       location,
     } = this.props;
+    const {current, previous, fullDiff} = this.state;
     const isFiltered = !!location.query.since;
 
     const thead = (
@@ -184,14 +237,19 @@ export default class HistoryTable extends Component {
 
     return (
       <div>
-        {isFiltered ? <FilterInfo location={location} /> : null}
-        <PaginatedTable
-          colSpan={6}
-          thead={thead}
-          tbody={tbody}
-          dataLoaded={historyLoaded}
-          hasNextPage={hasNextHistory}
-          listNextPage={listNextHistory} />
+        {isFiltered ? <FilterInfo
+                        location={location}
+                        onViewDiffClick={this.onViewDiffClick}
+                        onViewJournalClick={this.onViewJournalClick} /> : null}
+        {cid && fullDiff
+          ? <Diff source={current} target={previous}/>
+          : <PaginatedTable
+              colSpan={6}
+              thead={thead}
+              tbody={tbody}
+              dataLoaded={historyLoaded}
+              hasNextPage={hasNextHistory}
+              listNextPage={listNextHistory} />}
       </div>
     );
   }

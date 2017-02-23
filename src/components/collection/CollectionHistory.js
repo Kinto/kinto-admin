@@ -46,6 +46,7 @@ export default class CollectionHistory extends Component {
           capabilities={capabilities}>
           <HistoryTable
             bid={bid}
+            cid={cid}
             historyLoaded={loaded}
             history={entries}
             hasNextHistory={hasNextPage}
