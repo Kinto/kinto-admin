@@ -44,17 +44,14 @@ function fetchPreviousVersion(bid, entry: ResourceHistoryEntry): Promise<?Resour
 }
 
 function fetchCollectionStateAt(bid: string, cid: string, timestamp: ?number): Promise<Object[]> {
-  const query = {
-    sort: "id",
-    filters: {
-      not_deleted: true,
-      _before: timestamp,
-    }
-  };
-  return getClient().bucket(bid).collection(cid).listRecords(query)
-    .then(({data: changes}) => {
+  const coll = getClient().bucket(bid).collection(cid);
+  const query = timestamp ? {at: parseInt(timestamp, 10)} : {};
+  return coll.listRecords(query)
+    .then(({data: records}) => {
       // clean entries for easier review
-      return changes.map((change) => omit(change, ["last_modified", "schema"]));
+      return records
+        .map((record) => omit(record, ["last_modified", "schema"]))
+        .sort((a, b) => a.id > b.id ? 1 : -1);
     });
 }
 
