@@ -7,6 +7,7 @@ import { diffJson } from "diff";
 
 import { timeago, humanDate } from "../utils";
 import AdminLink from "./AdminLink";
+import Spinner from "./Spinner";
 import PaginatedTable from "./PaginatedTable";
 import { getClient } from "../client";
 import { omit } from "../utils";
@@ -279,13 +280,15 @@ export default class HistoryTable extends Component {
             onViewJournalClick={this.onViewJournalClick} /> : null}
         {cid && fullDiff
           ? <Diff source={current} target={previous}/>
-          : <PaginatedTable
-              colSpan={6}
-              thead={thead}
-              tbody={tbody}
-              dataLoaded={historyLoaded}
-              hasNextPage={hasNextHistory}
-              listNextPage={listNextHistory} />}
+          : !historyLoaded
+            ? <Spinner/>
+            : <PaginatedTable
+                colSpan={6}
+                thead={thead}
+                tbody={tbody}
+                dataLoaded={historyLoaded}
+                hasNextPage={hasNextHistory}
+                listNextPage={listNextHistory} />}
       </div>
     );
   }
