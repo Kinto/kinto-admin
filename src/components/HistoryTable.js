@@ -184,6 +184,7 @@ type Props = {
   historyLoaded: boolean,
   hasNextHistory: boolean,
   listNextHistory: ?Function,
+  notifyError: (message: string, error: Error) => void,
 };
 
 export default class HistoryTable extends Component {
@@ -191,27 +192,33 @@ export default class HistoryTable extends Component {
 
   state: {
     fullDiff: boolean,
+    busy: boolean,
     current: ?RecordData[],
     previous: ?RecordData[],
   };
 
   constructor(props: Props) {
     super(props);
-    this.state = {fullDiff: false, current: null, previous: null};
+    this.state = {fullDiff: false, busy: false, current: null, previous: null};
   }
 
   onViewDiffClick = (since: string): void => {
-    const {bid, cid} = this.props;
+    const {bid, cid, notifyError} = this.props;
     if (cid == null) {
       return;
     }
+    this.setState({busy: true});
     fetchCollectionStateAt(bid, cid)
       .then((current) => {
         this.setState({current});
         return fetchCollectionStateAt(bid, cid, since);
       })
       .then((previous) => {
-        this.setState({previous, fullDiff: true});
+        this.setState({previous, busy: false, fullDiff: true});
+      })
+      .catch((err) => {
+        notifyError("Couldn't compute full diff", err);
+        this.setState({fullDiff: false, busy: false, previous: null, current: null});
       });
   };
 

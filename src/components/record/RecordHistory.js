@@ -23,6 +23,7 @@ export default class RecordHistory extends Component {
     record: RecordState,
     location: RouteLocation,
     listRecordNextHistory: () => void,
+    notifyError: (message: string, error: ?Error) => void,
   };
 
   render() {
@@ -32,6 +33,7 @@ export default class RecordHistory extends Component {
       capabilities,
       location,
       listRecordNextHistory,
+      notifyError,
     } = this.props;
     const {bid, cid, rid} = params;
     const {history: {entries, loaded, hasNextPage}} = record;
@@ -51,7 +53,8 @@ export default class RecordHistory extends Component {
             history={entries}
             hasNextHistory={hasNextPage}
             listNextHistory={listRecordNextHistory}
-            location={location} />
+            location={location}
+            notifyError={notifyError} />
         </RecordTabs>
       </div>
     );
