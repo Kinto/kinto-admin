@@ -59,6 +59,7 @@ class HistoryRow extends Component {
   props: {
     bid: string,
     entry: ResourceHistoryEntry,
+    pos: number,
   };
 
   state: {
@@ -93,7 +94,7 @@ class HistoryRow extends Component {
 
   render() {
     const {open, previous, error} = this.state;
-    const {entry, bid} = this.props;
+    const {entry, bid, pos} = this.props;
     const {
       last_modified,
       action,
@@ -102,7 +103,7 @@ class HistoryRow extends Component {
       user_id,
       collection_id: cid,
       group_id: gid,
-      record_id: rid
+      record_id: rid,
     } = entry;
 
     const {data: {id: objectId}} = target;
@@ -112,7 +113,6 @@ class HistoryRow extends Component {
         <tr>
           <td>
             <span title={humanDate(last_modified)}>{timeago(last_modified)}</span>
-            {" " + last_modified}
           </td>
           <td>{action}</td>
           <td>{resource_name}</td>
@@ -123,6 +123,19 @@ class HistoryRow extends Component {
           </td>
           <td>{user_id}</td>
           <td className="text-center">
+            {pos !== 0 && (
+              <span>
+                <AdminLink
+                  className="btn btn-xs btn-default"
+                  title="Start history log from this point"
+                  name="collection:history"
+                  params={{bid, cid}}
+                  query={{since: last_modified, resource_name: "record"}}>
+                  <i className="glyphicon glyphicon-step-backward" />
+                </AdminLink>
+                {" "}
+              </span>
+            )}
             <a href="." className="btn btn-xs btn-default"
                onClick={this.toggle}
                title="View entry details">
@@ -253,7 +266,7 @@ export default class HistoryTable extends Component {
     );
 
     const tbody = history.map((entry, index) => {
-      return <HistoryRow key={index} bid={bid} entry={entry} />;
+      return <HistoryRow key={index} pos={index} bid={bid} entry={entry} />;
     });
 
     return (
