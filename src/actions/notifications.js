@@ -9,12 +9,11 @@ import {
 } from "../constants";
 
 
-function getErrorDetails(error: ?(Error | ClientError)): string[] {
+function getErrorDetails(error: ?ClientError): string[] {
   if (!error) {
     return [];
   }
-  const {toString, ...rawError} = error; // eslint-disable-line
-  const {data: errorData, message} = {data: {}, ...rawError};
+  const {data: errorData = {}, message} = error;
   let details = [message];
   const {code, message: errorMessage, details: errorDetails} = errorData;
   if (!code) {
@@ -77,7 +76,7 @@ export function notifySuccess(message: string, options: Object={}): Notification
 
 export function notifyError(
   message: string,
-  error:   ?(Error | ClientError),
+  error:   ?ClientError,
   options: Object={}
 ): NotificationAction {
   console.error(error);
