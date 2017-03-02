@@ -66,7 +66,7 @@ export function* loadRoute(params: RouteParams): SagaGen {
       if (type === "Unknown") {
         throw new Error("Unknown route resource.");
       } else if (status === 404) {
-        throw new Error(`${type} ${data.id} does not exist.`);
+        throw new Error(`${type} ${data.data.id} does not exist.`);
       } else if (status === 403) {
         return {...data, permissions: {read: [], write: []}};
       }
