@@ -70,7 +70,7 @@ export function* loadRoute(params: RouteParams): SagaGen {
         if (!Array.isArray(resource)) {
           throw new Error(`${type} ${resource.id} does not exist.`);
         } else {
-          throw new Error(`${type}s could not be loaded.`);
+          throw new Error(`${type} could not be loaded.`);
         }
       } else if (status === 403) {
         return {...data, permissions: {read: [], write: []}};
