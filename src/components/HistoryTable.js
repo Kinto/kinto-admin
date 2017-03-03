@@ -65,13 +65,14 @@ class HistoryRow extends Component {
 
   state: {
     open: boolean,
+    busy: boolean,
     previous: ?ResourceHistoryEntry,
     error: ?Error,
   };
 
   constructor(props) {
     super(props);
-    this.state = {open: false, previous: null, error: null};
+    this.state = {open: false, busy: false, previous: null, error: null};
   }
 
   toggle = (event) => {
@@ -86,15 +87,16 @@ class HistoryRow extends Component {
     if (this.state.previous) {
       return this.setState({open: true});
     }
+    this.setState({busy: true});
     // We don't leverage redux store and dedicated action as this behavior is
     // contextually specific to this local component.
     fetchPreviousVersion(bid, entry)
-      .then((previous) => this.setState({open: true, previous, error: null}))
-      .catch((error) => this.setState({open: true, previous: null, error}));
+      .then((previous) => this.setState({open: true, busy: false, previous, error: null}))
+      .catch((error) => this.setState({open: true, busy: false, previous: null, error}));
   };
 
   render() {
-    const {open, previous, error} = this.state;
+    const {open, busy, previous, error} = this.state;
     const {entry, bid, pos} = this.props;
     const {
       last_modified,
@@ -109,53 +111,53 @@ class HistoryRow extends Component {
 
     const {data: {id: objectId}} = target;
 
-    return (
-      <tbody>
-        <tr>
-          <td>
-            <span title={humanDate(last_modified)}>{timeago(last_modified)}</span>
-          </td>
-          <td>{action}</td>
-          <td>{resource_name}</td>
-          <td>
-            <AdminLink
-              name={`${resource_name}:attributes`}
-              params={{bid, cid, gid, rid}}>{objectId}</AdminLink>
-          </td>
-          <td>{user_id}</td>
-          <td className="text-center">
-            {pos !== 0 && (
-              <span>
-                <AdminLink
-                  className="btn btn-xs btn-default"
-                  title="Start history log from this point"
-                  name="collection:history"
-                  params={{bid, cid}}
-                  query={{since: last_modified, resource_name: "record"}}>
-                  <i className="glyphicon glyphicon-step-backward" />
-                </AdminLink>
-                {" "}
-              </span>
-            )}
-            <a href="." className="btn btn-xs btn-default"
-               onClick={this.toggle}
-               title="View entry details">
-              <i className={`glyphicon glyphicon-eye-${open ? "close" : "open"}`} />
-            </a>
-          </td>
-        </tr>
-        <tr className="history-row-details"
-            style={{display: open ? "table-row" : "none"}}>
-          <td colSpan="6">
-            {previous
-              ? <Diff source={entry.target} target={previous.target} />
-              : error
-                ? <p className="alert alert-danger">{error}</p>
-                : <pre>{JSON.stringify(entry.target, null, 2)}</pre>}
-          </td>
-        </tr>
-      </tbody>
-    );
+    return busy
+      ? <tbody><tr><td colSpan="6"><Spinner/></td></tr></tbody>
+      : <tbody>
+          <tr>
+            <td>
+              <span title={humanDate(last_modified)}>{timeago(last_modified)}</span>
+            </td>
+            <td>{action}</td>
+            <td>{resource_name}</td>
+            <td>
+              <AdminLink
+                name={`${resource_name}:attributes`}
+                params={{bid, cid, gid, rid}}>{objectId}</AdminLink>
+            </td>
+            <td>{user_id}</td>
+            <td className="text-center">
+              {pos !== 0 && (
+                <span>
+                  <AdminLink
+                    className="btn btn-xs btn-default"
+                    title="Start history log from this point"
+                    name="collection:history"
+                    params={{bid, cid}}
+                    query={{since: last_modified, resource_name: "record"}}>
+                    <i className="glyphicon glyphicon-step-backward" />
+                  </AdminLink>
+                  {" "}
+                </span>
+              )}
+              <a href="." className="btn btn-xs btn-default"
+                 onClick={this.toggle}
+                 title="View entry details">
+                <i className={`glyphicon glyphicon-eye-${open ? "close" : "open"}`} />
+              </a>
+            </td>
+          </tr>
+          <tr className="history-row-details"
+              style={{display: open ? "table-row" : "none"}}>
+            <td colSpan="6">
+              {previous
+                ? <Diff source={entry.target} target={previous.target} />
+                : error
+                  ? <p className="alert alert-danger">{error}</p>
+                  : <pre>{JSON.stringify(entry.target, null, 2)}</pre>}
+            </td>
+          </tr>
+        </tbody>;
   }
 }
 
