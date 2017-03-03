@@ -230,8 +230,8 @@ export default class HistoryTable extends Component {
   }
 
   onViewDiffClick = (since: string): void => {
-    const {bid, cid, notifyError} = this.props;
-    if (cid == null) {
+    const {fullDiffSupport, bid, cid, notifyError} = this.props;
+    if (!fullDiffSupport || cid == null) {
       return;
     }
     this.setState({busy: true});
