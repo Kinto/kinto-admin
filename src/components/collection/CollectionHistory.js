@@ -47,6 +47,7 @@ export default class CollectionHistory extends Component {
           selected="history"
           capabilities={capabilities}>
           <HistoryTable
+            fullDiffSupport
             bid={bid}
             cid={cid}
             historyLoaded={loaded}

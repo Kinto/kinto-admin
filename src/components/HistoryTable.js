@@ -61,6 +61,11 @@ class HistoryRow extends Component {
     bid: string,
     entry: ResourceHistoryEntry,
     pos: number,
+    fullDiffSupport: boolean,
+  };
+
+  static defaultProps = {
+    fullDiffSupport: false,
   };
 
   state: {
@@ -97,7 +102,7 @@ class HistoryRow extends Component {
 
   render() {
     const {open, busy, previous, error} = this.state;
-    const {entry, bid, pos} = this.props;
+    const {entry, bid, fullDiffSupport, pos} = this.props;
     const {
       last_modified,
       action,
@@ -126,7 +131,7 @@ class HistoryRow extends Component {
           </td>
           <td>{user_id}</td>
           <td className="text-center">
-            {pos !== 0 && (
+            {fullDiffSupport && pos !== 0 && (
               <span>
                 <AdminLink
                   className="btn btn-xs btn-default"
@@ -164,10 +169,9 @@ class HistoryRow extends Component {
 }
 
 function FilterInfo(props) {
-  // XXX only provide diff for collections (maybe records), not buckets
-  const {location, cid, onViewJournalClick, onViewDiffClick}: {
+  const {location, fullDiffSupport, onViewJournalClick, onViewDiffClick}: {
     location: RouteLocation,
-    cid: ?string,
+    fullDiffSupport: boolean,
     onViewJournalClick: () => void,
     onViewDiffClick: (timestamp: string) => void
   } = props;
@@ -181,7 +185,7 @@ function FilterInfo(props) {
         document.location.hash = pathname;
         onViewJournalClick();
       }}>View all entries</a>
-      {cid && since != null && (
+      {fullDiffSupport && since != null && (
         <span>
           {" | "}
           <a href="#" onClick={(event) => {
@@ -202,11 +206,16 @@ type Props = {
   historyLoaded: boolean,
   hasNextHistory: boolean,
   listNextHistory: ?Function,
+  fullDiffSupport: boolean,
   notifyError: (message: string, error: Error) => void,
 };
 
 export default class HistoryTable extends Component {
   props: Props;
+
+  static defaultProps = {
+    fullDiffSupport: false,
+  };
 
   state: {
     fullDiff: boolean,
@@ -246,6 +255,7 @@ export default class HistoryTable extends Component {
 
   render() {
     const {
+      fullDiffSupport,
       history,
       historyLoaded,
       hasNextHistory,
@@ -271,7 +281,14 @@ export default class HistoryTable extends Component {
     );
 
     const tbody = history.map((entry, index) => {
-      return <HistoryRow key={index} pos={index} bid={bid} entry={entry} />;
+      return (
+        <HistoryRow
+          key={index}
+          pos={index}
+          fullDiffSupport={fullDiffSupport}
+          bid={bid}
+          entry={entry} />
+      );
     });
 
     return (
@@ -279,7 +296,7 @@ export default class HistoryTable extends Component {
         {isFiltered ?
           <FilterInfo
             location={location}
-            cid={cid}
+            fullDiffSupport={fullDiffSupport}
             onViewDiffClick={this.onViewDiffClick}
             onViewJournalClick={this.onViewJournalClick} /> : null}
         {cid && fullDiff
