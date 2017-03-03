@@ -111,53 +111,55 @@ class HistoryRow extends Component {
 
     const {data: {id: objectId}} = target;
 
-    return busy
-      ? <tbody><tr><td colSpan="6"><Spinner/></td></tr></tbody>
-      : <tbody>
-          <tr>
-            <td>
-              <span title={humanDate(last_modified)}>{timeago(last_modified)}</span>
-            </td>
-            <td>{action}</td>
-            <td>{resource_name}</td>
-            <td>
-              <AdminLink
-                name={`${resource_name}:attributes`}
-                params={{bid, cid, gid, rid}}>{objectId}</AdminLink>
-            </td>
-            <td>{user_id}</td>
-            <td className="text-center">
-              {pos !== 0 && (
-                <span>
-                  <AdminLink
-                    className="btn btn-xs btn-default"
-                    title="Start history log from this point"
-                    name="collection:history"
-                    params={{bid, cid}}
-                    query={{since: last_modified, resource_name: "record"}}>
-                    <i className="glyphicon glyphicon-step-backward" />
-                  </AdminLink>
-                  {" "}
-                </span>
-              )}
-              <a href="." className="btn btn-xs btn-default"
-                 onClick={this.toggle}
-                 title="View entry details">
-                <i className={`glyphicon glyphicon-eye-${open ? "close" : "open"}`} />
-              </a>
-            </td>
-          </tr>
-          <tr className="history-row-details"
-              style={{display: open ? "table-row" : "none"}}>
-            <td colSpan="6">
-              {previous
+    return (
+      <tbody>
+        <tr>
+          <td>
+            <span title={humanDate(last_modified)}>{timeago(last_modified)}</span>
+          </td>
+          <td>{action}</td>
+          <td>{resource_name}</td>
+          <td>
+            <AdminLink
+              name={`${resource_name}:attributes`}
+              params={{bid, cid, gid, rid}}>{objectId}</AdminLink>
+          </td>
+          <td>{user_id}</td>
+          <td className="text-center">
+            {pos !== 0 && (
+              <span>
+                <AdminLink
+                  className="btn btn-xs btn-default"
+                  title="Start history log from this point"
+                  name="collection:history"
+                  params={{bid, cid}}
+                  query={{since: last_modified, resource_name: "record"}}>
+                  <i className="glyphicon glyphicon-step-backward" />
+                </AdminLink>
+                {" "}
+              </span>
+            )}
+            <a href="." className="btn btn-xs btn-default"
+               onClick={this.toggle}
+               title="View entry details">
+              <i className={`glyphicon glyphicon-eye-${open ? "close" : "open"}`} />
+            </a>
+          </td>
+        </tr>
+        <tr className="history-row-details"
+            style={{display: busy || open ? "table-row" : "none"}}>
+          <td colSpan="6">
+            {busy
+              ? <Spinner/>
+              : previous
                 ? <Diff source={entry.target} target={previous.target} />
                 : error
                   ? <p className="alert alert-danger">{error}</p>
                   : <pre>{JSON.stringify(entry.target, null, 2)}</pre>}
-            </td>
-          </tr>
-        </tbody>;
+          </td>
+        </tr>
+      </tbody>
+    );
   }
 }
 
