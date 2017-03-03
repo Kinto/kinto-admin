@@ -23,6 +23,7 @@ export default class CollectionHistory extends Component {
     params: CollectionRouteParams,
     location: RouteLocation,
     listCollectionNextHistory: () => void,
+    notifyError: (message: string, error: ?Error) => void,
   };
 
   render() {
@@ -32,6 +33,7 @@ export default class CollectionHistory extends Component {
       capabilities,
       location,
       listCollectionNextHistory,
+      notifyError,
     } = this.props;
     const {bid, cid} = params;
     const {history: {entries, loaded, hasNextPage}} = collection;
@@ -45,12 +47,15 @@ export default class CollectionHistory extends Component {
           selected="history"
           capabilities={capabilities}>
           <HistoryTable
+            fullDiffSupport
             bid={bid}
+            cid={cid}
             historyLoaded={loaded}
             history={entries}
             hasNextHistory={hasNextPage}
             listNextHistory={listCollectionNextHistory}
-            location={location} />
+            location={location}
+            notifyError={notifyError} />
         </CollectionTabs>
       </div>
     );

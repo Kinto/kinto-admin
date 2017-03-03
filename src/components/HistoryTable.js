@@ -1,15 +1,16 @@
 /* @flow */
 
-import type { ResourceHistoryEntry, RouteLocation } from "../types";
+import type { RecordData, ResourceHistoryEntry, RouteLocation } from "../types";
 
 import React, { Component } from "react";
-import { Link } from "react-router";
 import { diffJson } from "diff";
 
 import { timeago, humanDate } from "../utils";
 import AdminLink from "./AdminLink";
+import Spinner from "./Spinner";
 import PaginatedTable from "./PaginatedTable";
 import { getClient } from "../client";
+import { omit } from "../utils";
 
 
 function Diff({source, target}) {
@@ -43,21 +44,40 @@ function fetchPreviousVersion(bid, entry: ResourceHistoryEntry): Promise<?Resour
   }).then(({data}) => data[0]);
 }
 
+function fetchCollectionStateAt(bid: string, cid: string, timestamp: ?string): Promise<Object[]> {
+  const coll = getClient().bucket(bid).collection(cid);
+  const query = timestamp ? {at: parseInt(timestamp, 10)} : {};
+  return coll.listRecords(query)
+    .then(({data: records}) => {
+      // clean entries for easier review
+      return records
+        .map((record) => omit(record, ["last_modified", "schema"]))
+        .sort((a, b) => a.id > b.id ? 1 : -1);
+    });
+}
+
 class HistoryRow extends Component {
   props: {
     bid: string,
     entry: ResourceHistoryEntry,
+    pos: number,
+    fullDiffSupport: boolean,
+  };
+
+  static defaultProps = {
+    fullDiffSupport: false,
   };
 
   state: {
     open: boolean,
+    busy: boolean,
     previous: ?ResourceHistoryEntry,
     error: ?Error,
   };
 
   constructor(props) {
     super(props);
-    this.state = {open: false, previous: null, error: null};
+    this.state = {open: false, busy: false, previous: null, error: null};
   }
 
   toggle = (event) => {
@@ -72,16 +92,17 @@ class HistoryRow extends Component {
     if (this.state.previous) {
       return this.setState({open: true});
     }
+    this.setState({busy: true});
     // We don't leverage redux store and dedicated action as this behavior is
     // contextually specific to this local component.
     fetchPreviousVersion(bid, entry)
-      .then((previous) => this.setState({open: true, previous, error: null}))
-      .catch((error) => this.setState({open: true, previous: null, error}));
+      .then((previous) => this.setState({open: true, busy: false, previous, error: null}))
+      .catch((error) => this.setState({open: true, busy: false, previous: null, error}));
   };
 
   render() {
-    const {open, previous, error} = this.state;
-    const {entry, bid} = this.props;
+    const {open, busy, previous, error} = this.state;
+    const {entry, bid, fullDiffSupport, pos} = this.props;
     const {
       last_modified,
       action,
@@ -90,7 +111,7 @@ class HistoryRow extends Component {
       user_id,
       collection_id: cid,
       group_id: gid,
-      record_id: rid
+      record_id: rid,
     } = entry;
 
     const {data: {id: objectId}} = target;
@@ -110,6 +131,19 @@ class HistoryRow extends Component {
           </td>
           <td>{user_id}</td>
           <td className="text-center">
+            {fullDiffSupport && pos !== 0 && (
+              <span>
+                <AdminLink
+                  className="btn btn-xs btn-default"
+                  title="Start history log from this point"
+                  name="collection:history"
+                  params={{bid, cid}}
+                  query={{since: last_modified, resource_name: "record"}}>
+                  <i className="glyphicon glyphicon-step-backward" />
+                </AdminLink>
+                {" "}
+              </span>
+            )}
             <a href="." className="btn btn-xs btn-default"
                onClick={this.toggle}
                title="View entry details">
@@ -118,13 +152,15 @@ class HistoryRow extends Component {
           </td>
         </tr>
         <tr className="history-row-details"
-            style={{display: open ? "table-row" : "none"}}>
+            style={{display: busy || open ? "table-row" : "none"}}>
           <td colSpan="6">
-            {previous
-              ? <Diff source={entry.target} target={previous.target} />
-              : error
-                ? <p className="alert alert-danger">{error}</p>
-                : <pre>{JSON.stringify(entry.target, null, 2)}</pre>}
+            {busy
+              ? <Spinner/>
+              : previous
+                ? <Diff source={entry.target} target={previous.target} />
+                : error
+                  ? <p className="alert alert-danger">{error}</p>
+                  : <pre>{JSON.stringify(entry.target, null, 2)}</pre>}
           </td>
         </tr>
       </tbody>
@@ -133,36 +169,102 @@ class HistoryRow extends Component {
 }
 
 function FilterInfo(props) {
-  const {location}: {location: RouteLocation} = props;
+  const {location, fullDiffSupport, onViewJournalClick, onViewDiffClick}: {
+    location: RouteLocation,
+    fullDiffSupport: boolean,
+    onViewJournalClick: () => void,
+    onViewDiffClick: (timestamp: string) => void
+  } = props;
   const {pathname, query: {since}} = location;
   return (
     <p>
       Since {since ? humanDate(since) : ""}.
       {" "}
-      <Link to={pathname}>View all entries</Link>
+      <a href="#" onClick={(event) => {
+        event.preventDefault();
+        document.location.hash = pathname;
+        onViewJournalClick();
+      }}>View all entries</a>
+      {fullDiffSupport && since != null && (
+        <span>
+          {" | "}
+          <a href="#" onClick={(event) => {
+            event.preventDefault();
+            onViewDiffClick(since);
+          }}>View full diff</a>
+        </span>
+      )}
     </p>
   );
 }
 
+type Props = {
+  bid: string,
+  cid?: string,
+  location: RouteLocation,
+  history: ResourceHistoryEntry[],
+  historyLoaded: boolean,
+  hasNextHistory: boolean,
+  listNextHistory: ?Function,
+  fullDiffSupport: boolean,
+  notifyError: (message: string, error: Error) => void,
+};
+
 export default class HistoryTable extends Component {
-  props: {
-    bid: string,
-    location: RouteLocation,
-    history: ResourceHistoryEntry[],
-    historyLoaded: boolean,
-    hasNextHistory: boolean,
-    listNextHistory: ?Function,
+  props: Props;
+
+  static defaultProps = {
+    fullDiffSupport: false,
   };
+
+  state: {
+    fullDiff: boolean,
+    busy: boolean,
+    current: ?RecordData[],
+    previous: ?RecordData[],
+  };
+
+  constructor(props: Props) {
+    super(props);
+    this.state = {fullDiff: false, busy: false, current: null, previous: null};
+  }
+
+  onViewDiffClick = (since: string): void => {
+    const {fullDiffSupport, bid, cid, notifyError} = this.props;
+    if (!fullDiffSupport || cid == null) {
+      return;
+    }
+    this.setState({busy: true});
+    fetchCollectionStateAt(bid, cid)
+      .then((current) => {
+        this.setState({current});
+        return fetchCollectionStateAt(bid, cid, since);
+      })
+      .then((previous) => {
+        this.setState({previous, busy: false, fullDiff: true});
+      })
+      .catch((err) => {
+        notifyError("Couldn't compute full diff", err);
+        this.setState({fullDiff: false, busy: false, previous: null, current: null});
+      });
+  };
+
+  onViewJournalClick = (): void => {
+    this.setState({fullDiff: false, current: null, previous: null});
+  }
 
   render() {
     const {
+      fullDiffSupport,
       history,
       historyLoaded,
       hasNextHistory,
       listNextHistory,
       bid,
+      cid,
       location,
     } = this.props;
+    const {current, previous, fullDiff} = this.state;
     const isFiltered = !!location.query.since;
 
     const thead = (
@@ -179,19 +281,35 @@ export default class HistoryTable extends Component {
     );
 
     const tbody = history.map((entry, index) => {
-      return <HistoryRow key={index} bid={bid} entry={entry} />;
+      return (
+        <HistoryRow
+          key={index}
+          pos={index}
+          fullDiffSupport={fullDiffSupport}
+          bid={bid}
+          entry={entry} />
+      );
     });
 
     return (
       <div>
-        {isFiltered ? <FilterInfo location={location} /> : null}
-        <PaginatedTable
-          colSpan={6}
-          thead={thead}
-          tbody={tbody}
-          dataLoaded={historyLoaded}
-          hasNextPage={hasNextHistory}
-          listNextPage={listNextHistory} />
+        {isFiltered ?
+          <FilterInfo
+            location={location}
+            fullDiffSupport={fullDiffSupport}
+            onViewDiffClick={this.onViewDiffClick}
+            onViewJournalClick={this.onViewJournalClick} /> : null}
+        {cid && fullDiff
+          ? <Diff source={current} target={previous}/>
+          : !historyLoaded
+            ? <Spinner/>
+            : <PaginatedTable
+                colSpan={6}
+                thead={thead}
+                tbody={tbody}
+                dataLoaded={historyLoaded}
+                hasNextPage={hasNextHistory}
+                listNextPage={listNextHistory} />}
       </div>
     );
   }

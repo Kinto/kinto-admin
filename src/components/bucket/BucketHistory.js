@@ -19,6 +19,7 @@ export default class BucketHistory extends Component {
     capabilities: Capabilities,
     location: RouteLocation,
     listBucketNextHistory: () => void,
+    notifyError: (message: string, error: ?Error) => void,
   };
 
   render() {
@@ -28,6 +29,7 @@ export default class BucketHistory extends Component {
       capabilities,
       location,
       listBucketNextHistory,
+      notifyError,
     } = this.props;
     const {bid} = params;
     const {history: {entries, loaded, hasNextPage: hasNextHistoryPage}} = bucket;
@@ -45,7 +47,8 @@ export default class BucketHistory extends Component {
             history={entries}
             hasNextHistory={hasNextHistoryPage}
             listNextHistory={listBucketNextHistory}
-            location={location} />
+            location={location}
+            notifyError={notifyError} />
         </BucketTabs>
       </div>
     );

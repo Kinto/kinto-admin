@@ -33,7 +33,7 @@ function getBatchLoadFn(bid, cid, gid, rid) {
   };
 }
 
-function identifyResponse(index, bid, cid, gid, rid) {
+function identifyResponse(index, bid, cid, gid, rid): {type: string, data: Object | Object[]} {
   switch(index) {
     case 0: return {type: "Bucket", data: {id: bid}};
     case 1: return {type: "Groups", data: []};
@@ -66,7 +66,12 @@ export function* loadRoute(params: RouteParams): SagaGen {
       if (type === "Unknown") {
         throw new Error("Unknown route resource.");
       } else if (status === 404) {
-        throw new Error(`${type} ${data.id} does not exist.`);
+        const {data: resource} = data;
+        if (!Array.isArray(resource)) {
+          throw new Error(`${type} ${resource.id} does not exist.`);
+        } else {
+          throw new Error(`${type} could not be loaded.`);
+        }
       } else if (status === 403) {
         return {...data, permissions: {read: [], write: []}};
       }
