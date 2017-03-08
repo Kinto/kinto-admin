@@ -96,7 +96,7 @@ function postToPortier(server: string, redirect: string): NavigationResult {
   // dedicated Kinto server endpoint. This is definitely one of the ugliest
   // part of this project, but it works :)
   try {
-    const portierUrl = (`${server}/portier/login`).replace(/\/\//g, "/");
+    const portierUrl = (`${server}/portier/login`).replace("//portier", "/portier");
     const form: ?HTMLElement = document.querySelector("form.rjsf");
     if (!(form instanceof HTMLFormElement)) {
       return notifyError("Missing authentication form.");
