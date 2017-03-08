@@ -188,7 +188,33 @@ const authSchemas = {
         password: {"ui:widget": "password"}
       }
     }
-  }
+  },
+  portier: {
+    schema: {
+      ...baseAuthSchema,
+      required: [...baseAuthSchema.required, "email"],
+      properties: {
+        ...baseAuthSchema.properties,
+        email: {
+          title: "Email address",
+          type: "string",
+          format: "email",
+        }
+      }
+    },
+    uiSchema: {
+      authType: {
+        ...baseUISchema.authType,
+        "ui:help": (
+          <span>
+            <b>Note:</b> The
+            <a href="https://github.com/Kinto/kinto-portier">{" kinto-portier "}</a>
+            plugin must be installed on the target server.
+          </span>
+        )
+      }
+    }
+  },
 };
 
 const authLabels = {
@@ -196,6 +222,7 @@ const authLabels = {
   "basicauth": "Basic Auth",
   "fxa": "Firefox Account",
   "ldap": "LDAP",
+  "portier": "Portier",
 };
 
 /**
@@ -301,7 +328,8 @@ export default class AuthForm extends Component {
     const {redirectURL} = session;
     const extendedFormData = {...formData, redirectURL};
     switch(authType) {
-      case "fxa": {
+      case "fxa":
+      case "portier": {
         return navigateToExternalAuth(extendedFormData);
       }
       // case "anonymous":

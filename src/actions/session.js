@@ -84,17 +84,51 @@ export function logout(): {
   return {type: SESSION_LOGOUT};
 }
 
+function navigateToFxA(server, redirect) {
+  document.location.href = `${server}/fxa-oauth/login?redirect=${encodeURIComponent(redirect)}`;
+}
+
+function postToPortier(server, redirect) {
+  // Alter the AuthForm to make it posting Portier auth information to the
+  // dedicated Kinto server endpoint. This is definitely one of the ugliest
+  // part of this project, but it works :)
+  try {
+    const portierUrl = (`${server}/portier/login`).replace(/\/\//g, "/");
+    const form: ?HTMLElement = document.querySelector("form.rjsf");
+    if (!(form instanceof HTMLFormElement)) {
+      return;
+    }
+    form.setAttribute("method", "post");
+    form.setAttribute("action", portierUrl);
+    form.querySelector("#root_email").setAttribute("name", "email");
+    const hiddenRedirect = document.createElement("input");
+    hiddenRedirect.setAttribute("type", "hidden");
+    hiddenRedirect.setAttribute("name", "redirect");
+    hiddenRedirect.setAttribute("value", redirect);
+    form.appendChild(hiddenRedirect);
+    form.submit();
+  } catch(error) {
+    return notifyError("Couldn't redirect to authentication endpoint.", error);
+  }
+}
+
 /**
  * Massive side effect: this will navigate away from the current page to perform
  * authentication to a third-party service, like FxA.
  */
 export function navigateToExternalAuth(authFormData: Object): ?ActionType<typeof notifyError> {
   const {origin, pathname} = document.location;
-  const {server} = authFormData;
+  const {server, authType} = authFormData;
   try {
     const payload = btoa(JSON.stringify(authFormData));
-    const redirect = encodeURIComponent(`${origin}${pathname}#/auth/${payload}/`);
-    document.location.href = `${server}/fxa-oauth/login?redirect=${redirect}`;
+    const redirect = `${origin}${pathname}#/auth/${payload}/`;
+    if (authType === "fxa") {
+      navigateToFxA(server, redirect);
+    } else if (authType === "portier") {
+      postToPortier(server, redirect);
+    } else {
+      return notifyError(`Unsupported auth navigation type "${authType}".`);
+    }
   } catch(error) {
     return notifyError("Couldn't redirect to authentication endpoint.", error);
   }
