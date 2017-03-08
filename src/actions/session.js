@@ -17,6 +17,8 @@ import {
 } from "../constants";
 
 
+type NavigationResult = ActionType<typeof notifyError> | {type: null};
+
 export function sessionBusy(busy: boolean): {
   type: "SESSION_BUSY",
   busy: boolean,
@@ -84,11 +86,12 @@ export function logout(): {
   return {type: SESSION_LOGOUT};
 }
 
-function navigateToFxA(server, redirect) {
+function navigateToFxA(server: string, redirect: string): NavigationResult {
   document.location.href = `${server}/fxa-oauth/login?redirect=${encodeURIComponent(redirect)}`;
+  return {type: null};
 }
 
-function postToPortier(server, redirect) {
+function postToPortier(server: string, redirect: string): NavigationResult {
   // Alter the AuthForm to make it posting Portier auth information to the
   // dedicated Kinto server endpoint. This is definitely one of the ugliest
   // part of this project, but it works :)
@@ -96,7 +99,7 @@ function postToPortier(server, redirect) {
     const portierUrl = (`${server}/portier/login`).replace(/\/\//g, "/");
     const form: ?HTMLElement = document.querySelector("form.rjsf");
     if (!(form instanceof HTMLFormElement)) {
-      return;
+      return notifyError("Missing authentication form.");
     }
     form.setAttribute("method", "post");
     form.setAttribute("action", portierUrl);
@@ -107,6 +110,7 @@ function postToPortier(server, redirect) {
     hiddenRedirect.setAttribute("value", redirect);
     form.appendChild(hiddenRedirect);
     form.submit();
+    return {type: null};
   } catch(error) {
     return notifyError("Couldn't redirect to authentication endpoint.", error);
   }
@@ -116,16 +120,16 @@ function postToPortier(server, redirect) {
  * Massive side effect: this will navigate away from the current page to perform
  * authentication to a third-party service, like FxA.
  */
-export function navigateToExternalAuth(authFormData: Object): ?ActionType<typeof notifyError> {
+export function navigateToExternalAuth(authFormData: Object): NavigationResult {
   const {origin, pathname} = document.location;
   const {server, authType} = authFormData;
   try {
     const payload = btoa(JSON.stringify(authFormData));
     const redirect = `${origin}${pathname}#/auth/${payload}/`;
     if (authType === "fxa") {
-      navigateToFxA(server, redirect);
+      return navigateToFxA(server, redirect);
     } else if (authType === "portier") {
-      postToPortier(server, redirect);
+      return postToPortier(server, redirect);
     } else {
       return notifyError(`Unsupported auth navigation type "${authType}".`);
     }
