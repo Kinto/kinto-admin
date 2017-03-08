@@ -282,7 +282,7 @@ export type RouteResources = {
   group: ?GroupResource,
 };
 
-export type AuthMethod = "anonymous" | "fxa" | "ldap" | "basicauth";
+export type AuthMethod = "anonymous" | "fxa" | "ldap" | "basicauth" | "portier";
 
 export type SettingsState = {
   maxPerPage: number,
