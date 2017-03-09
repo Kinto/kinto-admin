@@ -98,25 +98,34 @@ export function* loadRoute(params: RouteParams): SagaGen {
 export function* routeUpdated(getState: GetStateFn, action: ActionType<typeof actions.routeUpdated>): SagaGen {
   const {session: {authenticated}} = getState();
   const {params, location} = action;
-  const {token} = params;
+  const {token, payload} = params;
 
   // Clear notifications on each route update
   yield put(clearNotifications());
 
   // Check for an authenticated session; if we're requesting anything other
   // than the homepage, redirect to the homepage with a notification.
-  if (!authenticated && !token && location.pathname !== "/") {
-    yield put(storeRedirectURL(location.pathname));
-    yield put(updatePath(""));
-    yield put(notifyInfo("Authentication required.", {persistent: true}));
-    // pause until the user is authenticated
-    yield take(SESSION_AUTHENTICATED);
-    // clear auth related notifications
-    yield put(clearNotifications({force: true}));
-    // Redirect the user to the initially requested URL
-    yield put(updatePath(location.pathname));
-    // Clear stored redirectURL
-    yield put(storeRedirectURL(null));
+  if (!authenticated && location.pathname !== "/") {
+    if (token && payload) {
+      // We've just been redirected with an auth token and payload
+      const {redirectURL} = JSON.parse(atob(payload));
+      // Wait until we're actually authenticated
+      yield take(SESSION_AUTHENTICATED);
+      // Redirect to the initially requested URL
+      yield put(updatePath(redirectURL));
+    } else {
+      yield put(storeRedirectURL(location.pathname));
+      yield put(updatePath(""));
+      yield put(notifyInfo("Authentication required.", {persistent: true}));
+      // pause until the user is authenticated
+      yield take(SESSION_AUTHENTICATED);
+      // clear auth related notifications
+      yield put(clearNotifications({force: true}));
+      // Redirect the user to the initially requested URL
+      yield put(updatePath(location.pathname));
+      // Clear stored redirectURL
+      yield put(storeRedirectURL(null));
+    }
   } else {
     // Load route related resources
     yield call(loadRoute, params);
