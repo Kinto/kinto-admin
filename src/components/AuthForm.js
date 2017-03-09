@@ -254,6 +254,7 @@ function extendSchemaWithHistory(schema, history, authMethods, singleServer) {
 function extendUiSchemaWithHistory(uiSchema, history, clearHistory, singleServer, singleAuthMethod) {
   const authType = {
     authType: {
+      ...uiSchema.authType,
       "ui:widget": singleAuthMethod ? "hidden" : "radio",
     }
   };
@@ -313,8 +314,9 @@ export default class AuthForm extends Component {
   onChange = ({formData}: {formData: Object}) => {
     const {authType} = formData;
     const {schema, uiSchema} = authSchemas[authType];
-    const specificFormData = /fxa|anonymous/.test(authType) ? omit(formData, ["credentials"])
-                                                            : {credentials: {}, ...formData};
+    const specificFormData = ["anonymous", "fxa", "portier"].includes(authType)
+      ? omit(formData, ["credentials"])
+      : {credentials: {}, ...formData};
     return this.setState({
       schema,
       uiSchema,
@@ -346,12 +348,25 @@ export default class AuthForm extends Component {
     const {schema, uiSchema, formData} = this.state;
     const {singleServer, authMethods} = settings;
     const singleAuthMethod = authMethods.length === 1;
+    const finalSchema = extendSchemaWithHistory(
+      schema,
+      history,
+      authMethods,
+      singleServer
+    );
+    const finalUiSchema = extendUiSchemaWithHistory(
+      uiSchema,
+      history,
+      clearHistory,
+      singleServer,
+      singleAuthMethod
+    );
     return (
       <div className="panel panel-default">
         <div className="panel-body">
           <BaseForm
-            schema={extendSchemaWithHistory(schema, history, authMethods, singleServer)}
-            uiSchema={extendUiSchemaWithHistory(uiSchema, history, clearHistory, singleServer, singleAuthMethod)}
+            schema={finalSchema}
+            uiSchema={finalUiSchema}
             formData={formData}
             onChange={this.onChange}
             onSubmit={this.onSubmit}>
