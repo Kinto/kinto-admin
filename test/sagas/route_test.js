@@ -383,6 +383,34 @@ describe("route sagas", () => {
       });
     });
 
+    describe("Pending authentication", () => {
+      let routeUpdated;
+
+      before(() => {
+        const getState = () => ({session: {authenticated: false}});
+        const action = actions.routeUpdated({
+          token: "token",
+          payload: btoa(JSON.stringify({redirectURL: "/blah"}))
+        }, {});
+        routeUpdated = saga.routeUpdated(getState, action);
+      });
+
+      it("should clear notification", () => {
+        expect(routeUpdated.next().value)
+          .eql(put(notificationActions.clearNotifications()));
+      });
+
+      it("should wait for the SESSION_AUTHENTICATED event", () => {
+        expect(routeUpdated.next().value)
+          .eql(take(SESSION_AUTHENTICATED));
+      });
+
+      it("should redirect to the initially requested URL", () => {
+        expect(routeUpdated.next().value)
+          .eql(put(updatePath("/blah")));
+      });
+    });
+
     describe("Authenticated", () => {
       let routeUpdated;
       const params = {bid: "bucket", cid: "collection", rid: "record"};
