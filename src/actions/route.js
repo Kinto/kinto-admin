@@ -18,23 +18,29 @@ import {
   ROUTE_LOAD_FAILURE,
 } from "../constants";
 
-
-export function routeUpdated(params: Object, location: Object): {
+export function routeUpdated(
+  params: Object,
+  location: Object
+): {
   type: "ROUTE_UPDATED",
   params: Object,
   location: Object,
 } {
-  return {type: ROUTE_UPDATED, params, location};
+  return { type: ROUTE_UPDATED, params, location };
 }
 
-export function routeLoadRequest(params: RouteParams): {
+export function routeLoadRequest(
+  params: RouteParams
+): {
   type: "ROUTE_LOAD_REQUEST",
   params: RouteParams,
 } {
-  return {type: ROUTE_LOAD_REQUEST, params};
+  return { type: ROUTE_LOAD_REQUEST, params };
 }
 
-export function routeLoadSuccess(routeResources: RouteResources): {
+export function routeLoadSuccess(
+  routeResources: RouteResources
+): {
   type: "ROUTE_LOAD_SUCCESS",
   bucket: BucketResource,
   groups: GroupData[],
@@ -42,19 +48,22 @@ export function routeLoadSuccess(routeResources: RouteResources): {
   record: ?RecordResource,
   group: ?GroupResource,
 } {
-  return {type: ROUTE_LOAD_SUCCESS, ...routeResources};
+  return { type: ROUTE_LOAD_SUCCESS, ...routeResources };
 }
 
 export function routeLoadFailure(): {
   type: "ROUTE_LOAD_FAILURE",
 } {
-  return {type: ROUTE_LOAD_FAILURE};
+  return { type: ROUTE_LOAD_FAILURE };
 }
 
-export function redirectTo(name: string, params: RouteParams): {
+export function redirectTo(
+  name: string,
+  params: RouteParams
+): {
   type: "ROUTE_REDIRECT",
   name: string,
   params: RouteParams,
 } {
-  return {type: ROUTE_REDIRECT, name, params};
+  return { type: ROUTE_REDIRECT, name, params };
 }

@@ -10,7 +10,6 @@ import GroupHistory from "../../components/group/GroupHistory";
 import * as GroupActions from "../../actions/group";
 import * as NotificationsActions from "../../actions/notifications";
 
-
 function mapStateToProps(state: AppState) {
   return {
     group: state.group,
@@ -20,14 +19,14 @@ function mapStateToProps(state: AppState) {
 }
 
 function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
-  return bindActionCreators({
-    ...GroupActions,
-    ...NotificationsActions,
-    updatePath
-  }, dispatch);
+  return bindActionCreators(
+    {
+      ...GroupActions,
+      ...NotificationsActions,
+      updatePath,
+    },
+    dispatch
+  );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(GroupHistory);
+export default connect(mapStateToProps, mapDispatchToProps)(GroupHistory);

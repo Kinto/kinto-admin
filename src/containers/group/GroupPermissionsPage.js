@@ -8,7 +8,6 @@ import { connect } from "react-redux";
 import GroupPermissions from "../../components/group/GroupPermissions";
 import * as BucketActions from "../../actions/bucket";
 
-
 function mapStateToProps(state: AppState) {
   return {
     bucket: state.bucket,
@@ -22,7 +21,4 @@ function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
   return bindActionCreators(BucketActions, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(GroupPermissions);
+export default connect(mapStateToProps, mapDispatchToProps)(GroupPermissions);

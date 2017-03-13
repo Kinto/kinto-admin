@@ -13,7 +13,6 @@ import React, { Component } from "react";
 import HistoryTable from "../HistoryTable";
 import CollectionTabs from "./CollectionTabs";
 
-
 export default class CollectionHistory extends Component {
   props: {
     session: SessionState,
@@ -35,8 +34,8 @@ export default class CollectionHistory extends Component {
       listCollectionNextHistory,
       notifyError,
     } = this.props;
-    const {bid, cid} = params;
-    const {history: {entries, loaded, hasNextPage}} = collection;
+    const { bid, cid } = params;
+    const { history: { entries, loaded, hasNextPage } } = collection;
 
     return (
       <div>
@@ -55,7 +54,8 @@ export default class CollectionHistory extends Component {
             hasNextHistory={hasNextPage}
             listNextHistory={listCollectionNextHistory}
             location={location}
-            notifyError={notifyError} />
+            notifyError={notifyError}
+          />
         </CollectionTabs>
       </div>
     );

@@ -7,7 +7,6 @@ import { Link } from "react-router";
 
 import url from "../url";
 
-
 type Props = {
   name: string,
   params: RouteParams,
@@ -18,9 +17,7 @@ export default class AdminLink extends Component {
   props: Props;
 
   render() {
-    const {children, name, params, ...linkProps} = this.props;
-    return (
-      <Link {...linkProps} to={url(name, params)}>{children}</Link>
-    );
+    const { children, name, params, ...linkProps } = this.props;
+    return <Link {...linkProps} to={url(name, params)}>{children}</Link>;
   }
 }

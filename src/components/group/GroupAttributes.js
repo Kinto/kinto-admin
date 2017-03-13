@@ -14,7 +14,6 @@ import Spinner from "../Spinner";
 import GroupForm from "./GroupForm";
 import GroupTabs from "./GroupTabs";
 
-
 export default class GroupAttributes extends Component {
   props: {
     params: GroupRouteParams,
@@ -22,28 +21,32 @@ export default class GroupAttributes extends Component {
     bucket: BucketState,
     group: GroupState,
     capabilities: Capabilities,
-    updateGroup: (bid: string, gid: string, payload: {data: GroupData}) => void,
+    updateGroup: (
+      bid: string,
+      gid: string,
+      payload: { data: GroupData }
+    ) => void,
     deleteGroup: (bid: string, gid: string) => void,
   };
 
   onSubmit = (formData: GroupData) => {
-    const {params, updateGroup} = this.props;
-    const {bid, gid} = params;
-    updateGroup(bid, gid, {data: formData});
+    const { params, updateGroup } = this.props;
+    const { bid, gid } = params;
+    updateGroup(bid, gid, { data: formData });
   };
 
   deleteGroup = (gid: string) => {
-    const {deleteGroup, params} = this.props;
-    const {bid} = params;
+    const { deleteGroup, params } = this.props;
+    const { bid } = params;
     if (confirm("This will delete the group. Are you sure?")) {
       deleteGroup(bid, gid);
     }
   };
 
   render() {
-    const {params, session, bucket, group, capabilities} = this.props;
-    const {bid, gid} = params;
-    const {busy, data: formData} = group;
+    const { params, session, bucket, group, capabilities } = this.props;
+    const { bid, gid } = params;
+    const { busy, data: formData } = group;
     if (busy) {
       return <Spinner />;
     }
@@ -63,7 +66,8 @@ export default class GroupAttributes extends Component {
             group={group}
             deleteGroup={this.deleteGroup}
             formData={formData}
-            onSubmit={this.onSubmit} />
+            onSubmit={this.onSubmit}
+          />
         </GroupTabs>
       </div>
     );

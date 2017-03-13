@@ -10,7 +10,6 @@ import RecordHistory from "../../components/record/RecordHistory";
 import * as RecordActions from "../../actions/record";
 import * as NotificationsActions from "../../actions/notifications";
 
-
 function mapStateToProps(state: AppState) {
   return {
     record: state.record,
@@ -20,14 +19,14 @@ function mapStateToProps(state: AppState) {
 }
 
 function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
-  return bindActionCreators({
-    ...RecordActions,
-    ...NotificationsActions,
-    updatePath
-  }, dispatch);
+  return bindActionCreators(
+    {
+      ...RecordActions,
+      ...NotificationsActions,
+      updatePath,
+    },
+    dispatch
+  );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(RecordHistory);
+export default connect(mapStateToProps, mapDispatchToProps)(RecordHistory);

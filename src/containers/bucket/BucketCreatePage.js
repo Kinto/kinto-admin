@@ -8,7 +8,6 @@ import { connect } from "react-redux";
 import BucketCreate from "../../components/bucket/BucketCreate";
 import * as BucketActions from "../../actions/bucket";
 
-
 function mapStateToProps(state: AppState) {
   return {
     session: state.session,
@@ -20,7 +19,4 @@ function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
   return bindActionCreators(BucketActions, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(BucketCreate);
+export default connect(mapStateToProps, mapDispatchToProps)(BucketCreate);

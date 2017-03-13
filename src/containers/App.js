@@ -8,7 +8,6 @@ import { connect } from "react-redux";
 import App from "../components/App";
 import * as SessionActions from "../actions/session";
 
-
 function mapStateToProps(state: AppState) {
   return {
     notificationList: state.notifications,
@@ -20,7 +19,4 @@ function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
   return bindActionCreators(SessionActions, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

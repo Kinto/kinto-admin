@@ -1,5 +1,10 @@
 /* @flow */
-import type { SessionState, RouteParams, RouteLocation, BucketEntry } from "../types";
+import type {
+  SessionState,
+  RouteParams,
+  RouteLocation,
+  BucketEntry,
+} from "../types";
 
 import React, { Component } from "react";
 
@@ -7,12 +12,20 @@ import Spinner from "./Spinner";
 import AdminLink from "./AdminLink";
 import url from "../url";
 
-
 function SideBarLink(props) {
-  const {currentPath, name, params, children, className, ...otherProps} = props;
+  const {
+    currentPath,
+    name,
+    params,
+    children,
+    className,
+    ...otherProps
+  } = props;
   const targetUrl = url(name, params);
   const active = currentPath === targetUrl ? "active" : "";
-  const classes = className !== undefined ? className : `list-group-item ${active}`;
+  const classes = className !== undefined
+    ? className
+    : `list-group-item ${active}`;
 
   return (
     <AdminLink {...otherProps} name={name} params={params} className={classes}>
@@ -21,10 +34,9 @@ function SideBarLink(props) {
   );
 }
 
-
 function CollectionMenuEntry(props) {
-  const {bucket: {id: bid}, collection, currentPath, active} = props;
-  const {id: cid} = collection;
+  const { bucket: { id: bid }, collection, currentPath, active } = props;
+  const { id: cid } = collection;
   const classes = [
     "list-group-item",
     "collections-menu-entry",
@@ -32,14 +44,20 @@ function CollectionMenuEntry(props) {
   ].join(" ");
   return (
     <div className={classes}>
-      <SideBarLink name="collection:records" params={{bid, cid}} currentPath={currentPath}
+      <SideBarLink
+        name="collection:records"
+        params={{ bid, cid }}
+        currentPath={currentPath}
         className="">
         {collection.readonly
-          ? <i className="glyphicon glyphicon-lock"/>
-          : <i className="glyphicon glyphicon-align-justify"/>}
+          ? <i className="glyphicon glyphicon-lock" />
+          : <i className="glyphicon glyphicon-align-justify" />}
         {cid}
       </SideBarLink>
-      <SideBarLink name="collection:attributes" params={{bid, cid}} currentPath={currentPath}
+      <SideBarLink
+        name="collection:attributes"
+        params={{ bid, cid }}
+        currentPath={currentPath}
         className="collections-menu-entry-edit"
         title="Edit collection attributes">
         <i className="glyphicon glyphicon-cog" />
@@ -49,23 +67,25 @@ function CollectionMenuEntry(props) {
 }
 
 function BucketCollectionsMenu(props) {
-  const {currentPath, bucket, collections, bid, cid} = props;
+  const { currentPath, bucket, collections, bid, cid } = props;
   return (
     <div className="collections-menu list-group">
-      {
-        collections.map((collection, index) => {
-          return (
-            <CollectionMenuEntry
-              key={index}
-              currentPath={currentPath}
-              active={bid === bucket.id && cid === collection.id}
-              bucket={bucket}
-              collection={collection} />
-          );
-        })
-      }
-      <SideBarLink name="collection:create" params={{bid: bucket.id}} currentPath={currentPath}>
-        <i className="glyphicon glyphicon-plus"/>
+      {collections.map((collection, index) => {
+        return (
+          <CollectionMenuEntry
+            key={index}
+            currentPath={currentPath}
+            active={bid === bucket.id && cid === collection.id}
+            bucket={bucket}
+            collection={collection}
+          />
+        );
+      })}
+      <SideBarLink
+        name="collection:create"
+        params={{ bid: bucket.id }}
+        currentPath={currentPath}>
+        <i className="glyphicon glyphicon-plus" />
         Create collection
       </SideBarLink>
     </div>
@@ -81,24 +101,29 @@ type BucketsMenuProps = {
 };
 
 function filterBuckets(buckets, filters) {
-  const {hideReadOnly, search} = filters;
-  return buckets.slice(0)
-    .reduce((acc, bucket) => {
-      if (search == null || bucket.id.includes(search)) {
-        return [...acc, bucket];
-      } else if (bucket.collections.some(c => c.id.includes(search))) {
-        return [
-          ...acc,
-          {
-            ...bucket,
-            collections: bucket.collections.filter(c => c.id.includes(search))
-          }
-        ];
-      } else {
-        return acc;
-      }
-    }, [])
-    .filter((bucket) => !(hideReadOnly && bucket.readonly));
+  const { hideReadOnly, search } = filters;
+  return buckets
+    .slice(0)
+    .reduce(
+      (acc, bucket) => {
+        if (search == null || bucket.id.includes(search)) {
+          return [...acc, bucket];
+        } else if (bucket.collections.some(c => c.id.includes(search))) {
+          return [
+            ...acc,
+            {
+              ...bucket,
+              collections: bucket.collections.filter(c =>
+                c.id.includes(search)),
+            },
+          ];
+        } else {
+          return acc;
+        }
+      },
+      []
+    )
+    .filter(bucket => !(hideReadOnly && bucket.readonly));
 }
 
 class BucketsMenu extends Component {
@@ -111,31 +136,31 @@ class BucketsMenu extends Component {
 
   constructor(props: BucketsMenuProps) {
     super(props);
-    this.state = {hideReadOnly: false, search: null};
+    this.state = { hideReadOnly: false, search: null };
   }
 
   toggleReadOnly = () => {
-    this.setState({hideReadOnly: !this.state.hideReadOnly});
+    this.setState({ hideReadOnly: !this.state.hideReadOnly });
   };
 
-  resetSearch = (event) => {
+  resetSearch = event => {
     event.preventDefault();
-    this.setState({search: null});
+    this.setState({ search: null });
   };
 
-  updateSearch = (event) => {
-    this.setState({search: event.target.value || null});
+  updateSearch = event => {
+    this.setState({ search: event.target.value || null });
   };
 
   render() {
-    const {currentPath, busy, buckets, bid, cid} = this.props;
+    const { currentPath, busy, buckets, bid, cid } = this.props;
     const filteredBuckets = filterBuckets(buckets, this.state);
     return (
       <div>
         <div className="panel panel-default">
           <div className="list-group">
             <SideBarLink name="bucket:create" currentPath={currentPath}>
-              <i className="glyphicon glyphicon-plus"/>
+              <i className="glyphicon glyphicon-plus" />
               Create bucket
             </SideBarLink>
           </div>
@@ -146,50 +171,70 @@ class BucketsMenu extends Component {
           </div>
           <form className="form panel-body">
             <div className="input-group">
-              <input type="text" className="form-control" placeholder="Filter bucket/collection name"
-                value={this.state.search || ""} onInput={this.updateSearch}/>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Filter bucket/collection name"
+                value={this.state.search || ""}
+                onInput={this.updateSearch}
+              />
               <span className="input-group-addon">
                 <a href="" className="clear" onClick={this.resetSearch}>
-                  <i className="glyphicon glyphicon-remove-sign"/>
+                  <i className="glyphicon glyphicon-remove-sign" />
                 </a>
               </span>
             </div>
             <div className="checkbox">
               <label>
-                <input type="checkbox" value={this.state.hideReadOnly}
-                  onChange={this.toggleReadOnly}/>
+                <input
+                  type="checkbox"
+                  value={this.state.hideReadOnly}
+                  onChange={this.toggleReadOnly}
+                />
                 {" "}Hide readonly buckets
               </label>
             </div>
           </form>
         </div>
-        {
-          busy ? <Spinner/> : filteredBuckets.map((bucket, i) => {
-            const {id, collections} = bucket;
-            const current = bid === id;
-            return (
-              <div key={i} className={`panel panel-${current ? "info": "default"} bucket-menu`}>
-                <div className="panel-heading">
-                  {bucket.readonly
-                    ? <i className="glyphicon glyphicon-lock"/>
-                    : <i className={`glyphicon glyphicon-folder-${current ? "open" : "close"}`} />}
-                  <strong>{id}</strong> bucket
-                  <SideBarLink name="bucket:attributes" params={{bid: id}} currentPath={currentPath}
-                    className="bucket-menu-entry-edit"
-                    title="Manage bucket">
-                    <i className="glyphicon glyphicon-cog"/>
-                  </SideBarLink>
+        {busy
+          ? <Spinner />
+          : filteredBuckets.map((bucket, i) => {
+              const { id, collections } = bucket;
+              const current = bid === id;
+              return (
+                <div
+                  key={i}
+                  className={
+                    `panel panel-${current ? "info" : "default"} bucket-menu`
+                  }>
+                  <div className="panel-heading">
+                    {bucket.readonly
+                      ? <i className="glyphicon glyphicon-lock" />
+                      : <i
+                          className={
+                            `glyphicon glyphicon-folder-${current ? "open" : "close"}`
+                          }
+                        />}
+                    <strong>{id}</strong> bucket
+                    <SideBarLink
+                      name="bucket:attributes"
+                      params={{ bid: id }}
+                      currentPath={currentPath}
+                      className="bucket-menu-entry-edit"
+                      title="Manage bucket">
+                      <i className="glyphicon glyphicon-cog" />
+                    </SideBarLink>
+                  </div>
+                  <BucketCollectionsMenu
+                    bucket={bucket}
+                    collections={collections}
+                    currentPath={currentPath}
+                    bid={bid}
+                    cid={cid}
+                  />
                 </div>
-                <BucketCollectionsMenu
-                  bucket={bucket}
-                  collections={collections}
-                  currentPath={currentPath}
-                  bid={bid}
-                  cid={cid} />
-              </div>
-            );
-          })
-        }
+              );
+            })}
       </div>
     );
   }
@@ -207,24 +252,28 @@ export default class Sidebar extends Component {
   };
 
   render() {
-    const {session, params, location} = this.props;
-    const {pathname: currentPath} = location;
-    const {bid, cid} = params;
-    const {busy, authenticated, buckets=[]} = session;
+    const { session, params, location } = this.props;
+    const { pathname: currentPath } = location;
+    const { bid, cid } = params;
+    const { busy, authenticated, buckets = [] } = session;
     return (
       <div>
         <div className="panel panel-default">
           <div className="list-group">
-            <SideBarLink name="home" currentPath={currentPath}>Home</SideBarLink>
+            <SideBarLink name="home" currentPath={currentPath}>
+              Home
+            </SideBarLink>
           </div>
         </div>
-        {authenticated ?
-          <BucketsMenu
-            busy={busy}
-            buckets={buckets}
-            currentPath={currentPath}
-            bid={bid}
-            cid={cid} /> : null}
+        {authenticated
+          ? <BucketsMenu
+              busy={busy}
+              buckets={buckets}
+              currentPath={currentPath}
+              bid={bid}
+              cid={cid}
+            />
+          : null}
       </div>
     );
   }

@@ -10,40 +10,49 @@ import {
   GROUP_HISTORY_SUCCESS,
 } from "../constants";
 
-
-export function groupBusy(busy: boolean): {
+export function groupBusy(
+  busy: boolean
+): {
   type: "GROUP_BUSY",
   busy: boolean,
 } {
-  return {type: GROUP_BUSY, busy};
+  return { type: GROUP_BUSY, busy };
 }
 
 export function resetGroup(): {
   type: "GROUP_RESET",
 } {
-  return {type: GROUP_RESET};
+  return { type: GROUP_RESET };
 }
 
-export function listGroupHistory(bid: string, gid: string, filters: HistoryFilters = {}): {
+export function listGroupHistory(
+  bid: string,
+  gid: string,
+  filters: HistoryFilters = {}
+): {
   type: "GROUP_HISTORY_REQUEST",
   bid: string,
   gid: string,
   filters: HistoryFilters,
 } {
-  return {type: GROUP_HISTORY_REQUEST, bid, gid, filters};
+  return { type: GROUP_HISTORY_REQUEST, bid, gid, filters };
 }
 
 export function listGroupNextHistory(): {
   type: "GROUP_HISTORY_NEXT_REQUEST",
 } {
-  return {type: GROUP_HISTORY_NEXT_REQUEST};
+  return { type: GROUP_HISTORY_NEXT_REQUEST };
 }
 
-export function listGroupHistorySuccess(entries: ResourceHistoryEntry[], hasNextPage: boolean, next: ?Function): {
+export function listGroupHistorySuccess(
+  entries: ResourceHistoryEntry[],
+  hasNextPage: boolean,
+  next: ?Function
+): {
   type: "GROUP_HISTORY_SUCCESS",
   entries: ResourceHistoryEntry[],
   hasNextPage: boolean,
   next: ?Function,
 } {
-  return {type: GROUP_HISTORY_SUCCESS, entries, hasNextPage, next};
+  return { type: GROUP_HISTORY_SUCCESS, entries, hasNextPage, next };
 }

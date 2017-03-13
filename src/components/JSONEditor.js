@@ -3,13 +3,14 @@ import React, { Component } from "react";
 import Codemirror from "react-codemirror";
 import "codemirror/mode/javascript/javascript";
 
-
 // Patching CodeMirror#componentWillReceiveProps so it's executed synchronously
 // Ref https://github.com/mozilla-services/react-jsonschema-form/issues/174
-Codemirror.prototype.componentWillReceiveProps = function (nextProps) {
-  if (this.codeMirror &&
-      nextProps.value !== undefined &&
-      this.codeMirror.getValue() != nextProps.value) {
+Codemirror.prototype.componentWillReceiveProps = function(nextProps) {
+  if (
+    this.codeMirror &&
+    nextProps.value !== undefined &&
+    this.codeMirror.getValue() != nextProps.value
+  ) {
     this.codeMirror.setValue(nextProps.value);
   }
   if (typeof nextProps.options === "object") {
@@ -49,12 +50,13 @@ export default class JSONEditor extends Component {
   };
 
   render() {
-    const {readonly, disabled, value} = this.props;
-    return readonly || disabled ? <pre>{value}</pre> : (
-      <Codemirror
-        value={value}
-        onChange={this.onCodeChange}
-        options={cmOptions} />
-    );
+    const { readonly, disabled, value } = this.props;
+    return readonly || disabled
+      ? <pre>{value}</pre>
+      : <Codemirror
+          value={value}
+          onChange={this.onCodeChange}
+          options={cmOptions}
+        />;
   }
 }

@@ -8,7 +8,6 @@ import { connect } from "react-redux";
 import GroupCreate from "../../components/group/GroupCreate";
 import * as BucketActions from "../../actions/bucket";
 
-
 function mapStateToProps(state: AppState) {
   return {
     bucket: state.bucket,
@@ -21,7 +20,4 @@ function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
   return bindActionCreators(BucketActions, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(GroupCreate);
+export default connect(mapStateToProps, mapDispatchToProps)(GroupCreate);

@@ -16,7 +16,6 @@ import {
 } from "../constants";
 import { paginator } from "./shared";
 
-
 const INITIAL_STATE: RecordState = {
   busy: false,
   data: {},
@@ -24,38 +23,38 @@ const INITIAL_STATE: RecordState = {
     read: [],
     write: [],
   },
-  history: paginator(undefined, {type: "@@INIT"}),
+  history: paginator(undefined, { type: "@@INIT" }),
 };
 
 function load(state: RecordState, record: RecordResource): RecordState {
   if (!record) {
-    return {...state, busy: false};
+    return { ...state, busy: false };
   }
-  const {data, permissions} = record;
-  return {...state, busy: false, data, permissions};
+  const { data, permissions } = record;
+  return { ...state, busy: false, data, permissions };
 }
 
 export default function record(
   state: RecordState = INITIAL_STATE,
   action: Object // XXX: "type: string" + arbitrary keys
 ): RecordState {
-  switch(action.type) {
+  switch (action.type) {
     case RECORD_BUSY: {
-      return {...state, busy: action.busy};
+      return { ...state, busy: action.busy };
     }
     case RECORD_CREATE_REQUEST:
     case RECORD_UPDATE_REQUEST:
     case RECORD_DELETE_REQUEST: {
-      return {...state, busy: true};
+      return { ...state, busy: true };
     }
     case ROUTE_LOAD_REQUEST: {
-      return {...INITIAL_STATE, busy: true};
+      return { ...INITIAL_STATE, busy: true };
     }
     case ROUTE_LOAD_SUCCESS: {
       return load(state, action.record);
     }
     case ROUTE_LOAD_FAILURE: {
-      return {...state, busy: false};
+      return { ...state, busy: false };
     }
     case RECORD_RESET: {
       return INITIAL_STATE;
@@ -63,7 +62,7 @@ export default function record(
     case RECORD_HISTORY_REQUEST:
     case RECORD_HISTORY_NEXT_REQUEST:
     case RECORD_HISTORY_SUCCESS: {
-      return {...state, history: paginator(state.history, action)};
+      return { ...state, history: paginator(state.history, action) };
     }
     default: {
       return state;

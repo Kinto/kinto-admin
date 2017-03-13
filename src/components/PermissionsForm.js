@@ -18,16 +18,16 @@ export default class PermissionsForm extends Component {
     permissions: Permissions,
     groups: GroupData[],
     acls: string[],
-    onSubmit: (data: {formData: Object}) => void,
+    onSubmit: (data: { formData: Object }) => void,
   };
 
-  onSubmit = ({formData}: {formData: Object}) => {
-    const {bid, onSubmit} = this.props;
-    onSubmit({formData: formDataToPermissions(bid, formData)});
-  }
+  onSubmit = ({ formData }: { formData: Object }) => {
+    const { bid, onSubmit } = this.props;
+    onSubmit({ formData: formDataToPermissions(bid, formData) });
+  };
 
   render() {
-    const {bid, readonly} = this.props;
+    const { bid, readonly } = this.props;
     if (readonly) {
       return (
         <div className="alert alert-warning">
@@ -36,15 +36,17 @@ export default class PermissionsForm extends Component {
       );
     }
 
-    const {permissions, acls, groups} = this.props;
+    const { permissions, acls, groups } = this.props;
     const formData = permissionsToFormData(bid, permissions);
-    const {schema, uiSchema} = preparePermissionsForm(acls, groups);
+    const { schema, uiSchema } = preparePermissionsForm(acls, groups);
     return (
-      <BaseForm className="permissions-form"
-            schema={schema}
-            uiSchema={uiSchema}
-            formData={formData}
-            onSubmit={this.onSubmit} />
+      <BaseForm
+        className="permissions-form"
+        schema={schema}
+        uiSchema={uiSchema}
+        formData={formData}
+        onSubmit={this.onSubmit}
+      />
     );
   }
 }

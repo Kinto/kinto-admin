@@ -18,7 +18,7 @@ global.sessionStorage = (function() {
     },
     removeItem(key) {
       delete _state[key];
-    }
+    },
   };
 })();
 
@@ -27,12 +27,12 @@ global.sessionStorage = (function() {
 var Form = require("react-jsonschema-form").default;
 Form.defaultProps = {
   ...Form.defaultProps,
-  safeRenderCompletion: true
+  safeRenderCompletion: true,
 };
 
 // HTML debugging helper
 global.d = function d(node) {
-  console.log(require("html").prettyPrint(node.outerHTML, {indent_size: 2}));
+  console.log(require("html").prettyPrint(node.outerHTML, { indent_size: 2 }));
 };
 
 // btoa polyfill for tests

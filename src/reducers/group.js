@@ -13,17 +13,16 @@ import {
 } from "../constants";
 import { paginator } from "./shared";
 
-
 export const INITIAL_STATE: GroupState = {
   data: {
     members: [],
   },
   busy: false,
   permissions: {
-    "read": [],
-    "write": []
+    read: [],
+    write: [],
   },
-  history: paginator(undefined, {type: "@@INIT"}),
+  history: paginator(undefined, { type: "@@INIT" }),
   historyLoaded: false,
   hasNextHistory: false,
   listNextHistory: null,
@@ -31,10 +30,10 @@ export const INITIAL_STATE: GroupState = {
 
 function load(state: GroupState, group: GroupResource): GroupState {
   if (!group) {
-    return {...state, busy: false};
+    return { ...state, busy: false };
   }
-  const {permissions, data} = group;
-  return {...state, busy: false, data, permissions};
+  const { permissions, data } = group;
+  return { ...state, busy: false, data, permissions };
 }
 
 export function group(
@@ -43,17 +42,17 @@ export function group(
 ): GroupState {
   switch (action.type) {
     case GROUP_BUSY: {
-      const {busy}: {busy: boolean} = action;
-      return {...state, busy};
+      const { busy }: { busy: boolean } = action;
+      return { ...state, busy };
     }
     case ROUTE_LOAD_REQUEST: {
-      return {...INITIAL_STATE, busy: true};
+      return { ...INITIAL_STATE, busy: true };
     }
     case ROUTE_LOAD_SUCCESS: {
       return load(state, action.group);
     }
     case ROUTE_LOAD_FAILURE: {
-      return {...state, busy: false};
+      return { ...state, busy: false };
     }
     case GROUP_RESET: {
       return INITIAL_STATE;
@@ -61,7 +60,7 @@ export function group(
     case GROUP_HISTORY_REQUEST:
     case GROUP_HISTORY_NEXT_REQUEST:
     case GROUP_HISTORY_SUCCESS: {
-      return {...state, history: paginator(state.history, action)};
+      return { ...state, history: paginator(state.history, action) };
     }
     default: {
       return state;

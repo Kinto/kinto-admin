@@ -5,7 +5,6 @@ import BaseForm from "../BaseForm";
 import JSONEditor from "../JSONEditor";
 import { validJSON } from "../../utils";
 
-
 const schema = {
   type: "string",
   title: "JSON record",
@@ -32,18 +31,18 @@ export default class JSONRecordForm extends Component {
     children?: React.Element<*>,
   };
 
-  onSubmit = (data: {formData: string}) => {
-    this.props.onSubmit({...data, formData: JSON.parse(data.formData)});
-  }
+  onSubmit = (data: { formData: string }) => {
+    this.props.onSubmit({ ...data, formData: JSON.parse(data.formData) });
+  };
 
   render() {
-    const {record, disabled, children} = this.props;
+    const { record, disabled, children } = this.props;
     return (
       <div>
         <BaseForm
           schema={schema}
           formData={record}
-          uiSchema={disabled ? {...uiSchema, "ui:disabled": true} : uiSchema}
+          uiSchema={disabled ? { ...uiSchema, "ui:disabled": true } : uiSchema}
           validate={validate}
           onSubmit={this.onSubmit}>
           {children}

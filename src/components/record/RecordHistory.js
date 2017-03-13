@@ -13,7 +13,6 @@ import React, { Component } from "react";
 import HistoryTable from "../HistoryTable";
 import RecordTabs from "./RecordTabs";
 
-
 export default class RecordHistory extends Component {
   props: {
     params: RecordRouteParams,
@@ -35,8 +34,8 @@ export default class RecordHistory extends Component {
       listRecordNextHistory,
       notifyError,
     } = this.props;
-    const {bid, cid, rid} = params;
-    const {history: {entries, loaded, hasNextPage}} = record;
+    const { bid, cid, rid } = params;
+    const { history: { entries, loaded, hasNextPage } } = record;
 
     return (
       <div>
@@ -54,7 +53,8 @@ export default class RecordHistory extends Component {
             hasNextHistory={hasNextPage}
             listNextHistory={listRecordNextHistory}
             location={location}
-            notifyError={notifyError} />
+            notifyError={notifyError}
+          />
         </RecordTabs>
       </div>
     );

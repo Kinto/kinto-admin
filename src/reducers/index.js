@@ -13,7 +13,6 @@ import notifications from "./notifications";
 import history from "./history";
 import settings from "./settings";
 
-
 const standardReducers = {
   routing: routerReducer,
   session,

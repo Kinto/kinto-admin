@@ -13,10 +13,9 @@ import AdminLink from "../AdminLink";
 import BucketTabs from "./BucketTabs";
 import PaginatedTable from "../PaginatedTable";
 
-
 function DataList(props) {
-  const {bid, collections, capabilities, listBucketNextCollections} = props;
-  const {loaded, entries, hasNextPage} = collections;
+  const { bid, collections, capabilities, listBucketNextCollections } = props;
+  const { loaded, entries, hasNextPage } = collections;
   const thead = (
     <thead>
       <tr>
@@ -30,37 +29,49 @@ function DataList(props) {
   );
 
   const tbody = (
-    <tbody className={!loaded ? "loading" : ""}>{
-      entries.map((collection, index) => {
-        const {id: cid, schema, cache_expires, last_modified} = collection;
+    <tbody className={!loaded ? "loading" : ""}>
+      {entries.map((collection, index) => {
+        const { id: cid, schema, cache_expires, last_modified } = collection;
         const date = new Date(last_modified);
         return (
           <tr key={index}>
             <td>{cid}</td>
             <td>{schema ? "Yes" : "No"}</td>
-            <td>{cache_expires ? `${cache_expires} seconds` : "No" }</td>
-            <td><span title={date.toISOString()}>{timeago(date.getTime())}</span></td>
+            <td>{cache_expires ? `${cache_expires} seconds` : "No"}</td>
+            <td>
+              <span title={date.toISOString()}>{timeago(date.getTime())}</span>
+            </td>
             <td className="actions">
               <div className="btn-group">
-                <AdminLink name="collection:records" params={{bid, cid}}
-                  className="btn btn-xs btn-default" title="Browse collection">
+                <AdminLink
+                  name="collection:records"
+                  params={{ bid, cid }}
+                  className="btn btn-xs btn-default"
+                  title="Browse collection">
                   <i className="glyphicon glyphicon-align-justify" />
                 </AdminLink>
-                {"history" in capabilities ?
-                  <AdminLink name="collection:history" params={{bid, cid}}
-                    className="btn btn-xs btn-default" title="View collection history">
-                    <i className="glyphicon glyphicon-time" />
-                  </AdminLink> : null}
-                <AdminLink name="collection:attributes" params={{bid, cid}}
-                   className="btn btn-xs btn-default" title="Edit collection attributes">
+                {"history" in capabilities
+                  ? <AdminLink
+                      name="collection:history"
+                      params={{ bid, cid }}
+                      className="btn btn-xs btn-default"
+                      title="View collection history">
+                      <i className="glyphicon glyphicon-time" />
+                    </AdminLink>
+                  : null}
+                <AdminLink
+                  name="collection:attributes"
+                  params={{ bid, cid }}
+                  className="btn btn-xs btn-default"
+                  title="Edit collection attributes">
                   <i className="glyphicon glyphicon-cog" />
                 </AdminLink>
               </div>
             </td>
           </tr>
         );
-      })
-    }</tbody>
+      })}
+    </tbody>
   );
 
   return (
@@ -70,24 +81,27 @@ function DataList(props) {
       dataLoaded={loaded}
       colSpan={5}
       hasNextPage={hasNextPage}
-      listNextPage={listBucketNextCollections} />
+      listNextPage={listBucketNextCollections}
+    />
   );
 }
 
-
 function ListActions(props) {
-  const {bid, session, bucket} = props;
+  const { bid, session, bucket } = props;
   if (session.busy || bucket.busy) {
     return null;
   }
   return (
     <div className="list-actions">
-      <AdminLink name="collection:create" params={{bid}}
-            className="btn btn-info btn-collection-add">Add</AdminLink>
+      <AdminLink
+        name="collection:create"
+        params={{ bid }}
+        className="btn btn-info btn-collection-add">
+        Add
+      </AdminLink>
     </div>
   );
 }
-
 
 export default class BucketCollections extends Component {
   props: {
@@ -106,14 +120,11 @@ export default class BucketCollections extends Component {
       capabilities,
       listBucketNextCollections,
     } = this.props;
-    const {bid} = params;
-    const {collections} = bucket;
+    const { bid } = params;
+    const { collections } = bucket;
 
     const listActions = (
-      <ListActions
-        bid={bid}
-        session={session}
-        bucket={bucket} />
+      <ListActions bid={bid} session={session} bucket={bucket} />
     );
 
     return (
@@ -124,17 +135,16 @@ export default class BucketCollections extends Component {
           selected="collections"
           capabilities={capabilities}>
           {listActions}
-          {collections.loaded && collections.entries.length === 0 ?
-            <div className="alert alert-info">
-              <p>This bucket has no collections.</p>
-            </div>
-            :
-            <DataList
-              bid={bid}
-              collections={collections}
-              listBucketNextCollections={listBucketNextCollections}
-              capabilities={capabilities} />
-          }
+          {collections.loaded && collections.entries.length === 0
+            ? <div className="alert alert-info">
+                <p>This bucket has no collections.</p>
+              </div>
+            : <DataList
+                bid={bid}
+                collections={collections}
+                listBucketNextCollections={listBucketNextCollections}
+                capabilities={capabilities}
+              />}
           {listActions}
         </BucketTabs>
       </div>

@@ -3,7 +3,6 @@ import { expect } from "chai";
 import { createSandbox, createComponent } from "../test_utils";
 import Sidebar from "../../src/components/Sidebar";
 
-
 describe("Sidebar component", () => {
   let sandbox;
 
@@ -19,9 +18,9 @@ describe("Sidebar component", () => {
     it("should not render any bucket menus", () => {
       const node = createComponent(Sidebar, {
         params: {},
-        location: {pathname: ""},
-        session: {authenticated: false},
-        capabilities: {history: {}},
+        location: { pathname: "" },
+        session: { authenticated: false },
+        capabilities: { history: {} },
       });
 
       expect(node.querySelectorAll(".bucket-menu")).to.have.length.of(0);
@@ -34,26 +33,31 @@ describe("Sidebar component", () => {
     const session = {
       authenticated: true,
       serverInfo: {
-        user: {bucket: "defaultBucket"}
+        user: { bucket: "defaultBucket" },
       },
       buckets: [
         {
           id: "mybuck",
-          collections: [{id: "othercoll"}, {id: "mycoll"}]
+          collections: [{ id: "othercoll" }, { id: "mycoll" }],
         },
         {
           id: "otherbuck",
-          collections: [{id: "foo"}, {id: "bar"}, {id: "baz"}]
-        }
-      ]
+          collections: [{ id: "foo" }, { id: "bar" }, { id: "baz" }],
+        },
+      ],
     };
 
     beforeEach(() => {
-      const params = {bid: "mybuck", cid: "mycoll"};
-      const location = {pathname: ""};
-      const capabilities = {history: {}};
+      const params = { bid: "mybuck", cid: "mycoll" };
+      const location = { pathname: "" };
+      const capabilities = { history: {} };
 
-      node = createComponent(Sidebar, {params, location, session, capabilities});
+      node = createComponent(Sidebar, {
+        params,
+        location,
+        session,
+        capabilities,
+      });
       bucketMenus = node.querySelectorAll(".bucket-menu");
     });
 
@@ -62,25 +66,34 @@ describe("Sidebar component", () => {
     });
 
     it("should list collections for the first bucket", () => {
-      const collMenus = bucketMenus[0].querySelectorAll(".collections-menu-entry");
+      const collMenus = bucketMenus[0].querySelectorAll(
+        ".collections-menu-entry"
+      );
 
-      expect([].map.call(collMenus, x => x.textContent))
-        .eql(["othercoll", "mycoll"]);
+      expect([].map.call(collMenus, x => x.textContent)).eql([
+        "othercoll",
+        "mycoll",
+      ]);
     });
 
     it("should list collections for the second bucket", () => {
-      const collMenus = bucketMenus[1].querySelectorAll(".collections-menu-entry");
+      const collMenus = bucketMenus[1].querySelectorAll(
+        ".collections-menu-entry"
+      );
 
-      expect([].map.call(collMenus, x => x.textContent))
-        .eql(["foo", "bar", "baz"]);
+      expect([].map.call(collMenus, x => x.textContent)).eql([
+        "foo",
+        "bar",
+        "baz",
+      ]);
     });
 
     it("should highlight the selected collection", () => {
-      const targetEntry = bucketMenus[0]
-        .querySelectorAll(".collections-menu-entry")[1];
+      const targetEntry = bucketMenus[0].querySelectorAll(
+        ".collections-menu-entry"
+      )[1];
 
-      expect(targetEntry.classList.contains("active"))
-        .eql(true);
+      expect(targetEntry.classList.contains("active")).eql(true);
     });
   });
 });

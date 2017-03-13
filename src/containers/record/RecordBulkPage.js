@@ -10,7 +10,6 @@ import RecordBulk from "../../components/record/RecordBulk";
 import * as CollectionActions from "../../actions/collection";
 import * as NotificationsActions from "../../actions/notifications";
 
-
 function mapStateToProps(state: AppState) {
   return {
     collection: state.collection,
@@ -19,14 +18,14 @@ function mapStateToProps(state: AppState) {
 }
 
 function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
-  return bindActionCreators({
-    ...CollectionActions,
-    ...NotificationsActions,
-    updatePath
-  }, dispatch);
+  return bindActionCreators(
+    {
+      ...CollectionActions,
+      ...NotificationsActions,
+      updatePath,
+    },
+    dispatch
+  );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(RecordBulk);
+export default connect(mapStateToProps, mapDispatchToProps)(RecordBulk);

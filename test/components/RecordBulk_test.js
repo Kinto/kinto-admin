@@ -6,7 +6,6 @@ import { createSandbox, createComponent } from "../test_utils";
 
 import RecordBulk from "../../src/components/record/RecordBulk";
 
-
 describe("RecordBulk component", () => {
   let sandbox;
 
@@ -26,8 +25,8 @@ describe("RecordBulk component", () => {
           type: "object",
           properties: {
             foo: {
-              type: "string"
-            }
+              type: "string",
+            },
           },
         },
       },
@@ -36,7 +35,7 @@ describe("RecordBulk component", () => {
     beforeEach(() => {
       bulkCreateRecords = sinon.spy();
       node = createComponent(RecordBulk, {
-        params: {bid: "bucket", cid: "collection"},
+        params: { bid: "bucket", cid: "collection" },
         collection,
         bulkCreateRecords,
       });
@@ -50,13 +49,13 @@ describe("RecordBulk component", () => {
       return new Promise(setImmediate)
         .then(() => {
           Simulate.change(node.querySelector("#root_0_foo"), {
-            target: {value: "bar1"}
+            target: { value: "bar1" },
           });
           return new Promise(setImmediate);
         })
         .then(() => {
           Simulate.change(node.querySelector("#root_1_foo"), {
-            target: {value: "bar2"}
+            target: { value: "bar2" },
           });
           return new Promise(setImmediate);
         })
@@ -64,10 +63,11 @@ describe("RecordBulk component", () => {
           Simulate.submit(node.querySelector("form"));
 
           sinon.assert.calledWithExactly(
-            bulkCreateRecords, "bucket", "collection", [
-              {foo: "bar1"},
-              {foo: "bar2"},
-            ]);
+            bulkCreateRecords,
+            "bucket",
+            "collection",
+            [{ foo: "bar1" }, { foo: "bar2" }]
+          );
         });
     });
   });

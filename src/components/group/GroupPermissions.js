@@ -15,7 +15,6 @@ import GroupTabs from "./GroupTabs";
 import PermissionsForm from "../PermissionsForm";
 import { canEditGroup } from "../../permission";
 
-
 export default class GroupPermissions_ extends Component {
   props: {
     params: GroupRouteParams,
@@ -26,26 +25,26 @@ export default class GroupPermissions_ extends Component {
     updateGroup: (
       bid: string,
       gid: string,
-      data: {permissions: GroupPermissions}
+      data: { permissions: GroupPermissions }
     ) => void,
   };
 
-  onSubmit = ({formData}: {formData: GroupPermissions}) => {
-    const {params, updateGroup} = this.props;
-    const {bid, gid} = params;
-    updateGroup(bid, gid, {permissions: formData});
-  }
+  onSubmit = ({ formData }: { formData: GroupPermissions }) => {
+    const { params, updateGroup } = this.props;
+    const { bid, gid } = params;
+    updateGroup(bid, gid, { permissions: formData });
+  };
 
   get readonly(): boolean {
-    const {session, bucket, group} = this.props;
+    const { session, bucket, group } = this.props;
     return !canEditGroup(session, bucket, group);
   }
 
   render() {
-    const {params, capabilities, bucket, group} = this.props;
-    const {bid, gid} = params;
-    const {busy, permissions} = group;
-    const {groups} = bucket;
+    const { params, capabilities, bucket, group } = this.props;
+    const { bid, gid } = params;
+    const { busy, permissions } = group;
+    const { groups } = bucket;
     const acls = ["read", "write"];
     if (busy) {
       return <Spinner />;
@@ -64,7 +63,8 @@ export default class GroupPermissions_ extends Component {
             permissions={permissions}
             acls={acls}
             readonly={this.readonly}
-            onSubmit={this.onSubmit} />
+            onSubmit={this.onSubmit}
+          />
         </GroupTabs>
       </div>
     );

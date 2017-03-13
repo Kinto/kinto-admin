@@ -8,7 +8,6 @@ import { connect } from "react-redux";
 import BucketPermissions from "../../components/bucket/BucketPermissions";
 import * as BucketActions from "../../actions/bucket";
 
-
 function mapStateToProps(state: AppState) {
   return {
     session: state.session,
@@ -21,7 +20,4 @@ function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
   return bindActionCreators(BucketActions, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(BucketPermissions);
+export default connect(mapStateToProps, mapDispatchToProps)(BucketPermissions);

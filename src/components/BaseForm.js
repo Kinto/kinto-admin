@@ -4,8 +4,7 @@ import Form from "react-jsonschema-form";
 
 import TagsField from "./TagsField";
 
-
-const adminFields = {tags: TagsField};
+const adminFields = { tags: TagsField };
 
 export default class BaseForm extends Component {
   render() {

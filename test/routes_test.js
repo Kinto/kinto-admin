@@ -8,21 +8,21 @@ import {
   onBucketHistoryEnter,
   onCollectionHistoryEnter,
   onGroupHistoryEnter,
-  onRecordHistoryEnter
+  onRecordHistoryEnter,
 } from "../src/routes";
 
-
 describe("Routes onEnter", () => {
-
-  const params = {bid: "bid", cid: "cid", gid: "gid", rid: "rid"};
-  const filters = {since: "12"};
+  const params = { bid: "bid", cid: "cid", gid: "gid", rid: "rid" };
+  const filters = { since: "12" };
   const state = {
-    session: {authenticated: true},
-    routing: {locationBeforeTransitions: {query: filters}}
+    session: { authenticated: true },
+    routing: { locationBeforeTransitions: { query: filters } },
   };
   const store = {
     dispatch() {},
-    getState() {return state;}
+    getState() {
+      return state;
+    },
   };
 
   let sandbox;
@@ -38,7 +38,7 @@ describe("Routes onEnter", () => {
 
   describe("Buckets history", () => {
     it("should dispatch load history", () => {
-      onBucketHistoryEnter(store, {params});
+      onBucketHistoryEnter(store, { params });
       const action = bucketActions.listBucketHistory("bid", filters);
       sinon.assert.calledWith(store.dispatch, action);
     });
@@ -46,15 +46,19 @@ describe("Routes onEnter", () => {
 
   describe("Collections history", () => {
     it("should dispatch load history", () => {
-      onCollectionHistoryEnter(store, {params});
-      const action = collectionActions.listCollectionHistory("bid", "cid", filters);
+      onCollectionHistoryEnter(store, { params });
+      const action = collectionActions.listCollectionHistory(
+        "bid",
+        "cid",
+        filters
+      );
       sinon.assert.calledWith(store.dispatch, action);
     });
   });
 
   describe("Groups history", () => {
     it("should dispatch load history", () => {
-      onGroupHistoryEnter(store, {params});
+      onGroupHistoryEnter(store, { params });
       const action = groupActions.listGroupHistory("bid", "gid", filters);
       sinon.assert.calledWith(store.dispatch, action);
     });
@@ -62,8 +66,13 @@ describe("Routes onEnter", () => {
 
   describe("Records history", () => {
     it("should dispatch load history", () => {
-      onRecordHistoryEnter(store, {params});
-      const action = recordActions.listRecordHistory("bid", "cid", "rid", filters);
+      onRecordHistoryEnter(store, { params });
+      const action = recordActions.listRecordHistory(
+        "bid",
+        "cid",
+        "rid",
+        filters
+      );
       sinon.assert.calledWith(store.dispatch, action);
     });
   });

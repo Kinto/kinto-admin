@@ -10,7 +10,6 @@ import * as NotificationActions from "../actions/notifications";
 import * as SessionActions from "../actions/session";
 import * as HistoryActions from "../actions/history";
 
-
 function mapStateToProps(state: AppState) {
   return {
     session: state.session,
@@ -20,14 +19,14 @@ function mapStateToProps(state: AppState) {
 }
 
 function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
-  return bindActionCreators({
-    ...SessionActions,
-    ...NotificationActions,
-    ...HistoryActions,
-  }, dispatch);
+  return bindActionCreators(
+    {
+      ...SessionActions,
+      ...NotificationActions,
+      ...HistoryActions,
+    },
+    dispatch
+  );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(HomePage);
+export default connect(mapStateToProps, mapDispatchToProps)(HomePage);

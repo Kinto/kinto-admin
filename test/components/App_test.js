@@ -6,7 +6,6 @@ import { createSandbox, createComponent } from "../test_utils";
 
 import App from "../../src/components/App";
 
-
 describe("App component", () => {
   let sandbox;
 
@@ -21,9 +20,9 @@ describe("App component", () => {
   describe("Session top bar", () => {
     it("should not render a session top bar when not authenticated", () => {
       const node = createComponent(App, {
-        session: {authenticated: false},
-        notificationList: [{message: "blah"}],
-        routes: [{name: "Home"}],
+        session: { authenticated: false },
+        notificationList: [{ message: "blah" }],
+        routes: [{ name: "Home" }],
       });
 
       expect(node.querySelector(".session-info-bar")).to.not.exist;
@@ -33,14 +32,14 @@ describe("App component", () => {
       const session = {
         authenticated: true,
         serverInfo: {
-          url: "http://test.server/v1/"
-        }
+          url: "http://test.server/v1/",
+        },
       };
       const node = createComponent(App, {
         session,
         logout: {},
         notificationList: [],
-        routes: [{name: "Home"}],
+        routes: [{ name: "Home" }],
       });
       const infoBar = node.querySelector(".session-info-bar");
       const content = infoBar.textContent;
@@ -55,20 +54,20 @@ describe("App component", () => {
         serverInfo: {
           url: "http://test.server/v1/",
           user: {
-            id: "fxa:1234"
-          }
+            id: "fxa:1234",
+          },
         },
         credentials: {
           username: "user",
           password: "pass",
-        }
+        },
       };
       const logout = sandbox.spy();
       const node = createComponent(App, {
         session,
         logout,
         notificationList: [],
-        routes: [{name: "Home"}],
+        routes: [{ name: "Home" }],
       });
 
       const infoBar = node.querySelector(".session-info-bar");
@@ -87,16 +86,16 @@ describe("App component", () => {
 
   describe("Notifications", () => {
     it("should add a class when notifications are provided", () => {
-      const session = {authenticated: false};
+      const session = { authenticated: false };
       const node = createComponent(App, {
         session,
-        notificationList: [{message: "blah"}],
-        routes: [{name: "Home"}],
+        notificationList: [{ message: "blah" }],
+        routes: [{ name: "Home" }],
       });
 
-      expect(node.querySelector(".content")
-               .classList.contains("with-notifications"))
-        .eql(true);
+      expect(
+        node.querySelector(".content").classList.contains("with-notifications")
+      ).eql(true);
     });
   });
 });

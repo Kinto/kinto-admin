@@ -14,7 +14,7 @@ import {
   onCollectionRecordsRequest,
   handleRequestReview,
   handleDeclineChanges,
-  handleApproveChanges
+  handleApproveChanges,
 } from "./sagas";
 
 import "../../../css/plugins/signoff/styles.css";
@@ -24,7 +24,7 @@ import "../../../css/plugins/signoff/styles.css";
 //
 
 export const reducers = {
-  signoff: signoffReducer
+  signoff: signoffReducer,
 };
 
 //
@@ -32,7 +32,11 @@ export const reducers = {
 //
 
 export const sagas = [
-  [takeEvery, adminConstants.COLLECTION_RECORDS_REQUEST, onCollectionRecordsRequest],
+  [
+    takeEvery,
+    adminConstants.COLLECTION_RECORDS_REQUEST,
+    onCollectionRecordsRequest,
+  ],
   [takeEvery, pluginConstants.PLUGIN_REVIEW_REQUEST, handleRequestReview],
   [takeEvery, pluginConstants.PLUGIN_DECLINE_REQUEST, handleDeclineChanges],
   [takeEvery, pluginConstants.PLUGIN_SIGNOFF_REQUEST, handleApproveChanges],
@@ -47,12 +51,13 @@ function mapStateToProps(state) {
     session: sessionState,
     bucket: bucketState,
     collection: collectionState,
-    signoff} = state;
+    signoff,
+  } = state;
   return {
     sessionState,
     bucketState,
     collectionState,
-    signoff
+    signoff,
   };
 }
 
@@ -60,10 +65,9 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(SignoffActions, dispatch);
 }
 
-const SignoffContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SignoffToolBar);
+const SignoffContainer = connect(mapStateToProps, mapDispatchToProps)(
+  SignoffToolBar
+);
 
 //
 // Plugin register
@@ -72,10 +76,8 @@ const SignoffContainer = connect(
 export function register(store: Store) {
   const hooks = {
     CollectionRecords: {
-      ListActions: [
-        <SignoffContainer key="request-signoff-toolbar" />
-      ]
-    }
+      ListActions: [<SignoffContainer key="request-signoff-toolbar" />],
+    },
   };
 
   return {

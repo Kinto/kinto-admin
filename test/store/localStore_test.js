@@ -2,7 +2,6 @@ import { expect } from "chai";
 
 import * as localStore from "../../src/store/localStore";
 
-
 describe("localStore", () => {
   describe("history store", () => {
     before(() => {
@@ -33,7 +32,7 @@ describe("localStore", () => {
         username: "user",
         password: "pass",
       },
-      buckets: [{}]
+      buckets: [{}],
     };
 
     before(() => {
@@ -47,7 +46,7 @@ describe("localStore", () => {
     it("should save and load session with the buckets emptied", () => {
       localStore.saveSession(session);
 
-      expect(localStore.loadSession()).eql({...session, buckets: []});
+      expect(localStore.loadSession()).eql({ ...session, buckets: [] });
     });
 
     it("should clear session", () => {

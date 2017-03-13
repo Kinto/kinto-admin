@@ -14,7 +14,6 @@ import Spinner from "../Spinner";
 import CollectionForm from "./CollectionForm";
 import CollectionTabs from "./CollectionTabs";
 
-
 export default class CollectionAttributes extends Component {
   props: {
     session: SessionState,
@@ -27,23 +26,27 @@ export default class CollectionAttributes extends Component {
   };
 
   onSubmit = (formData: CollectionData) => {
-    const {params, updateCollection} = this.props;
-    const {bid, cid} = params;
-    updateCollection(bid, cid, {data: formData});
+    const { params, updateCollection } = this.props;
+    const { bid, cid } = params;
+    updateCollection(bid, cid, { data: formData });
   };
 
   deleteCollection = (cid: string) => {
-    const {deleteCollection, params} = this.props;
-    const {bid} = params;
-    if (confirm("This will delete the collection and all the records it contains. Are you sure?")) {
+    const { deleteCollection, params } = this.props;
+    const { bid } = params;
+    if (
+      confirm(
+        "This will delete the collection and all the records it contains. Are you sure?"
+      )
+    ) {
       deleteCollection(bid, cid);
     }
   };
 
   render() {
-    const {params, session, bucket, collection, capabilities} = this.props;
-    const {bid, cid} = params;
-    const {busy, data: formData} = collection;
+    const { params, session, bucket, collection, capabilities } = this.props;
+    const { bid, cid } = params;
+    const { busy, data: formData } = collection;
     if (busy) {
       return <Spinner />;
     }
@@ -63,7 +66,8 @@ export default class CollectionAttributes extends Component {
             collection={collection}
             deleteCollection={this.deleteCollection}
             formData={formData}
-            onSubmit={this.onSubmit} />
+            onSubmit={this.onSubmit}
+          />
         </CollectionTabs>
       </div>
     );

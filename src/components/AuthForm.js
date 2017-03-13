@@ -6,7 +6,6 @@ import React, { Component } from "react";
 import BaseForm from "./BaseForm";
 import { omit } from "../utils";
 
-
 class ServerHistory extends Component {
   state: {
     menuOpened: boolean,
@@ -14,54 +13,60 @@ class ServerHistory extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {menuOpened: false};
+    this.state = { menuOpened: false };
   }
 
-  select = (server) => {
-    return (event) => {
+  select = server => {
+    return event => {
       event.preventDefault();
       this.props.onChange(server);
-      this.setState({menuOpened: false});
+      this.setState({ menuOpened: false });
     };
-  }
+  };
 
   toggleMenu = () => {
-    this.setState({menuOpened: !this.state.menuOpened});
-  }
+    this.setState({ menuOpened: !this.state.menuOpened });
+  };
 
-  clear = (event) => {
+  clear = event => {
     event.preventDefault();
-    const {clearHistory} = this.props.options;
+    const { clearHistory } = this.props.options;
     clearHistory();
-    this.setState({menuOpened: false});
-  }
+    this.setState({ menuOpened: false });
+  };
 
   render() {
-    const {menuOpened} = this.state;
-    const {id, value, onChange, placeholder, options} = this.props;
-    const {history} = options;
+    const { menuOpened } = this.state;
+    const { id, value, onChange, placeholder, options } = this.props;
+    const { history } = options;
     return (
       <div className="input-group">
-        <input type="text"
+        <input
+          type="text"
           id={id}
           className="form-control"
           placeholder={placeholder}
           value={value}
-          onChange={(event) => onChange(event.target.value)} />
+          onChange={event => onChange(event.target.value)}
+        />
         <div className={`input-group-btn ${menuOpened ? "open" : ""}`}>
-          <button type="button" className="btn btn-default dropdown-toggle"
+          <button
+            type="button"
+            className="btn btn-default dropdown-toggle"
             onClick={this.toggleMenu}>
             <span className="caret" />
           </button>
           <ul className="dropdown-menu dropdown-menu-right">
-            {
-              history.length === 0 ? (
-                <li><a onClick={this.toggleMenu}><em>No server history</em></a></li>
-              ) : history.map((server, key) => (
-                <li key={key}><a href="#" onClick={this.select(server)}>{server}</a></li>
-              ))
-            }
-            <li role="separator" className="divider"></li>
+            {history.length === 0
+              ? <li>
+                  <a onClick={this.toggleMenu}><em>No server history</em></a>
+                </li>
+              : history.map((server, key) => (
+                  <li key={key}>
+                    <a href="#" onClick={this.select(server)}>{server}</a>
+                  </li>
+                ))}
+            <li role="separator" className="divider" />
             <li><a href="#" onClick={this.clear}>Clear</a></li>
           </ul>
         </div>
@@ -75,7 +80,7 @@ const baseAuthSchema = {
   title: "Setup",
   required: ["server", "authType"],
   properties: {
-    server:   {
+    server: {
       type: "string",
       title: "Server",
       format: "uri",
@@ -84,8 +89,8 @@ const baseAuthSchema = {
       type: "string",
       title: "Authentication method",
       enum: ["basicauth", "fxa", "ldap"],
-    }
-  }
+    },
+  },
 };
 
 const baseUISchema = {
@@ -94,7 +99,7 @@ const baseUISchema = {
   },
   authType: {
     "ui:widget": "radio",
-  }
+  },
 };
 
 const authSchemas = {
@@ -118,32 +123,32 @@ const authSchemas = {
               type: "string",
               title: "Password",
               default: "test",
-            }
-          }
-        }
-      }
+            },
+          },
+        },
+      },
     },
     uiSchema: {
       ...baseUISchema,
       credentials: {
-        password: {"ui:widget": "password"}
-      }
-    }
+        password: { "ui:widget": "password" },
+      },
+    },
   },
   anonymous: {
     schema: {
       ...baseAuthSchema,
     },
     uiSchema: {
-      ...baseUISchema
-    }
+      ...baseUISchema,
+    },
   },
   fxa: {
     schema: {
       ...baseAuthSchema,
       properties: {
         ...baseAuthSchema.properties,
-      }
+      },
     },
     uiSchema: {
       authType: {
@@ -151,12 +156,14 @@ const authSchemas = {
         "ui:help": (
           <span>
             <b>Note:</b> The
-            <a href="https://github.com/mozilla-services/kinto-fxa">{" kinto-fxa "}</a>
+            <a href="https://github.com/mozilla-services/kinto-fxa">
+              {" kinto-fxa "}
+            </a>
             plugin must be installed on the target server.
           </span>
-        )
-      }
-    }
+        ),
+      },
+    },
   },
   ldap: {
     schema: {
@@ -176,18 +183,18 @@ const authSchemas = {
             },
             password: {
               type: "string",
-              title: "Password"
-            }
-          }
-        }
-      }
+              title: "Password",
+            },
+          },
+        },
+      },
     },
     uiSchema: {
       ...baseUISchema,
       credentials: {
-        password: {"ui:widget": "password"}
-      }
-    }
+        password: { "ui:widget": "password" },
+      },
+    },
   },
   portier: {
     schema: {
@@ -199,8 +206,8 @@ const authSchemas = {
           title: "Email address",
           type: "string",
           format: "email",
-        }
-      }
+        },
+      },
     },
     uiSchema: {
       authType: {
@@ -208,21 +215,23 @@ const authSchemas = {
         "ui:help": (
           <span>
             <b>Note:</b> The
-            <a href="https://github.com/Kinto/kinto-portier">{" kinto-portier "}</a>
+            <a href="https://github.com/Kinto/kinto-portier">
+              {" kinto-portier "}
+            </a>
             plugin must be installed on the target server.
           </span>
-        )
-      }
-    }
+        ),
+      },
+    },
   },
 };
 
 const authLabels = {
-  "anonymous": "Anonymous",
-  "basicauth": "Basic Auth",
-  "fxa": "Firefox Account",
-  "ldap": "LDAP",
-  "portier": "Portier",
+  anonymous: "Anonymous",
+  basicauth: "Basic Auth",
+  fxa: "Firefox Account",
+  ldap: "LDAP",
+  portier: "Portier",
 };
 
 /**
@@ -242,21 +251,27 @@ function extendSchemaWithHistory(schema, history, authMethods, singleServer) {
       },
       server: {
         ...schema.properties.server,
-        default: serverURL
-      }
-    }
+        default: serverURL,
+      },
+    },
   };
 }
 
 /**
  * Use the server history for the default server field value when available.
  */
-function extendUiSchemaWithHistory(uiSchema, history, clearHistory, singleServer, singleAuthMethod) {
+function extendUiSchemaWithHistory(
+  uiSchema,
+  history,
+  clearHistory,
+  singleServer,
+  singleAuthMethod
+) {
   const authType = {
     authType: {
       ...uiSchema.authType,
       "ui:widget": singleAuthMethod ? "hidden" : "radio",
-    }
+    },
   };
 
   if (singleServer) {
@@ -264,8 +279,8 @@ function extendUiSchemaWithHistory(uiSchema, history, clearHistory, singleServer
       ...uiSchema,
       ...authType,
       server: {
-        "ui:widget": "hidden"
-      }
+        "ui:widget": "hidden",
+      },
     };
   }
   return {
@@ -274,7 +289,7 @@ function extendUiSchemaWithHistory(uiSchema, history, clearHistory, singleServer
     server: {
       ...uiSchema.server,
       "ui:widget": ServerHistory,
-      "ui:options": {history, clearHistory},
+      "ui:options": { history, clearHistory },
     },
   };
 }
@@ -296,40 +311,40 @@ export default class AuthForm extends Component {
   };
 
   defaultProps = {
-    history: []
+    history: [],
   };
 
   constructor(props: Object) {
     super(props);
-    const {settings: {authMethods}} = this.props;
+    const { settings: { authMethods } } = this.props;
     const defaultAuth = authMethods[0];
-    const {schema, uiSchema} = authSchemas[defaultAuth];
+    const { schema, uiSchema } = authSchemas[defaultAuth];
     this.state = {
       schema,
       uiSchema,
-      formData: {authType: defaultAuth},
+      formData: { authType: defaultAuth },
     };
   }
 
-  onChange = ({formData}: {formData: Object}) => {
-    const {authType} = formData;
-    const {schema, uiSchema} = authSchemas[authType];
+  onChange = ({ formData }: { formData: Object }) => {
+    const { authType } = formData;
+    const { schema, uiSchema } = authSchemas[authType];
     const specificFormData = ["anonymous", "fxa", "portier"].includes(authType)
       ? omit(formData, ["credentials"])
-      : {credentials: {}, ...formData};
+      : { credentials: {}, ...formData };
     return this.setState({
       schema,
       uiSchema,
-      formData: specificFormData
+      formData: specificFormData,
     });
-  }
+  };
 
-  onSubmit = ({formData}: {formData: Object}) => {
-    const {session, setup, navigateToExternalAuth} = this.props;
-    const {authType} = formData;
-    const {redirectURL} = session;
-    const extendedFormData = {...formData, redirectURL};
-    switch(authType) {
+  onSubmit = ({ formData }: { formData: Object }) => {
+    const { session, setup, navigateToExternalAuth } = this.props;
+    const { authType } = formData;
+    const { redirectURL } = session;
+    const extendedFormData = { ...formData, redirectURL };
+    switch (authType) {
       case "fxa":
       case "portier": {
         return navigateToExternalAuth(extendedFormData);
@@ -344,9 +359,9 @@ export default class AuthForm extends Component {
   };
 
   render() {
-    const {history, clearHistory, settings} = this.props;
-    const {schema, uiSchema, formData} = this.state;
-    const {singleServer, authMethods} = settings;
+    const { history, clearHistory, settings } = this.props;
+    const { schema, uiSchema, formData } = this.state;
+    const { singleServer, authMethods } = settings;
     const singleAuthMethod = authMethods.length === 1;
     const finalSchema = extendSchemaWithHistory(
       schema,
