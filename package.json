@@ -93,6 +93,7 @@
     "mocha-generators": "^1.2.0",
     "nightmare": "^2.7.0",
     "prettier": "^0.22.0",
+    "prettier-check": "^1.0.0",
     "react-addons-test-utils": "^15.2.0",
     "react-transform-catch-errors": "^1.0.0",
     "react-transform-hmr": "^1.0.1",
