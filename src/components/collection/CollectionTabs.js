@@ -44,16 +44,15 @@ export default class CollectionTabs extends Component {
               Permissions
             </AdminLink>
           </li>
-          {"history" in capabilities
-            ? <li
-                role="presentation"
-                className={selected === "history" ? "active" : ""}>
-                <AdminLink name="collection:history" params={{ bid, cid }}>
-                  <i className="glyphicon glyphicon-time" />
-                  History
-                </AdminLink>
-              </li>
-            : null}
+          {"history" in capabilities &&
+            <li
+              role="presentation"
+              className={selected === "history" ? "active" : ""}>
+              <AdminLink name="collection:history" params={{ bid, cid }}>
+                <i className="glyphicon glyphicon-time" />
+                History
+              </AdminLink>
+            </li>}
         </ul>
         <div className="panel panel-default">
           <div className="panel-body">

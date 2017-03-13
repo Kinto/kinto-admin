@@ -265,15 +265,14 @@ export default class Sidebar extends Component {
             </SideBarLink>
           </div>
         </div>
-        {authenticated
-          ? <BucketsMenu
-              busy={busy}
-              buckets={buckets}
-              currentPath={currentPath}
-              bid={bid}
-              cid={cid}
-            />
-          : null}
+        {authenticated &&
+          <BucketsMenu
+            busy={busy}
+            buckets={buckets}
+            currentPath={currentPath}
+            bid={bid}
+            cid={cid}
+          />}
       </div>
     );
   }

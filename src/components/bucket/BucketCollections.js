@@ -50,15 +50,14 @@ function DataList(props) {
                   title="Browse collection">
                   <i className="glyphicon glyphicon-align-justify" />
                 </AdminLink>
-                {"history" in capabilities
-                  ? <AdminLink
-                      name="collection:history"
-                      params={{ bid, cid }}
-                      className="btn btn-xs btn-default"
-                      title="View collection history">
-                      <i className="glyphicon glyphicon-time" />
-                    </AdminLink>
-                  : null}
+                {"history" in capabilities &&
+                  <AdminLink
+                    name="collection:history"
+                    params={{ bid, cid }}
+                    className="btn btn-xs btn-default"
+                    title="View collection history">
+                    <i className="glyphicon glyphicon-time" />
+                  </AdminLink>}
                 <AdminLink
                   name="collection:attributes"
                   params={{ bid, cid }}

@@ -158,9 +158,7 @@ export default class BucketForm extends Component {
               onSubmit={this.onSubmit}>
               {buttons}
             </BaseForm>}
-        {showDeleteForm
-          ? <DeleteForm bid={bid} onSubmit={deleteBucket} />
-          : null}
+        {showDeleteForm && <DeleteForm bid={bid} onSubmit={deleteBucket} />}
       </div>
     );
   }

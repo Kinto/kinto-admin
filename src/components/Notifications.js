@@ -73,21 +73,20 @@ export class Notification extends Component {
         <h4>{this.getHeading()}</h4>
         <p>
           {message}
-          {details.length !== 0
-            ? <a
-                href="."
-                className="btn-details"
-                onClick={this.expand}
-                title="Error details">
-                <i
-                  className={
-                    `glyphicon glyphicon-triangle-${expanded ? "bottom" : "right"}`
-                  }
-                />
-              </a>
-            : null}
+          {details.length !== 0 &&
+            <a
+              href="."
+              className="btn-details"
+              onClick={this.expand}
+              title="Error details">
+              <i
+                className={
+                  `glyphicon glyphicon-triangle-${expanded ? "bottom" : "right"}`
+                }
+              />
+            </a>}
         </p>
-        {expanded ? <ErrorDetails details={details} /> : null}
+        {expanded && <ErrorDetails details={details} />}
       </div>
     );
   }

@@ -34,11 +34,11 @@ export default class CollectionAttributes extends Component {
   deleteCollection = (cid: string) => {
     const { deleteCollection, params } = this.props;
     const { bid } = params;
-    if (
-      confirm(
-        "This will delete the collection and all the records it contains. Are you sure?"
-      )
-    ) {
+    const message = [
+      "This will delete the collection and all the records it contains.",
+      "Are you sure?",
+    ].join(" ");
+    if (confirm(message)) {
       deleteCollection(bid, cid);
     }
   };

@@ -58,9 +58,8 @@ export default class App extends Component {
       process.env.KINTO_ADMIN_VERSION;
     return (
       <div>
-        {session.authenticated
-          ? <SessionInfoBar session={session} logout={logout} />
-          : null}
+        {session.authenticated &&
+          <SessionInfoBar session={session} logout={logout} />}
         <div className="container-fluid main">
           <div className="row">
             <div className="col-sm-3 sidebar">

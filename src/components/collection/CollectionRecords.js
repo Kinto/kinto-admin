@@ -61,15 +61,14 @@ class Row extends Component {
         <td className="lastmod">{this.lastModified}</td>
         <td className="actions text-right">
           <div className="btn-group">
-            {attachmentUrl
-              ? <a
-                  href={attachmentUrl}
-                  className="btn btn-sm btn-default"
-                  title="The record has an attachment"
-                  target="_blank">
-                  <i className="glyphicon glyphicon-paperclip" />
-                </a>
-              : null}
+            {attachmentUrl &&
+              <a
+                href={attachmentUrl}
+                className="btn btn-sm btn-default"
+                title="The record has an attachment"
+                target="_blank">
+                <i className="glyphicon glyphicon-paperclip" />
+              </a>}
             <AdminLink
               name="record:attributes"
               params={{ bid, cid, rid }}
@@ -198,13 +197,12 @@ class Table extends Component {
             return (
               <th key={index}>
                 {this.getFieldTitle(displayField)}
-                {this.isSchemaProperty(displayField)
-                  ? <ColumnSortLink
-                      currentSort={currentSort}
-                      column={displayField}
-                      updateSort={updateSort}
-                    />
-                  : null}
+                {this.isSchemaProperty(displayField) &&
+                  <ColumnSortLink
+                    currentSort={currentSort}
+                    column={displayField}
+                    updateSort={updateSort}
+                  />}
               </th>
             );
           })}

@@ -184,9 +184,7 @@ export default class GroupForm extends Component {
               onSubmit={this.onSubmit}>
               {buttons}
             </BaseForm>}
-        {showDeleteForm
-          ? <DeleteForm gid={gid} onSubmit={deleteGroup} />
-          : null}
+        {showDeleteForm && <DeleteForm gid={gid} onSubmit={deleteGroup} />}
       </div>
     );
   }

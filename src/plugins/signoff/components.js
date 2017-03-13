@@ -185,9 +185,7 @@ function WorkInProgress(
   return (
     <ProgressStep {...{ label, currentStep, step }}>
       <WorkInProgressInfos {...{ lastAuthor, lastUpdated }} />
-      {active && lastUpdated
-        ? <RequestReviewButton onClick={requestReview} />
-        : null}
+      {active && lastUpdated && <RequestReviewButton onClick={requestReview} />}
     </ProgressStep>
   );
 }
@@ -259,17 +257,13 @@ function Review(props: ReviewProps) {
   const { lastEditor } = source;
   return (
     <ProgressStep {...{ label, currentStep, step }}>
-      {lastEditor
-        ? <ReviewInfos
-            {...{ active, source, lastRequested, link, hasHistory }}
-          />
-        : null}
-      {active && canEdit
-        ? <ReviewButtons
-            onApprove={approveChanges}
-            onDecline={declineChanges}
-          />
-        : null}
+      {lastEditor &&
+        <ReviewInfos
+          {...{ active, source, lastRequested, link, hasHistory }}
+        />}
+      {active &&
+        canEdit &&
+        <ReviewButtons onApprove={approveChanges} onDecline={declineChanges} />}
     </ProgressStep>
   );
 }
@@ -287,14 +281,13 @@ function ReviewInfos(
 ) {
   const { bid, cid, lastEditor, changes = {} } = source;
   const { since, deleted, updated } = changes;
-  const detailsLink = hasHistory
-    ? <AdminLink
-        name="collection:history"
-        params={{ bid, cid }}
-        query={{ since, resource_name: "record" }}>
-        details...
-      </AdminLink>
-    : null;
+  const detailsLink = hasHistory &&
+    <AdminLink
+      name="collection:history"
+      params={{ bid, cid }}
+      query={{ since, resource_name: "record" }}>
+      details...
+    </AdminLink>;
 
   return (
     <ul>
@@ -303,13 +296,12 @@ function ReviewInfos(
       </li>
       <li><strong>By: </strong> {lastEditor}</li>
       <li><strong>Preview: </strong> {link}</li>
-      {active
-        ? <li>
-            <strong>Changes: </strong>
-            <DiffStats updated={updated} deleted={deleted} />{" "}
-            {detailsLink}
-          </li>
-        : null}
+      {active &&
+        <li>
+          <strong>Changes: </strong>
+          <DiffStats updated={updated} deleted={deleted} />{" "}
+          {detailsLink}
+        </li>}
     </ul>
   );
 }
@@ -317,8 +309,8 @@ function ReviewInfos(
 function DiffStats({ updated, deleted }: { updated: number, deleted: number }) {
   return (
     <span className="diffstats">
-      {updated > 0 ? <span className="text-green">+{updated}</span> : null}
-      {deleted > 0 ? <span className="text-red">-{deleted}</span> : null}
+      {updated > 0 && <span className="text-green">+{updated}</span>}
+      {deleted > 0 && <span className="text-red">-{deleted}</span>}
     </span>
   );
 }
@@ -368,8 +360,8 @@ function Signed(
   const { lastSigned } = destination;
   return (
     <ProgressStep {...{ label, currentStep, step }}>
-      {lastSigned ? <SignedInfos {...{ lastReviewer, destination }} /> : null}
-      {active ? <ReSignButton onClick={reSign} /> : null}
+      {lastSigned && <SignedInfos {...{ lastReviewer, destination }} />}
+      {active && <ReSignButton onClick={reSign} />}
     </ProgressStep>
   );
 }

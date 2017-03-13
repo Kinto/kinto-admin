@@ -111,13 +111,11 @@ const schema = {
       default: 0,
       description: (
         <p>
-          (in seconds) add
-          {" "}
+          {"(in seconds) add "}
           <a
             href="https://kinto.readthedocs.io/en/stable/api/1.x/collections.html#collection-caching">
             client cache headers on read-only requests
-          </a>
-          .
+          </a>.
         </p>
       ),
     },
@@ -127,10 +125,10 @@ const schema = {
       description: (
         <p>
           Pick the JSON schema field names you want to see listed in the records
-          list table. <em>
-            Hint: These are the keys of the root
-            <code>properties</code> object, but may also be other existing
-            property names of your records.
+          list table.{" "}
+          <em>
+            Hint: These are the keys of the root <code>properties</code> object,
+            but may also be other existing property names of your records.
           </em>
         </p>
       ),
@@ -193,7 +191,7 @@ const uiSchema = {
         defining an object representing the structure of your collection records.
         You may find this
         <a href="http://jsonschema.net/" target="_blank">
-          {" "}online schema builder{" "}
+          {" online schema builder "}
         </a>
         useful to create your own.
       </p>
@@ -217,16 +215,16 @@ const uiSchema = {
         Learn more about
         <a href="https://git.io/vrbKn" target="_blank"> what a uiSchema is </a>
         {" "}
-        and
-        how to leverage it to enhance how JSON schema forms are rendered in the admin.
+        and how to leverage it to enhance how JSON schema forms are rendered in
+        the admin.
       </p>
     ),
   },
   sort: {
     "ui:help": (
       <p>
-        The record field name the list should be sorted on by default. Prefix the
-        field name with <code>-</code> to sort by descending order.
+        The record field name the list should be sorted on by default. Prefix
+        the field name with <code>-</code> to sort by descending order.
       </p>
     ),
   },
@@ -424,9 +422,7 @@ export default class CollectionForm extends Component {
                 {buttons}
               </BaseForm>
             </div>}
-        {showDeleteForm
-          ? <DeleteForm cid={cid} onSubmit={deleteCollection} />
-          : null}
+        {showDeleteForm && <DeleteForm cid={cid} onSubmit={deleteCollection} />}
       </div>
     );
   }

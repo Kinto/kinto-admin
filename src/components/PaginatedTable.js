@@ -18,25 +18,24 @@ export default class PaginatedTable extends Component {
       <table className="table table-striped table-bordered record-list">
         {thead}
         {tbody}
-        {hasNextPage
-          ? <tfoot>
-              <tr>
-                <td colSpan={colSpan} className="load-more text-center">
-                  {!dataLoaded
-                    ? <Spinner />
-                    : <a
-                        href="."
-                        key="__3"
-                        onClick={event => {
-                          event.preventDefault();
-                          listNextPage();
-                        }}>
-                        Load more
-                      </a>}
-                </td>
-              </tr>
-            </tfoot>
-          : null}
+        {hasNextPage &&
+          <tfoot>
+            <tr>
+              <td colSpan={colSpan} className="load-more text-center">
+                {!dataLoaded
+                  ? <Spinner />
+                  : <a
+                      href="."
+                      key="__3"
+                      onClick={event => {
+                        event.preventDefault();
+                        listNextPage();
+                      }}>
+                      Load more
+                    </a>}
+              </td>
+            </tr>
+          </tfoot>}
       </table>
     );
   }

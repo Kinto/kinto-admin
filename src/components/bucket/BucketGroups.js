@@ -43,15 +43,14 @@ function DataList(props) {
               </td>
               <td className="actions">
                 <div className="btn-group">
-                  {"history" in capabilities
-                    ? <AdminLink
-                        name="group:history"
-                        params={{ bid, gid }}
-                        className="btn btn-xs btn-default"
-                        title="View group history">
-                        <i className="glyphicon glyphicon-time" />
-                      </AdminLink>
-                    : null}
+                  {"history" in capabilities &&
+                    <AdminLink
+                      name="group:history"
+                      params={{ bid, gid }}
+                      className="btn btn-xs btn-default"
+                      title="View group history">
+                      <i className="glyphicon glyphicon-time" />
+                    </AdminLink>}
                   <AdminLink
                     name="group:attributes"
                     params={{ bid, gid }}

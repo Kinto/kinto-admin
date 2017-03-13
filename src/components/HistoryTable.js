@@ -339,14 +339,13 @@ export default class HistoryTable extends Component {
 
     return (
       <div>
-        {isFiltered
-          ? <FilterInfo
-              location={location}
-              fullDiffSupport={fullDiffSupport}
-              onViewDiffClick={this.onViewDiffClick}
-              onViewJournalClick={this.onViewJournalClick}
-            />
-          : null}
+        {isFiltered &&
+          <FilterInfo
+            location={location}
+            fullDiffSupport={fullDiffSupport}
+            onViewDiffClick={this.onViewDiffClick}
+            onViewJournalClick={this.onViewJournalClick}
+          />}
         {cid && fullDiff
           ? <Diff source={current} target={previous} />
           : !historyLoaded

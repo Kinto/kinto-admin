@@ -25,12 +25,11 @@ export default class BucketAttributes extends Component {
 
   deleteBucket = (bid: string) => {
     const { deleteBucket } = this.props;
-    if (
-      confirm(
-        "This will delete the bucket and all the collections and " +
-          "records it contains. Are you sure?"
-      )
-    ) {
+    const message = [
+      "This will delete the bucket and all the collections and",
+      "records it contains. Are you sure?",
+    ].join(" ");
+    if (confirm(message)) {
       deleteBucket(bid);
     }
   };

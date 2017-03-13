@@ -109,15 +109,14 @@ function AttachmentInfo(props: AttachmentInfoProps) {
         <b>Attachment information</b>
       </div>
       <div className="panel-body">
-        {!attachmentRequired
-          ? null
-          : <div className="alert alert-warning">
-              <p>
-                An attachment is required for records in this collection. To
-                replace current attachment, use the <i>File attachment</i> field
-                below.
-              </p>
-            </div>}
+        {attachmentRequired &&
+          <div className="alert alert-warning">
+            <p>
+              An attachment is required for records in this collection. To
+              replace current attachment, use the <i>File attachment</i> field
+              below.
+            </p>
+          </div>}
         <AttachmentPreview
           mimetype={attachment.mimetype}
           location={buildAttachmentUrl(record, capabilities)}
@@ -146,16 +145,15 @@ function AttachmentInfo(props: AttachmentInfoProps) {
             </tr>
           </tbody>
         </table>
-        {attachmentRequired
-          ? null
-          : <p className="text-right attachment-action">
-              <input
-                type="button"
-                onClick={deleteAttachment}
-                className="btn btn-danger"
-                value="Delete this attachment"
-              />
-            </p>}
+        {!attachmentRequired &&
+          <p className="text-right attachment-action">
+            <input
+              type="button"
+              onClick={deleteAttachment}
+              className="btn btn-danger"
+              value="Delete this attachment"
+            />
+          </p>}
       </div>
     </div>
   );
@@ -240,15 +238,15 @@ export default class RecordForm extends Component {
               </span>}
         </div>
         <div className="col-sm-6 text-right">
-          {this.allowEditing && record
-            ? <button
-                type="button"
-                className="btn btn-danger delete"
-                onClick={this.deleteRecord}>
-                <i className="glyphicon glyphicon-trash" />{" "}
-                Delete record
-              </button>
-            : null}
+          {this.allowEditing &&
+            record &&
+            <button
+              type="button"
+              className="btn btn-danger delete"
+              onClick={this.deleteRecord}>
+              <i className="glyphicon glyphicon-trash" />{" "}
+              Delete record
+            </button>}
         </div>
       </div>
     );
@@ -256,12 +254,11 @@ export default class RecordForm extends Component {
     if (asJSON || emptySchema) {
       return (
         <div>
-          {emptySchema
-            ? <div className="alert alert-warning">
-                This collection doesn't have any JSON schema defined, though you can
-                create free-form records entering raw JSON.
-              </div>
-            : null}
+          {emptySchema &&
+            <div className="alert alert-warning">
+              This collection doesn't have any JSON schema defined, though you can
+              create free-form records entering raw JSON.
+            </div>}
           <JSONRecordForm
             disabled={!this.allowEditing}
             record={JSON.stringify(cleanRecord(recordData), null, 2)}
@@ -315,14 +312,13 @@ export default class RecordForm extends Component {
     return (
       <div>
         {alert}
-        {creation
-          ? null
-          : <AttachmentInfo
-              capabilities={capabilities}
-              record={record}
-              attachmentRequired={attachmentRequired}
-              deleteAttachment={this.deleteAttachment}
-            />}
+        {creation &&
+          <AttachmentInfo
+            capabilities={capabilities}
+            record={record}
+            attachmentRequired={attachmentRequired}
+            deleteAttachment={this.deleteAttachment}
+          />}
         {this.getForm()}
       </div>
     );
