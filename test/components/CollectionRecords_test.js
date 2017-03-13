@@ -2,8 +2,8 @@ import { expect } from "chai";
 
 import { createSandbox, createComponent } from "../test_utils";
 
-import CollectionRecords from "../../src/components/collection/CollectionRecords";
-
+import CollectionRecords
+  from "../../src/components/collection/CollectionRecords";
 
 describe("CollectionRecords component", () => {
   let sandbox;
@@ -38,25 +38,25 @@ describe("CollectionRecords component", () => {
         schema: {
           type: "object",
           properties: {
-            foo: {type: "string"}
-          }
+            foo: { type: "string" },
+          },
         },
         displayFields: ["foo"],
       },
       permissions: {
-        write: []
+        write: [],
       },
       records: [
-        {id: "id1", foo: "bar", last_modified: 2},
-        {id: "id2", foo: "baz", last_modified: 1},
+        { id: "id1", foo: "bar", last_modified: 2 },
+        { id: "id2", foo: "baz", last_modified: 1 },
       ],
       recordsLoaded: true,
     };
 
     beforeEach(() => {
       node = createComponent(CollectionRecords, {
-        params: {bid: "bucket", cid: "collection"},
-        session: {authenticated: true, serverInfo: {user: {id: "plop"}}},
+        params: { bid: "bucket", cid: "collection" },
+        session: { authenticated: true, serverInfo: { user: { id: "plop" } } },
         pluginHooks: {},
         bucket,
         collection,
@@ -72,10 +72,8 @@ describe("CollectionRecords component", () => {
       const rows = node.querySelectorAll("tbody tr");
 
       expect(rows).to.have.length.of(2);
-      expect(rows[0].querySelectorAll("td")[0].textContent)
-        .eql("bar");
-      expect(rows[1].querySelectorAll("td")[0].textContent)
-        .eql("baz");
+      expect(rows[0].querySelectorAll("td")[0].textContent).eql("bar");
+      expect(rows[1].querySelectorAll("td")[0].textContent).eql("baz");
     });
   });
 
@@ -86,19 +84,19 @@ describe("CollectionRecords component", () => {
       busy: false,
       data: {},
       permissions: {
-        write: []
+        write: [],
       },
       recordsLoaded: true,
       records: [
-        {id: "id1", foo: "bar", last_modified: 1},
-        {id: "id2", foo: "baz", last_modified: 2},
+        { id: "id1", foo: "bar", last_modified: 1 },
+        { id: "id2", foo: "baz", last_modified: 2 },
       ],
     };
 
     beforeEach(() => {
       node = createComponent(CollectionRecords, {
-        params: {bid: "bucket", cid: "collection"},
-        session: {authenticated: true, serverInfo: {user: {id: "plop"}}},
+        params: { bid: "bucket", cid: "collection" },
+        session: { authenticated: true, serverInfo: { user: { id: "plop" } } },
         pluginHooks: {},
         bucket,
         collection,
@@ -114,10 +112,12 @@ describe("CollectionRecords component", () => {
       const rows = node.querySelectorAll("tbody tr");
 
       expect(rows).to.have.length.of(2);
-      expect(rows[0].querySelectorAll("td")[0].textContent)
-        .eql(JSON.stringify({foo: "bar"}));
-      expect(rows[1].querySelectorAll("td")[0].textContent)
-        .eql(JSON.stringify({foo: "baz"}));
+      expect(rows[0].querySelectorAll("td")[0].textContent).eql(
+        JSON.stringify({ foo: "bar" })
+      );
+      expect(rows[1].querySelectorAll("td")[0].textContent).eql(
+        JSON.stringify({ foo: "baz" })
+      );
     });
   });
 
@@ -128,13 +128,13 @@ describe("CollectionRecords component", () => {
         schema: {
           type: "object",
           properties: {
-            foo: {type: "string"}
-          }
+            foo: { type: "string" },
+          },
         },
         displayFields: ["foo"],
       },
       permissions: {
-        write: ["basicauth:plop"]
+        write: ["basicauth:plop"],
       },
       recordsLoaded: true,
       records: [],
@@ -145,8 +145,8 @@ describe("CollectionRecords component", () => {
 
       beforeEach(() => {
         node = createComponent(CollectionRecords, {
-          params: {bid: "bucket", cid: "collection"},
-          session: {permissions: null},
+          params: { bid: "bucket", cid: "collection" },
+          session: { permissions: null },
           pluginHooks: {},
           bucket,
           collection,
@@ -156,7 +156,9 @@ describe("CollectionRecords component", () => {
 
       it("should render list actions", () => {
         expect(node.querySelector(".list-actions .btn-record-add")).to.exist;
-        expect(node.querySelector(".list-actions .btn-record-bulk-add")).to.exist;
+        expect(
+          node.querySelector(".list-actions .btn-record-bulk-add")
+        ).to.exist;
       });
     });
 
@@ -165,8 +167,8 @@ describe("CollectionRecords component", () => {
 
       beforeEach(() => {
         node = createComponent(CollectionRecords, {
-          params: {bid: "bucket", cid: "collection"},
-          session: {permissions: []},
+          params: { bid: "bucket", cid: "collection" },
+          session: { permissions: [] },
           pluginHooks: {},
           bucket,
           collection,
@@ -175,7 +177,9 @@ describe("CollectionRecords component", () => {
       });
 
       it("should not render list actions", () => {
-        expect(node.querySelector(".list-actions .btn-record-bulk-add")).to.not.exist;
+        expect(
+          node.querySelector(".list-actions .btn-record-bulk-add")
+        ).to.not.exist;
       });
     });
   });

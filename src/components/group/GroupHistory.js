@@ -11,7 +11,6 @@ import React, { Component } from "react";
 import HistoryTable from "../HistoryTable";
 import CollectionTabs from "./GroupTabs";
 
-
 export default class GroupHistory extends Component {
   props: {
     params: GroupRouteParams,
@@ -32,8 +31,8 @@ export default class GroupHistory extends Component {
       listGroupNextHistory,
       notifyError,
     } = this.props;
-    const {bid, gid} = params;
-    const {history: {entries, loaded, hasNextPage}} = group;
+    const { bid, gid } = params;
+    const { history: { entries, loaded, hasNextPage } } = group;
 
     return (
       <div>
@@ -50,7 +49,8 @@ export default class GroupHistory extends Component {
             hasNextHistory={hasNextPage}
             listNextHistory={listGroupNextHistory}
             location={location}
-            notifyError={notifyError} />
+            notifyError={notifyError}
+          />
         </CollectionTabs>
       </div>
     );

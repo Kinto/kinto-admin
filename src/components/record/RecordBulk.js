@@ -13,38 +13,48 @@ import Spinner from "../Spinner";
 import JSONEditor from "../JSONEditor";
 import {
   extendSchemaWithAttachment,
-  extendUiSchemaWithAttachment
+  extendUiSchemaWithAttachment,
 } from "./RecordForm";
-
 
 export default class RecordBulk extends Component {
   props: {
     params: CollectionRouteParams,
     collection: CollectionState,
-    bulkCreateRecords: (bid: string, cid: string, formData: RecordData[]) => void,
+    bulkCreateRecords: (
+      bid: string,
+      cid: string,
+      formData: RecordData[]
+    ) => void,
     notifyError: (msg: string, error: ?Error) => void,
   };
 
-  onSubmit = ({formData}: {formData: any[]}) => {
-    const {params, collection, notifyError, bulkCreateRecords} = this.props;
-    const {bid, cid} = params;
-    const {data: {schema={}}} = collection;
+  onSubmit = ({ formData }: { formData: any[] }) => {
+    const { params, collection, notifyError, bulkCreateRecords } = this.props;
+    const { bid, cid } = params;
+    const { data: { schema = {} } } = collection;
 
     if (formData.length === 0) {
       return notifyError("The form is empty.");
     }
 
     if (Object.keys(schema).length === 0) {
-      return bulkCreateRecords(bid, cid, formData.map(json => JSON.parse(json)));
+      return bulkCreateRecords(
+        bid,
+        cid,
+        formData.map(json => JSON.parse(json))
+      );
     }
 
     bulkCreateRecords(bid, cid, formData);
-  }
+  };
 
   render() {
-    const {params, collection} = this.props;
-    const {busy, data: {schema={}, uiSchema={}, attachment}} = collection;
-    const {bid, cid} = params;
+    const { params, collection } = this.props;
+    const {
+      busy,
+      data: { schema = {}, uiSchema = {}, attachment },
+    } = collection;
+    const { bid, cid } = params;
 
     let bulkSchema, bulkUiSchema, bulkFormData;
 
@@ -64,13 +74,13 @@ export default class RecordBulk extends Component {
         items: {
           type: "string",
           title: "JSON record",
-          default: "{}"
-        }
+          default: "{}",
+        },
       };
       bulkUiSchema = {
         items: {
-          "ui:widget": JSONEditor
-        }
+          "ui:widget": JSONEditor,
+        },
       };
       bulkFormData = ["{}", "{}"];
     }
@@ -78,21 +88,27 @@ export default class RecordBulk extends Component {
     return (
       <div>
         <h1>Bulk <b>{bid}/{cid}</b> creation</h1>
-        {busy ? <Spinner /> :
-          <div className="panel panel-default">
-            <div className="panel-body">
-            <BaseForm
-              schema={bulkSchema}
-              uiSchema={bulkUiSchema}
-              formData={bulkFormData}
-              onSubmit={this.onSubmit}>
-              <input type="submit" className="btn btn-primary"
-                value="Bulk create" />
-              {" or "}
-              <AdminLink name="collection:records" params={{bid, cid}}>Cancel</AdminLink>
-            </BaseForm>
-          </div>
-        </div>}
+        {busy
+          ? <Spinner />
+          : <div className="panel panel-default">
+              <div className="panel-body">
+                <BaseForm
+                  schema={bulkSchema}
+                  uiSchema={bulkUiSchema}
+                  formData={bulkFormData}
+                  onSubmit={this.onSubmit}>
+                  <input
+                    type="submit"
+                    className="btn btn-primary"
+                    value="Bulk create"
+                  />
+                  {" or "}
+                  <AdminLink name="collection:records" params={{ bid, cid }}>
+                    Cancel
+                  </AdminLink>
+                </BaseForm>
+              </div>
+            </div>}
       </div>
     );
   }

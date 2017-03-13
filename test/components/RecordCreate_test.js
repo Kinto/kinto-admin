@@ -6,7 +6,6 @@ import { createSandbox, createComponent } from "../test_utils";
 
 import RecordCreate from "../../src/components/record/RecordCreate";
 
-
 describe("RecordCreate component", () => {
   let sandbox;
 
@@ -35,22 +34,22 @@ describe("RecordCreate component", () => {
           type: "object",
           properties: {
             foo: {
-              type: "string"
-            }
+              type: "string",
+            },
           },
         },
       },
       permissions: {
-        write: []
-      }
+        write: [],
+      },
     };
-    const record = {data: {}, permissions: {}};
+    const record = { data: {}, permissions: {} };
 
     beforeEach(() => {
       createRecord = sinon.spy();
       node = createComponent(RecordCreate, {
-        params: {bid: "bucket", cid: "collection"},
-        session: {authenticated: true, serverInfo: {user: "plop"}},
+        params: { bid: "bucket", cid: "collection" },
+        session: { authenticated: true, serverInfo: { user: "plop" } },
         bucket,
         collection,
         record,
@@ -64,13 +63,18 @@ describe("RecordCreate component", () => {
 
     it("should submitted entered data", () => {
       Simulate.change(node.querySelector("#root_foo"), {
-        target: {value: "bar"}
+        target: { value: "bar" },
       });
 
       Simulate.submit(node.querySelector("form"));
 
       sinon.assert.calledWithExactly(
-        createRecord, "bucket", "collection", {foo: "bar"}, undefined);
+        createRecord,
+        "bucket",
+        "collection",
+        { foo: "bar" },
+        undefined
+      );
     });
   });
 

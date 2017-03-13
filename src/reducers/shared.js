@@ -20,7 +20,6 @@ import {
   RECORD_HISTORY_SUCCESS,
 } from "../constants";
 
-
 const INITIAL_STATE: Paginator<*> = {
   entries: [],
   loaded: false,
@@ -28,7 +27,10 @@ const INITIAL_STATE: Paginator<*> = {
   next: null,
 };
 
-export function paginator(state: Paginator<*> = INITIAL_STATE, action: Object): Paginator<*> {
+export function paginator(
+  state: Paginator<*> = INITIAL_STATE,
+  action: Object
+): Paginator<*> {
   switch (action.type) {
     case BUCKET_COLLECTIONS_REQUEST:
     case BUCKET_COLLECTIONS_NEXT_REQUEST:
@@ -40,7 +42,7 @@ export function paginator(state: Paginator<*> = INITIAL_STATE, action: Object): 
     case COLLECTION_HISTORY_NEXT_REQUEST:
     case RECORD_HISTORY_REQUEST:
     case RECORD_HISTORY_NEXT_REQUEST: {
-      return {...state, loaded: false};
+      return { ...state, loaded: false };
     }
 
     // history responses
@@ -49,7 +51,7 @@ export function paginator(state: Paginator<*> = INITIAL_STATE, action: Object): 
     case GROUP_HISTORY_SUCCESS:
     case COLLECTION_HISTORY_SUCCESS:
     case RECORD_HISTORY_SUCCESS: {
-      const {entries, hasNextPage, next} = action;
+      const { entries, hasNextPage, next } = action;
       return {
         entries: [...state.entries, ...entries],
         loaded: true,

@@ -25,6 +25,7 @@ install:
 env:
   - ACTION="build:lib"
   - ACTION="test-all"
+  - ACTION="cs-check"
   - ACTION="test-browser"
 matrix:
   allow_failures:

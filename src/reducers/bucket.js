@@ -16,54 +16,57 @@ import {
 } from "../constants";
 import { paginator } from "./shared";
 
-
 const INITIAL_STATE: BucketState = {
   busy: false,
   data: {},
   permissions: {
-    "read": [],
-    "write": [],
+    read: [],
+    write: [],
     "collection:create": [],
     "group:create": [],
   },
   groups: [],
-  collections: paginator(undefined, {type: "@@INIT"}),
-  history: paginator(undefined, {type: "@@INIT"}),
+  collections: paginator(undefined, { type: "@@INIT" }),
+  history: paginator(undefined, { type: "@@INIT" }),
 };
 
-function load(state: BucketState, bucket: BucketResource, groups: GroupData[]): BucketState {
+function load(
+  state: BucketState,
+  bucket: BucketResource,
+  groups: GroupData[]
+): BucketState {
   if (!bucket) {
-    return {...state, busy: false};
+    return { ...state, busy: false };
   }
-  const {data, permissions} = bucket;
-  return {...state, busy: false, data, permissions, groups};
+  const { data, permissions } = bucket;
+  return { ...state, busy: false, data, permissions, groups };
 }
 
 export function bucket(state: BucketState = INITIAL_STATE, action: Object) {
   switch (action.type) {
     case BUCKET_BUSY: {
-      const {busy}: {busy: boolean} = action;
-      return {...state, busy};
+      const { busy }: { busy: boolean } = action;
+      return { ...state, busy };
     }
     case ROUTE_LOAD_REQUEST: {
-      return {...INITIAL_STATE, busy: true};
+      return { ...INITIAL_STATE, busy: true };
     }
     case ROUTE_LOAD_SUCCESS: {
-      const {bucket, groups=state.groups} = action;
+      const { bucket, groups = state.groups } = action;
       return load(state, bucket, groups);
     }
     case ROUTE_LOAD_FAILURE: {
-      return {...state, busy: false};
+      return { ...state, busy: false };
     }
     case BUCKET_COLLECTIONS_REQUEST:
     case BUCKET_COLLECTIONS_NEXT_REQUEST:
     case BUCKET_COLLECTIONS_SUCCESS: {
-      return {...state, collections: paginator(state.collections, action)};
+      return { ...state, collections: paginator(state.collections, action) };
     }
     case BUCKET_HISTORY_REQUEST:
     case BUCKET_HISTORY_NEXT_REQUEST:
     case BUCKET_HISTORY_SUCCESS: {
-      return {...state, history: paginator(state.history, action)};
+      return { ...state, history: paginator(state.history, action) };
     }
     case BUCKET_RESET: {
       return INITIAL_STATE;

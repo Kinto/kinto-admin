@@ -6,7 +6,6 @@
 ./node_modules/
 
 [libs]
-./node_modules/iflow-react-router-redux/index.js.flow
 ./interfaces/
 
 [options]

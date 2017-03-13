@@ -3,28 +3,29 @@ import type { WorkflowInfo } from "./types";
 
 import * as constants from "./constants";
 
-
-export function requestReview() : {
+export function requestReview(): {
   type: "PLUGIN_REVIEW_REQUEST",
 } {
-  return {type: constants.PLUGIN_REVIEW_REQUEST};
+  return { type: constants.PLUGIN_REVIEW_REQUEST };
 }
 
-export function declineChanges() : {
+export function declineChanges(): {
   type: "PLUGIN_DECLINE_REQUEST",
 } {
-  return {type: constants.PLUGIN_DECLINE_REQUEST};
+  return { type: constants.PLUGIN_DECLINE_REQUEST };
 }
 
-export function approveChanges() : {
+export function approveChanges(): {
   type: "PLUGIN_SIGNOFF_REQUEST",
 } {
-  return {type: constants.PLUGIN_SIGNOFF_REQUEST};
+  return { type: constants.PLUGIN_SIGNOFF_REQUEST };
 }
 
-export function workflowInfo(info: WorkflowInfo) : {
+export function workflowInfo(
+  info: WorkflowInfo
+): {
   type: "SIGNOFF_WORKFLOW_INFO",
   info: WorkflowInfo,
 } {
-  return {type: constants.SIGNOFF_WORKFLOW_INFO, info};
+  return { type: constants.SIGNOFF_WORKFLOW_INFO, info };
 }

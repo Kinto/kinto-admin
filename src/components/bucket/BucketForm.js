@@ -1,9 +1,5 @@
 /* @flow */
-import type {
-  BucketState,
-  BucketData,
-  SessionState,
-} from "../../types";
+import type { BucketState, BucketData, SessionState } from "../../types";
 
 import React, { Component } from "react";
 import { Link } from "react-router";
@@ -13,7 +9,6 @@ import JSONEditor from "../JSONEditor";
 import Spinner from "../Spinner";
 import { canEditBucket } from "../../permission";
 import { validJSON, omit } from "../../utils";
-
 
 const schema = {
   type: "object",
@@ -29,7 +24,7 @@ const schema = {
       title: "Bucket metadata (JSON)",
       default: "{}",
     },
-  }
+  },
 };
 
 const uiSchema = {
@@ -43,14 +38,14 @@ const deleteSchema = {
   title: "Please enter the bucket id to delete as a confirmation",
 };
 
-function validate({data}, errors) {
+function validate({ data }, errors) {
   if (!validJSON(data)) {
     errors.data.addError("Invalid JSON.");
   }
   return errors;
 }
 
-function DeleteForm({bid, onSubmit}) {
+function DeleteForm({ bid, onSubmit }) {
   const validate = (formData, errors) => {
     if (formData !== bid) {
       errors.addError("The bucket id does not match.");
@@ -70,13 +65,13 @@ function DeleteForm({bid, onSubmit}) {
         <BaseForm
           schema={deleteSchema}
           validate={validate}
-          onSubmit={({formData}) => {
+          onSubmit={({ formData }) => {
             if (typeof onSubmit === "function") {
               onSubmit(formData);
             }
           }}>
           <button type="submit" className="btn btn-danger">
-            <i className="glyphicon glyphicon-trash"/>{" "}Delete bucket
+            <i className="glyphicon glyphicon-trash" />{" "}Delete bucket
           </button>
         </BaseForm>
       </div>
@@ -94,15 +89,15 @@ export default class BucketForm extends Component {
     onSubmit: (data: Object) => void,
   };
 
-  onSubmit = ({formData}: {formData: Object}) => {
-    const {id, data} = formData;
+  onSubmit = ({ formData }: { formData: Object }) => {
+    const { id, data } = formData;
     // Parse JSON fields so they can be sent to the server
     const attributes = JSON.parse(data);
-    this.props.onSubmit({id, ...attributes});
-  }
+    this.props.onSubmit({ id, ...attributes });
+  };
 
   render() {
-    const {bid, session, bucket, formData={}, deleteBucket} = this.props;
+    const { bid, session, bucket, formData = {}, deleteBucket } = this.props;
     const creation = !formData.id;
     const hasWriteAccess = canEditBucket(session, bucket);
     const formIsEditable = creation || hasWriteAccess;
@@ -113,28 +108,32 @@ export default class BucketForm extends Component {
     const data = JSON.stringify(attributes, null, 2);
     const formDataSerialized = {
       id: bid,
-      data
+      data,
     };
 
     // Disable edition of the collection id
-    const _uiSchema = creation ? uiSchema : {
-      ...uiSchema,
-      id: {
-        "ui:readonly": true,
-      }
-    };
+    const _uiSchema = creation
+      ? uiSchema
+      : {
+          ...uiSchema,
+          id: {
+            "ui:readonly": true,
+          },
+        };
 
-    const alert = formIsEditable || bucket.busy ? null : (
-      <div className="alert alert-warning">
-        You don't have the required permission to edit this bucket.
-      </div>
-    );
+    const alert = formIsEditable || bucket.busy
+      ? null
+      : <div className="alert alert-warning">
+          You don't have the required permission to edit this bucket.
+        </div>;
 
     const buttons = (
       <div>
-        <button type="submit" disabled={!formIsEditable}
+        <button
+          type="submit"
+          disabled={!formIsEditable}
           className="btn btn-primary">
-          <i className="glyphicon glyphicon-ok"/>
+          <i className="glyphicon glyphicon-ok" />
           {` ${creation ? "Create" : "Update"} bucket`}
         </button>
         {" or "}
@@ -145,22 +144,21 @@ export default class BucketForm extends Component {
     return (
       <div>
         {alert}
-        {bucket.busy ?
-          <Spinner /> :
-          <BaseForm
-            schema={schema}
-            uiSchema={formIsEditable ? _uiSchema :
-                        {..._uiSchema, "ui:readonly": true}}
-            formData={formDataSerialized}
-            validate={validate}
-            onSubmit={this.onSubmit}>
-            {buttons}
-          </BaseForm>
-        }
-        {showDeleteForm ?
-          <DeleteForm
-            bid={bid}
-            onSubmit={deleteBucket} /> : null}
+        {bucket.busy
+          ? <Spinner />
+          : <BaseForm
+              schema={schema}
+              uiSchema={
+                formIsEditable
+                  ? _uiSchema
+                  : { ..._uiSchema, "ui:readonly": true }
+              }
+              formData={formDataSerialized}
+              validate={validate}
+              onSubmit={this.onSubmit}>
+              {buttons}
+            </BaseForm>}
+        {showDeleteForm && <DeleteForm bid={bid} onSubmit={deleteBucket} />}
       </div>
     );
   }

@@ -11,7 +11,6 @@ import * as CollectionActions from "../../actions/collection";
 import * as NotificationsActions from "../../actions/notifications";
 import * as RouteActions from "../../actions/route";
 
-
 function mapStateToProps(state: AppState) {
   return {
     session: state.session,
@@ -22,15 +21,15 @@ function mapStateToProps(state: AppState) {
 }
 
 function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
-  return bindActionCreators({
-    ...CollectionActions,
-    ...NotificationsActions,
-    ...RouteActions,
-    updatePath
-  }, dispatch);
+  return bindActionCreators(
+    {
+      ...CollectionActions,
+      ...NotificationsActions,
+      ...RouteActions,
+      updatePath,
+    },
+    dispatch
+  );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CollectionRecords);
+export default connect(mapStateToProps, mapDispatchToProps)(CollectionRecords);

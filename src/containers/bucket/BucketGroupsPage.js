@@ -10,7 +10,6 @@ import BucketGroups from "../../components/bucket/BucketGroups";
 import * as BucketActions from "../../actions/bucket";
 import * as NotificationsActions from "../../actions/notifications";
 
-
 function mapStateToProps(state: AppState) {
   return {
     bucket: state.bucket,
@@ -20,14 +19,14 @@ function mapStateToProps(state: AppState) {
 }
 
 function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
-  return bindActionCreators({
-    ...BucketActions,
-    ...NotificationsActions,
-    updatePath
-  }, dispatch);
+  return bindActionCreators(
+    {
+      ...BucketActions,
+      ...NotificationsActions,
+      updatePath,
+    },
+    dispatch
+  );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(BucketGroups);
+export default connect(mapStateToProps, mapDispatchToProps)(BucketGroups);

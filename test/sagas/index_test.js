@@ -11,7 +11,6 @@ import * as sessionActions from "../../src/actions/session";
 import * as bucketActions from "../../src/actions/bucket";
 import * as collectionActions from "../../src/actions/collection";
 
-
 function expectSagaCalled(saga, action) {
   // Note: the rootSaga function is called by configureStore
   configureStore().dispatch(action);

@@ -17,15 +17,14 @@ import {
 } from "../constants";
 import { paginator } from "./shared";
 
-
 const DEFAULT_SORT: string = "-last_modified";
 
 export const INITIAL_STATE: CollectionState = {
   busy: false,
   data: {},
   permissions: {
-    "read": [],
-    "write": [],
+    read: [],
+    write: [],
     "record:create": [],
   },
   currentSort: DEFAULT_SORT,
@@ -33,15 +32,18 @@ export const INITIAL_STATE: CollectionState = {
   recordsLoaded: false,
   hasNextRecords: false,
   listNextRecords: null,
-  history: paginator(undefined, {type: "@@INIT"}),
+  history: paginator(undefined, { type: "@@INIT" }),
 };
 
-function load(state: CollectionState, collection: CollectionResource): CollectionState {
+function load(
+  state: CollectionState,
+  collection: CollectionResource
+): CollectionState {
   if (!collection) {
-    return {...state, busy: false};
+    return { ...state, busy: false };
   }
-  const {data, permissions} = collection;
-  return {...state, busy: false, data, permissions};
+  const { data, permissions } = collection;
+  return { ...state, busy: false, data, permissions };
 }
 
 export function collection(
@@ -50,34 +52,34 @@ export function collection(
 ): CollectionState {
   switch (action.type) {
     case COLLECTION_BUSY: {
-      const {busy}: {busy: boolean} = action;
-      return {...state, busy};
+      const { busy }: { busy: boolean } = action;
+      return { ...state, busy };
     }
     case ROUTE_LOAD_REQUEST: {
-      return {...INITIAL_STATE, busy: true};
+      return { ...INITIAL_STATE, busy: true };
     }
     case ROUTE_LOAD_SUCCESS: {
       return load(state, action.collection);
     }
     case ROUTE_LOAD_FAILURE: {
-      return {...state, busy: false};
+      return { ...state, busy: false };
     }
     case COLLECTION_RESET: {
       return INITIAL_STATE;
     }
     case COLLECTION_RECORDS_REQUEST: {
-      const {currentSort, data: {sort: preferedSort}} = state;
-      const {sort: newSort = preferedSort || DEFAULT_SORT} = action;
+      const { currentSort, data: { sort: preferedSort } } = state;
+      const { sort: newSort = preferedSort || DEFAULT_SORT } = action;
       // If a new sort filter is used, purge the previous records list and
       // pagination state.
       const records = currentSort !== newSort ? [] : state.records;
-      return {...state, currentSort: newSort, records, recordsLoaded: false};
+      return { ...state, currentSort: newSort, records, recordsLoaded: false };
     }
     case COLLECTION_RECORDS_NEXT_REQUEST: {
-      return {...state, recordsLoaded: false};
+      return { ...state, recordsLoaded: false };
     }
     case COLLECTION_RECORDS_SUCCESS: {
-      const {records, hasNextRecords, listNextRecords} = action;
+      const { records, hasNextRecords, listNextRecords } = action;
       return {
         ...state,
         records: [...state.records, ...records],
@@ -89,7 +91,7 @@ export function collection(
     case COLLECTION_HISTORY_REQUEST:
     case COLLECTION_HISTORY_NEXT_REQUEST:
     case COLLECTION_HISTORY_SUCCESS: {
-      return {...state, history: paginator(state.history, action)};
+      return { ...state, history: paginator(state.history, action) };
     }
     default: {
       return state;

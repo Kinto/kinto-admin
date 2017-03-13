@@ -14,7 +14,6 @@ import React, { Component } from "react";
 import RecordForm from "./RecordForm";
 import RecordTabs from "./RecordTabs";
 
-
 export default class RecordAttributes extends Component {
   props: {
     params: RecordRouteParams,
@@ -34,11 +33,11 @@ export default class RecordAttributes extends Component {
     ) => void,
   };
 
-  onSubmit = ({__attachment__: attachment, ...record}: Object) => {
-    const {params, updateRecord} = this.props;
-    const {bid, cid, rid} = params;
-    updateRecord(bid, cid, rid, {data: record}, attachment);
-  }
+  onSubmit = ({ __attachment__: attachment, ...record }: Object) => {
+    const { params, updateRecord } = this.props;
+    const { bid, cid, rid } = params;
+    updateRecord(bid, cid, rid, { data: record }, attachment);
+  };
 
   render() {
     const {
@@ -51,7 +50,7 @@ export default class RecordAttributes extends Component {
       deleteRecord,
       deleteAttachment,
     } = this.props;
-    const {bid, cid, rid} = params;
+    const { bid, cid, rid } = params;
 
     return (
       <div>
@@ -73,7 +72,8 @@ export default class RecordAttributes extends Component {
             deleteRecord={deleteRecord}
             deleteAttachment={deleteAttachment}
             onSubmit={this.onSubmit}
-            capabilities={capabilities} />
+            capabilities={capabilities}
+          />
         </RecordTabs>
       </div>
     );

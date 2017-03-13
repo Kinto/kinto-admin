@@ -4,32 +4,31 @@ import { put } from "redux-saga/effects";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
-
 const PLUGIN_ACTION_REQUEST = "PLUGIN_ACTION_REQUEST";
 const PLUGIN_ACTION_SUCCESS = "PLUGIN_ACTION_SUCCESS";
 
 // Test actions
 function testActionRequest() {
-  return {type: PLUGIN_ACTION_REQUEST};
+  return { type: PLUGIN_ACTION_REQUEST };
 }
 
 function testActionSuccess() {
-  return {type: PLUGIN_ACTION_SUCCESS, answer: 42};
+  return { type: PLUGIN_ACTION_SUCCESS, answer: 42 };
 }
 
 // Container setup
 function mapStateToProps(state) {
-  return {plugin: state.plugin};
+  return { plugin: state.plugin };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({testActionRequest}, dispatch);
+  return bindActionCreators({ testActionRequest }, dispatch);
 }
 
 // Plugin view root container component
 class TestPlugin extends React.Component {
   render() {
-    const {plugin, testActionRequest} = this.props;
+    const { plugin, testActionRequest } = this.props;
     return (
       <div>
         <h1>Hello from plugin!</h1>
@@ -40,7 +39,9 @@ class TestPlugin extends React.Component {
   }
 }
 
-const TestPluginContainer = connect(mapStateToProps, mapDispatchToProps)(TestPlugin);
+const TestPluginContainer = connect(mapStateToProps, mapDispatchToProps)(
+  TestPlugin
+);
 
 // Test saga
 function* testSaga(getState, action) {
@@ -50,28 +51,26 @@ function* testSaga(getState, action) {
 
 // Plugin exports
 const routes = [
-  {path: "/test/plugin", components: {content: TestPluginContainer}}
+  { path: "/test/plugin", components: { content: TestPluginContainer } },
 ];
 
-export const sagas = [
-  [takeEvery, PLUGIN_ACTION_REQUEST, testSaga]
-];
+export const sagas = [[takeEvery, PLUGIN_ACTION_REQUEST, testSaga]];
 
 export const reducers = {
-  plugin(state = {answer: 0}, action) {
-    switch(action.type) {
+  plugin(state = { answer: 0 }, action) {
+    switch (action.type) {
       case PLUGIN_ACTION_SUCCESS: {
-        return {...state, answer: action.answer};
+        return { ...state, answer: action.answer };
       }
       default: {
         return state;
       }
     }
-  }
+  },
 };
 
 export function register(store) {
   return {
-    routes
+    routes,
   };
 }

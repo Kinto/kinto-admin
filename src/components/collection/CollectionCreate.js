@@ -13,7 +13,6 @@ import React, { Component } from "react";
 import Spinner from "../Spinner";
 import CollectionForm from "./CollectionForm";
 
-
 export default class CollectionCreate extends Component {
   props: {
     session: SessionState,
@@ -25,9 +24,15 @@ export default class CollectionCreate extends Component {
   };
 
   render() {
-    const {params, session, bucket, collection, createCollection} = this.props;
-    const {bid} = params;
-    const {busy} = session;
+    const {
+      params,
+      session,
+      bucket,
+      collection,
+      createCollection,
+    } = this.props;
+    const { bid } = params;
+    const { busy } = session;
     if (busy) {
       return <Spinner />;
     }
@@ -40,7 +45,8 @@ export default class CollectionCreate extends Component {
               session={session}
               bucket={bucket}
               collection={collection}
-              onSubmit={(formData) => createCollection(bid, formData)} />
+              onSubmit={formData => createCollection(bid, formData)}
+            />
           </div>
         </div>
       </div>

@@ -15,7 +15,6 @@ import AdminLink from "../AdminLink";
 import CollectionTabs from "./CollectionTabs";
 import PaginatedTable from "../PaginatedTable";
 
-
 class Row extends Component {
   static defaultProps = {
     schema: {},
@@ -28,57 +27,68 @@ class Row extends Component {
       return null;
     }
     const date = new Date(lastModified);
-    return date.toJSON() == null ? null : (
-      <span title={date.toISOString()}>{timeago(date.getTime())}</span>
-    );
+    return date.toJSON() == null
+      ? null
+      : <span title={date.toISOString()}>{timeago(date.getTime())}</span>;
   }
 
   onDoubleClick(event) {
     event.preventDefault();
-    const {bid, cid, record, redirectTo} = this.props;
-    const {id: rid} = record;
-    redirectTo("record:attributes", {bid, cid, rid});
+    const { bid, cid, record, redirectTo } = this.props;
+    const { id: rid } = record;
+    redirectTo("record:attributes", { bid, cid, rid });
   }
 
   onDeleteClick(event) {
-    const {bid, cid, record, deleteRecord} = this.props;
-    const {id: rid, last_modified} = record;
+    const { bid, cid, record, deleteRecord } = this.props;
+    const { id: rid, last_modified } = record;
     if (confirm("Are you sure?")) {
       deleteRecord(bid, cid, rid, last_modified);
     }
   }
 
   render() {
-    const {bid, cid, record, displayFields, capabilities} = this.props;
-    const {id: rid} = record;
+    const { bid, cid, record, displayFields, capabilities } = this.props;
+    const { id: rid } = record;
     const attachmentUrl = buildAttachmentUrl(record, capabilities);
     return (
       <tr onDoubleClick={this.onDoubleClick.bind(this)}>
-        {
-          displayFields.map((displayField, index) => {
-            return <td key={index}>{renderDisplayField(record, displayField)}</td>;
-          })
-        }
+        {displayFields.map((displayField, index) => {
+          return (
+            <td key={index}>{renderDisplayField(record, displayField)}</td>
+          );
+        })}
         <td className="lastmod">{this.lastModified}</td>
         <td className="actions text-right">
           <div className="btn-group">
-            {attachmentUrl ?
-              <a href={attachmentUrl} className="btn btn-sm btn-default"
+            {attachmentUrl &&
+              <a
+                href={attachmentUrl}
+                className="btn btn-sm btn-default"
                 title="The record has an attachment"
                 target="_blank">
                 <i className="glyphicon glyphicon-paperclip" />
-              </a> : null}
-            <AdminLink name="record:attributes" params={{bid, cid, rid}}
-              className="btn btn-sm btn-info" title="Edit record">
-              <i className="glyphicon glyphicon-pencil"/>
+              </a>}
+            <AdminLink
+              name="record:attributes"
+              params={{ bid, cid, rid }}
+              className="btn btn-sm btn-info"
+              title="Edit record">
+              <i className="glyphicon glyphicon-pencil" />
             </AdminLink>
-            <AdminLink name="record:permissions" params={{bid, cid, rid}}
-              className="btn btn-sm btn-warning" title="Record permissions">
-              <i className="glyphicon glyphicon-lock"/>
+            <AdminLink
+              name="record:permissions"
+              params={{ bid, cid, rid }}
+              className="btn btn-sm btn-warning"
+              title="Record permissions">
+              <i className="glyphicon glyphicon-lock" />
             </AdminLink>
-            <button type="button" className="btn btn-sm btn-danger"
-              onClick={this.onDeleteClick.bind(this)} title="Delete record">
-              <i className="glyphicon glyphicon-trash"/>
+            <button
+              type="button"
+              className="btn btn-sm btn-danger"
+              onClick={this.onDeleteClick.bind(this)}
+              title="Delete record">
+              <i className="glyphicon glyphicon-trash" />
             </button>
           </div>
         </td>
@@ -88,11 +98,12 @@ class Row extends Component {
 }
 
 function SortLink(props) {
-  const {dir, active, column, updateSort} = props;
+  const { dir, active, column, updateSort } = props;
   return (
-    <a href="#"
+    <a
+      href="#"
       className={`sort-link ${active ? "active label label-default" : ""}`}
-      onClick={(event) => {
+      onClick={event => {
         event.preventDefault();
         if (active) {
           // Perform the opposite action from current state to make the link act
@@ -103,13 +114,13 @@ function SortLink(props) {
           updateSort(column);
         }
       }}>
-      <i className={`glyphicon glyphicon-menu-${dir}`}/>
+      <i className={`glyphicon glyphicon-menu-${dir}`} />
     </a>
   );
 }
 
 function ColumnSortLink(props) {
-  const {column, currentSort, updateSort} = props;
+  const { column, currentSort, updateSort } = props;
   if (!currentSort || column === "__json") {
     return null;
   }
@@ -129,28 +140,29 @@ function ColumnSortLink(props) {
       active={active}
       dir={direction}
       column={column}
-      updateSort={updateSort} />
+      updateSort={updateSort}
+    />
   );
 }
 
 class Table extends Component {
   getFieldTitle(displayField) {
-    const {schema} = this.props;
+    const { schema } = this.props;
     if (displayField === "__json") {
       return "JSON";
     }
-    if (this.isSchemaProperty(displayField) &&
-        "title" in schema.properties[displayField]) {
+    if (
+      this.isSchemaProperty(displayField) &&
+      "title" in schema.properties[displayField]
+    ) {
       return schema.properties[displayField].title;
     }
     return displayField;
   }
 
   isSchemaProperty(displayField) {
-    const {schema} = this.props;
-    return schema &&
-           schema.properties &&
-           displayField in schema.properties;
+    const { schema } = this.props;
+    return schema && schema.properties && displayField in schema.properties;
   }
 
   render() {
@@ -181,37 +193,38 @@ class Table extends Component {
     const thead = (
       <thead>
         <tr>
-          {
-            displayFields.map((displayField, index) => {
-              return (
-                <th key={index}>
-                  {this.getFieldTitle(displayField)}
-                  {this.isSchemaProperty(displayField) ?
-                    <ColumnSortLink
-                      currentSort={currentSort}
-                      column={displayField}
-                      updateSort={updateSort} /> : null}
-                </th>
-              );
-            })
-          }
+          {displayFields.map((displayField, index) => {
+            return (
+              <th key={index}>
+                {this.getFieldTitle(displayField)}
+                {this.isSchemaProperty(displayField) &&
+                  <ColumnSortLink
+                    currentSort={currentSort}
+                    column={displayField}
+                    updateSort={updateSort}
+                  />}
+              </th>
+            );
+          })}
           <th>
             Last mod.
             <ColumnSortLink
               currentSort={currentSort}
               column="last_modified"
-              updateSort={updateSort} />
+              updateSort={updateSort}
+            />
           </th>
-          <th></th>
+          <th />
         </tr>
       </thead>
     );
 
     const tbody = (
-      <tbody className={!recordsLoaded ? "loading" : ""}>{
-        records.map((record, index) => {
+      <tbody className={!recordsLoaded ? "loading" : ""}>
+        {records.map((record, index) => {
           return (
-            <Row key={index}
+            <Row
+              key={index}
               bid={bid}
               cid={cid}
               record={record}
@@ -219,10 +232,11 @@ class Table extends Component {
               displayFields={displayFields}
               deleteRecord={deleteRecord}
               redirectTo={redirectTo}
-              capabilities={capabilities} />
+              capabilities={capabilities}
+            />
           );
-        })
-      }</tbody>
+        })}
+      </tbody>
     );
 
     return (
@@ -232,26 +246,38 @@ class Table extends Component {
         dataLoaded={recordsLoaded}
         colSpan={displayFields.length + 2}
         hasNextPage={hasNextRecords}
-        listNextPage={listNextRecords} />
+        listNextPage={listNextRecords}
+      />
     );
   }
 }
 
 function ListActions(props) {
-  const {bid, cid, session, bucket, collection, hooks=[]} = props;
+  const { bid, cid, session, bucket, collection, hooks = [] } = props;
   if (session.busy || collection.busy) {
     return null;
   }
   const defaultButtons = [
-    <AdminLink key="__1" name="record:create" params={{bid, cid}}
-      className="btn btn-info btn-record-add">Create</AdminLink>,
-    <AdminLink key="__2" name="record:bulk" params={{bid, cid}}
-      className="btn btn-info btn-record-bulk-add">Bulk create</AdminLink>,
+    <AdminLink
+      key="__1"
+      name="record:create"
+      params={{ bid, cid }}
+      className="btn btn-info btn-record-add">
+      Create
+    </AdminLink>,
+    <AdminLink
+      key="__2"
+      name="record:bulk"
+      params={{ bid, cid }}
+      className="btn btn-info btn-record-bulk-add">
+      Bulk create
+    </AdminLink>,
   ];
   return (
     <div className="list-actions">
-      {canCreateRecord(session, bucket, collection) ?
-        [...defaultButtons, ...hooks] : hooks}
+      {canCreateRecord(session, bucket, collection)
+        ? [...defaultButtons, ...hooks]
+        : hooks}
     </div>
   );
 }
@@ -275,10 +301,10 @@ export default class CollectionRecords extends Component {
   };
 
   updateSort = (sort: string) => {
-    const {params, listRecords} = this.props;
-    const {bid, cid} = params;
+    const { params, listRecords } = this.props;
+    const { bid, cid } = params;
     listRecords(bid, cid, sort);
-  }
+  };
 
   render() {
     const {
@@ -292,7 +318,7 @@ export default class CollectionRecords extends Component {
       pluginHooks,
       capabilities,
     } = this.props;
-    const {bid, cid} = params;
+    const { bid, cid } = params;
     const {
       busy,
       data,
@@ -301,7 +327,7 @@ export default class CollectionRecords extends Component {
       recordsLoaded,
       hasNextRecords,
     } = collection;
-    const {schema, displayFields} = data;
+    const { schema, displayFields } = data;
 
     const listActions = (
       <ListActions
@@ -310,7 +336,8 @@ export default class CollectionRecords extends Component {
         bucket={bucket}
         session={session}
         collection={collection}
-        hooks={pluginHooks.ListActions} />
+        hooks={pluginHooks.ListActions}
+      />
     );
 
     return (
@@ -336,7 +363,8 @@ export default class CollectionRecords extends Component {
             deleteRecord={deleteRecord}
             updateSort={this.updateSort}
             redirectTo={redirectTo}
-            capabilities={capabilities} />
+            capabilities={capabilities}
+          />
           {listActions}
         </CollectionTabs>
       </div>

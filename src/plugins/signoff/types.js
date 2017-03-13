@@ -1,6 +1,6 @@
 /* @flow */
 export type SignoffState = {
-  resource: ?WorkflowInfo
+  resource: ?WorkflowInfo,
 };
 
 export type WorkflowInfo = {

@@ -11,7 +11,6 @@ import React, { Component } from "react";
 import BucketTabs from "./BucketTabs";
 import HistoryTable from "../HistoryTable";
 
-
 export default class BucketHistory extends Component {
   props: {
     params: BucketRouteParams,
@@ -31,16 +30,15 @@ export default class BucketHistory extends Component {
       listBucketNextHistory,
       notifyError,
     } = this.props;
-    const {bid} = params;
-    const {history: {entries, loaded, hasNextPage: hasNextHistoryPage}} = bucket;
+    const { bid } = params;
+    const {
+      history: { entries, loaded, hasNextPage: hasNextHistoryPage },
+    } = bucket;
 
     return (
       <div>
         <h1>History for <b>{bid}</b></h1>
-        <BucketTabs
-          bid={bid}
-          selected="history"
-          capabilities={capabilities}>
+        <BucketTabs bid={bid} selected="history" capabilities={capabilities}>
           <HistoryTable
             bid={bid}
             historyLoaded={loaded}
@@ -48,7 +46,8 @@ export default class BucketHistory extends Component {
             hasNextHistory={hasNextHistoryPage}
             listNextHistory={listBucketNextHistory}
             location={location}
-            notifyError={notifyError} />
+            notifyError={notifyError}
+          />
         </BucketTabs>
       </div>
     );

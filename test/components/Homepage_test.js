@@ -5,7 +5,6 @@ import { Simulate } from "react-addons-test-utils";
 import { createSandbox, createComponent } from "../test_utils";
 import HomePage from "../../src/components/HomePage";
 
-
 describe("HomePage component", () => {
   let sandbox;
 
@@ -29,10 +28,10 @@ describe("HomePage component", () => {
           history: ["http://server.test/v1"],
           settings: {
             singleServer: null,
-            authMethods: ["basicauth", "fxa", "ldap"]
+            authMethods: ["basicauth", "fxa", "ldap"],
           },
           navigateToExternalAuth,
-          session: {authenticated: false},
+          session: { authenticated: false },
         });
       });
 
@@ -49,28 +48,30 @@ describe("HomePage component", () => {
             history: [],
             settings: {
               singleServer: serverURL,
-              authMethods: ["basicauth"]
+              authMethods: ["basicauth"],
             },
             navigateToExternalAuth,
-            session: {authenticated: false},
+            session: { authenticated: false },
           });
         });
 
         it("should set the server url value in hidden field", () => {
-          expect(node.querySelector("input[type='hidden']").value).eql(serverURL);
+          expect(node.querySelector("input[type='hidden']").value).eql(
+            serverURL
+          );
         });
       });
 
       describe("Basic Auth", () => {
         it("should submit setup data", () => {
           Simulate.change(node.querySelector("#root_server"), {
-            target: {value: "http://test.server/v1"}
+            target: { value: "http://test.server/v1" },
           });
           Simulate.change(node.querySelector("#root_credentials_username"), {
-            target: {value: "user"}
+            target: { value: "user" },
           });
           Simulate.change(node.querySelector("#root_credentials_password"), {
-            target: {value: "pass"}
+            target: { value: "pass" },
           });
 
           return new Promise(setImmediate).then(() => {
@@ -91,16 +92,16 @@ describe("HomePage component", () => {
       describe("LDAP", () => {
         it("should submit setup data", () => {
           Simulate.change(node.querySelector("#root_server"), {
-            target: {value: "http://test.server/v1"}
+            target: { value: "http://test.server/v1" },
           });
           Simulate.change(node.querySelectorAll("[type=radio]")[2], {
-            target: {value: "ldap"}
+            target: { value: "ldap" },
           });
           Simulate.change(node.querySelector("#root_credentials_username"), {
-            target: {value: "you@email.com"}
+            target: { value: "you@email.com" },
           });
           Simulate.change(node.querySelector("#root_credentials_password"), {
-            target: {value: "pass"}
+            target: { value: "pass" },
           });
 
           return new Promise(setImmediate).then(() => {
@@ -121,10 +122,10 @@ describe("HomePage component", () => {
       describe("FxA", () => {
         it("should navigate to external auth URL", () => {
           Simulate.change(node.querySelector("#root_server"), {
-            target: {value: "http://test.server/v1"}
+            target: { value: "http://test.server/v1" },
           });
           Simulate.change(node.querySelectorAll("[type=radio]")[1], {
-            target: {value: "fxa"}
+            target: { value: "fxa" },
           });
 
           return new Promise(setImmediate).then(() => {
@@ -144,26 +145,28 @@ describe("HomePage component", () => {
         const node = createComponent(HomePage, {
           history: [],
           settings: {
-            authMethods: ["basicauth"]
+            authMethods: ["basicauth"],
           },
-          session: {authenticated: false},
+          session: { authenticated: false },
         });
 
-        expect(node.querySelector("#root_server").value)
-          .eql("https://kinto.dev.mozaws.net/v1/");
+        expect(node.querySelector("#root_server").value).eql(
+          "https://kinto.dev.mozaws.net/v1/"
+        );
       });
 
       it("should set the server field value using latest entry from history", () => {
         const node = createComponent(HomePage, {
           history: ["http://server.test/v1"],
           settings: {
-            authMethods: ["basicauth"]
+            authMethods: ["basicauth"],
           },
-          session: {authenticated: false},
+          session: { authenticated: false },
         });
 
-        expect(node.querySelector("#root_server").value)
-          .eql("http://server.test/v1");
+        expect(node.querySelector("#root_server").value).eql(
+          "http://server.test/v1"
+        );
       });
     });
   });
@@ -180,21 +183,24 @@ describe("HomePage component", () => {
           password: "pass",
           serverInfo: {
             foo: {
-              bar: "plop"
-            }
-          }
+              bar: "plop",
+            },
+          },
         },
       });
     });
 
     it("should render server information heading", () => {
-      expect(node.querySelector(".panel-heading").textContent)
-        .eql("Server information");
+      expect(node.querySelector(".panel-heading").textContent).eql(
+        "Server information"
+      );
     });
 
     it("should render server information table", () => {
-      expect([].map.call(node.querySelectorAll("th"), x => x.textContent))
-        .eql(["foo", "bar"]);
+      expect([].map.call(node.querySelectorAll("th"), x => x.textContent)).eql([
+        "foo",
+        "bar",
+      ]);
     });
   });
 });
