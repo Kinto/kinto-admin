@@ -118,7 +118,7 @@ describe("session sagas", () => {
         ];
 
         expect(listBuckets.next(responses).value).eql(
-          call([client, client.listPermissions])
+          call([client, client.listPermissions], { pages: Infinity })
         );
       });
 

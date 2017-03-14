@@ -163,10 +163,10 @@ export function* listBuckets(
 
     // If the Kinto API version allows it, retrieves all permissions
     if ("permissions_endpoint" in serverInfo.capabilities) {
-      const { data: permissions } = yield call([
-        client,
-        client.listPermissions,
-      ]);
+      const { data: permissions } = yield call(
+        [client, client.listPermissions],
+        { pages: Infinity }
+      );
       buckets = expandBucketsCollections(buckets, permissions);
       yield put(actions.permissionsListSuccess(permissions));
     } else {
