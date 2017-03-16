@@ -92,7 +92,7 @@ function BucketCollectionsMenu(props) {
       {sidebarMaxListedCollections != null &&
         collections.length > sidebarMaxListedCollections &&
         <SideBarLink
-          name="collection:create"
+          name="bucket:collections"
           params={{ bid: bucket.id }}
           currentPath={currentPath}>
           <i className="glyphicon glyphicon-option-horizontal" />
