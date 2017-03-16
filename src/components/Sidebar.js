@@ -76,9 +76,16 @@ function BucketCollectionsMenu(props) {
     cid,
     sidebarMaxListedCollections,
   } = props;
+  // collections always contains one more item than what's configured in
+  // sidebarMaxListedCollections, so we can render a link to the paginated list
+  // of collections. Still, we only want to list that configured number of
+  // collections for this bucket menu.
+  const slicedCollections = sidebarMaxListedCollections !== null
+    ? collections.slice(0, sidebarMaxListedCollections)
+    : collections;
   return (
     <div className="collections-menu list-group">
-      {collections.map((collection, index) => {
+      {slicedCollections.map((collection, index) => {
         return (
           <CollectionMenuEntry
             key={index}
