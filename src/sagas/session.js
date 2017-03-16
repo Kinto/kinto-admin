@@ -49,7 +49,8 @@ export function* sessionLogout(
 
 export function expandBucketsCollections(
   buckets: BucketEntry[],
-  permissions: PermissionEntry[]
+  permissions: PermissionEntry[],
+  sidebarMaxListedCollections: number
 ): BucketEntry[] {
   // Create a copy to avoid mutating the source object
   const bucketsCopy = clone(buckets);
@@ -103,7 +104,19 @@ export function expandBucketsCollections(
     }
   }
 
-  return bucketsCopy;
+  // Limit bucket collections entries
+  return bucketsCopy.map(
+    bucket => {
+      return {
+        ...bucket,
+        collections: bucket.collections.slice(
+          0,
+          sidebarMaxListedCollections + 1
+        ),
+      };
+    },
+    []
+  );
 }
 
 export function* listBuckets(
@@ -111,6 +124,8 @@ export function* listBuckets(
   action: ActionType<typeof actions.listBuckets>
 ): SagaGen {
   try {
+    // retrieve sidebarMaxListedCollections setting
+    const { settings: { sidebarMaxListedCollections } } = getState();
     const client = getClient();
     // Fetch server information
     const serverInfo = yield call([client, client.fetchServerInfo]);
@@ -136,7 +151,9 @@ export function* listBuckets(
     }
     const responses = yield call([client, client.batch], batch => {
       for (const { id } of data) {
-        batch.bucket(id).listCollections();
+        batch
+          .bucket(id)
+          .listCollections({ limit: sidebarMaxListedCollections + 1 });
       }
     });
     let buckets: BucketEntry[] = data.map((bucket, index) => {
@@ -167,7 +184,11 @@ export function* listBuckets(
         [client, client.listPermissions],
         { pages: Infinity }
       );
-      buckets = expandBucketsCollections(buckets, permissions);
+      buckets = expandBucketsCollections(
+        buckets,
+        permissions,
+        sidebarMaxListedCollections
+      );
       yield put(actions.permissionsListSuccess(permissions));
     } else {
       yield put(
