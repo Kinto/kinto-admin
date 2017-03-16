@@ -84,6 +84,8 @@ describe("Sidebar component", () => {
         ".collections-menu-entry"
       );
 
+      // Note: collections are sliced to 2 items because of the
+      // sidebarMaxListedCollections setting
       expect([].map.call(collMenus, x => x.textContent)).eql(["foo", "bar"]);
     });
 

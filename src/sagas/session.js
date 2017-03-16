@@ -49,8 +49,7 @@ export function* sessionLogout(
 
 export function expandBucketsCollections(
   buckets: BucketEntry[],
-  permissions: PermissionEntry[],
-  sidebarMaxListedCollections: number
+  permissions: PermissionEntry[]
 ): BucketEntry[] {
   // Create a copy to avoid mutating the source object
   const bucketsCopy = clone(buckets);
@@ -104,19 +103,7 @@ export function expandBucketsCollections(
     }
   }
 
-  // Limit bucket collections entries
-  return bucketsCopy.map(
-    bucket => {
-      return {
-        ...bucket,
-        collections: bucket.collections.slice(
-          0,
-          sidebarMaxListedCollections + 1
-        ),
-      };
-    },
-    []
-  );
+  return bucketsCopy;
 }
 
 export function* listBuckets(
@@ -184,11 +171,7 @@ export function* listBuckets(
         [client, client.listPermissions],
         { pages: Infinity }
       );
-      buckets = expandBucketsCollections(
-        buckets,
-        permissions,
-        sidebarMaxListedCollections
-      );
+      buckets = expandBucketsCollections(buckets, permissions);
       yield put(actions.permissionsListSuccess(permissions));
     } else {
       yield put(
@@ -201,11 +184,32 @@ export function* listBuckets(
       );
     }
 
-    yield put(actions.bucketsSuccess(buckets));
+    const slicedBucketEntries = sliceBucketEntries(
+      buckets,
+      sidebarMaxListedCollections
+    );
+
+    yield put(actions.bucketsSuccess(slicedBucketEntries));
 
     // Save current app state
     yield call(saveSession, getState().session);
   } catch (error) {
     yield put(notificationActions.notifyError("Couldn't list buckets.", error));
   }
+}
+
+function sliceBucketEntries(
+  buckets: BucketEntry[],
+  limit: number
+): BucketEntry[] {
+  // Limit bucket collections array to specified length
+  return buckets.map(
+    bucket => {
+      return {
+        ...bucket,
+        collections: bucket.collections.slice(0, limit + 1),
+      };
+    },
+    []
+  );
 }
