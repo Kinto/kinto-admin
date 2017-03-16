@@ -77,6 +77,7 @@ The `KintoAdmin` component accepts a `settings` prop, where you can define the f
 - `maxPerPage`: The max number of results per page in lists (default: `200`).
 - `singleServer`: The server URL to be used (default: `null`). This removes the ability to connect to multiple servers.
 - `authMethods`: The list of supported authenticated methods (default: `["basicauth", "ldap", "fxa"]`). The first is the default one.
+- `sidebarMaxListedCollections`: The maximum number of bucket collections entries to list in the sidebar.
 
 Example:
 

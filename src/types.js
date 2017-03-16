@@ -287,6 +287,7 @@ export type SettingsState = {
   maxPerPage: number,
   singleServer: ?string,
   authMethods: AuthMethod[],
+  sidebarMaxListedCollections: number,
 };
 
 export type AuthData = AnonymousAuth | LDAPAuth | BasicAuth | TokenAuth;

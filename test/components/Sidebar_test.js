@@ -20,6 +20,7 @@ describe("Sidebar component", () => {
         params: {},
         location: { pathname: "" },
         session: { authenticated: false },
+        settings: { sidebarMaxListedCollections: 2 },
         capabilities: { history: {} },
       });
 
@@ -51,11 +52,13 @@ describe("Sidebar component", () => {
       const params = { bid: "mybuck", cid: "mycoll" };
       const location = { pathname: "" };
       const capabilities = { history: {} };
+      const settings = { sidebarMaxListedCollections: 2 };
 
       node = createComponent(Sidebar, {
         params,
         location,
         session,
+        settings,
         capabilities,
       });
       bucketMenus = node.querySelectorAll(".bucket-menu");
@@ -81,11 +84,9 @@ describe("Sidebar component", () => {
         ".collections-menu-entry"
       );
 
-      expect([].map.call(collMenus, x => x.textContent)).eql([
-        "foo",
-        "bar",
-        "baz",
-      ]);
+      // Note: collections are sliced to 2 items because of the
+      // sidebarMaxListedCollections setting
+      expect([].map.call(collMenus, x => x.textContent)).eql(["foo", "bar"]);
     });
 
     it("should highlight the selected collection", () => {

@@ -1,6 +1,7 @@
 /* @flow */
 import type {
   SessionState,
+  SettingsState,
   RouteParams,
   RouteLocation,
   BucketEntry,
@@ -67,10 +68,24 @@ function CollectionMenuEntry(props) {
 }
 
 function BucketCollectionsMenu(props) {
-  const { currentPath, bucket, collections, bid, cid } = props;
+  const {
+    currentPath,
+    bucket,
+    collections,
+    bid,
+    cid,
+    sidebarMaxListedCollections,
+  } = props;
+  // collections always contains one more item than what's configured in
+  // sidebarMaxListedCollections, so we can render a link to the paginated list
+  // of collections. Still, we only want to list that configured number of
+  // collections for this bucket menu.
+  const slicedCollections = sidebarMaxListedCollections !== null
+    ? collections.slice(0, sidebarMaxListedCollections)
+    : collections;
   return (
     <div className="collections-menu list-group">
-      {collections.map((collection, index) => {
+      {slicedCollections.map((collection, index) => {
         return (
           <CollectionMenuEntry
             key={index}
@@ -81,6 +96,15 @@ function BucketCollectionsMenu(props) {
           />
         );
       })}
+      {sidebarMaxListedCollections != null &&
+        collections.length > sidebarMaxListedCollections &&
+        <SideBarLink
+          name="bucket:collections"
+          params={{ bid: bucket.id }}
+          currentPath={currentPath}>
+          <i className="glyphicon glyphicon-option-horizontal" />
+          See all collections
+        </SideBarLink>}
       <SideBarLink
         name="collection:create"
         params={{ bid: bucket.id }}
@@ -98,6 +122,7 @@ type BucketsMenuProps = {
   buckets: BucketEntry[],
   bid: string,
   cid: string,
+  sidebarMaxListedCollections: ?number,
 };
 
 function filterBuckets(buckets, filters) {
@@ -153,7 +178,14 @@ class BucketsMenu extends Component {
   };
 
   render() {
-    const { currentPath, busy, buckets, bid, cid } = this.props;
+    const {
+      currentPath,
+      busy,
+      buckets,
+      bid,
+      cid,
+      sidebarMaxListedCollections,
+    } = this.props;
     const filteredBuckets = filterBuckets(buckets, this.state);
     return (
       <div>
@@ -231,6 +263,7 @@ class BucketsMenu extends Component {
                     currentPath={currentPath}
                     bid={bid}
                     cid={cid}
+                    sidebarMaxListedCollections={sidebarMaxListedCollections}
                   />
                 </div>
               );
@@ -247,15 +280,17 @@ export default class Sidebar extends Component {
 
   props: {
     session: SessionState,
+    settings: SettingsState,
     params: RouteParams,
     location: RouteLocation,
   };
 
   render() {
-    const { session, params, location } = this.props;
+    const { session, settings, params, location } = this.props;
     const { pathname: currentPath } = location;
     const { bid, cid } = params;
     const { busy, authenticated, buckets = [] } = session;
+    const { sidebarMaxListedCollections } = settings;
     return (
       <div>
         <div className="panel panel-default">
@@ -272,6 +307,7 @@ export default class Sidebar extends Component {
             currentPath={currentPath}
             bid={bid}
             cid={cid}
+            sidebarMaxListedCollections={sidebarMaxListedCollections}
           />}
       </div>
     );

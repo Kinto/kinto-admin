@@ -45,6 +45,8 @@ describe("session sagas", () => {
   });
 
   describe("listBuckets()", () => {
+    const settingsState = { sidebarMaxListedCollections: 2 };
+
     describe("Success", () => {
       let client, listBuckets;
 
@@ -67,7 +69,10 @@ describe("session sagas", () => {
           listBuckets() {},
           listPermissions() {},
         });
-        const getState = () => ({ session: sessionState });
+        const getState = () => ({
+          session: sessionState,
+          settings: settingsState,
+        });
         const action = actions.listBuckets();
         listBuckets = saga.listBuckets(getState, action);
       });
@@ -193,7 +198,10 @@ describe("session sagas", () => {
       describe("Forbidden list of buckets", () => {
         before(() => {
           const action = actions.listBuckets();
-          const getState = () => ({ session: sessionState });
+          const getState = () => ({
+            session: sessionState,
+            settings: settingsState,
+          });
           listBuckets = saga.listBuckets(getState, action);
 
           listBuckets.next();
@@ -213,16 +221,22 @@ describe("session sagas", () => {
             .eql(client.listPermissions);
         });
       });
+    });
 
-      describe("Failure", () => {
-        it("should dispatch an error notification action", () => {
-          const listBuckets = saga.listBuckets();
-          listBuckets.next();
-
-          expect(listBuckets.throw("error").value).eql(
-            put(notifyError("Couldn't list buckets.", "error"))
-          );
+    describe("Failure", () => {
+      it("should dispatch an error notification action", () => {
+        const action = actions.listBuckets();
+        const getState = () => ({
+          session: {},
+          settings: settingsState,
         });
+
+        const listBuckets = saga.listBuckets(getState, action);
+        listBuckets.next();
+
+        expect(listBuckets.throw("error").value).eql(
+          put(notifyError("Couldn't list buckets.", "error"))
+        );
       });
     });
   });
@@ -289,7 +303,7 @@ describe("expandBucketsCollections()", () => {
     collectionPerm("foo", "foo", ["read"]),
   ];
 
-  const tree = saga.expandBucketsCollections(buckets, permissions);
+  const tree = saga.expandBucketsCollections(buckets, permissions, 2);
 
   it("should denote a bucket as writable", () => {
     expect(tree.find(b => b.id === "b1").readonly).to.be.false;

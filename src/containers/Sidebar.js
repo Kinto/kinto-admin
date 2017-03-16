@@ -7,6 +7,7 @@ import Sidebar from "../components/Sidebar";
 function mapStateToProps(state: AppState) {
   return {
     session: state.session,
+    settings: state.settings,
   };
 }
 
