@@ -148,7 +148,8 @@ class HistoryRow extends Component {
           </td>
           <td>{user_id}</td>
           <td className="text-center">
-            {enableDiffOverview &&
+            {resource_name === "record" &&
+              enableDiffOverview &&
               pos !== 0 &&
               <span>
                 <AdminLink
