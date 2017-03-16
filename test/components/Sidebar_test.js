@@ -84,11 +84,7 @@ describe("Sidebar component", () => {
         ".collections-menu-entry"
       );
 
-      expect([].map.call(collMenus, x => x.textContent)).eql([
-        "foo",
-        "bar",
-        "baz",
-      ]);
+      expect([].map.call(collMenus, x => x.textContent)).eql(["foo", "bar"]);
     });
 
     it("should highlight the selected collection", () => {
