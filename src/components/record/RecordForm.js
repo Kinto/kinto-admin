@@ -8,7 +8,7 @@ import type {
   Capabilities,
 } from "../../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import filesize from "filesize";
 
 import BaseForm from "./../BaseForm";
@@ -159,7 +159,7 @@ function AttachmentInfo(props: AttachmentInfoProps) {
   );
 }
 
-export default class RecordForm extends Component {
+export default class RecordForm extends PureComponent {
   props: {
     bid: string,
     cid: string,

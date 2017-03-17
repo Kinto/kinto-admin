@@ -1,5 +1,5 @@
 /* @flow */
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 const DEFAULT_SEPARATOR = ",";
 
@@ -33,7 +33,7 @@ type State = {
   tagsString: string,
 };
 
-export default class TagsField extends Component {
+export default class TagsField extends PureComponent {
   props: Props;
   state: State;
 

@@ -8,13 +8,13 @@ import type {
   CollectionData,
 } from "../../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import Spinner from "../Spinner";
 import CollectionForm from "./CollectionForm";
 import CollectionTabs from "./CollectionTabs";
 
-export default class CollectionAttributes extends Component {
+export default class CollectionAttributes extends PureComponent {
   props: {
     session: SessionState,
     bucket: BucketState,

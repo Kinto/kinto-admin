@@ -1,7 +1,7 @@
 /* @flow */
 import type { SessionState, SettingsState } from "../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import Spinner from "./Spinner";
 import AuthForm from "./AuthForm";
@@ -47,7 +47,7 @@ function SessionInfo({ session: { busy, serverInfo } }) {
   );
 }
 
-export default class HomePage extends Component {
+export default class HomePage extends PureComponent {
   props: {
     session: SessionState,
     settings: SettingsState,

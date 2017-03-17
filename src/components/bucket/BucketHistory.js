@@ -6,12 +6,12 @@ import type {
   RouteLocation,
 } from "../../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import BucketTabs from "./BucketTabs";
 import HistoryTable from "../HistoryTable";
 
-export default class BucketHistory extends Component {
+export default class BucketHistory extends PureComponent {
   props: {
     params: BucketRouteParams,
     bucket: BucketState,

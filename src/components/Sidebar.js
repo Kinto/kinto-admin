@@ -7,7 +7,7 @@ import type {
   BucketEntry,
 } from "../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import Spinner from "./Spinner";
 import AdminLink from "./AdminLink";
@@ -151,7 +151,7 @@ function filterBuckets(buckets, filters) {
     .filter(bucket => !(hideReadOnly && bucket.readonly));
 }
 
-class BucketsMenu extends Component {
+class BucketsMenu extends PureComponent {
   props: BucketsMenuProps;
 
   state: {
@@ -273,7 +273,7 @@ class BucketsMenu extends Component {
   }
 }
 
-export default class Sidebar extends Component {
+export default class Sidebar extends PureComponent {
   // This is useful to identify wrapped component for plugin hooks when code is
   // minified; see https://github.com/facebook/react/issues/4915
   static displayName = "Sidebar";

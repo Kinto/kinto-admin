@@ -8,13 +8,13 @@ import type {
   GroupRouteParams,
 } from "../../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import Spinner from "../Spinner";
 import GroupForm from "./GroupForm";
 import GroupTabs from "./GroupTabs";
 
-export default class GroupAttributes extends Component {
+export default class GroupAttributes extends PureComponent {
   props: {
     params: GroupRouteParams,
     session: SessionState,

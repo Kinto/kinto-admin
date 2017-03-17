@@ -5,7 +5,7 @@ import type {
   CollectionRouteParams,
 } from "../../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import BaseForm from "../BaseForm";
 import AdminLink from "../AdminLink";
@@ -16,7 +16,7 @@ import {
   extendUiSchemaWithAttachment,
 } from "./RecordForm";
 
-export default class RecordBulk extends Component {
+export default class RecordBulk extends PureComponent {
   props: {
     params: CollectionRouteParams,
     collection: CollectionState,

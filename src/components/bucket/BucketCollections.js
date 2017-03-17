@@ -6,7 +6,7 @@ import type {
   BucketRouteParams,
 } from "../../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import { timeago } from "../../utils";
 import AdminLink from "../AdminLink";
@@ -102,7 +102,7 @@ function ListActions(props) {
   );
 }
 
-export default class BucketCollections extends Component {
+export default class BucketCollections extends PureComponent {
   props: {
     params: BucketRouteParams,
     session: SessionState,

@@ -2,7 +2,7 @@
 
 import type { RouteParams } from "../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { Link } from "react-router";
 
 import url from "../url";
@@ -13,7 +13,7 @@ type Props = {
   children?: React.Element<*>,
 };
 
-export default class AdminLink extends Component {
+export default class AdminLink extends PureComponent {
   props: Props;
 
   render() {

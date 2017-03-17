@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
-export default class Spinner extends Component {
+export default class Spinner extends PureComponent {
   render() {
     return (
       <div className="spinner">

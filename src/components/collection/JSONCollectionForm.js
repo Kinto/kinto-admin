@@ -1,7 +1,7 @@
 /* @flow */
 import type { CollectionData } from "../../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import Form from "react-jsonschema-form";
 
 import JSONEditor from "../JSONEditor";
@@ -38,7 +38,7 @@ function validate({ data }, errors) {
   return errors;
 }
 
-export default class JSONCollectionForm extends Component {
+export default class JSONCollectionForm extends PureComponent {
   props: {
     children?: React.Element<*>,
     cid: ?string,

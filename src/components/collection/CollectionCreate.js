@@ -8,12 +8,12 @@ import type {
   BucketRouteParams,
 } from "../../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import Spinner from "../Spinner";
 import CollectionForm from "./CollectionForm";
 
-export default class CollectionCreate extends Component {
+export default class CollectionCreate extends PureComponent {
   props: {
     session: SessionState,
     bucket: BucketState,

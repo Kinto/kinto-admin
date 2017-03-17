@@ -7,7 +7,7 @@ import type {
   Capabilities,
 } from "../../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import { renderDisplayField, timeago, buildAttachmentUrl } from "../../utils";
 import { canCreateRecord } from "../../permission";
@@ -15,7 +15,7 @@ import AdminLink from "../AdminLink";
 import CollectionTabs from "./CollectionTabs";
 import PaginatedTable from "../PaginatedTable";
 
-class Row extends Component {
+class Row extends PureComponent {
   static defaultProps = {
     schema: {},
     record: {},
@@ -145,7 +145,7 @@ function ColumnSortLink(props) {
   );
 }
 
-class Table extends Component {
+class Table extends PureComponent {
   getFieldTitle(displayField) {
     const { schema } = this.props;
     if (displayField === "__json") {
@@ -282,7 +282,7 @@ function ListActions(props) {
   );
 }
 
-export default class CollectionRecords extends Component {
+export default class CollectionRecords extends PureComponent {
   // This is useful to identify wrapped component for plugin hooks when code is
   // minified; see https://github.com/facebook/react/issues/4915
   static displayName = "CollectionRecords";

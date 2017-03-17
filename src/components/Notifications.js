@@ -1,9 +1,9 @@
 /* @flow */
 import type { Notifications } from "../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
-class ErrorDetails extends Component {
+class ErrorDetails extends PureComponent {
   render() {
     const { details } = this.props;
     if (details.length === 0) {
@@ -19,7 +19,7 @@ class ErrorDetails extends Component {
   }
 }
 
-export class Notification extends Component {
+export class Notification extends PureComponent {
   static defaultProps = {
     type: "info",
     details: [],
@@ -92,7 +92,7 @@ export class Notification extends Component {
   }
 }
 
-export default class Notifications_ extends Component {
+export default class Notifications_ extends PureComponent {
   // This is useful to identify wrapped component for plugin hooks when code is
   // minified; see https://github.com/facebook/react/issues/4915
   static displayName = "Notifications";
