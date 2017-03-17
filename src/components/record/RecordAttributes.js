@@ -9,12 +9,12 @@ import type {
   RecordRouteParams,
 } from "../../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import RecordForm from "./RecordForm";
 import RecordTabs from "./RecordTabs";
 
-export default class RecordAttributes extends Component {
+export default class RecordAttributes extends PureComponent {
   props: {
     params: RecordRouteParams,
     session: SessionState,

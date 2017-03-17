@@ -1,7 +1,7 @@
 /* @flow */
 import type { SessionState, RouteParams, Notifications } from "../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import Breadcrumbs from "react-breadcrumbs";
 
 function UserInfo({ session }) {
@@ -27,7 +27,7 @@ function SessionInfoBar({ session, logout }) {
   );
 }
 
-export default class App extends Component {
+export default class App extends PureComponent {
   props: {
     session: SessionState,
     logout: () => void,

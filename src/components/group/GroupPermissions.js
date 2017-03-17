@@ -8,14 +8,14 @@ import type {
   GroupPermissions,
 } from "../../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import Spinner from "../Spinner";
 import GroupTabs from "./GroupTabs";
 import PermissionsForm from "../PermissionsForm";
 import { canEditGroup } from "../../permission";
 
-export default class GroupPermissions_ extends Component {
+export default class GroupPermissions_ extends PureComponent {
   props: {
     params: GroupRouteParams,
     session: SessionState,

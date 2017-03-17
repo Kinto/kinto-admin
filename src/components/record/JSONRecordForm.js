@@ -1,5 +1,5 @@
 /* @flow */
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import BaseForm from "../BaseForm";
 import JSONEditor from "../JSONEditor";
@@ -23,7 +23,7 @@ function validate(json, errors) {
   return errors;
 }
 
-export default class JSONRecordForm extends Component {
+export default class JSONRecordForm extends PureComponent {
   props: {
     disabled: boolean,
     record: string, // JSON string representation of a record data

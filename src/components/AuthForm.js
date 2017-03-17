@@ -1,12 +1,12 @@
 /* @flow */
 import type { SessionState, SettingsState } from "../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import BaseForm from "./BaseForm";
 import { omit } from "../utils";
 
-class ServerHistory extends Component {
+class ServerHistory extends PureComponent {
   state: {
     menuOpened: boolean,
   };
@@ -294,7 +294,7 @@ function extendUiSchemaWithHistory(
   };
 }
 
-export default class AuthForm extends Component {
+export default class AuthForm extends PureComponent {
   props: {
     session: SessionState,
     history: string[],

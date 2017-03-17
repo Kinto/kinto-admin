@@ -9,14 +9,14 @@ import type {
   RecordPermissions,
 } from "../../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import Spinner from "../Spinner";
 import RecordTabs from "./RecordTabs";
 import PermissionsForm from "../PermissionsForm";
 import { canEditRecord } from "../../permission";
 
-export default class RecordPermissions_ extends Component {
+export default class RecordPermissions_ extends PureComponent {
   props: {
     params: RecordRouteParams,
     session: SessionState,

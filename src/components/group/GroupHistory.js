@@ -6,12 +6,12 @@ import type {
   RouteLocation,
 } from "../../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import HistoryTable from "../HistoryTable";
 import CollectionTabs from "./GroupTabs";
 
-export default class GroupHistory extends Component {
+export default class GroupHistory extends PureComponent {
   props: {
     params: GroupRouteParams,
     group: GroupState,

@@ -8,12 +8,12 @@ import type {
   RouteLocation,
 } from "../../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import HistoryTable from "../HistoryTable";
 import RecordTabs from "./RecordTabs";
 
-export default class RecordHistory extends Component {
+export default class RecordHistory extends PureComponent {
   props: {
     params: RecordRouteParams,
     session: SessionState,

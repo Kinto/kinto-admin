@@ -8,12 +8,12 @@ import type {
   RouteLocation,
 } from "../../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import HistoryTable from "../HistoryTable";
 import CollectionTabs from "./CollectionTabs";
 
-export default class CollectionHistory extends Component {
+export default class CollectionHistory extends PureComponent {
   props: {
     session: SessionState,
     bucket: BucketState,

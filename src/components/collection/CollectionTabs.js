@@ -1,11 +1,11 @@
 /* @flow */
 import type { Capabilities } from "../../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import AdminLink from "../AdminLink";
 
-export default class CollectionTabs extends Component {
+export default class CollectionTabs extends PureComponent {
   props: {
     bid: string,
     cid: string,

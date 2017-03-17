@@ -6,7 +6,7 @@ import type {
   GroupData,
 } from "../../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import BaseForm from "../BaseForm";
 import AdminLink from "../AdminLink";
@@ -90,7 +90,7 @@ function DeleteForm({ gid, onSubmit }) {
   );
 }
 
-export default class GroupForm extends Component {
+export default class GroupForm extends PureComponent {
   props: {
     gid?: string,
     session: SessionState,

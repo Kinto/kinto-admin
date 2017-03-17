@@ -2,7 +2,7 @@
 
 import type { RecordData, ResourceHistoryEntry, RouteLocation } from "../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { diffJson } from "diff";
 
 import { timeago, humanDate } from "../utils";
@@ -67,7 +67,7 @@ function fetchCollectionStateAt(
   });
 }
 
-class HistoryRow extends Component {
+class HistoryRow extends PureComponent {
   props: {
     bid: string,
     entry: ResourceHistoryEntry,
@@ -268,7 +268,7 @@ type Props = {
   notifyError: (message: string, error: Error) => void,
 };
 
-export default class HistoryTable extends Component {
+export default class HistoryTable extends PureComponent {
   props: Props;
 
   static defaultProps = {

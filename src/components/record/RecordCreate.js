@@ -8,11 +8,11 @@ import type {
   Capabilities,
 } from "../../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import RecordForm from "./RecordForm";
 
-export default class RecordCreate extends Component {
+export default class RecordCreate extends PureComponent {
   props: {
     params: CollectionRouteParams,
     session: SessionState,

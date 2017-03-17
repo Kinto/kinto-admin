@@ -6,7 +6,7 @@ import type {
   CollectionData,
 } from "../../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { Link } from "react-router";
 
 import BaseForm from "../BaseForm";
@@ -294,7 +294,7 @@ type Props = {
   formData?: CollectionData,
 };
 
-export default class CollectionForm extends Component {
+export default class CollectionForm extends PureComponent {
   props: Props;
 
   state: {

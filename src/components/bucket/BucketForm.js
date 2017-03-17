@@ -1,7 +1,7 @@
 /* @flow */
 import type { BucketState, BucketData, SessionState } from "../../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { Link } from "react-router";
 
 import BaseForm from "../BaseForm";
@@ -79,7 +79,7 @@ function DeleteForm({ bid, onSubmit }) {
   );
 }
 
-export default class BucketForm extends Component {
+export default class BucketForm extends PureComponent {
   props: {
     bid?: string,
     session: SessionState,

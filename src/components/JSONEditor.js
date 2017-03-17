@@ -1,5 +1,5 @@
 /* @flow */
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import Codemirror from "react-codemirror";
 import "codemirror/mode/javascript/javascript";
 
@@ -37,7 +37,7 @@ const cmOptions = {
   tabSize: 2,
 };
 
-export default class JSONEditor extends Component {
+export default class JSONEditor extends PureComponent {
   props: {
     readonly: boolean,
     disabled: boolean,

@@ -8,12 +8,12 @@ import type {
   BucketRouteParams,
 } from "../../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import GroupForm from "./GroupForm";
 import Spinner from "../Spinner";
 
-export default class GroupCreate extends Component {
+export default class GroupCreate extends PureComponent {
   props: {
     params: BucketRouteParams,
     session: SessionState,

@@ -1,10 +1,10 @@
 /* @flow */
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import Spinner from "./Spinner";
 
-export default class PaginatedTable extends Component {
+export default class PaginatedTable extends PureComponent {
   render() {
     const {
       thead,

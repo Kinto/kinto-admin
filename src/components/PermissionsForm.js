@@ -2,7 +2,7 @@
 
 import type { Permissions, GroupData } from "../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import BaseForm from "./BaseForm";
 import {
@@ -11,7 +11,7 @@ import {
   preparePermissionsForm,
 } from "../permission";
 
-export default class PermissionsForm extends Component {
+export default class PermissionsForm extends PureComponent {
   props: {
     bid: string,
     readonly: boolean,

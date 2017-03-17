@@ -8,14 +8,14 @@ import type {
   CollectionRouteParams,
 } from "../../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import Spinner from "../Spinner";
 import CollectionTabs from "./CollectionTabs";
 import PermissionsForm from "../PermissionsForm";
 import { canEditCollection } from "../../permission";
 
-export default class CollectionPermissions_ extends Component {
+export default class CollectionPermissions_ extends PureComponent {
   props: {
     session: SessionState,
     bucket: BucketState,

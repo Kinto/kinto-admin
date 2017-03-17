@@ -7,13 +7,13 @@ import type {
   BucketRouteParams,
 } from "../../types";
 
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import Spinner from "../Spinner";
 import BucketForm from "./BucketForm";
 import BucketTabs from "./BucketTabs";
 
-export default class BucketAttributes extends Component {
+export default class BucketAttributes extends PureComponent {
   props: {
     params: BucketRouteParams,
     session: SessionState,
