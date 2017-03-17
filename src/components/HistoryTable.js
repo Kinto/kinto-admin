@@ -72,11 +72,11 @@ class HistoryRow extends Component {
     bid: string,
     entry: ResourceHistoryEntry,
     pos: number,
-    fullDiffSupport: boolean,
+    enableDiffOverview: boolean,
   };
 
   static defaultProps = {
-    fullDiffSupport: false,
+    enableDiffOverview: false,
   };
 
   state: {
@@ -115,7 +115,7 @@ class HistoryRow extends Component {
 
   render() {
     const { open, busy, previous, error } = this.state;
-    const { entry, bid, fullDiffSupport, pos } = this.props;
+    const { entry, bid, enableDiffOverview, pos } = this.props;
     const {
       last_modified,
       action,
@@ -148,7 +148,8 @@ class HistoryRow extends Component {
           </td>
           <td>{user_id}</td>
           <td className="text-center">
-            {fullDiffSupport &&
+            {resource_name === "record" &&
+              enableDiffOverview &&
               pos !== 0 &&
               <span>
                 <AdminLink
@@ -193,14 +194,14 @@ class HistoryRow extends Component {
 function FilterInfo(props) {
   const {
     location,
-    fullDiffSupport,
+    enableDiffOverview,
     onViewJournalClick,
-    onViewDiffClick,
+    onDiffOverviewClick,
   }: {
     location: RouteLocation,
-    fullDiffSupport: boolean,
+    enableDiffOverview: boolean,
     onViewJournalClick: () => void,
-    onViewDiffClick: (timestamp: string) => void,
+    onDiffOverviewClick: (timestamp: string) => void,
   } = props;
   const { pathname, query: { since } } = location;
   return (
@@ -216,7 +217,7 @@ function FilterInfo(props) {
         }}>
         View all entries
       </a>
-      {fullDiffSupport &&
+      {enableDiffOverview &&
         since != null &&
         <span>
           {" | "}
@@ -224,12 +225,34 @@ function FilterInfo(props) {
             href="#"
             onClick={event => {
               event.preventDefault();
-              onViewDiffClick(since);
+              onDiffOverviewClick(since);
             }}>
-            View full diff
+            View records list diff overview
           </a>
         </span>}
     </p>
+  );
+}
+
+function DiffOverview(props) {
+  const { source, target, since } = props;
+  return (
+    <div>
+      <div className="alert alert-info">
+        <p>
+          This diff overview is computed against the current list of records in
+          this collection and the list it contained on
+          {" "}
+          <b>{humanDate(since)}</b>
+          .
+        </p>
+        <p>
+          <b>Note:</b> <code>last_modified</code> and <code>schema</code>{" "}
+          record metadata are omitted for easier review.
+        </p>
+      </div>
+      <Diff source={source} target={target} />
+    </div>
   );
 }
 
@@ -241,7 +264,7 @@ type Props = {
   historyLoaded: boolean,
   hasNextHistory: boolean,
   listNextHistory: ?Function,
-  fullDiffSupport: boolean,
+  enableDiffOverview: boolean,
   notifyError: (message: string, error: Error) => void,
 };
 
@@ -249,11 +272,11 @@ export default class HistoryTable extends Component {
   props: Props;
 
   static defaultProps = {
-    fullDiffSupport: false,
+    enableDiffOverview: false,
   };
 
   state: {
-    fullDiff: boolean,
+    diffOverview: boolean,
     busy: boolean,
     current: ?(RecordData[]),
     previous: ?(RecordData[]),
@@ -262,16 +285,16 @@ export default class HistoryTable extends Component {
   constructor(props: Props) {
     super(props);
     this.state = {
-      fullDiff: false,
+      diffOverview: false,
       busy: false,
       current: null,
       previous: null,
     };
   }
 
-  onViewDiffClick = (since: string): void => {
-    const { fullDiffSupport, bid, cid, notifyError } = this.props;
-    if (!fullDiffSupport || cid == null) {
+  onDiffOverviewClick = (since: string): void => {
+    const { enableDiffOverview, bid, cid, notifyError } = this.props;
+    if (!enableDiffOverview || cid == null) {
       return;
     }
     this.setState({ busy: true });
@@ -281,12 +304,12 @@ export default class HistoryTable extends Component {
         return fetchCollectionStateAt(bid, cid, since);
       })
       .then(previous => {
-        this.setState({ previous, busy: false, fullDiff: true });
+        this.setState({ previous, busy: false, diffOverview: true });
       })
       .catch(err => {
-        notifyError("Couldn't compute full diff", err);
+        notifyError("Couldn't compute records list diff overview", err);
         this.setState({
-          fullDiff: false,
+          diffOverview: false,
           busy: false,
           previous: null,
           current: null,
@@ -295,12 +318,12 @@ export default class HistoryTable extends Component {
   };
 
   onViewJournalClick = (): void => {
-    this.setState({ fullDiff: false, current: null, previous: null });
+    this.setState({ diffOverview: false, current: null, previous: null });
   };
 
   render() {
     const {
-      fullDiffSupport,
+      enableDiffOverview,
       history,
       historyLoaded,
       hasNextHistory,
@@ -309,8 +332,9 @@ export default class HistoryTable extends Component {
       cid,
       location,
     } = this.props;
-    const { current, previous, fullDiff } = this.state;
-    const isFiltered = !!location.query.since;
+    const { current, previous, diffOverview } = this.state;
+    const { since } = location.query;
+    const isFiltered = !!since;
 
     const thead = (
       <thead>
@@ -330,7 +354,7 @@ export default class HistoryTable extends Component {
         <HistoryRow
           key={index}
           pos={index}
-          fullDiffSupport={fullDiffSupport}
+          enableDiffOverview={enableDiffOverview}
           bid={bid}
           entry={entry}
         />
@@ -342,12 +366,12 @@ export default class HistoryTable extends Component {
         {isFiltered &&
           <FilterInfo
             location={location}
-            fullDiffSupport={fullDiffSupport}
-            onViewDiffClick={this.onViewDiffClick}
+            enableDiffOverview={enableDiffOverview}
+            onDiffOverviewClick={this.onDiffOverviewClick}
             onViewJournalClick={this.onViewJournalClick}
           />}
-        {cid && fullDiff
-          ? <Diff source={current} target={previous} />
+        {cid && diffOverview && since
+          ? <DiffOverview since={since} source={current} target={previous} />
           : !historyLoaded
               ? <Spinner />
               : <PaginatedTable
