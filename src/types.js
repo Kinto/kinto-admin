@@ -214,7 +214,10 @@ export type ResourceHistoryEntry = {
   id: string,
   last_modified: number,
   resource_name: string,
-  target: Object,
+  target: {
+    data: Object,
+    permissions: Object,
+  },
   timestamp: number,
   uri: string,
   user_id: string,
