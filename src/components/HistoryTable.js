@@ -10,7 +10,7 @@ import AdminLink from "./AdminLink";
 import Spinner from "./Spinner";
 import PaginatedTable from "./PaginatedTable";
 import { getClient } from "../client";
-import { omit } from "../utils";
+import { omit, sortHistoryEntryPermissions } from "../utils";
 
 function Diff({ source, target }) {
   const diff = diffJson(target, source);
@@ -107,10 +107,26 @@ class HistoryRow extends PureComponent {
     // We don't leverage redux store and dedicated action as this behavior is
     // contextually specific to this local component.
     fetchPreviousVersion(bid, entry)
-      .then(previous =>
-        this.setState({ open: true, busy: false, previous, error: null }))
-      .catch(error =>
-        this.setState({ open: true, busy: false, previous: null, error }));
+      .then(previous => {
+        if (previous == null) {
+          this.setState({
+            open: false,
+            busy: false,
+            previous: null,
+            error: new Error("Couldn't fetch previous history entry."),
+          });
+        } else {
+          this.setState({
+            open: true,
+            busy: false,
+            previous: sortHistoryEntryPermissions(previous),
+            error: null,
+          });
+        }
+      })
+      .catch(error => {
+        this.setState({ open: true, busy: false, previous: null, error });
+      });
   };
 
   render() {
@@ -125,7 +141,7 @@ class HistoryRow extends PureComponent {
       collection_id: cid,
       group_id: gid,
       record_id: rid,
-    } = entry;
+    } = sortHistoryEntryPermissions(entry);
 
     const { data: { id: objectId } } = target;
 

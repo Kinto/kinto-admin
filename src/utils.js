@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { RecordData, Capabilities } from "./types";
+import type { RecordData, ResourceHistoryEntry, Capabilities } from "./types";
 import React from "react";
 import _timeago from "timeago.js";
 
@@ -238,4 +238,25 @@ export function scrollToTop(): Promise<void> {
 export function scrollToBottom(): Promise<void> {
   window.scrollTo(0, window.document.body.scrollHeight);
   return Promise.resolve();
+}
+
+export function sortHistoryEntryPermissions(
+  entry: ResourceHistoryEntry
+): ResourceHistoryEntry {
+  const currentPermissions = entry.target.permissions;
+  return entry.action === "delete"
+    ? entry
+    : {
+        ...entry,
+        target: {
+          ...entry.target,
+          permissions: Object.keys(currentPermissions).reduce(
+            (acc, type) => {
+              const permissions = currentPermissions[type];
+              return { ...acc, [type]: permissions.sort() };
+            },
+            {}
+          ),
+        },
+      };
 }
