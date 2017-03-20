@@ -133,8 +133,10 @@ export function* routeUpdated(
       const { redirectURL } = JSON.parse(atob(payload));
       // Wait until we're actually authenticated
       yield take(SESSION_AUTHENTICATED);
-      // Redirect to the initially requested URL
-      yield put(updatePath(redirectURL));
+      // Redirect to the initially requested URL (if any)
+      if (redirectURL) {
+        yield put(updatePath(redirectURL));
+      }
     } else {
       // We're requesting an app URL requiring authentication while we're not;
       // Store current requested URL, wait for user authentication then redirect
