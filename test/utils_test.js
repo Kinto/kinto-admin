@@ -8,6 +8,7 @@ import {
   humanDate,
   buildAttachmentUrl,
   timeago,
+  sortHistoryEntryPermissions,
 } from "../src/utils";
 
 describe("cleanRecord", () => {
@@ -246,5 +247,39 @@ describe("timeago", function() {
   it("should prevent rendering future events", () => {
     const now = new Date().getTime();
     expect(timeago(now + 86400000, now)).eql("just now");
+  });
+});
+
+describe("sortHistoryEntryPermissions()", () => {
+  it("should sort permissions", () => {
+    const entry = {
+      action: "update",
+      target: {
+        permissions: {
+          write: ["b", "c", "a"],
+          read: ["c", "a", "b"],
+        },
+      },
+    };
+    expect(sortHistoryEntryPermissions(entry)).eql({
+      action: "update",
+      target: {
+        permissions: {
+          write: ["a", "b", "c"],
+          read: ["a", "b", "c"],
+        },
+      },
+    });
+  });
+
+  it("should not process tombstones", () => {
+    const entry = {
+      action: "delete",
+      target: {
+        id: "x",
+        deleted: true,
+      },
+    };
+    expect(sortHistoryEntryPermissions(entry)).eql(entry);
   });
 });

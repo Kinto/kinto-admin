@@ -243,20 +243,18 @@ export function scrollToBottom(): Promise<void> {
 export function sortHistoryEntryPermissions(
   entry: ResourceHistoryEntry
 ): ResourceHistoryEntry {
-  const currentPermissions = entry.target.permissions;
-  return entry.action === "delete"
-    ? entry
-    : {
-        ...entry,
-        target: {
-          ...entry.target,
-          permissions: Object.keys(currentPermissions).reduce(
-            (acc, type) => {
-              const permissions = currentPermissions[type];
-              return { ...acc, [type]: permissions.sort() };
-            },
-            {}
-          ),
-        },
-      };
+  if (entry.action === "delete") {
+    return entry;
+  }
+  const { permissions } = entry.target;
+  return {
+    ...entry,
+    target: {
+      ...entry.target,
+      permissions: Object.keys(permissions).reduce(
+        (acc, type) => ({ ...acc, [type]: permissions[type].sort() }),
+        {}
+      ),
+    },
+  };
 }
