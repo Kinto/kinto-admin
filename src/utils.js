@@ -243,10 +243,10 @@ export function scrollToBottom(): Promise<void> {
 export function sortHistoryEntryPermissions(
   entry: ResourceHistoryEntry
 ): ResourceHistoryEntry {
-  if (entry.action === "delete") {
+  const { permissions } = entry.target;
+  if (!permissions) {
     return entry;
   }
-  const { permissions } = entry.target;
   return {
     ...entry,
     target: {
