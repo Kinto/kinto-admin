@@ -382,7 +382,9 @@ describe("route sagas", () => {
       });
 
       it("should redirect to the homepage", () => {
-        expect(routeUpdated.next().value).eql(put(updatePath("")));
+        expect(routeUpdated.next().value).eql(
+          put(actions.redirectTo("home", {}))
+        );
       });
 
       it("should dispatch a notification", () => {

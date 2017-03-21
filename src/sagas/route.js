@@ -134,12 +134,16 @@ export function* routeUpdated(
       // Wait until we're actually authenticated
       yield take(SESSION_AUTHENTICATED);
       // Redirect to the initially requested URL (if any)
-      yield put(updatePath(redirectURL || "/"));
+      if (redirectURL) {
+        yield put(updatePath(redirectURL));
+      } else {
+        yield put(actions.redirectTo("home", {}));
+      }
     } else {
       // We're requesting an app URL requiring authentication while we're not;
       // Store current requested URL, wait for user authentication then redirect
       yield put(storeRedirectURL(location.pathname));
-      yield put(updatePath(""));
+      yield put(actions.redirectTo("home", {}));
       yield put(notifyInfo("Authentication required.", { persistent: true }));
       // pause until the user is authenticated
       yield take(SESSION_AUTHENTICATED);
