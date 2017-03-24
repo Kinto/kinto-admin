@@ -44,7 +44,7 @@ describe("signoff plugin sagas", () => {
       expect(handleRequestReview.next({ id: "coll" }).value).to.have
         .property("CALL")
         .to.have.property("args")
-        .to.include({ status: "to-review", last_editor_comment: ":)"});
+        .to.include({ status: "to-review", last_editor_comment: ":)" });
     });
 
     it("should refresh signoff resources status", () => {
@@ -92,7 +92,10 @@ describe("signoff plugin sagas", () => {
       expect(handleDeclineChanges.next({ id: "coll" }).value).to.have
         .property("CALL")
         .to.have.property("args")
-        .to.include({ status: "work-in-progress", last_reviewer_comment: ":(" });
+        .to.include({
+          status: "work-in-progress",
+          last_reviewer_comment: ":(",
+        });
     });
 
     it("should refresh signoff resources status", () => {
