@@ -14,10 +14,6 @@ import { timeago, humanDate } from "../../utils";
 import AdminLink from "../../components/AdminLink";
 import { ProgressBar, ProgressStep } from "./ProgressBar.js";
 
-function nl2br(comment: string): string {
-  return comment.split("\n").map((l, i) => <span key={i}>{l}<br /></span>);
-}
-
 function isMember(groupKey, source, sessionState, bucketState) {
   const { serverInfo: { user = {}, capabilities } } = sessionState;
   if (!user.id) {
@@ -163,12 +159,14 @@ export default class SignoffToolBar extends React.Component {
         </ProgressBar>
         {pendingConfirmReviewRequest &&
           <CommentDialog
+            description="Leave some notes for the reviewer:"
             confirmLabel="Request review"
             onConfirm={requestReview}
             onCancel={cancelPendingConfirm}
           />}
         {pendingConfirmDeclineChanges &&
           <CommentDialog
+            description="Leave some notes for the editor:"
             confirmLabel="Decline changes"
             onConfirm={declineChanges}
             onCancel={cancelPendingConfirm}
@@ -176,6 +174,17 @@ export default class SignoffToolBar extends React.Component {
       </div>
     );
   }
+}
+
+function Comment({ text }: { text: string }): string {
+  if (!text) {
+    return null;
+  }
+  return (
+    <span title={text} className="signoff-comment">
+      {text.split("\n").map((l, i) => <span key={i}>{l}<br /></span>)}
+    </span>
+  );
 }
 
 function HumanDate({ timestamp }: { timestamp: number }) {
@@ -233,7 +242,9 @@ function WorkInProgressInfos(
       <li><strong>By: </strong> {lastAuthor}</li>
       {active &&
         lastReviewerComment &&
-        <li><strong>Comment: </strong> {nl2br(lastReviewerComment)}</li>}
+        <li>
+          <strong>Comment: </strong> <Comment text={lastReviewerComment} />
+        </li>}
     </ul>
   );
 }
@@ -336,7 +347,9 @@ function ReviewInfos(
       <li><strong>By: </strong> {lastEditor}</li>
       {active &&
         lastEditorComment &&
-        <li><strong>Comment: </strong> {nl2br(lastEditorComment)}</li>}
+        <li>
+          <strong>Comment: </strong> <Comment text={lastEditorComment} />
+        </li>}
       <li><strong>Preview: </strong> {link}</li>
       {active &&
         <li>
@@ -441,6 +454,7 @@ function ReSignButton(props: Object) {
 // Comment dialog
 //
 type CommentDialogProps = {
+  description: string,
   confirmLabel: string,
   onConfirm: (string) => void,
   onCancel: () => void,
@@ -465,7 +479,7 @@ class CommentDialog extends PureComponent {
   };
 
   render() {
-    const { confirmLabel, onConfirm, onCancel } = this.props;
+    const { description, confirmLabel, onConfirm, onCancel } = this.props;
     const { comment } = this.state;
     const onClickConfirm = () => onConfirm(comment);
 
@@ -484,6 +498,7 @@ class CommentDialog extends PureComponent {
                 <h4 className="modal-title">Confirmation</h4>
               </div>
               <div className="modal-body">
+                <p>{description}</p>
                 <textarea
                   className="form-control"
                   placeholder="Comment..."
