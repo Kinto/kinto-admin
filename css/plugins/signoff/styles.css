@@ -38,3 +38,10 @@
     padding-left: 4px;
     padding-right: 4px;
   }
+
+/* Signoff collapsible comment */
+.signoff-comment {
+  display: block;
+  overflow: auto;
+  max-height: 4em;
+}
