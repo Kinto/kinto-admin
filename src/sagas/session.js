@@ -112,7 +112,6 @@ export function* listBuckets(
 ): SagaGen {
   try {
     // retrieve sidebarMaxListedCollections setting
-    const { settings: { sidebarMaxListedCollections } } = getState();
     const client = getClient();
     // Fetch server information
     const serverInfo = yield call([client, client.fetchServerInfo]);
@@ -138,9 +137,7 @@ export function* listBuckets(
     }
     const responses = yield call([client, client.batch], batch => {
       for (const { id } of data) {
-        batch
-          .bucket(id)
-          .listCollections({ limit: sidebarMaxListedCollections + 1 });
+        batch.bucket(id).listCollections();
       }
     });
     let buckets: BucketEntry[] = data.map((bucket, index) => {
@@ -184,32 +181,11 @@ export function* listBuckets(
       );
     }
 
-    const slicedBucketEntries = sliceBucketEntries(
-      buckets,
-      sidebarMaxListedCollections
-    );
-
-    yield put(actions.bucketsSuccess(slicedBucketEntries));
+    yield put(actions.bucketsSuccess(buckets));
 
     // Save current app state
     yield call(saveSession, getState().session);
   } catch (error) {
     yield put(notificationActions.notifyError("Couldn't list buckets.", error));
   }
-}
-
-function sliceBucketEntries(
-  buckets: BucketEntry[],
-  limit: number
-): BucketEntry[] {
-  // Limit bucket collections array to specified length
-  return buckets.map(
-    bucket => {
-      return {
-        ...bucket,
-        collections: bucket.collections.slice(0, limit + 1),
-      };
-    },
-    []
-  );
 }
