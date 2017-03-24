@@ -252,7 +252,7 @@ function WorkInProgressInfos(
 function RequestReviewButton(props: Object) {
   return (
     <button className="btn btn-info" {...props}>
-      <i className="glyphicon glyphicon-comment" /> Request review...
+      <i className="glyphicon glyphicon-comment" />{" "}Request review...
     </button>
   );
 }
@@ -376,10 +376,10 @@ function ReviewButtons(
   return (
     <div className="btn-group">
       <button className="btn btn-success" onClick={onApprove}>
-        <i className="glyphicon glyphicon-ok" /> Approve
+        <i className="glyphicon glyphicon-ok" />{" "}Approve
       </button>
       <button className="btn btn-danger" onClick={onDecline}>
-        <i className="glyphicon glyphicon-comment" /> Decline...
+        <i className="glyphicon glyphicon-comment" />{" "}Decline...
       </button>
     </div>
   );
@@ -445,7 +445,7 @@ function SignedInfos({ lastReviewer, destination }: SignedInfosProps) {
 function ReSignButton(props: Object) {
   return (
     <button className="btn btn-info" {...props}>
-      <i className="glyphicon glyphicon-repeat" /> Re-sign
+      <i className="glyphicon glyphicon-repeat" />{" "}Re-sign
     </button>
   );
 }
@@ -516,7 +516,7 @@ class CommentDialog extends PureComponent {
                   type="button"
                   className="btn btn-primary"
                   onClick={onClickConfirm}>
-                  {confirmLabel}
+                  <i className="glyphicon glyphicon-ok" />{" "}{confirmLabel}
                 </button>
               </div>
             </div>
