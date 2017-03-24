@@ -57,9 +57,12 @@ export default class SignoffToolBar extends React.Component {
     bucketState: BucketState,
     collectionState: CollectionState,
     signoff: SignoffState,
-    requestReview: () => void,
+    requestReview: (string) => void,
+    confirmRequestReview: () => void,
     approveChanges: () => void,
-    declineChanges: () => void,
+    declineChanges: (string) => void,
+    confirmDeclineChanges: () => void,
+    cancelPendingConfirm: () => void,
   };
 
   render() {
@@ -184,7 +187,7 @@ type WorkInProgressProps = {
   canEdit: boolean,
   currentStep: number,
   step: number,
-  requestReview: () => void,
+  confirmRequestReview: () => void,
   source: SourceInfo,
 };
 
@@ -249,7 +252,7 @@ type ReviewProps = {
   currentStep: number,
   step: number,
   approveChanges: () => void,
-  declineChanges: () => void,
+  confirmDeclineChanges: () => void,
   source: SourceInfo,
   preview: PreviewInfo,
 };
@@ -432,8 +435,19 @@ function ReSignButton(props: Object) {
 //
 // Comment dialog
 //
+type CommentDialogProps = {
+  confirmLabel: string,
+  onConfirm: (string) => void,
+  onCancel: () => void,
+};
 
 class CommentDialog extends PureComponent {
+  props: CommentDialogProps;
+
+  state: {
+    comment: string,
+  };
+
   constructor(props: Object) {
     super(props);
     this.state = {

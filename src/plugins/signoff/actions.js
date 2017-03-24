@@ -18,9 +18,9 @@ export function requestReview(
 }
 
 export function confirmDeclineChanges(): {
-  type: "PLUGIN_CONFIRM_DECLINE_REQUEST",
+  type: "PLUGIN_CONFIRM_DECLINE_CHANGES",
 } {
-  return { type: constants.PLUGIN_CONFIRM_DECLINE_REQUEST };
+  return { type: constants.PLUGIN_CONFIRM_DECLINE_CHANGES };
 }
 
 export function declineChanges(
