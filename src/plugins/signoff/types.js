@@ -1,8 +1,13 @@
 /* @flow */
-export type SignoffState = {
-  source: ?SourceInfo,
+
+export type CollectionsInfo = {
+  source: SourceInfo,
+  destination: DestinationInfo,
   preview: ?PreviewInfo,
-  destination: ?DestinationInfo,
+};
+
+export type SignoffState = {
+  collections: ?CollectionsInfo,
   pendingConfirmReviewRequest: boolean,
   pendingConfirmDeclineChanges: boolean,
 };

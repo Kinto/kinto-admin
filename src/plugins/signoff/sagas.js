@@ -15,7 +15,7 @@ export function* onCollectionRecordsRequest(getState, action) {
   })[0];
 
   // Refresh the signoff toolbar (either empty or basic infos about current)
-  yield put(SignoffActions.workflowInfo({ resource }));
+  yield put(SignoffActions.workflowInfo(resource));
 
   if (!resource) {
     return;
@@ -63,7 +63,7 @@ export function* onCollectionRecordsRequest(getState, action) {
     lastSigned: destinationAttributes.last_modified,
   };
   yield put(
-    SignoffActions.workflowInfo(sourceInfo, previewInfo, destinationInfo)
+    SignoffActions.workflowInfo({ sourceInfo, previewInfo, destinationInfo })
   );
 }
 
@@ -89,9 +89,7 @@ function* fetchWorkflowInfo(source, preview, destination) {
   const colClient = client.bucket(bid).collection(cid);
   const { data: sourceChanges } = yield call(
     [colClient, colClient.listRecords],
-    {
-      since: lastSigned,
-    }
+    { since: lastSigned }
   );
   // Here, `lastUpdated` gives us the timestamp of the most recently changed record.
   // Which can be different from `sourceAttributes.last_modified` since the collection

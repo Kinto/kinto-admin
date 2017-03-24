@@ -1,5 +1,5 @@
 /* @flow */
-import type { SourceInfo, PreviewInfo, DestinationInfo } from "./types";
+import type { CollectionsInfo } from "./types";
 
 import * as constants from "./constants";
 
@@ -44,19 +44,13 @@ export function cancelPendingConfirm(): {
 }
 
 export function workflowInfo(
-  source: SourceInfo,
-  preview: PreviewInfo,
-  destination: DestinationInfo
+  collections: CollectionsInfo
 ): {
   type: "SIGNOFF_WORKFLOW_INFO",
-  source: SourceInfo,
-  preview: PreviewInfo,
-  destination: DestinationInfo,
+  collections: CollectionsInfo,
 } {
   return {
     type: constants.SIGNOFF_WORKFLOW_INFO,
-    source,
-    preview,
-    destination,
+    collections,
   };
 }

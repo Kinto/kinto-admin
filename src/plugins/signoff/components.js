@@ -94,20 +94,16 @@ export default class SignoffToolBar extends React.Component {
 
     // Information loaded via this plugin.
     const {
-      source,
-      preview,
-      destination,
+      collections,
       pendingConfirmReviewRequest,
       pendingConfirmDeclineChanges,
     } = signoff;
     // Hide toolbar if server has not kinto-signer plugin,
     // or if this collection is not configured to be signed.
-    if (!source) {
+    if (!collections) {
       return null;
     }
-    if (!destination) {
-      return null; // Never happens, make flow-check happy.
-    }
+    const { source, destination, preview } = collections;
 
     const canRequestReview = canEdit &&
       isEditor(source, sessionState, bucketState);
@@ -400,11 +396,11 @@ type SignedProps = {
   step: number,
   reSign: () => void,
   source: SourceInfo,
-  destination: DestinationInfo,
+  destination: ?DestinationInfo,
 };
 
-function Signed(
-  {
+function Signed(props: SignedProps) {
+  const {
     label,
     canEdit,
     currentStep,
@@ -412,14 +408,14 @@ function Signed(
     reSign,
     source,
     destination,
-  }: SignedProps
-) {
+  } = props;
   const active = step == currentStep && canEdit;
   const { lastReviewer } = source;
-  const { lastSigned } = destination;
   return (
     <ProgressStep {...{ label, currentStep, step }}>
-      {lastSigned && <SignedInfos {...{ lastReviewer, destination }} />}
+      {destination &&
+        destination.lastSigned &&
+        <SignedInfos {...{ lastReviewer, destination }} />}
       {active && <ReSignButton onClick={reSign} />}
     </ProgressStep>
   );
@@ -430,7 +426,8 @@ type SignedInfosProps = {
   destination: DestinationInfo,
 };
 
-function SignedInfos({ lastReviewer, destination }: SignedInfosProps) {
+function SignedInfos(props: SignedInfosProps) {
+  const { lastReviewer, destination } = props;
   const { lastSigned, bid, cid } = destination;
   return (
     <ul>
