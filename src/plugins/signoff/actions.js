@@ -44,12 +44,19 @@ export function cancelPendingConfirm(): {
 }
 
 export function workflowInfo(
-  source: SourceInfo, preview: PreviewInfo, destination: DestinationInfo
+  source: SourceInfo,
+  preview: PreviewInfo,
+  destination: DestinationInfo
 ): {
   type: "SIGNOFF_WORKFLOW_INFO",
   source: SourceInfo,
   preview: PreviewInfo,
-  destination: DestinationInfo
+  destination: DestinationInfo,
 } {
-  return { type: constants.SIGNOFF_WORKFLOW_INFO, source, preview, destination };
+  return {
+    type: constants.SIGNOFF_WORKFLOW_INFO,
+    source,
+    preview,
+    destination,
+  };
 }

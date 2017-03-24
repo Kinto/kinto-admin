@@ -60,9 +60,11 @@ export function* onCollectionRecordsRequest(getState, action) {
   const destinationInfo = {
     bid: destination.bucket,
     cid: destination.collection,
-    lastSigned: destinationAttributes.last_modified
+    lastSigned: destinationAttributes.last_modified,
   };
-  yield put(SignoffActions.workflowInfo(sourceInfo, previewInfo, destinationInfo));
+  yield put(
+    SignoffActions.workflowInfo(sourceInfo, previewInfo, destinationInfo)
+  );
 }
 
 function* fetchWorkflowInfo(source, preview, destination) {

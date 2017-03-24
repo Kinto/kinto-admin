@@ -106,7 +106,7 @@ export default class SignoffToolBar extends React.Component {
       return null;
     }
     if (!destination) {
-      return null;  // Never happens, make flow-check happy.
+      return null; // Never happens, make flow-check happy.
     }
 
     const canRequestReview = canEdit &&
