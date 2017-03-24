@@ -40,33 +40,29 @@ export function* onCollectionRecordsRequest(getState, action) {
     last_reviewer_comment: lastReviewerComment,
   } = sourceAttributes;
 
-  const information = {
-    resource: {
-      source: {
-        bid: source.bucket,
-        cid: source.collection,
-        lastAuthor,
-        lastEditor,
-        lastEditorComment,
-        lastReviewer,
-        lastReviewerComment,
-        status,
-        lastStatusChanged: sourceAttributes.last_modified,
-        changes,
-      },
-      preview: {
-        bid: preview.bucket,
-        cid: preview.collection,
-        lastRequested: previewAttributes.last_modified,
-      },
-      destination: {
-        bid: destination.bucket,
-        cid: destination.collection,
-        lastSigned: destinationAttributes.last_modified,
-      },
-    },
+  const sourceInfo = {
+    bid: source.bucket,
+    cid: source.collection,
+    lastAuthor,
+    lastEditor,
+    lastEditorComment,
+    lastReviewer,
+    lastReviewerComment,
+    status,
+    lastStatusChanged: sourceAttributes.last_modified,
+    changes,
   };
-  yield put(SignoffActions.workflowInfo(information));
+  const previewInfo = {
+    bid: preview.bucket,
+    cid: preview.collection,
+    lastRequested: previewAttributes.last_modified,
+  };
+  const destinationInfo = {
+    bid: destination.bucket,
+    cid: destination.collection,
+    lastSigned: destinationAttributes.last_modified
+  };
+  yield put(SignoffActions.workflowInfo(sourceInfo, previewInfo, destinationInfo));
 }
 
 function* fetchWorkflowInfo(source, preview, destination) {

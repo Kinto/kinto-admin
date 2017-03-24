@@ -94,17 +94,21 @@ export default class SignoffToolBar extends React.Component {
 
     // Information loaded via this plugin.
     const {
-      resource,
+      source,
+      preview,
+      destination,
       pendingConfirmReviewRequest,
       pendingConfirmDeclineChanges,
     } = signoff;
     // Hide toolbar if server has not kinto-signer plugin,
     // or if this collection is not configured to be signed.
-    if (!resource) {
+    if (!source) {
       return null;
     }
+    if (!destination) {
+      return null;  // Never happens, make flow-check happy.
+    }
 
-    const { source, preview, destination } = resource;
     const canRequestReview = canEdit &&
       isEditor(source, sessionState, bucketState);
     const canReview = canEdit &&
@@ -270,7 +274,7 @@ type ReviewProps = {
   approveChanges: () => void,
   confirmDeclineChanges: () => void,
   source: SourceInfo,
-  preview: PreviewInfo,
+  preview: ?PreviewInfo,
 };
 
 function Review(props: ReviewProps) {
