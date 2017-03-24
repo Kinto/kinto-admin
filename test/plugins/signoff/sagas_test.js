@@ -36,7 +36,7 @@ describe("signoff plugin sagas", () => {
     let handleRequestReview;
 
     before(() => {
-      const action = actions.requestReview();
+      const action = actions.requestReview(":)");
       handleRequestReview = saga.handleRequestReview(getState, action);
     });
 
@@ -44,7 +44,7 @@ describe("signoff plugin sagas", () => {
       expect(handleRequestReview.next({ id: "coll" }).value).to.have
         .property("CALL")
         .to.have.property("args")
-        .to.include({ status: "to-review" });
+        .to.include({ status: "to-review", last_editor_comment: ":)"});
     });
 
     it("should refresh signoff resources status", () => {
@@ -84,7 +84,7 @@ describe("signoff plugin sagas", () => {
     let handleDeclineChanges;
 
     before(() => {
-      const action = actions.declineChanges();
+      const action = actions.declineChanges(":(");
       handleDeclineChanges = saga.handleDeclineChanges(getState, action);
     });
 
@@ -92,7 +92,18 @@ describe("signoff plugin sagas", () => {
       expect(handleDeclineChanges.next({ id: "coll" }).value).to.have
         .property("CALL")
         .to.have.property("args")
-        .to.include({ status: "work-in-progress" });
+        .to.include({ status: "work-in-progress", last_reviewer_comment: ":(" });
+    });
+
+    it("should refresh signoff resources status", () => {
+      expect(
+        handleDeclineChanges.next({
+          data: { id: "coll", status: "work-in-progress" },
+        }).value
+      ).to.have
+        .property("CALL")
+        .to.have.property("args")
+        .to.include({ bid: "buck", cid: "coll" });
     });
 
     it("should dispatch the routeLoadSuccess action", () => {
@@ -129,7 +140,7 @@ describe("signoff plugin sagas", () => {
       expect(handleApproveChanges.next({ id: "coll" }).value).to.have
         .property("CALL")
         .to.have.property("args")
-        .to.include({ status: "to-sign" });
+        .to.include({ status: "to-sign", last_reviewer_comment: "" });
     });
 
     it("should refresh signoff resources status", () => {

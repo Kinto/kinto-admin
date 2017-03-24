@@ -176,7 +176,7 @@ export default class SignoffToolBar extends React.Component {
   }
 }
 
-function Comment({ text }: { text: string }): string {
+function Comment({ text }: { text: string }): ?React$Element<*> {
   if (!text) {
     return null;
   }
