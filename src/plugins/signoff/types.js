@@ -1,6 +1,8 @@
 /* @flow */
 export type SignoffState = {
   resource: ?WorkflowInfo,
+  pendingConfirmReviewRequest: boolean,
+  pendingConfirmDeclineChanges: boolean,
 };
 
 export type WorkflowInfo = {
@@ -15,7 +17,9 @@ export type SourceInfo = {
   changes: Object,
   lastAuthor: string,
   lastEditor: string,
+  lastEditorComment: string,
   lastReviewer: string,
+  lastReviewerComment: string,
   lastStatusChanged: number,
   editors_group?: string,
   reviewers_group?: string,

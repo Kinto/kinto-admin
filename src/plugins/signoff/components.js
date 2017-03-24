@@ -7,7 +7,7 @@ import type {
   DestinationInfo,
 } from "./types";
 
-import React from "react";
+import React, { PureComponent } from "react";
 
 import { canEditCollection } from "../../permission";
 import { timeago, humanDate } from "../../utils";
@@ -71,8 +71,11 @@ export default class SignoffToolBar extends React.Component {
       // Plugin state
       signoff = {},
       // Actions
+      confirmRequestReview,
       requestReview,
       approveChanges,
+      confirmDeclineChanges,
+      cancelPendingConfirm,
       declineChanges,
     } = this.props;
 
@@ -87,7 +90,11 @@ export default class SignoffToolBar extends React.Component {
     const { data: { status } } = collectionState;
 
     // Information loaded via this plugin.
-    const { resource } = signoff;
+    const {
+      resource,
+      pendingConfirmReviewRequest,
+      pendingConfirmDeclineChanges,
+    } = signoff;
     // Hide toolbar if server has not kinto-signer plugin,
     // or if this collection is not configured to be signed.
     if (!resource) {
@@ -123,7 +130,7 @@ export default class SignoffToolBar extends React.Component {
             step={0}
             currentStep={step}
             canEdit={canRequestReview}
-            requestReview={requestReview}
+            confirmRequestReview={confirmRequestReview}
             source={source}
           />
           <Review
@@ -133,7 +140,7 @@ export default class SignoffToolBar extends React.Component {
             canEdit={canReview}
             hasHistory={hasHistory}
             approveChanges={approveChanges}
-            declineChanges={declineChanges}
+            confirmDeclineChanges={confirmDeclineChanges}
             source={source}
             preview={preview}
           />
@@ -147,6 +154,18 @@ export default class SignoffToolBar extends React.Component {
             destination={destination}
           />
         </ProgressBar>
+        {pendingConfirmReviewRequest &&
+          <CommentDialog
+            confirmLabel="Request review"
+            onConfirm={requestReview}
+            onCancel={cancelPendingConfirm}
+          />}
+        {pendingConfirmDeclineChanges &&
+          <CommentDialog
+            confirmLabel="Decline changes"
+            onConfirm={declineChanges}
+            onCancel={cancelPendingConfirm}
+          />}
       </div>
     );
   }
@@ -175,22 +194,28 @@ function WorkInProgress(
     canEdit,
     currentStep,
     step,
-    requestReview,
+    confirmRequestReview,
     source,
   }: WorkInProgressProps
 ) {
   const active = step == currentStep && canEdit;
-  const { lastAuthor, changes = {} } = source;
+  const { lastAuthor, lastReviewerComment, changes = {} } = source;
   const { lastUpdated } = changes;
   return (
     <ProgressStep {...{ label, currentStep, step }}>
-      <WorkInProgressInfos {...{ lastAuthor, lastUpdated }} />
-      {active && lastUpdated && <RequestReviewButton onClick={requestReview} />}
+      <WorkInProgressInfos
+        {...{ active, lastAuthor, lastUpdated, lastReviewerComment }}
+      />
+      {active &&
+        lastUpdated &&
+        <RequestReviewButton onClick={confirmRequestReview} />}
     </ProgressStep>
   );
 }
 
-function WorkInProgressInfos({ lastAuthor, lastUpdated }) {
+function WorkInProgressInfos(
+  { active, lastAuthor, lastUpdated, lastReviewerComment }
+) {
   if (!lastUpdated) {
     return <ul><li>Never updated</li></ul>;
   }
@@ -198,6 +223,9 @@ function WorkInProgressInfos({ lastAuthor, lastUpdated }) {
     <ul>
       <li><strong>Updated: </strong><HumanDate timestamp={lastUpdated} /></li>
       <li><strong>By: </strong> {lastAuthor}</li>
+      {active &&
+        lastReviewerComment &&
+        <li><strong>Comment: </strong> {lastReviewerComment}</li>}
     </ul>
   );
 }
@@ -234,7 +262,7 @@ function Review(props: ReviewProps) {
     currentStep,
     step,
     approveChanges,
-    declineChanges,
+    confirmDeclineChanges,
     source,
     preview,
   } = props;
@@ -263,7 +291,10 @@ function Review(props: ReviewProps) {
         />}
       {active &&
         canEdit &&
-        <ReviewButtons onApprove={approveChanges} onDecline={declineChanges} />}
+        <ReviewButtons
+          onApprove={approveChanges}
+          onDecline={confirmDeclineChanges}
+        />}
     </ProgressStep>
   );
 }
@@ -279,7 +310,7 @@ type ReviewInfosProps = {
 function ReviewInfos(
   { active, source, lastRequested, link, hasHistory }: ReviewInfosProps
 ) {
-  const { bid, cid, lastEditor, changes = {} } = source;
+  const { bid, cid, lastEditor, lastEditorComment, changes = {} } = source;
   const { since, deleted, updated } = changes;
   const detailsLink = hasHistory &&
     <AdminLink
@@ -295,6 +326,9 @@ function ReviewInfos(
         <strong>Requested: </strong><HumanDate timestamp={lastRequested} />
       </li>
       <li><strong>By: </strong> {lastEditor}</li>
+      {active &&
+        lastEditorComment &&
+        <li><strong>Comment: </strong> {lastEditorComment}</li>}
       <li><strong>Preview: </strong> {link}</li>
       {active &&
         <li>
@@ -393,4 +427,68 @@ function ReSignButton(props: Object) {
       <i className="glyphicon glyphicon-repeat" /> Re-sign
     </button>
   );
+}
+
+//
+// Comment dialog
+//
+
+class CommentDialog extends PureComponent {
+  constructor(props: Object) {
+    super(props);
+    this.state = {
+      comment: "",
+    };
+  }
+
+  onCommentChange = e => {
+    this.setState({ comment: e.target.value });
+  };
+
+  render() {
+    const { confirmLabel, onConfirm, onCancel } = this.props;
+    const { comment } = this.state;
+    const onClickConfirm = () => onConfirm(comment);
+
+    return (
+      <div className="model-open">
+        <div
+          className="modal fade in"
+          role="dialog"
+          style={{ display: "block" }}>
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <button type="button" className="close" onClick={onCancel}>
+                  <span>×</span>
+                </button>
+                <h4 className="modal-title">Confirmation</h4>
+              </div>
+              <div className="modal-body">
+                <textarea
+                  className="form-control"
+                  placeholder="Comment..."
+                  onChange={this.onCommentChange}
+                />
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={onCancel}>
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={onClickConfirm}>
+                  {confirmLabel}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }

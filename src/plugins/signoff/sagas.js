@@ -35,7 +35,9 @@ export function* onCollectionRecordsRequest(getState, action) {
     status,
     last_author: lastAuthor,
     last_editor: lastEditor,
+    last_editor_comment: lastEditorComment,
     last_reviewer: lastReviewer,
+    last_reviewer_comment: lastReviewerComment,
   } = sourceAttributes;
 
   const information = {
@@ -45,7 +47,9 @@ export function* onCollectionRecordsRequest(getState, action) {
         cid: source.collection,
         lastAuthor,
         lastEditor,
+        lastEditorComment,
         lastReviewer,
+        lastReviewerComment,
         status,
         lastStatusChanged: sourceAttributes.last_modified,
         changes,
@@ -118,13 +122,15 @@ function* fetchWorkflowInfo(source, preview, destination) {
 
 export function* handleRequestReview(getState, action) {
   const { bucket } = getState();
+  const { comment } = action;
   try {
     const collection = yield call(_updateCollectionAttributes, getState, {
       status: "to-review",
+      last_editor_comment: comment,
     });
     const { data: { id: bid } } = bucket;
     const { data: { id: cid } } = collection;
-    // Simulate page refresh to update new timestamps
+    // Go through the same saga as page load to refresh attributes after signoff changes.
     yield call(onCollectionRecordsRequest, getState, { bid, cid });
     yield put(routeLoadSuccess({ bucket, collection }));
     yield put(notifySuccess("Review requested."));
@@ -135,10 +141,16 @@ export function* handleRequestReview(getState, action) {
 
 export function* handleDeclineChanges(getState, action) {
   const { bucket } = getState();
+  const { comment } = action;
   try {
     const collection = yield call(_updateCollectionAttributes, getState, {
       status: "work-in-progress",
+      last_reviewer_comment: comment,
     });
+    const { data: { id: bid } } = bucket;
+    const { data: { id: cid } } = collection;
+    // Go through the same saga as page load to refresh attributes after signoff changes.
+    yield call(onCollectionRecordsRequest, getState, { bid, cid });
     yield put(routeLoadSuccess({ bucket, collection }));
     yield put(notifySuccess("Changes declined."));
   } catch (e) {
@@ -151,11 +163,12 @@ export function* handleApproveChanges(getState, action) {
   try {
     const collection = yield call(_updateCollectionAttributes, getState, {
       status: "to-sign",
+      last_reviewer_comment: "",
     });
 
     const { data: { id: bid } } = bucket;
     const { data: { id: cid } } = collection;
-    // Simulate page refresh to update new timestamps
+    // Go through the same saga as page load to refresh attributes after signoff changes.
     yield call(onCollectionRecordsRequest, getState, { bid, cid });
     yield put(routeLoadSuccess({ bucket, collection }));
     yield put(notifySuccess("Signature requested."));
