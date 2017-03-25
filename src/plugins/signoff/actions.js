@@ -13,6 +13,7 @@ export function requestReview(
   comment: string
 ): {
   type: "PLUGIN_REVIEW_REQUEST",
+  comment: string,
 } {
   return { type: constants.PLUGIN_REVIEW_REQUEST, comment };
 }
@@ -27,6 +28,7 @@ export function declineChanges(
   comment: string
 ): {
   type: "PLUGIN_DECLINE_REQUEST",
+  comment: string,
 } {
   return { type: constants.PLUGIN_DECLINE_REQUEST, comment };
 }

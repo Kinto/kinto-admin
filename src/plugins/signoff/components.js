@@ -204,16 +204,15 @@ type WorkInProgressProps = {
   source: SourceInfo,
 };
 
-function WorkInProgress(
-  {
+function WorkInProgress(props: WorkInProgressProps) {
+  const {
     label,
     canEdit,
     currentStep,
     step,
     confirmRequestReview,
     source,
-  }: WorkInProgressProps
-) {
+  } = props;
   const active = step == currentStep;
   const { lastAuthor, lastReviewerComment, changes = {} } = source;
   const { lastUpdated } = changes;
@@ -230,9 +229,8 @@ function WorkInProgress(
   );
 }
 
-function WorkInProgressInfos(
-  { active, lastAuthor, lastUpdated, lastReviewerComment }
-) {
+function WorkInProgressInfos(props) {
+  const { active, lastAuthor, lastUpdated, lastReviewerComment } = props;
   if (!lastUpdated) {
     return <ul><li>Never updated</li></ul>;
   }
@@ -249,9 +247,10 @@ function WorkInProgressInfos(
   );
 }
 
-function RequestReviewButton(props: Object) {
+function RequestReviewButton(props: { onClick: () => void }) {
+  const { onClick } = props;
   return (
-    <button className="btn btn-info" {...props}>
+    <button className="btn btn-info" onClick={onClick}>
       <i className="glyphicon glyphicon-comment" />{" "}Request review...
     </button>
   );
@@ -326,9 +325,8 @@ type ReviewInfosProps = {
   hasHistory: boolean,
 };
 
-function ReviewInfos(
-  { active, source, lastRequested, link, hasHistory }: ReviewInfosProps
-) {
+function ReviewInfos(props: ReviewInfosProps) {
+  const { active, source, lastRequested, link, hasHistory } = props;
   const { bid, cid, lastEditor, lastEditorComment, changes = {} } = source;
   const { since, deleted, updated } = changes;
   const detailsLink = hasHistory &&
@@ -361,7 +359,8 @@ function ReviewInfos(
   );
 }
 
-function DiffStats({ updated, deleted }: { updated: number, deleted: number }) {
+function DiffStats(props: { updated: number, deleted: number }) {
+  const { updated, deleted } = props;
   return (
     <span className="diffstats">
       {updated > 0 && <span className="text-green">+{updated}</span>}
@@ -371,8 +370,9 @@ function DiffStats({ updated, deleted }: { updated: number, deleted: number }) {
 }
 
 function ReviewButtons(
-  { onApprove, onDecline }: { onApprove: () => void, onDecline: () => void }
+  props: { onApprove: () => void, onDecline: () => void }
 ) {
+  const { onApprove, onDecline } = props;
   return (
     <div className="btn-group">
       <button className="btn btn-success" onClick={onApprove}>
@@ -415,7 +415,7 @@ function Signed(props: SignedProps) {
     <ProgressStep {...{ label, currentStep, step }}>
       {destination &&
         destination.lastSigned &&
-        <SignedInfos {...{ lastReviewer, destination }} />}
+        <SignedInfos lastReviewer={lastReviewer} destination={destination} />}
       {active && <ReSignButton onClick={reSign} />}
     </ProgressStep>
   );
@@ -443,9 +443,10 @@ function SignedInfos(props: SignedInfosProps) {
   );
 }
 
-function ReSignButton(props: Object) {
+function ReSignButton(props: { onClick: () => void }) {
+  const { onClick } = props;
   return (
-    <button className="btn btn-info" {...props}>
+    <button className="btn btn-info" onClick={onClick}>
       <i className="glyphicon glyphicon-repeat" />{" "}Re-sign
     </button>
   );
