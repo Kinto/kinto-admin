@@ -217,9 +217,12 @@ function WorkInProgress(props: WorkInProgressProps) {
   const { lastAuthor, lastReviewerComment, changes = {} } = source;
   const { lastUpdated } = changes;
   return (
-    <ProgressStep {...{ label, currentStep, step }}>
+    <ProgressStep label={label} currentStep={currentStep} step={step}>
       <WorkInProgressInfos
-        {...{ active, lastAuthor, lastUpdated, lastReviewerComment }}
+        active={active}
+        lastAuthor={lastAuthor}
+        lastUpdated={lastUpdated}
+        lastReviewerComment={lastReviewerComment}
       />
       {active &&
         lastUpdated &&
@@ -302,10 +305,14 @@ function Review(props: ReviewProps) {
 
   const { lastEditor } = source;
   return (
-    <ProgressStep {...{ label, currentStep, step }}>
+    <ProgressStep label={label} currentStep={currentStep} step={step}>
       {lastEditor &&
         <ReviewInfos
-          {...{ active, source, lastRequested, link, hasHistory }}
+          active={active}
+          source={source}
+          lastRequested={lastRequested}
+          link={link}
+          hasHistory={hasHistory}
         />}
       {active &&
         canEdit &&
@@ -412,7 +419,7 @@ function Signed(props: SignedProps) {
   const active = step == currentStep && canEdit;
   const { lastReviewer } = source;
   return (
-    <ProgressStep {...{ label, currentStep, step }}>
+    <ProgressStep label={label} currentStep={currentStep} step={step}>
       {destination &&
         destination.lastSigned &&
         <SignedInfos lastReviewer={lastReviewer} destination={destination} />}
@@ -486,7 +493,7 @@ class CommentDialog extends PureComponent {
     const onClickConfirm = () => onConfirm(comment);
 
     return (
-      <div className="model-open">
+      <div className="modal-open">
         <div
           className="modal fade in"
           role="dialog"
