@@ -1,4 +1,5 @@
 /* @flow */
+import "babel-polyfill";
 import type { Plugin } from "./types";
 
 import React, { Component } from "react";
