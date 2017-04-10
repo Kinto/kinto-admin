@@ -1,5 +1,5 @@
 /* @flow */
-import type { WorkflowInfo } from "./types";
+import type { CollectionsInfo } from "./types";
 
 import * as constants from "./constants";
 
@@ -13,6 +13,7 @@ export function requestReview(
   comment: string
 ): {
   type: "PLUGIN_REVIEW_REQUEST",
+  comment: string,
 } {
   return { type: constants.PLUGIN_REVIEW_REQUEST, comment };
 }
@@ -27,6 +28,7 @@ export function declineChanges(
   comment: string
 ): {
   type: "PLUGIN_DECLINE_REQUEST",
+  comment: string,
 } {
   return { type: constants.PLUGIN_DECLINE_REQUEST, comment };
 }
@@ -44,10 +46,13 @@ export function cancelPendingConfirm(): {
 }
 
 export function workflowInfo(
-  info: WorkflowInfo
+  collections: CollectionsInfo
 ): {
   type: "SIGNOFF_WORKFLOW_INFO",
-  info: WorkflowInfo,
+  collections: CollectionsInfo,
 } {
-  return { type: constants.SIGNOFF_WORKFLOW_INFO, info };
+  return {
+    type: constants.SIGNOFF_WORKFLOW_INFO,
+    collections,
+  };
 }

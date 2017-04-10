@@ -4,7 +4,7 @@ import type { SignoffState } from "./types";
 import * as constants from "./constants";
 
 const INITIAL_STATE: SignoffState = {
-  resource: null,
+  collections: null,
   pendingConfirmReviewRequest: false,
   pendingConfirmDeclineChanges: false,
 };
@@ -28,10 +28,10 @@ export default function signoff(
       };
     }
     case constants.SIGNOFF_WORKFLOW_INFO: {
-      const { info: { resource } } = action;
+      const { collections } = action;
       return {
         ...state,
-        resource,
+        collections,
         pendingConfirmReviewRequest: false,
         pendingConfirmDeclineChanges: false,
       };

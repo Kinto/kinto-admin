@@ -1,14 +1,15 @@
 /* @flow */
-export type SignoffState = {
-  resource: ?WorkflowInfo,
-  pendingConfirmReviewRequest: boolean,
-  pendingConfirmDeclineChanges: boolean,
+
+export type CollectionsInfo = {
+  source: SourceInfo,
+  destination: DestinationInfo,
+  preview: ?PreviewInfo,
 };
 
-export type WorkflowInfo = {
-  source: SourceInfo,
-  preview: PreviewInfo,
-  destination: DestinationInfo,
+export type SignoffState = {
+  collections: ?CollectionsInfo,
+  pendingConfirmReviewRequest: boolean,
+  pendingConfirmDeclineChanges: boolean,
 };
 
 export type SourceInfo = {
