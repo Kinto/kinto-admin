@@ -67,6 +67,7 @@
     "babel-core": "^6.9.1",
     "babel-eslint": "^6.0.2",
     "babel-loader": "^6.2.4",
+    "babel-polyfill": "^6.22.0",
     "babel-plugin-react-transform": "^2.0.2",
     "babel-plugin-syntax-flow": "^6.8.0",
     "babel-plugin-transform-class-properties": "^6.9.1",
