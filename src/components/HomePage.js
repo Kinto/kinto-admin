@@ -8,16 +8,18 @@ import AuthForm from "./AuthForm";
 import { isObject } from "../utils";
 
 function ServerProps({ node }: { node: Object }) {
+  const nodes = Array.isArray(node)
+    ? node.map((n, i) => [i, n])
+    : Object.keys(node).map(key => [key, node[key]]);
   return (
     <table className="table table-condensed">
       <tbody>
-        {Object.keys(node).map((key, i) => {
-          const childNode = node[key];
+        {nodes.map(([key, childNode], i) => {
           return (
             <tr key={i}>
               <th>{key}</th>
               <td style={{ width: "100%" }}>
-                {isObject(childNode)
+                {isObject(childNode) || Array.isArray(childNode)
                   ? <ServerProps node={childNode} />
                   : typeof childNode === "string" &&
                       childNode.startsWith("http")
