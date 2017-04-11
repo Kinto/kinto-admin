@@ -5,6 +5,7 @@ var version = require("./package.json").version;
 module.exports = {
   devtool: "#inline-source-map",
   entry: [
+    "babel-polyfill",
     "webpack-hot-middleware/client",
     "./index"
   ],
