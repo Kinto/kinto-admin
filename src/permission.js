@@ -34,9 +34,11 @@ export function canEditBucket(
   bucket: BucketState
 ): boolean {
   return can(session, (perm: PermissionsListEntry) => {
-    return perm.resource_name == "bucket" &&
+    return (
+      perm.resource_name == "bucket" &&
       perm.bucket_id == bucket.data.id &&
-      perm.permissions.includes("write");
+      perm.permissions.includes("write")
+    );
   });
 }
 
@@ -45,9 +47,11 @@ export function canCreateCollection(
   bucket: BucketState
 ): boolean {
   return can(session, (perm: PermissionsListEntry) => {
-    return perm.resource_name == "bucket" &&
+    return (
+      perm.resource_name == "bucket" &&
       perm.bucket_id == bucket.data.id &&
-      perm.permissions.includes("collection:create");
+      perm.permissions.includes("collection:create")
+    );
   });
 }
 
@@ -57,11 +61,13 @@ export function canEditCollection(
   collection: CollectionState
 ): boolean {
   return can(session, (perm: PermissionsListEntry) => {
-    return (perm.resource_name == "bucket" ||
-      (perm.resource_name == "collection" &&
-        perm.collection_id == collection.data.id)) &&
+    return (
+      (perm.resource_name == "bucket" ||
+        (perm.resource_name == "collection" &&
+          perm.collection_id == collection.data.id)) &&
       perm.bucket_id == bucket.data.id &&
-      perm.permissions.includes("write");
+      perm.permissions.includes("write")
+    );
   });
 }
 
@@ -70,9 +76,11 @@ export function canCreateGroup(
   bucket: BucketState
 ): boolean {
   return can(session, (perm: PermissionsListEntry) => {
-    return perm.resource_name == "bucket" &&
+    return (
+      perm.resource_name == "bucket" &&
       perm.bucket_id == bucket.data.id &&
-      perm.permissions.includes("group:create");
+      perm.permissions.includes("group:create")
+    );
   });
 }
 
@@ -82,10 +90,12 @@ export function canEditGroup(
   group: GroupState
 ): boolean {
   return can(session, (perm: PermissionsListEntry) => {
-    return (perm.resource_name == "bucket" ||
-      (perm.resource_name == "group" && perm.group_id == group.data.id)) &&
+    return (
+      (perm.resource_name == "bucket" ||
+        (perm.resource_name == "group" && perm.group_id == group.data.id)) &&
       perm.bucket_id == bucket.data.id &&
-      perm.permissions.includes("write");
+      perm.permissions.includes("write")
+    );
   });
 }
 
@@ -95,12 +105,13 @@ export function canCreateRecord(
   collection: CollectionState
 ): boolean {
   return can(session, (perm: PermissionsListEntry) => {
-    return ((perm.resource_name == "bucket" &&
-      perm.permissions.includes("write")) ||
-      (perm.resource_name == "collection" &&
-        perm.collection_id == collection.data.id &&
-        perm.permissions.includes("record:create"))) &&
-      perm.bucket_id == bucket.data.id;
+    return (
+      ((perm.resource_name == "bucket" && perm.permissions.includes("write")) ||
+        (perm.resource_name == "collection" &&
+          perm.collection_id == collection.data.id &&
+          perm.permissions.includes("record:create"))) &&
+      perm.bucket_id == bucket.data.id
+    );
   });
 }
 
@@ -111,14 +122,16 @@ export function canEditRecord(
   record: RecordState
 ): boolean {
   return can(session, (perm: PermissionsListEntry) => {
-    return (perm.resource_name == "bucket" ||
-      (perm.resource_name == "collection" &&
-        perm.collection_id == collection.data.id) ||
-      (perm.resource_name == "record" &&
-        perm.collection_id == collection.data.id &&
-        perm.record_id == record.data.id)) &&
+    return (
+      (perm.resource_name == "bucket" ||
+        (perm.resource_name == "collection" &&
+          perm.collection_id == collection.data.id) ||
+        (perm.resource_name == "record" &&
+          perm.collection_id == collection.data.id &&
+          perm.record_id == record.data.id)) &&
       perm.permissions.includes("write") &&
-      perm.bucket_id == bucket.data.id;
+      perm.bucket_id == bucket.data.id
+    );
   });
 }
 
@@ -201,7 +214,7 @@ export function permissionsToFormData(
     ...formData,
     // Ensure entries are always listed alphabetically by principals, to avoid
     // confusing UX.
-    principals: principals.sort((a, b) => a.principal > b.principal ? 1 : -1),
+    principals: principals.sort((a, b) => (a.principal > b.principal ? 1 : -1)),
   };
 }
 
@@ -226,26 +239,24 @@ export function formDataToPermissions(bid: string, formData: Object): Object {
     permissions: groups[gid],
   }));
   const permissionsList = principals.concat(fromGroups).concat(fromGeneric);
-  return permissionsList.reduce(
-    (acc, { principal, permissions = [] }) => {
-      for (const permissionName of permissions) {
-        if (!acc.hasOwnProperty(permissionName)) {
-          acc[permissionName] = [principal];
-        } else {
-          acc[permissionName] = [...acc[permissionName], principal];
-        }
+  return permissionsList.reduce((acc, { principal, permissions = [] }) => {
+    for (const permissionName of permissions) {
+      if (!acc.hasOwnProperty(permissionName)) {
+        acc[permissionName] = [principal];
+      } else {
+        acc[permissionName] = [...acc[permissionName], principal];
       }
-      return acc;
-    },
-    {}
-  );
+    }
+    return acc;
+  }, {});
 }
 
 export function preparePermissionsForm(
   permissions: string[],
   groups: GroupData[]
 ) {
-  const apiDocURI = "https://kinto.readthedocs.io/en/stable/api/1.x/permissions.html#api-principals";
+  const apiDocURI =
+    "https://kinto.readthedocs.io/en/stable/api/1.x/permissions.html#api-principals";
   const schema = {
     definitions: {
       permissions: {
@@ -273,18 +284,15 @@ export function preparePermissionsForm(
         title: "Groups",
         type: "object",
         properties: {
-          ...groups.reduce(
-            (acc, group) => {
-              const { id: gid } = group;
-              acc[gid] = {
-                title: gid,
-                description: `Permissions for users of the ${gid} group`,
-                $ref: "#/definitions/permissions",
-              };
-              return acc;
-            },
-            {}
-          ),
+          ...groups.reduce((acc, group) => {
+            const { id: gid } = group;
+            acc[gid] = {
+              title: gid,
+              description: `Permissions for users of the ${gid} group`,
+              $ref: "#/definitions/permissions",
+            };
+            return acc;
+          }, {}),
         },
       },
       principals: {
@@ -339,12 +347,9 @@ export function preparePermissionsForm(
     },
     groups: {
       classNames: "field-groups",
-      ...groups.reduce(
-        (acc, group) => {
-          return { ...acc, [group.id]: { "ui:widget": "checkboxes" } };
-        },
-        {}
-      ),
+      ...groups.reduce((acc, group) => {
+        return { ...acc, [group.id]: { "ui:widget": "checkboxes" } };
+      }, {}),
     },
   };
 

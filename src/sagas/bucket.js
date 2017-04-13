@@ -235,10 +235,7 @@ export function* createGroup(
 ): SagaGen {
   const { bid, groupData } = action;
   try {
-    const {
-      id: gid,
-      members,
-    } = groupData;
+    const { id: gid, members } = groupData;
     const bucket = getBucket(bid);
     yield call([bucket, bucket.createGroup], gid, members, {
       data: groupData,

@@ -114,14 +114,8 @@ export default class GroupForm extends PureComponent {
   };
 
   render() {
-    const {
-      gid,
-      session,
-      bucket,
-      group,
-      formData = {},
-      deleteGroup,
-    } = this.props;
+    const { gid, session, bucket, group, formData = {}, deleteGroup } = this
+      .props;
     const creation = !formData.id;
     const hasWriteAccess = creation
       ? canCreateGroup(session, bucket)

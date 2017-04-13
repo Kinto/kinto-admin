@@ -13,38 +13,31 @@ export function flattenPluginsRoutes(
   plugins: Object[],
   defaultComponents: Object
 ): Object[] {
-  return plugins.reduce(
-    (acc, { routes = [] }) => {
-      const pluginRoutes = routes.map((route, key) => {
-        const { components, ...props } = route;
-        return (
-          <Route
-            key={key}
-            components={{ ...defaultComponents, ...components }}
-            {...props}
-          />
-        );
-      });
-      return [...acc, ...pluginRoutes];
-    },
-    []
-  );
+  return plugins.reduce((acc, { routes = [] }) => {
+    const pluginRoutes = routes.map((route, key) => {
+      const { components, ...props } = route;
+      return (
+        <Route
+          key={key}
+          components={{ ...defaultComponents, ...components }}
+          {...props}
+        />
+      );
+    });
+    return [...acc, ...pluginRoutes];
+  }, []);
 }
 
 export function flattenPluginsSagas(
   pluginsSagas: PluginSagas,
   getState: GetStateFn
 ): Object[] {
-  return pluginsSagas.reduce(
-    (acc, sagaDefs = []) => {
-      // Create the saga watchers for this plugin, passing them the getState
-      // function
-      const pluginSagas = sagaDefs.map(([fn, ...args]) =>
-        fn(...args, getState));
-      return [...acc, ...pluginSagas];
-    },
-    []
-  );
+  return pluginsSagas.reduce((acc, sagaDefs = []) => {
+    // Create the saga watchers for this plugin, passing them the getState
+    // function
+    const pluginSagas = sagaDefs.map(([fn, ...args]) => fn(...args, getState));
+    return [...acc, ...pluginSagas];
+  }, []);
 }
 
 function extendReducer(
@@ -60,21 +53,18 @@ function extendReducer(
 }
 
 function extendReducers(pluginReducers, standardReducers) {
-  return Object.keys(pluginReducers).reduce(
-    (acc, name) => {
-      const pluginReducer = pluginReducers[name];
-      const standardReducer = standardReducers[name];
-      // If the name of the plugin reducer is already registered, then extend the
-      // existing reducer with the plugin one
-      return {
-        ...acc,
-        [name]: standardReducers.hasOwnProperty(name)
-          ? extendReducer(standardReducer, pluginReducer)
-          : pluginReducer,
-      };
-    },
-    {}
-  );
+  return Object.keys(pluginReducers).reduce((acc, name) => {
+    const pluginReducer = pluginReducers[name];
+    const standardReducer = standardReducers[name];
+    // If the name of the plugin reducer is already registered, then extend the
+    // existing reducer with the plugin one
+    return {
+      ...acc,
+      [name]: standardReducers.hasOwnProperty(name)
+        ? extendReducer(standardReducer, pluginReducer)
+        : pluginReducer,
+    };
+  }, {});
 }
 
 export function flattenPluginsReducers(

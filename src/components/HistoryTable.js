@@ -63,7 +63,7 @@ function fetchCollectionStateAt(
     // clean entries for easier review
     return records
       .map(record => omit(record, ["last_modified", "schema"]))
-      .sort((a, b) => a.id > b.id ? 1 : -1);
+      .sort((a, b) => (a.id > b.id ? 1 : -1));
   });
 }
 

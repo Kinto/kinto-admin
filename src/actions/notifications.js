@@ -53,11 +53,7 @@ function notify(
   message: string,
   options: Object = {}
 ): NotificationAction {
-  const {
-    clear = true,
-    persistent = false,
-    details = [],
-  } = options;
+  const { clear = true, persistent = false, details = [] } = options;
   return {
     type: NOTIFICATION_ADDED,
     clear,

@@ -54,8 +54,8 @@ export default class App extends PureComponent {
       ? " with-notifications"
       : "";
     const contentClasses = `col-sm-9 content${notificationsClass}`;
-    const version = process.env.REACT_APP_VERSION ||
-      process.env.KINTO_ADMIN_VERSION;
+    const version =
+      process.env.REACT_APP_VERSION || process.env.KINTO_ADMIN_VERSION;
     return (
       <div>
         {session.authenticated &&
@@ -82,9 +82,7 @@ export default class App extends PureComponent {
               : <span>
                   &nbsp;v
                   <a
-                    href={
-                      `https://github.com/Kinto/kinto-admin/releases/tag/v${version}`
-                    }>
+                    href={`https://github.com/Kinto/kinto-admin/releases/tag/v${version}`}>
                     {version}
                   </a>
                 </span>}.

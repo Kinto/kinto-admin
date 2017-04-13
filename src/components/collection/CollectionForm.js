@@ -112,8 +112,7 @@ const schema = {
       description: (
         <p>
           {"(in seconds) add "}
-          <a
-            href="https://kinto.readthedocs.io/en/stable/api/1.x/collections.html#collection-caching">
+          <a href="https://kinto.readthedocs.io/en/stable/api/1.x/collections.html#collection-caching">
             client cache headers on read-only requests
           </a>.
         </p>
@@ -340,13 +339,8 @@ export default class CollectionForm extends PureComponent {
   };
 
   render() {
-    const {
-      cid,
-      bucket,
-      collection,
-      formData = {},
-      deleteCollection,
-    } = this.props;
+    const { cid, bucket, collection, formData = {}, deleteCollection } = this
+      .props;
     const creation = !formData.id;
     const showDeleteForm = !creation && this.allowEditing;
     const { asJSON } = this.state;

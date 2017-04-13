@@ -171,7 +171,8 @@ export function* updateRecord(
     if (data) {
       const updatedRecord = { ...data, id: rid, last_modified };
       if (session.serverInfo.capabilities.attachments != null && attachment) {
-        const attachmentCapability = session.serverInfo.capabilities.attachments;
+        const attachmentCapability =
+          session.serverInfo.capabilities.attachments;
         const attachmentOptions = getAttachmentOptions(
           attachmentCapability,
           collection.data

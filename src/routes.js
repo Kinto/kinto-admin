@@ -159,12 +159,9 @@ function registerPluginsComponentHooks(PageContainer, plugins) {
   // Retrieve all the hooks if any
   const hooks = plugins.map(plugin => plugin.hooks).filter(isObject);
   // Merge all the hooks together, recursively grouped by namespaces
-  const mergedHooks = hooks.reduce(
-    (acc, hookObject) => {
-      return mergeObjects(acc, hookObject, true);
-    },
-    {}
-  );
+  const mergedHooks = hooks.reduce((acc, hookObject) => {
+    return mergeObjects(acc, hookObject, true);
+  }, {});
   // Wrap the root component, augmenting its props with the plugin hooks for it.
   return class extends Component {
     render() {
