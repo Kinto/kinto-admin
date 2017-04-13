@@ -44,7 +44,6 @@ export function paginator(
     case RECORD_HISTORY_NEXT_REQUEST: {
       return { ...state, loaded: false };
     }
-
     // history responses
     case BUCKET_COLLECTIONS_SUCCESS:
     case BUCKET_HISTORY_SUCCESS:

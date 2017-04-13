@@ -25,9 +25,12 @@ type ProgressStepProps = {
   children?: any,
 };
 
-export function ProgressStep(
-  { label, currentStep, step, children }: ProgressStepProps
-) {
+export function ProgressStep({
+  label,
+  currentStep,
+  step,
+  children,
+}: ProgressStepProps) {
   const status = currentStep == step
     ? "active"
     : step < currentStep ? "complete" : "disabled";

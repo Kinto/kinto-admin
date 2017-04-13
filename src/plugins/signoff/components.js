@@ -57,10 +57,10 @@ export default class SignoffToolBar extends React.Component {
     bucketState: BucketState,
     collectionState: CollectionState,
     signoff: SignoffState,
-    requestReview: (string) => void,
+    requestReview: string => void,
     confirmRequestReview: () => void,
     approveChanges: () => void,
-    declineChanges: (string) => void,
+    declineChanges: string => void,
     confirmDeclineChanges: () => void,
     cancelPendingConfirm: () => void,
   };
@@ -105,9 +105,10 @@ export default class SignoffToolBar extends React.Component {
     }
     const { source, destination, preview } = collections;
 
-    const canRequestReview = canEdit &&
-      isEditor(source, sessionState, bucketState);
-    const canReview = canEdit &&
+    const canRequestReview =
+      canEdit && isEditor(source, sessionState, bucketState);
+    const canReview =
+      canEdit &&
       isReviewer(source, sessionState, bucketState) &&
       !isLastEditor(source, sessionState);
     const canSign = canEdit && isReviewer(source, sessionState, bucketState);
@@ -336,7 +337,8 @@ function ReviewInfos(props: ReviewInfosProps) {
   const { active, source, lastRequested, link, hasHistory } = props;
   const { bid, cid, lastEditor, lastEditorComment, changes = {} } = source;
   const { since, deleted, updated } = changes;
-  const detailsLink = hasHistory &&
+  const detailsLink =
+    hasHistory &&
     <AdminLink
       name="collection:history"
       params={{ bid, cid }}
@@ -465,7 +467,7 @@ function ReSignButton(props: { onClick: () => void }) {
 type CommentDialogProps = {
   description: string,
   confirmLabel: string,
-  onConfirm: (string) => void,
+  onConfirm: string => void,
   onCancel: () => void,
 };
 

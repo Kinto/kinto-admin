@@ -55,9 +55,9 @@ export default class TagsField extends PureComponent {
     this.state = { tagsString: toTagsString(props.formData, this.separator) };
   }
 
-  onChange = (
-    { target: { value: tagsString } }: { target: { value: string } }
-  ) => {
+  onChange = ({
+    target: { value: tagsString },
+  }: { target: { value: string } }) => {
     const { schema: { uniqueItems = false }, onChange } = this.props;
     const tags = toTagList(tagsString, this.separator, uniqueItems);
     this.setState({ tagsString });

@@ -156,9 +156,8 @@ describe("CollectionRecords component", () => {
 
       it("should render list actions", () => {
         expect(node.querySelector(".list-actions .btn-record-add")).to.exist;
-        expect(
-          node.querySelector(".list-actions .btn-record-bulk-add")
-        ).to.exist;
+        expect(node.querySelector(".list-actions .btn-record-bulk-add")).to
+          .exist;
       });
     });
 
@@ -177,9 +176,8 @@ describe("CollectionRecords component", () => {
       });
 
       it("should not render list actions", () => {
-        expect(
-          node.querySelector(".list-actions .btn-record-bulk-add")
-        ).to.not.exist;
+        expect(node.querySelector(".list-actions .btn-record-bulk-add")).to.not
+          .exist;
       });
     });
   });

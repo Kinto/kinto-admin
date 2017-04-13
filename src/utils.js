@@ -9,12 +9,9 @@ export function clone(obj: any) {
 }
 
 export function omit(obj: Object, keys: string[] = []): Object {
-  return Object.keys(obj).reduce(
-    (acc: Object, key: string) => {
-      return keys.includes(key) ? acc : { ...acc, [key]: obj[key] };
-    },
-    {}
-  );
+  return Object.keys(obj).reduce((acc: Object, key: string) => {
+    return keys.includes(key) ? acc : { ...acc, [key]: obj[key] };
+  }, {});
 }
 
 export function isObject(thing: any): boolean {
@@ -202,16 +199,18 @@ export function renderDisplayField(record: Object, displayField: string): any {
 }
 
 export function humanDate(since: string | number): string {
-  return new Date(parseInt(since, 10)).toLocaleDateString("en-GB", {
-    timeZone: "UTC",
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  }) + " UTC";
+  return (
+    new Date(parseInt(since, 10)).toLocaleDateString("en-GB", {
+      timeZone: "UTC",
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    }) + " UTC"
+  );
 }
 
 export function buildAttachmentUrl(
@@ -223,8 +222,8 @@ export function buildAttachmentUrl(
   }
   const { base_url = "" } = capabilities.attachments;
   const { location } = record.attachment;
-  const ensureTrailingSlash = str => str.endsWith("/") ? str : str + "/";
-  const dropStartingSlash = str => str.startsWith("/") ? str.slice(1) : str;
+  const ensureTrailingSlash = str => (str.endsWith("/") ? str : str + "/");
+  const dropStartingSlash = str => (str.startsWith("/") ? str.slice(1) : str);
   return location.startsWith(base_url)
     ? location
     : ensureTrailingSlash(base_url) + dropStartingSlash(location);

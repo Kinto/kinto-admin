@@ -114,16 +114,14 @@ describe("validateSchema()", () => {
 
   it("should validate that the schema properties are an object", () => {
     expect(() =>
-      validateSchema(
-        JSON.stringify({ type: "object", properties: 2 })
-      )).to.throw("The 'properties' property is not an object");
+      validateSchema(JSON.stringify({ type: "object", properties: 2 }))
+    ).to.throw("The 'properties' property is not an object");
   });
 
   it("should validate that the schema properties has properties", () => {
     expect(() =>
-      validateSchema(
-        JSON.stringify({ type: "object", properties: {} })
-      )).to.throw("The 'properties' property object has no properties");
+      validateSchema(JSON.stringify({ type: "object", properties: {} }))
+    ).to.throw("The 'properties' property object has no properties");
   });
 });
 
@@ -150,22 +148,21 @@ describe("validateUiSchema()", () => {
 
   it("should validate that a uiSchema 'ui:order' is an array", () => {
     expect(() =>
-      validateUiSchema(JSON.stringify({ "ui:order": 42 }), schema)).to.throw(
-      "The uiSchema ui:order directive isn't an array"
-    );
+      validateUiSchema(JSON.stringify({ "ui:order": 42 }), schema)
+    ).to.throw("The uiSchema ui:order directive isn't an array");
   });
 
   it("should validate that a uiSchema 'ui:order' match schema properties", () => {
     expect(() =>
-      validateUiSchema(JSON.stringify({ "ui:order": [] }), schema)).to.throw(
-      "The ui:order directive should list all schema properties"
-    );
+      validateUiSchema(JSON.stringify({ "ui:order": [] }), schema)
+    ).to.throw("The ui:order directive should list all schema properties");
 
     expect(() =>
       validateUiSchema(
         JSON.stringify({ "ui:order": ["foo", "bar", "baz"] }),
         schema
-      )).to.throw("The ui:order directive should list all schema properties");
+      )
+    ).to.throw("The ui:order directive should list all schema properties");
 
     const validUiSchema = JSON.stringify({ "ui:order": ["foo", "bar"] });
     expect(validateUiSchema(validUiSchema, schema)).eql(

@@ -129,25 +129,21 @@ function filterBuckets(buckets, filters) {
   const { hideReadOnly, search } = filters;
   return buckets
     .slice(0)
-    .reduce(
-      (acc, bucket) => {
-        if (search == null || bucket.id.includes(search)) {
-          return [...acc, bucket];
-        } else if (bucket.collections.some(c => c.id.includes(search))) {
-          return [
-            ...acc,
-            {
-              ...bucket,
-              collections: bucket.collections.filter(c =>
-                c.id.includes(search)),
-            },
-          ];
-        } else {
-          return acc;
-        }
-      },
-      []
-    )
+    .reduce((acc, bucket) => {
+      if (search == null || bucket.id.includes(search)) {
+        return [...acc, bucket];
+      } else if (bucket.collections.some(c => c.id.includes(search))) {
+        return [
+          ...acc,
+          {
+            ...bucket,
+            collections: bucket.collections.filter(c => c.id.includes(search)),
+          },
+        ];
+      } else {
+        return acc;
+      }
+    }, [])
     .filter(bucket => !(hideReadOnly && bucket.readonly));
 }
 
@@ -236,16 +232,12 @@ class BucketsMenu extends PureComponent {
               return (
                 <div
                   key={i}
-                  className={
-                    `panel panel-${current ? "info" : "default"} bucket-menu`
-                  }>
+                  className={`panel panel-${current ? "info" : "default"} bucket-menu`}>
                   <div className="panel-heading">
                     {bucket.readonly
                       ? <i className="glyphicon glyphicon-lock" />
                       : <i
-                          className={
-                            `glyphicon glyphicon-folder-${current ? "open" : "close"}`
-                          }
+                          className={`glyphicon glyphicon-folder-${current ? "open" : "close"}`}
                         />}
                     <strong>{id}</strong> bucket
                     <SideBarLink

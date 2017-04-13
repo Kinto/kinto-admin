@@ -20,7 +20,7 @@
     "test-browser": "NODE_ENV=test node_modules/.bin/babel-node node_modules/.bin/_mocha 'test-browser/**/*_test.js'",
     "test-all": "npm run lint && npm run flow-check && npm run test"
   },
-  "prettierOptions": "--jsx-bracket-same-line --trailing-comma es5",
+  "prettierOptions": "--jsx-bracket-same-line --trailing-comma es5 --semi",
   "lint-staged": {
     "{src,test}/**/*.js": [
       "npm run lint",
@@ -93,7 +93,7 @@
     "mocha": "^3.0.2",
     "mocha-generators": "^1.2.0",
     "nightmare": "^2.7.0",
-    "prettier": "^0.22.0",
+    "prettier": "^1.0.0",
     "prettier-check": "^1.0.0",
     "react-addons-test-utils": "^15.2.0",
     "react-transform-catch-errors": "^1.0.0",
