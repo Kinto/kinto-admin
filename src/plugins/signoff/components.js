@@ -16,7 +16,7 @@ import { ProgressBar, ProgressStep } from "./ProgressBar.js";
 
 function isMember(groupKey, source, sessionState, bucketState) {
   const { serverInfo: { user = {}, capabilities } } = sessionState;
-  if (!user.id) {
+  if (!source || !user.id) {
     return false;
   }
   const { signer = {} } = capabilities;
@@ -103,7 +103,11 @@ export default class SignoffToolBar extends React.Component {
     if (!collections) {
       return null;
     }
-    const { source, destination, preview } = collections;
+    const {
+      sourceInfo: source,
+      destinationinfo: destination,
+      previewInfo: preview,
+    } = collections;
 
     const canRequestReview =
       canEdit && isEditor(source, sessionState, bucketState);
