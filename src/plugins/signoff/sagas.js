@@ -63,7 +63,11 @@ export function* onCollectionRecordsRequest(getState, action) {
     lastSigned: destinationAttributes.last_modified,
   };
   yield put(
-    SignoffActions.workflowInfo({ sourceInfo, previewInfo, destinationInfo })
+    SignoffActions.workflowInfo({
+      source: sourceInfo,
+      preview: previewInfo,
+      destination: destinationInfo,
+    })
   );
 }
 

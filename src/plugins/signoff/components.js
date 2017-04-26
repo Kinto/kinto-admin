@@ -103,11 +103,7 @@ export default class SignoffToolBar extends React.Component {
     if (!collections) {
       return null;
     }
-    const {
-      sourceInfo: source,
-      destinationinfo: destination,
-      previewInfo: preview,
-    } = collections;
+    const { source, destination, preview } = collections;
 
     const canRequestReview =
       canEdit && isEditor(source, sessionState, bucketState);
@@ -218,6 +214,7 @@ function WorkInProgress(props: WorkInProgressProps) {
     confirmRequestReview,
     source,
   } = props;
+
   const active = step == currentStep;
   const { lastAuthor, lastReviewerComment, changes = {} } = source;
   const { lastUpdated } = changes;
