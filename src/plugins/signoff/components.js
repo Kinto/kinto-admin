@@ -16,7 +16,7 @@ import { ProgressBar, ProgressStep } from "./ProgressBar.js";
 
 function isMember(groupKey, source, sessionState, bucketState) {
   const { serverInfo: { user = {}, capabilities } } = sessionState;
-  if (!user.id) {
+  if (!source || !user.id) {
     return false;
   }
   const { signer = {} } = capabilities;
@@ -214,6 +214,7 @@ function WorkInProgress(props: WorkInProgressProps) {
     confirmRequestReview,
     source,
   } = props;
+
   const active = step == currentStep;
   const { lastAuthor, lastReviewerComment, changes = {} } = source;
   const { lastUpdated } = changes;
