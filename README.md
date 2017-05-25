@@ -1,5 +1,7 @@
 # Kinto Web Administration Console
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/Kinto/kinto-admin.svg)](https://greenkeeper.io/)
+
 [![Build Status](https://travis-ci.org/Kinto/kinto-admin.svg?branch=master)](https://travis-ci.org/Kinto/kinto-admin)
 
 A Web admin UI to manage data from a [Kinto](https://kinto.readthedocs.io/) server. [Demo](http://kinto.github.io/kinto-admin/).
