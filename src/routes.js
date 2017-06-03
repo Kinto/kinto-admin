@@ -26,15 +26,11 @@ import GroupCreatePage from "./containers/group/GroupCreatePage";
 import GroupAttributesPage from "./containers/group/GroupAttributesPage";
 import GroupPermissionsPage from "./containers/group/GroupPermissionsPage";
 import GroupHistoryPage from "./containers/group/GroupHistoryPage";
-import CollectionRecordsPage
-  from "./containers/collection/CollectionRecordsPage";
-import CollectionHistoryPage
-  from "./containers/collection/CollectionHistoryPage";
+import CollectionRecordsPage from "./containers/collection/CollectionRecordsPage";
+import CollectionHistoryPage from "./containers/collection/CollectionHistoryPage";
 import CollectionCreatePage from "./containers/collection/CollectionCreatePage";
-import CollectionAttributesPage
-  from "./containers/collection/CollectionAttributesPage";
-import CollectionPermissionsPage
-  from "./containers/collection/CollectionPermissionsPage";
+import CollectionAttributesPage from "./containers/collection/CollectionAttributesPage";
+import CollectionPermissionsPage from "./containers/collection/CollectionPermissionsPage";
 import RecordCreatePage from "./containers/record/RecordCreatePage";
 import RecordBulkPage from "./containers/record/RecordBulkPage";
 import RecordAttributesPage from "./containers/record/RecordAttributesPage";

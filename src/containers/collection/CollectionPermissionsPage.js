@@ -5,8 +5,7 @@ import type { Dispatch, ActionCreatorOrObjectOfACs } from "redux";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
-import CollectionPermissions
-  from "../../components/collection/CollectionPermissions";
+import CollectionPermissions from "../../components/collection/CollectionPermissions";
 import * as BucketActions from "../../actions/bucket";
 
 function mapStateToProps(state: AppState) {

@@ -80,7 +80,9 @@ export class Notification extends PureComponent {
               onClick={this.expand}
               title="Error details">
               <i
-                className={`glyphicon glyphicon-triangle-${expanded ? "bottom" : "right"}`}
+                className={`glyphicon glyphicon-triangle-${expanded
+                  ? "bottom"
+                  : "right"}`}
               />
             </a>}
         </p>

@@ -61,11 +61,11 @@ class ServerHistory extends PureComponent {
               ? <li>
                   <a onClick={this.toggleMenu}><em>No server history</em></a>
                 </li>
-              : history.map((server, key) => (
+              : history.map((server, key) =>
                   <li key={key}>
                     <a href="#" onClick={this.select(server)}>{server}</a>
                   </li>
-                ))}
+                )}
             <li role="separator" className="divider" />
             <li><a href="#" onClick={this.clear}>Clear</a></li>
           </ul>
