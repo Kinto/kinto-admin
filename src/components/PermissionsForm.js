@@ -31,7 +31,8 @@ export default class PermissionsForm extends PureComponent {
     if (readonly) {
       return (
         <div className="alert alert-warning">
-          You don't have the required permission to edit the permissions for this resource.
+          You don't have the required permission to edit the permissions for
+          this resource.
         </div>
       );
     }

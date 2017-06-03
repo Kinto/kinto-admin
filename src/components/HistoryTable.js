@@ -196,10 +196,10 @@ class HistoryRow extends PureComponent {
             {busy
               ? <Spinner />
               : previous
-                  ? <Diff source={entry.target} target={previous.target} />
-                  : error
-                      ? <p className="alert alert-danger">{error}</p>
-                      : <pre>{JSON.stringify(entry.target, null, 2)}</pre>}
+                ? <Diff source={entry.target} target={previous.target} />
+                : error
+                  ? <p className="alert alert-danger">{error}</p>
+                  : <pre>{JSON.stringify(entry.target, null, 2)}</pre>}
           </td>
         </tr>
       </tbody>
@@ -389,15 +389,15 @@ export default class HistoryTable extends PureComponent {
         {cid && diffOverview && since
           ? <DiffOverview since={since} source={current} target={previous} />
           : !historyLoaded
-              ? <Spinner />
-              : <PaginatedTable
-                  colSpan={6}
-                  thead={thead}
-                  tbody={tbody}
-                  dataLoaded={historyLoaded}
-                  hasNextPage={hasNextHistory}
-                  listNextPage={listNextHistory}
-                />}
+            ? <Spinner />
+            : <PaginatedTable
+                colSpan={6}
+                thead={thead}
+                tbody={tbody}
+                dataLoaded={historyLoaded}
+                hasNextPage={hasNextHistory}
+                listNextPage={listNextHistory}
+              />}
       </div>
     );
   }

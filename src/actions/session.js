@@ -100,8 +100,9 @@ export function logout(): {
 }
 
 function navigateToFxA(server: string, redirect: string): NavigationResult {
-  document.location
-    .href = `${server}/fxa-oauth/login?redirect=${encodeURIComponent(redirect)}`;
+  document.location.href = `${server}/fxa-oauth/login?redirect=${encodeURIComponent(
+    redirect
+  )}`;
   return { type: null };
 }
 

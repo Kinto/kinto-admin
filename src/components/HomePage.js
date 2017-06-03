@@ -23,8 +23,8 @@ function ServerProps({ node }: { node: Object }) {
                   ? <ServerProps node={childNode} />
                   : typeof childNode === "string" &&
                       childNode.startsWith("http")
-                      ? <a href={childNode} target="_blank">{childNode}</a>
-                      : String(childNode)}
+                    ? <a href={childNode} target="_blank">{childNode}</a>
+                    : String(childNode)}
               </td>
             </tr>
           );
@@ -75,15 +75,15 @@ export default class HomePage extends PureComponent {
         {busy
           ? <Spinner />
           : authenticated
-              ? <SessionInfo session={session} />
-              : <AuthForm
-                  setup={setup}
-                  session={session}
-                  settings={settings}
-                  history={history}
-                  clearHistory={clearHistory}
-                  navigateToExternalAuth={navigateToExternalAuth}
-                />}
+            ? <SessionInfo session={session} />
+            : <AuthForm
+                setup={setup}
+                session={session}
+                settings={settings}
+                history={history}
+                clearHistory={clearHistory}
+                navigateToExternalAuth={navigateToExternalAuth}
+              />}
       </div>
     );
   }
