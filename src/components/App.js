@@ -48,7 +48,7 @@ export default class App extends PureComponent {
       content,
       notificationList,
       routes,
-      params,
+      params = {},
     } = this.props;
     const notificationsClass = notificationList.length
       ? " with-notifications"
