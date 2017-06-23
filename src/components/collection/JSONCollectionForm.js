@@ -48,7 +48,9 @@ export default class JSONCollectionForm extends PureComponent {
 
   onSubmit = ({
     formData,
-  }: { formData: { id: string, data: string } }): void => {
+  }: {
+    formData: { id: string, data: string },
+  }): void => {
     const collectionData = { ...JSON.parse(formData.data), id: formData.id };
     this.props.onSubmit({ formData: collectionData });
   };

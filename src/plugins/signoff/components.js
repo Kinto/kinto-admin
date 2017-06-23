@@ -123,7 +123,8 @@ export default class SignoffToolBar extends React.Component {
           : <div className="alert alert-warning">
               <p>
                 <b>
-                  Plugin which tracks history of changes is not enabled on this server.
+                  Plugin which tracks history of changes is not enabled on this
+                  server.
                 </b>
                 Please reach to the server administrator.
               </p>
@@ -380,7 +381,10 @@ function DiffStats(props: { updated: number, deleted: number }) {
 }
 
 function ReviewButtons(
-  props: { onApprove: () => void, onDecline: () => void }
+  props: {
+    onApprove: () => void,
+    onDecline: () => void,
+  }
 ) {
   const { onApprove, onDecline } = props;
   return (

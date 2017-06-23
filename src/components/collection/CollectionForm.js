@@ -187,7 +187,8 @@ const uiSchema = {
       <p>
         This must be a valid
         <a href="http://json-schema.org/" target="_blank"> JSON schema </a>
-        defining an object representing the structure of your collection records.
+        defining an object representing the structure of your collection
+        records.
         You may find this
         <a href="http://jsonschema.net/" target="_blank">
           {" online schema builder "}

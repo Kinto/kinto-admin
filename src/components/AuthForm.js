@@ -88,7 +88,7 @@ const baseAuthSchema = {
     authType: {
       type: "string",
       title: "Authentication method",
-      enum: ["basicauth", "fxa", "ldap"],
+      enum: ["basicauth", "account", "fxa", "ldap"],
     },
   },
 };
@@ -103,6 +103,36 @@ const baseUISchema = {
 };
 
 const authSchemas = {
+  account: {
+    schema: {
+      ...baseAuthSchema,
+      required: [...baseAuthSchema.required, "credentials"],
+      properties: {
+        ...baseAuthSchema.properties,
+        credentials: {
+          type: "object",
+          title: "Accounts credentials",
+          required: ["username", "password"],
+          properties: {
+            username: {
+              type: "string",
+              title: "Username",
+            },
+            password: {
+              type: "string",
+              title: "Password",
+            },
+          },
+        },
+      },
+    },
+    uiSchema: {
+      ...baseUISchema,
+      credentials: {
+        password: { "ui:widget": "password" },
+      },
+    },
+  },
   basicauth: {
     schema: {
       ...baseAuthSchema,
@@ -229,6 +259,7 @@ const authSchemas = {
 const authLabels = {
   anonymous: "Anonymous",
   basicauth: "Basic Auth",
+  account: "Kinto Account Auth",
   fxa: "Firefox Account",
   ldap: "LDAP",
   portier: "Portier",
@@ -352,6 +383,7 @@ export default class AuthForm extends PureComponent {
       // case "anonymous":
       // case "ldap":
       // case "basicauth":
+      // case "account":
       default: {
         return setup(extendedFormData);
       }

@@ -286,7 +286,13 @@ export type RouteResources = {
   group: ?GroupResource,
 };
 
-export type AuthMethod = "anonymous" | "fxa" | "ldap" | "basicauth" | "portier";
+export type AuthMethod =
+  | "anonymous"
+  | "account"
+  | "fxa"
+  | "ldap"
+  | "basicauth"
+  | "portier";
 
 export type SettingsState = {
   maxPerPage: number,
@@ -295,7 +301,12 @@ export type SettingsState = {
   sidebarMaxListedCollections: number,
 };
 
-export type AuthData = AnonymousAuth | LDAPAuth | BasicAuth | TokenAuth;
+export type AuthData =
+  | AnonymousAuth
+  | LDAPAuth
+  | AccountAuth
+  | BasicAuth
+  | TokenAuth;
 
 export type AnonymousAuth = {
   authType: "anonymous",
@@ -304,6 +315,15 @@ export type AnonymousAuth = {
 
 export type LDAPAuth = {
   authType: "ldap",
+  server: string,
+  credentials: {
+    username: string,
+    password: string,
+  },
+};
+
+export type AccountAuth = {
+  authType: "account",
   server: string,
   credentials: {
     username: string,

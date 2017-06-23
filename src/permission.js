@@ -305,7 +305,8 @@ export function preparePermissionsForm(
               can be a user ID or a group URI
             </a>
             .
-            The write permissions is always granted to the user that edited the object.
+            The write permissions is always granted to the user that edited the
+            object.
           </p>
         ),
         type: "array",
