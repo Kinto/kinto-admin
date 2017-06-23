@@ -79,7 +79,8 @@ export function validateSchema(jsonSchema: string) {
 }
 
 export function validateUiSchema(jsonUiSchema: string, jsonSchema: string) {
-  let uiSchema: Object, schema: Object = JSON.parse(jsonSchema);
+  let uiSchema: Object,
+    schema: Object = JSON.parse(jsonSchema);
   try {
     uiSchema = JSON.parse(jsonUiSchema);
   } catch (err) {
@@ -182,7 +183,8 @@ export function renderDisplayField(record: Object, displayField: string): any {
     if (typeof field === "string") {
       return linkify(field);
     } else if (
-      Array.isArray(field) && field.every(x => typeof x === "string")
+      Array.isArray(field) &&
+      field.every(x => typeof x === "string")
     ) {
       return field.join(", ");
     } else if (typeof field === "object") {

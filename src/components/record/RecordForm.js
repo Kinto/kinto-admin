@@ -256,7 +256,8 @@ export default class RecordForm extends PureComponent {
         <div>
           {emptySchema &&
             <div className="alert alert-warning">
-              This collection doesn't have any JSON schema defined, though you can
+              This collection doesn't have any JSON schema defined, though you
+              can
               create free-form records entering raw JSON.
             </div>}
           <JSONRecordForm

@@ -2,8 +2,7 @@ import { expect } from "chai";
 
 import { createSandbox, createComponent } from "../test_utils";
 
-import CollectionRecords
-  from "../../src/components/collection/CollectionRecords";
+import CollectionRecords from "../../src/components/collection/CollectionRecords";
 
 describe("CollectionRecords component", () => {
   let sandbox;

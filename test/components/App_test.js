@@ -23,6 +23,7 @@ describe("App component", () => {
         session: { authenticated: false },
         notificationList: [{ message: "blah" }],
         routes: [{ name: "Home" }],
+        params: {},
       });
 
       expect(node.querySelector(".session-info-bar")).to.not.exist;
@@ -40,6 +41,7 @@ describe("App component", () => {
         logout: {},
         notificationList: [],
         routes: [{ name: "Home" }],
+        params: {},
       });
       const infoBar = node.querySelector(".session-info-bar");
       const content = infoBar.textContent;
@@ -68,6 +70,7 @@ describe("App component", () => {
         logout,
         notificationList: [],
         routes: [{ name: "Home" }],
+        params: {},
       });
 
       const infoBar = node.querySelector(".session-info-bar");
@@ -91,6 +94,7 @@ describe("App component", () => {
         session,
         notificationList: [{ message: "blah" }],
         routes: [{ name: "Home" }],
+        params: {},
       });
 
       expect(

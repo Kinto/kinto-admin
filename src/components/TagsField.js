@@ -57,7 +57,9 @@ export default class TagsField extends PureComponent {
 
   onChange = ({
     target: { value: tagsString },
-  }: { target: { value: string } }) => {
+  }: {
+    target: { value: string },
+  }) => {
     const { schema: { uniqueItems = false }, onChange } = this.props;
     const tags = toTagList(tagsString, this.separator, uniqueItems);
     this.setState({ tagsString });
@@ -79,7 +81,7 @@ export default class TagsField extends PureComponent {
           value={tagsString}
           placeholder={
             uiSchema["ui:placeholder"] ||
-              toTagsString(["tag1", "tag2", "tag3"], this.separator)
+            toTagsString(["tag1", "tag2", "tag3"], this.separator)
           }
           onChange={this.onChange}
           required={required}

@@ -61,11 +61,11 @@ class ServerHistory extends PureComponent {
               ? <li>
                   <a onClick={this.toggleMenu}><em>No server history</em></a>
                 </li>
-              : history.map((server, key) => (
+              : history.map((server, key) =>
                   <li key={key}>
                     <a href="#" onClick={this.select(server)}>{server}</a>
                   </li>
-                ))}
+                )}
             <li role="separator" className="divider" />
             <li><a href="#" onClick={this.clear}>Clear</a></li>
           </ul>
@@ -88,7 +88,7 @@ const baseAuthSchema = {
     authType: {
       type: "string",
       title: "Authentication method",
-      enum: ["basicauth", "fxa", "ldap"],
+      enum: ["basicauth", "account", "fxa", "ldap"],
     },
   },
 };
@@ -102,37 +102,59 @@ const baseUISchema = {
   },
 };
 
+const loginPasswordSchema = function(title) {
+  return {
+    credentials: {
+      type: "object",
+      title: title,
+      required: ["username", "password"],
+      properties: {
+        username: {
+          type: "string",
+          title: "Username",
+        },
+        password: {
+          type: "string",
+          title: "Password",
+        },
+      },
+    },
+  };
+};
+
+const loginPasswordUiSchema = {
+  credentials: {
+    password: { "ui:widget": "password" },
+  },
+};
+
 const authSchemas = {
+  account: {
+    schema: {
+      ...baseAuthSchema,
+      required: [...baseAuthSchema.required, "credentials"],
+      properties: {
+        ...baseAuthSchema.properties,
+        ...loginPasswordSchema("Accounts credentials"),
+      },
+    },
+    uiSchema: {
+      ...baseUISchema,
+      ...loginPasswordUiSchema,
+    },
+  },
   basicauth: {
     schema: {
       ...baseAuthSchema,
       required: [...baseAuthSchema.required, "credentials"],
       properties: {
         ...baseAuthSchema.properties,
-        credentials: {
-          type: "object",
-          title: "BasicAuth credentials",
-          required: ["username", "password"],
-          properties: {
-            username: {
-              type: "string",
-              title: "Username",
-              default: "test",
-            },
-            password: {
-              type: "string",
-              title: "Password",
-              default: "test",
-            },
-          },
-        },
+        ...loginPasswordSchema("BasicAuth credentials"),
       },
     },
     uiSchema: {
       ...baseUISchema,
-      credentials: {
-        password: { "ui:widget": "password" },
-      },
+      ...loginPasswordUiSchema,
     },
   },
   anonymous: {
@@ -229,6 +251,7 @@ const authSchemas = {
 const authLabels = {
   anonymous: "Anonymous",
   basicauth: "Basic Auth",
+  account: "Kinto Account Auth",
   fxa: "Firefox Account",
   ldap: "LDAP",
   portier: "Portier",
@@ -352,6 +375,7 @@ export default class AuthForm extends PureComponent {
       // case "anonymous":
       // case "ldap":
       // case "basicauth":
+      // case "account":
       default: {
         return setup(extendedFormData);
       }
