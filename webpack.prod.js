@@ -18,7 +18,7 @@ module.exports = {
   },
   plugins: [
     new webpack.IgnorePlugin(/^(buffertools)$/), // unwanted "deeper" dependency
-    new ExtractTextPlugin("styles.css", {allChunks: true}),
+    new ExtractTextPlugin({filename: "styles.css", allChunks: true}),
     new webpack.DefinePlugin({
       "process.env": {
         NODE_ENV: JSON.stringify("production"),
@@ -32,13 +32,13 @@ module.exports = {
     }),
   ],
   resolve: {
-    extensions: ["", ".js", ".jsx", ".css", ".png"]
+    extensions: [".js", ".jsx", ".css", ".png"]
   },
   module: {
     loaders: [
       {
         test: /\.jsx?$/,
-        loaders: ["babel"],
+        loader: "babel-loader",
         exclude: /node_modules/,
         include: [
           path.join(__dirname),
@@ -49,11 +49,11 @@ module.exports = {
         test: /\.css$/,
         loader: ExtractTextPlugin.extract("css-loader"),
       },
-      { test: /\.png$/, loader: "url?limit=10000" },
-      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" },
-      { test: /\.(woff|woff2)$/, loader:"url?prefix=font/&limit=5000" },
-      { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=application/octet-stream" },
-      { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml" }
+      { test: /\.png$/, loader: "url-loader", options: {"limit": 10000} },
+      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader" },
+      { test: /\.(woff|woff2)$/, loader:"url-loader", options: {"prefix": "font/", "limit": 5000} },
+      { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader", options: {"limit": 10000, "mimetype": "application/octet-stream"} },
+      { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader", options: {"limit": 10000, "mimetype": "image/svg+xml"} }
     ]
   }
 };
