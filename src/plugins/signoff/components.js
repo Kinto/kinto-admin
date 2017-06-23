@@ -380,12 +380,10 @@ function DiffStats(props: { updated: number, deleted: number }) {
   );
 }
 
-function ReviewButtons(
-  props: {
-    onApprove: () => void,
-    onDecline: () => void,
-  }
-) {
+function ReviewButtons(props: {
+  onApprove: () => void,
+  onDecline: () => void,
+}) {
   const { onApprove, onDecline } = props;
   return (
     <div className="btn-group">

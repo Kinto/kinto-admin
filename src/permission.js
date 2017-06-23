@@ -338,7 +338,8 @@ export function preparePermissionsForm(
       items: {
         principal: {
           classNames: "field-principal",
-          "ui:placeholder": "Principal, eg. basicauth:alice, /buckets/x/groups/y",
+          "ui:placeholder":
+            "Principal, eg. basicauth:alice, /buckets/x/groups/y",
         },
         permissions: {
           "ui:widget": "checkboxes",

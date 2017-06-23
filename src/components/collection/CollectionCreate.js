@@ -24,8 +24,13 @@ export default class CollectionCreate extends PureComponent {
   };
 
   render() {
-    const { params, session, bucket, collection, createCollection } = this
-      .props;
+    const {
+      params,
+      session,
+      bucket,
+      collection,
+      createCollection,
+    } = this.props;
     const { bid } = params;
     const { busy } = session;
     if (busy) {

@@ -179,7 +179,8 @@ const uiSchema = {
     "attachment",
   ],
   id: {
-    "ui:help": "The name should only contain letters, numbers, dashes or underscores.",
+    "ui:help":
+      "The name should only contain letters, numbers, dashes or underscores.",
   },
   schema: {
     "ui:widget": JSONEditor,
@@ -202,7 +203,8 @@ const uiSchema = {
       "ui:help": "Enable attachment of a single file to records.",
     },
     required: {
-      "ui:help": "Require a file to be attached to each record in the collection.",
+      "ui:help":
+        "Require a file to be attached to each record in the collection.",
     },
     gzipped: {
       "ui:help": "Enable gzipping file on server side on upload.",
@@ -340,8 +342,13 @@ export default class CollectionForm extends PureComponent {
   };
 
   render() {
-    const { cid, bucket, collection, formData = {}, deleteCollection } = this
-      .props;
+    const {
+      cid,
+      bucket,
+      collection,
+      formData = {},
+      deleteCollection,
+    } = this.props;
     const creation = !formData.id;
     const showDeleteForm = !creation && this.allowEditing;
     const { asJSON } = this.state;
