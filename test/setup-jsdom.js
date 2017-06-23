@@ -2,8 +2,9 @@ var jsdom = require("jsdom");
 
 // Setup the jsdom environment
 // @see https://github.com/facebook/react/issues/5046
-global.document = jsdom.jsdom("<!doctype html><html><body></body></html>");
-global.window = document.defaultView;
+const JSDOM = new jsdom.JSDOM("<!doctype html><html><body></body></html>");
+global.window = JSDOM.window;
+global.document = window.document;
 global.navigator = global.window.navigator;
 
 // Setup dumb sessionStorage for tests
