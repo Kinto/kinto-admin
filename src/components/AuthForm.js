@@ -102,6 +102,32 @@ const baseUISchema = {
   },
 };
 
+const loginPasswordSchema = function(title) {
+  return {
+    credentials: {
+      type: "object",
+      title: title,
+      required: ["username", "password"],
+      properties: {
+        username: {
+          type: "string",
+          title: "Username",
+        },
+        password: {
+          type: "string",
+          title: "Password",
+        },
+      },
+    },
+  };
+};
+
+const loginPasswordUiSchema = {
+  credentials: {
+    password: { "ui:widget": "password" },
+  },
+};
+
 const authSchemas = {
   account: {
     schema: {
@@ -109,28 +135,12 @@ const authSchemas = {
       required: [...baseAuthSchema.required, "credentials"],
       properties: {
         ...baseAuthSchema.properties,
-        credentials: {
-          type: "object",
-          title: "Accounts credentials",
-          required: ["username", "password"],
-          properties: {
-            username: {
-              type: "string",
-              title: "Username",
-            },
-            password: {
-              type: "string",
-              title: "Password",
-            },
-          },
-        },
+        ...loginPasswordSchema("Accounts credentials"),
       },
     },
     uiSchema: {
       ...baseUISchema,
-      credentials: {
-        password: { "ui:widget": "password" },
-      },
+      ...loginPasswordUiSchema,
     },
   },
   basicauth: {
@@ -139,30 +149,12 @@ const authSchemas = {
       required: [...baseAuthSchema.required, "credentials"],
       properties: {
         ...baseAuthSchema.properties,
-        credentials: {
-          type: "object",
-          title: "BasicAuth credentials",
-          required: ["username", "password"],
-          properties: {
-            username: {
-              type: "string",
-              title: "Username",
-              default: "test",
-            },
-            password: {
-              type: "string",
-              title: "Password",
-              default: "test",
-            },
-          },
-        },
+        ...loginPasswordSchema("BasicAuth credentials"),
       },
     },
     uiSchema: {
       ...baseUISchema,
-      credentials: {
-        password: { "ui:widget": "password" },
-      },
+      ...loginPasswordUiSchema,
     },
   },
   anonymous: {
