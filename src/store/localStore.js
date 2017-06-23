@@ -21,9 +21,9 @@ export function saveHistory(history: string[]): string[] {
     sessionStorage.setItem(HISTORY_KEY, JSON.stringify(history));
   } catch (err) {
     // Not much to do here, let's fail silently
-  } finally {
-    return history;
   }
+
+  return history;
 }
 
 export function clearHistory(): string[] {
