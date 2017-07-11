@@ -31,6 +31,11 @@ Kinto-based systems.
 
 NodeJS v4+ and npm 2.14+ should be installed and available on your machine.
 
+Various pre-commit hooks are available to help prevent you from
+pushing sub-optimal code; to use these, ``pip install --user
+pre-commit`` and ``pre-commit install``. (If you have a
+``.git/hooks/pre-commit.legacy``, you can remove it.)
+
 ## Installation
 
 The easiest way to get started is to install [create-react-app](https://github.com/facebookincubator/create-react-app) first:
