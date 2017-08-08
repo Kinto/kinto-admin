@@ -47,7 +47,9 @@ export default class BucketPermissions_ extends PureComponent {
     }
     return (
       <div>
-        <h1>Edit <b>{bid}</b> bucket permissions</h1>
+        <h1>
+          Edit <b>{bid}</b> bucket permissions
+        </h1>
         <BucketTabs
           bid={bid}
           capabilities={capabilities}

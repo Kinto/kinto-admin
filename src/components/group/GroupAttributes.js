@@ -52,7 +52,13 @@ export default class GroupAttributes extends PureComponent {
     }
     return (
       <div>
-        <h1>Edit <b>{bid}/{gid}</b> group attributes</h1>
+        <h1>
+          Edit{" "}
+          <b>
+            {bid}/{gid}
+          </b>{" "}
+          group attributes
+        </h1>
         <GroupTabs
           bid={bid}
           gid={gid}

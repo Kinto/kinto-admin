@@ -29,7 +29,9 @@ class Row extends PureComponent {
     const date = new Date(lastModified);
     return date.toJSON() == null
       ? null
-      : <span title={date.toISOString()}>{timeago(date.getTime())}</span>;
+      : <span title={date.toISOString()}>
+          {timeago(date.getTime())}
+        </span>;
   }
 
   onDoubleClick(event) {
@@ -55,10 +57,14 @@ class Row extends PureComponent {
       <tr onDoubleClick={this.onDoubleClick.bind(this)}>
         {displayFields.map((displayField, index) => {
           return (
-            <td key={index}>{renderDisplayField(record, displayField)}</td>
+            <td key={index}>
+              {renderDisplayField(record, displayField)}
+            </td>
           );
         })}
-        <td className="lastmod">{this.lastModified}</td>
+        <td className="lastmod">
+          {this.lastModified}
+        </td>
         <td className="actions text-right">
           <div className="btn-group">
             {attachmentUrl &&
@@ -342,7 +348,12 @@ export default class CollectionRecords extends PureComponent {
 
     return (
       <div className="list-page">
-        <h1>Records of <b>{bid}/{cid}</b></h1>
+        <h1>
+          Records of{" "}
+          <b>
+            {bid}/{cid}
+          </b>
+        </h1>
         <CollectionTabs
           bid={bid}
           cid={cid}

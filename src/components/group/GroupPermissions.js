@@ -51,7 +51,13 @@ export default class GroupPermissions_ extends PureComponent {
     }
     return (
       <div>
-        <h1>Edit <b>{bid}/{gid} group</b> group permissions</h1>
+        <h1>
+          Edit{" "}
+          <b>
+            {bid}/{gid} group
+          </b>{" "}
+          group permissions
+        </h1>
         <GroupTabs
           bid={bid}
           gid={gid}

@@ -30,7 +30,9 @@ function Diff({ source, target }) {
           .join("\n");
         return (
           <div key={i} className={className}>
-            <code>{prefixedChunk}</code>
+            <code>
+              {prefixedChunk}
+            </code>
           </div>
         );
       })}
@@ -153,8 +155,12 @@ class HistoryRow extends PureComponent {
               {timeago(last_modified)}
             </span>
           </td>
-          <td>{action}</td>
-          <td>{resource_name}</td>
+          <td>
+            {action}
+          </td>
+          <td>
+            {resource_name}
+          </td>
           <td>
             <AdminLink
               name={`${resource_name}:attributes`}
@@ -162,7 +168,9 @@ class HistoryRow extends PureComponent {
               {objectId}
             </AdminLink>
           </td>
-          <td>{user_id}</td>
+          <td>
+            {user_id}
+          </td>
           <td className="text-center">
             {resource_name === "record" &&
               enableDiffOverview &&
@@ -175,8 +183,7 @@ class HistoryRow extends PureComponent {
                   params={{ bid, cid }}
                   query={{ since: last_modified, resource_name: "record" }}>
                   <i className="glyphicon glyphicon-step-backward" />
-                </AdminLink>
-                {" "}
+                </AdminLink>{" "}
               </span>}
             <a
               href="."
@@ -198,8 +205,12 @@ class HistoryRow extends PureComponent {
               : previous
                 ? <Diff source={entry.target} target={previous.target} />
                 : error
-                  ? <p className="alert alert-danger">{error}</p>
-                  : <pre>{JSON.stringify(entry.target, null, 2)}</pre>}
+                  ? <p className="alert alert-danger">
+                      {error}
+                    </p>
+                  : <pre>
+                      {JSON.stringify(entry.target, null, 2)}
+                    </pre>}
           </td>
         </tr>
       </tbody>
@@ -222,8 +233,7 @@ function FilterInfo(props) {
   const { pathname, query: { since } } = location;
   return (
     <p>
-      Since {since ? humanDate(since) : ""}.
-      {" "}
+      Since {since ? humanDate(since) : ""}.{" "}
       <a
         href="#"
         onClick={event => {
@@ -257,14 +267,12 @@ function DiffOverview(props) {
       <div className="alert alert-info">
         <p>
           This diff overview is computed against the current list of records in
-          this collection and the list it contained on
-          {" "}
-          <b>{humanDate(since)}</b>
+          this collection and the list it contained on <b>{humanDate(since)}</b>
           .
         </p>
         <p>
-          <b>Note:</b> <code>last_modified</code> and <code>schema</code>{" "}
-          record metadata are omitted for easier review.
+          <b>Note:</b> <code>last_modified</code> and <code>schema</code> record
+          metadata are omitted for easier review.
         </p>
       </div>
       <Diff source={source} target={target} />

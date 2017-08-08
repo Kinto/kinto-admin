@@ -72,8 +72,7 @@ function DeleteForm({ cid, onSubmit }) {
             }
           }}>
           <button type="submit" className="btn btn-danger">
-            <i className="glyphicon glyphicon-trash" />{" "}
-            Delete collection
+            <i className="glyphicon glyphicon-trash" /> Delete collection
           </button>
         </BaseForm>
       </div>
@@ -143,8 +142,8 @@ const schema = {
       title: "File attachment",
       description: (
         <p>
-          Please note this requires the <code>attachments</code> capability
-          to be available on the server.
+          Please note this requires the <code>attachments</code> capability to
+          be available on the server.
         </p>
       ),
       properties: {
@@ -187,10 +186,11 @@ const uiSchema = {
     "ui:help": (
       <p>
         This must be a valid
-        <a href="http://json-schema.org/" target="_blank"> JSON schema </a>
+        <a href="http://json-schema.org/" target="_blank">
+          {" "}JSON schema{" "}
+        </a>
         defining an object representing the structure of your collection
-        records.
-        You may find this
+        records. You may find this
         <a href="http://jsonschema.net/" target="_blank">
           {" online schema builder "}
         </a>
@@ -215,8 +215,9 @@ const uiSchema = {
     "ui:help": (
       <p>
         Learn more about
-        <a href="https://git.io/vrbKn" target="_blank"> what a uiSchema is </a>
-        {" "}
+        <a href="https://git.io/vrbKn" target="_blank">
+          {" "}what a uiSchema is{" "}
+        </a>{" "}
         and how to leverage it to enhance how JSON schema forms are rendered in
         the admin.
       </p>
@@ -265,8 +266,8 @@ function FormInstructions({ onSchemalessLinkClick }) {
       <ol>
         <li>First find a good name for your collection.</li>
         <li>
-          Create a <em>JSON schema</em> describing the fields the
-          collection records should have.
+          Create a <em>JSON schema</em> describing the fields the collection
+          records should have.
         </li>
         <li>
           Define a <em>uiSchema</em> to customize the way forms for creating and
@@ -280,7 +281,9 @@ function FormInstructions({ onSchemalessLinkClick }) {
       </ol>
       <p>
         Alternatively, you can create a
-        <a href="" onClick={onSchemalessLinkClick}>schemaless collection</a>.
+        <a href="" onClick={onSchemalessLinkClick}>
+          schemaless collection
+        </a>.
       </p>
     </div>
   );
@@ -373,11 +376,12 @@ export default class CollectionForm extends PureComponent {
           uiSchema: JSON.stringify(formData.uiSchema || {}, null, 2),
         };
 
-    const alert = this.allowEditing || bucket.busy || collection.busy
-      ? null
-      : <div className="alert alert-warning">
-          You don't have the required permission to edit this collection.
-        </div>;
+    const alert =
+      this.allowEditing || bucket.busy || collection.busy
+        ? null
+        : <div className="alert alert-warning">
+            You don't have the required permission to edit this collection.
+          </div>;
 
     const buttons = (
       <div>

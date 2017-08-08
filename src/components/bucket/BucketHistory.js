@@ -37,7 +37,9 @@ export default class BucketHistory extends PureComponent {
 
     return (
       <div>
-        <h1>History for <b>{bid}</b></h1>
+        <h1>
+          History for <b>{bid}</b>
+        </h1>
         <BucketTabs bid={bid} selected="history" capabilities={capabilities}>
           <HistoryTable
             bid={bid}

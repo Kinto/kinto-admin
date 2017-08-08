@@ -31,15 +31,22 @@ export function ProgressStep({
   step,
   children,
 }: ProgressStepProps) {
-  const status = currentStep == step
-    ? "active"
-    : step < currentStep ? "complete" : "disabled";
+  const status =
+    currentStep == step
+      ? "active"
+      : step < currentStep ? "complete" : "disabled";
   return (
     <div className={`col-xs-3 bs-wizard-step ${status}`} key={step}>
-      <div className="text-center bs-wizard-stepnum">{label}</div>
-      <div className="progress"><div className="progress-bar" /></div>
+      <div className="text-center bs-wizard-stepnum">
+        {label}
+      </div>
+      <div className="progress">
+        <div className="progress-bar" />
+      </div>
       <span className="bs-wizard-dot" />
-      <div className="bs-wizard-info text-center">{children}</div>
+      <div className="bs-wizard-info text-center">
+        {children}
+      </div>
     </div>
   );
 }

@@ -24,9 +24,8 @@ function SideBarLink(props) {
   } = props;
   const targetUrl = url(name, params);
   const active = currentPath === targetUrl ? "active" : "";
-  const classes = className !== undefined
-    ? className
-    : `list-group-item ${active}`;
+  const classes =
+    className !== undefined ? className : `list-group-item ${active}`;
 
   return (
     <AdminLink {...otherProps} name={name} params={params} className={classes}>
@@ -80,9 +79,10 @@ function BucketCollectionsMenu(props) {
   // sidebarMaxListedCollections, so we can render a link to the paginated list
   // of collections. Still, we only want to list that configured number of
   // collections for this bucket menu.
-  const slicedCollections = sidebarMaxListedCollections !== null
-    ? collections.slice(0, sidebarMaxListedCollections)
-    : collections;
+  const slicedCollections =
+    sidebarMaxListedCollections !== null
+      ? collections.slice(0, sidebarMaxListedCollections)
+      : collections;
   return (
     <div className="collections-menu list-group">
       {slicedCollections.map((collection, index) => {
@@ -218,8 +218,8 @@ class BucketsMenu extends PureComponent {
                   type="checkbox"
                   value={this.state.hideReadOnly}
                   onChange={this.toggleReadOnly}
-                />
-                {" "}Hide readonly buckets
+                />{" "}
+                Hide readonly buckets
               </label>
             </div>
           </form>

@@ -39,7 +39,12 @@ export default class RecordHistory extends PureComponent {
 
     return (
       <div>
-        <h1>History for <b>{bid}/{cid}/{rid}</b></h1>
+        <h1>
+          History for{" "}
+          <b>
+            {bid}/{cid}/{rid}
+          </b>
+        </h1>
         <RecordTabs
           bid={bid}
           cid={cid}

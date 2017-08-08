@@ -54,7 +54,13 @@ export default class RecordPermissions_ extends PureComponent {
     }
     return (
       <div>
-        <h1>Edit <b>{bid}/{cid}/{rid}</b> record permissions</h1>
+        <h1>
+          Edit{" "}
+          <b>
+            {bid}/{cid}/{rid}
+          </b>{" "}
+          record permissions
+        </h1>
         <RecordTabs
           bid={bid}
           cid={cid}

@@ -17,13 +17,17 @@ function ServerProps({ node }: { node: Object }) {
         {nodes.map(([key, childNode], i) => {
           return (
             <tr key={i}>
-              <th>{key}</th>
+              <th>
+                {key}
+              </th>
               <td style={{ width: "100%" }}>
                 {isObject(childNode) || Array.isArray(childNode)
                   ? <ServerProps node={childNode} />
                   : typeof childNode === "string" &&
-                      childNode.startsWith("http")
-                    ? <a href={childNode} target="_blank">{childNode}</a>
+                    childNode.startsWith("http")
+                    ? <a href={childNode} target="_blank">
+                        {childNode}
+                      </a>
                     : String(childNode)}
               </td>
             </tr>
@@ -40,7 +44,9 @@ function SessionInfo({ session: { busy, serverInfo } }) {
       {busy
         ? <Spinner />
         : <div className="panel server-info-panel panel-default">
-            <div className="panel-heading"><b>Server information</b></div>
+            <div className="panel-heading">
+              <b>Server information</b>
+            </div>
             <div className="panel-body">
               <ServerProps node={serverInfo} />
             </div>

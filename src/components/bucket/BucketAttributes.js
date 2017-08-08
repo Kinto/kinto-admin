@@ -49,7 +49,9 @@ export default class BucketAttributes extends PureComponent {
     }
     return (
       <div>
-        <h1>Edit <b>{bid}</b> bucket attributes</h1>
+        <h1>
+          Edit <b>{bid}</b> bucket attributes
+        </h1>
         <BucketTabs bid={bid} capabilities={capabilities} selected="attributes">
           <BucketForm
             session={session}

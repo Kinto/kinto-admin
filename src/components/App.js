@@ -9,7 +9,11 @@ function UserInfo({ session }) {
   if (!user.id) {
     return <strong>Anonymous</strong>;
   }
-  return <span>Connected as <strong>{user.id}</strong></span>;
+  return (
+    <span>
+      Connected as <strong>{user.id}</strong>
+    </span>
+  );
 }
 
 function SessionInfoBar({ session, logout }) {

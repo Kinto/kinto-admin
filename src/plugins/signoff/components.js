@@ -184,13 +184,22 @@ function Comment({ text }: { text: string }): ?React.Element<*> {
   }
   return (
     <span title={text} className="signoff-comment">
-      {text.split("\n").map((l, i) => <span key={i}>{l}<br /></span>)}
+      {text.split("\n").map((l, i) =>
+        <span key={i}>
+          {l}
+          <br />
+        </span>
+      )}
     </span>
   );
 }
 
 function HumanDate({ timestamp }: { timestamp: number }) {
-  return <span title={humanDate(timestamp)}>{timeago(timestamp)}</span>;
+  return (
+    <span title={humanDate(timestamp)}>
+      {timeago(timestamp)}
+    </span>
+  );
 }
 
 //
@@ -238,12 +247,21 @@ function WorkInProgress(props: WorkInProgressProps) {
 function WorkInProgressInfos(props) {
   const { active, lastAuthor, lastUpdated, lastReviewerComment } = props;
   if (!lastUpdated) {
-    return <ul><li>Never updated</li></ul>;
+    return (
+      <ul>
+        <li>Never updated</li>
+      </ul>
+    );
   }
   return (
     <ul>
-      <li><strong>Updated: </strong><HumanDate timestamp={lastUpdated} /></li>
-      <li><strong>By: </strong> {lastAuthor}</li>
+      <li>
+        <strong>Updated: </strong>
+        <HumanDate timestamp={lastUpdated} />
+      </li>
+      <li>
+        <strong>By: </strong> {lastAuthor}
+      </li>
       {active &&
         lastReviewerComment &&
         <li>
@@ -257,7 +275,7 @@ function RequestReviewButton(props: { onClick: () => void }) {
   const { onClick } = props;
   return (
     <button className="btn btn-info" onClick={onClick}>
-      <i className="glyphicon glyphicon-comment" />{" "}Request review...
+      <i className="glyphicon glyphicon-comment" /> Request review...
     </button>
   );
 }
@@ -351,20 +369,24 @@ function ReviewInfos(props: ReviewInfosProps) {
   return (
     <ul>
       <li>
-        <strong>Requested: </strong><HumanDate timestamp={lastRequested} />
+        <strong>Requested: </strong>
+        <HumanDate timestamp={lastRequested} />
       </li>
-      <li><strong>By: </strong> {lastEditor}</li>
+      <li>
+        <strong>By: </strong> {lastEditor}
+      </li>
       {active &&
         lastEditorComment &&
         <li>
           <strong>Comment: </strong> <Comment text={lastEditorComment} />
         </li>}
-      <li><strong>Preview: </strong> {link}</li>
+      <li>
+        <strong>Preview: </strong> {link}
+      </li>
       {active &&
         <li>
           <strong>Changes: </strong>
-          <DiffStats updated={updated} deleted={deleted} />{" "}
-          {detailsLink}
+          <DiffStats updated={updated} deleted={deleted} /> {detailsLink}
         </li>}
     </ul>
   );
@@ -374,8 +396,14 @@ function DiffStats(props: { updated: number, deleted: number }) {
   const { updated, deleted } = props;
   return (
     <span className="diffstats">
-      {updated > 0 && <span className="text-green">+{updated}</span>}
-      {deleted > 0 && <span className="text-red">-{deleted}</span>}
+      {updated > 0 &&
+        <span className="text-green">
+          +{updated}
+        </span>}
+      {deleted > 0 &&
+        <span className="text-red">
+          -{deleted}
+        </span>}
     </span>
   );
 }
@@ -388,10 +416,10 @@ function ReviewButtons(props: {
   return (
     <div className="btn-group">
       <button className="btn btn-success" onClick={onApprove}>
-        <i className="glyphicon glyphicon-ok" />{" "}Approve
+        <i className="glyphicon glyphicon-ok" /> Approve
       </button>
       <button className="btn btn-danger" onClick={onDecline}>
-        <i className="glyphicon glyphicon-comment" />{" "}Decline...
+        <i className="glyphicon glyphicon-comment" /> Decline...
       </button>
     </div>
   );
@@ -443,8 +471,14 @@ function SignedInfos(props: SignedInfosProps) {
   const { lastSigned, bid, cid } = destination;
   return (
     <ul>
-      <li><strong>Signed: </strong><HumanDate timestamp={lastSigned} /></li>
-      <li><strong>By: </strong>{lastReviewer}</li>
+      <li>
+        <strong>Signed: </strong>
+        <HumanDate timestamp={lastSigned} />
+      </li>
+      <li>
+        <strong>By: </strong>
+        {lastReviewer}
+      </li>
       <li>
         <strong>Destination: </strong>
         <AdminLink name="collection:records" params={{ bid, cid }}>
@@ -459,7 +493,7 @@ function ReSignButton(props: { onClick: () => void }) {
   const { onClick } = props;
   return (
     <button className="btn btn-info" onClick={onClick}>
-      <i className="glyphicon glyphicon-repeat" />{" "}Re-sign
+      <i className="glyphicon glyphicon-repeat" /> Re-sign
     </button>
   );
 }
@@ -512,7 +546,9 @@ class CommentDialog extends PureComponent {
                 <h4 className="modal-title">Confirmation</h4>
               </div>
               <div className="modal-body">
-                <p>{description}</p>
+                <p>
+                  {description}
+                </p>
                 <textarea
                   className="form-control"
                   placeholder="Comment..."
@@ -530,7 +566,7 @@ class CommentDialog extends PureComponent {
                   type="button"
                   className="btn btn-primary"
                   onClick={onClickConfirm}>
-                  <i className="glyphicon glyphicon-ok" />{" "}{confirmLabel}
+                  <i className="glyphicon glyphicon-ok" /> {confirmLabel}
                 </button>
               </div>
             </div>

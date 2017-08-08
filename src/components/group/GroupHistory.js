@@ -36,7 +36,12 @@ export default class GroupHistory extends PureComponent {
 
     return (
       <div>
-        <h1>History for <b>{bid}/{gid}</b></h1>
+        <h1>
+          History for{" "}
+          <b>
+            {bid}/{gid}
+          </b>
+        </h1>
         <CollectionTabs
           bid={bid}
           gid={gid}

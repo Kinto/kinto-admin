@@ -52,7 +52,13 @@ export default class CollectionAttributes extends PureComponent {
     }
     return (
       <div>
-        <h1>Edit <b>{bid}/{cid}</b> collection attributes</h1>
+        <h1>
+          Edit{" "}
+          <b>
+            {bid}/{cid}
+          </b>{" "}
+          collection attributes
+        </h1>
         <CollectionTabs
           bid={bid}
           cid={cid}
