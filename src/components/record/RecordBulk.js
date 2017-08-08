@@ -87,7 +87,13 @@ export default class RecordBulk extends PureComponent {
 
     return (
       <div>
-        <h1>Bulk <b>{bid}/{cid}</b> creation</h1>
+        <h1>
+          Bulk{" "}
+          <b>
+            {bid}/{cid}
+          </b>{" "}
+          creation
+        </h1>
         {busy
           ? <Spinner />
           : <div className="panel panel-default">

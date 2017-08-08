@@ -35,7 +35,9 @@ function DataList(props) {
                   {gid}
                 </AdminLink>
               </td>
-              <td>{members.join(", ")}</td>
+              <td>
+                {members.join(", ")}
+              </td>
               <td>
                 <span title={date.toISOString()}>
                   {timeago(date.getTime())}
@@ -103,7 +105,9 @@ export default class BucketCollections extends PureComponent {
 
     return (
       <div className="list-page">
-        <h1>Groups of <b>{bid}</b></h1>
+        <h1>
+          Groups of <b>{bid}</b>
+        </h1>
         <BucketTabs bid={bid} selected="groups" capabilities={capabilities}>
           {listActions}
           {groups.length === 0

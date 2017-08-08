@@ -59,8 +59,8 @@ function DeleteForm({ bid, onSubmit }) {
       </div>
       <div className="panel-body">
         <p>
-          Delete the <b>{bid}</b> bucket and all the collections and
-          records it contains.
+          Delete the <b>{bid}</b> bucket and all the collections and records it
+          contains.
         </p>
         <BaseForm
           schema={deleteSchema}
@@ -71,7 +71,7 @@ function DeleteForm({ bid, onSubmit }) {
             }
           }}>
           <button type="submit" className="btn btn-danger">
-            <i className="glyphicon glyphicon-trash" />{" "}Delete bucket
+            <i className="glyphicon glyphicon-trash" /> Delete bucket
           </button>
         </BaseForm>
       </div>
@@ -121,11 +121,12 @@ export default class BucketForm extends PureComponent {
           },
         };
 
-    const alert = formIsEditable || bucket.busy
-      ? null
-      : <div className="alert alert-warning">
-          You don't have the required permission to edit this bucket.
-        </div>;
+    const alert =
+      formIsEditable || bucket.busy
+        ? null
+        : <div className="alert alert-warning">
+            You don't have the required permission to edit this bucket.
+          </div>;
 
     const buttons = (
       <div>

@@ -51,7 +51,13 @@ export default class CollectionPermissions_ extends PureComponent {
     }
     return (
       <div>
-        <h1>Edit <b>{bid}/{cid} collection</b> collection permissions</h1>
+        <h1>
+          Edit{" "}
+          <b>
+            {bid}/{cid} collection
+          </b>{" "}
+          collection permissions
+        </h1>
         <CollectionTabs
           bid={bid}
           cid={cid}

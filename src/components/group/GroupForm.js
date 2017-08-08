@@ -81,8 +81,7 @@ function DeleteForm({ gid, onSubmit }) {
             }
           }}>
           <button type="submit" className="btn btn-danger">
-            <i className="glyphicon glyphicon-trash" />{" "}
-            Delete group
+            <i className="glyphicon glyphicon-trash" /> Delete group
           </button>
         </BaseForm>
       </div>
@@ -147,11 +146,12 @@ export default class GroupForm extends PureComponent {
       data,
     };
 
-    const alert = formIsEditable || group.busy
-      ? null
-      : <div className="alert alert-warning">
-          You don't have the required permission to edit this group.
-        </div>;
+    const alert =
+      formIsEditable || group.busy
+        ? null
+        : <div className="alert alert-warning">
+            You don't have the required permission to edit this group.
+          </div>;
 
     const buttons = (
       <div>
@@ -163,7 +163,9 @@ export default class GroupForm extends PureComponent {
           {` ${creation ? "Create" : "Update"} group`}
         </button>
         {" or "}
-        <AdminLink name="home" params={{}}>Cancel</AdminLink>
+        <AdminLink name="home" params={{}}>
+          Cancel
+        </AdminLink>
       </div>
     );
 

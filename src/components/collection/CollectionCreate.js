@@ -38,7 +38,9 @@ export default class CollectionCreate extends PureComponent {
     }
     return (
       <div>
-        <h1>Create a new collection in <b>{bid}</b> bucket</h1>
+        <h1>
+          Create a new collection in <b>{bid}</b> bucket
+        </h1>
         <div className="panel panel-default">
           <div className="panel-body">
             <CollectionForm

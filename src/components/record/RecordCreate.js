@@ -38,7 +38,12 @@ export default class RecordCreate extends PureComponent {
     const { bid, cid } = params;
     return (
       <div>
-        <h1>Add a new record in <b>{bid}/{cid}</b></h1>
+        <h1>
+          Add a new record in{" "}
+          <b>
+            {bid}/{cid}
+          </b>
+        </h1>
         <div className="panel panel-default">
           <div className="panel-body">
             <RecordForm

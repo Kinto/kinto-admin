@@ -52,7 +52,9 @@ export default class JSONEditor extends PureComponent {
   render() {
     const { readonly, disabled, value } = this.props;
     return readonly || disabled
-      ? <pre>{value}</pre>
+      ? <pre>
+          {value}
+        </pre>
       : <Codemirror
           value={value}
           onChange={this.onCodeChange}

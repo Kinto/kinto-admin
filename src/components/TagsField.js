@@ -93,7 +93,9 @@ export default class TagsField extends PureComponent {
               Entries must be separated with
               {this.separator === " "
                 ? "spaces"
-                : <code>{this.separator}</code>}
+                : <code>
+                    {this.separator}
+                  </code>}
               .
             </span>}
         </div>

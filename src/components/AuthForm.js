@@ -59,15 +59,23 @@ class ServerHistory extends PureComponent {
           <ul className="dropdown-menu dropdown-menu-right">
             {history.length === 0
               ? <li>
-                  <a onClick={this.toggleMenu}><em>No server history</em></a>
+                  <a onClick={this.toggleMenu}>
+                    <em>No server history</em>
+                  </a>
                 </li>
               : history.map((server, key) =>
                   <li key={key}>
-                    <a href="#" onClick={this.select(server)}>{server}</a>
+                    <a href="#" onClick={this.select(server)}>
+                      {server}
+                    </a>
                   </li>
                 )}
             <li role="separator" className="divider" />
-            <li><a href="#" onClick={this.clear}>Clear</a></li>
+            <li>
+              <a href="#" onClick={this.clear}>
+                Clear
+              </a>
+            </li>
           </ul>
         </div>
       </div>
@@ -410,7 +418,8 @@ export default class AuthForm extends PureComponent {
             onChange={this.onChange}
             onSubmit={this.onSubmit}>
             <button type="submit" className="btn btn-info">
-              {"Sign in using "}{authLabels[formData.authType]}
+              {"Sign in using "}
+              {authLabels[formData.authType]}
             </button>
           </BaseForm>
         </div>

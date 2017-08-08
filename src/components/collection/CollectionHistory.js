@@ -39,7 +39,12 @@ export default class CollectionHistory extends PureComponent {
 
     return (
       <div>
-        <h1>History for <b>{bid}/{cid}</b></h1>
+        <h1>
+          History for{" "}
+          <b>
+            {bid}/{cid}
+          </b>
+        </h1>
         <CollectionTabs
           bid={bid}
           cid={cid}

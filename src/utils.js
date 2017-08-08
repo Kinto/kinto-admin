@@ -169,7 +169,11 @@ function handleNestedDisplayField(
 
 export function linkify(string: string): any {
   if (/https?:\/\//.test(string)) {
-    return <a href={string} title={string} target="_blank">{string}</a>;
+    return (
+      <a href={string} title={string} target="_blank">
+        {string}
+      </a>
+    );
   }
   return string;
 }
@@ -193,7 +197,11 @@ export function renderDisplayField(record: Object, displayField: string): any {
       return String(field);
     }
   } else if (displayField === "__json") {
-    return <code>{JSON.stringify(cleanRecord(record))}</code>;
+    return (
+      <code>
+        {JSON.stringify(cleanRecord(record))}
+      </code>
+    );
   } else if (displayField.indexOf(".") !== -1) {
     return handleNestedDisplayField(record, displayField);
   }

@@ -35,11 +35,19 @@ function DataList(props) {
         const date = new Date(last_modified);
         return (
           <tr key={index}>
-            <td>{cid}</td>
-            <td>{schema ? "Yes" : "No"}</td>
-            <td>{cache_expires ? `${cache_expires} seconds` : "No"}</td>
             <td>
-              <span title={date.toISOString()}>{timeago(date.getTime())}</span>
+              {cid}
+            </td>
+            <td>
+              {schema ? "Yes" : "No"}
+            </td>
+            <td>
+              {cache_expires ? `${cache_expires} seconds` : "No"}
+            </td>
+            <td>
+              <span title={date.toISOString()}>
+                {timeago(date.getTime())}
+              </span>
             </td>
             <td className="actions">
               <div className="btn-group">
@@ -128,7 +136,9 @@ export default class BucketCollections extends PureComponent {
 
     return (
       <div className="list-page">
-        <h1>Collections of <b>{bid}</b></h1>
+        <h1>
+          Collections of <b>{bid}</b>
+        </h1>
         <BucketTabs
           bid={bid}
           selected="collections"
