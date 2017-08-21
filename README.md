@@ -48,17 +48,15 @@ $ npm install kinto-admin --save-dev
 
 Then, import and render the main `KintoAdmin` component in the generated `src/index.js` file:
 
-```jsx
-import React from "react";
-import ReactDOM from "react-dom";
+```diff
+ import App from './App';
+ import registerServiceWorker from './registerServiceWorker';
 
-import KintoAdmin from "kinto-admin";
-
-ReactDOM.render(
-  <KintoAdmin />,
-  document.getElementById("root")
-);
-
+-ReactDOM.render(<App />, document.getElementById('root'));
++import KintoAdmin from "kinto-admin";
++
++ReactDOM.render(<KintoAdmin />, document.getElementById('root'));
+ registerServiceWorker();
 ```
 
 To run a local development server:
