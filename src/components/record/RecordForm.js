@@ -112,14 +112,15 @@ function AttachmentInfo(props: AttachmentInfoProps) {
         <b>Attachment information</b>
       </div>
       <div className="panel-body">
-        {attachmentRequired &&
+        {attachmentRequired && (
           <div className="alert alert-warning">
             <p>
               An attachment is required for records in this collection. To
               replace current attachment, use the <i>File attachment</i> field
               below.
             </p>
-          </div>}
+          </div>
+        )}
         <AttachmentPreview
           mimetype={attachment.mimetype}
           location={buildAttachmentUrl(record, capabilities)}
@@ -128,37 +129,27 @@ function AttachmentInfo(props: AttachmentInfoProps) {
           <tbody>
             <tr>
               <th>Location</th>
-              <td>
-                {linkify(attachment.location)}
-              </td>
+              <td>{linkify(attachment.location)}</td>
             </tr>
             <tr>
               <th>Filename</th>
-              <td>
-                {attachment.filename}
-              </td>
+              <td>{attachment.filename}</td>
             </tr>
             <tr>
               <th>Size</th>
-              <td>
-                {filesize(attachment.size)}
-              </td>
+              <td>{filesize(attachment.size)}</td>
             </tr>
             <tr>
               <th>Hash</th>
-              <td>
-                {attachment.hash}
-              </td>
+              <td>{attachment.hash}</td>
             </tr>
             <tr>
               <th>Mime-Type</th>
-              <td>
-                {attachment.mimetype}
-              </td>
+              <td>{attachment.mimetype}</td>
             </tr>
           </tbody>
         </table>
-        {!attachmentRequired &&
+        {!attachmentRequired && (
           <p className="text-right attachment-action">
             <input
               type="button"
@@ -166,7 +157,8 @@ function AttachmentInfo(props: AttachmentInfoProps) {
               className="btn btn-danger"
               value="Delete this attachment"
             />
-          </p>}
+          </p>
+        )}
       </div>
     </div>
   );
@@ -241,24 +233,25 @@ export default class RecordForm extends PureComponent {
           <AdminLink name="collection:records" params={{ bid, cid }}>
             Cancel
           </AdminLink>
-          {emptySchema
-            ? null
-            : <span>
-                {" | "}
-                <a href="#" onClick={this.toggleJSON}>
-                  {asJSON ? "Edit form" : "Edit raw JSON"}
-                </a>
-              </span>}
+          {emptySchema ? null : (
+            <span>
+              {" | "}
+              <a href="#" onClick={this.toggleJSON}>
+                {asJSON ? "Edit form" : "Edit raw JSON"}
+              </a>
+            </span>
+          )}
         </div>
         <div className="col-sm-6 text-right">
           {this.allowEditing &&
-            record &&
+          record && (
             <button
               type="button"
               className="btn btn-danger delete"
               onClick={this.deleteRecord}>
               <i className="glyphicon glyphicon-trash" /> Delete record
-            </button>}
+            </button>
+          )}
         </div>
       </div>
     );
@@ -266,11 +259,12 @@ export default class RecordForm extends PureComponent {
     if (asJSON || emptySchema) {
       return (
         <div>
-          {emptySchema &&
+          {emptySchema && (
             <div className="alert alert-warning">
               This collection doesn't have any JSON schema defined, though you
               can create free-form records entering raw JSON.
-            </div>}
+            </div>
+          )}
           <JSONRecordForm
             disabled={!this.allowEditing}
             record={JSON.stringify(cleanRecord(recordData), null, 2)}
@@ -315,23 +309,24 @@ export default class RecordForm extends PureComponent {
     const creation = !record;
 
     const alert =
-      this.allowEditing || collection.busy
-        ? null
-        : <div className="alert alert-warning">
-            You don't have the required permission to
-            {creation ? " create a" : " edit this"} record.
-          </div>;
+      this.allowEditing || collection.busy ? null : (
+        <div className="alert alert-warning">
+          You don't have the required permission to
+          {creation ? " create a" : " edit this"} record.
+        </div>
+      );
 
     return (
       <div>
         {alert}
-        {creation &&
+        {creation && (
           <AttachmentInfo
             capabilities={capabilities}
             record={record}
             attachmentRequired={attachmentRequired}
             deleteAttachment={this.deleteAttachment}
-          />}
+          />
+        )}
         {this.getForm()}
       </div>
     );

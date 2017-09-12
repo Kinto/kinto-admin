@@ -30,9 +30,7 @@ function Diff({ source, target }) {
           .join("\n");
         return (
           <div key={i} className={className}>
-            <code>
-              {prefixedChunk}
-            </code>
+            <code>{prefixedChunk}</code>
           </div>
         );
       })}
@@ -59,7 +57,9 @@ function fetchCollectionStateAt(
   cid: string,
   timestamp: ?string
 ): Promise<Object[]> {
-  const coll = getClient().bucket(bid).collection(cid);
+  const coll = getClient()
+    .bucket(bid)
+    .collection(cid);
   const query = timestamp ? { at: parseInt(timestamp, 10) } : {};
   return coll.listRecords(query).then(({ data: records }) => {
     // clean entries for easier review
@@ -155,12 +155,8 @@ class HistoryRow extends PureComponent {
               {timeago(last_modified)}
             </span>
           </td>
-          <td>
-            {action}
-          </td>
-          <td>
-            {resource_name}
-          </td>
+          <td>{action}</td>
+          <td>{resource_name}</td>
           <td>
             <AdminLink
               name={`${resource_name}:attributes`}
@@ -168,13 +164,11 @@ class HistoryRow extends PureComponent {
               {objectId}
             </AdminLink>
           </td>
-          <td>
-            {user_id}
-          </td>
+          <td>{user_id}</td>
           <td className="text-center">
             {resource_name === "record" &&
-              enableDiffOverview &&
-              pos !== 0 &&
+            enableDiffOverview &&
+            pos !== 0 && (
               <span>
                 <AdminLink
                   className="btn btn-xs btn-default"
@@ -184,7 +178,8 @@ class HistoryRow extends PureComponent {
                   query={{ since: last_modified, resource_name: "record" }}>
                   <i className="glyphicon glyphicon-step-backward" />
                 </AdminLink>{" "}
-              </span>}
+              </span>
+            )}
             <a
               href="."
               className="btn btn-xs btn-default"
@@ -200,17 +195,15 @@ class HistoryRow extends PureComponent {
           className="history-row-details"
           style={{ display: busy || open ? "table-row" : "none" }}>
           <td colSpan="6">
-            {busy
-              ? <Spinner />
-              : previous
-                ? <Diff source={entry.target} target={previous.target} />
-                : error
-                  ? <p className="alert alert-danger">
-                      {error}
-                    </p>
-                  : <pre>
-                      {JSON.stringify(entry.target, null, 2)}
-                    </pre>}
+            {busy ? (
+              <Spinner />
+            ) : previous ? (
+              <Diff source={entry.target} target={previous.target} />
+            ) : error ? (
+              <p className="alert alert-danger">{error}</p>
+            ) : (
+              <pre>{JSON.stringify(entry.target, null, 2)}</pre>
+            )}
           </td>
         </tr>
       </tbody>
@@ -244,7 +237,7 @@ function FilterInfo(props) {
         View all entries
       </a>
       {enableDiffOverview &&
-        since != null &&
+      since != null && (
         <span>
           {" | "}
           <a
@@ -255,7 +248,8 @@ function FilterInfo(props) {
             }}>
             View records list diff overview
           </a>
-        </span>}
+        </span>
+      )}
     </p>
   );
 }
@@ -387,25 +381,28 @@ export default class HistoryTable extends PureComponent {
 
     return (
       <div>
-        {isFiltered &&
+        {isFiltered && (
           <FilterInfo
             location={location}
             enableDiffOverview={enableDiffOverview}
             onDiffOverviewClick={this.onDiffOverviewClick}
             onViewJournalClick={this.onViewJournalClick}
-          />}
-        {cid && diffOverview && since
-          ? <DiffOverview since={since} source={current} target={previous} />
-          : !historyLoaded
-            ? <Spinner />
-            : <PaginatedTable
-                colSpan={6}
-                thead={thead}
-                tbody={tbody}
-                dataLoaded={historyLoaded}
-                hasNextPage={hasNextHistory}
-                listNextPage={listNextHistory}
-              />}
+          />
+        )}
+        {cid && diffOverview && since ? (
+          <DiffOverview since={since} source={current} target={previous} />
+        ) : !historyLoaded ? (
+          <Spinner />
+        ) : (
+          <PaginatedTable
+            colSpan={6}
+            thead={thead}
+            tbody={tbody}
+            dataLoaded={historyLoaded}
+            hasNextPage={hasNextHistory}
+            listNextPage={listNextHistory}
+          />
+        )}
       </div>
     );
   }

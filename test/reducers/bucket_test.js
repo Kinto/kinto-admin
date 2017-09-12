@@ -17,8 +17,8 @@ import {
 describe("bucket reducer", () => {
   describe("BUCKET_BUSY", () => {
     it("should set the busy flag", () => {
-      expect(bucket(undefined, { type: BUCKET_BUSY, busy: true })).to.have
-        .property("busy")
+      expect(bucket(undefined, { type: BUCKET_BUSY, busy: true }))
+        .to.have.property("busy")
         .eql(true);
     });
   });
@@ -33,8 +33,8 @@ describe("bucket reducer", () => {
 
   describe("ROUTE_LOAD_REQUEST", () => {
     it("should set the busy flag", () => {
-      expect(bucket({ busy: false }, { type: ROUTE_LOAD_REQUEST })).to.have
-        .property("busy")
+      expect(bucket({ busy: false }, { type: ROUTE_LOAD_REQUEST }))
+        .to.have.property("busy")
         .eql(true);
     });
   });
@@ -52,8 +52,8 @@ describe("bucket reducer", () => {
           { groups: [{ id: "g1" }] },
           { type: ROUTE_LOAD_SUCCESS, bucket: {} }
         )
-      ).to.have
-        .property("groups")
+      )
+        .to.have.property("groups")
         .eql([{ id: "g1" }]);
     });
 
@@ -73,8 +73,8 @@ describe("bucket reducer", () => {
 
   describe("ROUTE_LOAD_FAILURE", () => {
     it("should clear the busy flag", () => {
-      expect(bucket({ busy: true }, { type: ROUTE_LOAD_FAILURE })).to.have
-        .property("busy")
+      expect(bucket({ busy: true }, { type: ROUTE_LOAD_FAILURE }))
+        .to.have.property("busy")
         .eql(false);
     });
   });
@@ -84,8 +84,8 @@ describe("bucket reducer", () => {
       const state = { collections: { loaded: true } };
       const action = { type: BUCKET_COLLECTIONS_REQUEST };
 
-      expect(bucket(state, action)).to.have
-        .property("collections")
+      expect(bucket(state, action))
+        .to.have.property("collections")
         .to.have.property("loaded")
         .eql(false);
     });
@@ -104,15 +104,15 @@ describe("bucket reducer", () => {
     };
 
     it("should update the list of bucket collections", () => {
-      expect(bucket(state, action)).to.have
-        .property("collections")
+      expect(bucket(state, action))
+        .to.have.property("collections")
         .to.have.property("entries")
         .eql(action.entries);
     });
 
     it("should update the collectionsLoaded flag", () => {
-      expect(bucket(state, action)).to.have
-        .property("collections")
+      expect(bucket(state, action))
+        .to.have.property("collections")
         .to.have.property("loaded")
         .eql(true);
     });
@@ -123,8 +123,8 @@ describe("bucket reducer", () => {
       const state = { historyLoaded: true };
       const action = { type: BUCKET_HISTORY_REQUEST };
 
-      expect(bucket(state, action)).to.have
-        .property("history")
+      expect(bucket(state, action))
+        .to.have.property("history")
         .to.have.property("loaded")
         .eql(false);
     });
@@ -135,8 +135,8 @@ describe("bucket reducer", () => {
       const state = { historyLoaded: true };
       const action = { type: BUCKET_HISTORY_NEXT_REQUEST };
 
-      expect(bucket(state, action)).to.have
-        .property("history")
+      expect(bucket(state, action))
+        .to.have.property("history")
         .to.have.property("loaded")
         .eql(false);
     });
@@ -160,29 +160,29 @@ describe("bucket reducer", () => {
     };
 
     it("should update the list of history", () => {
-      expect(bucket(state, action)).to.have
-        .property("history")
+      expect(bucket(state, action))
+        .to.have.property("history")
         .to.have.property("entries")
         .eql(action.entries);
     });
 
     it("should update the historyLoaded flag", () => {
-      expect(bucket(state, action)).to.have
-        .property("history")
+      expect(bucket(state, action))
+        .to.have.property("history")
         .to.have.property("loaded")
         .eql(true);
     });
 
     it("should update the hasNextHistory flag", () => {
-      expect(bucket(state, action)).to.have
-        .property("history")
+      expect(bucket(state, action))
+        .to.have.property("history")
         .to.have.property("hasNextPage")
         .eql(true);
     });
 
     it("should update the listNextHistory flag", () => {
-      expect(bucket(state, action)).to.have
-        .property("history")
+      expect(bucket(state, action))
+        .to.have.property("history")
         .to.have.property("next")
         .eql(fakeNext);
     });

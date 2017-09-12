@@ -18,24 +18,27 @@ export default class PaginatedTable extends PureComponent {
       <table className="table table-striped table-bordered record-list">
         {thead}
         {tbody}
-        {hasNextPage &&
+        {hasNextPage && (
           <tfoot>
             <tr>
               <td colSpan={colSpan} className="load-more text-center">
-                {!dataLoaded
-                  ? <Spinner />
-                  : <a
-                      href="."
-                      key="__3"
-                      onClick={event => {
-                        event.preventDefault();
-                        listNextPage();
-                      }}>
-                      Load more
-                    </a>}
+                {!dataLoaded ? (
+                  <Spinner />
+                ) : (
+                  <a
+                    href="."
+                    key="__3"
+                    onClick={event => {
+                      event.preventDefault();
+                      listNextPage();
+                    }}>
+                    Load more
+                  </a>
+                )}
               </td>
             </tr>
-          </tfoot>}
+          </tfoot>
+        )}
       </table>
     );
   }

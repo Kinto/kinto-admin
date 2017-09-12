@@ -12,11 +12,7 @@ class ErrorDetails extends PureComponent {
     return (
       <ul>
         {details.map((error, index) => {
-          return (
-            <li key={index}>
-              {error}
-            </li>
-          );
+          return <li key={index}>{error}</li>;
         })}
       </ul>
     );
@@ -74,12 +70,10 @@ export class Notification extends PureComponent {
         <a className="close" href="" onClick={this.onCloseClick.bind(this)}>
           ✖
         </a>
-        <h4>
-          {this.getHeading()}
-        </h4>
+        <h4>{this.getHeading()}</h4>
         <p>
           {message}
-          {details.length !== 0 &&
+          {details.length !== 0 && (
             <a
               href="."
               className="btn-details"
@@ -90,7 +84,8 @@ export class Notification extends PureComponent {
                   ? "bottom"
                   : "right"}`}
               />
-            </a>}
+            </a>
+          )}
         </p>
         {expanded && <ErrorDetails details={details} />}
       </div>

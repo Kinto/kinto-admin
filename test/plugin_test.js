@@ -29,8 +29,8 @@ describe("Plugin API", () => {
     });
 
     it("should map to Route components", () => {
-      expect(flattenPluginsRoutes(plugins)[0]).to.have
-        .property("type")
+      expect(flattenPluginsRoutes(plugins)[0])
+        .to.have.property("type")
         .to.have.property("displayName")
         .eql("Route");
     });

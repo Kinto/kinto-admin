@@ -97,7 +97,10 @@ export function validateUiSchema(jsonUiSchema: string, jsonSchema: string) {
     const order = uiSchema["ui:order"];
     const properties: string[] = Object.keys(schema.properties);
     const arrayId = (array: string[]): string =>
-      array.slice().sort().toString();
+      array
+        .slice()
+        .sort()
+        .toString();
     checks = checks.concat([
       {
         test: () => Array.isArray(order),
@@ -197,11 +200,7 @@ export function renderDisplayField(record: Object, displayField: string): any {
       return String(field);
     }
   } else if (displayField === "__json") {
-    return (
-      <code>
-        {JSON.stringify(cleanRecord(record))}
-      </code>
-    );
+    return <code>{JSON.stringify(cleanRecord(record))}</code>;
   } else if (displayField.indexOf(".") !== -1) {
     return handleNestedDisplayField(record, displayField);
   }

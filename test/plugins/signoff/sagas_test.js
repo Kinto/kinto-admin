@@ -41,8 +41,8 @@ describe("signoff plugin sagas", () => {
     });
 
     it("should update the collection status as 'to-review'", () => {
-      expect(handleRequestReview.next({ id: "coll" }).value).to.have
-        .property("CALL")
+      expect(handleRequestReview.next({ id: "coll" }).value)
+        .to.have.property("CALL")
         .to.have.property("args")
         .to.include({ status: "to-review", last_editor_comment: ":)" });
     });
@@ -52,8 +52,8 @@ describe("signoff plugin sagas", () => {
         handleRequestReview.next({
           data: { id: "coll", status: "to-review" },
         }).value
-      ).to.have
-        .property("CALL")
+      )
+        .to.have.property("CALL")
         .to.have.property("args")
         .to.include({ bid: "buck", cid: "coll" });
     });
@@ -89,8 +89,8 @@ describe("signoff plugin sagas", () => {
     });
 
     it("should update the collection status as 'work-in-progress'", () => {
-      expect(handleDeclineChanges.next({ id: "coll" }).value).to.have
-        .property("CALL")
+      expect(handleDeclineChanges.next({ id: "coll" }).value)
+        .to.have.property("CALL")
         .to.have.property("args")
         .to.include({
           status: "work-in-progress",
@@ -103,8 +103,8 @@ describe("signoff plugin sagas", () => {
         handleDeclineChanges.next({
           data: { id: "coll", status: "work-in-progress" },
         }).value
-      ).to.have
-        .property("CALL")
+      )
+        .to.have.property("CALL")
         .to.have.property("args")
         .to.include({ bid: "buck", cid: "coll" });
     });
@@ -140,8 +140,8 @@ describe("signoff plugin sagas", () => {
     });
 
     it("should update the collection status as 'to-sign'", () => {
-      expect(handleApproveChanges.next({ id: "coll" }).value).to.have
-        .property("CALL")
+      expect(handleApproveChanges.next({ id: "coll" }).value)
+        .to.have.property("CALL")
         .to.have.property("args")
         .to.include({ status: "to-sign", last_reviewer_comment: "" });
     });
@@ -151,8 +151,8 @@ describe("signoff plugin sagas", () => {
         handleApproveChanges.next({
           data: { id: "coll", status: "to-sign" },
         }).value
-      ).to.have
-        .property("CALL")
+      )
+        .to.have.property("CALL")
         .to.have.property("args")
         .to.include({ bid: "buck", cid: "coll" });
     });

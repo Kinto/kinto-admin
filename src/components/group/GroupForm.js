@@ -147,11 +147,11 @@ export default class GroupForm extends PureComponent {
     };
 
     const alert =
-      formIsEditable || group.busy
-        ? null
-        : <div className="alert alert-warning">
-            You don't have the required permission to edit this group.
-          </div>;
+      formIsEditable || group.busy ? null : (
+        <div className="alert alert-warning">
+          You don't have the required permission to edit this group.
+        </div>
+      );
 
     const buttons = (
       <div>
@@ -172,20 +172,20 @@ export default class GroupForm extends PureComponent {
     return (
       <div>
         {alert}
-        {group.busy
-          ? <Spinner />
-          : <BaseForm
-              schema={schema}
-              uiSchema={
-                formIsEditable
-                  ? _uiSchema
-                  : { ..._uiSchema, "ui:readonly": true }
-              }
-              formData={formDataSerialized}
-              validate={validate}
-              onSubmit={this.onSubmit}>
-              {buttons}
-            </BaseForm>}
+        {group.busy ? (
+          <Spinner />
+        ) : (
+          <BaseForm
+            schema={schema}
+            uiSchema={
+              formIsEditable ? _uiSchema : { ..._uiSchema, "ui:readonly": true }
+            }
+            formData={formDataSerialized}
+            validate={validate}
+            onSubmit={this.onSubmit}>
+            {buttons}
+          </BaseForm>
+        )}
         {showDeleteForm && <DeleteForm gid={gid} onSubmit={deleteGroup} />}
       </div>
     );

@@ -35,19 +35,11 @@ function DataList(props) {
         const date = new Date(last_modified);
         return (
           <tr key={index}>
+            <td>{cid}</td>
+            <td>{schema ? "Yes" : "No"}</td>
+            <td>{cache_expires ? `${cache_expires} seconds` : "No"}</td>
             <td>
-              {cid}
-            </td>
-            <td>
-              {schema ? "Yes" : "No"}
-            </td>
-            <td>
-              {cache_expires ? `${cache_expires} seconds` : "No"}
-            </td>
-            <td>
-              <span title={date.toISOString()}>
-                {timeago(date.getTime())}
-              </span>
+              <span title={date.toISOString()}>{timeago(date.getTime())}</span>
             </td>
             <td className="actions">
               <div className="btn-group">
@@ -58,14 +50,15 @@ function DataList(props) {
                   title="Browse collection">
                   <i className="glyphicon glyphicon-align-justify" />
                 </AdminLink>
-                {"history" in capabilities &&
+                {"history" in capabilities && (
                   <AdminLink
                     name="collection:history"
                     params={{ bid, cid }}
                     className="btn btn-xs btn-default"
                     title="View collection history">
                     <i className="glyphicon glyphicon-time" />
-                  </AdminLink>}
+                  </AdminLink>
+                )}
                 <AdminLink
                   name="collection:attributes"
                   params={{ bid, cid }}
@@ -144,16 +137,18 @@ export default class BucketCollections extends PureComponent {
           selected="collections"
           capabilities={capabilities}>
           {listActions}
-          {collections.loaded && collections.entries.length === 0
-            ? <div className="alert alert-info">
-                <p>This bucket has no collections.</p>
-              </div>
-            : <DataList
-                bid={bid}
-                collections={collections}
-                listBucketNextCollections={listBucketNextCollections}
-                capabilities={capabilities}
-              />}
+          {collections.loaded && collections.entries.length === 0 ? (
+            <div className="alert alert-info">
+              <p>This bucket has no collections.</p>
+            </div>
+          ) : (
+            <DataList
+              bid={bid}
+              collections={collections}
+              listBucketNextCollections={listBucketNextCollections}
+              capabilities={capabilities}
+            />
+          )}
           {listActions}
         </BucketTabs>
       </div>

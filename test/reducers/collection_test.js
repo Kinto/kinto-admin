@@ -14,8 +14,8 @@ import {
 
 describe("collection reducer", () => {
   it("COLLECTION_BUSY", () => {
-    expect(collection(undefined, { type: COLLECTION_BUSY, busy: true })).to.have
-      .property("busy")
+    expect(collection(undefined, { type: COLLECTION_BUSY, busy: true }))
+      .to.have.property("busy")
       .eql(true);
   });
 
@@ -34,8 +34,8 @@ describe("collection reducer", () => {
             type: COLLECTION_RECORDS_REQUEST,
           }
         )
-      ).to.have
-        .property("recordsLoaded")
+      )
+        .to.have.property("recordsLoaded")
         .eql(false);
     });
 
@@ -45,8 +45,8 @@ describe("collection reducer", () => {
           type: COLLECTION_RECORDS_REQUEST,
           sort: "title",
         })
-      ).to.have
-        .property("currentSort")
+      )
+        .to.have.property("currentSort")
         .eql("title");
     });
 
@@ -58,8 +58,8 @@ describe("collection reducer", () => {
             type: COLLECTION_RECORDS_REQUEST,
           }
         )
-      ).to.have
-        .property("currentSort")
+      )
+        .to.have.property("currentSort")
         .eql("plop");
     });
 
@@ -71,8 +71,8 @@ describe("collection reducer", () => {
             type: COLLECTION_RECORDS_REQUEST,
           }
         )
-      ).to.have
-        .property("currentSort")
+      )
+        .to.have.property("currentSort")
         .eql("-last_modified");
     });
 
@@ -88,16 +88,16 @@ describe("collection reducer", () => {
             sort: "title",
           }
         )
-      ).to.have
-        .property("records")
+      )
+        .to.have.property("records")
         .eql([]);
     });
   });
 
   describe("ROUTE_LOAD_REQUEST", () => {
     it("should set the busy flag", () => {
-      expect(collection({ busy: false }, { type: ROUTE_LOAD_REQUEST })).to.have
-        .property("busy")
+      expect(collection({ busy: false }, { type: ROUTE_LOAD_REQUEST }))
+        .to.have.property("busy")
         .eql(true);
     });
   });
@@ -118,17 +118,23 @@ describe("collection reducer", () => {
         },
       });
 
-      expect(state.data).to.have.property("id").eql("coll");
-      expect(state.data).to.have.property("last_modified").eql(42);
-      expect(state.data).to.have.property("foo").eql("bar");
+      expect(state.data)
+        .to.have.property("id")
+        .eql("coll");
+      expect(state.data)
+        .to.have.property("last_modified")
+        .eql(42);
+      expect(state.data)
+        .to.have.property("foo")
+        .eql("bar");
       expect(state.permissions).eql({ read: ["a"], write: ["b"] });
     });
   });
 
   describe("ROUTE_LOAD_FAILURE", () => {
     it("should clear the busy flag", () => {
-      expect(collection({ busy: true }, { type: ROUTE_LOAD_FAILURE })).to.have
-        .property("busy")
+      expect(collection({ busy: true }, { type: ROUTE_LOAD_FAILURE }))
+        .to.have.property("busy")
         .eql(false);
     });
   });

@@ -88,16 +88,17 @@ export default class TagsField extends PureComponent {
           readOnly={readonly}
         />
         <div className="help-block">
-          {uiSchema["ui:help"] ||
+          {uiSchema["ui:help"] || (
             <span>
               Entries must be separated with
-              {this.separator === " "
-                ? "spaces"
-                : <code>
-                    {this.separator}
-                  </code>}
+              {this.separator === " " ? (
+                "spaces"
+              ) : (
+                <code>{this.separator}</code>
+              )}
               .
-            </span>}
+            </span>
+          )}
         </div>
       </div>
     );
