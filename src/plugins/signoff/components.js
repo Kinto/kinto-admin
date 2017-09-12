@@ -118,17 +118,17 @@ export default class SignoffToolBar extends React.Component {
     const step = status == "to-review" ? 1 : status == "signed" ? 2 : 0;
     return (
       <div>
-        {hasHistory
-          ? null
-          : <div className="alert alert-warning">
-              <p>
-                <b>
-                  Plugin which tracks history of changes is not enabled on this
-                  server.
-                </b>
-                Please reach to the server administrator.
-              </p>
-            </div>}
+        {hasHistory ? null : (
+          <div className="alert alert-warning">
+            <p>
+              <b>
+                Plugin which tracks history of changes is not enabled on this
+                server.
+              </b>
+              Please reach to the server administrator.
+            </p>
+          </div>
+        )}
         <ProgressBar>
           <WorkInProgress
             label="Work in progress"
@@ -159,20 +159,22 @@ export default class SignoffToolBar extends React.Component {
             destination={destination}
           />
         </ProgressBar>
-        {pendingConfirmReviewRequest &&
+        {pendingConfirmReviewRequest && (
           <CommentDialog
             description="Leave some notes for the reviewer:"
             confirmLabel="Request review"
             onConfirm={requestReview}
             onCancel={cancelPendingConfirm}
-          />}
-        {pendingConfirmDeclineChanges &&
+          />
+        )}
+        {pendingConfirmDeclineChanges && (
           <CommentDialog
             description="Leave some notes for the editor:"
             confirmLabel="Decline changes"
             onConfirm={declineChanges}
             onCancel={cancelPendingConfirm}
-          />}
+          />
+        )}
       </div>
     );
   }
@@ -184,22 +186,18 @@ function Comment({ text }: { text: string }): ?React.Element<*> {
   }
   return (
     <span title={text} className="signoff-comment">
-      {text.split("\n").map((l, i) =>
+      {text.split("\n").map((l, i) => (
         <span key={i}>
           {l}
           <br />
         </span>
-      )}
+      ))}
     </span>
   );
 }
 
 function HumanDate({ timestamp }: { timestamp: number }) {
-  return (
-    <span title={humanDate(timestamp)}>
-      {timeago(timestamp)}
-    </span>
-  );
+  return <span title={humanDate(timestamp)}>{timeago(timestamp)}</span>;
 }
 
 //
@@ -237,9 +235,8 @@ function WorkInProgress(props: WorkInProgressProps) {
         lastReviewerComment={lastReviewerComment}
       />
       {active &&
-        lastUpdated &&
-        canEdit &&
-        <RequestReviewButton onClick={confirmRequestReview} />}
+      lastUpdated &&
+      canEdit && <RequestReviewButton onClick={confirmRequestReview} />}
     </ProgressStep>
   );
 }
@@ -263,10 +260,11 @@ function WorkInProgressInfos(props) {
         <strong>By: </strong> {lastAuthor}
       </li>
       {active &&
-        lastReviewerComment &&
+      lastReviewerComment && (
         <li>
           <strong>Comment: </strong> <Comment text={lastReviewerComment} />
-        </li>}
+        </li>
+      )}
     </ul>
   );
 }
@@ -327,20 +325,22 @@ function Review(props: ReviewProps) {
   const { lastEditor } = source;
   return (
     <ProgressStep label={label} currentStep={currentStep} step={step}>
-      {lastEditor &&
+      {lastEditor && (
         <ReviewInfos
           active={active}
           source={source}
           lastRequested={lastRequested}
           link={link}
           hasHistory={hasHistory}
-        />}
+        />
+      )}
       {active &&
-        canEdit &&
+      canEdit && (
         <ReviewButtons
           onApprove={approveChanges}
           onDecline={confirmDeclineChanges}
-        />}
+        />
+      )}
     </ProgressStep>
   );
 }
@@ -357,14 +357,14 @@ function ReviewInfos(props: ReviewInfosProps) {
   const { active, source, lastRequested, link, hasHistory } = props;
   const { bid, cid, lastEditor, lastEditorComment, changes = {} } = source;
   const { since, deleted, updated } = changes;
-  const detailsLink =
-    hasHistory &&
+  const detailsLink = hasHistory && (
     <AdminLink
       name="collection:history"
       params={{ bid, cid }}
       query={{ since, resource_name: "record" }}>
       details...
-    </AdminLink>;
+    </AdminLink>
+  );
 
   return (
     <ul>
@@ -376,18 +376,20 @@ function ReviewInfos(props: ReviewInfosProps) {
         <strong>By: </strong> {lastEditor}
       </li>
       {active &&
-        lastEditorComment &&
+      lastEditorComment && (
         <li>
           <strong>Comment: </strong> <Comment text={lastEditorComment} />
-        </li>}
+        </li>
+      )}
       <li>
         <strong>Preview: </strong> {link}
       </li>
-      {active &&
+      {active && (
         <li>
           <strong>Changes: </strong>
           <DiffStats updated={updated} deleted={deleted} /> {detailsLink}
-        </li>}
+        </li>
+      )}
     </ul>
   );
 }
@@ -396,14 +398,8 @@ function DiffStats(props: { updated: number, deleted: number }) {
   const { updated, deleted } = props;
   return (
     <span className="diffstats">
-      {updated > 0 &&
-        <span className="text-green">
-          +{updated}
-        </span>}
-      {deleted > 0 &&
-        <span className="text-red">
-          -{deleted}
-        </span>}
+      {updated > 0 && <span className="text-green">+{updated}</span>}
+      {deleted > 0 && <span className="text-red">-{deleted}</span>}
     </span>
   );
 }
@@ -454,8 +450,9 @@ function Signed(props: SignedProps) {
   return (
     <ProgressStep label={label} currentStep={currentStep} step={step}>
       {destination &&
-        destination.lastSigned &&
-        <SignedInfos lastReviewer={lastReviewer} destination={destination} />}
+      destination.lastSigned && (
+        <SignedInfos lastReviewer={lastReviewer} destination={destination} />
+      )}
       {active && <ReSignButton onClick={reSign} />}
     </ProgressStep>
   );
@@ -546,9 +543,7 @@ class CommentDialog extends PureComponent {
                 <h4 className="modal-title">Confirmation</h4>
               </div>
               <div className="modal-body">
-                <p>
-                  {description}
-                </p>
+                <p>{description}</p>
                 <textarea
                   className="form-control"
                   placeholder="Comment..."

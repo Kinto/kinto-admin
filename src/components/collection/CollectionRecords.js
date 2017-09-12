@@ -27,11 +27,9 @@ class Row extends PureComponent {
       return null;
     }
     const date = new Date(lastModified);
-    return date.toJSON() == null
-      ? null
-      : <span title={date.toISOString()}>
-          {timeago(date.getTime())}
-        </span>;
+    return date.toJSON() == null ? null : (
+      <span title={date.toISOString()}>{timeago(date.getTime())}</span>
+    );
   }
 
   onDoubleClick(event) {
@@ -57,24 +55,21 @@ class Row extends PureComponent {
       <tr onDoubleClick={this.onDoubleClick.bind(this)}>
         {displayFields.map((displayField, index) => {
           return (
-            <td key={index}>
-              {renderDisplayField(record, displayField)}
-            </td>
+            <td key={index}>{renderDisplayField(record, displayField)}</td>
           );
         })}
-        <td className="lastmod">
-          {this.lastModified}
-        </td>
+        <td className="lastmod">{this.lastModified}</td>
         <td className="actions text-right">
           <div className="btn-group">
-            {attachmentUrl &&
+            {attachmentUrl && (
               <a
                 href={attachmentUrl}
                 className="btn btn-sm btn-default"
                 title="The record has an attachment"
                 target="_blank">
                 <i className="glyphicon glyphicon-paperclip" />
-              </a>}
+              </a>
+            )}
             <AdminLink
               name="record:attributes"
               params={{ bid, cid, rid }}
@@ -203,12 +198,13 @@ class Table extends PureComponent {
             return (
               <th key={index}>
                 {this.getFieldTitle(displayField)}
-                {this.isSchemaProperty(displayField) &&
+                {this.isSchemaProperty(displayField) && (
                   <ColumnSortLink
                     currentSort={currentSort}
                     column={displayField}
                     updateSort={updateSort}
-                  />}
+                  />
+                )}
               </th>
             );
           })}
@@ -281,9 +277,11 @@ function ListActions(props) {
   ];
   return (
     <div className="list-actions">
-      {canCreateRecord(session, bucket, collection)
-        ? [...defaultButtons, ...hooks]
-        : hooks}
+      {canCreateRecord(session, bucket, collection) ? (
+        [...defaultButtons, ...hooks]
+      ) : (
+        hooks
+      )}
     </div>
   );
 }

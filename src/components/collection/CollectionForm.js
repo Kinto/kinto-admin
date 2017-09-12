@@ -187,7 +187,8 @@ const uiSchema = {
       <p>
         This must be a valid
         <a href="http://json-schema.org/" target="_blank">
-          {" "}JSON schema{" "}
+          {" "}
+          JSON schema{" "}
         </a>
         defining an object representing the structure of your collection
         records. You may find this
@@ -216,7 +217,8 @@ const uiSchema = {
       <p>
         Learn more about
         <a href="https://git.io/vrbKn" target="_blank">
-          {" "}what a uiSchema is{" "}
+          {" "}
+          what a uiSchema is{" "}
         </a>{" "}
         and how to leverage it to enhance how JSON schema forms are rendered in
         the admin.
@@ -377,11 +379,11 @@ export default class CollectionForm extends PureComponent {
         };
 
     const alert =
-      this.allowEditing || bucket.busy || collection.busy
-        ? null
-        : <div className="alert alert-warning">
-            You don't have the required permission to edit this collection.
-          </div>;
+      this.allowEditing || bucket.busy || collection.busy ? null : (
+        <div className="alert alert-warning">
+          You don't have the required permission to edit this collection.
+        </div>
+      );
 
     const buttons = (
       <div>
@@ -404,30 +406,34 @@ export default class CollectionForm extends PureComponent {
     return (
       <div>
         {alert}
-        {asJSON
-          ? <JSONCollectionForm
-              cid={cid}
-              formData={collection.data}
+        {asJSON ? (
+          <JSONCollectionForm
+            cid={cid}
+            formData={collection.data}
+            onSubmit={this.onSubmit}>
+            {buttons}
+          </JSONCollectionForm>
+        ) : (
+          <div>
+            <FormInstructions
+              onSchemalessLinkClick={this.onSchemalessLinkClick}
+            />
+            <BaseForm
+              schema={schema}
+              formData={formDataSerialized}
+              uiSchema={
+                this.allowEditing ? (
+                  _uiSchema
+                ) : (
+                  { ..._uiSchema, "ui:disabled": true }
+                )
+              }
+              validate={validate}
               onSubmit={this.onSubmit}>
               {buttons}
-            </JSONCollectionForm>
-          : <div>
-              <FormInstructions
-                onSchemalessLinkClick={this.onSchemalessLinkClick}
-              />
-              <BaseForm
-                schema={schema}
-                formData={formDataSerialized}
-                uiSchema={
-                  this.allowEditing
-                    ? _uiSchema
-                    : { ..._uiSchema, "ui:disabled": true }
-                }
-                validate={validate}
-                onSubmit={this.onSubmit}>
-                {buttons}
-              </BaseForm>
-            </div>}
+            </BaseForm>
+          </div>
+        )}
         {showDeleteForm && <DeleteForm cid={cid} onSubmit={deleteCollection} />}
       </div>
     );

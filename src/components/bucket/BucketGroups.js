@@ -35,9 +35,7 @@ function DataList(props) {
                   {gid}
                 </AdminLink>
               </td>
-              <td>
-                {members.join(", ")}
-              </td>
+              <td>{members.join(", ")}</td>
               <td>
                 <span title={date.toISOString()}>
                   {timeago(date.getTime())}
@@ -45,14 +43,15 @@ function DataList(props) {
               </td>
               <td className="actions">
                 <div className="btn-group">
-                  {"history" in capabilities &&
+                  {"history" in capabilities && (
                     <AdminLink
                       name="group:history"
                       params={{ bid, gid }}
                       className="btn btn-xs btn-default"
                       title="View group history">
                       <i className="glyphicon glyphicon-time" />
-                    </AdminLink>}
+                    </AdminLink>
+                  )}
                   <AdminLink
                     name="group:attributes"
                     params={{ bid, gid }}
@@ -110,15 +109,13 @@ export default class BucketCollections extends PureComponent {
         </h1>
         <BucketTabs bid={bid} selected="groups" capabilities={capabilities}>
           {listActions}
-          {groups.length === 0
-            ? <div className="alert alert-info">
-                <p>This bucket has no groups.</p>
-              </div>
-            : <DataList
-                bid={bid}
-                groups={groups}
-                capabilities={capabilities}
-              />}
+          {groups.length === 0 ? (
+            <div className="alert alert-info">
+              <p>This bucket has no groups.</p>
+            </div>
+          ) : (
+            <DataList bid={bid} groups={groups} capabilities={capabilities} />
+          )}
           {listActions}
         </BucketTabs>
       </div>

@@ -75,8 +75,14 @@ function* fetchWorkflowInfo(source, preview, destination) {
   // Obtain collections attributes for source, preview and destination.
   const client = getClient();
   const fetchInfos = batch => {
-    batch.bucket(source.bucket).collection(source.collection).getData();
-    batch.bucket(preview.bucket).collection(preview.collection).getData();
+    batch
+      .bucket(source.bucket)
+      .collection(source.collection)
+      .getData();
+    batch
+      .bucket(preview.bucket)
+      .collection(preview.collection)
+      .getData();
     batch
       .bucket(destination.bucket)
       .collection(destination.collection)

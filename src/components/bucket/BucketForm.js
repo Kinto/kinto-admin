@@ -122,11 +122,11 @@ export default class BucketForm extends PureComponent {
         };
 
     const alert =
-      formIsEditable || bucket.busy
-        ? null
-        : <div className="alert alert-warning">
-            You don't have the required permission to edit this bucket.
-          </div>;
+      formIsEditable || bucket.busy ? null : (
+        <div className="alert alert-warning">
+          You don't have the required permission to edit this bucket.
+        </div>
+      );
 
     const buttons = (
       <div>
@@ -145,20 +145,20 @@ export default class BucketForm extends PureComponent {
     return (
       <div>
         {alert}
-        {bucket.busy
-          ? <Spinner />
-          : <BaseForm
-              schema={schema}
-              uiSchema={
-                formIsEditable
-                  ? _uiSchema
-                  : { ..._uiSchema, "ui:readonly": true }
-              }
-              formData={formDataSerialized}
-              validate={validate}
-              onSubmit={this.onSubmit}>
-              {buttons}
-            </BaseForm>}
+        {bucket.busy ? (
+          <Spinner />
+        ) : (
+          <BaseForm
+            schema={schema}
+            uiSchema={
+              formIsEditable ? _uiSchema : { ..._uiSchema, "ui:readonly": true }
+            }
+            formData={formDataSerialized}
+            validate={validate}
+            onSubmit={this.onSubmit}>
+            {buttons}
+          </BaseForm>
+        )}
         {showDeleteForm && <DeleteForm bid={bid} onSubmit={deleteBucket} />}
       </div>
     );

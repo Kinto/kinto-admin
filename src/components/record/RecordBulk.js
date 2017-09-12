@@ -94,27 +94,29 @@ export default class RecordBulk extends PureComponent {
           </b>{" "}
           creation
         </h1>
-        {busy
-          ? <Spinner />
-          : <div className="panel panel-default">
-              <div className="panel-body">
-                <BaseForm
-                  schema={bulkSchema}
-                  uiSchema={bulkUiSchema}
-                  formData={bulkFormData}
-                  onSubmit={this.onSubmit}>
-                  <input
-                    type="submit"
-                    className="btn btn-primary"
-                    value="Bulk create"
-                  />
-                  {" or "}
-                  <AdminLink name="collection:records" params={{ bid, cid }}>
-                    Cancel
-                  </AdminLink>
-                </BaseForm>
-              </div>
-            </div>}
+        {busy ? (
+          <Spinner />
+        ) : (
+          <div className="panel panel-default">
+            <div className="panel-body">
+              <BaseForm
+                schema={bulkSchema}
+                uiSchema={bulkUiSchema}
+                formData={bulkFormData}
+                onSubmit={this.onSubmit}>
+                <input
+                  type="submit"
+                  className="btn btn-primary"
+                  value="Bulk create"
+                />
+                {" or "}
+                <AdminLink name="collection:records" params={{ bid, cid }}>
+                  Cancel
+                </AdminLink>
+              </BaseForm>
+            </div>
+          </div>
+        )}
       </div>
     );
   }

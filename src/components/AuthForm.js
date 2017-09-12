@@ -57,19 +57,21 @@ class ServerHistory extends PureComponent {
             <span className="caret" />
           </button>
           <ul className="dropdown-menu dropdown-menu-right">
-            {history.length === 0
-              ? <li>
-                  <a onClick={this.toggleMenu}>
-                    <em>No server history</em>
+            {history.length === 0 ? (
+              <li>
+                <a onClick={this.toggleMenu}>
+                  <em>No server history</em>
+                </a>
+              </li>
+            ) : (
+              history.map((server, key) => (
+                <li key={key}>
+                  <a href="#" onClick={this.select(server)}>
+                    {server}
                   </a>
                 </li>
-              : history.map((server, key) =>
-                  <li key={key}>
-                    <a href="#" onClick={this.select(server)}>
-                      {server}
-                    </a>
-                  </li>
-                )}
+              ))
+            )}
             <li role="separator" className="divider" />
             <li>
               <a href="#" onClick={this.clear}>

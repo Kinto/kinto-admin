@@ -49,9 +49,11 @@ function CollectionMenuEntry(props) {
         params={{ bid, cid }}
         currentPath={currentPath}
         className="">
-        {collection.readonly
-          ? <i className="glyphicon glyphicon-lock" />
-          : <i className="glyphicon glyphicon-align-justify" />}
+        {collection.readonly ? (
+          <i className="glyphicon glyphicon-lock" />
+        ) : (
+          <i className="glyphicon glyphicon-align-justify" />
+        )}
         {cid}
       </SideBarLink>
       <SideBarLink
@@ -97,14 +99,15 @@ function BucketCollectionsMenu(props) {
         );
       })}
       {sidebarMaxListedCollections != null &&
-        collections.length > sidebarMaxListedCollections &&
+      collections.length > sidebarMaxListedCollections && (
         <SideBarLink
           name="bucket:collections"
           params={{ bid: bucket.id }}
           currentPath={currentPath}>
           <i className="glyphicon glyphicon-option-horizontal" />
           See all collections
-        </SideBarLink>}
+        </SideBarLink>
+      )}
       <SideBarLink
         name="collection:create"
         params={{ bid: bucket.id }}
@@ -224,46 +227,50 @@ class BucketsMenu extends PureComponent {
             </div>
           </form>
         </div>
-        {busy
-          ? <Spinner />
-          : filteredBuckets.map((bucket, i) => {
-              const { id, collections } = bucket;
-              const current = bid === id;
-              return (
-                <div
-                  key={i}
-                  className={`panel panel-${current
-                    ? "info"
-                    : "default"} bucket-menu`}>
-                  <div className="panel-heading">
-                    {bucket.readonly
-                      ? <i className="glyphicon glyphicon-lock" />
-                      : <i
-                          className={`glyphicon glyphicon-folder-${current
-                            ? "open"
-                            : "close"}`}
-                        />}
-                    <strong>{id}</strong> bucket
-                    <SideBarLink
-                      name="bucket:attributes"
-                      params={{ bid: id }}
-                      currentPath={currentPath}
-                      className="bucket-menu-entry-edit"
-                      title="Manage bucket">
-                      <i className="glyphicon glyphicon-cog" />
-                    </SideBarLink>
-                  </div>
-                  <BucketCollectionsMenu
-                    bucket={bucket}
-                    collections={collections}
+        {busy ? (
+          <Spinner />
+        ) : (
+          filteredBuckets.map((bucket, i) => {
+            const { id, collections } = bucket;
+            const current = bid === id;
+            return (
+              <div
+                key={i}
+                className={`panel panel-${current
+                  ? "info"
+                  : "default"} bucket-menu`}>
+                <div className="panel-heading">
+                  {bucket.readonly ? (
+                    <i className="glyphicon glyphicon-lock" />
+                  ) : (
+                    <i
+                      className={`glyphicon glyphicon-folder-${current
+                        ? "open"
+                        : "close"}`}
+                    />
+                  )}
+                  <strong>{id}</strong> bucket
+                  <SideBarLink
+                    name="bucket:attributes"
+                    params={{ bid: id }}
                     currentPath={currentPath}
-                    bid={bid}
-                    cid={cid}
-                    sidebarMaxListedCollections={sidebarMaxListedCollections}
-                  />
+                    className="bucket-menu-entry-edit"
+                    title="Manage bucket">
+                    <i className="glyphicon glyphicon-cog" />
+                  </SideBarLink>
                 </div>
-              );
-            })}
+                <BucketCollectionsMenu
+                  bucket={bucket}
+                  collections={collections}
+                  currentPath={currentPath}
+                  bid={bid}
+                  cid={cid}
+                  sidebarMaxListedCollections={sidebarMaxListedCollections}
+                />
+              </div>
+            );
+          })
+        )}
       </div>
     );
   }
@@ -296,7 +303,7 @@ export default class Sidebar extends PureComponent {
             </SideBarLink>
           </div>
         </div>
-        {authenticated &&
+        {authenticated && (
           <BucketsMenu
             busy={busy}
             buckets={buckets}
@@ -304,7 +311,8 @@ export default class Sidebar extends PureComponent {
             bid={bid}
             cid={cid}
             sidebarMaxListedCollections={sidebarMaxListedCollections}
-          />}
+          />
+        )}
       </div>
     );
   }

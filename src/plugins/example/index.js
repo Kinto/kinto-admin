@@ -32,9 +32,7 @@ class TestPlugin extends React.Component {
     return (
       <div>
         <h1>Hello from plugin!</h1>
-        <p>
-          Answer: {plugin.answer}
-        </p>
+        <p>Answer: {plugin.answer}</p>
         <p>
           <button onClick={testActionRequest}>Get answer</button>
         </p>

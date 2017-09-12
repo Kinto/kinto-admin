@@ -17,32 +17,32 @@ import {
 describe("record reducer", () => {
   describe("busy flag", () => {
     it("RECORD_BUSY", () => {
-      expect(record({ busy: false }, { type: RECORD_BUSY, busy: true })).to.have
-        .property("busy")
+      expect(record({ busy: false }, { type: RECORD_BUSY, busy: true }))
+        .to.have.property("busy")
         .eql(true);
     });
 
     it("ROUTE_LOAD_REQUEST", () => {
-      expect(record({ busy: false }, { type: ROUTE_LOAD_REQUEST })).to.have
-        .property("busy")
+      expect(record({ busy: false }, { type: ROUTE_LOAD_REQUEST }))
+        .to.have.property("busy")
         .eql(true);
     });
 
     it("RECORD_CREATE_REQUEST", () => {
-      expect(record({ busy: false }, { type: RECORD_CREATE_REQUEST })).to.have
-        .property("busy")
+      expect(record({ busy: false }, { type: RECORD_CREATE_REQUEST }))
+        .to.have.property("busy")
         .eql(true);
     });
 
     it("RECORD_UPDATE_REQUEST", () => {
-      expect(record({ busy: false }, { type: RECORD_UPDATE_REQUEST })).to.have
-        .property("busy")
+      expect(record({ busy: false }, { type: RECORD_UPDATE_REQUEST }))
+        .to.have.property("busy")
         .eql(true);
     });
 
     it("RECORD_DELETE_REQUEST", () => {
-      expect(record({ busy: false }, { type: RECORD_DELETE_REQUEST })).to.have
-        .property("busy")
+      expect(record({ busy: false }, { type: RECORD_DELETE_REQUEST }))
+        .to.have.property("busy")
         .eql(true);
     });
   });
@@ -70,8 +70,8 @@ describe("record reducer", () => {
 
   describe("ROUTE_LOAD_FAILURE", () => {
     it("should clear the busy flag", () => {
-      expect(record({ busy: true }, { type: ROUTE_LOAD_FAILURE })).to.have
-        .property("busy")
+      expect(record({ busy: true }, { type: ROUTE_LOAD_FAILURE }))
+        .to.have.property("busy")
         .eql(false);
     });
   });

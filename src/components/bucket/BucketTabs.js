@@ -56,7 +56,7 @@ export default class BucketTabs extends PureComponent {
               Permissions
             </AdminLink>
           </li>
-          {"history" in capabilities &&
+          {"history" in capabilities && (
             <li
               role="presentation"
               className={selected === "history" ? "active" : ""}>
@@ -64,12 +64,11 @@ export default class BucketTabs extends PureComponent {
                 <i className="glyphicon glyphicon-time" />
                 History
               </AdminLink>
-            </li>}
+            </li>
+          )}
         </ul>
         <div className="panel panel-default">
-          <div className="panel-body">
-            {children}
-          </div>
+          <div className="panel-body">{children}</div>
         </div>
       </div>
     );
