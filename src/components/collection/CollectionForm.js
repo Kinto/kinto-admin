@@ -422,11 +422,9 @@ export default class CollectionForm extends PureComponent {
               schema={schema}
               formData={formDataSerialized}
               uiSchema={
-                this.allowEditing ? (
-                  _uiSchema
-                ) : (
-                  { ..._uiSchema, "ui:disabled": true }
-                )
+                this.allowEditing
+                  ? _uiSchema
+                  : { ..._uiSchema, "ui:disabled": true }
               }
               validate={validate}
               onSubmit={this.onSubmit}>

@@ -167,19 +167,19 @@ class HistoryRow extends PureComponent {
           <td>{user_id}</td>
           <td className="text-center">
             {resource_name === "record" &&
-            enableDiffOverview &&
-            pos !== 0 && (
-              <span>
-                <AdminLink
-                  className="btn btn-xs btn-default"
-                  title="Start history log from this point"
-                  name="collection:history"
-                  params={{ bid, cid }}
-                  query={{ since: last_modified, resource_name: "record" }}>
-                  <i className="glyphicon glyphicon-step-backward" />
-                </AdminLink>{" "}
-              </span>
-            )}
+              enableDiffOverview &&
+              pos !== 0 && (
+                <span>
+                  <AdminLink
+                    className="btn btn-xs btn-default"
+                    title="Start history log from this point"
+                    name="collection:history"
+                    params={{ bid, cid }}
+                    query={{ since: last_modified, resource_name: "record" }}>
+                    <i className="glyphicon glyphicon-step-backward" />
+                  </AdminLink>{" "}
+                </span>
+              )}
             <a
               href="."
               className="btn btn-xs btn-default"
@@ -237,19 +237,19 @@ function FilterInfo(props) {
         View all entries
       </a>
       {enableDiffOverview &&
-      since != null && (
-        <span>
-          {" | "}
-          <a
-            href="#"
-            onClick={event => {
-              event.preventDefault();
-              onDiffOverviewClick(since);
-            }}>
-            View records list diff overview
-          </a>
-        </span>
-      )}
+        since != null && (
+          <span>
+            {" | "}
+            <a
+              href="#"
+              onClick={event => {
+                event.preventDefault();
+                onDiffOverviewClick(since);
+              }}>
+              View records list diff overview
+            </a>
+          </span>
+        )}
     </p>
   );
 }
