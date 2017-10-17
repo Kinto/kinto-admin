@@ -235,8 +235,8 @@ function WorkInProgress(props: WorkInProgressProps) {
         lastReviewerComment={lastReviewerComment}
       />
       {active &&
-      lastUpdated &&
-      canEdit && <RequestReviewButton onClick={confirmRequestReview} />}
+        lastUpdated &&
+        canEdit && <RequestReviewButton onClick={confirmRequestReview} />}
     </ProgressStep>
   );
 }
@@ -260,11 +260,11 @@ function WorkInProgressInfos(props) {
         <strong>By: </strong> {lastAuthor}
       </li>
       {active &&
-      lastReviewerComment && (
-        <li>
-          <strong>Comment: </strong> <Comment text={lastReviewerComment} />
-        </li>
-      )}
+        lastReviewerComment && (
+          <li>
+            <strong>Comment: </strong> <Comment text={lastReviewerComment} />
+          </li>
+        )}
     </ul>
   );
 }
@@ -335,12 +335,12 @@ function Review(props: ReviewProps) {
         />
       )}
       {active &&
-      canEdit && (
-        <ReviewButtons
-          onApprove={approveChanges}
-          onDecline={confirmDeclineChanges}
-        />
-      )}
+        canEdit && (
+          <ReviewButtons
+            onApprove={approveChanges}
+            onDecline={confirmDeclineChanges}
+          />
+        )}
     </ProgressStep>
   );
 }
@@ -376,11 +376,11 @@ function ReviewInfos(props: ReviewInfosProps) {
         <strong>By: </strong> {lastEditor}
       </li>
       {active &&
-      lastEditorComment && (
-        <li>
-          <strong>Comment: </strong> <Comment text={lastEditorComment} />
-        </li>
-      )}
+        lastEditorComment && (
+          <li>
+            <strong>Comment: </strong> <Comment text={lastEditorComment} />
+          </li>
+        )}
       <li>
         <strong>Preview: </strong> {link}
       </li>
@@ -450,9 +450,9 @@ function Signed(props: SignedProps) {
   return (
     <ProgressStep label={label} currentStep={currentStep} step={step}>
       {destination &&
-      destination.lastSigned && (
-        <SignedInfos lastReviewer={lastReviewer} destination={destination} />
-      )}
+        destination.lastSigned && (
+          <SignedInfos lastReviewer={lastReviewer} destination={destination} />
+        )}
       {active && <ReSignButton onClick={reSign} />}
     </ProgressStep>
   );

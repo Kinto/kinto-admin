@@ -99,15 +99,15 @@ function BucketCollectionsMenu(props) {
         );
       })}
       {sidebarMaxListedCollections != null &&
-      collections.length > sidebarMaxListedCollections && (
-        <SideBarLink
-          name="bucket:collections"
-          params={{ bid: bucket.id }}
-          currentPath={currentPath}>
-          <i className="glyphicon glyphicon-option-horizontal" />
-          See all collections
-        </SideBarLink>
-      )}
+        collections.length > sidebarMaxListedCollections && (
+          <SideBarLink
+            name="bucket:collections"
+            params={{ bid: bucket.id }}
+            currentPath={currentPath}>
+            <i className="glyphicon glyphicon-option-horizontal" />
+            See all collections
+          </SideBarLink>
+        )}
       <SideBarLink
         name="collection:create"
         params={{ bid: bucket.id }}
