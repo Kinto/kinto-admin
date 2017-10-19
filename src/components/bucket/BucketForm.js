@@ -79,16 +79,16 @@ function DeleteForm({ bid, onSubmit }) {
   );
 }
 
-export default class BucketForm extends PureComponent {
-  props: {
-    bid?: string,
-    session: SessionState,
-    bucket: BucketState,
-    formData?: BucketData,
-    deleteBucket?: (bid: string) => void,
-    onSubmit: (data: Object) => void,
-  };
+type Props = {
+  bid?: string,
+  session: SessionState,
+  bucket: BucketState,
+  formData?: BucketData,
+  deleteBucket?: (bid: string) => void,
+  onSubmit: (data: Object) => void,
+};
 
+export default class BucketForm extends PureComponent<Props> {
   onSubmit = ({ formData }: { formData: Object }) => {
     const { id, data } = formData;
     // Parse JSON fields so they can be sent to the server

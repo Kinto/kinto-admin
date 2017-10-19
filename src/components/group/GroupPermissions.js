@@ -15,20 +15,20 @@ import GroupTabs from "./GroupTabs";
 import PermissionsForm from "../PermissionsForm";
 import { canEditGroup } from "../../permission";
 
-export default class GroupPermissions_ extends PureComponent {
-  props: {
-    params: GroupRouteParams,
-    session: SessionState,
-    bucket: BucketState,
-    group: GroupState,
-    capabilities: Capabilities,
-    updateGroup: (
-      bid: string,
-      gid: string,
-      data: { permissions: GroupPermissions }
-    ) => void,
-  };
+type Props = {
+  params: GroupRouteParams,
+  session: SessionState,
+  bucket: BucketState,
+  group: GroupState,
+  capabilities: Capabilities,
+  updateGroup: (
+    bid: string,
+    gid: string,
+    data: { permissions: GroupPermissions }
+  ) => void,
+};
 
+export default class GroupPermissions_ extends PureComponent<Props> {
   onSubmit = ({ formData }: { formData: GroupPermissions }) => {
     const { params, updateGroup } = this.props;
     const { bid, gid } = params;

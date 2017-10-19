@@ -5,15 +5,15 @@ import React, { PureComponent } from "react";
 
 import AdminLink from "../AdminLink";
 
-export default class GroupTabs extends PureComponent {
-  props: {
-    bid: string,
-    gid: string,
-    selected: "attributes" | "permissions" | "history",
-    capabilities: Capabilities,
-    children?: any,
-  };
+type Props = {
+  bid: string,
+  gid: string,
+  selected: "attributes" | "permissions" | "history",
+  capabilities: Capabilities,
+  children?: any,
+};
 
+export default class GroupTabs extends PureComponent<Props> {
   render() {
     const { bid, gid, selected, capabilities, children } = this.props;
 

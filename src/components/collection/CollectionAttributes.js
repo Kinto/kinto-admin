@@ -14,17 +14,17 @@ import Spinner from "../Spinner";
 import CollectionForm from "./CollectionForm";
 import CollectionTabs from "./CollectionTabs";
 
-export default class CollectionAttributes extends PureComponent {
-  props: {
-    session: SessionState,
-    bucket: BucketState,
-    collection: CollectionState,
-    capabilities: Capabilities,
-    params: CollectionRouteParams,
-    updateCollection: (bid: string, cid: string, data: CollectionData) => void,
-    deleteCollection: (bid: string, cid: string) => void,
-  };
+type Props = {
+  session: SessionState,
+  bucket: BucketState,
+  collection: CollectionState,
+  capabilities: Capabilities,
+  params: CollectionRouteParams,
+  updateCollection: (bid: string, cid: string, data: CollectionData) => void,
+  deleteCollection: (bid: string, cid: string) => void,
+};
 
+export default class CollectionAttributes extends PureComponent<Props> {
   onSubmit = (formData: CollectionData) => {
     const { params, updateCollection } = this.props;
     const { bid, cid } = params;

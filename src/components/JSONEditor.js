@@ -18,14 +18,14 @@ const cmOptions = {
   tabSize: 2,
 };
 
-export default class JSONEditor extends PureComponent {
-  props: {
-    readonly: boolean,
-    disabled: boolean,
-    value: any,
-    onChange: (code: string) => void,
-  };
+type Props = {
+  readonly: boolean,
+  disabled: boolean,
+  value: any,
+  onChange: (code: string) => void,
+};
 
+export default class JSONEditor extends PureComponent<Props> {
   onCodeChange = (editor: Object, metadata: any, code: string) => {
     this.props.onChange(code);
   };

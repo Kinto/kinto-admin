@@ -13,9 +13,7 @@ type Props = {
   children?: React.Element<*>,
 };
 
-export default class AdminLink extends PureComponent {
-  props: Props;
-
+export default class AdminLink extends PureComponent<Props> {
   render() {
     const { children, name, params, ...linkProps } = this.props;
     return (

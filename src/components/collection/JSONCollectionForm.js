@@ -38,14 +38,14 @@ function validate({ data }, errors) {
   return errors;
 }
 
-export default class JSONCollectionForm extends PureComponent {
-  props: {
-    children?: React.Element<*>,
-    cid: ?string,
-    formData: CollectionData,
-    onSubmit: (data: { formData: CollectionData }) => void,
-  };
+type Props = {
+  children?: React.Element<*>,
+  cid: ?string,
+  formData: CollectionData,
+  onSubmit: (data: { formData: CollectionData }) => void,
+};
 
+export default class JSONCollectionForm extends PureComponent<Props> {
   onSubmit = ({
     formData,
   }: {

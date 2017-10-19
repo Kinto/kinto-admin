@@ -33,10 +33,7 @@ type State = {
   tagsString: string,
 };
 
-export default class TagsField extends PureComponent {
-  props: Props;
-  state: State;
-
+export default class TagsField extends PureComponent<Props, State> {
   static defaultProps = {
     formData: [],
     uiSchema: {},

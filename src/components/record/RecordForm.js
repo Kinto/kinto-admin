@@ -164,25 +164,25 @@ function AttachmentInfo(props: AttachmentInfoProps) {
   );
 }
 
-export default class RecordForm extends PureComponent {
-  props: {
-    bid: string,
-    cid: string,
-    rid?: string,
-    session: SessionState,
-    bucket: BucketState,
-    collection: CollectionState,
-    record?: RecordState,
-    deleteRecord?: (bid: string, cid: string, rid: string) => void,
-    deleteAttachment?: (bid: string, cid: string, rid: string) => void,
-    onSubmit: (data: RecordData) => void,
-    capabilities: Capabilities,
-  };
+type Props = {
+  bid: string,
+  cid: string,
+  rid?: string,
+  session: SessionState,
+  bucket: BucketState,
+  collection: CollectionState,
+  record?: RecordState,
+  deleteRecord?: (bid: string, cid: string, rid: string) => void,
+  deleteAttachment?: (bid: string, cid: string, rid: string) => void,
+  onSubmit: (data: RecordData) => void,
+  capabilities: Capabilities,
+};
 
-  state: {
-    asJSON: boolean,
-  };
+type State = {
+  asJSON: boolean,
+};
 
+export default class RecordForm extends PureComponent<Props, State> {
   constructor(props: Object) {
     super(props);
     this.state = { asJSON: false };

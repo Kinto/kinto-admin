@@ -284,23 +284,23 @@ function ListActions(props) {
   );
 }
 
-export default class CollectionRecords extends PureComponent {
+type Props = {
+  capabilities: Capabilities,
+  pluginHooks: Object,
+  params: CollectionRouteParams,
+  session: SessionState,
+  bucket: BucketState,
+  collection: CollectionState,
+  deleteRecord: (bid: string, cid: string, rid: string) => void,
+  listRecords: (bid: string, cid: string, sort: ?string) => void,
+  listNextRecords: () => void,
+  redirectTo: (name: string, params: CollectionRouteParams) => void,
+};
+
+export default class CollectionRecords extends PureComponent<Props> {
   // This is useful to identify wrapped component for plugin hooks when code is
   // minified; see https://github.com/facebook/react/issues/4915
   static displayName = "CollectionRecords";
-
-  props: {
-    capabilities: Capabilities,
-    pluginHooks: Object,
-    params: CollectionRouteParams,
-    session: SessionState,
-    bucket: BucketState,
-    collection: CollectionState,
-    deleteRecord: (bid: string, cid: string, rid: string) => void,
-    listRecords: (bid: string, cid: string, sort: ?string) => void,
-    listNextRecords: () => void,
-    redirectTo: (name: string, params: CollectionRouteParams) => void,
-  };
 
   updateSort = (sort: string) => {
     const { params, listRecords } = this.props;

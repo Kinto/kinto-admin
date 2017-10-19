@@ -5,19 +5,14 @@ import React, { PureComponent } from "react";
 
 import AdminLink from "../AdminLink";
 
-export default class BucketTabs extends PureComponent {
-  props: {
-    bid: string,
-    selected:
-      | "collections"
-      | "groups"
-      | "attributes"
-      | "permissions"
-      | "history",
-    capabilities: Capabilities,
-    children?: React.Element<*>,
-  };
+type Props = {
+  bid: string,
+  selected: "collections" | "groups" | "attributes" | "permissions" | "history",
+  capabilities: Capabilities,
+  children?: React.Element<*>,
+};
 
+export default class BucketTabs extends PureComponent<Props> {
   render() {
     const { bid, selected, capabilities, children } = this.props;
 

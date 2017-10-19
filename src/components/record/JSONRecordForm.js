@@ -23,14 +23,14 @@ function validate(json, errors) {
   return errors;
 }
 
-export default class JSONRecordForm extends PureComponent {
-  props: {
-    disabled: boolean,
-    record: string, // JSON string representation of a record data
-    onSubmit: (data: Object) => void,
-    children?: React.Element<*>,
-  };
+type Props = {
+  disabled: boolean,
+  record: string, // JSON string representation of a record data
+  onSubmit: (data: Object) => void,
+  children?: React.Element<*>,
+};
 
+export default class JSONRecordForm extends PureComponent<Props> {
   onSubmit = (data: { formData: string }) => {
     this.props.onSubmit({ ...data, formData: JSON.parse(data.formData) });
   };

@@ -13,16 +13,16 @@ import React, { PureComponent } from "react";
 import Spinner from "../Spinner";
 import CollectionForm from "./CollectionForm";
 
-export default class CollectionCreate extends PureComponent {
-  props: {
-    session: SessionState,
-    bucket: BucketState,
-    collection: CollectionState,
-    capabilities: Capabilities,
-    params: BucketRouteParams,
-    createCollection: (bid: string, data: CollectionData) => void,
-  };
+type Props = {
+  session: SessionState,
+  bucket: BucketState,
+  collection: CollectionState,
+  capabilities: Capabilities,
+  params: BucketRouteParams,
+  createCollection: (bid: string, data: CollectionData) => void,
+};
 
+export default class CollectionCreate extends PureComponent<Props> {
   render() {
     const {
       params,

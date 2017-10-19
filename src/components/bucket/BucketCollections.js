@@ -103,15 +103,15 @@ function ListActions(props) {
   );
 }
 
-export default class BucketCollections extends PureComponent {
-  props: {
-    params: BucketRouteParams,
-    session: SessionState,
-    bucket: BucketState,
-    capabilities: Capabilities,
-    listBucketNextCollections: () => void,
-  };
+type Props = {
+  params: BucketRouteParams,
+  session: SessionState,
+  bucket: BucketState,
+  capabilities: Capabilities,
+  listBucketNextCollections: () => void,
+};
 
+export default class BucketCollections extends PureComponent<Props> {
   render() {
     const {
       params,

@@ -57,16 +57,16 @@ function SessionInfo({ session: { busy, serverInfo } }) {
   );
 }
 
-export default class HomePage extends PureComponent {
-  props: {
-    session: SessionState,
-    settings: SettingsState,
-    history: string[],
-    clearHistory: () => void,
-    setup: (session: Object) => void,
-    navigateToExternalAuth: (authFormData: Object) => void,
-  };
+type Props = {
+  session: SessionState,
+  settings: SettingsState,
+  history: string[],
+  clearHistory: () => void,
+  setup: (session: Object) => void,
+  navigateToExternalAuth: (authFormData: Object) => void,
+};
 
+export default class HomePage extends PureComponent<Props> {
   render() {
     const {
       session,

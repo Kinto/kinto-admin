@@ -5,15 +5,15 @@ import React, { PureComponent } from "react";
 
 import AdminLink from "../AdminLink";
 
-export default class CollectionTabs extends PureComponent {
-  props: {
-    bid: string,
-    cid: string,
-    selected: "records" | "attributes" | "permissions" | "history",
-    capabilities: Capabilities,
-    children?: React.Element<*>,
-  };
+type Props = {
+  bid: string,
+  cid: string,
+  selected: "records" | "attributes" | "permissions" | "history",
+  capabilities: Capabilities,
+  children?: React.Element<*>,
+};
 
+export default class CollectionTabs extends PureComponent<Props> {
   render() {
     const { bid, cid, selected, capabilities, children } = this.props;
 

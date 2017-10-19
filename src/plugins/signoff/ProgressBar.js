@@ -1,11 +1,11 @@
 /* @flow */
 import React, { Component } from "react";
 
-export class ProgressBar extends Component {
-  props: {
-    children?: any,
-  };
+type Props = {
+  children?: any,
+};
 
+export class ProgressBar extends Component<Props> {
   render() {
     const { children } = this.props;
     return (

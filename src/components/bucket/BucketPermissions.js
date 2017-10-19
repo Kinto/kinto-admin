@@ -14,18 +14,15 @@ import BucketTabs from "./BucketTabs";
 import PermissionsForm from "../PermissionsForm";
 import { canEditBucket } from "../../permission";
 
-export default class BucketPermissions_ extends PureComponent {
-  props: {
-    params: BucketRouteParams,
-    session: SessionState,
-    bucket: BucketState,
-    capabilities: Capabilities,
-    updateBucket: (
-      bid: string,
-      data: { permissions: BucketPermissions }
-    ) => void,
-  };
+type Props = {
+  params: BucketRouteParams,
+  session: SessionState,
+  bucket: BucketState,
+  capabilities: Capabilities,
+  updateBucket: (bid: string, data: { permissions: BucketPermissions }) => void,
+};
 
+export default class BucketPermissions_ extends PureComponent<Props> {
   onSubmit = ({ formData }: { formData: BucketPermissions }) => {
     const { params, updateBucket } = this.props;
     const { bid } = params;

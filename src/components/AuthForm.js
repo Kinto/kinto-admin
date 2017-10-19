@@ -6,11 +6,22 @@ import React, { PureComponent } from "react";
 import BaseForm from "./BaseForm";
 import { omit } from "../utils";
 
-class ServerHistory extends PureComponent {
-  state: {
-    menuOpened: boolean,
-  };
+type ServerHistoryProps = {
+  id: string,
+  value: string,
+  placeholder: string,
+  options: Object,
+  onChange: string => void,
+};
 
+type ServerHistoryState = {
+  menuOpened: boolean,
+};
+
+class ServerHistory extends PureComponent<
+  ServerHistoryProps,
+  ServerHistoryState
+> {
   constructor(props) {
     super(props);
     this.state = { menuOpened: false };
@@ -327,22 +338,25 @@ function extendUiSchemaWithHistory(
   };
 }
 
-export default class AuthForm extends PureComponent {
-  props: {
-    session: SessionState,
-    history: string[],
-    settings: SettingsState,
-    setup: (session: Object) => void,
-    navigateToExternalAuth: (authFormData: Object) => void,
-    clearHistory: () => void,
-  };
+type AuthFormProps = {
+  session: SessionState,
+  history: string[],
+  settings: SettingsState,
+  setup: (session: Object) => void,
+  navigateToExternalAuth: (authFormData: Object) => void,
+  clearHistory: () => void,
+};
 
-  state: {
-    schema: Object,
-    uiSchema: Object,
-    formData: Object,
-  };
+type AuthFormState = {
+  schema: Object,
+  uiSchema: Object,
+  formData: Object,
+};
 
+export default class AuthForm extends PureComponent<
+  AuthFormProps,
+  AuthFormState
+> {
   defaultProps = {
     history: [],
   };

@@ -13,16 +13,16 @@ import React, { PureComponent } from "react";
 import GroupForm from "./GroupForm";
 import Spinner from "../Spinner";
 
-export default class GroupCreate extends PureComponent {
-  props: {
-    params: BucketRouteParams,
-    session: SessionState,
-    bucket: BucketState,
-    group: GroupState,
-    capabilities: Capabilities,
-    createGroup: (bid: string, data: GroupData) => void,
-  };
+type Props = {
+  params: BucketRouteParams,
+  session: SessionState,
+  bucket: BucketState,
+  group: GroupState,
+  capabilities: Capabilities,
+  createGroup: (bid: string, data: GroupData) => void,
+};
 
+export default class GroupCreate extends PureComponent<Props> {
   render() {
     const { params, session, bucket, group, createGroup } = this.props;
     const { bid } = params;

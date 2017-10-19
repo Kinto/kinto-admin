@@ -31,18 +31,18 @@ function SessionInfoBar({ session, logout }) {
   );
 }
 
-export default class App extends PureComponent {
-  props: {
-    session: SessionState,
-    logout: () => void,
-    notificationList: Notifications,
-    routes: Element[],
-    params: RouteParams,
-    sidebar: Element,
-    notifications: Element,
-    content: Element,
-  };
+type Props = {
+  session: SessionState,
+  logout: () => void,
+  notificationList: Notifications,
+  routes: Element[],
+  params: RouteParams,
+  sidebar: Element,
+  notifications: Element,
+  content: Element,
+};
 
+export default class App extends PureComponent<Props> {
   render() {
     const {
       sidebar,
