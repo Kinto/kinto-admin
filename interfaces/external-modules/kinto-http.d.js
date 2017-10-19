@@ -46,8 +46,8 @@ declare module "kinto-http" {
     defaultReqOptions: {
       headers: Object
     };
-    constructor(): void;
-    bucket(): Bucket;
+    constructor(remote: string, options: Options): void;
+    bucket(bucketId: string): Bucket;
     createBucket(id: ?string, options?: Options): Promise<ObjectResponseBody<Resource>>;
     deleteBucket(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>;
     batch(): Promise<BatchResponse[]>;
@@ -58,7 +58,7 @@ declare module "kinto-http" {
 
   declare class Bucket {
     constructor(): void;
-    collection(): Collection;
+    collection(collectionId: string): Collection;
     setData(): Promise<*>;
     setPermissions(permissions: Permissions): Promise<ObjectResponseBody<Resource>>;
     createCollection(id: ?string, options?: Options): Promise<ObjectResponseBody<Resource>>;
