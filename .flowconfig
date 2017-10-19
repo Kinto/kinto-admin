@@ -1,6 +1,11 @@
 [ignore]
 .*/node_modules/*
 .*/test/.*
+.*/src/components/.*
+.*/src/containers/.*
+.*/src/plugins/.*
+.*/src/routes.js
+.*/src/index.js
 
 [include]
 ./node_modules/
