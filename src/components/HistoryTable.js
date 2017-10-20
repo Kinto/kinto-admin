@@ -365,17 +365,21 @@ export default class HistoryTable extends PureComponent<Props, State> {
       </thead>
     );
 
-    const tbody = history.map((entry, index) => {
-      return (
-        <HistoryRow
-          key={index}
-          pos={index}
-          enableDiffOverview={enableDiffOverview}
-          bid={bid}
-          entry={entry}
-        />
-      );
-    });
+    const tbody = (
+      <tbody>
+        {history.map((entry, index) => {
+          return (
+            <HistoryRow
+              key={index}
+              pos={index}
+              enableDiffOverview={enableDiffOverview}
+              bid={bid}
+              entry={entry}
+            />
+          );
+        })}
+      </tbody>
+    );
 
     return (
       <div>

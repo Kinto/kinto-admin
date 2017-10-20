@@ -1,10 +1,20 @@
 /* @flow */
 
-import React, { PureComponent } from "react";
+import { PureComponent } from "react";
+import * as React from "react";
 
 import Spinner from "./Spinner";
 
-export default class PaginatedTable extends PureComponent {
+type Props = {
+  thead: React.Element<React.ElementType>,
+  tbody: React.Element<React.ElementType>,
+  dataLoaded: boolean,
+  colSpan: number,
+  hasNextPage: boolean,
+  listNextPage: ?() => void,
+};
+
+export default class PaginatedTable extends PureComponent<Props> {
   render() {
     const {
       thead,
@@ -30,7 +40,11 @@ export default class PaginatedTable extends PureComponent {
                     key="__3"
                     onClick={event => {
                       event.preventDefault();
-                      listNextPage();
+                      // FIXME: we should always have listNextPage if
+                      // we have hasNextPage
+                      if (listNextPage) {
+                        listNextPage();
+                      }
                     }}>
                     Load more
                   </a>
