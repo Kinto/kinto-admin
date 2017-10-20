@@ -7,7 +7,6 @@ import type {
   BucketEntry,
 } from "../types";
 
-import type { Element } from "react";
 import React, { PureComponent } from "react";
 
 import Spinner from "./Spinner";
