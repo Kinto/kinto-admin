@@ -5,6 +5,7 @@ import type {
   BucketState,
   CollectionState,
   Capabilities,
+  RecordData,
 } from "../../types";
 
 import React, { PureComponent } from "react";
@@ -15,7 +16,24 @@ import AdminLink from "../AdminLink";
 import CollectionTabs from "./CollectionTabs";
 import PaginatedTable from "../PaginatedTable";
 
-class Row extends PureComponent {
+type CommonProps = {
+  capabilities: Capabilities,
+  deleteRecord: (bid: string, cid: string, rid: string) => void,
+  redirectTo: (name: string, params: CollectionRouteParams) => void,
+};
+
+type RecordsViewProps = CommonProps & {
+  bid: string,
+  cid: string,
+  displayFields: string[],
+  schema: Object,
+};
+
+type RowProps = RecordsViewProps & {
+  record: RecordData,
+};
+
+class Row extends PureComponent<RowProps> {
   static defaultProps = {
     schema: {},
     record: {},
@@ -146,7 +164,16 @@ function ColumnSortLink(props) {
   );
 }
 
-class Table extends PureComponent {
+type TableProps = RecordsViewProps & {
+  currentSort: string,
+  hasNextRecords: boolean,
+  listNextRecords: () => void,
+  records: RecordData[],
+  recordsLoaded: boolean,
+  updateSort: string => void,
+};
+
+class Table extends PureComponent<TableProps> {
   getFieldTitle(displayField) {
     const { schema } = this.props;
     if (displayField === "__json") {
@@ -284,17 +311,14 @@ function ListActions(props) {
   );
 }
 
-type Props = {
-  capabilities: Capabilities,
+type Props = CommonProps & {
   pluginHooks: Object,
   params: CollectionRouteParams,
   session: SessionState,
   bucket: BucketState,
   collection: CollectionState,
-  deleteRecord: (bid: string, cid: string, rid: string) => void,
   listRecords: (bid: string, cid: string, sort: ?string) => void,
   listNextRecords: () => void,
-  redirectTo: (name: string, params: CollectionRouteParams) => void,
 };
 
 export default class CollectionRecords extends PureComponent<Props> {
