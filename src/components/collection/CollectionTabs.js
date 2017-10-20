@@ -11,7 +11,7 @@ type Props = {
   cid: string,
   selected: "records" | "attributes" | "permissions" | "history",
   capabilities: Capabilities,
-  children?: React.Element<*>,
+  children?: React.Node,
 };
 
 export default class CollectionTabs extends PureComponent<Props> {

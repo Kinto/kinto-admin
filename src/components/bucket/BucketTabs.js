@@ -10,7 +10,7 @@ type Props = {
   bid: string,
   selected: "collections" | "groups" | "attributes" | "permissions" | "history",
   capabilities: Capabilities,
-  children?: React.Element<*>,
+  children?: React.Node,
 };
 
 export default class BucketTabs extends PureComponent<Props> {
