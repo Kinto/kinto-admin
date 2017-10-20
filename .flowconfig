@@ -1,10 +1,6 @@
 [ignore]
 .*/node_modules/*
 .*/test/.*
-.*/src/components/Sidebar.js
-.*/src/containers/Sidebar.js
-.*/src/routes.js
-.*/src/index.js
 
 [include]
 ./node_modules/

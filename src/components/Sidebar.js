@@ -7,6 +7,7 @@ import type {
   BucketEntry,
 } from "../types";
 
+import type { Element } from "react";
 import React, { PureComponent } from "react";
 
 import Spinner from "./Spinner";
@@ -128,7 +129,7 @@ type BucketsMenuProps = {
   sidebarMaxListedCollections: ?number,
 };
 
-function filterBuckets(buckets, filters) {
+function filterBuckets(buckets, filters): BucketEntry[] {
   const { hideReadOnly, search } = filters;
   return buckets
     .slice(0)
