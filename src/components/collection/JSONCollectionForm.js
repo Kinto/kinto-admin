@@ -1,7 +1,9 @@
 /* @flow */
 import type { CollectionData } from "../../types";
 
-import React, { PureComponent } from "react";
+import { PureComponent } from "react";
+import * as React from "react";
+
 import Form from "react-jsonschema-form";
 
 import JSONEditor from "../JSONEditor";

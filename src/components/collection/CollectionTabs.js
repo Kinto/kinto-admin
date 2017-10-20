@@ -1,7 +1,8 @@
 /* @flow */
 import type { Capabilities } from "../../types";
 
-import React, { PureComponent } from "react";
+import { PureComponent } from "react";
+import * as React from "react";
 
 import AdminLink from "../AdminLink";
 

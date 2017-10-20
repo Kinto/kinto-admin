@@ -2,7 +2,8 @@
 
 import type { RouteParams } from "../types";
 
-import React, { PureComponent } from "react";
+import { PureComponent } from "react";
+import * as React from "react";
 import { Link } from "react-router";
 
 import url from "../url";

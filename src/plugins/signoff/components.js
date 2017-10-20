@@ -7,7 +7,8 @@ import type {
   DestinationInfo,
 } from "./types";
 
-import React, { PureComponent } from "react";
+import { PureComponent } from "react";
+import * as React from "react";
 
 import { canEditCollection } from "../../permission";
 import { timeago, humanDate } from "../../utils";
