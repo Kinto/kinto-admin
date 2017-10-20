@@ -18,7 +18,13 @@ import PaginatedTable from "../PaginatedTable";
 
 type CommonProps = {
   capabilities: Capabilities,
-  deleteRecord: (bid: string, cid: string, rid: string) => void,
+  // FIXME: rid *must* be passed on calls to deleteRecord
+  deleteRecord: (
+    bid: string,
+    cid: string,
+    rid: ?string,
+    last_modified: ?number
+  ) => void,
   redirectTo: (name: string, params: CollectionRouteParams) => void,
 };
 
