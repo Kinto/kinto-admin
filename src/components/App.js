@@ -1,5 +1,6 @@
 /* @flow */
 import type { SessionState, RouteParams, Notifications } from "../types";
+import type { Element } from "react";
 
 import React, { PureComponent } from "react";
 import Breadcrumbs from "react-breadcrumbs";
@@ -35,11 +36,11 @@ type Props = {
   session: SessionState,
   logout: () => void,
   notificationList: Notifications,
-  routes: Element[],
+  routes: Element<*>[],
   params: RouteParams,
-  sidebar: Element,
-  notifications: Element,
-  content: Element,
+  sidebar: Element<*>,
+  notifications: Element<*>,
+  content: Element<*>,
 };
 
 export default class App extends PureComponent<Props> {
