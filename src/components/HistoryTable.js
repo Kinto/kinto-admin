@@ -200,7 +200,7 @@ class HistoryRow extends PureComponent<HistoryRowProps, HistoryRowState> {
             ) : previous ? (
               <Diff source={entry.target} target={previous.target} />
             ) : error ? (
-              <p className="alert alert-danger">{error}</p>
+              <p className="alert alert-danger">{error.toString()}</p>
             ) : (
               <pre>{JSON.stringify(entry.target, null, 2)}</pre>
             )}
