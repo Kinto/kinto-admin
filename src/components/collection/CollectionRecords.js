@@ -395,7 +395,7 @@ export default class CollectionRecords extends PureComponent<Props> {
             hasNextRecords={hasNextRecords}
             listNextRecords={listNextRecords}
             currentSort={currentSort}
-            schema={schema}
+            schema={schema || {}}
             displayFields={displayFields || ["__json"]}
             deleteRecord={deleteRecord}
             updateSort={this.updateSort}
