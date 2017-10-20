@@ -32,14 +32,17 @@ function DataList(props) {
     <tbody className={!loaded ? "loading" : ""}>
       {entries.map((collection, index) => {
         const { id: cid, schema, cache_expires, last_modified } = collection;
-        const date = new Date(last_modified);
+        // FIXME: last_modified should always be here, but the types
+        // don't express that
+        const date = last_modified && new Date(last_modified);
+        const ageString = date && timeago(date.getTime());
         return (
           <tr key={index}>
             <td>{cid}</td>
             <td>{schema ? "Yes" : "No"}</td>
             <td>{cache_expires ? `${cache_expires} seconds` : "No"}</td>
             <td>
-              <span title={date.toISOString()}>{timeago(date.getTime())}</span>
+              <span title={date ? date.toISOString() : ""}>{ageString}</span>
             </td>
             <td className="actions">
               <div className="btn-group">
