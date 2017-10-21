@@ -29,8 +29,6 @@ declare module "react-redux" {
   declare class ConnectedComponent<OP, P> extends React$Component<OP> {
     static WrappedComponent: Class<React$Component<P>>,
     getWrappedInstance(): React$Component<P>,
-    props: OP,
-    state: void
   }
 
   declare type ConnectedComponentClass<OP, P> = Class<
