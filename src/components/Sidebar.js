@@ -7,13 +7,22 @@ import type {
   BucketEntry,
 } from "../types";
 
-import React, { PureComponent } from "react";
+import { PureComponent } from "react";
+import * as React from "react";
 
 import Spinner from "./Spinner";
 import AdminLink from "./AdminLink";
 import url from "../url";
 
-function SideBarLink(props) {
+type SideBarLinkProps = {
+  currentPath: string,
+  name: string,
+  params: RouteParams,
+  children: React.Node,
+  className?: string,
+};
+
+function SideBarLink(props: SideBarLinkProps) {
   const {
     currentPath,
     name,
@@ -150,14 +159,12 @@ function filterBuckets(buckets, filters): BucketEntry[] {
     .filter(bucket => !(hideReadOnly && bucket.readonly));
 }
 
-class BucketsMenu extends PureComponent {
-  props: BucketsMenuProps;
+type BucketsMenuState = {
+  hideReadOnly: boolean,
+  search: ?string,
+};
 
-  state: {
-    hideReadOnly: boolean,
-    search: ?string,
-  };
-
+class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
   constructor(props: BucketsMenuProps) {
     super(props);
     this.state = { hideReadOnly: false, search: null };
@@ -276,22 +283,28 @@ class BucketsMenu extends PureComponent {
   }
 }
 
-export default class Sidebar extends PureComponent {
+type SidebarProps = {
+  session: SessionState,
+  settings: SettingsState,
+  params: RouteParams,
+  location: RouteLocation,
+};
+
+export default class Sidebar extends PureComponent<SidebarProps> {
   // This is useful to identify wrapped component for plugin hooks when code is
   // minified; see https://github.com/facebook/react/issues/4915
   static displayName = "Sidebar";
-
-  props: {
-    session: SessionState,
-    settings: SettingsState,
-    params: RouteParams,
-    location: RouteLocation,
-  };
 
   render() {
     const { session, settings, params, location } = this.props;
     const { pathname: currentPath } = location;
     const { bid, cid } = params;
+    if (!bid) {
+      throw new Error("can't happen -- bid missing from params");
+    }
+    if (!cid) {
+      throw new Error("can't happen -- cid missing from params");
+    }
     const { busy, authenticated, buckets = [] } = session;
     const { sidebarMaxListedCollections } = settings;
     return (
