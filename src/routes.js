@@ -159,7 +159,7 @@ function registerPluginsComponentHooks(PageContainer, plugins) {
     return mergeObjects(acc, hookObject, true);
   }, {});
   // Wrap the root component, augmenting its props with the plugin hooks for it.
-  return class extends Component {
+  return class extends Component<*> {
     render() {
       return (
         <PageContainer
