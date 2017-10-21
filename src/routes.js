@@ -152,6 +152,9 @@ function registerPluginsComponentHooks(PageContainer, plugins) {
   const { WrappedComponent } = PageContainer;
   // By convention, the hook namespace is the wrapped component name
   const namespace = WrappedComponent.displayName;
+  if (!namespace) {
+    throw new Error("can't happen -- component with no display name");
+  }
   // Retrieve all the hooks if any
   const hooks = plugins.map(plugin => plugin.hooks).filter(isObject);
   // Merge all the hooks together, recursively grouped by namespaces
