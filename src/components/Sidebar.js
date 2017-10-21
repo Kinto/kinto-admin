@@ -197,7 +197,10 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
       <div>
         <div className="panel panel-default">
           <div className="list-group">
-            <SideBarLink name="bucket:create" currentPath={currentPath}>
+            <SideBarLink
+              name="bucket:create"
+              currentPath={currentPath}
+              params={{}}>
               <i className="glyphicon glyphicon-plus" />
               Create bucket
             </SideBarLink>
@@ -311,7 +314,7 @@ export default class Sidebar extends PureComponent<SidebarProps> {
       <div>
         <div className="panel panel-default">
           <div className="list-group">
-            <SideBarLink name="home" currentPath={currentPath}>
+            <SideBarLink name="home" currentPath={currentPath} params={{}}>
               Home
             </SideBarLink>
           </div>
