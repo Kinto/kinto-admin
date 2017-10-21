@@ -132,8 +132,8 @@ type BucketsMenuProps = {
   currentPath: string,
   busy: boolean,
   buckets: BucketEntry[],
-  bid: string,
-  cid: string,
+  bid: ?string,
+  cid: ?string,
   sidebarMaxListedCollections: ?number,
 };
 
@@ -302,12 +302,6 @@ export default class Sidebar extends PureComponent<SidebarProps> {
     const { session, settings, params, location } = this.props;
     const { pathname: currentPath } = location;
     const { bid, cid } = params;
-    if (!bid) {
-      throw new Error("can't happen -- bid missing from params");
-    }
-    if (!cid) {
-      throw new Error("can't happen -- cid missing from params");
-    }
     const { busy, authenticated, buckets = [] } = session;
     const { sidebarMaxListedCollections } = settings;
     return (
