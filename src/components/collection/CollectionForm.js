@@ -301,13 +301,11 @@ type Props = {
   formData?: CollectionData,
 };
 
-export default class CollectionForm extends PureComponent {
-  props: Props;
+type State = {
+  asJSON: boolean,
+};
 
-  state: {
-    asJSON: boolean,
-  };
-
+export default class CollectionForm extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { asJSON: false };

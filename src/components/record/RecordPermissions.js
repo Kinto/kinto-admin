@@ -16,22 +16,22 @@ import RecordTabs from "./RecordTabs";
 import PermissionsForm from "../PermissionsForm";
 import { canEditRecord } from "../../permission";
 
-export default class RecordPermissions_ extends PureComponent {
-  props: {
-    params: RecordRouteParams,
-    session: SessionState,
-    capabilities: Capabilities,
-    bucket: BucketState,
-    collection: CollectionState,
-    record: RecordState,
-    updateRecord: (
-      bid: string,
-      cid: string,
-      rid: string,
-      data: { permissions: RecordPermissions }
-    ) => void,
-  };
+type Props = {
+  params: RecordRouteParams,
+  session: SessionState,
+  capabilities: Capabilities,
+  bucket: BucketState,
+  collection: CollectionState,
+  record: RecordState,
+  updateRecord: (
+    bid: string,
+    cid: string,
+    rid: string,
+    data: { permissions: RecordPermissions }
+  ) => void,
+};
 
+export default class RecordPermissions_ extends PureComponent<Props> {
   onSubmit = ({ formData }: { formData: Object }) => {
     const { params, updateRecord } = this.props;
     const { bid, cid, rid } = params;

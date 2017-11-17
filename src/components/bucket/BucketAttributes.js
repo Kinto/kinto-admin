@@ -13,16 +13,16 @@ import Spinner from "../Spinner";
 import BucketForm from "./BucketForm";
 import BucketTabs from "./BucketTabs";
 
-export default class BucketAttributes extends PureComponent {
-  props: {
-    params: BucketRouteParams,
-    session: SessionState,
-    bucket: BucketState,
-    capabilities: Capabilities,
-    updateBucket: (bid: string, data: BucketData) => void,
-    deleteBucket: (bid: string) => void,
-  };
+type Props = {
+  params: BucketRouteParams,
+  session: SessionState,
+  bucket: BucketState,
+  capabilities: Capabilities,
+  updateBucket: (bid: string, data: BucketData) => void,
+  deleteBucket: (bid: string) => void,
+};
 
+export default class BucketAttributes extends PureComponent<Props> {
   deleteBucket = (bid: string) => {
     const { deleteBucket } = this.props;
     const message = [

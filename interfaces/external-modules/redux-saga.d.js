@@ -101,7 +101,7 @@ declare module 'redux-saga' {
 
   declare type TakeXFn =
      // Kinto specific
-     & (<Y, R, N, Fn: KintoAdminSaga<Y, R, N>>(pattern: Pattern, saga: Fn) => TakeXRet)
+     & (<Y, R, N, T1, Fn: KintoAdminSaga<Y, R, N>>(pattern: Pattern, saga: Fn, t1: T1) => TakeXRet)
      // end
      & (<Y, R, N, Fn: Saga0<Y, R, N>>(pattern: Pattern, saga: Fn) => TakeXRet)
      & (<T1, Y, R, N, Fn: Saga1<Y, R, N, T1>>(pattern: Pattern, saga: Fn, t1: T1) => TakeXRet)

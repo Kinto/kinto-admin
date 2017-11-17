@@ -14,4 +14,3 @@ esproposal.class_static_fields=enable
 unsafe.enable_getters_and_setters=true
 module.name_mapper='.*\(.css\)' -> 'CSSModule'
 module.system=haste
-strip_root=true

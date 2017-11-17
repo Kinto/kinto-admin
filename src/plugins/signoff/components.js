@@ -7,7 +7,8 @@ import type {
   DestinationInfo,
 } from "./types";
 
-import React, { PureComponent } from "react";
+import { PureComponent } from "react";
+import * as React from "react";
 
 import { canEditCollection } from "../../permission";
 import { timeago, humanDate } from "../../utils";
@@ -51,20 +52,22 @@ function isLastEditor(source, sessionState) {
   return user.id === lastEditor;
 }
 
-export default class SignoffToolBar extends React.Component {
-  props: {
-    sessionState: SessionState,
-    bucketState: BucketState,
-    collectionState: CollectionState,
-    signoff: SignoffState,
-    requestReview: string => void,
-    confirmRequestReview: () => void,
-    approveChanges: () => void,
-    declineChanges: string => void,
-    confirmDeclineChanges: () => void,
-    cancelPendingConfirm: () => void,
-  };
+type SignoffToolBarProps = {
+  sessionState: SessionState,
+  bucketState: BucketState,
+  collectionState: CollectionState,
+  signoff: SignoffState,
+  requestReview: string => void,
+  confirmRequestReview: () => void,
+  approveChanges: () => void,
+  declineChanges: string => void,
+  confirmDeclineChanges: () => void,
+  cancelPendingConfirm: () => void,
+};
 
+export default class SignoffToolBar extends React.Component<
+  SignoffToolBarProps
+> {
   render() {
     const {
       // Global state
@@ -505,13 +508,14 @@ type CommentDialogProps = {
   onCancel: () => void,
 };
 
-class CommentDialog extends PureComponent {
-  props: CommentDialogProps;
+type CommentDialogState = {
+  comment: string,
+};
 
-  state: {
-    comment: string,
-  };
-
+class CommentDialog extends PureComponent<
+  CommentDialogProps,
+  CommentDialogState
+> {
   constructor(props: Object) {
     super(props);
     this.state = {

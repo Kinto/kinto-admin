@@ -16,18 +16,14 @@ import {
   extendUiSchemaWithAttachment,
 } from "./RecordForm";
 
-export default class RecordBulk extends PureComponent {
-  props: {
-    params: CollectionRouteParams,
-    collection: CollectionState,
-    bulkCreateRecords: (
-      bid: string,
-      cid: string,
-      formData: RecordData[]
-    ) => void,
-    notifyError: (msg: string, error: ?Error) => void,
-  };
+type Props = {
+  params: CollectionRouteParams,
+  collection: CollectionState,
+  bulkCreateRecords: (bid: string, cid: string, formData: RecordData[]) => void,
+  notifyError: (msg: string, error: ?Error) => void,
+};
 
+export default class RecordBulk extends PureComponent<Props> {
   onSubmit = ({ formData }: { formData: any[] }) => {
     const { params, collection, notifyError, bulkCreateRecords } = this.props;
     const { bid, cid } = params;

@@ -89,17 +89,17 @@ function DeleteForm({ gid, onSubmit }) {
   );
 }
 
-export default class GroupForm extends PureComponent {
-  props: {
-    gid?: string,
-    session: SessionState,
-    bucket: BucketState,
-    group: GroupState,
-    formData?: GroupData,
-    onSubmit: (formData: GroupData) => void,
-    deleteGroup?: (gid: string) => void,
-  };
+type Props = {
+  gid?: string,
+  session: SessionState,
+  bucket: BucketState,
+  group: GroupState,
+  formData?: GroupData,
+  onSubmit: (formData: GroupData) => void,
+  deleteGroup?: (gid: string) => void,
+};
 
+export default class GroupForm extends PureComponent<Props> {
   onSubmit = ({ formData }: { formData: { data: string } }) => {
     const { data } = formData;
     // Parse JSON fields so they can be sent to the server

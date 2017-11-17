@@ -69,23 +69,23 @@ function fetchCollectionStateAt(
   });
 }
 
-class HistoryRow extends PureComponent {
-  props: {
-    bid: string,
-    entry: ResourceHistoryEntry,
-    pos: number,
-    enableDiffOverview: boolean,
-  };
+type HistoryRowProps = {
+  bid: string,
+  entry: ResourceHistoryEntry,
+  pos: number,
+  enableDiffOverview: boolean,
+};
 
+type HistoryRowState = {
+  open: boolean,
+  busy: boolean,
+  previous: ?ResourceHistoryEntry,
+  error: ?Error,
+};
+
+class HistoryRow extends PureComponent<HistoryRowProps, HistoryRowState> {
   static defaultProps = {
     enableDiffOverview: false,
-  };
-
-  state: {
-    open: boolean,
-    busy: boolean,
-    previous: ?ResourceHistoryEntry,
-    error: ?Error,
   };
 
   constructor(props) {
@@ -200,7 +200,7 @@ class HistoryRow extends PureComponent {
             ) : previous ? (
               <Diff source={entry.target} target={previous.target} />
             ) : error ? (
-              <p className="alert alert-danger">{error}</p>
+              <p className="alert alert-danger">{error.toString()}</p>
             ) : (
               <pre>{JSON.stringify(entry.target, null, 2)}</pre>
             )}
@@ -286,18 +286,16 @@ type Props = {
   notifyError: (message: string, error: Error) => void,
 };
 
-export default class HistoryTable extends PureComponent {
-  props: Props;
+type State = {
+  diffOverview: boolean,
+  busy: boolean,
+  current: ?(RecordData[]),
+  previous: ?(RecordData[]),
+};
 
+export default class HistoryTable extends PureComponent<Props, State> {
   static defaultProps = {
     enableDiffOverview: false,
-  };
-
-  state: {
-    diffOverview: boolean,
-    busy: boolean,
-    current: ?(RecordData[]),
-    previous: ?(RecordData[]),
   };
 
   constructor(props: Props) {
@@ -367,17 +365,21 @@ export default class HistoryTable extends PureComponent {
       </thead>
     );
 
-    const tbody = history.map((entry, index) => {
-      return (
-        <HistoryRow
-          key={index}
-          pos={index}
-          enableDiffOverview={enableDiffOverview}
-          bid={bid}
-          entry={entry}
-        />
-      );
-    });
+    const tbody = (
+      <tbody>
+        {history.map((entry, index) => {
+          return (
+            <HistoryRow
+              key={index}
+              pos={index}
+              enableDiffOverview={enableDiffOverview}
+              bid={bid}
+              entry={entry}
+            />
+          );
+        })}
+      </tbody>
+    );
 
     return (
       <div>

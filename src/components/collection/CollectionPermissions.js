@@ -15,20 +15,20 @@ import CollectionTabs from "./CollectionTabs";
 import PermissionsForm from "../PermissionsForm";
 import { canEditCollection } from "../../permission";
 
-export default class CollectionPermissions_ extends PureComponent {
-  props: {
-    session: SessionState,
-    bucket: BucketState,
-    collection: CollectionState,
-    capabilities: Capabilities,
-    params: CollectionRouteParams,
-    updateCollection: (
-      bid: string,
-      cid: string,
-      data: { permissions: CollectionPermissions }
-    ) => void,
-  };
+type Props = {
+  session: SessionState,
+  bucket: BucketState,
+  collection: CollectionState,
+  capabilities: Capabilities,
+  params: CollectionRouteParams,
+  updateCollection: (
+    bid: string,
+    cid: string,
+    data: { permissions: CollectionPermissions }
+  ) => void,
+};
 
+export default class CollectionPermissions_ extends PureComponent<Props> {
   onSubmit = ({ formData }: { formData: CollectionPermissions }) => {
     const { params, updateCollection } = this.props;
     const { bid, cid } = params;

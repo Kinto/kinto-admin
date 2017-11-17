@@ -5,6 +5,7 @@ import type {
   BucketState,
   CollectionState,
   Capabilities,
+  RecordData,
 } from "../../types";
 
 import React, { PureComponent } from "react";
@@ -15,7 +16,30 @@ import AdminLink from "../AdminLink";
 import CollectionTabs from "./CollectionTabs";
 import PaginatedTable from "../PaginatedTable";
 
-class Row extends PureComponent {
+type CommonProps = {
+  capabilities: Capabilities,
+  // FIXME: rid *must* be passed on calls to deleteRecord
+  deleteRecord: (
+    bid: string,
+    cid: string,
+    rid: ?string,
+    last_modified: ?number
+  ) => void,
+  redirectTo: (name: string, params: CollectionRouteParams) => void,
+};
+
+type RecordsViewProps = CommonProps & {
+  bid: string,
+  cid: string,
+  displayFields: string[],
+  schema: Object,
+};
+
+type RowProps = RecordsViewProps & {
+  record: RecordData,
+};
+
+class Row extends PureComponent<RowProps> {
   static defaultProps = {
     schema: {},
     record: {},
@@ -146,7 +170,16 @@ function ColumnSortLink(props) {
   );
 }
 
-class Table extends PureComponent {
+type TableProps = RecordsViewProps & {
+  currentSort: string,
+  hasNextRecords: boolean,
+  listNextRecords: () => void,
+  records: RecordData[],
+  recordsLoaded: boolean,
+  updateSort: string => void,
+};
+
+class Table extends PureComponent<TableProps> {
   getFieldTitle(displayField) {
     const { schema } = this.props;
     if (displayField === "__json") {
@@ -284,23 +317,20 @@ function ListActions(props) {
   );
 }
 
-export default class CollectionRecords extends PureComponent {
+type Props = CommonProps & {
+  pluginHooks: Object,
+  params: CollectionRouteParams,
+  session: SessionState,
+  bucket: BucketState,
+  collection: CollectionState,
+  listRecords: (bid: string, cid: string, sort: ?string) => void,
+  listNextRecords: () => void,
+};
+
+export default class CollectionRecords extends PureComponent<Props> {
   // This is useful to identify wrapped component for plugin hooks when code is
   // minified; see https://github.com/facebook/react/issues/4915
   static displayName = "CollectionRecords";
-
-  props: {
-    capabilities: Capabilities,
-    pluginHooks: Object,
-    params: CollectionRouteParams,
-    session: SessionState,
-    bucket: BucketState,
-    collection: CollectionState,
-    deleteRecord: (bid: string, cid: string, rid: string) => void,
-    listRecords: (bid: string, cid: string, sort: ?string) => void,
-    listNextRecords: () => void,
-    redirectTo: (name: string, params: CollectionRouteParams) => void,
-  };
 
   updateSort = (sort: string) => {
     const { params, listRecords } = this.props;
@@ -365,7 +395,7 @@ export default class CollectionRecords extends PureComponent {
             hasNextRecords={hasNextRecords}
             listNextRecords={listNextRecords}
             currentSort={currentSort}
-            schema={schema}
+            schema={schema || {}}
             displayFields={displayFields || ["__json"]}
             deleteRecord={deleteRecord}
             updateSort={this.updateSort}

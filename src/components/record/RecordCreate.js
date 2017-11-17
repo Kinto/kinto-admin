@@ -12,21 +12,21 @@ import React, { PureComponent } from "react";
 
 import RecordForm from "./RecordForm";
 
-export default class RecordCreate extends PureComponent {
-  props: {
-    params: CollectionRouteParams,
-    session: SessionState,
-    capabilities: Capabilities,
-    bucket: BucketState,
-    collection: CollectionState,
-    createRecord: (
-      bid: string,
-      cid: string,
-      record: RecordData,
-      attachment: ?string
-    ) => void,
-  };
+type Props = {
+  params: CollectionRouteParams,
+  session: SessionState,
+  capabilities: Capabilities,
+  bucket: BucketState,
+  collection: CollectionState,
+  createRecord: (
+    bid: string,
+    cid: string,
+    record: RecordData,
+    attachment: ?string
+  ) => void,
+};
 
+export default class RecordCreate extends PureComponent<Props> {
   onSubmit = ({ __attachment__: attachment, ...record }: Object) => {
     const { params, createRecord } = this.props;
     const { bid, cid } = params;

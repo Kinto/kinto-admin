@@ -1,23 +1,19 @@
 /* @flow */
 import type { Capabilities } from "../../types";
 
-import React, { PureComponent } from "react";
+import { PureComponent } from "react";
+import * as React from "react";
 
 import AdminLink from "../AdminLink";
 
-export default class BucketTabs extends PureComponent {
-  props: {
-    bid: string,
-    selected:
-      | "collections"
-      | "groups"
-      | "attributes"
-      | "permissions"
-      | "history",
-    capabilities: Capabilities,
-    children?: React.Element<*>,
-  };
+type Props = {
+  bid: string,
+  selected: "collections" | "groups" | "attributes" | "permissions" | "history",
+  capabilities: Capabilities,
+  children?: React.Node,
+};
 
+export default class BucketTabs extends PureComponent<Props> {
   render() {
     const { bid, selected, capabilities, children } = this.props;
 

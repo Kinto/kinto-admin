@@ -7,13 +7,22 @@ import type {
   BucketEntry,
 } from "../types";
 
-import React, { PureComponent } from "react";
+import { PureComponent } from "react";
+import * as React from "react";
 
 import Spinner from "./Spinner";
 import AdminLink from "./AdminLink";
 import url from "../url";
 
-function SideBarLink(props) {
+type SideBarLinkProps = {
+  currentPath: string,
+  name: string,
+  params: RouteParams,
+  children: React.Node,
+  className?: string,
+};
+
+function SideBarLink(props: SideBarLinkProps) {
   const {
     currentPath,
     name,
@@ -123,12 +132,12 @@ type BucketsMenuProps = {
   currentPath: string,
   busy: boolean,
   buckets: BucketEntry[],
-  bid: string,
-  cid: string,
+  bid: ?string,
+  cid: ?string,
   sidebarMaxListedCollections: ?number,
 };
 
-function filterBuckets(buckets, filters) {
+function filterBuckets(buckets, filters): BucketEntry[] {
   const { hideReadOnly, search } = filters;
   return buckets
     .slice(0)
@@ -150,14 +159,12 @@ function filterBuckets(buckets, filters) {
     .filter(bucket => !(hideReadOnly && bucket.readonly));
 }
 
-class BucketsMenu extends PureComponent {
-  props: BucketsMenuProps;
+type BucketsMenuState = {
+  hideReadOnly: boolean,
+  search: ?string,
+};
 
-  state: {
-    hideReadOnly: boolean,
-    search: ?string,
-  };
-
+class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
   constructor(props: BucketsMenuProps) {
     super(props);
     this.state = { hideReadOnly: false, search: null };
@@ -190,7 +197,10 @@ class BucketsMenu extends PureComponent {
       <div>
         <div className="panel panel-default">
           <div className="list-group">
-            <SideBarLink name="bucket:create" currentPath={currentPath}>
+            <SideBarLink
+              name="bucket:create"
+              currentPath={currentPath}
+              params={{}}>
               <i className="glyphicon glyphicon-plus" />
               Create bucket
             </SideBarLink>
@@ -276,17 +286,17 @@ class BucketsMenu extends PureComponent {
   }
 }
 
-export default class Sidebar extends PureComponent {
+type SidebarProps = {
+  session: SessionState,
+  settings: SettingsState,
+  params: RouteParams,
+  location: RouteLocation,
+};
+
+export default class Sidebar extends PureComponent<SidebarProps> {
   // This is useful to identify wrapped component for plugin hooks when code is
   // minified; see https://github.com/facebook/react/issues/4915
   static displayName = "Sidebar";
-
-  props: {
-    session: SessionState,
-    settings: SettingsState,
-    params: RouteParams,
-    location: RouteLocation,
-  };
 
   render() {
     const { session, settings, params, location } = this.props;
@@ -298,7 +308,7 @@ export default class Sidebar extends PureComponent {
       <div>
         <div className="panel panel-default">
           <div className="list-group">
-            <SideBarLink name="home" currentPath={currentPath}>
+            <SideBarLink name="home" currentPath={currentPath} params={{}}>
               Home
             </SideBarLink>
           </div>
