@@ -87,9 +87,7 @@ export default class App extends PureComponent<Props> {
               <span>
                 &nbsp;v
                 <a
-                  href={`https://github.com/Kinto/kinto-admin/releases/tag/v${
-                    version
-                  }`}>
+                  href={`https://github.com/Kinto/kinto-admin/releases/tag/v${version}`}>
                   {version}
                 </a>
               </span>
