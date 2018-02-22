@@ -7,7 +7,8 @@ import type {
   DestinationInfo,
 } from "./types";
 
-import React, { PureComponent } from "react";
+import { PureComponent } from "react";
+import * as React from "react";
 
 import { canEditCollection } from "../../permission";
 import { timeago, humanDate } from "../../utils";
@@ -51,20 +52,22 @@ function isLastEditor(source, sessionState) {
   return user.id === lastEditor;
 }
 
-export default class SignoffToolBar extends React.Component {
-  props: {
-    sessionState: SessionState,
-    bucketState: BucketState,
-    collectionState: CollectionState,
-    signoff: SignoffState,
-    requestReview: string => void,
-    confirmRequestReview: () => void,
-    approveChanges: () => void,
-    declineChanges: string => void,
-    confirmDeclineChanges: () => void,
-    cancelPendingConfirm: () => void,
-  };
+type SignoffToolBarProps = {
+  sessionState: SessionState,
+  bucketState: BucketState,
+  collectionState: CollectionState,
+  signoff: SignoffState,
+  requestReview: string => void,
+  confirmRequestReview: () => void,
+  approveChanges: () => void,
+  declineChanges: string => void,
+  confirmDeclineChanges: () => void,
+  cancelPendingConfirm: () => void,
+};
 
+export default class SignoffToolBar extends React.Component<
+  SignoffToolBarProps
+> {
   render() {
     const {
       // Global state
@@ -118,16 +121,17 @@ export default class SignoffToolBar extends React.Component {
     const step = status == "to-review" ? 1 : status == "signed" ? 2 : 0;
     return (
       <div>
-        {hasHistory
-          ? null
-          : <div className="alert alert-warning">
-              <p>
-                <b>
-                  Plugin which tracks history of changes is not enabled on this server.
-                </b>
-                Please reach to the server administrator.
-              </p>
-            </div>}
+        {hasHistory ? null : (
+          <div className="alert alert-warning">
+            <p>
+              <b>
+                Plugin which tracks history of changes is not enabled on this
+                server.
+              </b>
+              Please reach to the server administrator.
+            </p>
+          </div>
+        )}
         <ProgressBar>
           <WorkInProgress
             label="Work in progress"
@@ -158,20 +162,22 @@ export default class SignoffToolBar extends React.Component {
             destination={destination}
           />
         </ProgressBar>
-        {pendingConfirmReviewRequest &&
+        {pendingConfirmReviewRequest && (
           <CommentDialog
             description="Leave some notes for the reviewer:"
             confirmLabel="Request review"
             onConfirm={requestReview}
             onCancel={cancelPendingConfirm}
-          />}
-        {pendingConfirmDeclineChanges &&
+          />
+        )}
+        {pendingConfirmDeclineChanges && (
           <CommentDialog
             description="Leave some notes for the editor:"
             confirmLabel="Decline changes"
             onConfirm={declineChanges}
             onCancel={cancelPendingConfirm}
-          />}
+          />
+        )}
       </div>
     );
   }
@@ -183,7 +189,12 @@ function Comment({ text }: { text: string }): ?React.Element<*> {
   }
   return (
     <span title={text} className="signoff-comment">
-      {text.split("\n").map((l, i) => <span key={i}>{l}<br /></span>)}
+      {text.split("\n").map((l, i) => (
+        <span key={i}>
+          {l}
+          <br />
+        </span>
+      ))}
     </span>
   );
 }
@@ -228,8 +239,7 @@ function WorkInProgress(props: WorkInProgressProps) {
       />
       {active &&
         lastUpdated &&
-        canEdit &&
-        <RequestReviewButton onClick={confirmRequestReview} />}
+        canEdit && <RequestReviewButton onClick={confirmRequestReview} />}
     </ProgressStep>
   );
 }
@@ -237,17 +247,27 @@ function WorkInProgress(props: WorkInProgressProps) {
 function WorkInProgressInfos(props) {
   const { active, lastAuthor, lastUpdated, lastReviewerComment } = props;
   if (!lastUpdated) {
-    return <ul><li>Never updated</li></ul>;
+    return (
+      <ul>
+        <li>Never updated</li>
+      </ul>
+    );
   }
   return (
     <ul>
-      <li><strong>Updated: </strong><HumanDate timestamp={lastUpdated} /></li>
-      <li><strong>By: </strong> {lastAuthor}</li>
+      <li>
+        <strong>Updated: </strong>
+        <HumanDate timestamp={lastUpdated} />
+      </li>
+      <li>
+        <strong>By: </strong> {lastAuthor}
+      </li>
       {active &&
-        lastReviewerComment &&
-        <li>
-          <strong>Comment: </strong> <Comment text={lastReviewerComment} />
-        </li>}
+        lastReviewerComment && (
+          <li>
+            <strong>Comment: </strong> <Comment text={lastReviewerComment} />
+          </li>
+        )}
     </ul>
   );
 }
@@ -256,7 +276,7 @@ function RequestReviewButton(props: { onClick: () => void }) {
   const { onClick } = props;
   return (
     <button className="btn btn-info" onClick={onClick}>
-      <i className="glyphicon glyphicon-comment" />{" "}Request review...
+      <i className="glyphicon glyphicon-comment" /> Request review...
     </button>
   );
 }
@@ -308,20 +328,22 @@ function Review(props: ReviewProps) {
   const { lastEditor } = source;
   return (
     <ProgressStep label={label} currentStep={currentStep} step={step}>
-      {lastEditor &&
+      {lastEditor && (
         <ReviewInfos
           active={active}
           source={source}
           lastRequested={lastRequested}
           link={link}
           hasHistory={hasHistory}
-        />}
+        />
+      )}
       {active &&
-        canEdit &&
-        <ReviewButtons
-          onApprove={approveChanges}
-          onDecline={confirmDeclineChanges}
-        />}
+        canEdit && (
+          <ReviewButtons
+            onApprove={approveChanges}
+            onDecline={confirmDeclineChanges}
+          />
+        )}
     </ProgressStep>
   );
 }
@@ -338,33 +360,39 @@ function ReviewInfos(props: ReviewInfosProps) {
   const { active, source, lastRequested, link, hasHistory } = props;
   const { bid, cid, lastEditor, lastEditorComment, changes = {} } = source;
   const { since, deleted, updated } = changes;
-  const detailsLink =
-    hasHistory &&
+  const detailsLink = hasHistory && (
     <AdminLink
       name="collection:history"
       params={{ bid, cid }}
       query={{ since, resource_name: "record" }}>
       details...
-    </AdminLink>;
+    </AdminLink>
+  );
 
   return (
     <ul>
       <li>
-        <strong>Requested: </strong><HumanDate timestamp={lastRequested} />
+        <strong>Requested: </strong>
+        <HumanDate timestamp={lastRequested} />
       </li>
-      <li><strong>By: </strong> {lastEditor}</li>
+      <li>
+        <strong>By: </strong> {lastEditor}
+      </li>
       {active &&
-        lastEditorComment &&
-        <li>
-          <strong>Comment: </strong> <Comment text={lastEditorComment} />
-        </li>}
-      <li><strong>Preview: </strong> {link}</li>
-      {active &&
+        lastEditorComment && (
+          <li>
+            <strong>Comment: </strong> <Comment text={lastEditorComment} />
+          </li>
+        )}
+      <li>
+        <strong>Preview: </strong> {link}
+      </li>
+      {active && (
         <li>
           <strong>Changes: </strong>
-          <DiffStats updated={updated} deleted={deleted} />{" "}
-          {detailsLink}
-        </li>}
+          <DiffStats updated={updated} deleted={deleted} /> {detailsLink}
+        </li>
+      )}
     </ul>
   );
 }
@@ -379,17 +407,18 @@ function DiffStats(props: { updated: number, deleted: number }) {
   );
 }
 
-function ReviewButtons(
-  props: { onApprove: () => void, onDecline: () => void }
-) {
+function ReviewButtons(props: {
+  onApprove: () => void,
+  onDecline: () => void,
+}) {
   const { onApprove, onDecline } = props;
   return (
     <div className="btn-group">
       <button className="btn btn-success" onClick={onApprove}>
-        <i className="glyphicon glyphicon-ok" />{" "}Approve
+        <i className="glyphicon glyphicon-ok" /> Approve
       </button>
       <button className="btn btn-danger" onClick={onDecline}>
-        <i className="glyphicon glyphicon-comment" />{" "}Decline...
+        <i className="glyphicon glyphicon-comment" /> Decline...
       </button>
     </div>
   );
@@ -424,8 +453,9 @@ function Signed(props: SignedProps) {
   return (
     <ProgressStep label={label} currentStep={currentStep} step={step}>
       {destination &&
-        destination.lastSigned &&
-        <SignedInfos lastReviewer={lastReviewer} destination={destination} />}
+        destination.lastSigned && (
+          <SignedInfos lastReviewer={lastReviewer} destination={destination} />
+        )}
       {active && <ReSignButton onClick={reSign} />}
     </ProgressStep>
   );
@@ -441,8 +471,14 @@ function SignedInfos(props: SignedInfosProps) {
   const { lastSigned, bid, cid } = destination;
   return (
     <ul>
-      <li><strong>Signed: </strong><HumanDate timestamp={lastSigned} /></li>
-      <li><strong>By: </strong>{lastReviewer}</li>
+      <li>
+        <strong>Signed: </strong>
+        <HumanDate timestamp={lastSigned} />
+      </li>
+      <li>
+        <strong>By: </strong>
+        {lastReviewer}
+      </li>
       <li>
         <strong>Destination: </strong>
         <AdminLink name="collection:records" params={{ bid, cid }}>
@@ -457,7 +493,7 @@ function ReSignButton(props: { onClick: () => void }) {
   const { onClick } = props;
   return (
     <button className="btn btn-info" onClick={onClick}>
-      <i className="glyphicon glyphicon-repeat" />{" "}Re-sign
+      <i className="glyphicon glyphicon-repeat" /> Re-sign
     </button>
   );
 }
@@ -472,13 +508,14 @@ type CommentDialogProps = {
   onCancel: () => void,
 };
 
-class CommentDialog extends PureComponent {
-  props: CommentDialogProps;
+type CommentDialogState = {
+  comment: string,
+};
 
-  state: {
-    comment: string,
-  };
-
+class CommentDialog extends PureComponent<
+  CommentDialogProps,
+  CommentDialogState
+> {
   constructor(props: Object) {
     super(props);
     this.state = {
@@ -528,7 +565,7 @@ class CommentDialog extends PureComponent {
                   type="button"
                   className="btn btn-primary"
                   onClick={onClickConfirm}>
-                  <i className="glyphicon glyphicon-ok" />{" "}{confirmLabel}
+                  <i className="glyphicon glyphicon-ok" /> {confirmLabel}
                 </button>
               </div>
             </div>

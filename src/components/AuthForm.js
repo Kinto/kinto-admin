@@ -6,11 +6,22 @@ import React, { PureComponent } from "react";
 import BaseForm from "./BaseForm";
 import { omit } from "../utils";
 
-class ServerHistory extends PureComponent {
-  state: {
-    menuOpened: boolean,
-  };
+type ServerHistoryProps = {
+  id: string,
+  value: string,
+  placeholder: string,
+  options: Object,
+  onChange: string => void,
+};
 
+type ServerHistoryState = {
+  menuOpened: boolean,
+};
+
+class ServerHistory extends PureComponent<
+  ServerHistoryProps,
+  ServerHistoryState
+> {
   constructor(props) {
     super(props);
     this.state = { menuOpened: false };
@@ -57,17 +68,27 @@ class ServerHistory extends PureComponent {
             <span className="caret" />
           </button>
           <ul className="dropdown-menu dropdown-menu-right">
-            {history.length === 0
-              ? <li>
-                  <a onClick={this.toggleMenu}><em>No server history</em></a>
+            {history.length === 0 ? (
+              <li>
+                <a onClick={this.toggleMenu}>
+                  <em>No server history</em>
+                </a>
+              </li>
+            ) : (
+              history.map((server, key) => (
+                <li key={key}>
+                  <a href="#" onClick={this.select(server)}>
+                    {server}
+                  </a>
                 </li>
-              : history.map((server, key) => (
-                  <li key={key}>
-                    <a href="#" onClick={this.select(server)}>{server}</a>
-                  </li>
-                ))}
+              ))
+            )}
             <li role="separator" className="divider" />
-            <li><a href="#" onClick={this.clear}>Clear</a></li>
+            <li>
+              <a href="#" onClick={this.clear}>
+                Clear
+              </a>
+            </li>
           </ul>
         </div>
       </div>
@@ -88,7 +109,7 @@ const baseAuthSchema = {
     authType: {
       type: "string",
       title: "Authentication method",
-      enum: ["basicauth", "fxa", "ldap"],
+      enum: ["basicauth", "account", "fxa", "ldap"],
     },
   },
 };
@@ -102,37 +123,59 @@ const baseUISchema = {
   },
 };
 
+const loginPasswordSchema = function(title) {
+  return {
+    credentials: {
+      type: "object",
+      title: title,
+      required: ["username", "password"],
+      properties: {
+        username: {
+          type: "string",
+          title: "Username",
+        },
+        password: {
+          type: "string",
+          title: "Password",
+        },
+      },
+    },
+  };
+};
+
+const loginPasswordUiSchema = {
+  credentials: {
+    password: { "ui:widget": "password" },
+  },
+};
+
 const authSchemas = {
+  account: {
+    schema: {
+      ...baseAuthSchema,
+      required: [...baseAuthSchema.required, "credentials"],
+      properties: {
+        ...baseAuthSchema.properties,
+        ...loginPasswordSchema("Accounts credentials"),
+      },
+    },
+    uiSchema: {
+      ...baseUISchema,
+      ...loginPasswordUiSchema,
+    },
+  },
   basicauth: {
     schema: {
       ...baseAuthSchema,
       required: [...baseAuthSchema.required, "credentials"],
       properties: {
         ...baseAuthSchema.properties,
-        credentials: {
-          type: "object",
-          title: "BasicAuth credentials",
-          required: ["username", "password"],
-          properties: {
-            username: {
-              type: "string",
-              title: "Username",
-              default: "test",
-            },
-            password: {
-              type: "string",
-              title: "Password",
-              default: "test",
-            },
-          },
-        },
+        ...loginPasswordSchema("BasicAuth credentials"),
       },
     },
     uiSchema: {
       ...baseUISchema,
-      credentials: {
-        password: { "ui:widget": "password" },
-      },
+      ...loginPasswordUiSchema,
     },
   },
   anonymous: {
@@ -229,6 +272,7 @@ const authSchemas = {
 const authLabels = {
   anonymous: "Anonymous",
   basicauth: "Basic Auth",
+  account: "Kinto Account Auth",
   fxa: "Firefox Account",
   ldap: "LDAP",
   portier: "Portier",
@@ -294,22 +338,25 @@ function extendUiSchemaWithHistory(
   };
 }
 
-export default class AuthForm extends PureComponent {
-  props: {
-    session: SessionState,
-    history: string[],
-    settings: SettingsState,
-    setup: (session: Object) => void,
-    navigateToExternalAuth: (authFormData: Object) => void,
-    clearHistory: () => void,
-  };
+type AuthFormProps = {
+  session: SessionState,
+  history: string[],
+  settings: SettingsState,
+  setup: (session: Object) => void,
+  navigateToExternalAuth: (authFormData: Object) => void,
+  clearHistory: () => void,
+};
 
-  state: {
-    schema: Object,
-    uiSchema: Object,
-    formData: Object,
-  };
+type AuthFormState = {
+  schema: Object,
+  uiSchema: Object,
+  formData: Object,
+};
 
+export default class AuthForm extends PureComponent<
+  AuthFormProps,
+  AuthFormState
+> {
   defaultProps = {
     history: [],
   };
@@ -352,6 +399,7 @@ export default class AuthForm extends PureComponent {
       // case "anonymous":
       // case "ldap":
       // case "basicauth":
+      // case "account":
       default: {
         return setup(extendedFormData);
       }
@@ -386,7 +434,8 @@ export default class AuthForm extends PureComponent {
             onChange={this.onChange}
             onSubmit={this.onSubmit}>
             <button type="submit" className="btn btn-info">
-              {"Sign in using "}{authLabels[formData.authType]}
+              {"Sign in using "}
+              {authLabels[formData.authType]}
             </button>
           </BaseForm>
         </div>

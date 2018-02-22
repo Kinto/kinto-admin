@@ -26,15 +26,11 @@ import GroupCreatePage from "./containers/group/GroupCreatePage";
 import GroupAttributesPage from "./containers/group/GroupAttributesPage";
 import GroupPermissionsPage from "./containers/group/GroupPermissionsPage";
 import GroupHistoryPage from "./containers/group/GroupHistoryPage";
-import CollectionRecordsPage
-  from "./containers/collection/CollectionRecordsPage";
-import CollectionHistoryPage
-  from "./containers/collection/CollectionHistoryPage";
+import CollectionRecordsPage from "./containers/collection/CollectionRecordsPage";
+import CollectionHistoryPage from "./containers/collection/CollectionHistoryPage";
 import CollectionCreatePage from "./containers/collection/CollectionCreatePage";
-import CollectionAttributesPage
-  from "./containers/collection/CollectionAttributesPage";
-import CollectionPermissionsPage
-  from "./containers/collection/CollectionPermissionsPage";
+import CollectionAttributesPage from "./containers/collection/CollectionAttributesPage";
+import CollectionPermissionsPage from "./containers/collection/CollectionPermissionsPage";
 import RecordCreatePage from "./containers/record/RecordCreatePage";
 import RecordBulkPage from "./containers/record/RecordBulkPage";
 import RecordAttributesPage from "./containers/record/RecordAttributesPage";
@@ -156,6 +152,9 @@ function registerPluginsComponentHooks(PageContainer, plugins) {
   const { WrappedComponent } = PageContainer;
   // By convention, the hook namespace is the wrapped component name
   const namespace = WrappedComponent.displayName;
+  if (!namespace) {
+    throw new Error("can't happen -- component with no display name");
+  }
   // Retrieve all the hooks if any
   const hooks = plugins.map(plugin => plugin.hooks).filter(isObject);
   // Merge all the hooks together, recursively grouped by namespaces
@@ -163,7 +162,7 @@ function registerPluginsComponentHooks(PageContainer, plugins) {
     return mergeObjects(acc, hookObject, true);
   }, {});
   // Wrap the root component, augmenting its props with the plugin hooks for it.
-  return class extends Component {
+  return class extends Component<*> {
     render() {
       return (
         <PageContainer

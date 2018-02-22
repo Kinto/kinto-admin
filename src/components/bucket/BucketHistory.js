@@ -11,16 +11,16 @@ import React, { PureComponent } from "react";
 import BucketTabs from "./BucketTabs";
 import HistoryTable from "../HistoryTable";
 
-export default class BucketHistory extends PureComponent {
-  props: {
-    params: BucketRouteParams,
-    bucket: BucketState,
-    capabilities: Capabilities,
-    location: RouteLocation,
-    listBucketNextHistory: () => void,
-    notifyError: (message: string, error: ?Error) => void,
-  };
+type Props = {
+  params: BucketRouteParams,
+  bucket: BucketState,
+  capabilities: Capabilities,
+  location: RouteLocation,
+  listBucketNextHistory: () => void,
+  notifyError: (message: string, error: ?Error) => void,
+};
 
+export default class BucketHistory extends PureComponent<Props> {
   render() {
     const {
       params,
@@ -37,7 +37,9 @@ export default class BucketHistory extends PureComponent {
 
     return (
       <div>
-        <h1>History for <b>{bid}</b></h1>
+        <h1>
+          History for <b>{bid}</b>
+        </h1>
         <BucketTabs bid={bid} selected="history" capabilities={capabilities}>
           <HistoryTable
             bid={bid}

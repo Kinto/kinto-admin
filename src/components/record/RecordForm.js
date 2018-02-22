@@ -27,9 +27,10 @@ export function extendSchemaWithAttachment(
     return schema;
   }
   const schemaRequired = schema.required || [];
-  const required = attachmentConfig.required && !edit
-    ? schemaRequired.concat("__attachment__")
-    : schemaRequired;
+  const required =
+    attachmentConfig.required && !edit
+      ? schemaRequired.concat("__attachment__")
+      : schemaRequired;
   return {
     ...schema,
     required,
@@ -74,7 +75,9 @@ function AttachmentPreview({ mimetype, location }) {
   } else {
     return (
       <div className="attachment-img">
-        <a href={location} target="_blank"><img src={location} /></a>
+        <a href={location} target="_blank">
+          <img src={location} />
+        </a>
       </div>
     );
   }
@@ -109,14 +112,15 @@ function AttachmentInfo(props: AttachmentInfoProps) {
         <b>Attachment information</b>
       </div>
       <div className="panel-body">
-        {attachmentRequired &&
+        {attachmentRequired && (
           <div className="alert alert-warning">
             <p>
               An attachment is required for records in this collection. To
               replace current attachment, use the <i>File attachment</i> field
               below.
             </p>
-          </div>}
+          </div>
+        )}
         <AttachmentPreview
           mimetype={attachment.mimetype}
           location={buildAttachmentUrl(record, capabilities)}
@@ -145,7 +149,7 @@ function AttachmentInfo(props: AttachmentInfoProps) {
             </tr>
           </tbody>
         </table>
-        {!attachmentRequired &&
+        {!attachmentRequired && (
           <p className="text-right attachment-action">
             <input
               type="button"
@@ -153,31 +157,32 @@ function AttachmentInfo(props: AttachmentInfoProps) {
               className="btn btn-danger"
               value="Delete this attachment"
             />
-          </p>}
+          </p>
+        )}
       </div>
     </div>
   );
 }
 
-export default class RecordForm extends PureComponent {
-  props: {
-    bid: string,
-    cid: string,
-    rid?: string,
-    session: SessionState,
-    bucket: BucketState,
-    collection: CollectionState,
-    record?: RecordState,
-    deleteRecord?: (bid: string, cid: string, rid: string) => void,
-    deleteAttachment?: (bid: string, cid: string, rid: string) => void,
-    onSubmit: (data: RecordData) => void,
-    capabilities: Capabilities,
-  };
+type Props = {
+  bid: string,
+  cid: string,
+  rid?: string,
+  session: SessionState,
+  bucket: BucketState,
+  collection: CollectionState,
+  record?: RecordState,
+  deleteRecord?: (bid: string, cid: string, rid: string) => void,
+  deleteAttachment?: (bid: string, cid: string, rid: string) => void,
+  onSubmit: (data: RecordData) => void,
+  capabilities: Capabilities,
+};
 
-  state: {
-    asJSON: boolean,
-  };
+type State = {
+  asJSON: boolean,
+};
 
+export default class RecordForm extends PureComponent<Props, State> {
   constructor(props: Object) {
     super(props);
     this.state = { asJSON: false };
@@ -228,25 +233,25 @@ export default class RecordForm extends PureComponent {
           <AdminLink name="collection:records" params={{ bid, cid }}>
             Cancel
           </AdminLink>
-          {emptySchema
-            ? null
-            : <span>
-                {" | "}
-                <a href="#" onClick={this.toggleJSON}>
-                  {asJSON ? "Edit form" : "Edit raw JSON"}
-                </a>
-              </span>}
+          {emptySchema ? null : (
+            <span>
+              {" | "}
+              <a href="#" onClick={this.toggleJSON}>
+                {asJSON ? "Edit form" : "Edit raw JSON"}
+              </a>
+            </span>
+          )}
         </div>
         <div className="col-sm-6 text-right">
           {this.allowEditing &&
-            record &&
-            <button
-              type="button"
-              className="btn btn-danger delete"
-              onClick={this.deleteRecord}>
-              <i className="glyphicon glyphicon-trash" />{" "}
-              Delete record
-            </button>}
+            record && (
+              <button
+                type="button"
+                className="btn btn-danger delete"
+                onClick={this.deleteRecord}>
+                <i className="glyphicon glyphicon-trash" /> Delete record
+              </button>
+            )}
         </div>
       </div>
     );
@@ -254,11 +259,12 @@ export default class RecordForm extends PureComponent {
     if (asJSON || emptySchema) {
       return (
         <div>
-          {emptySchema &&
+          {emptySchema && (
             <div className="alert alert-warning">
-              This collection doesn't have any JSON schema defined, though you can
-              create free-form records entering raw JSON.
-            </div>}
+              This collection doesn't have any JSON schema defined, though you
+              can create free-form records entering raw JSON.
+            </div>
+          )}
           <JSONRecordForm
             disabled={!this.allowEditing}
             record={JSON.stringify(cleanRecord(recordData), null, 2)}
@@ -302,23 +308,25 @@ export default class RecordForm extends PureComponent {
     const attachmentRequired = attachmentConfig && attachmentConfig.required;
     const creation = !record;
 
-    const alert = this.allowEditing || collection.busy
-      ? null
-      : <div className="alert alert-warning">
+    const alert =
+      this.allowEditing || collection.busy ? null : (
+        <div className="alert alert-warning">
           You don't have the required permission to
           {creation ? " create a" : " edit this"} record.
-        </div>;
+        </div>
+      );
 
     return (
       <div>
         {alert}
-        {creation &&
+        {creation && (
           <AttachmentInfo
             capabilities={capabilities}
             record={record}
             attachmentRequired={attachmentRequired}
             deleteAttachment={this.deleteAttachment}
-          />}
+          />
+        )}
         {this.getForm()}
       </div>
     );

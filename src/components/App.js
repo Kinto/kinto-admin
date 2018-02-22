@@ -1,5 +1,6 @@
 /* @flow */
 import type { SessionState, RouteParams, Notifications } from "../types";
+import type { Element } from "react";
 
 import React, { PureComponent } from "react";
 import Breadcrumbs from "react-breadcrumbs";
@@ -9,7 +10,11 @@ function UserInfo({ session }) {
   if (!user.id) {
     return <strong>Anonymous</strong>;
   }
-  return <span>Connected as <strong>{user.id}</strong></span>;
+  return (
+    <span>
+      Connected as <strong>{user.id}</strong>
+    </span>
+  );
 }
 
 function SessionInfoBar({ session, logout }) {
@@ -27,18 +32,18 @@ function SessionInfoBar({ session, logout }) {
   );
 }
 
-export default class App extends PureComponent {
-  props: {
-    session: SessionState,
-    logout: () => void,
-    notificationList: Notifications,
-    routes: Element[],
-    params: RouteParams,
-    sidebar: Element,
-    notifications: Element,
-    content: Element,
-  };
+type Props = {
+  session: SessionState,
+  logout: () => void,
+  notificationList: Notifications,
+  routes: Element<*>[],
+  params: RouteParams,
+  sidebar: Element<*>,
+  notifications: Element<*>,
+  content: Element<*>,
+};
 
+export default class App extends PureComponent<Props> {
   render() {
     const {
       sidebar,
@@ -58,8 +63,9 @@ export default class App extends PureComponent {
       process.env.REACT_APP_VERSION || process.env.KINTO_ADMIN_VERSION;
     return (
       <div>
-        {session.authenticated &&
-          <SessionInfoBar session={session} logout={logout} />}
+        {session.authenticated && (
+          <SessionInfoBar session={session} logout={logout} />
+        )}
         <div className="container-fluid main">
           <div className="row">
             <div className="col-sm-3 sidebar">
@@ -77,15 +83,15 @@ export default class App extends PureComponent {
             <a href="https://github.com/Kinto/kinto-admin">
               Powered by kinto-admin
             </a>
-            {!version
-              ? null
-              : <span>
-                  &nbsp;v
-                  <a
-                    href={`https://github.com/Kinto/kinto-admin/releases/tag/v${version}`}>
-                    {version}
-                  </a>
-                </span>}.
+            {!version ? null : (
+              <span>
+                &nbsp;v
+                <a
+                  href={`https://github.com/Kinto/kinto-admin/releases/tag/v${version}`}>
+                  {version}
+                </a>
+              </span>
+            )}.
           </p>
         </div>
       </div>

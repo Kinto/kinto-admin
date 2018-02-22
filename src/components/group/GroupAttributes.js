@@ -14,21 +14,17 @@ import Spinner from "../Spinner";
 import GroupForm from "./GroupForm";
 import GroupTabs from "./GroupTabs";
 
-export default class GroupAttributes extends PureComponent {
-  props: {
-    params: GroupRouteParams,
-    session: SessionState,
-    bucket: BucketState,
-    group: GroupState,
-    capabilities: Capabilities,
-    updateGroup: (
-      bid: string,
-      gid: string,
-      payload: { data: GroupData }
-    ) => void,
-    deleteGroup: (bid: string, gid: string) => void,
-  };
+type Props = {
+  params: GroupRouteParams,
+  session: SessionState,
+  bucket: BucketState,
+  group: GroupState,
+  capabilities: Capabilities,
+  updateGroup: (bid: string, gid: string, payload: { data: GroupData }) => void,
+  deleteGroup: (bid: string, gid: string) => void,
+};
 
+export default class GroupAttributes extends PureComponent<Props> {
   onSubmit = (formData: GroupData) => {
     const { params, updateGroup } = this.props;
     const { bid, gid } = params;
@@ -52,7 +48,13 @@ export default class GroupAttributes extends PureComponent {
     }
     return (
       <div>
-        <h1>Edit <b>{bid}/{gid}</b> group attributes</h1>
+        <h1>
+          Edit{" "}
+          <b>
+            {bid}/{gid}
+          </b>{" "}
+          group attributes
+        </h1>
         <GroupTabs
           bid={bid}
           gid={gid}

@@ -13,18 +13,18 @@ import React, { PureComponent } from "react";
 import HistoryTable from "../HistoryTable";
 import CollectionTabs from "./CollectionTabs";
 
-export default class CollectionHistory extends PureComponent {
-  props: {
-    session: SessionState,
-    bucket: BucketState,
-    collection: CollectionState,
-    capabilities: Capabilities,
-    params: CollectionRouteParams,
-    location: RouteLocation,
-    listCollectionNextHistory: () => void,
-    notifyError: (message: string, error: ?Error) => void,
-  };
+type Props = {
+  session: SessionState,
+  bucket: BucketState,
+  collection: CollectionState,
+  capabilities: Capabilities,
+  params: CollectionRouteParams,
+  location: RouteLocation,
+  listCollectionNextHistory: () => void,
+  notifyError: (message: string, error: ?Error) => void,
+};
 
+export default class CollectionHistory extends PureComponent<Props> {
   render() {
     const {
       params,
@@ -39,7 +39,12 @@ export default class CollectionHistory extends PureComponent {
 
     return (
       <div>
-        <h1>History for <b>{bid}/{cid}</b></h1>
+        <h1>
+          History for{" "}
+          <b>
+            {bid}/{cid}
+          </b>
+        </h1>
         <CollectionTabs
           bid={bid}
           cid={cid}

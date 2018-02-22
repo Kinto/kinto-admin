@@ -13,8 +13,8 @@ import {
 describe("group reducer", () => {
   describe("GROUP_BUSY", () => {
     it("should update the busy flag", () => {
-      expect(group(undefined, { type: GROUP_BUSY, busy: true })).to.have
-        .property("busy")
+      expect(group(undefined, { type: GROUP_BUSY, busy: true }))
+        .to.have.property("busy")
         .eql(true);
     });
   });
@@ -29,8 +29,8 @@ describe("group reducer", () => {
 
   describe("ROUTE_LOAD_REQUEST", () => {
     it("should set the busy flag", () => {
-      expect(group({ busy: false }, { type: ROUTE_LOAD_REQUEST })).to.have
-        .property("busy")
+      expect(group({ busy: false }, { type: ROUTE_LOAD_REQUEST }))
+        .to.have.property("busy")
         .eql(true);
     });
   });
@@ -58,8 +58,8 @@ describe("group reducer", () => {
 
   describe("ROUTE_LOAD_FAILURE", () => {
     it("should clear the busy flag", () => {
-      expect(group({ busy: true }, { type: ROUTE_LOAD_FAILURE })).to.have
-        .property("busy")
+      expect(group({ busy: true }, { type: ROUTE_LOAD_FAILURE }))
+        .to.have.property("busy")
         .eql(false);
     });
   });

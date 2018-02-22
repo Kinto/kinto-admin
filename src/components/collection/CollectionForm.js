@@ -72,8 +72,7 @@ function DeleteForm({ cid, onSubmit }) {
             }
           }}>
           <button type="submit" className="btn btn-danger">
-            <i className="glyphicon glyphicon-trash" />{" "}
-            Delete collection
+            <i className="glyphicon glyphicon-trash" /> Delete collection
           </button>
         </BaseForm>
       </div>
@@ -143,8 +142,8 @@ const schema = {
       title: "File attachment",
       description: (
         <p>
-          Please note this requires the <code>attachments</code> capability
-          to be available on the server.
+          Please note this requires the <code>attachments</code> capability to
+          be available on the server.
         </p>
       ),
       properties: {
@@ -179,16 +178,20 @@ const uiSchema = {
     "attachment",
   ],
   id: {
-    "ui:help": "The name should only contain letters, numbers, dashes or underscores.",
+    "ui:help":
+      "The name should only contain letters, numbers, dashes or underscores.",
   },
   schema: {
     "ui:widget": JSONEditor,
     "ui:help": (
       <p>
         This must be a valid
-        <a href="http://json-schema.org/" target="_blank"> JSON schema </a>
-        defining an object representing the structure of your collection records.
-        You may find this
+        <a href="http://json-schema.org/" target="_blank">
+          {" "}
+          JSON schema{" "}
+        </a>
+        defining an object representing the structure of your collection
+        records. You may find this
         <a href="http://jsonschema.net/" target="_blank">
           {" online schema builder "}
         </a>
@@ -201,7 +204,8 @@ const uiSchema = {
       "ui:help": "Enable attachment of a single file to records.",
     },
     required: {
-      "ui:help": "Require a file to be attached to each record in the collection.",
+      "ui:help":
+        "Require a file to be attached to each record in the collection.",
     },
     gzipped: {
       "ui:help": "Enable gzipping file on server side on upload.",
@@ -212,8 +216,10 @@ const uiSchema = {
     "ui:help": (
       <p>
         Learn more about
-        <a href="https://git.io/vrbKn" target="_blank"> what a uiSchema is </a>
-        {" "}
+        <a href="https://git.io/vrbKn" target="_blank">
+          {" "}
+          what a uiSchema is{" "}
+        </a>{" "}
         and how to leverage it to enhance how JSON schema forms are rendered in
         the admin.
       </p>
@@ -262,8 +268,8 @@ function FormInstructions({ onSchemalessLinkClick }) {
       <ol>
         <li>First find a good name for your collection.</li>
         <li>
-          Create a <em>JSON schema</em> describing the fields the
-          collection records should have.
+          Create a <em>JSON schema</em> describing the fields the collection
+          records should have.
         </li>
         <li>
           Define a <em>uiSchema</em> to customize the way forms for creating and
@@ -277,7 +283,9 @@ function FormInstructions({ onSchemalessLinkClick }) {
       </ol>
       <p>
         Alternatively, you can create a
-        <a href="" onClick={onSchemalessLinkClick}>schemaless collection</a>.
+        <a href="" onClick={onSchemalessLinkClick}>
+          schemaless collection
+        </a>.
       </p>
     </div>
   );
@@ -293,13 +301,11 @@ type Props = {
   formData?: CollectionData,
 };
 
-export default class CollectionForm extends PureComponent {
-  props: Props;
+type State = {
+  asJSON: boolean,
+};
 
-  state: {
-    asJSON: boolean,
-  };
-
+export default class CollectionForm extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { asJSON: false };
@@ -339,8 +345,13 @@ export default class CollectionForm extends PureComponent {
   };
 
   render() {
-    const { cid, bucket, collection, formData = {}, deleteCollection } = this
-      .props;
+    const {
+      cid,
+      bucket,
+      collection,
+      formData = {},
+      deleteCollection,
+    } = this.props;
     const creation = !formData.id;
     const showDeleteForm = !creation && this.allowEditing;
     const { asJSON } = this.state;
@@ -365,11 +376,12 @@ export default class CollectionForm extends PureComponent {
           uiSchema: JSON.stringify(formData.uiSchema || {}, null, 2),
         };
 
-    const alert = this.allowEditing || bucket.busy || collection.busy
-      ? null
-      : <div className="alert alert-warning">
+    const alert =
+      this.allowEditing || bucket.busy || collection.busy ? null : (
+        <div className="alert alert-warning">
           You don't have the required permission to edit this collection.
-        </div>;
+        </div>
+      );
 
     const buttons = (
       <div>
@@ -392,30 +404,32 @@ export default class CollectionForm extends PureComponent {
     return (
       <div>
         {alert}
-        {asJSON
-          ? <JSONCollectionForm
-              cid={cid}
-              formData={collection.data}
+        {asJSON ? (
+          <JSONCollectionForm
+            cid={cid}
+            formData={collection.data}
+            onSubmit={this.onSubmit}>
+            {buttons}
+          </JSONCollectionForm>
+        ) : (
+          <div>
+            <FormInstructions
+              onSchemalessLinkClick={this.onSchemalessLinkClick}
+            />
+            <BaseForm
+              schema={schema}
+              formData={formDataSerialized}
+              uiSchema={
+                this.allowEditing
+                  ? _uiSchema
+                  : { ..._uiSchema, "ui:disabled": true }
+              }
+              validate={validate}
               onSubmit={this.onSubmit}>
               {buttons}
-            </JSONCollectionForm>
-          : <div>
-              <FormInstructions
-                onSchemalessLinkClick={this.onSchemalessLinkClick}
-              />
-              <BaseForm
-                schema={schema}
-                formData={formDataSerialized}
-                uiSchema={
-                  this.allowEditing
-                    ? _uiSchema
-                    : { ..._uiSchema, "ui:disabled": true }
-                }
-                validate={validate}
-                onSubmit={this.onSubmit}>
-                {buttons}
-              </BaseForm>
-            </div>}
+            </BaseForm>
+          </div>
+        )}
         {showDeleteForm && <DeleteForm cid={cid} onSubmit={deleteCollection} />}
       </div>
     );

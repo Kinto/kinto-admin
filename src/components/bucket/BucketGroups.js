@@ -43,14 +43,15 @@ function DataList(props) {
               </td>
               <td className="actions">
                 <div className="btn-group">
-                  {"history" in capabilities &&
+                  {"history" in capabilities && (
                     <AdminLink
                       name="group:history"
                       params={{ bid, gid }}
                       className="btn btn-xs btn-default"
                       title="View group history">
                       <i className="glyphicon glyphicon-time" />
-                    </AdminLink>}
+                    </AdminLink>
+                  )}
                   <AdminLink
                     name="group:attributes"
                     params={{ bid, gid }}
@@ -84,14 +85,14 @@ function ListActions({ bid, session, bucket }) {
   );
 }
 
-export default class BucketCollections extends PureComponent {
-  props: {
-    params: BucketRouteParams,
-    session: SessionState,
-    bucket: BucketState,
-    capabilities: Capabilities,
-  };
+type Props = {
+  params: BucketRouteParams,
+  session: SessionState,
+  bucket: BucketState,
+  capabilities: Capabilities,
+};
 
+export default class BucketCollections extends PureComponent<Props> {
   render() {
     const { params, session, bucket, capabilities } = this.props;
     const { bid } = params;
@@ -103,18 +104,18 @@ export default class BucketCollections extends PureComponent {
 
     return (
       <div className="list-page">
-        <h1>Groups of <b>{bid}</b></h1>
+        <h1>
+          Groups of <b>{bid}</b>
+        </h1>
         <BucketTabs bid={bid} selected="groups" capabilities={capabilities}>
           {listActions}
-          {groups.length === 0
-            ? <div className="alert alert-info">
-                <p>This bucket has no groups.</p>
-              </div>
-            : <DataList
-                bid={bid}
-                groups={groups}
-                capabilities={capabilities}
-              />}
+          {groups.length === 0 ? (
+            <div className="alert alert-info">
+              <p>This bucket has no groups.</p>
+            </div>
+          ) : (
+            <DataList bid={bid} groups={groups} capabilities={capabilities} />
+          )}
           {listActions}
         </BucketTabs>
       </div>

@@ -21,10 +21,8 @@ type Props = {
   settings: Object,
 };
 
-export default class KintoAdmin extends Component {
+export default class KintoAdmin extends Component<Props> {
   store: Object;
-
-  props: Props;
 
   static defaultProps = {
     plugins: [],

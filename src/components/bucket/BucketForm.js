@@ -59,8 +59,8 @@ function DeleteForm({ bid, onSubmit }) {
       </div>
       <div className="panel-body">
         <p>
-          Delete the <b>{bid}</b> bucket and all the collections and
-          records it contains.
+          Delete the <b>{bid}</b> bucket and all the collections and records it
+          contains.
         </p>
         <BaseForm
           schema={deleteSchema}
@@ -71,7 +71,7 @@ function DeleteForm({ bid, onSubmit }) {
             }
           }}>
           <button type="submit" className="btn btn-danger">
-            <i className="glyphicon glyphicon-trash" />{" "}Delete bucket
+            <i className="glyphicon glyphicon-trash" /> Delete bucket
           </button>
         </BaseForm>
       </div>
@@ -79,16 +79,16 @@ function DeleteForm({ bid, onSubmit }) {
   );
 }
 
-export default class BucketForm extends PureComponent {
-  props: {
-    bid?: string,
-    session: SessionState,
-    bucket: BucketState,
-    formData?: BucketData,
-    deleteBucket?: (bid: string) => void,
-    onSubmit: (data: Object) => void,
-  };
+type Props = {
+  bid?: string,
+  session: SessionState,
+  bucket: BucketState,
+  formData?: BucketData,
+  deleteBucket?: (bid: string) => void,
+  onSubmit: (data: Object) => void,
+};
 
+export default class BucketForm extends PureComponent<Props> {
   onSubmit = ({ formData }: { formData: Object }) => {
     const { id, data } = formData;
     // Parse JSON fields so they can be sent to the server
@@ -121,11 +121,12 @@ export default class BucketForm extends PureComponent {
           },
         };
 
-    const alert = formIsEditable || bucket.busy
-      ? null
-      : <div className="alert alert-warning">
+    const alert =
+      formIsEditable || bucket.busy ? null : (
+        <div className="alert alert-warning">
           You don't have the required permission to edit this bucket.
-        </div>;
+        </div>
+      );
 
     const buttons = (
       <div>
@@ -144,20 +145,20 @@ export default class BucketForm extends PureComponent {
     return (
       <div>
         {alert}
-        {bucket.busy
-          ? <Spinner />
-          : <BaseForm
-              schema={schema}
-              uiSchema={
-                formIsEditable
-                  ? _uiSchema
-                  : { ..._uiSchema, "ui:readonly": true }
-              }
-              formData={formDataSerialized}
-              validate={validate}
-              onSubmit={this.onSubmit}>
-              {buttons}
-            </BaseForm>}
+        {bucket.busy ? (
+          <Spinner />
+        ) : (
+          <BaseForm
+            schema={schema}
+            uiSchema={
+              formIsEditable ? _uiSchema : { ..._uiSchema, "ui:readonly": true }
+            }
+            formData={formDataSerialized}
+            validate={validate}
+            onSubmit={this.onSubmit}>
+            {buttons}
+          </BaseForm>
+        )}
         {showDeleteForm && <DeleteForm bid={bid} onSubmit={deleteBucket} />}
       </div>
     );

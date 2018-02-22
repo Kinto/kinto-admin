@@ -1,7 +1,9 @@
 /* @flow */
 import type { CollectionData } from "../../types";
 
-import React, { PureComponent } from "react";
+import { PureComponent } from "react";
+import * as React from "react";
+
 import Form from "react-jsonschema-form";
 
 import JSONEditor from "../JSONEditor";
@@ -38,17 +40,19 @@ function validate({ data }, errors) {
   return errors;
 }
 
-export default class JSONCollectionForm extends PureComponent {
-  props: {
-    children?: React.Element<*>,
-    cid: ?string,
-    formData: CollectionData,
-    onSubmit: (data: { formData: CollectionData }) => void,
-  };
+type Props = {
+  children?: React.Element<*>,
+  cid: ?string,
+  formData: CollectionData,
+  onSubmit: (data: { formData: CollectionData }) => void,
+};
 
+export default class JSONCollectionForm extends PureComponent<Props> {
   onSubmit = ({
     formData,
-  }: { formData: { id: string, data: string } }): void => {
+  }: {
+    formData: { id: string, data: string },
+  }): void => {
     const collectionData = { ...JSON.parse(formData.data), id: formData.id };
     this.props.onSubmit({ formData: collectionData });
   };

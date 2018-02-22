@@ -81,8 +81,7 @@ function DeleteForm({ gid, onSubmit }) {
             }
           }}>
           <button type="submit" className="btn btn-danger">
-            <i className="glyphicon glyphicon-trash" />{" "}
-            Delete group
+            <i className="glyphicon glyphicon-trash" /> Delete group
           </button>
         </BaseForm>
       </div>
@@ -90,17 +89,17 @@ function DeleteForm({ gid, onSubmit }) {
   );
 }
 
-export default class GroupForm extends PureComponent {
-  props: {
-    gid?: string,
-    session: SessionState,
-    bucket: BucketState,
-    group: GroupState,
-    formData?: GroupData,
-    onSubmit: (formData: GroupData) => void,
-    deleteGroup?: (gid: string) => void,
-  };
+type Props = {
+  gid?: string,
+  session: SessionState,
+  bucket: BucketState,
+  group: GroupState,
+  formData?: GroupData,
+  onSubmit: (formData: GroupData) => void,
+  deleteGroup?: (gid: string) => void,
+};
 
+export default class GroupForm extends PureComponent<Props> {
   onSubmit = ({ formData }: { formData: { data: string } }) => {
     const { data } = formData;
     // Parse JSON fields so they can be sent to the server
@@ -114,8 +113,14 @@ export default class GroupForm extends PureComponent {
   };
 
   render() {
-    const { gid, session, bucket, group, formData = {}, deleteGroup } = this
-      .props;
+    const {
+      gid,
+      session,
+      bucket,
+      group,
+      formData = {},
+      deleteGroup,
+    } = this.props;
     const creation = !formData.id;
     const hasWriteAccess = creation
       ? canCreateGroup(session, bucket)
@@ -141,11 +146,12 @@ export default class GroupForm extends PureComponent {
       data,
     };
 
-    const alert = formIsEditable || group.busy
-      ? null
-      : <div className="alert alert-warning">
+    const alert =
+      formIsEditable || group.busy ? null : (
+        <div className="alert alert-warning">
           You don't have the required permission to edit this group.
-        </div>;
+        </div>
+      );
 
     const buttons = (
       <div>
@@ -157,27 +163,29 @@ export default class GroupForm extends PureComponent {
           {` ${creation ? "Create" : "Update"} group`}
         </button>
         {" or "}
-        <AdminLink name="home" params={{}}>Cancel</AdminLink>
+        <AdminLink name="home" params={{}}>
+          Cancel
+        </AdminLink>
       </div>
     );
 
     return (
       <div>
         {alert}
-        {group.busy
-          ? <Spinner />
-          : <BaseForm
-              schema={schema}
-              uiSchema={
-                formIsEditable
-                  ? _uiSchema
-                  : { ..._uiSchema, "ui:readonly": true }
-              }
-              formData={formDataSerialized}
-              validate={validate}
-              onSubmit={this.onSubmit}>
-              {buttons}
-            </BaseForm>}
+        {group.busy ? (
+          <Spinner />
+        ) : (
+          <BaseForm
+            schema={schema}
+            uiSchema={
+              formIsEditable ? _uiSchema : { ..._uiSchema, "ui:readonly": true }
+            }
+            formData={formDataSerialized}
+            validate={validate}
+            onSubmit={this.onSubmit}>
+            {buttons}
+          </BaseForm>
+        )}
         {showDeleteForm && <DeleteForm gid={gid} onSubmit={deleteGroup} />}
       </div>
     );

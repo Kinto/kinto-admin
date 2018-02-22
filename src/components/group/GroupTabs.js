@@ -5,15 +5,15 @@ import React, { PureComponent } from "react";
 
 import AdminLink from "../AdminLink";
 
-export default class GroupTabs extends PureComponent {
-  props: {
-    bid: string,
-    gid: string,
-    selected: "attributes" | "permissions" | "history",
-    capabilities: Capabilities,
-    children?: any,
-  };
+type Props = {
+  bid: string,
+  gid: string,
+  selected: "attributes" | "permissions" | "history",
+  capabilities: Capabilities,
+  children?: any,
+};
 
+export default class GroupTabs extends PureComponent<Props> {
   render() {
     const { bid, gid, selected, capabilities, children } = this.props;
 
@@ -36,7 +36,7 @@ export default class GroupTabs extends PureComponent {
               Permissions
             </AdminLink>
           </li>
-          {"history" in capabilities &&
+          {"history" in capabilities && (
             <li
               role="presentation"
               className={selected === "history" ? "active" : ""}>
@@ -44,12 +44,11 @@ export default class GroupTabs extends PureComponent {
                 <i className="glyphicon glyphicon-time" />
                 History
               </AdminLink>
-            </li>}
+            </li>
+          )}
         </ul>
         <div className="panel panel-default">
-          <div className="panel-body">
-            {children}
-          </div>
+          <div className="panel-body">{children}</div>
         </div>
       </div>
     );

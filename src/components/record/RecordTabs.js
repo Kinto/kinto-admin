@@ -1,20 +1,21 @@
 /* @flow */
 import type { Capabilities } from "../../types";
 
-import React, { PureComponent } from "react";
+import { PureComponent } from "react";
+import * as React from "react";
 
 import AdminLink from "../AdminLink";
 
-export default class RecordTabs extends PureComponent {
-  props: {
-    bid: string,
-    cid: string,
-    rid: string,
-    selected: "attributes" | "permissions" | "history",
-    capabilities: Capabilities,
-    children?: React.Element<*>,
-  };
+type Props = {
+  bid: string,
+  cid: string,
+  rid: string,
+  selected: "attributes" | "permissions" | "history",
+  capabilities: Capabilities,
+  children?: React.Element<*>,
+};
 
+export default class RecordTabs extends PureComponent<Props> {
   render() {
     const { bid, cid, rid, selected, capabilities, children } = this.props;
 
@@ -37,7 +38,7 @@ export default class RecordTabs extends PureComponent {
               Permissions
             </AdminLink>
           </li>
-          {"history" in capabilities &&
+          {"history" in capabilities && (
             <li
               role="presentation"
               className={selected === "history" ? "active" : ""}>
@@ -45,12 +46,11 @@ export default class RecordTabs extends PureComponent {
                 <i className="glyphicon glyphicon-time" />
                 History
               </AdminLink>
-            </li>}
+            </li>
+          )}
         </ul>
         <div className="panel panel-default">
-          <div className="panel-body">
-            {children}
-          </div>
+          <div className="panel-body">{children}</div>
         </div>
       </div>
     );

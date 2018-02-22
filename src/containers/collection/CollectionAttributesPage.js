@@ -5,8 +5,7 @@ import type { Dispatch, ActionCreatorOrObjectOfACs } from "redux";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
-import CollectionAttributes
-  from "../../components/collection/CollectionAttributes";
+import CollectionAttributes from "../../components/collection/CollectionAttributes";
 import * as BucketActions from "../../actions/bucket";
 
 function mapStateToProps(state: AppState) {

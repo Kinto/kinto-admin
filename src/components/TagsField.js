@@ -33,10 +33,7 @@ type State = {
   tagsString: string,
 };
 
-export default class TagsField extends PureComponent {
-  props: Props;
-  state: State;
-
+export default class TagsField extends PureComponent<Props, State> {
   static defaultProps = {
     formData: [],
     uiSchema: {},
@@ -57,7 +54,9 @@ export default class TagsField extends PureComponent {
 
   onChange = ({
     target: { value: tagsString },
-  }: { target: { value: string } }) => {
+  }: {
+    target: { value: string },
+  }) => {
     const { schema: { uniqueItems = false }, onChange } = this.props;
     const tags = toTagList(tagsString, this.separator, uniqueItems);
     this.setState({ tagsString });
@@ -79,21 +78,24 @@ export default class TagsField extends PureComponent {
           value={tagsString}
           placeholder={
             uiSchema["ui:placeholder"] ||
-              toTagsString(["tag1", "tag2", "tag3"], this.separator)
+            toTagsString(["tag1", "tag2", "tag3"], this.separator)
           }
           onChange={this.onChange}
           required={required}
           readOnly={readonly}
         />
         <div className="help-block">
-          {uiSchema["ui:help"] ||
+          {uiSchema["ui:help"] || (
             <span>
               Entries must be separated with
-              {this.separator === " "
-                ? "spaces"
-                : <code>{this.separator}</code>}
+              {this.separator === " " ? (
+                "spaces"
+              ) : (
+                <code>{this.separator}</code>
+              )}
               .
-            </span>}
+            </span>
+          )}
         </div>
       </div>
     );

@@ -7,13 +7,22 @@ import type {
   BucketEntry,
 } from "../types";
 
-import React, { PureComponent } from "react";
+import { PureComponent } from "react";
+import * as React from "react";
 
 import Spinner from "./Spinner";
 import AdminLink from "./AdminLink";
 import url from "../url";
 
-function SideBarLink(props) {
+type SideBarLinkProps = {
+  currentPath: string,
+  name: string,
+  params: RouteParams,
+  children: React.Node,
+  className?: string,
+};
+
+function SideBarLink(props: SideBarLinkProps) {
   const {
     currentPath,
     name,
@@ -24,9 +33,8 @@ function SideBarLink(props) {
   } = props;
   const targetUrl = url(name, params);
   const active = currentPath === targetUrl ? "active" : "";
-  const classes = className !== undefined
-    ? className
-    : `list-group-item ${active}`;
+  const classes =
+    className !== undefined ? className : `list-group-item ${active}`;
 
   return (
     <AdminLink {...otherProps} name={name} params={params} className={classes}>
@@ -50,9 +58,11 @@ function CollectionMenuEntry(props) {
         params={{ bid, cid }}
         currentPath={currentPath}
         className="">
-        {collection.readonly
-          ? <i className="glyphicon glyphicon-lock" />
-          : <i className="glyphicon glyphicon-align-justify" />}
+        {collection.readonly ? (
+          <i className="glyphicon glyphicon-lock" />
+        ) : (
+          <i className="glyphicon glyphicon-align-justify" />
+        )}
         {cid}
       </SideBarLink>
       <SideBarLink
@@ -80,9 +90,10 @@ function BucketCollectionsMenu(props) {
   // sidebarMaxListedCollections, so we can render a link to the paginated list
   // of collections. Still, we only want to list that configured number of
   // collections for this bucket menu.
-  const slicedCollections = sidebarMaxListedCollections !== null
-    ? collections.slice(0, sidebarMaxListedCollections)
-    : collections;
+  const slicedCollections =
+    sidebarMaxListedCollections !== null
+      ? collections.slice(0, sidebarMaxListedCollections)
+      : collections;
   return (
     <div className="collections-menu list-group">
       {slicedCollections.map((collection, index) => {
@@ -97,14 +108,15 @@ function BucketCollectionsMenu(props) {
         );
       })}
       {sidebarMaxListedCollections != null &&
-        collections.length > sidebarMaxListedCollections &&
-        <SideBarLink
-          name="bucket:collections"
-          params={{ bid: bucket.id }}
-          currentPath={currentPath}>
-          <i className="glyphicon glyphicon-option-horizontal" />
-          See all collections
-        </SideBarLink>}
+        collections.length > sidebarMaxListedCollections && (
+          <SideBarLink
+            name="bucket:collections"
+            params={{ bid: bucket.id }}
+            currentPath={currentPath}>
+            <i className="glyphicon glyphicon-option-horizontal" />
+            See all collections
+          </SideBarLink>
+        )}
       <SideBarLink
         name="collection:create"
         params={{ bid: bucket.id }}
@@ -120,12 +132,12 @@ type BucketsMenuProps = {
   currentPath: string,
   busy: boolean,
   buckets: BucketEntry[],
-  bid: string,
-  cid: string,
+  bid: ?string,
+  cid: ?string,
   sidebarMaxListedCollections: ?number,
 };
 
-function filterBuckets(buckets, filters) {
+function filterBuckets(buckets, filters): BucketEntry[] {
   const { hideReadOnly, search } = filters;
   return buckets
     .slice(0)
@@ -147,14 +159,12 @@ function filterBuckets(buckets, filters) {
     .filter(bucket => !(hideReadOnly && bucket.readonly));
 }
 
-class BucketsMenu extends PureComponent {
-  props: BucketsMenuProps;
+type BucketsMenuState = {
+  hideReadOnly: boolean,
+  search: ?string,
+};
 
-  state: {
-    hideReadOnly: boolean,
-    search: ?string,
-  };
-
+class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
   constructor(props: BucketsMenuProps) {
     super(props);
     this.state = { hideReadOnly: false, search: null };
@@ -187,7 +197,10 @@ class BucketsMenu extends PureComponent {
       <div>
         <div className="panel panel-default">
           <div className="list-group">
-            <SideBarLink name="bucket:create" currentPath={currentPath}>
+            <SideBarLink
+              name="bucket:create"
+              currentPath={currentPath}
+              params={{}}>
               <i className="glyphicon glyphicon-plus" />
               Create bucket
             </SideBarLink>
@@ -218,64 +231,72 @@ class BucketsMenu extends PureComponent {
                   type="checkbox"
                   value={this.state.hideReadOnly}
                   onChange={this.toggleReadOnly}
-                />
-                {" "}Hide readonly buckets
+                />{" "}
+                Hide readonly buckets
               </label>
             </div>
           </form>
         </div>
-        {busy
-          ? <Spinner />
-          : filteredBuckets.map((bucket, i) => {
-              const { id, collections } = bucket;
-              const current = bid === id;
-              return (
-                <div
-                  key={i}
-                  className={`panel panel-${current ? "info" : "default"} bucket-menu`}>
-                  <div className="panel-heading">
-                    {bucket.readonly
-                      ? <i className="glyphicon glyphicon-lock" />
-                      : <i
-                          className={`glyphicon glyphicon-folder-${current ? "open" : "close"}`}
-                        />}
-                    <strong>{id}</strong> bucket
-                    <SideBarLink
-                      name="bucket:attributes"
-                      params={{ bid: id }}
-                      currentPath={currentPath}
-                      className="bucket-menu-entry-edit"
-                      title="Manage bucket">
-                      <i className="glyphicon glyphicon-cog" />
-                    </SideBarLink>
-                  </div>
-                  <BucketCollectionsMenu
-                    bucket={bucket}
-                    collections={collections}
+        {busy ? (
+          <Spinner />
+        ) : (
+          filteredBuckets.map((bucket, i) => {
+            const { id, collections } = bucket;
+            const current = bid === id;
+            return (
+              <div
+                key={i}
+                className={`panel panel-${
+                  current ? "info" : "default"
+                } bucket-menu`}>
+                <div className="panel-heading">
+                  {bucket.readonly ? (
+                    <i className="glyphicon glyphicon-lock" />
+                  ) : (
+                    <i
+                      className={`glyphicon glyphicon-folder-${
+                        current ? "open" : "close"
+                      }`}
+                    />
+                  )}
+                  <strong>{id}</strong> bucket
+                  <SideBarLink
+                    name="bucket:attributes"
+                    params={{ bid: id }}
                     currentPath={currentPath}
-                    bid={bid}
-                    cid={cid}
-                    sidebarMaxListedCollections={sidebarMaxListedCollections}
-                  />
+                    className="bucket-menu-entry-edit"
+                    title="Manage bucket">
+                    <i className="glyphicon glyphicon-cog" />
+                  </SideBarLink>
                 </div>
-              );
-            })}
+                <BucketCollectionsMenu
+                  bucket={bucket}
+                  collections={collections}
+                  currentPath={currentPath}
+                  bid={bid}
+                  cid={cid}
+                  sidebarMaxListedCollections={sidebarMaxListedCollections}
+                />
+              </div>
+            );
+          })
+        )}
       </div>
     );
   }
 }
 
-export default class Sidebar extends PureComponent {
+type SidebarProps = {
+  session: SessionState,
+  settings: SettingsState,
+  params: RouteParams,
+  location: RouteLocation,
+};
+
+export default class Sidebar extends PureComponent<SidebarProps> {
   // This is useful to identify wrapped component for plugin hooks when code is
   // minified; see https://github.com/facebook/react/issues/4915
   static displayName = "Sidebar";
-
-  props: {
-    session: SessionState,
-    settings: SettingsState,
-    params: RouteParams,
-    location: RouteLocation,
-  };
 
   render() {
     const { session, settings, params, location } = this.props;
@@ -287,12 +308,12 @@ export default class Sidebar extends PureComponent {
       <div>
         <div className="panel panel-default">
           <div className="list-group">
-            <SideBarLink name="home" currentPath={currentPath}>
+            <SideBarLink name="home" currentPath={currentPath} params={{}}>
               Home
             </SideBarLink>
           </div>
         </div>
-        {authenticated &&
+        {authenticated && (
           <BucketsMenu
             busy={busy}
             buckets={buckets}
@@ -300,7 +321,8 @@ export default class Sidebar extends PureComponent {
             bid={bid}
             cid={cid}
             sidebarMaxListedCollections={sidebarMaxListedCollections}
-          />}
+          />
+        )}
       </div>
     );
   }

@@ -3,7 +3,7 @@ import type { Notifications } from "../types";
 
 import React, { PureComponent } from "react";
 
-class ErrorDetails extends PureComponent {
+class ErrorDetails extends PureComponent<{ details: Array<string> }> {
   render() {
     const { details } = this.props;
     if (details.length === 0) {
@@ -19,21 +19,24 @@ class ErrorDetails extends PureComponent {
   }
 }
 
-export class Notification extends PureComponent {
+type NotificationProps = {
+  type: string,
+  message: string,
+  details: string[],
+  close: () => void,
+};
+
+type NotificationState = {
+  expanded: boolean,
+};
+
+export class Notification extends PureComponent<
+  NotificationProps,
+  NotificationState
+> {
   static defaultProps = {
     type: "info",
     details: [],
-  };
-
-  props: {
-    type: string,
-    message: string,
-    details: string[],
-    close: () => void,
-  };
-
-  state: {
-    expanded: boolean,
   };
 
   constructor(props: Object) {
@@ -73,16 +76,19 @@ export class Notification extends PureComponent {
         <h4>{this.getHeading()}</h4>
         <p>
           {message}
-          {details.length !== 0 &&
+          {details.length !== 0 && (
             <a
               href="."
               className="btn-details"
               onClick={this.expand}
               title="Error details">
               <i
-                className={`glyphicon glyphicon-triangle-${expanded ? "bottom" : "right"}`}
+                className={`glyphicon glyphicon-triangle-${
+                  expanded ? "bottom" : "right"
+                }`}
               />
-            </a>}
+            </a>
+          )}
         </p>
         {expanded && <ErrorDetails details={details} />}
       </div>
@@ -90,15 +96,15 @@ export class Notification extends PureComponent {
   }
 }
 
-export default class Notifications_ extends PureComponent {
+type Props = {
+  notifications: Notifications,
+  removeNotification: (index: number) => void,
+};
+
+export default class Notifications_ extends PureComponent<Props> {
   // This is useful to identify wrapped component for plugin hooks when code is
   // minified; see https://github.com/facebook/react/issues/4915
   static displayName = "Notifications";
-
-  props: {
-    notifications: Notifications,
-    removeNotification: (index: number) => void,
-  };
 
   render() {
     const { notifications, removeNotification } = this.props;

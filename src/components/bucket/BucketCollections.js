@@ -32,14 +32,17 @@ function DataList(props) {
     <tbody className={!loaded ? "loading" : ""}>
       {entries.map((collection, index) => {
         const { id: cid, schema, cache_expires, last_modified } = collection;
-        const date = new Date(last_modified);
+        // FIXME: last_modified should always be here, but the types
+        // don't express that
+        const date = last_modified && new Date(last_modified);
+        const ageString = date && timeago(date.getTime());
         return (
           <tr key={index}>
             <td>{cid}</td>
             <td>{schema ? "Yes" : "No"}</td>
             <td>{cache_expires ? `${cache_expires} seconds` : "No"}</td>
             <td>
-              <span title={date.toISOString()}>{timeago(date.getTime())}</span>
+              <span title={date ? date.toISOString() : ""}>{ageString}</span>
             </td>
             <td className="actions">
               <div className="btn-group">
@@ -50,14 +53,15 @@ function DataList(props) {
                   title="Browse collection">
                   <i className="glyphicon glyphicon-align-justify" />
                 </AdminLink>
-                {"history" in capabilities &&
+                {"history" in capabilities && (
                   <AdminLink
                     name="collection:history"
                     params={{ bid, cid }}
                     className="btn btn-xs btn-default"
                     title="View collection history">
                     <i className="glyphicon glyphicon-time" />
-                  </AdminLink>}
+                  </AdminLink>
+                )}
                 <AdminLink
                   name="collection:attributes"
                   params={{ bid, cid }}
@@ -102,15 +106,15 @@ function ListActions(props) {
   );
 }
 
-export default class BucketCollections extends PureComponent {
-  props: {
-    params: BucketRouteParams,
-    session: SessionState,
-    bucket: BucketState,
-    capabilities: Capabilities,
-    listBucketNextCollections: () => void,
-  };
+type Props = {
+  params: BucketRouteParams,
+  session: SessionState,
+  bucket: BucketState,
+  capabilities: Capabilities,
+  listBucketNextCollections: () => void,
+};
 
+export default class BucketCollections extends PureComponent<Props> {
   render() {
     const {
       params,
@@ -128,22 +132,26 @@ export default class BucketCollections extends PureComponent {
 
     return (
       <div className="list-page">
-        <h1>Collections of <b>{bid}</b></h1>
+        <h1>
+          Collections of <b>{bid}</b>
+        </h1>
         <BucketTabs
           bid={bid}
           selected="collections"
           capabilities={capabilities}>
           {listActions}
-          {collections.loaded && collections.entries.length === 0
-            ? <div className="alert alert-info">
-                <p>This bucket has no collections.</p>
-              </div>
-            : <DataList
-                bid={bid}
-                collections={collections}
-                listBucketNextCollections={listBucketNextCollections}
-                capabilities={capabilities}
-              />}
+          {collections.loaded && collections.entries.length === 0 ? (
+            <div className="alert alert-info">
+              <p>This bucket has no collections.</p>
+            </div>
+          ) : (
+            <DataList
+              bid={bid}
+              collections={collections}
+              listBucketNextCollections={listBucketNextCollections}
+              capabilities={capabilities}
+            />
+          )}
           {listActions}
         </BucketTabs>
       </div>

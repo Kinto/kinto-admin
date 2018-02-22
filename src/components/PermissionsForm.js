@@ -11,16 +11,16 @@ import {
   preparePermissionsForm,
 } from "../permission";
 
-export default class PermissionsForm extends PureComponent {
-  props: {
-    bid: string,
-    readonly: boolean,
-    permissions: Permissions,
-    groups: GroupData[],
-    acls: string[],
-    onSubmit: (data: { formData: Object }) => void,
-  };
+type Props = {
+  bid: string,
+  readonly: boolean,
+  permissions: Permissions,
+  groups: GroupData[],
+  acls: string[],
+  onSubmit: (data: { formData: Object }) => void,
+};
 
+export default class PermissionsForm extends PureComponent<Props> {
   onSubmit = ({ formData }: { formData: Object }) => {
     const { bid, onSubmit } = this.props;
     onSubmit({ formData: formDataToPermissions(bid, formData) });
@@ -31,7 +31,8 @@ export default class PermissionsForm extends PureComponent {
     if (readonly) {
       return (
         <div className="alert alert-warning">
-          You don't have the required permission to edit the permissions for this resource.
+          You don't have the required permission to edit the permissions for
+          this resource.
         </div>
       );
     }

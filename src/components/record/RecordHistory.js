@@ -13,18 +13,18 @@ import React, { PureComponent } from "react";
 import HistoryTable from "../HistoryTable";
 import RecordTabs from "./RecordTabs";
 
-export default class RecordHistory extends PureComponent {
-  props: {
-    params: RecordRouteParams,
-    session: SessionState,
-    capabilities: Capabilities,
-    bucket: BucketState,
-    record: RecordState,
-    location: RouteLocation,
-    listRecordNextHistory: () => void,
-    notifyError: (message: string, error: ?Error) => void,
-  };
+type Props = {
+  params: RecordRouteParams,
+  session: SessionState,
+  capabilities: Capabilities,
+  bucket: BucketState,
+  record: RecordState,
+  location: RouteLocation,
+  listRecordNextHistory: () => void,
+  notifyError: (message: string, error: ?Error) => void,
+};
 
+export default class RecordHistory extends PureComponent<Props> {
   render() {
     const {
       params,
@@ -39,7 +39,12 @@ export default class RecordHistory extends PureComponent {
 
     return (
       <div>
-        <h1>History for <b>{bid}/{cid}/{rid}</b></h1>
+        <h1>
+          History for{" "}
+          <b>
+            {bid}/{cid}/{rid}
+          </b>
+        </h1>
         <RecordTabs
           bid={bid}
           cid={cid}

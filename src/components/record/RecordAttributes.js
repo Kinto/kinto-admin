@@ -14,25 +14,25 @@ import React, { PureComponent } from "react";
 import RecordForm from "./RecordForm";
 import RecordTabs from "./RecordTabs";
 
-export default class RecordAttributes extends PureComponent {
-  props: {
-    params: RecordRouteParams,
-    session: SessionState,
-    capabilities: Capabilities,
-    bucket: BucketState,
-    collection: CollectionState,
-    record: RecordState,
-    deleteRecord: (bid: string, cid: string, rid: string) => void,
-    deleteAttachment: (bid: string, cid: string, rid: string) => void,
-    updateRecord: (
-      bid: string,
-      cid: string,
-      rid: string,
-      data: RecordData,
-      attachment: ?string
-    ) => void,
-  };
+type Props = {
+  params: RecordRouteParams,
+  session: SessionState,
+  capabilities: Capabilities,
+  bucket: BucketState,
+  collection: CollectionState,
+  record: RecordState,
+  deleteRecord: (bid: string, cid: string, rid: string) => void,
+  deleteAttachment: (bid: string, cid: string, rid: string) => void,
+  updateRecord: (
+    bid: string,
+    cid: string,
+    rid: string,
+    data: RecordData,
+    attachment: ?string
+  ) => void,
+};
 
+export default class RecordAttributes extends PureComponent<Props> {
   onSubmit = ({ __attachment__: attachment, ...record }: Object) => {
     const { params, updateRecord } = this.props;
     const { bid, cid, rid } = params;
@@ -54,7 +54,13 @@ export default class RecordAttributes extends PureComponent {
 
     return (
       <div>
-        <h1>Edit <b>{bid}/{cid}/{rid}</b> record attributes</h1>
+        <h1>
+          Edit{" "}
+          <b>
+            {bid}/{cid}/{rid}
+          </b>{" "}
+          record attributes
+        </h1>
         <RecordTabs
           bid={bid}
           cid={cid}

@@ -21,13 +21,17 @@ describe("configureStore()", () => {
       });
 
       it("should register a plugin reducer", () => {
-        expect(store.getState()).to.have.property("count").eql(0);
+        expect(store.getState())
+          .to.have.property("count")
+          .eql(0);
       });
 
       it("should forward actions to the registered plugin reducer", () => {
         store.dispatch({ type: "INC" });
 
-        expect(store.getState()).to.have.property("count").eql(1);
+        expect(store.getState())
+          .to.have.property("count")
+          .eql(1);
       });
     });
 
@@ -53,8 +57,8 @@ describe("configureStore()", () => {
       });
 
       it("should extend a standard reducer", () => {
-        expect(store.getState()).to.have
-          .property("collection")
+        expect(store.getState())
+          .to.have.property("collection")
           .to.have.property("busy")
           .eql(false);
       });
@@ -62,8 +66,8 @@ describe("configureStore()", () => {
       it("should forward actions to the registered plugin reducer", () => {
         store.dispatch({ type: "BUSY" });
 
-        expect(store.getState()).to.have
-          .property("collection")
+        expect(store.getState())
+          .to.have.property("collection")
           .to.have.property("busy")
           .eql(true);
       });
@@ -105,8 +109,8 @@ describe("configureStore()", () => {
         });
 
         it("should extend a standard reducer", () => {
-          expect(store.getState()).to.have
-            .property("collection")
+          expect(store.getState())
+            .to.have.property("collection")
             .to.have.property("recordsLoaded")
             .eql(false);
         });
@@ -114,15 +118,15 @@ describe("configureStore()", () => {
         it("should override previously registered reducer with the same name", () => {
           store.dispatch({ type: "BUSY" });
 
-          expect(store.getState()).to.have
-            .property("collection")
+          expect(store.getState())
+            .to.have.property("collection")
             .to.have.property("busy")
             .eql(false);
 
           store.dispatch({ type: "LOADED" });
 
-          expect(store.getState()).to.have
-            .property("collection")
+          expect(store.getState())
+            .to.have.property("collection")
             .to.have.property("recordsLoaded")
             .eql(true);
         });
@@ -163,13 +167,13 @@ describe("configureStore()", () => {
         });
 
         it("should extend a standard reducer", () => {
-          expect(store.getState()).to.have
-            .property("bucket")
+          expect(store.getState())
+            .to.have.property("bucket")
             .to.have.property("busy")
             .eql(false);
 
-          expect(store.getState()).to.have
-            .property("collection")
+          expect(store.getState())
+            .to.have.property("collection")
             .to.have.property("recordsLoaded")
             .eql(false);
         });
@@ -177,15 +181,15 @@ describe("configureStore()", () => {
         it("should override previously registered reducer with the same name", () => {
           store.dispatch({ type: "BUSY" });
 
-          expect(store.getState()).to.have
-            .property("bucket")
+          expect(store.getState())
+            .to.have.property("bucket")
             .to.have.property("busy")
             .eql(true);
 
           store.dispatch({ type: "LOADED" });
 
-          expect(store.getState()).to.have
-            .property("collection")
+          expect(store.getState())
+            .to.have.property("collection")
             .to.have.property("recordsLoaded")
             .eql(true);
         });

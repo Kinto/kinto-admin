@@ -11,17 +11,17 @@ import React, { PureComponent } from "react";
 import HistoryTable from "../HistoryTable";
 import CollectionTabs from "./GroupTabs";
 
-export default class GroupHistory extends PureComponent {
-  props: {
-    params: GroupRouteParams,
-    group: GroupState,
-    capabilities: Capabilities,
-    location: RouteLocation,
-    hasNextHistory: boolean,
-    listGroupNextHistory: ?Function,
-    notifyError: (message: string, error: ?Error) => void,
-  };
+type Props = {
+  params: GroupRouteParams,
+  group: GroupState,
+  capabilities: Capabilities,
+  location: RouteLocation,
+  hasNextHistory: boolean,
+  listGroupNextHistory: ?Function,
+  notifyError: (message: string, error: ?Error) => void,
+};
 
+export default class GroupHistory extends PureComponent<Props> {
   render() {
     const {
       params,
@@ -36,7 +36,12 @@ export default class GroupHistory extends PureComponent {
 
     return (
       <div>
-        <h1>History for <b>{bid}/{gid}</b></h1>
+        <h1>
+          History for{" "}
+          <b>
+            {bid}/{gid}
+          </b>
+        </h1>
         <CollectionTabs
           bid={bid}
           gid={gid}

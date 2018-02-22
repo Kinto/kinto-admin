@@ -57,7 +57,9 @@ function fetchCollectionStateAt(
   cid: string,
   timestamp: ?string
 ): Promise<Object[]> {
-  const coll = getClient().bucket(bid).collection(cid);
+  const coll = getClient()
+    .bucket(bid)
+    .collection(cid);
   const query = timestamp ? { at: parseInt(timestamp, 10) } : {};
   return coll.listRecords(query).then(({ data: records }) => {
     // clean entries for easier review
@@ -67,23 +69,23 @@ function fetchCollectionStateAt(
   });
 }
 
-class HistoryRow extends PureComponent {
-  props: {
-    bid: string,
-    entry: ResourceHistoryEntry,
-    pos: number,
-    enableDiffOverview: boolean,
-  };
+type HistoryRowProps = {
+  bid: string,
+  entry: ResourceHistoryEntry,
+  pos: number,
+  enableDiffOverview: boolean,
+};
 
+type HistoryRowState = {
+  open: boolean,
+  busy: boolean,
+  previous: ?ResourceHistoryEntry,
+  error: ?Error,
+};
+
+class HistoryRow extends PureComponent<HistoryRowProps, HistoryRowState> {
   static defaultProps = {
     enableDiffOverview: false,
-  };
-
-  state: {
-    open: boolean,
-    busy: boolean,
-    previous: ?ResourceHistoryEntry,
-    error: ?Error,
   };
 
   constructor(props) {
@@ -166,18 +168,18 @@ class HistoryRow extends PureComponent {
           <td className="text-center">
             {resource_name === "record" &&
               enableDiffOverview &&
-              pos !== 0 &&
-              <span>
-                <AdminLink
-                  className="btn btn-xs btn-default"
-                  title="Start history log from this point"
-                  name="collection:history"
-                  params={{ bid, cid }}
-                  query={{ since: last_modified, resource_name: "record" }}>
-                  <i className="glyphicon glyphicon-step-backward" />
-                </AdminLink>
-                {" "}
-              </span>}
+              pos !== 0 && (
+                <span>
+                  <AdminLink
+                    className="btn btn-xs btn-default"
+                    title="Start history log from this point"
+                    name="collection:history"
+                    params={{ bid, cid }}
+                    query={{ since: last_modified, resource_name: "record" }}>
+                    <i className="glyphicon glyphicon-step-backward" />
+                  </AdminLink>{" "}
+                </span>
+              )}
             <a
               href="."
               className="btn btn-xs btn-default"
@@ -193,13 +195,15 @@ class HistoryRow extends PureComponent {
           className="history-row-details"
           style={{ display: busy || open ? "table-row" : "none" }}>
           <td colSpan="6">
-            {busy
-              ? <Spinner />
-              : previous
-                  ? <Diff source={entry.target} target={previous.target} />
-                  : error
-                      ? <p className="alert alert-danger">{error}</p>
-                      : <pre>{JSON.stringify(entry.target, null, 2)}</pre>}
+            {busy ? (
+              <Spinner />
+            ) : previous ? (
+              <Diff source={entry.target} target={previous.target} />
+            ) : error ? (
+              <p className="alert alert-danger">{error.toString()}</p>
+            ) : (
+              <pre>{JSON.stringify(entry.target, null, 2)}</pre>
+            )}
           </td>
         </tr>
       </tbody>
@@ -222,8 +226,7 @@ function FilterInfo(props) {
   const { pathname, query: { since } } = location;
   return (
     <p>
-      Since {since ? humanDate(since) : ""}.
-      {" "}
+      Since {since ? humanDate(since) : ""}.{" "}
       <a
         href="#"
         onClick={event => {
@@ -234,18 +237,19 @@ function FilterInfo(props) {
         View all entries
       </a>
       {enableDiffOverview &&
-        since != null &&
-        <span>
-          {" | "}
-          <a
-            href="#"
-            onClick={event => {
-              event.preventDefault();
-              onDiffOverviewClick(since);
-            }}>
-            View records list diff overview
-          </a>
-        </span>}
+        since != null && (
+          <span>
+            {" | "}
+            <a
+              href="#"
+              onClick={event => {
+                event.preventDefault();
+                onDiffOverviewClick(since);
+              }}>
+              View records list diff overview
+            </a>
+          </span>
+        )}
     </p>
   );
 }
@@ -257,14 +261,12 @@ function DiffOverview(props) {
       <div className="alert alert-info">
         <p>
           This diff overview is computed against the current list of records in
-          this collection and the list it contained on
-          {" "}
-          <b>{humanDate(since)}</b>
+          this collection and the list it contained on <b>{humanDate(since)}</b>
           .
         </p>
         <p>
-          <b>Note:</b> <code>last_modified</code> and <code>schema</code>{" "}
-          record metadata are omitted for easier review.
+          <b>Note:</b> <code>last_modified</code> and <code>schema</code> record
+          metadata are omitted for easier review.
         </p>
       </div>
       <Diff source={source} target={target} />
@@ -284,18 +286,16 @@ type Props = {
   notifyError: (message: string, error: Error) => void,
 };
 
-export default class HistoryTable extends PureComponent {
-  props: Props;
+type State = {
+  diffOverview: boolean,
+  busy: boolean,
+  current: ?(RecordData[]),
+  previous: ?(RecordData[]),
+};
 
+export default class HistoryTable extends PureComponent<Props, State> {
   static defaultProps = {
     enableDiffOverview: false,
-  };
-
-  state: {
-    diffOverview: boolean,
-    busy: boolean,
-    current: ?(RecordData[]),
-    previous: ?(RecordData[]),
   };
 
   constructor(props: Props) {
@@ -365,39 +365,46 @@ export default class HistoryTable extends PureComponent {
       </thead>
     );
 
-    const tbody = history.map((entry, index) => {
-      return (
-        <HistoryRow
-          key={index}
-          pos={index}
-          enableDiffOverview={enableDiffOverview}
-          bid={bid}
-          entry={entry}
-        />
-      );
-    });
+    const tbody = (
+      <tbody>
+        {history.map((entry, index) => {
+          return (
+            <HistoryRow
+              key={index}
+              pos={index}
+              enableDiffOverview={enableDiffOverview}
+              bid={bid}
+              entry={entry}
+            />
+          );
+        })}
+      </tbody>
+    );
 
     return (
       <div>
-        {isFiltered &&
+        {isFiltered && (
           <FilterInfo
             location={location}
             enableDiffOverview={enableDiffOverview}
             onDiffOverviewClick={this.onDiffOverviewClick}
             onViewJournalClick={this.onViewJournalClick}
-          />}
-        {cid && diffOverview && since
-          ? <DiffOverview since={since} source={current} target={previous} />
-          : !historyLoaded
-              ? <Spinner />
-              : <PaginatedTable
-                  colSpan={6}
-                  thead={thead}
-                  tbody={tbody}
-                  dataLoaded={historyLoaded}
-                  hasNextPage={hasNextHistory}
-                  listNextPage={listNextHistory}
-                />}
+          />
+        )}
+        {cid && diffOverview && since ? (
+          <DiffOverview since={since} source={current} target={previous} />
+        ) : !historyLoaded ? (
+          <Spinner />
+        ) : (
+          <PaginatedTable
+            colSpan={6}
+            thead={thead}
+            tbody={tbody}
+            dataLoaded={historyLoaded}
+            hasNextPage={hasNextHistory}
+            listNextPage={listNextHistory}
+          />
+        )}
       </div>
     );
   }
