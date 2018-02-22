@@ -1,6 +1,6 @@
 import React from "react";
 import { expect } from "chai";
-import { takeEvery } from "redux-saga";
+import { takeEvery } from "redux-saga/effects";
 
 import {
   flattenPluginsRoutes,

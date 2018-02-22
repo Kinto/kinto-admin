@@ -1,7 +1,7 @@
 /* @flow */
 import type { GetStateFn, PluginSagas, SagaGen } from "../types";
 
-import { takeEvery } from "redux-saga";
+import { takeEvery } from "redux-saga/effects";
 
 import { flattenPluginsSagas } from "../plugin";
 import * as c from "../constants";

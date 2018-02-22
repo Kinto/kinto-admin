@@ -1,8 +1,8 @@
 import type { Store } from "redux";
 
 import React from "react";
-import { takeEvery } from "redux-saga";
 import { connect } from "react-redux";
+import { takeEvery } from "redux-saga/effects";
 import { bindActionCreators } from "redux";
 
 import * as adminConstants from "../../constants";
