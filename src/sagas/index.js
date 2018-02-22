@@ -1,7 +1,7 @@
 /* @flow */
 import type { GetStateFn, PluginSagas, SagaGen } from "../types";
 
-import { takeEvery } from "redux-saga/effects";
+import { takeEvery, all } from "redux-saga/effects";
 
 import { flattenPluginsSagas } from "../plugin";
 import * as c from "../constants";
@@ -119,5 +119,5 @@ export default function* rootSaga(
     ),
   ];
 
-  yield [...standardSagas, ...flattenPluginsSagas(pluginsSagas, getState)];
+  yield all([...standardSagas, ...flattenPluginsSagas(pluginsSagas, getState)]);
 }
