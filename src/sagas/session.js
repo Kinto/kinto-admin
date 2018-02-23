@@ -130,7 +130,7 @@ export function* listBuckets(
     } catch (error) {
       // If the user is not allowed to list the buckets, we want
       // to show an empty list.
-      if (!/HTTP 403/.test(error.message)) {
+      if (!/HTTP 40[13]/.test(error.message)) {
         throw error;
       }
       data = [];

@@ -196,7 +196,7 @@ describe("session sagas", () => {
       });
 
       describe("Forbidden list of buckets", () => {
-        before(() => {
+        beforeEach(() => {
           const action = actions.listBuckets();
           const getState = () => ({
             session: sessionState,
@@ -214,6 +214,16 @@ describe("session sagas", () => {
         it("should support 403 errors when fetching list of buckets", () => {
           // listBucket fails with unauthorized error.
           listBuckets.throw(new Error("HTTP 403"));
+          // Saga continues without failing.
+          expect(listBuckets.next().value)
+            .to.have.property("CALL")
+            .to.have.property("fn")
+            .eql(client.listPermissions);
+        });
+
+        it("should support 401 errors when fetching list of buckets", () => {
+          // listBucket fails with unauthorized error.
+          listBuckets.throw(new Error("HTTP 401"));
           // Saga continues without failing.
           expect(listBuckets.next().value)
             .to.have.property("CALL")
