@@ -94,7 +94,7 @@
     "style-loader": "^0.18.1",
     "toctoc": "^0.2.3",
     "url-loader": "^0.5.7",
-    "webpack": "^2.6.1",
+    "webpack": "^4.0.0",
     "webpack-dev-middleware": "^1.6.1",
     "webpack-hot-middleware": "^2.6.0"
   },
