@@ -27,7 +27,7 @@ module.exports = {
     extensions: [".js", ".jsx", ".css", ".png"],
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.jsx?$/,
         loader: "babel-loader",
