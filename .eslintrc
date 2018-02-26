@@ -1,15 +1,15 @@
 {
   "parser": "babel-eslint",
   "rules": {
-    "react/jsx-uses-react": 2,
-    "react/jsx-uses-vars": 2,
-    "react/react-in-jsx-scope": 2,
-    "curly": [2],
-    "linebreak-style": [2, "unix"],
-    "semi": [2, "always"],
-    "comma-dangle": [0],
-    "no-unused-vars": [2, {"vars": "all", "args": "none"}],
-    "no-console": [0]
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars": "error",
+    "react/react-in-jsx-scope": "error",
+    "curly": ["error"],
+    "linebreak-style": ["error", "unix"],
+    "semi": ["error", "always"],
+    "comma-dangle": "off",
+    "no-unused-vars": ["error", {"vars": "all", "args": "none"}],
+    "no-console": "off",
   },
   "globals": {
     "Generator": true
