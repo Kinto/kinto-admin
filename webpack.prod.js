@@ -19,13 +19,7 @@ module.exports = {
     new ExtractTextPlugin({ filename: "styles.css", allChunks: true }),
     new webpack.DefinePlugin({
       "process.env": {
-        NODE_ENV: JSON.stringify("production"),
         KINTO_ADMIN_VERSION: JSON.stringify(version),
-      },
-    }),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
       },
     }),
   ],
