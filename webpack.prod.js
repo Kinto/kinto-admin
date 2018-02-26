@@ -4,6 +4,7 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var version = require("./package.json").version;
 
 module.exports = {
+  mode: "production",
   devServer: {
     stats: "errors-only",
   },

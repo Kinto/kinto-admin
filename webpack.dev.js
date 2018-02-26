@@ -3,6 +3,7 @@ var webpack = require("webpack");
 var version = require("./package.json").version;
 
 module.exports = {
+  mode: "development",
   devtool: "#inline-source-map",
   entry: ["babel-polyfill", "webpack-hot-middleware/client", "./index"],
   output: {
