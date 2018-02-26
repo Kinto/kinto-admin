@@ -11,10 +11,12 @@ module.exports = {
     filename: "bundle.js",
     publicPath: "/",
   },
+  optimization: {
+    noEmitOnErrors: true,
+  },
   plugins: [
     new webpack.IgnorePlugin(/^(buffertools)$/), // unwanted "deeper" dependency
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
     new webpack.DefinePlugin({
       "process.env": {
         NODE_ENV: JSON.stringify("development"),
