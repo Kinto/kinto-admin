@@ -10,7 +10,6 @@ import {
   createCollection,
 } from "./utils";
 
-
 installGeneratorSupport();
 
 describe("Collection tests", function() {
@@ -18,19 +17,19 @@ describe("Collection tests", function() {
 
   let browser, client;
 
-  beforeEach(function* () {
+  beforeEach(function*() {
     browser = createBrowser();
     yield startServers();
     yield authenticate(browser, "__test__", "__pass__");
     client = createClient("__test__", "__pass__");
   });
 
-  afterEach(function* () {
+  afterEach(function*() {
     yield browser.end();
     yield stopServers();
   });
 
-  it("should create a collection", function* () {
+  it("should create a collection", function*() {
     const result = yield createCollection(browser, "MyBucket", "MyCollection")
       .wait(".collections-menu-entry")
       .evaluate(() => {
@@ -39,12 +38,12 @@ describe("Collection tests", function() {
       .end();
     expect(result).eql("MyCollection");
 
-    const {data} = yield client.bucket("MyBucket").listCollections();
+    const { data } = yield client.bucket("MyBucket").listCollections();
     expect(data).to.have.length.of(1);
     expect(data[0].id).eql("MyCollection");
   });
 
-  it("should update a collection", function* () {
+  it("should update a collection", function*() {
     const result = yield createCollection(browser, "MyBucket", "MyCollection")
       .click("[href='#/buckets/MyBucket/collections/MyCollection/attributes']")
       .wait(".rjsf")
@@ -56,7 +55,7 @@ describe("Collection tests", function() {
     expect(result).eql("Update collection");
   });
 
-  it("should delete a collection", function* () {
+  it("should delete a collection", function*() {
     const result = yield createCollection(browser, "MyBucket", "MyCollection")
       .evaluate(() => {
         // Force accepting confirmation prompt
@@ -73,8 +72,7 @@ describe("Collection tests", function() {
       .end();
     expect(result).eql(0);
 
-    const {data} = yield client.bucket("MyBucket").listCollections();
+    const { data } = yield client.bucket("MyBucket").listCollections();
     expect(data).to.have.length.of(0);
   });
 });
-

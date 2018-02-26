@@ -10,7 +10,6 @@ import {
   createBucket,
 } from "./utils";
 
-
 installGeneratorSupport();
 
 describe("Bucket tests", function() {
@@ -18,32 +17,33 @@ describe("Bucket tests", function() {
 
   let browser, client;
 
-  beforeEach(function* () {
+  beforeEach(function*() {
     client = createClient("__test__", "__pass__");
     browser = createBrowser();
     yield startServers();
     yield authenticate(browser, "__test__", "__pass__");
   });
 
-  afterEach(function* () {
+  afterEach(function*() {
     yield browser.end();
     yield stopServers();
   });
 
-  it("should create a bucket", function* () {
+  it("should create a bucket", function*() {
     const result = yield createBucket(browser, "MyBucket")
       .evaluate(() => {
-        return document.querySelector(".bucket-menu .panel-heading strong").textContent;
+        return document.querySelector(".bucket-menu .panel-heading strong")
+          .textContent;
       })
       .end();
     expect(result).eql("MyBucket");
 
-    const {data} = yield client.listBuckets();
+    const { data } = yield client.listBuckets();
     expect(data).to.have.length.of(1);
     expect(data[0].id).eql("MyBucket");
   });
 
-  it("should edit a bucket", function* () {
+  it("should edit a bucket", function*() {
     const result = yield createBucket(browser, "MyBucket")
       .click("[href='#/buckets/MyBucket/attributes']")
       .wait(".rjsf")
@@ -55,7 +55,7 @@ describe("Bucket tests", function() {
     expect(result).eql("Update bucket");
   });
 
-  it("should delete a bucket", function* () {
+  it("should delete a bucket", function*() {
     const result = yield createBucket(browser, "MyBucket")
       .evaluate(() => {
         // Force accepting confirmation prompt
@@ -72,8 +72,7 @@ describe("Bucket tests", function() {
       .end();
     expect(result).eql(0);
 
-    const {data} = yield client.listBuckets();
+    const { data } = yield client.listBuckets();
     expect(data).to.have.length.of(0);
   });
 });
-

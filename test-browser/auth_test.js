@@ -8,7 +8,6 @@ import {
   authenticate,
 } from "./utils";
 
-
 installGeneratorSupport();
 
 describe("Auth tests", function() {
@@ -16,17 +15,17 @@ describe("Auth tests", function() {
 
   let browser;
 
-  beforeEach(function* () {
+  beforeEach(function*() {
     browser = createBrowser();
     yield startServers();
   });
 
-  afterEach(function* () {
+  afterEach(function*() {
     yield browser.end();
     yield stopServers();
   });
 
-  it("should authenticate a user", function* () {
+  it("should authenticate a user", function*() {
     const result = yield authenticate(browser, "__user__", "__pass__")
       .evaluate(() => {
         return document.querySelector(".session-info-bar strong").textContent;
@@ -36,7 +35,7 @@ describe("Auth tests", function() {
     expect(result).eql("__user__");
   });
 
-  it("should log a user out", function* () {
+  it("should log a user out", function*() {
     const result = yield authenticate(browser, "__user__", "__pass__")
       .click(".session-info-bar .btn-logout")
       .wait(".notification.alert-success")
@@ -47,4 +46,3 @@ describe("Auth tests", function() {
     expect(result).to.be.null;
   });
 });
-
