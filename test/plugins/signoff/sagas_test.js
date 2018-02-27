@@ -23,15 +23,15 @@ describe("Signoff plugin sagas", () => {
                     {
                       source: {
                         bucket: "stage",
-                        collection: "plugins",
+                        collection: "source-plugins",
                       },
                       preview: {
                         bucket: "preview",
-                        collection: "plugins",
+                        collection: "preview-plugins",
                       },
                       destination: {
                         bucket: "prod",
-                        collection: "plugins",
+                        collection: "dest-plugins",
                       },
                     },
                     {
@@ -60,22 +60,26 @@ describe("Signoff plugin sagas", () => {
       });
 
       it("should pick resource for current collection if source matches", () => {
-        const action = collection_actions.listRecords("stage", "plugins", "");
+        const action = collection_actions.listRecords(
+          "stage",
+          "source-plugins",
+          ""
+        );
         const result = saga.onCollectionRecordsRequest(getState, action);
         expect(result.next().value).eql(
           put(
             actions.workflowInfo({
               source: {
                 bucket: "stage",
-                collection: "plugins",
+                collection: "source-plugins",
               },
               preview: {
                 bucket: "preview",
-                collection: "plugins",
+                collection: "preview-plugins",
               },
               destination: {
                 bucket: "prod",
-                collection: "plugins",
+                collection: "dest-plugins",
               },
             })
           )

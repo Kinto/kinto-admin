@@ -200,7 +200,7 @@ function _updateCollectionAttributes(getState, data) {
 
 function _pickSignoffResource(serverInfo, bid, cid) {
   const { capabilities: { signer = { resources: [] } } } = serverInfo;
-  const resource = signer.resources.filter(
+  let resource = signer.resources.filter(
     ({ source: { bucket, collection } }) => {
       // If the source has no collection info, it means that reviewing was configured
       // by bucket on the server, and that it applies to every collection (thus this one too).
@@ -211,7 +211,17 @@ function _pickSignoffResource(serverInfo, bid, cid) {
   // If configured by bucket, fill-up the missing attribute as if it would be configured
   // explicitly for this collection.
   if (resource && !resource.source.collection) {
-    resource.source.collection = resource.destination.collection = cid;
+    resource = {
+      ...resource,
+      source: {
+        ...resource.source,
+        collection: cid,
+      },
+      destination: {
+        ...resource.destination,
+        collection: cid,
+      },
+    };
     if (resource.preview) {
       resource.preview.collection = cid;
     }
