@@ -5,7 +5,6 @@ import btoa from "btoa";
 
 import staticServer from "../server/test";
 
-
 const KINTO_SERVER = "http://0.0.0.0:8888/v1";
 const NIGHTMARE_SHOW = !!process.env.NIGHTMARE_SHOW;
 
@@ -17,25 +16,23 @@ function delay(ms) {
 
 export function startServers() {
   kintoServer = new KintoServer("http://0.0.0.0:8888/v1", {
-    pservePath: ".venv/bin/pserve"
+    pservePath: ".venv/bin/pserve",
   });
-  return Promise.all([
-    kintoServer.start(),
-    staticServer.start(),
-  ]).then(delay(200));
+  return Promise.all([kintoServer.start(), staticServer.start()]).then(
+    delay(200)
+  );
 }
 
 export function stopServers() {
   for (const line of kintoServer.logs) {
     console.log(line.toString());
   }
-  return Promise.all([
-    kintoServer.killAll(),
-    staticServer.stop(),
-  ]).then(delay(200));
+  return Promise.all([kintoServer.killAll(), staticServer.stop()]).then(
+    delay(200)
+  );
 }
 
-export function createBrowser(options={}) {
+export function createBrowser(options = {}) {
   options = {
     show: NIGHTMARE_SHOW,
     persistent: false,
@@ -50,7 +47,7 @@ export function createBrowser(options={}) {
     center: true,
     alwaysOnTop: false,
     skipTaskbar: true,
-    webPreferences: options.persistent ? {} : {partition: "nopersist"},
+    webPreferences: options.persistent ? {} : { partition: "nopersist" },
   });
 }
 
@@ -58,7 +55,7 @@ export function createClient(username, password) {
   return new KintoClient("http://0.0.0.0:8888/v1", {
     headers: {
       Authorization: "Basic " + btoa(`${username}:${password}`),
-    }
+    },
   });
 }
 
