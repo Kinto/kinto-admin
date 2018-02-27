@@ -20,12 +20,15 @@ function isMember(groupKey, source, sessionState, bucketState) {
   if (!source || !user.id) {
     return false;
   }
+  const { id: userId } = user;
+  const { cid } = source;
   const { signer = {} } = capabilities;
   const { [groupKey]: defaultGroupName } = signer;
   const { [groupKey]: groupName = defaultGroupName } = source;
-  const { id: userId } = user;
   const { groups } = bucketState;
-  const group = groups.find(g => g.id === groupName);
+  const group = groups.find(
+    ({ id }) => id === groupName.replace("{collection_id}", cid)
+  );
   if (group == null) {
     // XXX for now if we can't access the group it's probably because the user
     // doesn't have the permission to read it, so we mark the user has a member
@@ -275,7 +278,7 @@ function WorkInProgressInfos(props) {
 function RequestReviewButton(props: { onClick: () => void }) {
   const { onClick } = props;
   return (
-    <button className="btn btn-info" onClick={onClick}>
+    <button className="btn btn-info request-review" onClick={onClick}>
       <i className="glyphicon glyphicon-comment" /> Request review...
     </button>
   );

@@ -8,15 +8,14 @@ import * as SignoffActions from "./actions";
 export function* onCollectionRecordsRequest(getState, action) {
   const { bid, cid } = action;
   const { session: { serverInfo } } = getState();
-  // See if current collection is among signed resources from capabilities.
-  const { capabilities: { signer = { resources: [] } } } = serverInfo;
-  const resource = signer.resources.filter(r => {
-    return r.source.bucket == bid && r.source.collection == cid;
-  })[0];
+  // See if currently viewed collection is among kinto-signer resources
+  // described in server info capabilities.
+  const resource = _pickSignoffResource(serverInfo, bid, cid);
 
   // Refresh the signoff toolbar (either empty or basic infos about current)
   yield put(SignoffActions.workflowInfo(resource));
 
+  // Current collection is not configured, no need to proceed.
   if (!resource) {
     return;
   }
@@ -197,4 +196,35 @@ function _updateCollectionAttributes(getState, data) {
       // FIXME: https://github.com/Kinto/kinto-http.js/issues/150
       .then(attributes => ({ data: attributes }))
   );
+}
+
+function _pickSignoffResource(serverInfo, bid, cid) {
+  const { capabilities: { signer = { resources: [] } } } = serverInfo;
+  let resource = signer.resources.filter(
+    ({ source: { bucket, collection } }) => {
+      // If the source has no collection info, it means that reviewing was configured
+      // by bucket on the server, and that it applies to every collection (thus this one too).
+      return bucket == bid && (!collection || collection == cid);
+    }
+  )[0];
+  // The whole UI expects to have collection information for source/preview/destination.
+  // If configured by bucket, fill-up the missing attribute as if it would be configured
+  // explicitly for this collection.
+  if (resource && !resource.source.collection) {
+    resource = {
+      ...resource,
+      source: {
+        ...resource.source,
+        collection: cid,
+      },
+      destination: {
+        ...resource.destination,
+        collection: cid,
+      },
+    };
+    if (resource.preview) {
+      resource.preview.collection = cid;
+    }
+  }
+  return resource;
 }
