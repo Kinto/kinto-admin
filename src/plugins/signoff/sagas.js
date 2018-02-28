@@ -12,16 +12,25 @@ export function* onCollectionRecordsRequest(getState, action) {
   // described in server info capabilities.
   const resource = _pickSignoffResource(serverInfo, bid, cid);
 
-  // Refresh the signoff toolbar (either empty or basic infos about current)
-  yield put(SignoffActions.workflowInfo(resource));
-
   // Current collection is not configured, no need to proceed.
   if (!resource) {
+    yield put(SignoffActions.workflowInfo(null));
     return;
   }
 
-  // Obtain information for workflow (last update, authors, etc).
   const { source, preview = {}, destination } = resource;
+
+  // Show basic infos for this collection while fetching more details.
+  const basicInfos = resource
+    ? {
+        source: { bid: source.bucket, cid: source.collection },
+        destination: { bid: destination.bucket, cid: destination.collection },
+        preview: { bid: preview.bucket, cid: preview.collection },
+      }
+    : null;
+  yield put(SignoffActions.workflowInfo(basicInfos));
+
+  // Obtain information for workflow (last update, authors, etc).
   const {
     sourceAttributes,
     previewAttributes,

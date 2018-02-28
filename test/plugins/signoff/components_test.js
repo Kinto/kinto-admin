@@ -45,14 +45,14 @@ describe("SignoffToolBar component", () => {
       collections: {
         source: {
           bid: "stage",
-          cid: null,
+          cid: "certs",
           changes: {
             lastUpdated: 42,
           },
         },
         destination: {
           bid: "prod",
-          cid: null,
+          cid: "certs",
         },
       },
     },

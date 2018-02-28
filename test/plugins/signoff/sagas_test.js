@@ -56,7 +56,7 @@ describe("Signoff plugin sagas", () => {
       it("should do nothing if current collection is not configured", () => {
         const action = collection_actions.listRecords("bid", "cid", "");
         const result = saga.onCollectionRecordsRequest(getState, action);
-        expect(result.next().value).eql(put(actions.workflowInfo(undefined)));
+        expect(result.next().value).eql(put(actions.workflowInfo(null)));
       });
 
       it("should pick resource for current collection if source matches", () => {
@@ -70,16 +70,16 @@ describe("Signoff plugin sagas", () => {
           put(
             actions.workflowInfo({
               source: {
-                bucket: "stage",
-                collection: "source-plugins",
+                bid: "stage",
+                cid: "source-plugins",
               },
               preview: {
-                bucket: "preview",
-                collection: "preview-plugins",
+                bid: "preview",
+                cid: "preview-plugins",
               },
               destination: {
-                bucket: "prod",
-                collection: "dest-plugins",
+                bid: "prod",
+                cid: "dest-plugins",
               },
             })
           )
@@ -93,16 +93,16 @@ describe("Signoff plugin sagas", () => {
           put(
             actions.workflowInfo({
               source: {
-                bucket: "stage",
-                collection: "cid",
+                bid: "stage",
+                cid: "cid",
               },
               preview: {
-                bucket: "preview",
-                collection: "cid",
+                bid: "preview",
+                cid: "cid",
               },
               destination: {
-                bucket: "prod",
-                collection: "cid",
+                bid: "prod",
+                cid: "cid",
               },
             })
           )
