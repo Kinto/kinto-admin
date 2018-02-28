@@ -380,6 +380,7 @@ export type ServerInfo = {
   capabilities: Capabilities,
   user?: {
     id: string,
+    principals: string[],
     bucket?: string,
   },
 };

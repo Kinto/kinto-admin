@@ -27,16 +27,6 @@ describe("SignoffToolBar component", () => {
     },
     bucketState: {
       data: { id: "stage" },
-      groups: [
-        {
-          id: "reviewers",
-          members: [],
-        },
-        {
-          id: "certs_editors",
-          members: ["fxa:yo"],
-        },
-      ],
     },
     collectionState: {
       data: { id: "certs" },
@@ -81,7 +71,6 @@ describe("SignoffToolBar component", () => {
   });
 
   it("should show the request review button if current user is editor", () => {
-    // Let's connect as `fxa:yo`. It's member of the certs_editors group.
     // As the group is configured with a placeholder on the server, the group
     // name is resolved with the current collection.
     const node = createComponent(SignoffToolBar, {
@@ -92,6 +81,7 @@ describe("SignoffToolBar component", () => {
           ...props.sessionState.serverInfo,
           user: {
             id: "fxa:yo",
+            principals: ["fxa:yo", "/buckets/stage/groups/certs_editors"],
           },
         },
       },
