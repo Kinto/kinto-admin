@@ -15,38 +15,28 @@ import { timeago, humanDate } from "../../utils";
 import AdminLink from "../../components/AdminLink";
 import { ProgressBar, ProgressStep } from "./ProgressBar.js";
 
-function isMember(groupKey, source, sessionState, bucketState) {
+function isMember(groupKey, source, sessionState) {
   const { serverInfo: { user = {}, capabilities } } = sessionState;
-  if (!source || !user.id) {
+  if (!source || !user.principals) {
     return false;
   }
-  const { id: userId } = user;
-  const { cid } = source;
+  const { principals } = user;
+  const { bid, cid } = source;
   const { signer = {} } = capabilities;
   const { [groupKey]: defaultGroupName } = signer;
   const { [groupKey]: groupName = defaultGroupName } = source;
-  const { groups } = bucketState;
-  const group = groups.find(
-    ({ id }) => id === groupName.replace("{collection_id}", cid)
-  );
-  if (group == null) {
-    // XXX for now if we can't access the group it's probably because the user
-    // doesn't have the permission to read it, so we mark the user has a member
-    // of the group.
-    // Later when https://github.com/Kinto/kinto/pull/891/files lands, we'll
-    // have access to the principals attached to a given authentication, so we'll
-    // be able to properly check for membership.
-    return true;
-  }
-  return group.members.includes(userId);
+  const expectedGroup = groupName.replace("{collection_id}", cid);
+  const expectedPrincipal = `/buckets/${bid}/groups/${expectedGroup}`;
+
+  return principals.includes(expectedPrincipal);
 }
 
-function isEditor(source, sessionState, bucketState) {
-  return isMember("editors_group", source, sessionState, bucketState);
+function isEditor(source, sessionState) {
+  return isMember("editors_group", source, sessionState);
 }
 
-function isReviewer(source, sessionState, bucketState) {
-  return isMember("reviewers_group", source, sessionState, bucketState);
+function isReviewer(source, sessionState) {
+  return isMember("reviewers_group", source, sessionState);
 }
 
 function isLastEditor(source, sessionState) {
@@ -111,13 +101,12 @@ export default class SignoffToolBar extends React.Component<
     }
     const { source, destination, preview } = collections;
 
-    const canRequestReview =
-      canEdit && isEditor(source, sessionState, bucketState);
+    const canRequestReview = canEdit && isEditor(source, sessionState);
     const canReview =
       canEdit &&
-      isReviewer(source, sessionState, bucketState) &&
+      isReviewer(source, sessionState) &&
       !isLastEditor(source, sessionState);
-    const canSign = canEdit && isReviewer(source, sessionState, bucketState);
+    const canSign = canEdit && isReviewer(source, sessionState);
     const hasHistory = "history" in sessionState.serverInfo.capabilities;
 
     // Default status is request review
