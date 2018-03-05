@@ -12,6 +12,7 @@ import { getClient, setClient, resetClient } from "../../src/client";
 
 const authData = {
   server: "http://server.test/v1",
+  authType: "basicauth",
   credentials: {
     username: "user",
     password: "pass",
@@ -20,27 +21,83 @@ const authData = {
 
 describe("session sagas", () => {
   describe("setupSession()", () => {
-    let setupSession;
+    let setupSession, getState, client;
+
+    const serverInfo = {
+      url: "http://server.test/v1",
+      user: {
+        id: "basicauth:abcd",
+      },
+    };
+
+    const sessionState = { serverInfo };
 
     before(() => {
       resetClient();
+      getState = () => ({
+        session: sessionState,
+      });
       const action = actions.setup(authData);
-      setupSession = saga.setupSession(() => {}, action);
+      setupSession = saga.setupSession(getState, action);
       setupSession.next();
+
+      client = getClient();
     });
 
     it("should configure the client", () => {
       expect(getClient().remote).eql(authData.server);
     });
 
-    it("should retrieve buckets hierarchy", () => {
-      expect(setupSession.next().value).eql(put(actions.listBuckets()));
+    describe("Success", () => {
+      it("should fetch server information", () => {
+        expect(setupSession.next().value).eql(
+          call([client, client.fetchServerInfo])
+        );
+      });
+
+      it("should mark the user as authenticated", () => {
+        expect(setupSession.next(serverInfo).value).eql(
+          put(actions.setAuthenticated())
+        );
+      });
+
+      it("should add server to recent history", () => {
+        expect(setupSession.next().value).eql(
+          put(historyActions.addHistory("http://server.test/v1"))
+        );
+      });
+
+      it("should dispatch the server information action", () => {
+        expect(setupSession.next().value).eql(
+          put(actions.serverInfoSuccess(serverInfo))
+        );
+      });
+
+      it("should retrieve buckets hierarchy", () => {
+        expect(setupSession.next().value).eql(put(actions.listBuckets()));
+      });
+
+      it("should mark the session setup as completed", () => {
+        expect(setupSession.next().value).eql(
+          put(actions.setupComplete(authData))
+        );
+      });
     });
 
-    it("should mark the session setup as completed", () => {
-      expect(setupSession.next().value).eql(
-        put(actions.setupComplete(authData))
-      );
+    describe("Failure", () => {
+      it("should notify authentication error", () => {
+        const action = actions.setup(authData);
+        setupSession = saga.setupSession(getState, action);
+        setupSession.next();
+        setupSession.next(); // clear notifications.
+        const fetchedInfo = {
+          ...serverInfo,
+          user: {},
+        };
+        expect(setupSession.next(fetchedInfo).value).eql(
+          put(notifyError("Authentication failed."))
+        );
+      });
     });
   });
 
@@ -75,30 +132,6 @@ describe("session sagas", () => {
         });
         const action = actions.listBuckets();
         listBuckets = saga.listBuckets(getState, action);
-      });
-
-      it("should fetch server information", () => {
-        expect(listBuckets.next().value).eql(
-          call([client, client.fetchServerInfo])
-        );
-      });
-
-      it("should mark the user as authenticated", () => {
-        expect(listBuckets.next(serverInfo).value).eql(
-          put(actions.setAuthenticated())
-        );
-      });
-
-      it("should add server to recent history", () => {
-        expect(listBuckets.next().value).eql(
-          put(historyActions.addHistory("http://server.test/v1"))
-        );
-      });
-
-      it("should dispatch the server information action", () => {
-        expect(listBuckets.next().value).eql(
-          put(actions.serverInfoSuccess(serverInfo))
-        );
       });
 
       it("should fetch the list of buckets", () => {
@@ -205,10 +238,6 @@ describe("session sagas", () => {
           listBuckets = saga.listBuckets(getState, action);
 
           listBuckets.next();
-          listBuckets.next(serverInfo); // fetch server info
-          listBuckets.next(); // mark user authenticated
-          listBuckets.next(); // add server to history
-          listBuckets.next(); // dispatch server info success
         });
 
         it("should support 403 errors when fetching list of buckets", () => {
@@ -237,13 +266,14 @@ describe("session sagas", () => {
       it("should dispatch an error notification action", () => {
         const action = actions.listBuckets();
         const getState = () => ({
-          session: {},
+          session: {
+            serverInfo: { capabilities: [] },
+          },
           settings: settingsState,
         });
 
         const listBuckets = saga.listBuckets(getState, action);
         listBuckets.next();
-
         expect(listBuckets.throw("error").value).eql(
           put(notifyError("Couldn't list buckets.", "error"))
         );
