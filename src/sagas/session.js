@@ -40,9 +40,7 @@ export function* setupSession(
       authType != "anonymous" &&
       (!userId || !userId.startsWith(authType + ":"))
     ) {
-      yield put(
-        notificationActions.notifyError("Authentication failed.")
-      );
+      yield put(notificationActions.notifyError("Authentication failed."));
       return;
     }
 
