@@ -1,6 +1,6 @@
 /* @flow */
 import React, { PureComponent } from "react";
-import CodeMirror from "react-codemirror2";
+import { UnControlled as CodeMirror } from "react-codemirror2";
 import "codemirror/mode/javascript/javascript";
 
 const cmOptions = {
@@ -37,6 +37,7 @@ export default class JSONEditor extends PureComponent<Props> {
     ) : (
       <CodeMirror
         value={value}
+        autoCursor={false}
         onChange={this.onCodeChange}
         options={cmOptions}
       />
