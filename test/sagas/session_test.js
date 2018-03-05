@@ -40,11 +40,12 @@ describe("session sagas", () => {
       const action = actions.setup(authData);
       setupSession = saga.setupSession(getState, action);
       setupSession.next();
+
+      client = getClient();
     });
 
     it("should configure the client", () => {
       expect(getClient().remote).eql(authData.server);
-      client = getClient();
     });
 
     describe("Success", () => {
@@ -84,19 +85,17 @@ describe("session sagas", () => {
     });
 
     describe("Failure", () => {
-      it.only("should notify authentication error", () => {
+      it("should notify authentication error", () => {
         const action = actions.setup(authData);
         setupSession = saga.setupSession(getState, action);
         setupSession.next();
-
-        setupSession.next(); // call to fetch server.
-        setupSession.next({
+        setupSession.next(); // clear notifications.
+        const fetchedInfo = {
           ...serverInfo,
           user: {},
-        });
-
-        expect(setupSession.next().value).eql(
-          put(notifyError("Authentication failed.", "error"))
+        };
+        expect(setupSession.next(fetchedInfo).value).eql(
+          put(notifyError("Authentication failed."))
         );
       });
     });

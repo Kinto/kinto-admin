@@ -41,7 +41,7 @@ export function* setupSession(
       (!userId || !userId.startsWith(authType + ":"))
     ) {
       yield put(
-        notificationActions.notifyError("Authentication failed.", "error")
+        notificationActions.notifyError("Authentication failed.")
       );
       return;
     }
