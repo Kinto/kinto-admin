@@ -4,7 +4,7 @@ import type { SettingsState } from "../types";
 const INITIAL_STATE: SettingsState = {
   maxPerPage: 200,
   singleServer: null,
-  authMethods: ["basicauth", "account", "fxa", "ldap", "portier", "anonymous"],
+  authMethods: [],
   sidebarMaxListedCollections: 10,
 };
 

@@ -5,17 +5,20 @@ import React, { PureComponent } from "react";
 
 import BaseForm from "./BaseForm";
 import { omit } from "../utils";
+import { getClient, setupClient } from "../client";
+
+const defaultKintoServer = "https://kinto.dev.mozaws.net/v1/";
 
 type ServerHistoryProps = {
   id: string,
   value: string,
   placeholder: string,
   options: Object,
-  onChange: string => void,
+  onChange: string => void
 };
 
 type ServerHistoryState = {
-  menuOpened: boolean,
+  menuOpened: boolean
 };
 
 class ServerHistory extends PureComponent<
@@ -64,7 +67,8 @@ class ServerHistory extends PureComponent<
           <button
             type="button"
             className="btn btn-default dropdown-toggle"
-            onClick={this.toggleMenu}>
+            onClick={this.toggleMenu}
+          >
             <span className="caret" />
           </button>
           <ul className="dropdown-menu dropdown-menu-right">
@@ -282,8 +286,7 @@ const authLabels = {
  * Use the server history for the default server field value when available.
  */
 function extendSchemaWithHistory(schema, history, authMethods, singleServer) {
-  const defaultServer = "https://kinto.dev.mozaws.net/v1/";
-  const serverURL = singleServer || history[0] || defaultServer;
+  const serverURL = singleServer || history[0] || defaultKintoServer;
   return {
     ...schema,
     properties: {
@@ -344,13 +347,14 @@ type AuthFormProps = {
   settings: SettingsState,
   setup: (session: Object) => void,
   navigateToExternalAuth: (authFormData: Object) => void,
-  clearHistory: () => void,
+  clearHistory: () => void
 };
 
 type AuthFormState = {
   schema: Object,
   uiSchema: Object,
   formData: Object,
+  authMethods: string[]
 };
 
 export default class AuthForm extends PureComponent<
@@ -363,18 +367,67 @@ export default class AuthForm extends PureComponent<
 
   constructor(props: Object) {
     super(props);
-    const { settings: { authMethods } } = this.props;
-    const defaultAuth = authMethods[0];
+    const defaultAuth = "anonymous";
     const { schema, uiSchema } = authSchemas[defaultAuth];
     this.state = {
       schema,
       uiSchema,
       formData: { authType: defaultAuth },
+      authMethods: [defaultAuth],
     };
   }
 
+  async componentDidMount() {
+    // Check which of our known auth implementations are supported by the server.
+    const { history } = this.props;
+    const knownAuthImplementations = [
+      "basicauth",
+      "account",
+      "fxa",
+      "ldap",
+      "portier",
+      "anonymous",
+    ];
+    const server = (history && history[0]) || defaultKintoServer;
+    const defaultAuth = "anonymous";
+    let supportedAuthImplementations = [defaultAuth];
+    setupClient({ authType: "anonymous", server: server });
+    const client = getClient();
+    try {
+      const info = await client.fetchServerInfo();
+      console.log("fetchServerInfo", info.capabilities);
+      knownAuthImplementations.forEach(authImplementation => {
+        if (authImplementation in info.capabilities) {
+          supportedAuthImplementations.push(authImplementation);
+        }
+      });
+      console.log(
+        "supported auth implementations",
+        supportedAuthImplementations
+      );
+      this.setState({
+        ...this.state,
+        authMethods: supportedAuthImplementations,
+      });
+    } catch (error) {
+      console.log("error!!!", error);
+    }
+  }
+
   onChange = ({ formData }: { formData: Object }) => {
-    const { authType } = formData;
+    const { authType, server } = formData;
+    if (this.state.formData.server !== server) {
+      // Server changed, request its capabilities and check what auth methods
+      // it supports.
+      setupClient({ authType: "anonymous", server: server });
+      const client = getClient();
+      client
+        .fetchServerInfo()
+        .then(info => {
+          console.log("fetchServerInfo", info);
+        })
+        .catch(() => console.log("error"));
+    }
     const { schema, uiSchema } = authSchemas[authType];
     const specificFormData = ["anonymous", "fxa", "portier"].includes(authType)
       ? omit(formData, ["credentials"])
@@ -408,8 +461,8 @@ export default class AuthForm extends PureComponent<
 
   render() {
     const { history, clearHistory, settings } = this.props;
-    const { schema, uiSchema, formData } = this.state;
-    const { singleServer, authMethods } = settings;
+    const { schema, uiSchema, formData, authMethods } = this.state;
+    const { singleServer } = settings;
     const singleAuthMethod = authMethods.length === 1;
     const finalSchema = extendSchemaWithHistory(
       schema,
@@ -432,7 +485,8 @@ export default class AuthForm extends PureComponent<
             uiSchema={finalUiSchema}
             formData={formData}
             onChange={this.onChange}
-            onSubmit={this.onSubmit}>
+            onSubmit={this.onSubmit}
+          >
             <button type="submit" className="btn btn-info">
               {"Sign in using "}
               {authLabels[formData.authType]}
