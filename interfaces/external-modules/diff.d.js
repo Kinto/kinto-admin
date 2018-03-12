@@ -5,5 +5,5 @@ declare module "diff" {
     value: string,
   };
   declare function diffJson(a: Object, b: Object): DiffEntry[]
-  declare var exports: diffJson
+  declare module.exports: diffJson
 }

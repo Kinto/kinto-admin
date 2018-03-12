@@ -84,12 +84,12 @@ declare module "kinto-http" {
     batch(batchFn: (batch: Object) => void, options: Options): Promise<BatchResultAggregate>;
   }
 
-  declare var exports: typeof KintoClient
+  declare module.exports: typeof KintoClient
 }
 
 declare module "kinto-http/lib/endpoint" {
   declare function endpoint(): string;
-  declare var exports: endpoint;
+  declare module.exports: endpoint;
 }
 
 declare module "kinto-http/lib/utils" {
