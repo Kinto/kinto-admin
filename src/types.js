@@ -306,6 +306,7 @@ export type AuthData =
   | LDAPAuth
   | AccountAuth
   | BasicAuth
+  | PortierAuth
   | TokenAuth;
 
 export type AnonymousAuth = {
@@ -337,6 +338,14 @@ export type BasicAuth = {
   credentials: {
     username: string,
     password: string,
+  },
+};
+
+export type PortierAuth = {
+  authType: "portier",
+  server: string,
+  credentials: {
+    token: string,
   },
 };
 

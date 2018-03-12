@@ -4,5 +4,5 @@ declare module "timeago.js" {
   }
   declare function timeago(now: ?Date | number): timeagoApi
 
-  declare var exports: typeof timeago
+  declare module.exports: typeof timeago
 }

@@ -1,3 +1,3 @@
 declare module "react-breadcrumbs" {
-  declare var exports: React.Component;
+  declare module.exports: React.Component;
 }
