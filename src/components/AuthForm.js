@@ -398,7 +398,7 @@ export default class AuthForm extends PureComponent<
         }
       });
     } catch (error) {
-      console.error("error while retrieving the server capabilities", error);
+      console.log("error while retrieving the server capabilities", error);
     }
     return supportedAuthMethods;
   }
