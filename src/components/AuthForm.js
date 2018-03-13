@@ -8,6 +8,7 @@ import { omit } from "../utils";
 import { getClient, setupClient } from "../client";
 
 const defaultKintoServer = "https://kinto.dev.mozaws.net/v1/";
+const defaultAuth = "anonymous";
 
 type ServerHistoryProps = {
   id: string,
@@ -367,7 +368,6 @@ export default class AuthForm extends PureComponent<
 
   constructor(props: Object) {
     super(props);
-    const defaultAuth = "anonymous";
     const { schema, uiSchema } = authSchemas[defaultAuth];
     this.state = {
       schema,
@@ -377,10 +377,9 @@ export default class AuthForm extends PureComponent<
     };
   }
 
-  async componentDidMount() {
+  async getSupportedAuthMethods(server: string) {
     // Check which of our known auth implementations are supported by the server.
-    const { history } = this.props;
-    const knownAuthImplementations = [
+    const knownAuthMethods = [
       "basicauth",
       "account",
       "fxa",
@@ -388,45 +387,39 @@ export default class AuthForm extends PureComponent<
       "portier",
       "anonymous",
     ];
-    const server = (history && history[0]) || defaultKintoServer;
-    const defaultAuth = "anonymous";
-    let supportedAuthImplementations = [defaultAuth];
+    let supportedAuthMethods = [defaultAuth];
     setupClient({ authType: "anonymous", server: server });
     const client = getClient();
     try {
       const info = await client.fetchServerInfo();
-      console.log("fetchServerInfo", info.capabilities);
-      knownAuthImplementations.forEach(authImplementation => {
-        if (authImplementation in info.capabilities) {
-          supportedAuthImplementations.push(authImplementation);
+      knownAuthMethods.forEach(authMethod => {
+        if (authMethod in info.capabilities) {
+          supportedAuthMethods.push(authMethod);
         }
       });
-      console.log(
-        "supported auth implementations",
-        supportedAuthImplementations
-      );
-      this.setState({
-        ...this.state,
-        authMethods: supportedAuthImplementations,
-      });
     } catch (error) {
-      console.log("error!!!", error);
+      console.error("error while retrieving the server capabilities", error);
     }
+    return supportedAuthMethods;
   }
 
-  onChange = ({ formData }: { formData: Object }) => {
-    const { authType, server } = formData;
+  componentDidMount = async () => {
+    const { history } = this.props;
+    const server = (history && history[0]) || defaultKintoServer;
+    const supportedAuthMethods = await this.getSupportedAuthMethods(server);
+    this.setState({
+      ...this.state,
+      authMethods: supportedAuthMethods,
+    });
+  };
+
+  onChange = async ({ formData }: { formData: Object }) => {
+    const { authType, server, authMethods } = formData;
+    let supportedAuthMethods = authMethods;
     if (this.state.formData.server !== server) {
       // Server changed, request its capabilities and check what auth methods
       // it supports.
-      setupClient({ authType: "anonymous", server: server });
-      const client = getClient();
-      client
-        .fetchServerInfo()
-        .then(info => {
-          console.log("fetchServerInfo", info);
-        })
-        .catch(() => console.log("error"));
+      supportedAuthMethods = await this.getSupportedAuthMethods(server);
     }
     const { schema, uiSchema } = authSchemas[authType];
     const specificFormData = ["anonymous", "fxa", "portier"].includes(authType)
@@ -436,6 +429,7 @@ export default class AuthForm extends PureComponent<
       schema,
       uiSchema,
       formData: specificFormData,
+      authMethods: supportedAuthMethods,
     });
   };
 
