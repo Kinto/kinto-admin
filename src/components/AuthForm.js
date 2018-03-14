@@ -5,7 +5,6 @@ import React, { PureComponent } from "react";
 
 import BaseForm from "./BaseForm";
 import { omit } from "../utils";
-import { getClient, setupClient } from "../client";
 
 const defaultKintoServer = "https://kinto.dev.mozaws.net/v1/";
 const defaultAuth = "anonymous";
@@ -347,6 +346,7 @@ type AuthFormProps = {
   history: string[],
   settings: SettingsState,
   setup: (session: Object) => void,
+  getServerInfo: (auth: Object) => void,
   navigateToExternalAuth: (authFormData: Object) => void,
   clearHistory: () => void
 };
@@ -375,9 +375,16 @@ export default class AuthForm extends PureComponent<
       formData: { authType: defaultAuth },
       authMethods: [defaultAuth],
     };
+
+    const { history, getServerInfo } = this.props;
+    const server = (history && history[0]) || defaultKintoServer;
+    const anonymousAuth = { authType: "anonymous", server: server };
+
+    getServerInfo(anonymousAuth);
   }
 
-  async getSupportedAuthMethods(server: string) {
+  getSupportedAuthMethods = () => {
+    const { session: { serverInfo: { capabilities } } } = this.props;
     // Check which of our known auth implementations are supported by the server.
     const knownAuthMethods = [
       "basicauth",
@@ -388,38 +395,23 @@ export default class AuthForm extends PureComponent<
       "anonymous",
     ];
     let supportedAuthMethods = [defaultAuth];
-    setupClient({ authType: "anonymous", server: server });
-    const client = getClient();
-    try {
-      const info = await client.fetchServerInfo();
-      knownAuthMethods.forEach(authMethod => {
-        if (authMethod in info.capabilities) {
-          supportedAuthMethods.push(authMethod);
-        }
-      });
-    } catch (error) {
-      console.log("error while retrieving the server capabilities", error);
-    }
-    return supportedAuthMethods;
-  }
-
-  componentDidMount = async () => {
-    const { history } = this.props;
-    const server = (history && history[0]) || defaultKintoServer;
-    const supportedAuthMethods = await this.getSupportedAuthMethods(server);
-    this.setState({
-      ...this.state,
-      authMethods: supportedAuthMethods,
+    knownAuthMethods.forEach(authMethod => {
+      if (authMethod in capabilities) {
+        supportedAuthMethods.push(authMethod);
+      }
     });
+    return supportedAuthMethods;
   };
 
-  onChange = async ({ formData }: { formData: Object }) => {
+  onChange = ({ formData }: { formData: Object }) => {
     const { authType, server, authMethods } = formData;
     let supportedAuthMethods = authMethods;
     if (this.state.formData.server !== server) {
-      // Server changed, request its capabilities and check what auth methods
-      // it supports.
-      supportedAuthMethods = await this.getSupportedAuthMethods(server);
+      // Server changed, request its capabilities to check what auth methods it
+      // supports.
+      const anonymousAuth = { authType: "anonymous", server: server };
+      const { getServerInfo } = this.props;
+      getServerInfo(anonymousAuth);
     }
     const { schema, uiSchema } = authSchemas[authType];
     const specificFormData = ["anonymous", "fxa", "portier"].includes(authType)
@@ -455,8 +447,9 @@ export default class AuthForm extends PureComponent<
 
   render() {
     const { history, clearHistory, settings } = this.props;
-    const { schema, uiSchema, formData, authMethods } = this.state;
+    const { schema, uiSchema, formData } = this.state;
     const { singleServer } = settings;
+    const authMethods = this.getSupportedAuthMethods();
     const singleAuthMethod = authMethods.length === 1;
     const finalSchema = extendSchemaWithHistory(
       schema,

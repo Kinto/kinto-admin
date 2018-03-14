@@ -18,22 +18,40 @@ import * as historyActions from "../actions/history";
 import { clone } from "../utils";
 import { getClient, setupClient, resetClient } from "../client";
 
+export function* getServerInfo(
+  getState: GetStateFn,
+  action: ActionType<typeof actions.getServerInfo>
+): SagaGen {
+  const { auth } = action;
+  try {
+    setupClient(auth);
+    // Fetch server information
+    const client = getClient();
+    const serverInfo = yield call([client, client.fetchServerInfo]);
+    // Notify they're received
+    yield put(actions.serverInfoSuccess(serverInfo));
+  } catch (error) {
+    yield put(
+      notificationActions.notifyError("Couldn't retrieve server info", error)
+    );
+  }
+}
+
 export function* setupSession(
   getState: GetStateFn,
   action: ActionType<typeof actions.setup>
 ): SagaGen {
   const { auth } = action;
   try {
-    setupClient(auth);
     yield put(notificationActions.clearNotifications({ force: true }));
 
     // Fetch server information
-    const client = getClient();
-    const serverInfo = yield call([client, client.fetchServerInfo]);
+    yield call(getServerInfo, getState, auth);
 
     // Check that current user was authenticated as expected.
     // Distinguish anonymous from failed authentication using the user info
     // in the server info endpoint.
+    const { session: { serverInfo } } = getState();
     const { user: { id: userId } = {} } = serverInfo;
     const { authType } = auth;
     if (
@@ -48,8 +66,6 @@ export function* setupSession(
     yield put(actions.setAuthenticated());
     // Store this valid server url in the history
     yield put(historyActions.addHistory(serverInfo.url));
-    // Notify they're received
-    yield put(actions.serverInfoSuccess(serverInfo));
 
     yield put(actions.listBuckets());
     yield put(actions.setupComplete(auth));
