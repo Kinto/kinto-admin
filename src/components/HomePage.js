@@ -64,7 +64,7 @@ type Props = {
   clearHistory: () => void,
   setup: (session: Object) => void,
   getServerInfo: (auth: Object) => void,
-  navigateToExternalAuth: (authFormData: Object) => void
+  navigateToExternalAuth: (authFormData: Object) => void,
 };
 
 export default class HomePage extends PureComponent<Props> {

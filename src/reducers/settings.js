@@ -4,7 +4,6 @@ import type { SettingsState } from "../types";
 const INITIAL_STATE: SettingsState = {
   maxPerPage: 200,
   singleServer: null,
-  authMethods: [],
   sidebarMaxListedCollections: 10,
 };
 

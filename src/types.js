@@ -297,7 +297,6 @@ export type AuthMethod =
 export type SettingsState = {
   maxPerPage: number,
   singleServer: ?string,
-  authMethods: AuthMethod[],
   sidebarMaxListedCollections: number,
 };
 
