@@ -46,7 +46,7 @@ export function* setupSession(
     yield put(notificationActions.clearNotifications({ force: true }));
 
     // Fetch server information
-    yield call(getServerInfo, getState, auth);
+    yield call(getServerInfo, getState, actions.getServerInfo(auth));
 
     // Check that current user was authenticated as expected.
     // Distinguish anonymous from failed authentication using the user info
