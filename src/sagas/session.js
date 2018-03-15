@@ -15,6 +15,7 @@ import { saveSession, clearSession } from "../store/localStore";
 import * as notificationActions from "../actions/notifications";
 import * as actions from "../actions/session";
 import * as historyActions from "../actions/history";
+import { DEFAULT_SERVERINFO } from "../reducers/session";
 import { clone } from "../utils";
 import { getClient, setupClient, resetClient } from "../client";
 
@@ -31,6 +32,8 @@ export function* getServerInfo(
     // Notify they're received
     yield put(actions.serverInfoSuccess(serverInfo));
   } catch (error) {
+    // Reset the server info that we might have added previously to the state.
+    yield put(actions.serverInfoSuccess(DEFAULT_SERVERINFO));
     yield put(
       notificationActions.notifyError("Couldn't retrieve server info", error)
     );

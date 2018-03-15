@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { SessionState, AuthData } from "../types";
+import type { ServerInfo, SessionState, AuthData } from "../types";
 import {
   SESSION_BUSY,
   SESSION_SETUP_COMPLETE,
@@ -13,16 +13,18 @@ import {
   SESSION_LOGOUT,
 } from "../constants";
 
+export const DEFAULT_SERVERINFO: ServerInfo = {
+  url: "",
+  capabilities: {},
+};
+
 const DEFAULT: SessionState = {
   busy: false,
   auth: null,
   authenticated: false,
   permissions: null,
   buckets: [],
-  serverInfo: {
-    url: "",
-    capabilities: {},
-  },
+  serverInfo: DEFAULT_SERVERINFO,
   redirectURL: null,
 };
 
