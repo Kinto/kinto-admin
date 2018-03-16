@@ -21,6 +21,63 @@ const authData = {
 };
 
 describe("session sagas", () => {
+  describe("getServerInfo()", () => {
+    let getServerInfo, getState, action, client;
+
+    const serverInfo = {
+      ...DEFAULT_SERVERINFO,
+      url: "http://server.test/v1",
+      user: {
+        id: "basicauth:abcd",
+      },
+    };
+
+    const sessionState = { serverInfo };
+
+    before(() => {
+      resetClient();
+      getState = () => ({
+        session: sessionState,
+      });
+      action = actions.getServerInfo(authData);
+      getServerInfo = saga.getServerInfo(getState, action);
+    });
+
+    describe("Success", () => {
+      it("should call client.fetchServerInfo", () => {
+        const fetchServerInfoCall = getServerInfo.next().value;
+        client = getClient();
+        expect(fetchServerInfoCall).eql(call([client, client.fetchServerInfo]));
+      });
+
+      it("should have configured the client", () => {
+        expect(getClient().remote).eql(authData.server);
+      });
+
+      it("should send a serverInfoSuccess", () => {
+        expect(getServerInfo.next(serverInfo).value).eql(
+          put(actions.serverInfoSuccess(serverInfo))
+        );
+      });
+    });
+
+    describe("Failure", () => {
+      it("should reset the server info", () => {
+        getServerInfo = saga.getServerInfo(getState, action);
+        getServerInfo.next();
+        expect(getServerInfo.throw().value).eql(
+          put(actions.serverInfoSuccess(DEFAULT_SERVERINFO))
+        );
+      });
+
+      it("should notify the error", () => {
+        expect(getServerInfo.next().value).eql(
+          put(notifyError("Couldn't retrieve server info"))
+        );
+      });
+    });
+  });
+
   describe("setupSession()", () => {
     let setupSession, getState, action;
 
@@ -31,7 +88,6 @@ describe("session sagas", () => {
         id: "basicauth:abcd",
       },
     };
-    console.log("server info", serverInfo);
 
     const sessionState = { serverInfo };
 
@@ -42,14 +98,7 @@ describe("session sagas", () => {
       });
       action = actions.setup(authData);
       setupSession = saga.setupSession(getState, action);
-      // setupSession.next();
-
-      // client = getClient();
     });
-
-    // it("should configure the client", () => {
-    //   expect(getClient().remote).eql(authData.server);
-    // });
 
     describe("Success", () => {
       it("should clear the notifications", () => {
