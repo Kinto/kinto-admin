@@ -59,6 +59,12 @@ describe("session sagas", () => {
           put(actions.serverInfoSuccess(serverInfo))
         );
       });
+
+      it("should clear the notifications", () => {
+        expect(getServerInfo.next().value).eql(
+          put(notificationsActions.clearNotifications({ force: true }))
+        );
+      });
     });
 
     describe("Failure", () => {
@@ -101,12 +107,6 @@ describe("session sagas", () => {
     });
 
     describe("Success", () => {
-      it("should clear the notifications", () => {
-        expect(setupSession.next().value).eql(
-          put(notificationsActions.clearNotifications({ force: true }))
-        );
-      });
-
       it("should call getServerInfo", () => {
         expect(setupSession.next().value).eql(
           call(saga.getServerInfo, getState, actions.getServerInfo(authData))
@@ -147,7 +147,6 @@ describe("session sagas", () => {
           },
         });
         setupSession = saga.setupSession(getState, action);
-        setupSession.next(); // clear notifications.
         setupSession.next(); // call getServerInfo.
         expect(setupSession.next().value).eql(
           put(notifyError("Authentication failed."))

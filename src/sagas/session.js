@@ -31,6 +31,8 @@ export function* getServerInfo(
     const serverInfo = yield call([client, client.fetchServerInfo]);
     // Notify they're received
     yield put(actions.serverInfoSuccess(serverInfo));
+
+    yield put(notificationActions.clearNotifications({ force: true }));
   } catch (error) {
     // Reset the server info that we might have added previously to the state.
     yield put(actions.serverInfoSuccess(DEFAULT_SERVERINFO));
@@ -46,8 +48,6 @@ export function* setupSession(
 ): SagaGen {
   const { auth } = action;
   try {
-    yield put(notificationActions.clearNotifications({ force: true }));
-
     // Fetch server information
     yield call(getServerInfo, getState, actions.getServerInfo(auth));
 
