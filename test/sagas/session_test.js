@@ -9,6 +9,7 @@ import * as historyActions from "../../src/actions/history";
 import * as notificationsActions from "../../src/actions/notifications";
 import * as saga from "../../src/sagas/session";
 import { getClient, setClient, resetClient } from "../../src/client";
+import { DEFAULT_SERVERINFO } from "../../src/reducers/session";
 
 const authData = {
   server: "http://server.test/v1",
@@ -21,14 +22,16 @@ const authData = {
 
 describe("session sagas", () => {
   describe("setupSession()", () => {
-    let setupSession, getState, client;
+    let setupSession, getState, action;
 
     const serverInfo = {
+      ...DEFAULT_SERVERINFO,
       url: "http://server.test/v1",
       user: {
         id: "basicauth:abcd",
       },
     };
+    console.log("server info", serverInfo);
 
     const sessionState = { serverInfo };
 
@@ -37,21 +40,27 @@ describe("session sagas", () => {
       getState = () => ({
         session: sessionState,
       });
-      const action = actions.setup(authData);
+      action = actions.setup(authData);
       setupSession = saga.setupSession(getState, action);
-      setupSession.next();
+      // setupSession.next();
 
-      client = getClient();
+      // client = getClient();
     });
 
-    it("should configure the client", () => {
-      expect(getClient().remote).eql(authData.server);
-    });
+    // it("should configure the client", () => {
+    //   expect(getClient().remote).eql(authData.server);
+    // });
 
     describe("Success", () => {
-      it("should fetch server information", () => {
+      it("should clear the notifications", () => {
         expect(setupSession.next().value).eql(
-          call([client, client.fetchServerInfo])
+          put(notificationsActions.clearNotifications({ force: true }))
+        );
+      });
+
+      it("should call getServerInfo", () => {
+        expect(setupSession.next().value).eql(
+          call(saga.getServerInfo, getState, actions.getServerInfo(authData))
         );
       });
 
@@ -64,12 +73,6 @@ describe("session sagas", () => {
       it("should add server to recent history", () => {
         expect(setupSession.next().value).eql(
           put(historyActions.addHistory("http://server.test/v1"))
-        );
-      });
-
-      it("should dispatch the server information action", () => {
-        expect(setupSession.next().value).eql(
-          put(actions.serverInfoSuccess(serverInfo))
         );
       });
 
@@ -86,15 +89,18 @@ describe("session sagas", () => {
 
     describe("Failure", () => {
       it("should notify authentication error", () => {
-        const action = actions.setup(authData);
+        getState = () => ({
+          session: {
+            serverInfo: {
+              ...serverInfo,
+              user: {},
+            },
+          },
+        });
         setupSession = saga.setupSession(getState, action);
-        setupSession.next();
         setupSession.next(); // clear notifications.
-        const fetchedInfo = {
-          ...serverInfo,
-          user: {},
-        };
-        expect(setupSession.next(fetchedInfo).value).eql(
+        setupSession.next(); // call getServerInfo.
+        expect(setupSession.next().value).eql(
           put(notifyError("Authentication failed."))
         );
       });
