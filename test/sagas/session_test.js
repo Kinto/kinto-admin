@@ -69,6 +69,8 @@ describe("session sagas", () => {
 
     describe("Failure", () => {
       it("should reset the server info", () => {
+        // Make sure that we don't keep previously stored capabilities when
+        // the new server fails.
         getServerInfo = saga.getServerInfo(getState, action);
         getServerInfo.next();
         expect(getServerInfo.throw().value).eql(
@@ -78,7 +80,7 @@ describe("session sagas", () => {
 
       it("should notify the error", () => {
         expect(getServerInfo.next().value).eql(
-          put(notifyError("Couldn't retrieve server info"))
+          put(notifyError("Could not reach server"))
         );
       });
     });
