@@ -4,7 +4,7 @@ import type { SessionState, SettingsState } from "../types";
 import React, { PureComponent } from "react";
 
 import BaseForm from "./BaseForm";
-import { omit } from "../utils";
+import { debounce, omit } from "../utils";
 
 const DEFAULT_KINTO_SERVER = "https://kinto.dev.mozaws.net/v1/";
 const ANONYMOUS_AUTH = "anonymous";
@@ -414,6 +414,8 @@ export default class AuthForm extends PureComponent<
     });
   };
 
+  debouncedOnChange = debounce(this.onChange, 500);
+
   onSubmit = ({ formData }: { formData: Object }) => {
     const { session, setup, navigateToExternalAuth } = this.props;
     const { authType } = formData;
@@ -460,7 +462,7 @@ export default class AuthForm extends PureComponent<
             schema={finalSchema}
             uiSchema={finalUiSchema}
             formData={formData}
-            onChange={this.onChange}
+            onChange={this.debouncedOnChange}
             onSubmit={this.onSubmit}>
             <button type="submit" className="btn btn-info">
               {"Sign in using "}
