@@ -4,6 +4,7 @@ import { Simulate } from "react-addons-test-utils";
 
 import { createSandbox, createComponent } from "../test_utils";
 import HomePage from "../../src/components/HomePage";
+import { DEFAULT_SERVERINFO } from "../../src/reducers/session";
 
 describe("HomePage component", () => {
   let sandbox;
@@ -18,20 +19,30 @@ describe("HomePage component", () => {
 
   describe("Not authenticated", () => {
     describe("Authentication types", () => {
-      let node, setup, navigateToExternalAuth;
+      let node, setup, getServerInfo, navigateToExternalAuth;
 
       beforeEach(() => {
         setup = sandbox.spy();
+        getServerInfo = sandbox.spy();
         navigateToExternalAuth = sandbox.spy();
         node = createComponent(HomePage, {
           setup,
+          getServerInfo,
           history: ["http://server.test/v1"],
           settings: {
             singleServer: null,
-            authMethods: ["basicauth", "fxa", "ldap"],
           },
           navigateToExternalAuth,
-          session: { authenticated: false },
+          session: {
+            authenticated: false,
+            serverInfo: {
+              capabilities: {
+                basicauth: "some basic auth info",
+                ldap: "some ldap auth info",
+                fxa: "some fxa auth info",
+              },
+            },
+          },
         });
       });
 
@@ -45,13 +56,13 @@ describe("HomePage component", () => {
         beforeEach(() => {
           node = createComponent(HomePage, {
             setup,
+            getServerInfo,
             history: [],
             settings: {
               singleServer: serverURL,
-              authMethods: ["basicauth"],
             },
             navigateToExternalAuth,
-            session: { authenticated: false },
+            session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
           });
         });
 
@@ -66,6 +77,9 @@ describe("HomePage component", () => {
         it("should submit setup data", () => {
           Simulate.change(node.querySelector("#root_server"), {
             target: { value: "http://test.server/v1" },
+          });
+          Simulate.change(node.querySelectorAll("[type=radio]")[1], {
+            target: { value: "basicauth" },
           });
           Simulate.change(node.querySelector("#root_credentials_username"), {
             target: { value: "user" },
@@ -94,7 +108,7 @@ describe("HomePage component", () => {
           Simulate.change(node.querySelector("#root_server"), {
             target: { value: "http://test.server/v1" },
           });
-          Simulate.change(node.querySelectorAll("[type=radio]")[2], {
+          Simulate.change(node.querySelectorAll("[type=radio]")[3], {
             target: { value: "ldap" },
           });
           Simulate.change(node.querySelector("#root_credentials_username"), {
@@ -124,7 +138,7 @@ describe("HomePage component", () => {
           Simulate.change(node.querySelector("#root_server"), {
             target: { value: "http://test.server/v1" },
           });
-          Simulate.change(node.querySelectorAll("[type=radio]")[1], {
+          Simulate.change(node.querySelectorAll("[type=radio]")[2], {
             target: { value: "fxa" },
           });
 
@@ -143,11 +157,10 @@ describe("HomePage component", () => {
     describe("History support", () => {
       it("should set the server field value using latest entry from history", () => {
         const node = createComponent(HomePage, {
+          getServerInfo: sandbox.spy(),
           history: [],
-          settings: {
-            authMethods: ["basicauth"],
-          },
-          session: { authenticated: false },
+          settings: {},
+          session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
         });
 
         expect(node.querySelector("#root_server").value).eql(
@@ -157,11 +170,10 @@ describe("HomePage component", () => {
 
       it("should set the server field value using latest entry from history", () => {
         const node = createComponent(HomePage, {
+          getServerInfo: sandbox.spy(),
           history: ["http://server.test/v1"],
-          settings: {
-            authMethods: ["basicauth"],
-          },
-          session: { authenticated: false },
+          settings: {},
+          session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
         });
 
         expect(node.querySelector("#root_server").value).eql(
