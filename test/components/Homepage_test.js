@@ -8,13 +8,16 @@ import { DEFAULT_SERVERINFO } from "../../src/reducers/session";
 
 describe("HomePage component", () => {
   let sandbox;
+  let clock;
 
   beforeEach(() => {
     sandbox = createSandbox();
+    clock = sinon.useFakeTimers();
   });
 
   afterEach(() => {
     sandbox.restore();
+    clock.restore();
   });
 
   describe("Not authenticated", () => {
@@ -81,6 +84,7 @@ describe("HomePage component", () => {
           Simulate.change(node.querySelectorAll("[type=radio]")[1], {
             target: { value: "basicauth" },
           });
+          clock.tick(500); // The AuthForm.onChange even is debounced.
           Simulate.change(node.querySelector("#root_credentials_username"), {
             target: { value: "user" },
           });
@@ -111,6 +115,7 @@ describe("HomePage component", () => {
           Simulate.change(node.querySelectorAll("[type=radio]")[3], {
             target: { value: "ldap" },
           });
+          clock.tick(500); // The AuthForm.onChange even is debounced.
           Simulate.change(node.querySelector("#root_credentials_username"), {
             target: { value: "you@email.com" },
           });

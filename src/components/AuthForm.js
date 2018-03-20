@@ -19,7 +19,9 @@ function debounce(fn, delay) {
   return function() {
     var context = this,
       args = arguments;
-    clearTimeout(timer);
+    if (timer) {
+      clearTimeout(timer);
+    }
     timer = setTimeout(() => fn.apply(context, args), delay);
   };
 }
@@ -29,11 +31,11 @@ type ServerHistoryProps = {
   value: string,
   placeholder: string,
   options: Object,
-  onChange: string => void
+  onChange: string => void,
 };
 
 type ServerHistoryState = {
-  menuOpened: boolean
+  menuOpened: boolean,
 };
 
 class ServerHistory extends PureComponent<
@@ -82,8 +84,7 @@ class ServerHistory extends PureComponent<
           <button
             type="button"
             className="btn btn-default dropdown-toggle"
-            onClick={this.toggleMenu}
-          >
+            onClick={this.toggleMenu}>
             <span className="caret" />
           </button>
           <ul className="dropdown-menu dropdown-menu-right">
@@ -363,13 +364,13 @@ type AuthFormProps = {
   setup: (session: Object) => void,
   getServerInfo: (auth: Object) => void,
   navigateToExternalAuth: (authFormData: Object) => void,
-  clearHistory: () => void
+  clearHistory: () => void,
 };
 
 type AuthFormState = {
   schema: Object,
   uiSchema: Object,
-  formData: Object
+  formData: Object,
 };
 
 export default class AuthForm extends PureComponent<
@@ -474,8 +475,7 @@ export default class AuthForm extends PureComponent<
             uiSchema={finalUiSchema}
             formData={formData}
             onChange={this.debouncedOnChange}
-            onSubmit={this.onSubmit}
-          >
+            onSubmit={this.onSubmit}>
             <button type="submit" className="btn btn-info">
               {"Sign in using "}
               {authLabels[formData.authType]}
