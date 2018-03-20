@@ -266,3 +266,13 @@ export function sortHistoryEntryPermissions(
     },
   };
 }
+
+export function debounce(fn: any, delay: number) {
+  var timer = null;
+  return (...args: any) => {
+    if (timer) {
+      clearTimeout(timer);
+    }
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  };
+}

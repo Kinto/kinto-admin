@@ -4,7 +4,7 @@ import type { SessionState, SettingsState } from "../types";
 import React, { PureComponent } from "react";
 
 import BaseForm from "./BaseForm";
-import { omit } from "../utils";
+import { debounce, omit } from "../utils";
 
 const DEFAULT_KINTO_SERVER = "https://kinto.dev.mozaws.net/v1/";
 const ANONYMOUS_AUTH = "anonymous";
@@ -13,18 +13,6 @@ const anonymousAuthData = server => ({
   server: server,
 });
 const KNOWN_AUTH_METHODS = ["basicauth", "account", "fxa", "ldap", "portier"];
-
-function debounce(fn, delay) {
-  var timer = null;
-  return function() {
-    var context = this,
-      args = arguments;
-    if (timer) {
-      clearTimeout(timer);
-    }
-    timer = setTimeout(() => fn.apply(context, args), delay);
-  };
-}
 
 type ServerHistoryProps = {
   id: string,
