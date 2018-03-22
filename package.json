@@ -6,8 +6,8 @@
     "build": "rimraf build && NODE_ENV=production node_modules/.bin/webpack --progress --config webpack.prod.js && cp html/prod.html build/index.html",
     "build:lib": "rimraf lib && NODE_ENV=production babel -d lib/ src/",
     "build:readme": "toctoc README.md -w",
-    "cs-check": "prettier -l $npm_package_prettierOptions '{src,test,test-browser}/**/*.js'",
-    "cs-format": "prettier $npm_package_prettierOptions '{src,test,test-browser}/**/*.js' --write",
+    "cs-check": "prettier -l '{src,test,test-browser}/**/*.js'",
+    "cs-format": "prettier '{src,test,test-browser}/**/*.js' --write",
     "flow-check": "node_modules/.bin/flow check",
     "lint": "node_modules/.bin/eslint src test test-browser",
     "publish-to-gh-pages": "npm run build && gh-pages --add --dist build/",
@@ -19,7 +19,6 @@
     "test-browser": "NODE_ENV=test node_modules/.bin/babel-node node_modules/.bin/_mocha 'test-browser/**/*_test.js'",
     "test-all": "npm run lint && npm run flow-check && npm run test"
   },
-  "prettierOptions": "--jsx-bracket-same-line --trailing-comma es5 --semi",
   "main": "lib/index.js",
   "files": [
     "css",
