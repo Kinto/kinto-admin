@@ -11,7 +11,14 @@ const anonymousAuthData = server => ({
   authType: ANONYMOUS_AUTH,
   server: server,
 });
-const KNOWN_AUTH_METHODS = ["basicauth", "account", "fxa", "ldap", "portier"];
+const KNOWN_AUTH_METHODS = [
+  "basicauth",
+  "account",
+  "fxa",
+  "ldap",
+  "portier",
+  "openid",
+];
 
 type ServerHistoryProps = {
   id: string,
@@ -296,6 +303,19 @@ const authSchemas = {
       },
     },
   },
+  openid: {
+    schema: {
+      ...baseAuthSchema,
+      properties: {
+        ...baseAuthSchema.properties,
+      },
+    },
+    uiSchema: {
+      authType: {
+        ...baseUISchema.authType,
+      },
+    },
+  },
 };
 
 const authLabels = {
@@ -305,6 +325,7 @@ const authLabels = {
   fxa: "Firefox Account",
   ldap: "LDAP",
   portier: "Portier",
+  openid: "OpenID",
 };
 
 /**
