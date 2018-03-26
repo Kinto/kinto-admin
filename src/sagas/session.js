@@ -25,6 +25,9 @@ export function* getServerInfo(
 ): SagaGen {
   const { auth } = action;
   try {
+    // Reset the serverInfo in the state to the default.
+    yield put(actions.serverInfoSuccess(DEFAULT_SERVERINFO));
+
     setupClient(auth);
     // Fetch server information
     const client = getClient();

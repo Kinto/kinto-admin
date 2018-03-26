@@ -44,6 +44,12 @@ describe("session sagas", () => {
     });
 
     describe("Success", () => {
+      it("should reset the server info in the state", () => {
+        expect(getServerInfo.next().value).eql(
+          put(actions.serverInfoSuccess(DEFAULT_SERVERINFO))
+        );
+      });
+
       it("should call client.fetchServerInfo", () => {
         const fetchServerInfoCall = getServerInfo.next().value;
         client = getClient();

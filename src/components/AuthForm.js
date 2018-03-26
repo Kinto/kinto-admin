@@ -414,7 +414,7 @@ export default class AuthForm extends PureComponent<
     });
   };
 
-  debouncedOnChange = debounce(this.onChange, 500);
+  debouncedOnChange = debounce(this.onChange, 200);
 
   onSubmit = ({ formData }: { formData: Object }) => {
     const { session, setup, navigateToExternalAuth } = this.props;
