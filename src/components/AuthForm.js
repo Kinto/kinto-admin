@@ -396,6 +396,9 @@ export default class AuthForm extends PureComponent<
   onChange = ({ formData }: { formData: Object }) => {
     const { authType, server } = formData;
     if (this.state.formData.server !== server) {
+      if (!/https?:\/\/.+\/v\d/.test(server)) {
+        return;
+      }
       // Server changed, request its capabilities to check what auth methods it
       // supports.
       const { getServerInfo } = this.props;
