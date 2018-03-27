@@ -22,14 +22,16 @@ describe("HomePage component", () => {
 
   describe("Not authenticated", () => {
     describe("Authentication types", () => {
-      let node, setup, getServerInfo, navigateToExternalAuth;
+      let node, setup, getServerInfo, navigateToExternalAuth, serverChange;
 
       beforeEach(() => {
         setup = sandbox.spy();
+        serverChange = sandbox.spy();
         getServerInfo = sandbox.spy();
         navigateToExternalAuth = sandbox.spy();
         node = createComponent(HomePage, {
           setup,
+          serverChange,
           getServerInfo,
           history: ["http://server.test/v1"],
           settings: {
@@ -59,6 +61,7 @@ describe("HomePage component", () => {
         beforeEach(() => {
           node = createComponent(HomePage, {
             setup,
+            serverChange,
             getServerInfo,
             history: [],
             settings: {
@@ -162,6 +165,7 @@ describe("HomePage component", () => {
     describe("History support", () => {
       it("should set the server field value using latest entry from history", () => {
         const node = createComponent(HomePage, {
+          serverChange: sandbox.spy(),
           getServerInfo: sandbox.spy(),
           history: [],
           settings: {},
@@ -175,6 +179,7 @@ describe("HomePage component", () => {
 
       it("should set the server field value using latest entry from history", () => {
         const node = createComponent(HomePage, {
+          serverChange: sandbox.spy(),
           getServerInfo: sandbox.spy(),
           history: ["http://server.test/v1"],
           settings: {},
