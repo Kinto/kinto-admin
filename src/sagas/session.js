@@ -29,16 +29,30 @@ export function* getServerInfo(
   action: ActionType<typeof actions.getServerInfo>
 ): SagaGen {
   const { auth } = action;
+
+  setupClient(auth);
+  // Fetch server information
+  const client = getClient();
   try {
-    setupClient(auth);
-    // Fetch server information
-    const client = getClient();
     const serverInfo = yield call([client, client.fetchServerInfo]);
+
+    // Check that the client was not changed in the mean time.
+    const currentClient = getClient();
+    if (client.remote != currentClient.remote) {
+      return;
+    }
+
     // Notify they're received
     yield put(actions.serverInfoSuccess(serverInfo));
 
     yield put(notificationActions.clearNotifications({ force: true }));
   } catch (error) {
+    // Check that the client was not changed in the mean time.
+    const currentClient = getClient();
+    if (client.remote != currentClient.remote) {
+      return;
+    }
+
     // Reset the server info that we might have added previously to the state.
     yield put(actions.serverInfoSuccess(DEFAULT_SERVERINFO));
     yield put(notificationActions.notifyError("Could not reach server", error));
