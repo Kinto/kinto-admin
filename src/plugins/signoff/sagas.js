@@ -87,7 +87,7 @@ export function* onCollectionRecordsRequest(getState, action) {
   );
 }
 
-function* fetchWorkflowInfo(source, preview, destination) {
+export function* fetchWorkflowInfo(source, preview, destination) {
   // Obtain collections attributes for source, preview and destination.
   const client = getClient();
   const fetchInfos = batch => {
