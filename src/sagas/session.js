@@ -19,15 +19,17 @@ import { DEFAULT_SERVERINFO } from "../reducers/session";
 import { clone } from "../utils";
 import { getClient, setupClient, resetClient } from "../client";
 
+export function* serverChange(): SagaGen {
+  yield put(actions.serverInfoSuccess(DEFAULT_SERVERINFO));
+  yield put(notificationActions.clearNotifications({ force: true }));
+}
+
 export function* getServerInfo(
   getState: GetStateFn,
   action: ActionType<typeof actions.getServerInfo>
 ): SagaGen {
   const { auth } = action;
   try {
-    // Reset the serverInfo in the state to the default.
-    yield put(actions.serverInfoSuccess(DEFAULT_SERVERINFO));
-
     setupClient(auth);
     // Fetch server information
     const client = getClient();

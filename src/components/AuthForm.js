@@ -350,6 +350,7 @@ type AuthFormProps = {
   history: string[],
   settings: SettingsState,
   setup: (session: Object) => void,
+  serverChange: () => void,
   getServerInfo: (auth: Object) => void,
   navigateToExternalAuth: (authFormData: Object) => void,
   clearHistory: () => void,
@@ -398,7 +399,8 @@ export default class AuthForm extends PureComponent<
     if (this.state.formData.server !== server) {
       // Server changed, request its capabilities to check what auth methods it
       // supports.
-      const { getServerInfo } = this.props;
+      const { getServerInfo, serverChange } = this.props;
+      serverChange();
       getServerInfo(anonymousAuthData(server));
     }
     const { schema, uiSchema } = authSchemas[authType];
