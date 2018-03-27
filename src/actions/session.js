@@ -8,6 +8,7 @@ import {
   SESSION_SETUP,
   SESSION_SETUP_COMPLETE,
   SESSION_STORE_REDIRECT_URL,
+  SESSION_SERVER_CHANGE,
   SESSION_GET_SERVERINFO,
   SESSION_SERVERINFO_SUCCESS,
   SESSION_PERMISSIONS_SUCCESS,
@@ -53,6 +54,12 @@ export function storeRedirectURL(
   redirectURL: ?string,
 } {
   return { type: SESSION_STORE_REDIRECT_URL, redirectURL };
+}
+
+export function serverChange(): {
+  type: "SESSION_SERVER_CHANGE",
+} {
+  return { type: SESSION_SERVER_CHANGE };
 }
 
 export function getServerInfo(
