@@ -54,9 +54,25 @@ class ServerHistory extends PureComponent<
     this.setState({ menuOpened: false });
   };
 
+  onServerChange = (event) => {
+    const server = event.target.value;
+    this.props.onChange(server);
+    // Do not try to fetch server infos if the field value is invalid.
+    if (event.target.validity.valid) {
+      this.fetchServerInfo(server);
+    }
+  };
+
+  fetchServerInfo = debounce((server) => {
+    // Server changed, request its capabilities to check what auth methods it
+    // supports.
+    const { getServerInfo } = this.props.options;
+    getServerInfo(anonymousAuthData(server));
+  }, 500);
+
   render() {
     const { menuOpened } = this.state;
-    const { id, value, onChange, placeholder, options } = this.props;
+    const { id, value, placeholder, options } = this.props;
     const { history, pattern } = options;
     return (
       <div className="input-group">
@@ -67,7 +83,7 @@ class ServerHistory extends PureComponent<
           placeholder={placeholder}
           pattern={pattern}
           value={value}
-          onChange={event => onChange(event.target.value)}
+          onChange={this.onServerChange}
         />
         <div className={`input-group-btn ${menuOpened ? "open" : ""}`}>
           <button
@@ -317,6 +333,7 @@ function extendUiSchemaWithHistory(
   uiSchema,
   history,
   clearHistory,
+  getServerInfo,
   singleServer,
   singleAuthMethod
 ) {
@@ -342,7 +359,7 @@ function extendUiSchemaWithHistory(
     server: {
       ...uiSchema.server,
       "ui:widget": ServerHistory,
-      "ui:options": { history, clearHistory },
+      "ui:options": { history, clearHistory, getServerInfo },
     },
   };
 }
@@ -397,12 +414,6 @@ export default class AuthForm extends PureComponent<
 
   onChange = ({ formData }: { formData: Object }) => {
     const { authType, server } = formData;
-    if (this.state.formData.server !== server) {
-      // Server changed, request its capabilities to check what auth methods it
-      // supports.
-      const { getServerInfo } = this.props;
-      getServerInfo(anonymousAuthData(server));
-    }
     const { schema, uiSchema } = authSchemas[authType];
     const specificFormData = [ANONYMOUS_AUTH, "fxa", "portier"].includes(
       authType
@@ -415,8 +426,6 @@ export default class AuthForm extends PureComponent<
       formData: specificFormData,
     });
   };
-
-  debouncedOnChange = debounce(this.onChange, 500);
 
   onSubmit = ({ formData }: { formData: Object }) => {
     const { session, setup, navigateToExternalAuth } = this.props;
@@ -439,7 +448,7 @@ export default class AuthForm extends PureComponent<
   };
 
   render() {
-    const { history, clearHistory, settings } = this.props;
+    const { history, clearHistory, getServerInfo, settings } = this.props;
     const { schema, uiSchema, formData } = this.state;
     const { singleServer } = settings;
     const authMethods = this.getSupportedAuthMethods();
@@ -454,6 +463,7 @@ export default class AuthForm extends PureComponent<
       uiSchema,
       history,
       clearHistory,
+      getServerInfo,
       singleServer,
       singleAuthMethod
     );
@@ -464,7 +474,7 @@ export default class AuthForm extends PureComponent<
             schema={finalSchema}
             uiSchema={finalUiSchema}
             formData={formData}
-            onChange={this.debouncedOnChange}
+            onChange={this.onChange}
             onSubmit={this.onSubmit}>
             <button type="submit" className="btn btn-info">
               {"Sign in using "}
