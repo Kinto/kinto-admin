@@ -75,7 +75,7 @@ class ServerHistory extends PureComponent<
     const { id, value, placeholder, options } = this.props;
     const { history, pattern } = options;
     return (
-      <div className="input-group">
+      <div className="input-group server-url">
         <input
           type="text"
           id={id}

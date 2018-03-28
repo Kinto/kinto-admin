@@ -68,6 +68,10 @@ h1 {
   background-size: contain;
 }
 
+.server-url input:invalid, .server-url input:focus:invalid {
+  box-shadow: 0 0 5px 1px red;
+}
+
 .session-info-bar {
   position: fixed;
   top: 0;
@@ -371,10 +375,6 @@ form button[type="submit"].btn-primary {
   font-size: 1.2em;
   padding: 12px;
   box-shadow: inset 0px 0px 0px 1px #fff;
-}
-
-input:invalid, input:focus:invalid {
-  box-shadow: 0 0 5px 1px red;
 }
 
 .record-form-buttons .delete {
