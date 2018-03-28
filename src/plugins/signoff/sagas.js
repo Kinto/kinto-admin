@@ -18,7 +18,13 @@ export function* onCollectionRecordsRequest(getState, action) {
     return;
   }
 
-  const { source, preview = {}, destination } = resource;
+  const {
+    source,
+    preview = {},
+    destination,
+    editors_group,
+    reviewers_group,
+  } = resource;
 
   // Show basic infos for this collection while fetching more details.
   const basicInfos = resource
@@ -59,6 +65,8 @@ export function* onCollectionRecordsRequest(getState, action) {
     status,
     lastStatusChanged: sourceAttributes.last_modified,
     changes,
+    editors_group,
+    reviewers_group,
   };
   const previewInfo = {
     bid: preview.bucket,
@@ -79,7 +87,7 @@ export function* onCollectionRecordsRequest(getState, action) {
   );
 }
 
-function* fetchWorkflowInfo(source, preview, destination) {
+export function* fetchWorkflowInfo(source, preview, destination) {
   // Obtain collections attributes for source, preview and destination.
   const client = getClient();
   const fetchInfos = batch => {

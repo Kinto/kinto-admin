@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { put } from "redux-saga/effects";
+import { call, put } from "redux-saga/effects";
 
 import { notifySuccess } from "../../../src/actions/notifications";
 import { routeLoadSuccess } from "../../../src/actions/route";
@@ -19,6 +19,7 @@ describe("Signoff plugin sagas", () => {
             serverInfo: {
               capabilities: {
                 signer: {
+                  reviewers_group: "default-reviewers",
                   resources: [
                     {
                       source: {
@@ -33,6 +34,8 @@ describe("Signoff plugin sagas", () => {
                         bucket: "prod",
                         collection: "dest-plugins",
                       },
+                      editors_group:
+                        "{collection_id}_editors_who_wear_cool_sneakers",
                     },
                     {
                       source: {
@@ -80,6 +83,82 @@ describe("Signoff plugin sagas", () => {
               destination: {
                 bid: "prod",
                 cid: "dest-plugins",
+              },
+            })
+          )
+        );
+      });
+
+      it("should update the workflow info with groups", () => {
+        const action = collection_actions.listRecords(
+          "stage",
+          "source-plugins",
+          ""
+        );
+        const fetchWorkflowInfoResult = {
+          sourceAttributes: {
+            last_author: "Last Author",
+            last_editor: "Last Editor",
+            last_editor_comment: "Last Editor Comment",
+            last_reviewer: "Last Reviewer",
+            last_reviewer_comment: "Last Reviewer Comment",
+            last_modified: "sourceAttributes.last_modified",
+            status: "to-review",
+          },
+          previewAttributes: {
+            last_modified: "previewAttributes.last_modified",
+          },
+          destinationAttributes: {
+            last_modified: "destinationAttributes.last_modified",
+          },
+          changes: {},
+        };
+
+        const result = saga.onCollectionRecordsRequest(getState, action);
+        result.next().value; // put(), tested above
+        expect(result.next().value).eql(
+          call(
+            saga.fetchWorkflowInfo,
+            {
+              bucket: "stage",
+              collection: "source-plugins",
+            },
+            {
+              bucket: "preview",
+              collection: "preview-plugins",
+            },
+            {
+              bucket: "prod",
+              collection: "dest-plugins",
+            }
+          )
+        );
+        expect(result.next(fetchWorkflowInfoResult).value).eql(
+          put(
+            actions.workflowInfo({
+              source: {
+                bid: "stage",
+                cid: "source-plugins",
+                changes: {},
+                lastAuthor: "Last Author",
+                lastEditor: "Last Editor",
+                lastEditorComment: "Last Editor Comment",
+                lastReviewer: "Last Reviewer",
+                lastReviewerComment: "Last Reviewer Comment",
+                editors_group: "{collection_id}_editors_who_wear_cool_sneakers",
+                reviewers_group: undefined,
+                lastStatusChanged: "sourceAttributes.last_modified",
+                status: "to-review",
+              },
+              preview: {
+                bid: "preview",
+                cid: "preview-plugins",
+                lastRequested: "previewAttributes.last_modified",
+              },
+              destination: {
+                bid: "prod",
+                cid: "dest-plugins",
+                lastSigned: "destinationAttributes.last_modified",
               },
             })
           )
