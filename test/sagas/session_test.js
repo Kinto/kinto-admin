@@ -21,6 +21,38 @@ const authData = {
 };
 
 describe("session sagas", () => {
+  describe("serverChange()", () => {
+    let serverChange, getState;
+
+    const serverInfo = {
+      ...DEFAULT_SERVERINFO,
+      url: "http://server.test/v1",
+      user: {
+        id: "basicauth:abcd",
+      },
+    };
+
+    const sessionState = { serverInfo };
+
+    before(() => {
+      getState = () => ({
+        session: sessionState,
+      });
+      serverChange = saga.serverChange(getState);
+    });
+
+    it("should reset the server info in the state", () => {
+      expect(serverChange.next().value).eql(
+        put(actions.serverInfoSuccess(DEFAULT_SERVERINFO))
+      );
+    });
+    it("should clear the notifications", () => {
+      expect(serverChange.next().value).eql(
+        put(notificationsActions.clearNotifications({ force: true }))
+      );
+    });
+  });
+
   describe("getServerInfo()", () => {
     let getServerInfo, getState, action, client;
 

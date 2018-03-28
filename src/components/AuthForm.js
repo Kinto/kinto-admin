@@ -54,7 +54,7 @@ class ServerHistory extends PureComponent<
     this.setState({ menuOpened: false });
   };
 
-  onServerChange = (event) => {
+  onServerChange = event => {
     const server = event.target.value;
     this.props.onChange(server);
     // Do not try to fetch server infos if the field value is invalid.
@@ -63,7 +63,7 @@ class ServerHistory extends PureComponent<
     }
   };
 
-  fetchServerInfo = debounce((server) => {
+  fetchServerInfo = debounce(server => {
     // Server changed, request its capabilities to check what auth methods it
     // supports.
     const { getServerInfo } = this.props.options;
@@ -369,6 +369,7 @@ type AuthFormProps = {
   history: string[],
   settings: SettingsState,
   setup: (session: Object) => void,
+  serverChange: () => void,
   getServerInfo: (auth: Object) => void,
   navigateToExternalAuth: (authFormData: Object) => void,
   clearHistory: () => void,
@@ -413,7 +414,7 @@ export default class AuthForm extends PureComponent<
   };
 
   onChange = ({ formData }: { formData: Object }) => {
-    const { authType, server } = formData;
+    const { authType } = formData;
     const { schema, uiSchema } = authSchemas[authType];
     const specificFormData = [ANONYMOUS_AUTH, "fxa", "portier"].includes(
       authType

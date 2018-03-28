@@ -19,6 +19,11 @@ import { DEFAULT_SERVERINFO } from "../reducers/session";
 import { clone } from "../utils";
 import { getClient, setupClient, resetClient } from "../client";
 
+export function* serverChange(): SagaGen {
+  yield put(actions.serverInfoSuccess(DEFAULT_SERVERINFO));
+  yield put(notificationActions.clearNotifications({ force: true }));
+}
+
 export function* getServerInfo(
   getState: GetStateFn,
   action: ActionType<typeof actions.getServerInfo>
