@@ -373,6 +373,10 @@ form button[type="submit"].btn-primary {
   box-shadow: inset 0px 0px 0px 1px #fff;
 }
 
+input:invalid, input:focus:invalid {
+  box-shadow: 0 0 5px 1px red;
+}
+
 .record-form-buttons .delete {
   margin-top: 12px;
 }

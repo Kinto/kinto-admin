@@ -57,7 +57,7 @@ class ServerHistory extends PureComponent<
   render() {
     const { menuOpened } = this.state;
     const { id, value, onChange, placeholder, options } = this.props;
-    const { history } = options;
+    const { history, pattern } = options;
     return (
       <div className="input-group">
         <input
@@ -65,6 +65,7 @@ class ServerHistory extends PureComponent<
           id={id}
           className="form-control"
           placeholder={placeholder}
+          pattern={pattern}
           value={value}
           onChange={event => onChange(event.target.value)}
         />
@@ -124,7 +125,8 @@ const baseAuthSchema = {
 
 const baseUISchema = {
   server: {
-    "ui:placeholder": "https://",
+    "ui:placeholder": "https://server.com/v1",
+    "ui:pattern": "^https?://.+/v\\d+/?",
   },
   authType: {
     "ui:widget": "radio",
@@ -396,9 +398,6 @@ export default class AuthForm extends PureComponent<
   onChange = ({ formData }: { formData: Object }) => {
     const { authType, server } = formData;
     if (this.state.formData.server !== server) {
-      if (!/https?:\/\/.+\/v\d/.test(server)) {
-        return;
-      }
       // Server changed, request its capabilities to check what auth methods it
       // supports.
       const { getServerInfo } = this.props;
