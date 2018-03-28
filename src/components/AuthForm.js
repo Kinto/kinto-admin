@@ -58,7 +58,7 @@ class ServerHistory extends PureComponent<
     const server = event.target.value;
     this.props.onChange(server);
     // Do not try to fetch server infos if the field value is invalid.
-    if (event.target.validity.valid) {
+    if (event.target.validity && event.target.validity.valid) {
       this.fetchServerInfo(server);
     }
   };

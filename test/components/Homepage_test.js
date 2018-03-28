@@ -87,7 +87,7 @@ describe("HomePage component", () => {
           Simulate.change(node.querySelectorAll("[type=radio]")[1], {
             target: { value: "basicauth" },
           });
-          clock.tick(500); // The AuthForm.onChange even is debounced.
+          clock.tick(500); // The server field .onChange even is debounced.
           Simulate.change(node.querySelector("#root_credentials_username"), {
             target: { value: "user" },
           });
