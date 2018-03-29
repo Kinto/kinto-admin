@@ -30,13 +30,19 @@ export function* getServerInfo(
 ): SagaGen {
   const { auth } = action;
 
-  setupClient(auth);
-  // Fetch server information
-  const client = getClient();
+  // Set the client globally to the entire app, when the saga starts.
+  // We'll compare the remote of this singleton when the server info will be received
+  // to prevent race conditions.
+  const client = setupClient(auth);
+
   try {
+    // Fetch server information
     const serverInfo = yield call([client, client.fetchServerInfo]);
 
-    // Check that the client was not changed in the mean time.
+    // Check that the client was not changed in the mean time. This could happen if a request to
+    // another server was sent after the current one, but took less time to answer.
+    // In such a case, this means this saga/server request should be discarded in favor of the other one
+    // which was sent later.
     const currentClient = getClient();
     if (client.remote != currentClient.remote) {
       return;
@@ -47,7 +53,7 @@ export function* getServerInfo(
 
     yield put(notificationActions.clearNotifications({ force: true }));
   } catch (error) {
-    // Check that the client was not changed in the mean time.
+    // As above, we want to ignore this result, if another request was sent in the mean time.
     const currentClient = getClient();
     if (client.remote != currentClient.remote) {
       return;
