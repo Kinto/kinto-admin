@@ -40,6 +40,7 @@ class ServerHistory extends PureComponent<
       event.preventDefault();
       this.props.onChange(server);
       this.setState({ menuOpened: false });
+      this.debouncedFetchServerInfo(server);
     };
   };
 
@@ -59,16 +60,19 @@ class ServerHistory extends PureComponent<
     this.props.onChange(server);
     // Do not try to fetch server infos if the field value is invalid.
     if (event.target.validity && event.target.validity.valid) {
-      this.fetchServerInfo(server);
+      this.debouncedFetchServerInfo(server);
     }
   };
 
-  fetchServerInfo = debounce(server => {
+  fetchServerInfo = server => {
     // Server changed, request its capabilities to check what auth methods it
     // supports.
-    const { getServerInfo } = this.props.options;
+    const { getServerInfo, serverChange } = this.props.options;
+    serverChange();
     getServerInfo(anonymousAuthData(server));
-  }, 500);
+  };
+
+  debouncedFetchServerInfo = debounce(this.fetchServerInfo, 500);
 
   render() {
     const { menuOpened } = this.state;
@@ -334,6 +338,7 @@ function extendUiSchemaWithHistory(
   history,
   clearHistory,
   getServerInfo,
+  serverChange,
   singleServer,
   singleAuthMethod
 ) {
@@ -359,7 +364,7 @@ function extendUiSchemaWithHistory(
     server: {
       ...uiSchema.server,
       "ui:widget": ServerHistory,
-      "ui:options": { history, clearHistory, getServerInfo },
+      "ui:options": { history, clearHistory, getServerInfo, serverChange },
     },
   };
 }
@@ -449,7 +454,13 @@ export default class AuthForm extends PureComponent<
   };
 
   render() {
-    const { history, clearHistory, getServerInfo, settings } = this.props;
+    const {
+      history,
+      clearHistory,
+      getServerInfo,
+      serverChange,
+      settings,
+    } = this.props;
     const { schema, uiSchema, formData } = this.state;
     const { singleServer } = settings;
     const authMethods = this.getSupportedAuthMethods();
@@ -465,6 +476,7 @@ export default class AuthForm extends PureComponent<
       history,
       clearHistory,
       getServerInfo,
+      serverChange,
       singleServer,
       singleAuthMethod
     );
