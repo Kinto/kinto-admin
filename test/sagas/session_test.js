@@ -116,6 +116,45 @@ describe("session sagas", () => {
         );
       });
     });
+
+    describe("Race conditions", () => {
+      let action1, action2, getServerInfo1, getServerInfo2;
+
+      beforeEach(() => {
+        action1 = actions.getServerInfo({
+          ...authData,
+          server: "http://server1/v1",
+        });
+        action2 = actions.getServerInfo({
+          ...authData,
+          server: "http://server2/v1",
+        });
+        getServerInfo1 = saga.getServerInfo(getState, action1);
+        getServerInfo2 = saga.getServerInfo(getState, action2);
+      });
+
+      it("should ignore the success of the oldest", () => {
+        getServerInfo1.next();
+        getServerInfo2.next();
+        // Latest to have started is getServerInfo2, it's taken into account.
+        expect(getServerInfo2.next(serverInfo).value).eql(
+          put(actions.serverInfoSuccess(serverInfo))
+        );
+        // getServerInfo1 took longer, it's ignored.
+        expect(getServerInfo1.next(serverInfo).value).to.not.exist;
+      });
+
+      it("should ignore the error of the oldest", () => {
+        getServerInfo1.next();
+        getServerInfo2.next();
+        // Latest to have started is getServerInfo2, it's taken into account.
+        expect(getServerInfo2.next(serverInfo).value).eql(
+          put(actions.serverInfoSuccess(serverInfo))
+        );
+        // getServerInfo1 took longer, it's ignored.
+        expect(getServerInfo1.throw().value).to.not.exist;
+      });
+    });
   });
 
   describe("setupSession()", () => {
