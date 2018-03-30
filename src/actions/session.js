@@ -181,8 +181,7 @@ export function navigateToExternalAuth(authFormData: Object): NavigationResult {
     } else if (authType === "portier") {
       return postToPortier(server, redirect);
     } else if (authType === "openid") {
-      // TODO: const { provider } = authFormData;
-      const provider = "auth0";
+      const { provider } = authFormData;
       return navigateToOpenID(server, provider, redirect);
     } else {
       return notifyError(`Unsupported auth navigation type "${authType}".`);

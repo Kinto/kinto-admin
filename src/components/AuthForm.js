@@ -241,6 +241,24 @@ const authSchemas = {
       },
     },
   },
+  openid: {
+    schema: {
+      ...baseAuthSchema,
+      required: [...baseAuthSchema.required, "provider"],
+      properties: {
+        ...baseAuthSchema.properties,
+        provider: {
+          type: "string",
+          title: "Provider",
+          enum: [],
+        },
+      },
+    },
+    uiSchema: {
+      ...baseUISchema,
+      provider: { "ui:widget": "radio" },
+    },
+  },
   ldap: {
     schema: {
       ...baseAuthSchema,
@@ -298,14 +316,6 @@ const authSchemas = {
           </span>
         ),
       },
-    },
-  },
-  openid: {
-    schema: {
-      ...baseAuthSchema,
-    },
-    uiSchema: {
-      ...baseUISchema,
     },
   },
 };
@@ -441,7 +451,8 @@ export default class AuthForm extends PureComponent<
 
   onChange = ({ formData }: { formData: Object }) => {
     const { authType } = formData;
-    const { schema, uiSchema } = authSchemas[authType];
+    const { uiSchema } = authSchemas[authType];
+    let { schema } = authSchemas[authType];
     const specificFormData = [
       ANONYMOUS_AUTH,
       "fxa",
@@ -450,6 +461,25 @@ export default class AuthForm extends PureComponent<
     ].includes(authType)
       ? omit(formData, ["credentials"])
       : { credentials: {}, ...formData };
+    if (authType === "openid") {
+      // Special casing openid as we need to know which provider to use.
+      const { session } = this.props;
+      const {
+        serverInfo: {
+          capabilities: { openid: { providers } = { providers: [] } },
+        },
+      } = session;
+      schema = {
+        ...schema,
+        properties: {
+          ...schema.properties,
+          provider: {
+            ...schema.properties.provider,
+            enum: providers.map(provider => provider.name),
+          },
+        },
+      };
+    }
     return this.setState({
       schema,
       uiSchema,
