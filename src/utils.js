@@ -209,7 +209,7 @@ export function renderDisplayField(record: Object, displayField: string): any {
 
 export function humanDate(since: string | number): string {
   return (
-    new Date(parseInt(since, 10)).toLocaleDateString("en-GB", {
+    new Date(parseInt(since, 10)).toLocaleDateString("en-US", {
       timeZone: "UTC",
       weekday: "long",
       year: "numeric",
