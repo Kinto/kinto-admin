@@ -442,9 +442,12 @@ export default class AuthForm extends PureComponent<
   onChange = ({ formData }: { formData: Object }) => {
     const { authType } = formData;
     const { schema, uiSchema } = authSchemas[authType];
-    const specificFormData = [ANONYMOUS_AUTH, "fxa", "portier"].includes(
-      authType
-    )
+    const specificFormData = [
+      ANONYMOUS_AUTH,
+      "fxa",
+      "portier",
+      "openid",
+    ].includes(authType)
       ? omit(formData, ["credentials"])
       : { credentials: {}, ...formData };
     return this.setState({
@@ -461,7 +464,8 @@ export default class AuthForm extends PureComponent<
     const extendedFormData = { ...formData, redirectURL };
     switch (authType) {
       case "fxa":
-      case "portier": {
+      case "portier":
+      case "openid": {
         return navigateToExternalAuth(extendedFormData);
       }
       // case "anonymous":

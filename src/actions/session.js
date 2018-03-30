@@ -155,6 +155,17 @@ function postToPortier(server: string, redirect: string): NavigationResult {
   }
 }
 
+function navigateToOpenID(
+  server: string,
+  provider: string,
+  redirect: string
+): NavigationResult {
+  document.location.href = `${server}openid/${provider}/login?redirect=${encodeURIComponent(
+    redirect
+  )}`;
+  return { type: null };
+}
+
 /**
  * Massive side effect: this will navigate away from the current page to perform
  * authentication to a third-party service, like FxA.
@@ -169,6 +180,10 @@ export function navigateToExternalAuth(authFormData: Object): NavigationResult {
       return navigateToFxA(server, redirect);
     } else if (authType === "portier") {
       return postToPortier(server, redirect);
+    } else if (authType === "openid") {
+      // TODO: const { provider } = authFormData;
+      const provider = "auth0";
+      return navigateToOpenID(server, provider, redirect);
     } else {
       return notifyError(`Unsupported auth navigation type "${authType}".`);
     }
