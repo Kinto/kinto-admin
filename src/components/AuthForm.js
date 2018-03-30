@@ -144,7 +144,7 @@ const baseAuthSchema = {
     authType: {
       type: "string",
       title: "Authentication method",
-      enum: ["basicauth", "account", "fxa", "ldap"],
+      enum: [ANONYMOUS_AUTH],
     },
   },
 };
@@ -225,9 +225,6 @@ const authSchemas = {
   fxa: {
     schema: {
       ...baseAuthSchema,
-      properties: {
-        ...baseAuthSchema.properties,
-      },
     },
     uiSchema: {
       authType: {
@@ -306,14 +303,9 @@ const authSchemas = {
   openid: {
     schema: {
       ...baseAuthSchema,
-      properties: {
-        ...baseAuthSchema.properties,
-      },
     },
     uiSchema: {
-      authType: {
-        ...baseUISchema.authType,
-      },
+      ...baseUISchema,
     },
   },
 };
