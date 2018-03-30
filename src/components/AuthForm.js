@@ -399,6 +399,7 @@ type AuthFormProps = {
   serverChange: () => void,
   getServerInfo: (auth: Object) => void,
   navigateToExternalAuth: (authFormData: Object) => void,
+  navigateToOpenID: (authFormData: Object, provider: Object) => void,
   clearHistory: () => void,
 };
 
@@ -488,15 +489,34 @@ export default class AuthForm extends PureComponent<
   };
 
   onSubmit = ({ formData }: { formData: Object }) => {
-    const { session, setup, navigateToExternalAuth } = this.props;
+    const {
+      session,
+      setup,
+      navigateToExternalAuth,
+      navigateToOpenID,
+    } = this.props;
     const { authType } = formData;
     const { redirectURL } = session;
     const extendedFormData = { ...formData, redirectURL };
     switch (authType) {
       case "fxa":
-      case "portier":
-      case "openid": {
+      case "portier": {
         return navigateToExternalAuth(extendedFormData);
+      }
+      case "openid": {
+        const { provider } = formData;
+        const { session } = this.props;
+        const {
+          serverInfo: {
+            capabilities: { openid: { providers } = { providers: [] } },
+          },
+        } = session;
+        const providerData = providers.find(p => p.name === provider);
+        if (!providerData) {
+          throw "Couldn't find provider data in the state. Bad.";
+        }
+        console.log("providerData", providerData);
+        return navigateToOpenID(extendedFormData, providerData);
       }
       // case "anonymous":
       // case "ldap":

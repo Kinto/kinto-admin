@@ -155,14 +155,20 @@ function postToPortier(server: string, redirect: string): NavigationResult {
   }
 }
 
-function navigateToOpenID(
-  server: string,
-  provider: string,
-  redirect: string
+export function navigateToOpenID(
+  authFormData: Object,
+  provider: Object
 ): NavigationResult {
-  document.location.href = `${server}openid/${provider}/login?redirect=${encodeURIComponent(
+  const { origin, pathname } = document.location;
+  const { server } = authFormData;
+  const strippedServer = server.replace(/\/$/, "");
+  const { auth_path } = provider;
+  const strippedAuthPath = auth_path.replace(/^\//, "");
+  const payload = btoa(JSON.stringify(authFormData));
+  const redirect = `${origin}${pathname}#/auth/${payload}/`;
+  document.location.href = `${strippedServer}/${strippedAuthPath}?callback=${encodeURIComponent(
     redirect
-  )}`;
+  )}&scope=openid email`;
   return { type: null };
 }
 
@@ -180,9 +186,6 @@ export function navigateToExternalAuth(authFormData: Object): NavigationResult {
       return navigateToFxA(server, redirect);
     } else if (authType === "portier") {
       return postToPortier(server, redirect);
-    } else if (authType === "openid") {
-      const { provider } = authFormData;
-      return navigateToOpenID(server, provider, redirect);
     } else {
       return notifyError(`Unsupported auth navigation type "${authType}".`);
     }
