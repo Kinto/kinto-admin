@@ -421,7 +421,9 @@ export default class AuthForm extends PureComponent<
     super(props);
     const { schema, uiSchema } = authSchemas[ANONYMOUS_AUTH];
     const {
+      getServerInfo,
       history,
+      session,
       settings: { singleServer },
     } = this.props;
 
@@ -435,14 +437,26 @@ export default class AuthForm extends PureComponent<
       uiSchema,
       formData: { authType: ANONYMOUS_AUTH, server },
     };
+
+    // TODO: make sure we only request the server info once when we get
+    // redirected from an auth0 login dance (with the server we authenticated
+    // with.
+    // This currently doesn't work, because we initialize the component with
+    // the first element from the history, and do a "get server info" and
+    // replace the previous server info (the correct one).
+    console.log("session data", session);
+    const { serverInfo: { capabilities } } = session;
+    if (Object.keys(capabilities).length === 0) {
+      // TODO: this doesn't work because we're always in this case: we don't
+      // get the server info from the server we used for the auth0 dance soon
+      // enough.
+      console.log("requesting server info");
+      getServerInfo(anonymousAuthData(server));
+    }
   }
 
   getSupportedAuthMethods = (): string[] => {
-    const {
-      session: {
-        serverInfo: { capabilities },
-      },
-    } = this.props;
+    const { session: { serverInfo: { capabilities } } } = this.props;
     // Check which of our known auth implementations are supported by the server.
     const supportedAuthMethods = KNOWN_AUTH_METHODS.filter(
       a => a in capabilities

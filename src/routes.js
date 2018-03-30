@@ -46,11 +46,17 @@ import * as notificationActions from "./actions/notifications";
 function onAuthEnter(store: Object, { params }) {
   // XXX there's an odd bug where we enter twice this function while we clearly
   // load it once. Note that the state qs value changes, but I don't know why...
-  const { payload, token } = params;
+  const { payload } = params;
+  let { token } = params;
   // Check for an incoming authentication.
   if (payload && token) {
     try {
       const { server, redirectURL, authType } = JSON.parse(atob(payload));
+      if (authType === "openid") {
+        token = JSON.parse(token).access_token;
+      }
+      console.log("REDIRECTED", JSON.parse(atob(payload)));
+      console.log("token", token);
       const credentials = { token };
       store.dispatch(
         sessionActions.setup({

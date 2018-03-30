@@ -34,6 +34,7 @@ export function* getServerInfo(
   // We'll compare the remote of this singleton when the server info will be received
   // to prevent race conditions.
   const client = setupClient(auth);
+  console.log("getting server info", auth);
 
   try {
     // Fetch server information
@@ -45,6 +46,7 @@ export function* getServerInfo(
     // which was sent later.
     const currentClient = getClient();
     if (client.remote != currentClient.remote) {
+      console.log("NOOOOOO", client.remote, currentClient.remote);
       return;
     }
 
