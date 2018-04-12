@@ -77,7 +77,9 @@ export function* setupSession(
     // Check that current user was authenticated as expected.
     // Distinguish anonymous from failed authentication using the user info
     // in the server info endpoint.
-    const { session: { serverInfo } } = getState();
+    const {
+      session: { serverInfo },
+    } = getState();
     const { user: { id: userId } = {} } = serverInfo;
     const { authType } = auth;
     if (
@@ -179,7 +181,9 @@ export function* listBuckets(
 ): SagaGen {
   try {
     const {
-      session: { serverInfo: { capabilities: serverCapabilities } },
+      session: {
+        serverInfo: { capabilities: serverCapabilities },
+      },
     } = getState();
     // Retrieve and build the list of buckets
     const client = getClient();

@@ -27,7 +27,9 @@ export default class RecordBulk extends PureComponent<Props> {
   onSubmit = ({ formData }: { formData: any[] }) => {
     const { params, collection, notifyError, bulkCreateRecords } = this.props;
     const { bid, cid } = params;
-    const { data: { schema = {} } } = collection;
+    const {
+      data: { schema = {} },
+    } = collection;
 
     if (formData.length === 0) {
       return notifyError("The form is empty.");

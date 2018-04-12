@@ -6,7 +6,9 @@ import React, { PureComponent } from "react";
 import Breadcrumbs from "react-breadcrumbs";
 
 function UserInfo({ session }) {
-  const { serverInfo: { user = {} } } = session;
+  const {
+    serverInfo: { user = {} },
+  } = session;
   if (!user.id) {
     return <strong>Anonymous</strong>;
   }
@@ -18,7 +20,9 @@ function UserInfo({ session }) {
 }
 
 function SessionInfoBar({ session, logout }) {
-  const { serverInfo: { url } } = session;
+  const {
+    serverInfo: { url },
+  } = session;
   return (
     <div className="session-info-bar text-right">
       <UserInfo session={session} /> on <strong>{url}</strong>

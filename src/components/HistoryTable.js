@@ -19,7 +19,9 @@ function Diff({ source, target }) {
       {diff.map((chunk, i) => {
         const className = chunk.added
           ? "added"
-          : chunk.removed ? "removed" : "";
+          : chunk.removed
+            ? "removed"
+            : "";
         const prefixedChunk = chunk.value
           .split("\n")
           .filter(part => part !== "")
@@ -145,7 +147,9 @@ class HistoryRow extends PureComponent<HistoryRowProps, HistoryRowState> {
       record_id: rid,
     } = sortHistoryEntryPermissions(entry);
 
-    const { data: { id: objectId } } = target;
+    const {
+      data: { id: objectId },
+    } = target;
 
     return (
       <tr>
@@ -217,7 +221,10 @@ function FilterInfo(props) {
     onViewJournalClick: () => void,
     onDiffOverviewClick: (timestamp: string) => void,
   } = props;
-  const { pathname, query: { since } } = location;
+  const {
+    pathname,
+    query: { since },
+  } = location;
   return (
     <p>
       Since {since ? humanDate(since) : ""}.{" "}

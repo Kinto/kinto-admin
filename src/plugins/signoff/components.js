@@ -16,7 +16,9 @@ import AdminLink from "../../components/AdminLink";
 import { ProgressBar, ProgressStep } from "./ProgressBar.js";
 
 function isMember(groupKey, source, sessionState) {
-  const { serverInfo: { user = {}, capabilities } } = sessionState;
+  const {
+    serverInfo: { user = {}, capabilities },
+  } = sessionState;
   if (!source || !user.principals) {
     return false;
   }
@@ -40,7 +42,9 @@ function isReviewer(source, sessionState) {
 }
 
 function isLastEditor(source, sessionState) {
-  const { serverInfo: { user = {} } } = sessionState;
+  const {
+    serverInfo: { user = {} },
+  } = sessionState;
   const { lastEditor } = source;
   return user.id === lastEditor;
 }
@@ -86,7 +90,9 @@ export default class SignoffToolBar extends React.Component<
 
     // The above sagas refresh the global state via `routeLoadSuccess` actions.
     // Use the global so that the toolbar is refreshed when status changes.
-    const { data: { status } } = collectionState;
+    const {
+      data: { status },
+    } = collectionState;
 
     // Information loaded via this plugin.
     const {

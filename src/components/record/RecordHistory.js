@@ -35,7 +35,9 @@ export default class RecordHistory extends PureComponent<Props> {
       notifyError,
     } = this.props;
     const { bid, cid, rid } = params;
-    const { history: { entries, loaded, hasNextPage } } = record;
+    const {
+      history: { entries, loaded, hasNextPage },
+    } = record;
 
     return (
       <div>

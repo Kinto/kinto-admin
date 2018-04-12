@@ -86,7 +86,9 @@ export function onCollectionHistoryEnter(
   const { bid, cid } = params;
   const {
     session,
-    routing: { locationBeforeTransitions: { query: filters } },
+    routing: {
+      locationBeforeTransitions: { query: filters },
+    },
   } = store.getState();
   if (!session.authenticated) {
     // We're not authenticated, skip requesting the list of records. This likely
@@ -111,7 +113,9 @@ export function onBucketHistoryEnter(store: Object, { params }: BucketRoute) {
   const { bid } = params;
   const {
     session,
-    routing: { locationBeforeTransitions: { query: filters } },
+    routing: {
+      locationBeforeTransitions: { query: filters },
+    },
   } = store.getState();
   if (!session.authenticated) {
     // We're not authenticated, skip requesting the list of records. This likely
@@ -125,7 +129,9 @@ export function onGroupHistoryEnter(store: Object, { params }: GroupRoute) {
   const { bid, gid } = params;
   const {
     session,
-    routing: { locationBeforeTransitions: { query: filters } },
+    routing: {
+      locationBeforeTransitions: { query: filters },
+    },
   } = store.getState();
   if (!session.authenticated) {
     // We're not authenticated, skip requesting the list of records. This likely
@@ -139,7 +145,9 @@ export function onRecordHistoryEnter(store: Object, { params }: RecordRoute) {
   const { bid, cid, rid } = params;
   const {
     session,
-    routing: { locationBeforeTransitions: { query: filters } },
+    routing: {
+      locationBeforeTransitions: { query: filters },
+    },
   } = store.getState();
   if (!session.authenticated) {
     return;

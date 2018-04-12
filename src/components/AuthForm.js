@@ -410,7 +410,11 @@ export default class AuthForm extends PureComponent<
   }
 
   getSupportedAuthMethods = () => {
-    const { session: { serverInfo: { capabilities } } } = this.props;
+    const {
+      session: {
+        serverInfo: { capabilities },
+      },
+    } = this.props;
     // Check which of our known auth implementations are supported by the server.
     const supportedAuthMethods = KNOWN_AUTH_METHODS.filter(
       a => a in capabilities
