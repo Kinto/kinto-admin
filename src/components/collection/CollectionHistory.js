@@ -35,7 +35,9 @@ export default class CollectionHistory extends PureComponent<Props> {
       notifyError,
     } = this.props;
     const { bid, cid } = params;
-    const { history: { entries, loaded, hasNextPage } } = collection;
+    const {
+      history: { entries, loaded, hasNextPage },
+    } = collection;
 
     return (
       <div>

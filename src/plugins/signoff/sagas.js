@@ -7,7 +7,9 @@ import * as SignoffActions from "./actions";
 
 export function* onCollectionRecordsRequest(getState, action) {
   const { bid, cid } = action;
-  const { session: { serverInfo } } = getState();
+  const {
+    session: { serverInfo },
+  } = getState();
   // See if currently viewed collection is among kinto-signer resources
   // described in server info capabilities.
   const resource = _pickSignoffResource(serverInfo, bid, cid);
@@ -150,8 +152,12 @@ export function* handleRequestReview(getState, action) {
       status: "to-review",
       last_editor_comment: comment,
     });
-    const { data: { id: bid } } = bucket;
-    const { data: { id: cid } } = collection;
+    const {
+      data: { id: bid },
+    } = bucket;
+    const {
+      data: { id: cid },
+    } = collection;
     // Go through the same saga as page load to refresh attributes after signoff changes.
     yield call(onCollectionRecordsRequest, getState, { bid, cid });
     yield put(routeLoadSuccess({ bucket, collection }));
@@ -169,8 +175,12 @@ export function* handleDeclineChanges(getState, action) {
       status: "work-in-progress",
       last_reviewer_comment: comment,
     });
-    const { data: { id: bid } } = bucket;
-    const { data: { id: cid } } = collection;
+    const {
+      data: { id: bid },
+    } = bucket;
+    const {
+      data: { id: cid },
+    } = collection;
     // Go through the same saga as page load to refresh attributes after signoff changes.
     yield call(onCollectionRecordsRequest, getState, { bid, cid });
     yield put(routeLoadSuccess({ bucket, collection }));
@@ -188,8 +198,12 @@ export function* handleApproveChanges(getState, action) {
       last_reviewer_comment: "",
     });
 
-    const { data: { id: bid } } = bucket;
-    const { data: { id: cid } } = collection;
+    const {
+      data: { id: bid },
+    } = bucket;
+    const {
+      data: { id: cid },
+    } = collection;
     // Go through the same saga as page load to refresh attributes after signoff changes.
     yield call(onCollectionRecordsRequest, getState, { bid, cid });
     yield put(routeLoadSuccess({ bucket, collection }));
@@ -202,8 +216,12 @@ export function* handleApproveChanges(getState, action) {
 function _updateCollectionAttributes(getState, data) {
   const client = getClient();
   const {
-    bucket: { data: { id: bid } },
-    collection: { data: { id: cid, last_modified } },
+    bucket: {
+      data: { id: bid },
+    },
+    collection: {
+      data: { id: cid, last_modified },
+    },
   } = getState();
   const coll = client.bucket(bid).collection(cid);
   return (
@@ -216,7 +234,9 @@ function _updateCollectionAttributes(getState, data) {
 }
 
 function _pickSignoffResource(serverInfo, bid, cid) {
-  const { capabilities: { signer = { resources: [] } } } = serverInfo;
+  const {
+    capabilities: { signer = { resources: [] } },
+  } = serverInfo;
   let resource = signer.resources.filter(
     ({ source: { bucket, collection } }) => {
       // If the source has no collection info, it means that reviewing was configured

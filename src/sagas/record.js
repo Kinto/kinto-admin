@@ -16,8 +16,15 @@ export function* listHistory(
   getState: GetStateFn,
   action: ActionType<typeof actions.listRecordHistory>
 ): SagaGen {
-  const { settings: { maxPerPage } } = getState();
-  const { bid, cid, rid, filters: { since } } = action;
+  const {
+    settings: { maxPerPage },
+  } = getState();
+  const {
+    bid,
+    cid,
+    rid,
+    filters: { since },
+  } = action;
   try {
     const bucket = getBucket(bid);
     const { data, hasNextPage, next } = yield call(
@@ -38,7 +45,11 @@ export function* listHistory(
 }
 
 export function* listNextHistory(getState: GetStateFn): SagaGen {
-  const { record: { history: { next: fetchNextHistory } } } = getState();
+  const {
+    record: {
+      history: { next: fetchNextHistory },
+    },
+  } = getState();
   if (fetchNextHistory == null) {
     return;
   }

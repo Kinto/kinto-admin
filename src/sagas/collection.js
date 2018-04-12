@@ -41,7 +41,10 @@ export function* listRecords(
   action: ActionType<typeof actions.listRecords>
 ): SagaGen {
   const {
-    collection: { currentSort, data: { sort: defaultSort } },
+    collection: {
+      currentSort,
+      data: { sort: defaultSort },
+    },
     settings: { maxPerPage },
   } = getState();
   const { bid, cid, sort = currentSort } = action;
@@ -58,7 +61,9 @@ export function* listRecords(
 }
 
 export function* listNextRecords(getState: GetStateFn): SagaGen {
-  const { collection: { listNextRecords } } = getState();
+  const {
+    collection: { listNextRecords },
+  } = getState();
   if (listNextRecords == null) {
     return;
   }
@@ -75,8 +80,14 @@ export function* listHistory(
   getState: GetStateFn,
   action: ActionType<typeof actions.listCollectionHistory>
 ): SagaGen {
-  const { settings: { maxPerPage } } = getState();
-  const { bid, cid, filters: { since, resource_name } } = action;
+  const {
+    settings: { maxPerPage },
+  } = getState();
+  const {
+    bid,
+    cid,
+    filters: { since, resource_name },
+  } = action;
   try {
     const bucket = getBucket(bid);
     const { data, hasNextPage, next } = yield call(
@@ -97,7 +108,11 @@ export function* listHistory(
 }
 
 export function* listNextHistory(getState: GetStateFn): SagaGen {
-  const { collection: { history: { next: fetchNextHistory } } } = getState();
+  const {
+    collection: {
+      history: { next: fetchNextHistory },
+    },
+  } = getState();
   if (fetchNextHistory == null) {
     return;
   }
@@ -163,8 +178,18 @@ export function* updateRecord(
   getState: GetStateFn,
   action: ActionType<typeof actions.updateRecord>
 ): SagaGen {
-  const { session, collection, record: { data: currentRecord } } = getState();
-  const { bid, cid, rid, record: { data, permissions }, attachment } = action;
+  const {
+    session,
+    collection,
+    record: { data: currentRecord },
+  } = getState();
+  const {
+    bid,
+    cid,
+    rid,
+    record: { data, permissions },
+    attachment,
+  } = action;
   const { last_modified } = currentRecord;
   try {
     const coll = getCollection(bid, cid);

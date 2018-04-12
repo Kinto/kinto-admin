@@ -44,7 +44,12 @@ function SideBarLink(props: SideBarLinkProps) {
 }
 
 function CollectionMenuEntry(props) {
-  const { bucket: { id: bid }, collection, currentPath, active } = props;
+  const {
+    bucket: { id: bid },
+    collection,
+    currentPath,
+    active,
+  } = props;
   const { id: cid } = collection;
   const classes = [
     "list-group-item",

@@ -211,7 +211,9 @@ export default class RecordForm extends PureComponent<Props, State> {
   getForm() {
     const { asJSON } = this.state;
     const { bid, cid, collection, record } = this.props;
-    const { data: { schema = {}, uiSchema = {}, attachment } } = collection;
+    const {
+      data: { schema = {}, uiSchema = {}, attachment },
+    } = collection;
     const recordData = (record && record.data) || {};
     const emptySchema = Object.keys(schema).length === 0;
 
@@ -304,7 +306,9 @@ export default class RecordForm extends PureComponent<Props, State> {
 
   render() {
     const { collection, record, capabilities } = this.props;
-    const { data: { attachment: attachmentConfig } } = collection;
+    const {
+      data: { attachment: attachmentConfig },
+    } = collection;
     const attachmentRequired = attachmentConfig && attachmentConfig.required;
     const creation = !record;
 

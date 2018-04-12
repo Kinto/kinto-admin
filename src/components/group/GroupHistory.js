@@ -32,7 +32,9 @@ export default class GroupHistory extends PureComponent<Props> {
       notifyError,
     } = this.props;
     const { bid, gid } = params;
-    const { history: { entries, loaded, hasNextPage } } = group;
+    const {
+      history: { entries, loaded, hasNextPage },
+    } = group;
 
     return (
       <div>

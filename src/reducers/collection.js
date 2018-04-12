@@ -68,7 +68,10 @@ export function collection(
       return INITIAL_STATE;
     }
     case COLLECTION_RECORDS_REQUEST: {
-      const { currentSort, data: { sort: preferedSort } } = state;
+      const {
+        currentSort,
+        data: { sort: preferedSort },
+      } = state;
       const { sort: newSort = preferedSort || DEFAULT_SORT } = action;
       // If a new sort filter is used, purge the previous records list and
       // pagination state.

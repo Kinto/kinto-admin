@@ -118,7 +118,9 @@ export function* routeUpdated(
   getState: GetStateFn,
   action: ActionType<typeof actions.routeUpdated>
 ): SagaGen {
-  const { session: { authenticated } } = getState();
+  const {
+    session: { authenticated },
+  } = getState();
   const { params, location } = action;
   const { token, payload } = params;
 

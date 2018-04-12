@@ -41,8 +41,15 @@ export function* updateBucket(
   getState: GetStateFn,
   action: ActionType<typeof actions.updateBucket>
 ): SagaGen {
-  const { bid, bucket: { data, permissions } } = action;
-  const { bucket: { data: { last_modified } } } = getState();
+  const {
+    bid,
+    bucket: { data, permissions },
+  } = action;
+  const {
+    bucket: {
+      data: { last_modified },
+    },
+  } = getState();
   try {
     const bucket = getBucket(bid);
     yield put(sessionBusy(true));
@@ -73,7 +80,11 @@ export function* deleteBucket(
   action: ActionType<typeof actions.deleteBucket>
 ): SagaGen {
   const { bid } = action;
-  const { bucket: { data: { last_modified } } } = getState();
+  const {
+    bucket: {
+      data: { last_modified },
+    },
+  } = getState();
   try {
     const client = getClient();
     yield put(sessionBusy(true));
@@ -112,8 +123,16 @@ export function* updateCollection(
   getState: GetStateFn,
   action: ActionType<typeof actions.updateCollection>
 ): SagaGen {
-  const { bid, cid, collection: { data, permissions } } = action;
-  const { collection: { data: { last_modified } } } = getState();
+  const {
+    bid,
+    cid,
+    collection: { data, permissions },
+  } = action;
+  const {
+    collection: {
+      data: { last_modified },
+    },
+  } = getState();
   try {
     const coll = getCollection(bid, cid);
     if (data) {
@@ -139,7 +158,11 @@ export function* deleteCollection(
   action: ActionType<typeof actions.deleteCollection>
 ): SagaGen {
   const { bid, cid } = action;
-  const { collection: { data: { last_modified } } } = getState();
+  const {
+    collection: {
+      data: { last_modified },
+    },
+  } = getState();
   try {
     const bucket = getBucket(bid);
     yield call([bucket, bucket.deleteCollection], cid, {
@@ -158,7 +181,9 @@ export function* listBucketCollections(
   getState: GetStateFn,
   action: ActionType<typeof actions.listBucketCollections>
 ): SagaGen {
-  const { settings: { maxPerPage } } = getState();
+  const {
+    settings: { maxPerPage },
+  } = getState();
   const { bid } = action;
   try {
     const bucket = getBucket(bid);
@@ -176,7 +201,9 @@ export function* listBucketCollections(
 
 export function* listBucketNextCollections(getState: GetStateFn): SagaGen {
   const {
-    bucket: { collections: { next: fetchNextCollections } },
+    bucket: {
+      collections: { next: fetchNextCollections },
+    },
   } = getState();
   if (fetchNextCollections == null) {
     return;
@@ -194,8 +221,13 @@ export function* listHistory(
   getState: GetStateFn,
   action: ActionType<typeof actions.listBucketHistory>
 ): SagaGen {
-  const { settings: { maxPerPage } } = getState();
-  const { bid, filters: { resource_name, since } } = action;
+  const {
+    settings: { maxPerPage },
+  } = getState();
+  const {
+    bid,
+    filters: { resource_name, since },
+  } = action;
   try {
     const bucket = getBucket(bid);
     const { data, hasNextPage, next } = yield call(
@@ -216,7 +248,11 @@ export function* listHistory(
 }
 
 export function* listNextHistory(getState: GetStateFn): SagaGen {
-  const { bucket: { history: { next: fetchNextHistory } } } = getState();
+  const {
+    bucket: {
+      history: { next: fetchNextHistory },
+    },
+  } = getState();
   if (fetchNextHistory == null) {
     return;
   }
@@ -252,8 +288,14 @@ export function* updateGroup(
   getState: GetStateFn,
   action: ActionType<typeof actions.updateGroup>
 ): SagaGen {
-  const { bid, gid, group: { data, permissions } } = action;
-  const { group: { data: loadedData } } = getState();
+  const {
+    bid,
+    gid,
+    group: { data, permissions },
+  } = action;
+  const {
+    group: { data: loadedData },
+  } = getState();
   const { last_modified } = loadedData;
   try {
     const bucket = getBucket(bid);
@@ -281,7 +323,11 @@ export function* deleteGroup(
   action: ActionType<typeof actions.deleteGroup>
 ): SagaGen {
   const { bid, gid } = action;
-  const { group: { data: { last_modified } } } = getState();
+  const {
+    group: {
+      data: { last_modified },
+    },
+  } = getState();
   try {
     const bucket = getBucket(bid);
     yield call([bucket, bucket.deleteGroup], gid, {
