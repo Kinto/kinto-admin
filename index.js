@@ -14,6 +14,7 @@ const settings = {
   // entries. We may revisit this strategy as this override any server
   // configuration.
   maxPerPage: 200,
+  singleServer: "http://localhost:8888/v1",
 };
 
 render(<KintoAdmin plugins={corePlugins} settings={settings} />,

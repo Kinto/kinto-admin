@@ -1,4 +1,5 @@
 /* @flow */
+export const DEFAULT_KINTO_SERVER = "https://kinto.dev.mozaws.net/v1/";
 
 export const ATTACHMENT_DELETE_REQUEST = "ATTACHMENT_DELETE_REQUEST";
 
