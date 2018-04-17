@@ -409,7 +409,7 @@ export default class AuthForm extends PureComponent<
     getServerInfo(anonymousAuthData(server));
   }
 
-  getSupportedAuthMethods = () => {
+  getSupportedAuthMethods = (): string[] => {
     const {
       session: {
         serverInfo: { capabilities },
