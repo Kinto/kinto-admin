@@ -197,6 +197,10 @@ table.record-list td.load-more {
   line-height: 2.5em;
 }
 
+table.record-list > tbody:nth-child(odd) tr td {
+  background-color: #fff;
+}
+
 .load-more > a:hover, .load-more > a:active {
   background: #d9edf7;
   text-decoration: none;
