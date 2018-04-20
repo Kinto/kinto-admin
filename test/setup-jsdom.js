@@ -6,6 +6,7 @@ const JSDOM = new jsdom.JSDOM("<!doctype html><html><body></body></html>");
 global.window = JSDOM.window;
 global.document = window.document;
 global.navigator = global.window.navigator;
+JSDOM.reconfigure({ url: "http://server.test/" });
 
 // Setup dumb sessionStorage for tests
 global.sessionStorage = (function() {
