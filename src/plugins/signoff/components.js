@@ -45,8 +45,8 @@ function isLastEditor(source, sessionState) {
   const {
     serverInfo: { user = {} },
   } = sessionState;
-  const { lastEditor } = source;
-  return user.id === lastEditor;
+  const { lastEditBy } = source;
+  return user.id === lastEditBy;
 }
 
 type SignoffToolBarProps = {
@@ -96,16 +96,16 @@ export default class SignoffToolBar extends React.Component<
 
     // Information loaded via this plugin.
     const {
-      collections,
+      collectionsInfo,
       pendingConfirmReviewRequest,
       pendingConfirmDeclineChanges,
     } = signoff;
     // Hide toolbar if server has not kinto-signer plugin,
     // or if this collection is not configured to be signed.
-    if (!collections) {
+    if (!collectionsInfo) {
       return null;
     }
-    const { source, destination, preview } = collections;
+    const { source, destination, preview } = collectionsInfo;
 
     const canRequestReview = canEdit && isEditor(source, sessionState);
     const canReview =
@@ -225,26 +225,25 @@ function WorkInProgress(props: WorkInProgressProps) {
   } = props;
 
   const active = step == currentStep;
-  const { lastAuthor, lastReviewerComment, changes = {} } = source;
-  const { lastUpdated } = changes;
+  const { lastEditBy, lastEditDate, lastReviewerComment } = source;
   return (
     <ProgressStep label={label} currentStep={currentStep} step={step}>
       <WorkInProgressInfos
         active={active}
-        lastAuthor={lastAuthor}
-        lastUpdated={lastUpdated}
+        lastEditBy={lastEditBy}
+        lastEditDate={lastEditDate}
         lastReviewerComment={lastReviewerComment}
       />
       {active &&
-        lastUpdated &&
+        lastEditDate &&
         canEdit && <RequestReviewButton onClick={confirmRequestReview} />}
     </ProgressStep>
   );
 }
 
 function WorkInProgressInfos(props) {
-  const { active, lastAuthor, lastUpdated, lastReviewerComment } = props;
-  if (!lastUpdated) {
+  const { active, lastEditBy, lastEditDate, lastReviewerComment } = props;
+  if (!lastEditDate) {
     return (
       <ul>
         <li>Never updated</li>
@@ -255,10 +254,10 @@ function WorkInProgressInfos(props) {
     <ul>
       <li>
         <strong>Updated: </strong>
-        <HumanDate timestamp={lastUpdated} />
+        <HumanDate timestamp={lastEditDate} />
       </li>
       <li>
-        <strong>By: </strong> {lastAuthor}
+        <strong>By: </strong> {lastEditBy}
       </li>
       {active &&
         lastReviewerComment && (
@@ -310,11 +309,8 @@ function Review(props: ReviewProps) {
   const active = step == currentStep;
 
   // If preview disabled, the preview object is empty.
-  // We use the source last status change as review request datetime.
   let link = "disabled";
-  let { lastStatusChanged: lastRequested } = source;
   if (preview && preview.bid && preview.cid) {
-    lastRequested = preview.lastRequested;
     const { bid, cid } = preview;
     link = (
       <AdminLink name="collection:records" params={{ bid, cid }}>
@@ -323,14 +319,12 @@ function Review(props: ReviewProps) {
     );
   }
 
-  const { lastEditor } = source;
   return (
     <ProgressStep label={label} currentStep={currentStep} step={step}>
-      {lastEditor && (
+      {source.lastReviewRequestBy && (
         <ReviewInfos
           active={active}
           source={source}
-          lastRequested={lastRequested}
           link={link}
           hasHistory={hasHistory}
         />
@@ -349,14 +343,20 @@ function Review(props: ReviewProps) {
 type ReviewInfosProps = {
   active: boolean,
   source: SourceInfo,
-  lastRequested: number,
   link: any,
   hasHistory: boolean,
 };
 
 function ReviewInfos(props: ReviewInfosProps) {
-  const { active, source, lastRequested, link, hasHistory } = props;
-  const { bid, cid, lastEditor, lastEditorComment, changes = {} } = source;
+  const { active, source, link, hasHistory } = props;
+  const {
+    bid,
+    cid,
+    lastReviewRequestBy,
+    lastReviewRequestDate,
+    lastEditorComment,
+    changes = {},
+  } = source;
   const { since, deleted, updated } = changes;
   const detailsLink = hasHistory && (
     <AdminLink
@@ -371,10 +371,10 @@ function ReviewInfos(props: ReviewInfosProps) {
     <ul>
       <li>
         <strong>Requested: </strong>
-        <HumanDate timestamp={lastRequested} />
+        <HumanDate timestamp={lastReviewRequestDate} />
       </li>
       <li>
-        <strong>By: </strong> {lastEditor}
+        <strong>By: </strong> {lastReviewRequestBy}
       </li>
       {active &&
         lastEditorComment && (
@@ -447,12 +447,11 @@ function Signed(props: SignedProps) {
     destination,
   } = props;
   const active = step == currentStep && canEdit;
-  const { lastReviewer } = source;
   return (
     <ProgressStep label={label} currentStep={currentStep} step={step}>
       {destination &&
-        destination.lastSigned && (
-          <SignedInfos lastReviewer={lastReviewer} destination={destination} />
+        source.lastSignatureBy && (
+          <SignedInfos source={source} destination={destination} />
         )}
       {active && <ReSignButton onClick={reSign} />}
     </ProgressStep>
@@ -460,23 +459,41 @@ function Signed(props: SignedProps) {
 }
 
 type SignedInfosProps = {
-  lastReviewer: string,
+  source: SourceInfo,
   destination: DestinationInfo,
 };
 
 function SignedInfos(props: SignedInfosProps) {
-  const { lastReviewer, destination } = props;
-  const { lastSigned, bid, cid } = destination;
+  const { source, destination } = props;
+  const {
+    lastReviewBy,
+    lastReviewDate,
+    lastSignatureBy,
+    lastSignatureDate,
+  } = source;
+  const { bid, cid } = destination;
   return (
     <ul>
       <li>
-        <strong>Signed: </strong>
-        <HumanDate timestamp={lastSigned} />
+        <strong>Approved: </strong>
+        <HumanDate timestamp={lastReviewDate} />
       </li>
       <li>
         <strong>By: </strong>
-        {lastReviewer}
+        {lastReviewBy}
       </li>
+      {lastReviewDate != lastSignatureDate && (
+        <li>
+          <strong>Re-signed: </strong>
+          <HumanDate timestamp={lastSignatureDate} />
+        </li>
+      )}
+      {lastReviewDate != lastSignatureDate && ( // just to avoid SyntaxError: Adjacent JSX elements
+        <li>
+          <strong>By: </strong>
+          {lastSignatureBy}
+        </li>
+      )}
       <li>
         <strong>Destination: </strong>
         <AdminLink name="collection:records" params={{ bid, cid }}>

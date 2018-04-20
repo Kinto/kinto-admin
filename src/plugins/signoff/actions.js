@@ -46,13 +46,13 @@ export function cancelPendingConfirm(): {
 }
 
 export function workflowInfo(
-  collections: CollectionsInfo
+  collectionsInfo: CollectionsInfo
 ): {
   type: "SIGNOFF_WORKFLOW_INFO",
-  collections: CollectionsInfo,
+  collectionsInfo: CollectionsInfo,
 } {
   return {
     type: constants.SIGNOFF_WORKFLOW_INFO,
-    collections,
+    collectionsInfo,
   };
 }
