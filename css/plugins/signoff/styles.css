@@ -44,4 +44,5 @@
   display: block;
   overflow: auto;
   max-height: 4em;
+  white-space: pre-line;
 }
