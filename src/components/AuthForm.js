@@ -5,8 +5,8 @@ import React, { PureComponent } from "react";
 
 import BaseForm from "./BaseForm";
 import { debounce, omit } from "../utils";
+import { DEFAULT_KINTO_SERVER } from "../constants";
 
-const DEFAULT_KINTO_SERVER = "https://kinto.dev.mozaws.net/v1/";
 const ANONYMOUS_AUTH = "anonymous";
 const anonymousAuthData = server => ({
   authType: ANONYMOUS_AUTH,
@@ -397,16 +397,22 @@ export default class AuthForm extends PureComponent<
   constructor(props: Object) {
     super(props);
     const { schema, uiSchema } = authSchemas[ANONYMOUS_AUTH];
+    const {
+      history,
+      settings: { singleServer },
+    } = this.props;
+
+    // Initialize the server URL value, by priority:
+    // - single server mode
+    // - most recently used
+    // - default
+    const server =
+      singleServer || (history && history[0]) || DEFAULT_KINTO_SERVER;
     this.state = {
       schema,
       uiSchema,
-      formData: { authType: ANONYMOUS_AUTH },
+      formData: { authType: ANONYMOUS_AUTH, server },
     };
-
-    const { history, getServerInfo } = this.props;
-    const server = (history && history[0]) || DEFAULT_KINTO_SERVER;
-
-    getServerInfo(anonymousAuthData(server));
   }
 
   getSupportedAuthMethods = (): string[] => {
