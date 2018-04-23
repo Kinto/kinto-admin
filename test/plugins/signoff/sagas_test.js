@@ -97,20 +97,21 @@ describe("Signoff plugin sagas", () => {
         );
         const fetchWorkflowInfoResult = {
           sourceAttributes: {
-            last_author: "Last Author",
-            last_editor: "Last Editor",
+            last_edit_by: "Last Edit By",
+            last_edit_date: "2018-04-15T16:51:23.971129",
+            last_review_request_by: "Last Review Request By",
+            last_review_request_date: "2018-04-16T16:51:23.971129",
             last_editor_comment: "Last Editor Comment",
-            last_reviewer: "Last Reviewer",
+            last_review_by: "Last Review By",
+            last_review_date: "2018-04-17T16:51:23.971129",
             last_reviewer_comment: "Last Reviewer Comment",
+            last_signature_by: "Last Signature By",
+            last_signature_date: "2018-04-18T16:51:23.971129",
             last_modified: "sourceAttributes.last_modified",
             status: "to-review",
           },
-          previewAttributes: {
-            last_modified: "previewAttributes.last_modified",
-          },
-          destinationAttributes: {
-            last_modified: "destinationAttributes.last_modified",
-          },
+          previewAttributes: {},
+          destinationAttributes: {},
           changes: {},
         };
 
@@ -140,25 +141,27 @@ describe("Signoff plugin sagas", () => {
                 bid: "stage",
                 cid: "source-plugins",
                 changes: {},
-                lastAuthor: "Last Author",
-                lastEditor: "Last Editor",
+                lastEditBy: "Last Edit By",
+                lastEditDate: 1523803883971,
                 lastEditorComment: "Last Editor Comment",
-                lastReviewer: "Last Reviewer",
+                lastReviewRequestBy: "Last Review Request By",
+                lastReviewRequestDate: 1523890283971,
                 lastReviewerComment: "Last Reviewer Comment",
+                lastReviewBy: "Last Review By",
+                lastReviewDate: 1523976683971,
+                lastSignatureBy: "Last Signature By",
+                lastSignatureDate: 1524063083971,
                 editors_group: "{collection_id}_editors_who_wear_cool_sneakers",
                 reviewers_group: undefined,
-                lastStatusChanged: "sourceAttributes.last_modified",
                 status: "to-review",
               },
               preview: {
                 bid: "preview",
                 cid: "preview-plugins",
-                lastRequested: "previewAttributes.last_modified",
               },
               destination: {
                 bid: "prod",
                 cid: "dest-plugins",
-                lastSigned: "destinationAttributes.last_modified",
               },
             })
           )

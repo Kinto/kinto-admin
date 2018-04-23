@@ -41,12 +41,12 @@ function isReviewer(source, sessionState) {
   return isMember("reviewers_group", source, sessionState);
 }
 
-function isLastEditor(source, sessionState) {
+function hasRequestedReview(source, sessionState) {
   const {
     serverInfo: { user = {} },
   } = sessionState;
-  const { lastEditBy } = source;
-  return user.id === lastEditBy;
+  const { lastReviewRequestBy } = source;
+  return user.id === lastReviewRequestBy;
 }
 
 type SignoffToolBarProps = {
@@ -111,7 +111,7 @@ export default class SignoffToolBar extends React.Component<
     const canReview =
       canEdit &&
       isReviewer(source, sessionState) &&
-      !isLastEditor(source, sessionState);
+      !hasRequestedReview(source, sessionState);
     const canSign = canEdit && isReviewer(source, sessionState);
     const hasHistory = "history" in sessionState.serverInfo.capabilities;
 

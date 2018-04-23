@@ -32,10 +32,11 @@ describe("SignoffToolBar component", () => {
       data: { id: "certs" },
     },
     signoff: {
-      collections: {
+      collectionsInfo: {
         source: {
           bid: "stage",
           cid: "certs",
+          lastEditDate: 1524063083971,
           changes: {
             lastUpdated: 42,
           },

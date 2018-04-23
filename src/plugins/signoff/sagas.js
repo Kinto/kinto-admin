@@ -30,13 +30,11 @@ export function* onCollectionRecordsRequest(getState, action) {
   } = resource;
 
   // Show basic infos for this collection while fetching more details.
-  const basicInfos = resource
-    ? {
-        source: { bid: source.bucket, cid: source.collection },
-        destination: { bid: destination.bucket, cid: destination.collection },
-        preview: { bid: preview.bucket, cid: preview.collection },
-      }
-    : null;
+  const basicInfos = {
+    source: { bid: source.bucket, cid: source.collection },
+    destination: { bid: destination.bucket, cid: destination.collection },
+    preview: { bid: preview.bucket, cid: preview.collection },
+  };
   yield put(SignoffActions.workflowInfo(basicInfos));
 
   // Obtain information for workflow (last update, authors, etc).
@@ -106,18 +104,9 @@ export function* onCollectionRecordsRequest(getState, action) {
     editors_group,
     reviewers_group,
   };
-  const previewInfo = {
-    bid: preview.bucket,
-    cid: preview.collection,
-  };
-  const destinationInfo = {
-    bid: destination.bucket,
-    cid: destination.collection,
-  };
   const collectionsInfo = {
+    ...basicInfos,
     source: sourceInfo,
-    preview: previewInfo,
-    destination: destinationInfo,
   };
   yield put(SignoffActions.workflowInfo(collectionsInfo));
 }
