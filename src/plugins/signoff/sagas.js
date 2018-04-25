@@ -16,6 +16,7 @@ export function* onCollectionRecordsRequest(getState, action) {
 
   // Current collection is not configured, no need to proceed.
   if (!resource) {
+    console.log("Current collection is not signed");
     yield put(SignoffActions.workflowInfo(null));
     return;
   }
@@ -29,13 +30,11 @@ export function* onCollectionRecordsRequest(getState, action) {
   } = resource;
 
   // Show basic infos for this collection while fetching more details.
-  const basicInfos = resource
-    ? {
-        source: { bid: source.bucket, cid: source.collection },
-        destination: { bid: destination.bucket, cid: destination.collection },
-        preview: { bid: preview.bucket, cid: preview.collection },
-      }
-    : null;
+  const basicInfos = {
+    source: { bid: source.bucket, cid: source.collection },
+    destination: { bid: destination.bucket, cid: destination.collection },
+    preview: { bid: preview.bucket, cid: preview.collection },
+  };
   yield put(SignoffActions.workflowInfo(basicInfos));
 
   // Obtain information for workflow (last update, authors, etc).
@@ -47,46 +46,69 @@ export function* onCollectionRecordsRequest(getState, action) {
   } = yield call(fetchWorkflowInfo, source, preview, destination);
 
   // Workflow component state.
-  const {
+
+  let {
     status,
-    last_author: lastAuthor,
-    last_editor: lastEditor,
+    last_edit_by: lastEditBy,
+    last_edit_date: nLastEditDate,
+    last_review_request_by: lastReviewRequestBy,
+    last_review_request_date: nLastReviewRequestDate,
     last_editor_comment: lastEditorComment,
-    last_reviewer: lastReviewer,
+    last_review_by: lastReviewBy,
+    last_review_date: nLastReviewDate,
     last_reviewer_comment: lastReviewerComment,
+    last_signature_by: lastSignatureBy,
+    last_signature_date: nLastSignatureDate,
   } = sourceAttributes;
+  let lastEditDate = Date.parse(nLastEditDate);
+  let lastReviewRequestDate = Date.parse(nLastReviewRequestDate);
+  let lastReviewDate = Date.parse(nLastReviewDate);
+  let lastSignatureDate = Date.parse(nLastSignatureDate);
+
+  // Backwards compatibility for old server versions.
+  // This code could be removed after a few releases have been deployed to prod.
+  // (ie. no server rollback)
+  const {
+    capabilities: {
+      signer: { version },
+    },
+  } = serverInfo;
+  if (version < "3.2.0") {
+    // Some of these values will be wrong and disturbing in case of
+    // signature refresh.
+    lastEditBy = sourceAttributes.last_author;
+    lastEditDate = sourceAttributes.last_modified;
+    lastReviewRequestBy = sourceAttributes.last_editor;
+    lastReviewRequestDate = previewAttributes.last_modified;
+    lastReviewBy = sourceAttributes.last_reviewer;
+    lastReviewDate = destinationAttributes.last_modified;
+    lastSignatureBy = lastReviewBy;
+    lastSignatureDate = lastReviewDate;
+  }
 
   const sourceInfo = {
     bid: source.bucket,
     cid: source.collection,
-    lastAuthor,
-    lastEditor,
+    lastEditBy,
+    lastEditDate,
     lastEditorComment,
-    lastReviewer,
+    lastReviewRequestBy,
+    lastReviewRequestDate,
+    lastReviewBy,
+    lastReviewDate,
     lastReviewerComment,
+    lastSignatureBy,
+    lastSignatureDate,
     status,
-    lastStatusChanged: sourceAttributes.last_modified,
     changes,
     editors_group,
     reviewers_group,
   };
-  const previewInfo = {
-    bid: preview.bucket,
-    cid: preview.collection,
-    lastRequested: previewAttributes.last_modified,
+  const collectionsInfo = {
+    ...basicInfos,
+    source: sourceInfo,
   };
-  const destinationInfo = {
-    bid: destination.bucket,
-    cid: destination.collection,
-    lastSigned: destinationAttributes.last_modified,
-  };
-  yield put(
-    SignoffActions.workflowInfo({
-      source: sourceInfo,
-      preview: previewInfo,
-      destination: destinationInfo,
-    })
-  );
+  yield put(SignoffActions.workflowInfo(collectionsInfo));
 }
 
 export function* fetchWorkflowInfo(source, preview, destination) {
@@ -237,6 +259,9 @@ function _pickSignoffResource(serverInfo, bid, cid) {
   const {
     capabilities: { signer = { resources: [] } },
   } = serverInfo;
+  if (signer.resources.length == 0) {
+    console.log("kinto-signer is not enabled.");
+  }
   let resource = signer.resources.filter(
     ({ source: { bucket, collection } }) => {
       // If the source has no collection info, it means that reviewing was configured

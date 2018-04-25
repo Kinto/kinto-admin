@@ -7,7 +7,7 @@ export type CollectionsInfo = {
 };
 
 export type SignoffState = {
-  collections: ?CollectionsInfo,
+  collectionsInfo: ?CollectionsInfo,
   pendingConfirmReviewRequest: boolean,
   pendingConfirmDeclineChanges: boolean,
 };
@@ -16,12 +16,18 @@ export type SourceInfo = {
   bid: string,
   cid: string,
   changes: Object,
-  lastAuthor: string,
-  lastEditor: string,
+
+  lastEditBy: string,
+  lastEditDate: number,
+  lastReviewRequestBy: string,
+  lastReviewRequestDate: number,
   lastEditorComment: string,
-  lastReviewer: string,
+  lastReviewBy: string,
+  lastReviewDate: number,
   lastReviewerComment: string,
-  lastStatusChanged: number,
+  lastSignatureBy: string,
+  lastSignatureDate: number,
+
   editors_group?: string,
   reviewers_group?: string,
 };
@@ -29,11 +35,9 @@ export type SourceInfo = {
 export type PreviewInfo = {
   bid: string,
   cid: string,
-  lastRequested: number,
 };
 
 export type DestinationInfo = {
   bid: string,
   cid: string,
-  lastSigned: number,
 };
