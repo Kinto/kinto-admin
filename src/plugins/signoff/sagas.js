@@ -65,7 +65,7 @@ export function* onCollectionRecordsRequest(getState, action) {
   let lastReviewDate = Date.parse(nLastReviewDate);
   let lastSignatureDate = Date.parse(nLastSignatureDate);
 
-  // Retro-compatibility for old server versions.
+  // Backwards compatibility for old server versions.
   // This code could be removed after a few releases have been deployed to prod.
   // (ie. no server rollback)
   const {
