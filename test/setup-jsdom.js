@@ -6,6 +6,10 @@ const JSDOM = new jsdom.JSDOM("<!doctype html><html><body></body></html>");
 global.window = JSDOM.window;
 global.document = window.document;
 global.navigator = global.window.navigator;
+// Fake a window.location to be a real url, and not `about:blank` which breaks
+// react-router-redux's `syncHistoryWithStore`, called from the KintoAdmin
+// component constructor.
+JSDOM.reconfigure({ url: "http://server.test/" });
 
 // Setup dumb sessionStorage for tests
 global.sessionStorage = (function() {
