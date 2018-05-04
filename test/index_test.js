@@ -28,10 +28,10 @@ describe("KintoAdmin", () => {
       buckets: [{}],
       serverInfo: {},
     };
-    const createKintoAdmin = () =>
+    const createKintoAdmin = (settings = {}) =>
       createComponent(KintoAdmin, {
         plugins: [],
-        settings: {},
+        settings: settings,
       });
 
     it("should call setup with the info stored locally", () => {
@@ -54,6 +54,16 @@ describe("KintoAdmin", () => {
       sinon.assert.calledWithExactly(getServerInfo, {
         authType: "anonymous",
         server: DEFAULT_KINTO_SERVER,
+      });
+    });
+
+    it("should call getServerInfo on the singleServer if set in the settings", () => {
+      const getServerInfo = sandbox.spy(sessionActions, "getServerInfo");
+      createKintoAdmin({ singleServer: "http://foo.bar/v1" });
+
+      sinon.assert.calledWithExactly(getServerInfo, {
+        authType: "anonymous",
+        server: "http://foo.bar/v1",
       });
     });
   });
