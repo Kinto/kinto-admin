@@ -35,6 +35,7 @@ export default class KintoAdmin extends Component<Props> {
     const { plugins, settings } = props;
     this.store = configureStore({ settings }, plugins);
     syncHistoryWithStore(hashHistory, this.store);
+    const { history } = this.store.getState();
 
     // Restore saved session, if any
     const session = loadSession();
@@ -44,7 +45,10 @@ export default class KintoAdmin extends Component<Props> {
       this.store.dispatch(
         sessionActions.getServerInfo({
           authType: "anonymous",
-          server: DEFAULT_KINTO_SERVER,
+          server:
+            settings.singleServer ||
+            (history && history[0]) ||
+            DEFAULT_KINTO_SERVER,
         })
       );
     }
