@@ -3,6 +3,7 @@
 import type { RecordData, ResourceHistoryEntry, Capabilities } from "./types";
 import React from "react";
 import _timeago from "timeago.js";
+import { DEFAULT_KINTO_SERVER } from "./constants";
 
 export function clone(obj: any) {
   return JSON.parse(JSON.stringify(obj));
@@ -275,4 +276,15 @@ export function debounce(fn: any, delay: number) {
     }
     timer = setTimeout(() => fn.apply(this, args), delay);
   };
+}
+
+export function getServerByPriority(
+  singleServer: ?string,
+  history: ?(string[])
+) {
+  // Return the server URL value, by priority:
+  // - single server mode
+  // - most recently used
+  // - default
+  return singleServer || (history && history[0]) || DEFAULT_KINTO_SERVER;
 }
