@@ -5,6 +5,8 @@ import * as sessionActions from "../src/actions/session";
 import { DEFAULT_KINTO_SERVER, SESSION_SETUP } from "../src/constants";
 import KintoAdmin from "../src/index";
 import * as localStore from "../src/store/localStore";
+import configureStore from "../src/store/configureStore";
+import * as configStore from "../src/store/configureStore";
 
 describe("KintoAdmin", () => {
   let sandbox;
@@ -31,7 +33,7 @@ describe("KintoAdmin", () => {
     const createKintoAdmin = (settings = {}) =>
       createComponent(KintoAdmin, {
         plugins: [],
-        settings: settings,
+        settings,
       });
 
     it("should call setup with the info stored locally", () => {
@@ -47,7 +49,7 @@ describe("KintoAdmin", () => {
       });
     });
 
-    it("should call getServerInfo on the server if no session was stored", () => {
+    it("should call getServerInfo on the server if no session was stored and no history", () => {
       const getServerInfo = sandbox.spy(sessionActions, "getServerInfo");
       createKintoAdmin();
 
@@ -64,6 +66,20 @@ describe("KintoAdmin", () => {
       sinon.assert.calledWithExactly(getServerInfo, {
         authType: "anonymous",
         server: "http://foo.bar/v1",
+      });
+    });
+
+    it("should call getServerInfo on the server from the history if there is one", () => {
+      const getServerInfo = sandbox.spy(sessionActions, "getServerInfo");
+      const store = configureStore({
+        history: ["http://server.history/v1"],
+      });
+      sandbox.stub(configStore, "default").returns(store);
+      createKintoAdmin();
+
+      sinon.assert.calledWithExactly(getServerInfo, {
+        authType: "anonymous",
+        server: "http://server.history/v1",
       });
     });
   });
