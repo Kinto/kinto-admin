@@ -46,7 +46,6 @@ export function* getServerInfo(
     // which was sent later.
     const currentClient = getClient();
     if (client.remote != currentClient.remote) {
-      console.log("NOOOOOO", client.remote, currentClient.remote);
       return;
     }
 

@@ -6,7 +6,6 @@ import { Provider } from "react-redux";
 import { Router, hashHistory } from "react-router";
 import { syncHistoryWithStore } from "react-router-redux";
 
-import { getServerByPriority } from "./utils";
 import getRoutes from "./routes";
 import configureStore from "./store/configureStore";
 import * as routeActions from "./actions/route";
@@ -35,17 +34,18 @@ export default class KintoAdmin extends Component<Props> {
     const { plugins, settings } = props;
     this.store = configureStore({ settings }, plugins);
     syncHistoryWithStore(hashHistory, this.store);
-    const { history } = this.store.getState();
 
     // Restore saved session, if any
     const session = loadSession();
     if (session) {
       this.store.dispatch(sessionActions.setup(session.auth));
-    } else {
+    } else if (settings.singleServer) {
+      // We can't wait for the server input box to be filled in to fetch the
+      // server info when we're in "singleServer" mode.
       this.store.dispatch(
         sessionActions.getServerInfo({
           authType: "anonymous",
-          server: getServerByPriority(settings.singleServer, history),
+          server: settings.singleServer,
         })
       );
     }
