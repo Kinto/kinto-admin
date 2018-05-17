@@ -85,9 +85,16 @@ export function* setupSession(
     const { authType } = auth;
     if (
       authType != "anonymous" &&
-      (!userId || !userId.startsWith(authType + ":"))
+      (!userId ||
+        (!userId.startsWith(authType + ":") &&
+          // If the authType is openid, the userId doesn't start with "openid:" but "auth0:".
+          (authType === "openid" && !userId.startsWith("auth0:"))))
     ) {
-      yield put(notificationActions.notifyError("Authentication failed."));
+      yield put(
+        notificationActions.notifyError("Authentication failed.", {
+          message: `authType is ${authType} and userID is ${userId}`,
+        })
+      );
       return;
     }
 

@@ -222,7 +222,11 @@ describe("session sagas", () => {
         setupSession = saga.setupSession(getState, action);
         setupSession.next(); // call getServerInfo.
         expect(setupSession.next().value).eql(
-          put(notifyError("Authentication failed."))
+          put(
+            notifyError("Authentication failed.", {
+              message: "authType is basicauth and userID is undefined",
+            })
+          )
         );
       });
     });

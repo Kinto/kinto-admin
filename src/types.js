@@ -64,17 +64,19 @@ export type Capabilities = {
   signer?: Object,
 };
 
-export type ClientError = {
+export type ClientErrorData = {
+  code: number,
   message: string,
-  data: {
-    code: number,
-    message: string,
-    details: {
-      existing: {
-        id: string,
-      },
+  details: {
+    existing: {
+      id: string,
     },
   },
+};
+
+export type ClientError = {
+  message: string,
+  data?: ClientErrorData,
 };
 
 export type HistoryFilters = {

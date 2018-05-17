@@ -39,8 +39,6 @@ class ServerHistory extends PureComponent<
   constructor(props) {
     super(props);
     this.state = { menuOpened: false };
-    // Initialise the server info from the value we have in the input box.
-    this.fetchServerInfo(this.props.value);
   }
 
   select = server => {

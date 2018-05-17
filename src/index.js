@@ -11,6 +11,7 @@ import configureStore from "./store/configureStore";
 import * as routeActions from "./actions/route";
 import * as sessionActions from "./actions/session";
 import { loadSession } from "./store/localStore";
+import { getServerByPriority } from "./utils";
 
 import "bootstrap/dist/css/bootstrap.css";
 import "codemirror/lib/codemirror.css";
@@ -34,18 +35,17 @@ export default class KintoAdmin extends Component<Props> {
     const { plugins, settings } = props;
     this.store = configureStore({ settings }, plugins);
     syncHistoryWithStore(hashHistory, this.store);
+    const { history } = this.store.getState();
 
     // Restore saved session, if any
     const session = loadSession();
     if (session) {
       this.store.dispatch(sessionActions.setup(session.auth));
-    } else if (settings.singleServer) {
-      // We can't wait for the server input box to be filled in to fetch the
-      // server info when we're in "singleServer" mode.
+    } else {
       this.store.dispatch(
         sessionActions.getServerInfo({
           authType: "anonymous",
-          server: settings.singleServer,
+          server: getServerByPriority(settings.singleServer, history),
         })
       );
     }
