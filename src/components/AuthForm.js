@@ -4,8 +4,7 @@ import type { SessionState, SettingsState } from "../types";
 import React, { PureComponent } from "react";
 
 import BaseForm from "./BaseForm";
-import { debounce, omit } from "../utils";
-import { DEFAULT_KINTO_SERVER } from "../constants";
+import { debounce, getServerByPriority, omit } from "../utils";
 
 const ANONYMOUS_AUTH = "anonymous";
 const anonymousAuthData = server => ({
@@ -312,7 +311,7 @@ const authLabels = {
  * Use the server history for the default server field value when available.
  */
 function extendSchemaWithHistory(schema, history, authMethods, singleServer) {
-  const serverURL = singleServer || history[0] || DEFAULT_KINTO_SERVER;
+  const serverURL = getServerByPriority(singleServer, history);
   return {
     ...schema,
     properties: {
@@ -406,8 +405,7 @@ export default class AuthForm extends PureComponent<
     // - single server mode
     // - most recently used
     // - default
-    const server =
-      singleServer || (history && history[0]) || DEFAULT_KINTO_SERVER;
+    const server = getServerByPriority(singleServer, history);
     this.state = {
       schema,
       uiSchema,
