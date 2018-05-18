@@ -17,7 +17,7 @@ const KNOWN_AUTH_METHODS = [
   "fxa",
   "ldap",
   "portier",
-  "openid",
+  // "openid", // Special cased as we need one auth method per openid provider.
 ];
 
 type ServerHistoryProps = {
@@ -185,149 +185,147 @@ const loginPasswordUiSchema = {
   },
 };
 
-const authSchemas = {
-  account: {
-    schema: {
-      ...baseAuthSchema,
-      required: [...baseAuthSchema.required, "credentials"],
-      properties: {
-        ...baseAuthSchema.properties,
-        ...loginPasswordSchema("Accounts credentials"),
+const authSchemas = authType => {
+  const customizedSchemas: Object = {
+    account: {
+      schema: {
+        ...baseAuthSchema,
+        required: [...baseAuthSchema.required, "credentials"],
+        properties: {
+          ...baseAuthSchema.properties,
+          ...loginPasswordSchema("Accounts credentials"),
+        },
+      },
+      uiSchema: {
+        ...baseUISchema,
+        ...loginPasswordUiSchema,
       },
     },
-    uiSchema: {
-      ...baseUISchema,
-      ...loginPasswordUiSchema,
-    },
-  },
-  basicauth: {
-    schema: {
-      ...baseAuthSchema,
-      required: [...baseAuthSchema.required, "credentials"],
-      properties: {
-        ...baseAuthSchema.properties,
-        ...loginPasswordSchema("BasicAuth credentials"),
+    basicauth: {
+      schema: {
+        ...baseAuthSchema,
+        required: [...baseAuthSchema.required, "credentials"],
+        properties: {
+          ...baseAuthSchema.properties,
+          ...loginPasswordSchema("BasicAuth credentials"),
+        },
+      },
+      uiSchema: {
+        ...baseUISchema,
+        ...loginPasswordUiSchema,
       },
     },
-    uiSchema: {
-      ...baseUISchema,
-      ...loginPasswordUiSchema,
-    },
-  },
-  anonymous: {
-    schema: {
-      ...baseAuthSchema,
-    },
-    uiSchema: {
-      ...baseUISchema,
-    },
-  },
-  fxa: {
-    schema: {
-      ...baseAuthSchema,
-    },
-    uiSchema: {
-      authType: {
-        ...baseUISchema.authType,
-        "ui:help": (
-          <span>
-            <b>Note:</b> The
-            <a href="https://github.com/mozilla-services/kinto-fxa">
-              {" kinto-fxa "}
-            </a>
-            plugin must be installed on the target server.
-          </span>
-        ),
+    fxa: {
+      schema: {
+        ...baseAuthSchema,
       },
-    },
-  },
-  openid: {
-    schema: {
-      ...baseAuthSchema,
-      required: [...baseAuthSchema.required, "provider"],
-      properties: {
-        ...baseAuthSchema.properties,
-        provider: {
-          type: "string",
-          title: "Provider",
-          enum: [],
+      uiSchema: {
+        authType: {
+          ...baseUISchema.authType,
+          "ui:help": (
+            <span>
+              <b>Note:</b> The
+              <a href="https://github.com/mozilla-services/kinto-fxa">
+                {" kinto-fxa "}
+              </a>
+              plugin must be installed on the target server.
+            </span>
+          ),
         },
       },
     },
-    uiSchema: {
-      ...baseUISchema,
-      provider: { "ui:widget": "radio" },
-    },
-  },
-  ldap: {
-    schema: {
-      ...baseAuthSchema,
-      required: [...baseAuthSchema.required, "credentials"],
-      properties: {
-        ...baseAuthSchema.properties,
-        credentials: {
-          type: "object",
-          title: "LDAP credentials",
-          required: ["username", "password"],
-          properties: {
-            username: {
-              type: "string",
-              title: "Email",
-              default: "jdoe@mozilla.com",
-            },
-            password: {
-              type: "string",
-              title: "Password",
+    ldap: {
+      schema: {
+        ...baseAuthSchema,
+        required: [...baseAuthSchema.required, "credentials"],
+        properties: {
+          ...baseAuthSchema.properties,
+          credentials: {
+            type: "object",
+            title: "LDAP credentials",
+            required: ["username", "password"],
+            properties: {
+              username: {
+                type: "string",
+                title: "Email",
+                default: "jdoe@mozilla.com",
+              },
+              password: {
+                type: "string",
+                title: "Password",
+              },
             },
           },
         },
       },
-    },
-    uiSchema: {
-      ...baseUISchema,
-      credentials: {
-        password: { "ui:widget": "password" },
-      },
-    },
-  },
-  portier: {
-    schema: {
-      ...baseAuthSchema,
-      required: [...baseAuthSchema.required, "email"],
-      properties: {
-        ...baseAuthSchema.properties,
-        email: {
-          title: "Email address",
-          type: "string",
-          format: "email",
+      uiSchema: {
+        ...baseUISchema,
+        credentials: {
+          password: { "ui:widget": "password" },
         },
       },
     },
-    uiSchema: {
-      authType: {
-        ...baseUISchema.authType,
-        "ui:help": (
-          <span>
-            <b>Note:</b> The
-            <a href="https://github.com/Kinto/kinto-portier">
-              {" kinto-portier "}
-            </a>
-            plugin must be installed on the target server.
-          </span>
-        ),
+    portier: {
+      schema: {
+        ...baseAuthSchema,
+        required: [...baseAuthSchema.required, "email"],
+        properties: {
+          ...baseAuthSchema.properties,
+          email: {
+            title: "Email address",
+            type: "string",
+            format: "email",
+          },
+        },
+      },
+      uiSchema: {
+        authType: {
+          ...baseUISchema.authType,
+          "ui:help": (
+            <span>
+              <b>Note:</b> The
+              <a href="https://github.com/Kinto/kinto-portier">
+                {" kinto-portier "}
+              </a>
+              plugin must be installed on the target server.
+            </span>
+          ),
+        },
       },
     },
-  },
+  };
+  if (authType in customizedSchemas) {
+    return customizedSchemas[authType];
+  }
+
+  // Return the standard schemas if no customization is needed (eg for
+  // anonymous, openid).
+  return {
+    schema: {
+      ...baseAuthSchema,
+    },
+    uiSchema: {
+      ...baseUISchema,
+    },
+  };
 };
 
-const authLabels = {
-  anonymous: "Anonymous",
-  basicauth: "Basic Auth",
-  account: "Kinto Account Auth",
-  fxa: "Firefox Account",
-  ldap: "LDAP",
-  portier: "Portier",
-  openid: "OpenID",
+const authLabels = authType => {
+  const labels = {
+    anonymous: "Anonymous",
+    basicauth: "Basic Auth",
+    account: "Kinto Account Auth",
+    fxa: "Firefox Account",
+    ldap: "LDAP",
+    portier: "Portier",
+  };
+  if (authType.startsWith("openid-")) {
+    const provider = authType.replace("openid-", "");
+    const prettyProvider =
+      labels[provider] || provider.charAt(0).toUpperCase() + provider.slice(1);
+    return `${prettyProvider} (OpenID)`;
+  }
+  return labels[authType];
 };
 
 /**
@@ -342,7 +340,7 @@ function extendSchemaWithHistory(schema, history, authMethods, singleServer) {
       authType: {
         ...schema.properties.authType,
         enum: authMethods,
-        enumNames: authMethods.map(a => authLabels[a]),
+        enumNames: authMethods.map(authLabels),
       },
       server: {
         ...schema.properties.server,
@@ -419,7 +417,7 @@ export default class AuthForm extends PureComponent<
 
   constructor(props: Object) {
     super(props);
-    const { schema, uiSchema } = authSchemas[ANONYMOUS_AUTH];
+    const { schema, uiSchema } = authSchemas(ANONYMOUS_AUTH);
     const {
       history,
       settings: { singleServer },
@@ -438,49 +436,30 @@ export default class AuthForm extends PureComponent<
   }
 
   getSupportedAuthMethods = (): string[] => {
+    const { session } = this.props;
     const {
-      session: {
-        serverInfo: { capabilities },
-      },
-    } = this.props;
+      serverInfo: { capabilities },
+    } = session;
+    const { openid: { providers } = { providers: [] } } = capabilities;
     // Check which of our known auth implementations are supported by the server.
     const supportedAuthMethods = KNOWN_AUTH_METHODS.filter(
       a => a in capabilities
     );
-    return [ANONYMOUS_AUTH].concat(supportedAuthMethods);
+    // Add an auth method for each single openid provider supported by the server.
+    const openIdMethods = providers.map(provider => `openid-${provider.name}`);
+    return [ANONYMOUS_AUTH].concat(supportedAuthMethods).concat(openIdMethods);
   };
 
   onChange = ({ formData }: { formData: Object }) => {
     const { authType } = formData;
-    const { uiSchema } = authSchemas[authType];
-    let { schema } = authSchemas[authType];
-    const specificFormData = [
-      ANONYMOUS_AUTH,
-      "fxa",
-      "portier",
-      "openid",
-    ].includes(authType)
+    const { uiSchema } = authSchemas(authType);
+    let { schema } = authSchemas(authType);
+    const omitCredentials =
+      authType in [ANONYMOUS_AUTH, "fxa", "portier"] ||
+      authType.startsWith("openid-");
+    const specificFormData = omitCredentials
       ? omit(formData, ["credentials"])
       : { credentials: {}, ...formData };
-    if (authType === "openid") {
-      // Special casing openid as we need to know which provider to use.
-      const { session } = this.props;
-      const {
-        serverInfo: {
-          capabilities: { openid: { providers } = { providers: [] } },
-        },
-      } = session;
-      schema = {
-        ...schema,
-        properties: {
-          ...schema.properties,
-          provider: {
-            ...schema.properties.provider,
-            enum: providers.map(provider => provider.name),
-          },
-        },
-      };
-    }
     return this.setState({
       schema,
       uiSchema,
@@ -495,7 +474,13 @@ export default class AuthForm extends PureComponent<
       navigateToExternalAuth,
       navigateToOpenID,
     } = this.props;
-    const { authType } = formData;
+    let { authType } = formData;
+    let openidProvider = null;
+    if (authType.startsWith("openid-")) {
+      openidProvider = authType.replace("openid-", "");
+      authType = "openid";
+    }
+
     const { redirectURL } = session;
     const extendedFormData = { ...formData, redirectURL };
     switch (authType) {
@@ -504,14 +489,13 @@ export default class AuthForm extends PureComponent<
         return navigateToExternalAuth(extendedFormData);
       }
       case "openid": {
-        const { provider } = formData;
         const { session } = this.props;
         const {
           serverInfo: {
             capabilities: { openid: { providers } = { providers: [] } },
           },
         } = session;
-        const providerData = providers.find(p => p.name === provider);
+        const providerData = providers.find(p => p.name === openidProvider);
         if (!providerData) {
           throw "Couldn't find provider data in the state. Bad.";
         }
@@ -566,7 +550,7 @@ export default class AuthForm extends PureComponent<
             onSubmit={this.onSubmit}>
             <button type="submit" className="btn btn-info">
               {"Sign in using "}
-              {authLabels[formData.authType]}
+              {authLabels(formData.authType)}
             </button>
           </BaseForm>
         </div>

@@ -28,12 +28,20 @@ export function* getServerInfo(
   getState: GetStateFn,
   action: ActionType<typeof actions.getServerInfo>
 ): SagaGen {
-  const { auth } = action;
+  const { auth }: Object = action;
 
+  let processedAuth = auth;
+  if (auth.authType.startsWith("openid-")) {
+    processedAuth = {
+      ...auth,
+      authType: "openid",
+      provider: auth.authType.replace("openid-", ""),
+    };
+  }
   // Set the client globally to the entire app, when the saga starts.
   // We'll compare the remote of this singleton when the server info will be received
   // to prevent race conditions.
-  const client = setupClient(auth);
+  const client = setupClient(processedAuth);
   console.log("getting server info", auth);
 
   try {
@@ -88,7 +96,7 @@ export function* setupSession(
       (!userId ||
         (!userId.startsWith(authType + ":") &&
           // If the authType is openid, the userId doesn't start with "openid:" but "auth0:".
-          (authType === "openid" && !userId.startsWith("auth0:"))))
+          (authType.startsWith("openid-") && !userId.startsWith("auth0:"))))
     ) {
       yield put(
         notificationActions.notifyError("Authentication failed.", {

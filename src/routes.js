@@ -52,7 +52,7 @@ function onAuthEnter(store: Object, { params }) {
   if (payload && token) {
     try {
       const { server, redirectURL, authType } = JSON.parse(atob(payload));
-      if (authType === "openid") {
+      if (authType.startsWith("openid-")) {
         token = JSON.parse(token).access_token;
       }
       console.log("REDIRECTED", JSON.parse(atob(payload)));
