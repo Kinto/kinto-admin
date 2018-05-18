@@ -156,6 +156,7 @@ describe("HomePage component", () => {
               server: "http://test.server/v1",
               authType: "fxa",
               redirectURL: undefined,
+              credentials: {},
             });
           });
         });
