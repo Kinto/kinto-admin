@@ -229,7 +229,7 @@ export function* listBuckets(
     if ("permissions_endpoint" in serverCapabilities) {
       const { data: permissions } = yield call(
         [client, client.listPermissions],
-        { pages: Infinity }
+        { pages: Infinity, filters: { exclude_resource_name: "record" } }
       );
       buckets = expandBucketsCollections(buckets, permissions);
       yield put(actions.permissionsListSuccess(permissions));
