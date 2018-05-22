@@ -108,28 +108,12 @@ const schema = {
       type: "integer",
       title: "Cache expires",
       default: 0,
-      description: (
-        <p>
-          {"(in seconds) add "}
-          <a href="https://kinto.readthedocs.io/en/stable/api/1.x/collections.html#collection-caching">
-            client cache headers on read-only requests
-          </a>.
-        </p>
-      ),
+      description: "client cache header on read-only requests",
     },
     displayFields: {
       type: "array",
       title: "Records list columns",
-      description: (
-        <p>
-          Pick the JSON schema field names you want to see listed in the records
-          list table.{" "}
-          <em>
-            Hint: These are the keys of the root <code>properties</code> object,
-            but may also be other existing property names of your records.
-          </em>
-        </p>
-      ),
+      description: "fields to list in the record list table",
       default: ["title"],
       minItems: 1,
       items: {
@@ -140,12 +124,7 @@ const schema = {
     attachment: {
       type: "object",
       title: "File attachment",
-      description: (
-        <p>
-          Please note this requires the <code>attachments</code> capability to
-          be available on the server.
-        </p>
-      ),
+      description: "Root object for file attachment information",
       properties: {
         enabled: {
           type: "boolean",
@@ -200,6 +179,12 @@ const uiSchema = {
     ),
   },
   attachment: {
+    "ui:description": (
+      <p>
+        Please note this requires the <code>attachments</code> capability to be
+        available on the server.
+      </p>
+    ),
     enabled: {
       "ui:help": "Enable attachment of a single file to records.",
     },
@@ -237,11 +222,31 @@ const uiSchema = {
     items: {
       "ui:placeholder": "Enter a field name. i.e: name, attachment.filename",
     },
+    "ui:description": (
+      <p>
+        Pick the JSON schema field names you want to see listed in the records
+        list table.{" "}
+        <em>
+          Hint: These are the keys of the root <code>properties</code> object,
+          but may also be other existing property names of your records.
+        </em>
+      </p>
+    ),
     "ui:help": (
       <p>
         This field allows defining the record object properties to display as
         columns in the main records list table. You must define at least one
         display field.
+      </p>
+    ),
+  },
+  cache_expires: {
+    "ui:description": (
+      <p>
+        {"(in seconds) add "}
+        <a href="https://kinto.readthedocs.io/en/stable/api/1.x/collections.html#collection-caching">
+          client cache headers on read-only requests
+        </a>.
       </p>
     ),
   },
