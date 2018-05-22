@@ -283,7 +283,10 @@ describe("session sagas", () => {
         ];
 
         expect(listBuckets.next(responses).value).eql(
-          call([client, client.listPermissions], { pages: Infinity })
+          call([client, client.listPermissions], {
+            pages: Infinity,
+            filters: { exclude_resource_name: "record" },
+          })
         );
       });
 
