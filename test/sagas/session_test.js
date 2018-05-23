@@ -1,4 +1,6 @@
+import sinon from "sinon";
 import { expect } from "chai";
+import { createSandbox } from "../test_utils";
 import { push as updatePath } from "react-router-redux";
 import { put, call } from "redux-saga/effects";
 
@@ -8,6 +10,7 @@ import * as actions from "../../src/actions/session";
 import * as historyActions from "../../src/actions/history";
 import * as notificationsActions from "../../src/actions/notifications";
 import * as saga from "../../src/sagas/session";
+import * as clientUtils from "../../src/client";
 import { getClient, setClient, resetClient } from "../../src/client";
 import { DEFAULT_SERVERINFO } from "../../src/reducers/session";
 
@@ -54,7 +57,7 @@ describe("session sagas", () => {
   });
 
   describe("getServerInfo()", () => {
-    let getServerInfo, getState, action, client;
+    let getServerInfo, getState, action, client, sandbox;
 
     const serverInfo = {
       ...DEFAULT_SERVERINFO,
@@ -67,12 +70,17 @@ describe("session sagas", () => {
     const sessionState = { serverInfo };
 
     before(() => {
+      sandbox = createSandbox();
       resetClient();
       getState = () => ({
         session: sessionState,
       });
       action = actions.getServerInfo(authData);
       getServerInfo = saga.getServerInfo(getState, action);
+    });
+
+    afterEach(() => {
+      sandbox.restore();
     });
 
     describe("Success", () => {
@@ -96,6 +104,24 @@ describe("session sagas", () => {
         expect(getServerInfo.next().value).eql(
           put(notificationsActions.clearNotifications({ force: true }))
         );
+      });
+
+      it("should split the auth if it's openID", () => {
+        const setupClient = sandbox.spy(clientUtils, "setupClient");
+        const authData = {
+          server: "http://server.test/v1",
+          authType: "openid-google",
+          credentials: { token: "the token" },
+        };
+        action = actions.getServerInfo(authData);
+        getServerInfo = saga.getServerInfo(getState, action);
+        getServerInfo.next();
+        sinon.assert.calledWithExactly(setupClient, {
+          authType: "openid",
+          provider: "google",
+          server: "http://server.test/v1",
+          credentials: { token: "the token" },
+        });
       });
     });
 
