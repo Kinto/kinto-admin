@@ -233,6 +233,31 @@ describe("session sagas", () => {
           put(actions.setupComplete(authData))
         );
       });
+
+      it("should correctly authenticate the user when using openID", () => {
+        const authData = {
+          server: "http://server.test/v1",
+          authType: "openid-google",
+          credentials: { token: "the token" },
+        };
+        const serverInfo = {
+          ...serverInfo,
+          user: { id: "auth0:token" },
+        };
+
+        const getStateOpenID = () => ({
+          session: {
+            serverInfo,
+          },
+        });
+        const action = actions.setup(authData);
+        const setupSession = saga.setupSession(getStateOpenID, action);
+        setupSession.next();
+
+        expect(setupSession.next(serverInfo).value).eql(
+          put(actions.setAuthenticated())
+        );
+      });
     });
 
     describe("Failure", () => {
