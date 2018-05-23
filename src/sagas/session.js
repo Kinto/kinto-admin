@@ -42,7 +42,6 @@ export function* getServerInfo(
   // We'll compare the remote of this singleton when the server info will be received
   // to prevent race conditions.
   const client = setupClient(processedAuth);
-  console.log("getting server info", auth);
 
   try {
     // Fetch server information

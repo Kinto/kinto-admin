@@ -55,8 +55,6 @@ function onAuthEnter(store: Object, { params }) {
       if (authType.startsWith("openid-")) {
         token = JSON.parse(token).access_token;
       }
-      console.log("REDIRECTED", JSON.parse(atob(payload)));
-      console.log("token", token);
       const credentials = { token };
       store.dispatch(
         sessionActions.setup({
