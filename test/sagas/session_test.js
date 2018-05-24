@@ -242,7 +242,7 @@ describe("session sagas", () => {
         };
         const serverInfo = {
           ...serverInfo,
-          user: { id: "auth0:token" },
+          user: { id: "google:token" },
         };
 
         const getStateOpenID = () => ({

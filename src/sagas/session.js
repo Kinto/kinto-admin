@@ -90,12 +90,14 @@ export function* setupSession(
     } = getState();
     const { user: { id: userId } = {} } = serverInfo;
     const { authType } = auth;
+    const provider = authType.replace("openid-", ""); // This is only relevant if it's openID, eg openid-google
     if (
       authType != "anonymous" &&
       (!userId ||
         (!userId.startsWith(authType + ":") &&
-          // If the authType is openid, the userId doesn't start with "openid:" but "auth0:".
-          (authType.startsWith("openid-") && !userId.startsWith("auth0:"))))
+          // If the authType is openid, the userId starts with the provider
+          (authType.startsWith("openid-") &&
+            !userId.startsWith(`${provider}:`))))
     ) {
       yield put(
         notificationActions.notifyError("Authentication failed.", {
