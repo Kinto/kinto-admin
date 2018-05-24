@@ -162,13 +162,11 @@ export function navigateToOpenID(
   const { origin, pathname } = document.location;
   const { server } = authFormData;
   const strippedServer = server.replace(/\/$/, "");
-  const { auth_path } = provider;
-  const strippedAuthPath = auth_path.replace(/^\//, "");
+  const { auth_path: authPath } = provider;
+  const strippedAuthPath = authPath.replace(/^\//, "");
   const payload = btoa(JSON.stringify(authFormData));
-  const redirect = `${origin}${pathname}#/auth/${payload}/`;
-  document.location.href = `${strippedServer}/${strippedAuthPath}?callback=${encodeURIComponent(
-    redirect
-  )}&scope=openid email`;
+  const redirect = encodeURIComponent(`${origin}${pathname}#/auth/${payload}/`);
+  document.location.href = `${strippedServer}/${strippedAuthPath}?callback=${redirect}&scope=openid email`;
   return { type: null };
 }
 

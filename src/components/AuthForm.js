@@ -310,7 +310,7 @@ const authSchemas = authType => {
   };
 };
 
-const authLabels = authType => {
+const getAuthLabel = authType => {
   const labels = {
     anonymous: "Anonymous",
     basicauth: "Basic Auth",
@@ -320,10 +320,11 @@ const authLabels = authType => {
     portier: "Portier",
   };
   if (authType.startsWith("openid-")) {
+    // The authType openid-<provider> is constructed in getSupportedAuthMethods.
     const provider = authType.replace("openid-", "");
     const prettyProvider =
       labels[provider] || provider.charAt(0).toUpperCase() + provider.slice(1);
-    return `${prettyProvider} (OpenID)`;
+    return `OpenID Connect (${prettyProvider})`;
   }
   return labels[authType];
 };
@@ -340,7 +341,7 @@ function extendSchemaWithHistory(schema, history, authMethods, singleServer) {
       authType: {
         ...schema.properties.authType,
         enum: authMethods,
-        enumNames: authMethods.map(authLabels),
+        enumNames: authMethods.map(getAuthLabel),
       },
       server: {
         ...schema.properties.server,
@@ -453,7 +454,7 @@ export default class AuthForm extends PureComponent<
   onChange = ({ formData }: { formData: Object }) => {
     const { authType } = formData;
     const { uiSchema } = authSchemas(authType);
-    let { schema } = authSchemas(authType);
+    const { schema } = authSchemas(authType);
     const omitCredentials =
       authType in [ANONYMOUS_AUTH, "fxa", "portier"] ||
       authType.startsWith("openid-");
@@ -497,9 +498,8 @@ export default class AuthForm extends PureComponent<
         } = session;
         const providerData = providers.find(p => p.name === openidProvider);
         if (!providerData) {
-          throw "Couldn't find provider data in the state. Bad.";
+          throw new Error("Couldn't find provider data in the state. Bad.");
         }
-        console.log("providerData", providerData);
         return navigateToOpenID(extendedFormData, providerData);
       }
       // case "anonymous":
@@ -550,7 +550,7 @@ export default class AuthForm extends PureComponent<
             onSubmit={this.onSubmit}>
             <button type="submit" className="btn btn-info">
               {"Sign in using "}
-              {authLabels(formData.authType)}
+              {getAuthLabel(formData.authType)}
             </button>
           </BaseForm>
         </div>
