@@ -155,6 +155,21 @@ function postToPortier(server: string, redirect: string): NavigationResult {
   }
 }
 
+export function navigateToOpenID(
+  authFormData: Object,
+  provider: Object
+): NavigationResult {
+  const { origin, pathname } = document.location;
+  const { server } = authFormData;
+  const strippedServer = server.replace(/\/$/, "");
+  const { auth_path: authPath } = provider;
+  const strippedAuthPath = authPath.replace(/^\//, "");
+  const payload = btoa(JSON.stringify(authFormData));
+  const redirect = encodeURIComponent(`${origin}${pathname}#/auth/${payload}/`);
+  document.location.href = `${strippedServer}/${strippedAuthPath}?callback=${redirect}&scope=openid email`;
+  return { type: null };
+}
+
 /**
  * Massive side effect: this will navigate away from the current page to perform
  * authentication to a third-party service, like FxA.

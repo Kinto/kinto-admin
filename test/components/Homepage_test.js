@@ -22,13 +22,19 @@ describe("HomePage component", () => {
 
   describe("Not authenticated", () => {
     describe("Authentication types", () => {
-      let node, setup, getServerInfo, navigateToExternalAuth, serverChange;
+      let node,
+        setup,
+        getServerInfo,
+        navigateToExternalAuth,
+        navigateToOpenID,
+        serverChange;
 
       beforeEach(() => {
         setup = sandbox.spy();
         serverChange = sandbox.spy();
         getServerInfo = sandbox.spy();
         navigateToExternalAuth = sandbox.spy();
+        navigateToOpenID = sandbox.spy();
         node = createComponent(HomePage, {
           setup,
           serverChange,
@@ -38,6 +44,7 @@ describe("HomePage component", () => {
             singleServer: null,
           },
           navigateToExternalAuth,
+          navigateToOpenID,
           session: {
             authenticated: false,
             serverInfo: {
@@ -45,6 +52,13 @@ describe("HomePage component", () => {
                 basicauth: "some basic auth info",
                 ldap: "some ldap auth info",
                 fxa: "some fxa auth info",
+                openid: {
+                  providers: [
+                    {
+                      name: "google",
+                    },
+                  ],
+                },
               },
             },
           },
@@ -156,7 +170,32 @@ describe("HomePage component", () => {
               server: "http://test.server/v1",
               authType: "fxa",
               redirectURL: undefined,
+              credentials: {},
             });
+          });
+        });
+      });
+
+      describe("OpenID", () => {
+        it("should navigate to external auth URL", () => {
+          Simulate.change(node.querySelector("#root_server"), {
+            target: { value: "http://test.server/v1" },
+          });
+          Simulate.change(node.querySelectorAll("[type=radio]")[4], {
+            target: { value: "openid-google" },
+          });
+
+          return new Promise(setImmediate).then(() => {
+            Simulate.submit(node.querySelector("form"));
+            sinon.assert.calledWithExactly(
+              navigateToOpenID,
+              {
+                server: "http://test.server/v1",
+                redirectURL: undefined,
+                authType: "openid-google",
+              },
+              { name: "google" }
+            );
           });
         });
       });

@@ -66,6 +66,7 @@ type Props = {
   serverChange: () => void,
   getServerInfo: (auth: Object) => void,
   navigateToExternalAuth: (authFormData: Object) => void,
+  navigateToOpenID: (authFormData: Object, provider: Object) => void,
 };
 
 export default class HomePage extends PureComponent<Props> {
@@ -79,6 +80,7 @@ export default class HomePage extends PureComponent<Props> {
       serverChange,
       getServerInfo,
       navigateToExternalAuth,
+      navigateToOpenID,
     } = this.props;
     const { authenticated, busy } = session;
     return (
@@ -98,6 +100,7 @@ export default class HomePage extends PureComponent<Props> {
             history={history}
             clearHistory={clearHistory}
             navigateToExternalAuth={navigateToExternalAuth}
+            navigateToOpenID={navigateToOpenID}
           />
         )}
       </div>

@@ -78,7 +78,12 @@ export default class App extends PureComponent<Props> {
             </div>
             <div className={contentClasses}>
               {notifications || <div />}
-              <Breadcrumbs routes={routes} params={params} separator=" / " />
+              <Breadcrumbs
+                routes={routes}
+                params={params}
+                separator=" / "
+                excludes={["auth"]}
+              />
               {content || <p>Default.</p>}
             </div>
           </div>

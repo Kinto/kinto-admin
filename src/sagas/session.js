@@ -28,12 +28,20 @@ export function* getServerInfo(
   getState: GetStateFn,
   action: ActionType<typeof actions.getServerInfo>
 ): SagaGen {
-  const { auth } = action;
+  const { auth }: Object = action;
 
+  let processedAuth = auth;
+  if (auth.authType.startsWith("openid-")) {
+    processedAuth = {
+      ...auth,
+      authType: "openid",
+      provider: auth.authType.replace("openid-", ""),
+    };
+  }
   // Set the client globally to the entire app, when the saga starts.
   // We'll compare the remote of this singleton when the server info will be received
   // to prevent race conditions.
-  const client = setupClient(auth);
+  const client = setupClient(processedAuth);
 
   try {
     // Fetch server information
@@ -82,11 +90,20 @@ export function* setupSession(
     } = getState();
     const { user: { id: userId } = {} } = serverInfo;
     const { authType } = auth;
+    const provider = authType.replace("openid-", ""); // This is only relevant if it's openID, eg openid-google
     if (
       authType != "anonymous" &&
-      (!userId || !userId.startsWith(authType + ":"))
+      (!userId ||
+        (!userId.startsWith(authType + ":") &&
+          // If the authType is openid, the userId starts with the provider
+          (authType.startsWith("openid-") &&
+            !userId.startsWith(`${provider}:`))))
     ) {
-      yield put(notificationActions.notifyError("Authentication failed."));
+      yield put(
+        notificationActions.notifyError("Authentication failed.", {
+          message: `authType is ${authType} and userID is ${userId}`,
+        })
+      );
       return;
     }
 

@@ -57,23 +57,26 @@ export type Capabilities = {
   changes?: Object,
   default_bucket?: Object,
   fxa?: Object,
+  openid?: Object,
   history?: Object,
   permissions_endpoint?: Object,
   schema?: Object,
   signer?: Object,
 };
 
-export type ClientError = {
+export type ClientErrorData = {
+  code: number,
   message: string,
-  data: {
-    code: number,
-    message: string,
-    details: {
-      existing: {
-        id: string,
-      },
+  details: {
+    existing: {
+      id: string,
     },
   },
+};
+
+export type ClientError = {
+  message: string,
+  data?: ClientErrorData,
 };
 
 export type HistoryFilters = {
@@ -292,7 +295,8 @@ export type AuthMethod =
   | "fxa"
   | "ldap"
   | "basicauth"
-  | "portier";
+  | "portier"
+  | "openid";
 
 export type SettingsState = {
   maxPerPage: number,
@@ -306,7 +310,8 @@ export type AuthData =
   | AccountAuth
   | BasicAuth
   | PortierAuth
-  | TokenAuth;
+  | TokenAuth
+  | OpenIDAuth;
 
 export type AnonymousAuth = {
   authType: "anonymous",
@@ -351,6 +356,15 @@ export type PortierAuth = {
 export type TokenAuth = {
   authType: "fxa",
   server: string,
+  credentials: {
+    token: string,
+  },
+};
+
+export type OpenIDAuth = {
+  authType: "openid",
+  server: string,
+  provider: string,
   credentials: {
     token: string,
   },
