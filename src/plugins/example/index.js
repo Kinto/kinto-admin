@@ -41,9 +41,10 @@ class TestPlugin extends React.Component {
   }
 }
 
-const TestPluginContainer = connect(mapStateToProps, mapDispatchToProps)(
-  TestPlugin
-);
+const TestPluginContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TestPlugin);
 
 // Test saga
 function* testSaga(getState, action) {
