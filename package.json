@@ -92,7 +92,7 @@
     "toctoc": "^0.2.3",
     "url-loader": "^1.0.0",
     "webpack": "^4.0.1",
-    "webpack-cli": "^2.0.9",
+    "webpack-cli": "^3.0.0",
     "webpack-dev-middleware": "^3.0.0",
     "webpack-hot-middleware": "^2.6.0"
   },
