@@ -429,10 +429,11 @@ export default class AuthForm extends PureComponent<
     // - most recently used
     // - default
     const server = getServerByPriority(singleServer, history);
+    const authType = history.length && history[0].authType || ANONYMOUS_AUTH;
     this.state = {
       schema,
       uiSchema,
-      formData: { authType: ANONYMOUS_AUTH, server },
+      formData: { authType, server },
     };
   }
 
