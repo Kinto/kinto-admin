@@ -286,5 +286,5 @@ export function getServerByPriority(
   // - single server mode
   // - most recently used
   // - default
-  return singleServer || (history && history[0]) || DEFAULT_KINTO_SERVER;
+  return singleServer || (history.length && history[0].server) || DEFAULT_KINTO_SERVER;
 }

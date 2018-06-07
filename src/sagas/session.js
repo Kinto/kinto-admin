@@ -110,7 +110,7 @@ export function* setupSession(
     // We got a valid response; officially declare current user authenticated
     yield put(actions.setAuthenticated());
     // Store this valid server url in the history
-    yield put(historyActions.addHistory(serverInfo.url));
+    yield put(historyActions.addHistory(serverInfo.url, auth.authType));
 
     yield put(actions.listBuckets());
     yield put(actions.setupComplete(auth));

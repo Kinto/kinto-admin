@@ -11,7 +11,7 @@ export default function history(
 ): string[] {
   switch (action.type) {
     case HISTORY_ADD: {
-      return saveHistory(Array.from(new Set([action.entry, ...state])));
+      return saveHistory(Array.from(new Set([{ server: action.server, authType: action.authType }, ...state])));
     }
     case HISTORY_CLEAR: {
       return clearHistory();

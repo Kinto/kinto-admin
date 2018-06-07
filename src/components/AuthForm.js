@@ -110,7 +110,7 @@ class ServerHistory extends PureComponent<
                 </a>
               </li>
             ) : (
-              history.map((server, key) => (
+              history.map(({ server }, key) => (
                 <li key={key}>
                   <a href="#" onClick={this.select(server)}>
                     {server}

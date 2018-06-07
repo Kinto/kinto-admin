@@ -3,12 +3,14 @@
 import { HISTORY_ADD, HISTORY_CLEAR } from "../constants";
 
 export function addHistory(
-  entry: string
+  server: string,
+  authType: string
 ): {
   type: "HISTORY_ADD",
-  entry: string,
+  server: string,
+  authType: string
 } {
-  return { type: HISTORY_ADD, entry };
+  return { type: HISTORY_ADD, server, authType };
 }
 
 export function clearHistory(): {
