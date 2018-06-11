@@ -87,7 +87,7 @@
     "react-transform-catch-errors": "^1.0.0",
     "react-transform-hmr": "^1.0.1",
     "redbox-react": "^1.2.6",
-    "sinon": "^5.0.0",
+    "sinon": "^6.0.0",
     "style-loader": "^0.21.0",
     "toctoc": "^0.2.3",
     "url-loader": "^1.0.0",
