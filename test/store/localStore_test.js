@@ -13,6 +13,18 @@ describe("localStore", () => {
       expect(localStore.loadHistory()).eql([]);
     });
 
+    it("should load legacy history", () => {
+      const HISTORY_KEY = "kinto-admin-server-history";
+      sessionStorage.setItem(
+        HISTORY_KEY,
+        JSON.stringify(["someServer", "otherServer"])
+      );
+      expect(localStore.loadHistory()).eql([
+        { server: "someServer", authType: ANONYMOUS_AUTH },
+        { server: "otherServer", authType: ANONYMOUS_AUTH },
+      ]);
+    });
+
     it("should save and load history", () => {
       localStore.saveHistory([
         { server: "foo", authType: ANONYMOUS_AUTH },
