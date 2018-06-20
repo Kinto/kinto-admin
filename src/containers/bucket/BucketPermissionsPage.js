@@ -20,4 +20,7 @@ function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
   return bindActionCreators(BucketActions, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(BucketPermissions);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(BucketPermissions);
