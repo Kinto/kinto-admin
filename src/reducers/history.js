@@ -12,12 +12,12 @@ export default function history(
 ): ServerHistoryEntry[] {
   switch (action.type) {
     case HISTORY_ADD: {
+      const filteredHistory = state.filter(
+        entry => entry.server != action.server
+      );
       return saveHistory(
-        Array.from(
-          new Set([
-            { server: action.server, authType: action.authType },
-            ...state,
-          ])
+        [{ server: action.server, authType: action.authType }].concat(
+          filteredHistory
         )
       );
     }

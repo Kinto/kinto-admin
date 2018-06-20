@@ -1,6 +1,7 @@
 import { expect } from "chai";
 
 import * as localStore from "../../src/store/localStore";
+import { ANONYMOUS_AUTH } from "../../src/components/AuthForm";
 
 describe("localStore", () => {
   describe("history store", () => {
@@ -13,9 +14,15 @@ describe("localStore", () => {
     });
 
     it("should save and load history", () => {
-      localStore.saveHistory(["foo", "bar"]);
+      localStore.saveHistory([
+        { server: "foo", authType: ANONYMOUS_AUTH },
+        { server: "bar", authType: ANONYMOUS_AUTH },
+      ]);
 
-      expect(localStore.loadHistory()).eql(["foo", "bar"]);
+      expect(localStore.loadHistory()).eql([
+        { server: "foo", authType: ANONYMOUS_AUTH },
+        { server: "bar", authType: ANONYMOUS_AUTH },
+      ]);
     });
 
     it("should clear history", () => {

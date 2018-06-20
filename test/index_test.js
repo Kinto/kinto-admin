@@ -7,6 +7,7 @@ import KintoAdmin from "../src/index";
 import * as localStore from "../src/store/localStore";
 import configureStore from "../src/store/configureStore";
 import * as configStore from "../src/store/configureStore";
+import { ANONYMOUS_AUTH } from "../src/components/AuthForm";
 
 describe("KintoAdmin", () => {
   let sandbox;
@@ -72,7 +73,9 @@ describe("KintoAdmin", () => {
     it("should call getServerInfo on the server from the history if there is one", () => {
       const getServerInfo = sandbox.spy(sessionActions, "getServerInfo");
       const store = configureStore({
-        history: ["http://server.history/v1"],
+        history: [
+          { server: "http://server.history/v1", authType: ANONYMOUS_AUTH },
+        ],
       });
       sandbox.stub(configStore, "default").returns(store);
       createKintoAdmin();

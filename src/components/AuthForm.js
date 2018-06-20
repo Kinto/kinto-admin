@@ -6,7 +6,7 @@ import React, { PureComponent } from "react";
 import BaseForm from "./BaseForm";
 import { debounce, getServerByPriority, omit } from "../utils";
 
-const ANONYMOUS_AUTH = "anonymous";
+export const ANONYMOUS_AUTH = "anonymous";
 const anonymousAuthData = server => ({
   authType: ANONYMOUS_AUTH,
   server: server,

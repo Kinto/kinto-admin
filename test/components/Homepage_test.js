@@ -220,7 +220,7 @@ describe("HomePage component", () => {
         const node = createComponent(HomePage, {
           serverChange: sandbox.spy(),
           getServerInfo: sandbox.spy(),
-          history: ["http://server.test/v1"],
+          history: [{ server: "http://server.test/v1", authType: "anonymous" }],
           settings: {},
           session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
         });

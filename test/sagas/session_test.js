@@ -220,7 +220,7 @@ describe("session sagas", () => {
 
       it("should add server to recent history", () => {
         expect(setupSession.next().value).eql(
-          put(historyActions.addHistory("http://server.test/v1"))
+          put(historyActions.addHistory("http://server.test/v1", "basicauth"))
         );
       });
 
