@@ -1,6 +1,11 @@
 /* @flow */
 
-import type { RecordData, ResourceHistoryEntry, Capabilities } from "./types";
+import type {
+  RecordData,
+  ResourceHistoryEntry,
+  Capabilities,
+  ServerHistoryEntry,
+} from "./types";
 import React from "react";
 import _timeago from "timeago.js";
 import { DEFAULT_KINTO_SERVER } from "./constants";
@@ -280,11 +285,15 @@ export function debounce(fn: any, delay: number) {
 
 export function getServerByPriority(
   singleServer: ?string,
-  history: ?(string[])
+  history: ?(ServerHistoryEntry[])
 ) {
   // Return the server URL value, by priority:
   // - single server mode
   // - most recently used
   // - default
-  return singleServer || (history.length && history[0].server) || DEFAULT_KINTO_SERVER;
+  return (
+    singleServer ||
+    (history && history.length && history[0].server) ||
+    DEFAULT_KINTO_SERVER
+  );
 }

@@ -1,5 +1,5 @@
 /* @flow */
-import type { SessionState, SettingsState } from "../types";
+import type { SessionState, SettingsState, ServerHistoryEntry } from "../types";
 
 import React, { PureComponent } from "react";
 
@@ -392,7 +392,7 @@ function extendUiSchemaWithHistory(
 
 type AuthFormProps = {
   session: SessionState,
-  history: string[],
+  history: ServerHistoryEntry[],
   settings: SettingsState,
   setup: (session: Object) => void,
   serverChange: () => void,
@@ -429,7 +429,7 @@ export default class AuthForm extends PureComponent<
     // - most recently used
     // - default
     const server = getServerByPriority(singleServer, history);
-    const authType = history.length && history[0].authType || ANONYMOUS_AUTH;
+    const authType = (history.length && history[0].authType) || ANONYMOUS_AUTH;
     this.state = {
       schema,
       uiSchema,
