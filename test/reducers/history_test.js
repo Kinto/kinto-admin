@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import history from "../../src/reducers/history";
 import { HISTORY_ADD, HISTORY_CLEAR } from "../../src/constants";
-import { ANONYMOUS_AUTH } from "../../src/components/AuthForm";
+import { ANONYMOUS_AUTH } from "../../src/constants";
 
 describe("history reducer", () => {
   describe("HISTORY_ADD", () => {

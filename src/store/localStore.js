@@ -1,6 +1,6 @@
 /* @flow */
 import type { SessionState, ServerHistoryEntry } from "../types";
-import { ANONYMOUS_AUTH } from "../components/AuthForm";
+import { ANONYMOUS_AUTH } from "../constants";
 
 const HISTORY_KEY = "kinto-admin-server-history";
 const SESSION_KEY = "kinto-admin-session";

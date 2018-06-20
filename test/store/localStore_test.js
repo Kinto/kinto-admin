@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import * as localStore from "../../src/store/localStore";
-import { ANONYMOUS_AUTH } from "../../src/components/AuthForm";
+import { ANONYMOUS_AUTH } from "../../src/constants";
 
 describe("localStore", () => {
   describe("history store", () => {
