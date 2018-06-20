@@ -31,7 +31,4 @@ function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(RecordAttributes);
+export default connect(mapStateToProps, mapDispatchToProps)(RecordAttributes);

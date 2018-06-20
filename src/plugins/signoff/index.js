@@ -65,10 +65,9 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(SignoffActions, dispatch);
 }
 
-const SignoffContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SignoffToolBar);
+const SignoffContainer = connect(mapStateToProps, mapDispatchToProps)(
+  SignoffToolBar
+);
 
 //
 // Plugin register

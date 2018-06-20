@@ -8,7 +8,7 @@ export function addHistory(
 ): {
   type: "HISTORY_ADD",
   server: string,
-  authType: string
+  authType: string,
 } {
   return { type: HISTORY_ADD, server, authType };
 }

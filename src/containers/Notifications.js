@@ -17,7 +17,4 @@ function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
   return bindActionCreators(NotificationsActions, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Notifications);
+export default connect(mapStateToProps, mapDispatchToProps)(Notifications);
