@@ -297,3 +297,7 @@ export function getServerByPriority(
     DEFAULT_KINTO_SERVER
   );
 }
+
+export function isObjectEmpty(obj: Object) {
+  return Object.keys(obj).length === 0;
+}
