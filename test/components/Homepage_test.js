@@ -202,7 +202,7 @@ describe("HomePage component", () => {
     });
 
     describe("History support", () => {
-      it("should set the server field value using latest entry from history", () => {
+      it("should set the server field value using a default value if there's no history", () => {
         const node = createComponent(HomePage, {
           serverChange: sandbox.spy(),
           getServerInfo: sandbox.spy(),
@@ -228,6 +228,35 @@ describe("HomePage component", () => {
         expect(node.querySelector("#root_server").value).eql(
           "http://server.test/v1"
         );
+      });
+
+      it("should set the authType field value using latest entry from history for that server", () => {
+        const node = createComponent(HomePage, {
+          serverChange: sandbox.spy(),
+          getServerInfo: sandbox.spy(),
+          history: [
+            { server: "http://server.test/v1", authType: "basicauth" },
+            { server: "http://test.server/v1", authType: "openid-google" },
+          ],
+          settings: {},
+          session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
+        });
+
+        expect(node.querySelector("#root_server").value).eql(
+          "http://server.test/v1"
+        );
+        expect(node.querySelector("#root_authType").value).eql("basicauth");
+
+        // Changing the server to another element from the history: the
+        Simulate.change(node.querySelector("#root_server"), {
+          target: { value: "http://test.server/v1" },
+        });
+        expect(node.querySelector("#root_server").value).eql(
+          "http://test.server/v1"
+        );
+        // authType is reset to "anonymous" while we wait for the server info
+        // (capabilities)
+        expect(node.querySelector("#root_authType").value).eql("anonymous");
       });
     });
   });
