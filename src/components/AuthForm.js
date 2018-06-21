@@ -513,6 +513,51 @@ export default class AuthForm extends PureComponent<
     }
   };
 
+  componentDidUpdate(prevProps: AuthFormProps, prevState: AuthFormState) {
+    const {
+      formData: { server: prevServer },
+    } = prevState;
+    const {
+      formData: { server: newServer },
+    } = this.state;
+
+    if (prevServer !== newServer) {
+      // Server changed, set the authType back to "anonymous"
+      return this.onChange({
+        ...this.state,
+        formData: { ...this.state.formData, authType: ANONYMOUS_AUTH },
+      });
+    }
+
+    const {
+      session: {
+        serverInfo: { capabilities: prevCapabilities },
+      },
+    } = prevProps;
+    const {
+      session: {
+        serverInfo: { capabilities: newCapabilities },
+      },
+    } = this.props;
+    if (JSON.stringify(prevCapabilities) !== JSON.stringify(newCapabilities)) {
+      // The auth methods have changed following a successful "getServerInfo",
+      // update the default auth method with the one from the history, if we
+      // have one for this server.
+      const serverHistoryEntry = this.props.history.find(
+        entry => entry.server === newServer
+      );
+      if (serverHistoryEntry) {
+        return this.onChange({
+          ...this.state,
+          formData: {
+            ...this.state.formData,
+            authType: serverHistoryEntry.authType,
+          },
+        });
+      }
+    }
+  }
+
   render() {
     const {
       history,
