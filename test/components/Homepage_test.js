@@ -247,7 +247,7 @@ describe("HomePage component", () => {
         );
         expect(node.querySelector("#root_authType").value).eql("basicauth");
 
-        // Changing the server to another element from the history: the
+        // Changing the server to another element from the history.
         Simulate.change(node.querySelector("#root_server"), {
           target: { value: "http://test.server/v1" },
         });
