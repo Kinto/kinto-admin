@@ -43,3 +43,9 @@ global.d = function d(node) {
 // btoa polyfill for tests
 global.btoa = require("btoa");
 global.atob = require("atob");
+
+// Setup Enzyme for testing react
+const configure = require("enzyme").configure;
+const Adapter = require("enzyme-adapter-react-15");
+
+configure({ adapter: new Adapter() });
