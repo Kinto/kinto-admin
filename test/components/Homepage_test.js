@@ -1,9 +1,12 @@
+import React from "react";
 import { expect } from "chai";
 import sinon from "sinon";
 import { Simulate } from "react-addons-test-utils";
+import { mount } from "enzyme";
 
 import { createSandbox, createComponent } from "../test_utils";
 import HomePage from "../../src/components/HomePage";
+import AuthForm from "../../src/components/AuthForm";
 import { DEFAULT_SERVERINFO } from "../../src/reducers/session";
 
 describe("HomePage component", () => {
@@ -202,7 +205,7 @@ describe("HomePage component", () => {
     });
 
     describe("History support", () => {
-      it("should set the server field value using latest entry from history", () => {
+      it("should set the server field value using a default value if there's no history", () => {
         const node = createComponent(HomePage, {
           serverChange: sandbox.spy(),
           getServerInfo: sandbox.spy(),
@@ -220,7 +223,7 @@ describe("HomePage component", () => {
         const node = createComponent(HomePage, {
           serverChange: sandbox.spy(),
           getServerInfo: sandbox.spy(),
-          history: ["http://server.test/v1"],
+          history: [{ server: "http://server.test/v1", authType: "anonymous" }],
           settings: {},
           session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
         });
@@ -228,6 +231,70 @@ describe("HomePage component", () => {
         expect(node.querySelector("#root_server").value).eql(
           "http://server.test/v1"
         );
+      });
+
+      it("should set the authType field value using latest entry from history for that server", () => {
+        const props = {
+          serverChange: sandbox.spy(),
+          getServerInfo: sandbox.spy(),
+          history: [
+            { server: "http://server.test/v1", authType: "basicauth" },
+            { server: "http://test.server/v1", authType: "openid-google" },
+          ],
+          settings: {},
+          session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
+        };
+        const wrapper = mount(<HomePage {...props} />);
+        expect(wrapper.find("input#root_server").prop("value")).eql(
+          "http://server.test/v1"
+        );
+        expect(wrapper.find("input#root_authType").prop("value")).eql(
+          "basicauth"
+        );
+
+        // Changing the server to another element from the history.
+        wrapper.find("input#root_server").simulate("change", {
+          target: { value: "http://test.server/v1" },
+        });
+        expect(wrapper.find("input#root_server").prop("value")).eql(
+          "http://test.server/v1"
+        );
+        // authType is reset to "anonymous" while we wait for the server info
+        // (capabilities)
+        expect(wrapper.find("input#root_authType").prop("value")).eql(
+          "anonymous"
+        );
+
+        // Simulate a `getServerInfo` response that updated the `capabilities`.
+        const prevProps = wrapper.props();
+        wrapper.setProps({
+          ...prevProps,
+          session: {
+            ...prevProps.session,
+            serverInfo: {
+              ...prevProps.session.serverInfo,
+              capabilities: {
+                ...prevProps.session.serverInfo.capabilities,
+                basicauth: "some basic auth info",
+                ldap: "some ldap auth info",
+                fxa: "some fxa auth info",
+                openid: {
+                  providers: [
+                    {
+                      name: "google",
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        });
+        // authType is now set to the value we have from the history.
+        // TODO: for some reason, we don't have a "input#root_authType" anymore
+        // at this point, so we need to get at the `authType` value some other
+        // way, here by looking into the state.
+        const state = wrapper.find(AuthForm).instance().state;
+        expect(state.formData.authType).eql("openid-google");
       });
     });
   });

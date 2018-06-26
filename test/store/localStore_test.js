@@ -1,6 +1,7 @@
 import { expect } from "chai";
 
 import * as localStore from "../../src/store/localStore";
+import { ANONYMOUS_AUTH } from "../../src/constants";
 
 describe("localStore", () => {
   describe("history store", () => {
@@ -12,10 +13,28 @@ describe("localStore", () => {
       expect(localStore.loadHistory()).eql([]);
     });
 
-    it("should save and load history", () => {
-      localStore.saveHistory(["foo", "bar"]);
+    it("should load legacy history", () => {
+      const HISTORY_KEY = "kinto-admin-server-history";
+      sessionStorage.setItem(
+        HISTORY_KEY,
+        JSON.stringify(["someServer", "otherServer"])
+      );
+      expect(localStore.loadHistory()).eql([
+        { server: "someServer", authType: ANONYMOUS_AUTH },
+        { server: "otherServer", authType: ANONYMOUS_AUTH },
+      ]);
+    });
 
-      expect(localStore.loadHistory()).eql(["foo", "bar"]);
+    it("should save and load history", () => {
+      localStore.saveHistory([
+        { server: "foo", authType: ANONYMOUS_AUTH },
+        { server: "bar", authType: ANONYMOUS_AUTH },
+      ]);
+
+      expect(localStore.loadHistory()).eql([
+        { server: "foo", authType: ANONYMOUS_AUTH },
+        { server: "bar", authType: ANONYMOUS_AUTH },
+      ]);
     });
 
     it("should clear history", () => {

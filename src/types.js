@@ -397,6 +397,11 @@ export type SessionState = {
   redirectURL: ?string,
 };
 
+export type ServerHistoryEntry = {
+  server: string,
+  authType: string,
+};
+
 export type ServerInfo = {
   url: string,
   capabilities: Capabilities,

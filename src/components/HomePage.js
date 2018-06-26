@@ -1,5 +1,5 @@
 /* @flow */
-import type { SessionState, SettingsState } from "../types";
+import type { SessionState, SettingsState, ServerHistoryEntry } from "../types";
 
 import React, { PureComponent } from "react";
 
@@ -60,7 +60,7 @@ function SessionInfo({ session: { busy, serverInfo } }) {
 type Props = {
   session: SessionState,
   settings: SettingsState,
-  history: string[],
+  history: ServerHistoryEntry[],
   clearHistory: () => void,
   setup: (session: Object) => void,
   serverChange: () => void,

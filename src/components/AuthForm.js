@@ -1,12 +1,12 @@
 /* @flow */
-import type { SessionState, SettingsState } from "../types";
+import type { SessionState, SettingsState, ServerHistoryEntry } from "../types";
 
 import React, { PureComponent } from "react";
 
 import BaseForm from "./BaseForm";
-import { debounce, getServerByPriority, omit } from "../utils";
+import { debounce, getServerByPriority, isObjectEmpty, omit } from "../utils";
+import { ANONYMOUS_AUTH } from "../constants";
 
-const ANONYMOUS_AUTH = "anonymous";
 const anonymousAuthData = server => ({
   authType: ANONYMOUS_AUTH,
   server: server,
@@ -110,7 +110,7 @@ class ServerHistory extends PureComponent<
                 </a>
               </li>
             ) : (
-              history.map((server, key) => (
+              history.map(({ server }, key) => (
                 <li key={key}>
                   <a href="#" onClick={this.select(server)}>
                     {server}
@@ -392,7 +392,7 @@ function extendUiSchemaWithHistory(
 
 type AuthFormProps = {
   session: SessionState,
-  history: string[],
+  history: ServerHistoryEntry[],
   settings: SettingsState,
   setup: (session: Object) => void,
   serverChange: () => void,
@@ -429,10 +429,11 @@ export default class AuthForm extends PureComponent<
     // - most recently used
     // - default
     const server = getServerByPriority(singleServer, history);
+    const authType = (history.length && history[0].authType) || ANONYMOUS_AUTH;
     this.state = {
       schema,
       uiSchema,
-      formData: { authType: ANONYMOUS_AUTH, server },
+      formData: { authType, server },
     };
   }
 
@@ -511,6 +512,53 @@ export default class AuthForm extends PureComponent<
       }
     }
   };
+
+  componentDidUpdate(prevProps: AuthFormProps, prevState: AuthFormState) {
+    const {
+      formData: { server: prevServer },
+    } = prevState;
+    const {
+      formData: { server: newServer },
+    } = this.state;
+
+    if (prevServer !== newServer) {
+      // Server changed, set the authType back to "anonymous", until we get the
+      // `capabilities` back from the call to `getServerInfo`. This is what
+      // we're doing below.
+      return this.onChange({
+        ...this.state,
+        formData: { ...this.state.formData, authType: ANONYMOUS_AUTH },
+      });
+    }
+
+    const {
+      session: {
+        serverInfo: { capabilities: prevCapabilities },
+      },
+    } = prevProps;
+    const {
+      session: {
+        serverInfo: { capabilities: newCapabilities },
+      },
+    } = this.props;
+    if (isObjectEmpty(prevCapabilities) && !isObjectEmpty(newCapabilities)) {
+      // The `capabilities` (and thus the auth methods) have changed following
+      // a successful `getServerInfo`, update the default auth method with the
+      // one from the history, if we have one for this server.
+      const serverHistoryEntry = this.props.history.find(
+        ({ server }) => server === newServer
+      );
+      if (serverHistoryEntry) {
+        return this.onChange({
+          ...this.state,
+          formData: {
+            ...this.state.formData,
+            authType: serverHistoryEntry.authType,
+          },
+        });
+      }
+    }
+  }
 
   render() {
     const {

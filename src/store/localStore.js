@@ -1,22 +1,33 @@
 /* @flow */
-import type { SessionState } from "../types";
+import type { SessionState, ServerHistoryEntry } from "../types";
+import { ANONYMOUS_AUTH } from "../constants";
 
 const HISTORY_KEY = "kinto-admin-server-history";
 const SESSION_KEY = "kinto-admin-session";
 
-export function loadHistory(): string[] {
+export function loadHistory(): ServerHistoryEntry[] {
   const jsonHistory = sessionStorage.getItem(HISTORY_KEY);
   if (!jsonHistory) {
     return [];
   }
   try {
-    return JSON.parse(jsonHistory);
+    const history = JSON.parse(jsonHistory);
+    // Cope with legacy history which only stored the server as a string, without the authType.
+    const withLegacyHistory = history.map(
+      entry =>
+        typeof entry === "string"
+          ? { server: entry, authType: ANONYMOUS_AUTH }
+          : entry
+    );
+    return withLegacyHistory;
   } catch (err) {
     return [];
   }
 }
 
-export function saveHistory(history: string[]): string[] {
+export function saveHistory(
+  history: ServerHistoryEntry[]
+): ServerHistoryEntry[] {
   try {
     sessionStorage.setItem(HISTORY_KEY, JSON.stringify(history));
   } catch (err) {
@@ -26,7 +37,7 @@ export function saveHistory(history: string[]): string[] {
   return history;
 }
 
-export function clearHistory(): string[] {
+export function clearHistory(): ServerHistoryEntry[] {
   return saveHistory([]);
 }
 
