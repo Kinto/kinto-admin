@@ -291,7 +291,7 @@ export type RouteResources = {
 
 export type AuthMethod =
   | "anonymous"
-  | "account"
+  | "accounts"
   | "fxa"
   | "ldap"
   | "basicauth"
