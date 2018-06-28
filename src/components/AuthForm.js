@@ -13,7 +13,7 @@ const anonymousAuthData = server => ({
 });
 const KNOWN_AUTH_METHODS = [
   "basicauth",
-  "account",
+  "accounts",
   "fxa",
   "ldap",
   "portier",
@@ -187,7 +187,7 @@ const loginPasswordUiSchema = {
 
 const authSchemas = authType => {
   const customizedSchemas: Object = {
-    account: {
+    accounts: {
       schema: {
         ...baseAuthSchema,
         required: [...baseAuthSchema.required, "credentials"],
@@ -314,7 +314,7 @@ const getAuthLabel = authType => {
   const labels = {
     anonymous: "Anonymous",
     basicauth: "Basic Auth",
-    account: "Kinto Account Auth",
+    accounts: "Kinto Account Auth",
     fxa: "Firefox Account",
     ldap: "LDAP",
     portier: "Portier",
@@ -506,7 +506,7 @@ export default class AuthForm extends PureComponent<
       // case "anonymous":
       // case "ldap":
       // case "basicauth":
-      // case "account":
+      // case "accounts":
       default: {
         return setup(extendedFormData);
       }
