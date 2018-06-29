@@ -84,7 +84,7 @@
     "mocha": "^5.0.2",
     "mocha-generators": "^2.0.0",
     "nightmare": "^3.0.0",
-    "prettier": "1.13.6",
+    "prettier": "1.13.7",
     "react-addons-test-utils": "^15.2.0",
     "react-test-renderer": "^16.4.1",
     "react-transform-catch-errors": "^1.0.0",
