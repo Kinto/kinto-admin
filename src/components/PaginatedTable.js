@@ -7,7 +7,7 @@ import Spinner from "./Spinner";
 
 type Props = {
   thead: React.Element<React.ElementType>,
-  tbody: React.Element<React.ElementType>,
+  tbody: React.Element<any>[] | React.Element<React.ElementType>,
   dataLoaded: boolean,
   colSpan: number,
   hasNextPage: boolean,
