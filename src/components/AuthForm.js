@@ -4,7 +4,13 @@ import type { SessionState, SettingsState, ServerHistoryEntry } from "../types";
 import React, { PureComponent } from "react";
 
 import BaseForm from "./BaseForm";
-import { debounce, getServerByPriority, isObjectEmpty, omit } from "../utils";
+import {
+  debounce,
+  getAuthLabel,
+  getServerByPriority,
+  isObjectEmpty,
+  omit,
+} from "../utils";
 import { ANONYMOUS_AUTH } from "../constants";
 
 const anonymousAuthData = server => ({
@@ -308,25 +314,6 @@ const authSchemas = authType => {
       ...baseUISchema,
     },
   };
-};
-
-const getAuthLabel = authType => {
-  const labels = {
-    anonymous: "Anonymous",
-    basicauth: "Basic Auth",
-    accounts: "Kinto Account Auth",
-    fxa: "Firefox Account",
-    ldap: "LDAP",
-    portier: "Portier",
-  };
-  if (authType.startsWith("openid-")) {
-    // The authType openid-<provider> is constructed in getSupportedAuthMethods.
-    const provider = authType.replace("openid-", "");
-    const prettyProvider =
-      labels[provider] || provider.charAt(0).toUpperCase() + provider.slice(1);
-    return `OpenID Connect (${prettyProvider})`;
-  }
-  return labels[authType];
 };
 
 /**
