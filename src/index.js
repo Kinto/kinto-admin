@@ -1,9 +1,10 @@
 /* @flow */
 import type { Plugin } from "./types";
 
+import createHashHistory from "history/createHashHistory";
 import React, { Component } from "react";
 import { Provider } from "react-redux";
-import { Router, hashHistory } from "react-router";
+import { Router, Switch } from "react-router-dom";
 import { syncHistoryWithStore } from "react-router-redux";
 
 import getRoutes from "./routes";
@@ -24,6 +25,7 @@ type Props = {
 
 export default class KintoAdmin extends Component<Props> {
   store: Object;
+  hashHistory: Object;
 
   static defaultProps = {
     plugins: [],
@@ -32,9 +34,10 @@ export default class KintoAdmin extends Component<Props> {
   constructor(props: Props) {
     super(props);
 
+    this.hashHistory = createHashHistory();
     const { plugins, settings } = props;
     this.store = configureStore({ settings }, plugins);
-    syncHistoryWithStore(hashHistory, this.store);
+    syncHistoryWithStore(this.hashHistory, this.store);
     const { history } = this.store.getState();
 
     // Restore saved session, if any
@@ -63,8 +66,8 @@ export default class KintoAdmin extends Component<Props> {
 
     return (
       <Provider store={store}>
-        <Router history={hashHistory} onUpdate={onRouteUpdate}>
-          {getRoutes(this.store, registerPlugins)}
+        <Router history={this.hashHistory} onUpdate={onRouteUpdate}>
+          <Switch>{getRoutes(this.store, registerPlugins)}</Switch>
         </Router>
       </Provider>
     );

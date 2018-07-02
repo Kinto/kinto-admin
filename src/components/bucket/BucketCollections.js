@@ -111,10 +111,24 @@ type Props = {
   session: SessionState,
   bucket: BucketState,
   capabilities: Capabilities,
+  listBucketCollections: () => void,
   listBucketNextCollections: () => void,
 };
 
 export default class BucketCollections extends PureComponent<Props> {
+  onBucketPageEnter() {
+    const { listBucketCollections, session } = this.props;
+    if (!session.authenticated) {
+      // We're not authenticated, skip requesting the list of records. This likely
+      // occurs when users refresh the page and lose their session.
+      return;
+    }
+    listBucketCollections();
+  }
+
+  componentDidMount = this.onBucketPageEnter;
+  componentWillUpdate = this.onBucketPageEnter;
+
   render() {
     const {
       params,

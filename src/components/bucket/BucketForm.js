@@ -2,7 +2,7 @@
 import type { BucketState, BucketData, SessionState } from "../../types";
 
 import React, { PureComponent } from "react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 import BaseForm from "../BaseForm";
 import JSONEditor from "../JSONEditor";

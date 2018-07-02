@@ -7,7 +7,7 @@ import type { GetStateFn, PluginSagas } from "./types";
  * use it if you bet on stability.
  */
 import React from "react";
-import { Route } from "react-router";
+import { Route } from "react-router-dom";
 
 export function flattenPluginsRoutes(
   plugins: Object[],
@@ -18,6 +18,7 @@ export function flattenPluginsRoutes(
       const { components, ...props } = route;
       return (
         <Route
+          exact
           key={key}
           components={{ ...defaultComponents, ...components }}
           {...props}

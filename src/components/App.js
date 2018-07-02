@@ -3,7 +3,7 @@ import type { SessionState, RouteParams, Notifications } from "../types";
 import type { Element } from "react";
 
 import React, { PureComponent } from "react";
-import Breadcrumbs from "react-breadcrumbs";
+import { Breadcrumbs } from "react-breadcrumbs";
 
 function UserInfo({ session }) {
   const {

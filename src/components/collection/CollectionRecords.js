@@ -338,6 +338,21 @@ export default class CollectionRecords extends PureComponent<Props> {
     listRecords(bid, cid, sort);
   };
 
+  onCollectionRecordsEnter = () => {
+    const { collection, listRecords, params, session } = this.props;
+    const { bid, cid } = params;
+    if (!session.authenticated) {
+      // We're not authenticated, skip requesting the list of records. This likely
+      // occurs when users refresh the page and lose their session.
+      return;
+    }
+    const { currentSort } = collection;
+    listRecords(bid, cid, currentSort);
+  };
+
+  componentDidMount = this.onCollectionRecordsEnter;
+  componentWillUpdate = this.onCollectionRecordsEnter;
+
   render() {
     const {
       params,

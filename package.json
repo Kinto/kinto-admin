@@ -42,12 +42,11 @@
     "filesize": "^3.3.0",
     "kinto-http": "^4.3.3",
     "react": "^16.4.1",
-    "react-breadcrumbs": "^1.3.16",
+    "react-breadcrumbs": "^2.1.4",
     "react-codemirror2": "^5.0.1",
     "react-dom": "^16.4.1",
     "react-jsonschema-form": "^1.0.2",
     "react-redux": "^5.0.7",
-    "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "react-router-redux": "4.0.8",
     "redux": "^3.0.4",
@@ -98,11 +97,6 @@
     "webpack-cli": "^3.0.0",
     "webpack-dev-middleware": "^3.0.0",
     "webpack-hot-middleware": "^2.6.0"
-  },
-  "greenkeeper": {
-    "ignore": [
-      "react-router"
-    ]
   },
   "repository": {
     "type": "git",
