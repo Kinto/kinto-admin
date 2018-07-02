@@ -301,3 +301,22 @@ export function getServerByPriority(
 export function isObjectEmpty(obj: Object) {
   return Object.keys(obj).length === 0;
 }
+
+export const getAuthLabel = (authType: string) => {
+  const labels = {
+    anonymous: "Anonymous",
+    basicauth: "Basic Auth",
+    accounts: "Kinto Account Auth",
+    fxa: "Firefox Account",
+    ldap: "LDAP",
+    portier: "Portier",
+  };
+  if (authType.startsWith("openid-")) {
+    // The authType openid-<provider> is constructed in getSupportedAuthMethods.
+    const provider = authType.replace("openid-", "");
+    const prettyProvider =
+      labels[provider] || provider.charAt(0).toUpperCase() + provider.slice(1);
+    return `OpenID Connect (${prettyProvider})`;
+  }
+  return labels[authType];
+};

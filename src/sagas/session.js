@@ -16,7 +16,7 @@ import * as notificationActions from "../actions/notifications";
 import * as actions from "../actions/session";
 import * as historyActions from "../actions/history";
 import { DEFAULT_SERVERINFO } from "../reducers/session";
-import { clone } from "../utils";
+import { clone, getAuthLabel } from "../utils";
 import { getClient, setupClient, resetClient } from "../client";
 
 export function* serverChange(): SagaGen {
@@ -101,7 +101,7 @@ export function* setupSession(
     ) {
       yield put(
         notificationActions.notifyError("Authentication failed.", {
-          message: `authType is ${authType} and userID is ${userId}`,
+          message: `Could not authenticate with ${getAuthLabel(authType)}`,
         })
       );
       return;

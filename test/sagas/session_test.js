@@ -275,7 +275,7 @@ describe("session sagas", () => {
         expect(setupSession.next().value).eql(
           put(
             notifyError("Authentication failed.", {
-              message: "authType is basicauth and userID is undefined",
+              message: "Could not authenticate with Basic Auth",
             })
           )
         );
