@@ -46,6 +46,6 @@ global.atob = require("atob");
 
 // Setup Enzyme for testing react
 const configure = require("enzyme").configure;
-const Adapter = require("enzyme-adapter-react-15");
+const Adapter = require("enzyme-adapter-react-16");
 
 configure({ adapter: new Adapter() });
