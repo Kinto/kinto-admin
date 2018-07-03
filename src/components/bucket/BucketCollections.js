@@ -5,6 +5,7 @@ import type {
   SessionState,
   BucketRouteParams,
 } from "../../types";
+import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
 
@@ -113,6 +114,7 @@ type Props = {
   capabilities: Capabilities,
   listBucketCollections: () => void,
   listBucketNextCollections: () => void,
+  location: Location,
 };
 
 export default class BucketCollections extends PureComponent<Props> {
@@ -127,7 +129,11 @@ export default class BucketCollections extends PureComponent<Props> {
   }
 
   componentDidMount = this.onBucketPageEnter;
-  componentWillUpdate = this.onBucketPageEnter;
+  componentDidUpdate = (prevProps: Props) => {
+    if (prevProps.location !== this.props.location) {
+      this.onBucketPageEnter();
+    }
+  };
 
   render() {
     const {

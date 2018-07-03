@@ -7,6 +7,7 @@ import type {
   Capabilities,
   RecordData,
 } from "../../types";
+import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
 
@@ -325,6 +326,7 @@ type Props = CommonProps & {
   collection: CollectionState,
   listRecords: (bid: string, cid: string, sort: ?string) => void,
   listNextRecords: () => void,
+  location: Location,
 };
 
 export default class CollectionRecords extends PureComponent<Props> {
@@ -351,7 +353,11 @@ export default class CollectionRecords extends PureComponent<Props> {
   };
 
   componentDidMount = this.onCollectionRecordsEnter;
-  componentWillUpdate = this.onCollectionRecordsEnter;
+  componentDidUpdate = (prevProps: Props) => {
+    if (prevProps.location !== this.props.location) {
+      this.onCollectionRecordsEnter();
+    }
+  };
 
   render() {
     const {

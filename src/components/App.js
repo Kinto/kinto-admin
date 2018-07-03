@@ -86,9 +86,17 @@ type Props = {
   plugins: Plugin[],
   location: Location,
   match: Match,
+  routeUpdated: (Object, Location) => void,
 };
 
 export default class App extends PureComponent<Props> {
+  componentDidUpdate = (prevProps: Props) => {
+    if (prevProps.location !== this.props.location) {
+      const { match, location, routeUpdated } = this.props;
+      routeUpdated(match.params, location);
+    }
+  };
+
   render() {
     const {
       session,

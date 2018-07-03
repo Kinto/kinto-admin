@@ -9,7 +9,6 @@ import { syncHistoryWithStore } from "react-router-redux";
 
 import getRoutes from "./routes";
 import configureStore from "./store/configureStore";
-import * as routeActions from "./actions/route";
 import * as sessionActions from "./actions/session";
 import { loadSession } from "./store/localStore";
 import { getServerByPriority } from "./utils";
@@ -59,14 +58,9 @@ export default class KintoAdmin extends Component<Props> {
     const { plugins } = this.props;
     const registerPlugins = plugins.map(plugin => plugin.register(store));
 
-    function onRouteUpdate() {
-      const { params, location } = this.state;
-      store.dispatch(routeActions.routeUpdated(params, location));
-    }
-
     return (
       <Provider store={store}>
-        <Router history={this.hashHistory} onUpdate={onRouteUpdate}>
+        <Router history={this.hashHistory}>
           <Switch>{getRoutes(this.store, registerPlugins)}</Switch>
         </Router>
       </Provider>
