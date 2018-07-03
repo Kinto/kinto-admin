@@ -1,9 +1,11 @@
 /* @flow */
 import type { SessionState, RouteParams, Notifications } from "../types";
 import type { Element } from "react";
+import { Route, Switch } from "react-router-dom";
 
 import React, { PureComponent } from "react";
 import { Breadcrumbs } from "react-breadcrumbs";
+import HomePage from "../containers/HomePage";
 
 function UserInfo({ session }) {
   const {
@@ -84,7 +86,15 @@ export default class App extends PureComponent<Props> {
                 separator=" / "
                 excludes={["auth"]}
               />
-              {content || <p>Default.</p>}
+              <Switch>
+                <Route exact name="home" path="/" component={HomePage} />
+                <Route
+                  exact
+                  name="auth"
+                  path="/auth/:payload/:token"
+                  component={HomePage}
+                />
+              </Switch>
             </div>
           </div>
           <hr />

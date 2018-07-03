@@ -172,13 +172,6 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
   return (
     <Route name="home" path="/" component={App} {...common} content={HomePage}>
       {flattenPluginsRoutes(plugins, common)}
-      <Route
-        exact
-        name="auth"
-        path="/auth/:payload/:token"
-        components={{ ...common, content: HomePage }}
-        onEnter={onAuthEnter.bind(null, store)}
-      />
       {/* /buckets */}
       <Route exact name="buckets" path="buckets">
         <Redirect to="/" />
