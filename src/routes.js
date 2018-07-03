@@ -164,40 +164,27 @@ function registerPluginsComponentHooks(PageContainer, plugins) {
 }
 
 export default function getRoutes(store: Object, plugins: Object[] = []) {
-  const common = {
-    notifications: registerPluginsComponentHooks(Notifications, plugins),
-    sidebar: registerPluginsComponentHooks(Sidebar, plugins),
-  };
-
   return (
-    <Route name="home" path="/" component={App} {...common} content={HomePage}>
-      {flattenPluginsRoutes(plugins, common)}
+    <Route
+      name="home"
+      path="/"
+      render={props => <App plugins={plugins} {...props} />}>
       {/* /buckets */}
       <Route exact name="buckets" path="buckets">
         <Redirect to="/" />
         {/* /buckets/:bid/create */}
-        <Route
-          exact
-          name="create"
-          path="create"
-          components={{ ...common, content: BucketCreatePage }}
-        />
+        <Route exact name="create" path="create" component={BucketCreatePage} />
         {/* /buckets/:bid */}
         <Route exact name=":bid" path=":bid">
           <Redirect to="collections" />
           {/* /buckets/:bid/groups */}
-          <Route
-            exact
-            name="groups"
-            path="groups"
-            {...common}
-            content={BucketGroupsPage}>
+          <Route exact name="groups" path="groups" component={BucketGroupsPage}>
             {/* /buckets/:bid/groups/create */}
             <Route
               exact
               name="create"
               path="create"
-              components={{ ...common, content: GroupCreatePage }}
+              component={GroupCreatePage}
             />
             {/* /buckets/:bid/groups/:gid */}
             <Route exact name=":gid" path=":gid">
@@ -207,21 +194,21 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                 exact
                 name="attributes"
                 path="attributes"
-                components={{ ...common, content: GroupAttributesPage }}
+                component={GroupAttributesPage}
               />
               {/* /buckets/:bid/groups/:gid/permissions */}
               <Route
                 exact
                 name="permissions"
                 path="permissions"
-                components={{ ...common, content: GroupPermissionsPage }}
+                component={GroupPermissionsPage}
               />
               {/* /buckets/:bid/groups/:gid/history */}
               <Route
                 exact
                 name="history"
                 path="history"
-                components={{ ...common, content: GroupHistoryPage }}
+                component={GroupHistoryPage}
                 onEnter={onGroupHistoryEnter.bind(null, store)}
                 onChange={onGroupHistoryEnter.bind(null, store)}
               />
@@ -232,21 +219,21 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
             exact
             name="attributes"
             path="attributes"
-            components={{ ...common, content: BucketAttributesPage }}
+            component={BucketAttributesPage}
           />
           {/* /buckets/:bid/permissions */}
           <Route
             exact
             name="permissions"
             path="permissions"
-            components={{ ...common, content: BucketPermissionsPage }}
+            component={BucketPermissionsPage}
           />
           {/* /buckets/:bid/history */}
           <Route
             exact
             name="history"
             path="history"
-            components={{ ...common, content: BucketHistoryPage }}
+            component={BucketHistoryPage}
             onEnter={onBucketHistoryEnter.bind(null, store)}
             onChange={onBucketHistoryEnter.bind(null, store)}
           />
@@ -255,14 +242,13 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
             exact
             name="collections"
             path="collections"
-            {...common}
-            content={BucketCollectionsPage}>
+            component={BucketCollectionsPage}>
             {/* /buckets/:bid/collections/create */}
             <Route
               exact
               name="create"
               path="create"
-              components={{ ...common, content: CollectionCreatePage }}
+              component={CollectionCreatePage}
             />
             {/* /buckets/:bid/collections/:cid */}
             <Route exact name=":cid" path=":cid">
@@ -272,21 +258,21 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                 exact
                 name="attributes"
                 path="attributes"
-                components={{ ...common, content: CollectionAttributesPage }}
+                component={CollectionAttributesPage}
               />
               {/* /buckets/:bid/collections/:cid/permissions */}
               <Route
                 exact
                 name="permissions"
                 path="permissions"
-                components={{ ...common, content: CollectionPermissionsPage }}
+                component={CollectionPermissionsPage}
               />
               {/* /buckets/:bid/collections/:cid/history */}
               <Route
                 exact
                 name="history"
                 path="history"
-                components={{ ...common, content: CollectionHistoryPage }}
+                component={CollectionHistoryPage}
                 onEnter={onCollectionHistoryEnter.bind(null, store)}
                 onChange={onCollectionHistoryEnter.bind(null, store)}
               />
@@ -295,8 +281,7 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                 exact
                 name="records"
                 path="records"
-                {...common}
-                content={registerPluginsComponentHooks(
+                component={registerPluginsComponentHooks(
                   CollectionRecordsPage,
                   plugins
                 )}>
@@ -305,14 +290,14 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                   exact
                   name="create"
                   path="create"
-                  components={{ ...common, content: RecordCreatePage }}
+                  component={RecordCreatePage}
                 />
                 {/* /buckets/:bid/collections/:cid/records/bulk */}
                 <Route
                   exact
                   name="bulk create"
                   path="bulk"
-                  components={{ ...common, content: RecordBulkPage }}
+                  component={RecordBulkPage}
                 />
                 {/* /buckets/:bid/collections/:cid/records/:rid */}
                 <Route exact name=":rid" path=":rid">
@@ -322,21 +307,21 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                     exact
                     name="attributes"
                     path="attributes"
-                    components={{ ...common, content: RecordAttributesPage }}
+                    component={RecordAttributesPage}
                   />
                   {/* /buckets/:bid/collections/:cid/records/:rid/permissions */}
                   <Route
                     exact
                     name="permissions"
                     path="permissions"
-                    components={{ ...common, content: RecordPermissionsPage }}
+                    component={RecordPermissionsPage}
                   />
                   {/* /buckets/:bid/collections/:cid/history */}
                   <Route
                     exact
                     name="history"
                     path="history"
-                    components={{ ...common, content: RecordHistoryPage }}
+                    component={RecordHistoryPage}
                     onEnter={onRecordHistoryEnter.bind(null, store)}
                     onChange={onRecordHistoryEnter.bind(null, store)}
                   />

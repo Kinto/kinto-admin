@@ -1,11 +1,21 @@
 /* @flow */
-import type { SessionState, RouteParams, Notifications } from "../types";
+import type {
+  SessionState,
+  Notifications as NotificationsType,
+  Plugin,
+} from "../types";
+import type { Location, Match } from "react-router-dom";
 import type { Element } from "react";
+import { Component } from "react";
 import { Route, Switch } from "react-router-dom";
+import { isObject } from "../utils";
+import { mergeObjects } from "react-jsonschema-form/lib/utils";
 
 import React, { PureComponent } from "react";
 import { Breadcrumbs } from "react-breadcrumbs";
 import HomePage from "../containers/HomePage";
+import Notifications from "../containers/Notifications";
+import Sidebar from "../containers/Sidebar";
 
 function UserInfo({ session }) {
   const {
@@ -38,35 +48,69 @@ function SessionInfoBar({ session, logout }) {
   );
 }
 
+function registerPluginsComponentHooks(PageContainer, plugins) {
+  // Extract the container wrapped component (see react-redux connect() API)
+  const { WrappedComponent } = PageContainer;
+  // By convention, the hook namespace is the wrapped component name
+  const namespace = WrappedComponent.displayName;
+  if (!namespace) {
+    throw new Error("can't happen -- component with no display name");
+  }
+  // Retrieve all the hooks if any
+  const hooks = plugins.map(plugin => plugin.hooks).filter(isObject);
+  // Merge all the hooks together, recursively grouped by namespaces
+  const mergedHooks = hooks.reduce((acc, hookObject) => {
+    return mergeObjects(acc, hookObject, true);
+  }, {});
+  // Wrap the root component, augmenting its props with the plugin hooks for it.
+  return class extends Component<*> {
+    render() {
+      return (
+        <PageContainer
+          {...this.props}
+          pluginHooks={mergedHooks[namespace] || {}}
+        />
+      );
+    }
+  };
+}
+
 type Props = {
   session: SessionState,
   logout: () => void,
-  notificationList: Notifications,
+  notificationList: NotificationsType,
   routes: Element<*>[],
-  params: RouteParams,
   sidebar: Element<*>,
   notifications: Element<*>,
   content: Element<*>,
+  plugins: Plugin[],
+  location: Location,
+  match: Match,
 };
 
 export default class App extends PureComponent<Props> {
   render() {
     const {
-      sidebar,
       session,
       logout,
-      notifications,
-      content,
       notificationList,
       routes,
-      params,
+      plugins,
+      location,
+      match,
     } = this.props;
+    const { params } = match;
     const notificationsClass = notificationList.length
       ? " with-notifications"
       : "";
     const contentClasses = `col-sm-9 content${notificationsClass}`;
     const version =
       process.env.REACT_APP_VERSION || process.env.KINTO_ADMIN_VERSION;
+    const HookedSidebar = registerPluginsComponentHooks(Sidebar, plugins);
+    const HookedNotifications = registerPluginsComponentHooks(
+      Notifications,
+      plugins
+    );
     return (
       <div>
         {session.authenticated && (
@@ -76,10 +120,10 @@ export default class App extends PureComponent<Props> {
           <div className="row">
             <div className="col-sm-3 sidebar">
               <h1 className="kinto-admin-title">Kinto admin</h1>
-              {sidebar || <p>Sidebar.</p>}
+              <HookedSidebar location={location} params={params} />
             </div>
             <div className={contentClasses}>
-              {notifications || <div />}
+              <HookedNotifications />
               <Breadcrumbs
                 routes={routes}
                 params={params}

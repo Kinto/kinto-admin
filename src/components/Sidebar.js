@@ -3,9 +3,9 @@ import type {
   SessionState,
   SettingsState,
   RouteParams,
-  RouteLocation,
   BucketEntry,
 } from "../types";
+import type { Location } from "react-router-dom";
 
 import { PureComponent } from "react";
 import * as React from "react";
@@ -295,7 +295,7 @@ type SidebarProps = {
   session: SessionState,
   settings: SettingsState,
   params: RouteParams,
-  location: RouteLocation,
+  location: Location,
 };
 
 export default class Sidebar extends PureComponent<SidebarProps> {
