@@ -331,15 +331,6 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
           </Route>
         </Route>
       </Route>
-      <Route
-        exact
-        name="not found"
-        path="*"
-        components={{
-          sidebar: Sidebar,
-          content: _ => <h1>Page not found.</h1>,
-        }}
-      />
     </Route>
   );
 }

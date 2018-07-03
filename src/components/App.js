@@ -138,6 +138,10 @@ export default class App extends PureComponent<Props> {
                   path="/auth/:payload/:token"
                   component={HomePage}
                 />
+                <Route
+                  name="not found"
+                  component={_ => <h1>Page not found.</h1>}
+                />
               </Switch>
             </div>
           </div>
