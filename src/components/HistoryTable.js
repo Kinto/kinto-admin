@@ -4,6 +4,7 @@ import type { RecordData, ResourceHistoryEntry, RouteLocation } from "../types";
 
 import React, { PureComponent } from "react";
 import { diffJson } from "diff";
+import { parse } from "query-string";
 
 import { timeago, humanDate } from "../utils";
 import AdminLink from "./AdminLink";
@@ -356,7 +357,8 @@ export default class HistoryTable extends PureComponent<Props, State> {
       location,
     } = this.props;
     const { current, previous, diffOverview } = this.state;
-    const { since } = location.query;
+    const query = parse(location);
+    const { since } = query;
     const isFiltered = !!since;
 
     const thead = (
