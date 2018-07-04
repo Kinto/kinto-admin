@@ -5,7 +5,7 @@ import type {
   BucketState,
   GroupState,
   GroupData,
-  BucketRouteParams,
+  BucketRouteMatch,
 } from "../../types";
 
 import React, { PureComponent } from "react";
@@ -14,7 +14,7 @@ import GroupForm from "./GroupForm";
 import Spinner from "../Spinner";
 
 type Props = {
-  params: BucketRouteParams,
+  match: BucketRouteMatch,
   session: SessionState,
   bucket: BucketState,
   group: GroupState,
@@ -24,8 +24,8 @@ type Props = {
 
 export default class GroupCreate extends PureComponent<Props> {
   render() {
-    const { params, session, bucket, group, createGroup } = this.props;
-    const { bid } = params;
+    const { match, session, bucket, group, createGroup } = this.props;
+    const { bid } = match.params;
     const { busy } = session;
     if (busy) {
       return <Spinner />;

@@ -2,7 +2,7 @@
 import type {
   Capabilities,
   BucketState,
-  BucketRouteParams,
+  BucketRouteMatch,
   HistoryFilters,
   RouteLocation,
   SessionState,
@@ -14,7 +14,7 @@ import BucketTabs from "./BucketTabs";
 import HistoryTable from "../HistoryTable";
 
 type Props = {
-  params: BucketRouteParams,
+  match: BucketRouteMatch,
   bucket: BucketState,
   capabilities: Capabilities,
   location: RouteLocation,
@@ -28,8 +28,8 @@ type Props = {
 
 export default class BucketHistory extends PureComponent<Props> {
   onBucketHistoryEnter() {
-    const { listBucketHistory, params, session, routing } = this.props;
-    const { bid } = params;
+    const { listBucketHistory, match, session, routing } = this.props;
+    const { bid } = match.params;
     const {
       locationBeforeTransitions: { query: filters },
     } = routing;

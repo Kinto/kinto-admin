@@ -229,12 +229,15 @@ export type ResourceHistoryEntry = {
 
 export type EmptyRouteParams = {};
 
-export type BucketRouteParams = {
-  bid: string,
+export type BucketRouteMatch = {
+  params: { bid: string },
+  isExact: boolean,
+  path: string,
+  url: string,
 };
 
 export type BucketRoute = {
-  params: BucketRouteParams,
+  match: BucketRouteMatch,
 };
 
 export type CollectionRouteParams = {

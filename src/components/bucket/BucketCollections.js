@@ -3,7 +3,7 @@ import type {
   Capabilities,
   BucketState,
   SessionState,
-  BucketRouteParams,
+  BucketRouteMatch,
 } from "../../types";
 import type { Location } from "react-router-dom";
 
@@ -108,7 +108,7 @@ function ListActions(props) {
 }
 
 type Props = {
-  params: BucketRouteParams,
+  match: BucketRouteMatch,
   session: SessionState,
   bucket: BucketState,
   capabilities: Capabilities,
@@ -137,13 +137,13 @@ export default class BucketCollections extends PureComponent<Props> {
 
   render() {
     const {
-      params,
+      match,
       session,
       bucket,
       capabilities,
       listBucketNextCollections,
     } = this.props;
-    const { bid } = params;
+    const { bid } = match.params;
     const { collections } = bucket;
 
     const listActions = (
