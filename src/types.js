@@ -256,13 +256,18 @@ export type CollectionRoute = {
   params: CollectionRouteMatch,
 };
 
-export type GroupRouteParams = {
-  bid: string,
-  gid: string,
+export type GroupRouteMatch = {
+  params: {
+    bid: string,
+    gid: string,
+  },
+  isExact: boolean,
+  path: string,
+  url: string,
 };
 
 export type GroupRoute = {
-  params: GroupRouteParams,
+  params: GroupRouteMatch,
 };
 
 export type RecordRouteParams = {

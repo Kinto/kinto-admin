@@ -2,7 +2,7 @@
 import type {
   Capabilities,
   GroupState,
-  GroupRouteParams,
+  GroupRouteMatch,
   RouteLocation,
   SessionState,
 } from "../../types";
@@ -14,7 +14,7 @@ import HistoryTable from "../HistoryTable";
 import CollectionTabs from "./GroupTabs";
 
 type Props = {
-  params: GroupRouteParams,
+  match: GroupRouteMatch,
   group: GroupState,
   capabilities: Capabilities,
   location: RouteLocation,
@@ -29,8 +29,8 @@ type Props = {
 
 export default class GroupHistory extends PureComponent<Props> {
   onGroupHistoryEnter() {
-    const { params, listGroupHistory, session, routing } = this.props;
-    const { bid, gid } = params;
+    const { match, listGroupHistory, session, routing } = this.props;
+    const { bid, gid } = match.params;
     const {
       locationBeforeTransitions: { query: filters },
     } = routing;
@@ -51,14 +51,14 @@ export default class GroupHistory extends PureComponent<Props> {
 
   render() {
     const {
-      params,
+      match,
       group,
       capabilities,
       location,
       listGroupNextHistory,
       notifyError,
     } = this.props;
-    const { bid, gid } = params;
+    const { bid, gid } = match.params;
     const {
       history: { entries, loaded, hasNextPage },
     } = group;
