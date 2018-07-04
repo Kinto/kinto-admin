@@ -4,7 +4,7 @@ import type {
   SessionState,
   BucketState,
   CollectionState,
-  CollectionRouteParams,
+  CollectionRouteMatch,
   HistoryFilters,
   RouteLocation,
 } from "../../types";
@@ -19,7 +19,7 @@ type Props = {
   bucket: BucketState,
   collection: CollectionState,
   capabilities: Capabilities,
-  params: CollectionRouteParams,
+  match: CollectionRouteMatch,
   location: RouteLocation,
   listCollectionHistory: (
     bid: string,
@@ -33,8 +33,8 @@ type Props = {
 
 export default class CollectionHistory extends PureComponent<Props> {
   onCollectionHistoryEnter() {
-    const { listCollectionHistory, params, routing, session } = this.props;
-    const { bid, cid } = params;
+    const { listCollectionHistory, match, routing, session } = this.props;
+    const { bid, cid } = match.params;
     const {
       locationBeforeTransitions: { query: filters },
     } = routing;
@@ -55,14 +55,14 @@ export default class CollectionHistory extends PureComponent<Props> {
 
   render() {
     const {
-      params,
+      match,
       collection,
       capabilities,
       location,
       listCollectionNextHistory,
       notifyError,
     } = this.props;
-    const { bid, cid } = params;
+    const { bid, cid } = match.params;
     const {
       history: { entries, loaded, hasNextPage },
     } = collection;

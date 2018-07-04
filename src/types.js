@@ -245,8 +245,15 @@ export type CollectionRouteParams = {
   cid: string,
 };
 
-export type CollectionRoute = {
+export type CollectionRouteMatch = {
   params: CollectionRouteParams,
+  isExact: boolean,
+  path: string,
+  url: string,
+};
+
+export type CollectionRoute = {
+  params: CollectionRouteMatch,
 };
 
 export type GroupRouteParams = {

@@ -1,5 +1,6 @@
 /* @flow */
 import type {
+  CollectionRouteMatch,
   CollectionRouteParams,
   SessionState,
   BucketState,
@@ -320,7 +321,7 @@ function ListActions(props) {
 
 type Props = CommonProps & {
   pluginHooks: Object,
-  params: CollectionRouteParams,
+  match: CollectionRouteMatch,
   session: SessionState,
   bucket: BucketState,
   collection: CollectionState,
@@ -335,14 +336,14 @@ export default class CollectionRecords extends PureComponent<Props> {
   static displayName = "CollectionRecords";
 
   updateSort = (sort: string) => {
-    const { params, listRecords } = this.props;
-    const { bid, cid } = params;
+    const { match, listRecords } = this.props;
+    const { bid, cid } = match.params;
     listRecords(bid, cid, sort);
   };
 
   onCollectionRecordsEnter = () => {
-    const { collection, listRecords, params, session } = this.props;
-    const { bid, cid } = params;
+    const { collection, listRecords, match, session } = this.props;
+    const { bid, cid } = match.params;
     if (!session.authenticated) {
       // We're not authenticated, skip requesting the list of records. This likely
       // occurs when users refresh the page and lose their session.
@@ -361,7 +362,7 @@ export default class CollectionRecords extends PureComponent<Props> {
 
   render() {
     const {
-      params,
+      match,
       session,
       bucket,
       collection,
@@ -371,7 +372,7 @@ export default class CollectionRecords extends PureComponent<Props> {
       pluginHooks,
       capabilities,
     } = this.props;
-    const { bid, cid } = params;
+    const { bid, cid } = match.params;
     const {
       busy,
       data,

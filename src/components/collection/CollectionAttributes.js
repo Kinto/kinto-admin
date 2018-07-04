@@ -4,7 +4,7 @@ import type {
   SessionState,
   BucketState,
   CollectionState,
-  CollectionRouteParams,
+  CollectionRouteMatch,
   CollectionData,
 } from "../../types";
 
@@ -19,21 +19,21 @@ type Props = {
   bucket: BucketState,
   collection: CollectionState,
   capabilities: Capabilities,
-  params: CollectionRouteParams,
+  match: CollectionRouteMatch,
   updateCollection: (bid: string, cid: string, data: CollectionData) => void,
   deleteCollection: (bid: string, cid: string) => void,
 };
 
 export default class CollectionAttributes extends PureComponent<Props> {
   onSubmit = (formData: CollectionData) => {
-    const { params, updateCollection } = this.props;
-    const { bid, cid } = params;
+    const { match, updateCollection } = this.props;
+    const { bid, cid } = match.params;
     updateCollection(bid, cid, { data: formData });
   };
 
   deleteCollection = (cid: string) => {
-    const { deleteCollection, params } = this.props;
-    const { bid } = params;
+    const { deleteCollection, match } = this.props;
+    const { bid } = match.params;
     const message = [
       "This will delete the collection and all the records it contains.",
       "Are you sure?",
@@ -44,8 +44,8 @@ export default class CollectionAttributes extends PureComponent<Props> {
   };
 
   render() {
-    const { params, session, bucket, collection, capabilities } = this.props;
-    const { bid, cid } = params;
+    const { match, session, bucket, collection, capabilities } = this.props;
+    const { bid, cid } = match.params;
     const { busy, data: formData } = collection;
     if (busy) {
       return <Spinner />;

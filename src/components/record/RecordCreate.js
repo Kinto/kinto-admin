@@ -4,7 +4,7 @@ import type {
   BucketState,
   CollectionState,
   RecordData,
-  CollectionRouteParams,
+  CollectionRouteMatch,
   Capabilities,
 } from "../../types";
 
@@ -13,7 +13,7 @@ import React, { PureComponent } from "react";
 import RecordForm from "./RecordForm";
 
 type Props = {
-  params: CollectionRouteParams,
+  match: CollectionRouteMatch,
   session: SessionState,
   capabilities: Capabilities,
   bucket: BucketState,
@@ -28,14 +28,14 @@ type Props = {
 
 export default class RecordCreate extends PureComponent<Props> {
   onSubmit = ({ __attachment__: attachment, ...record }: Object) => {
-    const { params, createRecord } = this.props;
-    const { bid, cid } = params;
+    const { match, createRecord } = this.props;
+    const { bid, cid } = match.params;
     createRecord(bid, cid, record, attachment);
   };
 
   render() {
-    const { params, session, bucket, collection, capabilities } = this.props;
-    const { bid, cid } = params;
+    const { match, session, bucket, collection, capabilities } = this.props;
+    const { bid, cid } = match.params;
     return (
       <div>
         <h1>
