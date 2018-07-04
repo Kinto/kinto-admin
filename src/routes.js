@@ -90,22 +90,6 @@ export function onCollectionHistoryEnter(
   store.dispatch(collectionActions.listCollectionHistory(bid, cid, filters));
 }
 
-export function onBucketHistoryEnter(store: Object, { params }: BucketRoute) {
-  const { bid } = params;
-  const {
-    session,
-    routing: {
-      locationBeforeTransitions: { query: filters },
-    },
-  } = store.getState();
-  if (!session.authenticated) {
-    // We're not authenticated, skip requesting the list of records. This likely
-    // occurs when users refresh the page and lose their session.
-    return;
-  }
-  store.dispatch(bucketActions.listBucketHistory(bid, filters));
-}
-
 export function onRecordHistoryEnter(store: Object, { params }: RecordRoute) {
   const { bid, cid, rid } = params;
   const {
@@ -216,8 +200,6 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
             name="history"
             path="history"
             component={BucketHistoryPage}
-            onEnter={onBucketHistoryEnter.bind(null, store)}
-            onChange={onBucketHistoryEnter.bind(null, store)}
           />
           {/* /buckets/:bid/collections */}
           <Route

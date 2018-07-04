@@ -3,7 +3,9 @@ import type {
   Capabilities,
   BucketState,
   BucketRouteParams,
+  HistoryFilters,
   RouteLocation,
+  SessionState,
 } from "../../types";
 
 import React, { PureComponent } from "react";
@@ -16,11 +18,36 @@ type Props = {
   bucket: BucketState,
   capabilities: Capabilities,
   location: RouteLocation,
+  listBucketHistory: (bid: string, filters: HistoryFilters) => void,
   listBucketNextHistory: () => void,
   notifyError: (message: string, error: ?Error) => void,
+  location: Location,
+  session: SessionState,
+  routing: Object,
 };
 
 export default class BucketHistory extends PureComponent<Props> {
+  onBucketHistoryEnter() {
+    const { listBucketHistory, params, session, routing } = this.props;
+    const { bid } = params;
+    const {
+      locationBeforeTransitions: { query: filters },
+    } = routing;
+    if (!session.authenticated) {
+      // We're not authenticated, skip requesting the list of records. This likely
+      // occurs when users refresh the page and lose their session.
+      return;
+    }
+    listBucketHistory(bid, filters);
+  }
+
+  componentDidMount = this.onBucketHistoryEnter;
+  componentDidUpdate = (prevProps: Props) => {
+    if (prevProps.location !== this.props.location) {
+      this.onBucketHistoryEnter();
+    }
+  };
+
   render() {
     const {
       params,
