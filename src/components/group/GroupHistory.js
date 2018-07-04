@@ -4,7 +4,9 @@ import type {
   GroupState,
   GroupRouteParams,
   RouteLocation,
+  SessionState,
 } from "../../types";
+import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
 
@@ -17,11 +19,36 @@ type Props = {
   capabilities: Capabilities,
   location: RouteLocation,
   hasNextHistory: boolean,
+  listGroupHistory: ?Function,
   listGroupNextHistory: ?Function,
   notifyError: (message: string, error: ?Error) => void,
+  location: Location,
+  session: SessionState,
+  routing: Object,
 };
 
 export default class GroupHistory extends PureComponent<Props> {
+  onGroupHistoryEnter() {
+    const { params, listGroupHistory, session, routing } = this.props;
+    const { bid, gid } = params;
+    const {
+      locationBeforeTransitions: { query: filters },
+    } = routing;
+    if (!session.authenticated) {
+      // We're not authenticated, skip requesting the list of records. This likely
+      // occurs when users refresh the page and lose their session.
+      return;
+    }
+    listGroupHistory && listGroupHistory(bid, gid, filters);
+  }
+
+  componentDidMount = this.onGroupHistoryEnter;
+  componentDidUpdate = (prevProps: Props) => {
+    if (prevProps.location !== this.props.location) {
+      this.onGroupHistoryEnter();
+    }
+  };
+
   render() {
     const {
       params,
