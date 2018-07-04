@@ -5,7 +5,7 @@ import type {
   BucketState,
   CollectionState,
   RecordState,
-  RecordRouteParams,
+  RecordRouteMatch,
   RecordPermissions,
 } from "../../types";
 
@@ -17,7 +17,7 @@ import PermissionsForm from "../PermissionsForm";
 import { canEditRecord } from "../../permission";
 
 type Props = {
-  params: RecordRouteParams,
+  match: RecordRouteMatch,
   session: SessionState,
   capabilities: Capabilities,
   bucket: BucketState,
@@ -33,8 +33,8 @@ type Props = {
 
 export default class RecordPermissions_ extends PureComponent<Props> {
   onSubmit = ({ formData }: { formData: Object }) => {
-    const { params, updateRecord } = this.props;
-    const { bid, cid, rid } = params;
+    const { match, updateRecord } = this.props;
+    const { bid, cid, rid } = match.params;
     updateRecord(bid, cid, rid, { permissions: formData });
   };
 
@@ -44,8 +44,8 @@ export default class RecordPermissions_ extends PureComponent<Props> {
   }
 
   render() {
-    const { params, capabilities, bucket, record } = this.props;
-    const { bid, cid, rid } = params;
+    const { match, capabilities, bucket, record } = this.props;
+    const { bid, cid, rid } = match.params;
     const { groups } = bucket;
     const { busy, permissions } = record;
     const acls = ["read", "write"];

@@ -270,14 +270,19 @@ export type GroupRoute = {
   params: GroupRouteMatch,
 };
 
-export type RecordRouteParams = {
-  bid: string,
-  cid: string,
-  rid: string,
+export type RecordRouteMatch = {
+  params: {
+    bid: string,
+    cid: string,
+    rid: string,
+  },
+  isExact: boolean,
+  path: string,
+  url: string,
 };
 
 export type RecordRoute = {
-  params: RecordRouteParams,
+  params: RecordRouteMatch,
 };
 
 export type RouteParams = {

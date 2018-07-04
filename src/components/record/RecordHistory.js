@@ -5,7 +5,7 @@ import type {
   BucketState,
   HistoryFilters,
   RecordState,
-  RecordRouteParams,
+  RecordRouteMatch,
   RouteLocation,
 } from "../../types";
 
@@ -15,7 +15,7 @@ import HistoryTable from "../HistoryTable";
 import RecordTabs from "./RecordTabs";
 
 type Props = {
-  params: RecordRouteParams,
+  match: RecordRouteMatch,
   session: SessionState,
   capabilities: Capabilities,
   bucket: BucketState,
@@ -34,8 +34,8 @@ type Props = {
 
 export default class RecordHistory extends PureComponent<Props> {
   onRecordHistoryEnter() {
-    const { listRecordHistory, params, routing, session } = this.props;
-    const { bid, cid, rid } = params;
+    const { listRecordHistory, match, routing, session } = this.props;
+    const { bid, cid, rid } = match.params;
     const {
       locationBeforeTransitions: { query: filters },
     } = routing;
@@ -54,14 +54,14 @@ export default class RecordHistory extends PureComponent<Props> {
 
   render() {
     const {
-      params,
+      match,
       record,
       capabilities,
       location,
       listRecordNextHistory,
       notifyError,
     } = this.props;
-    const { bid, cid, rid } = params;
+    const { bid, cid, rid } = match.params;
     const {
       history: { entries, loaded, hasNextPage },
     } = record;
