@@ -3,6 +3,7 @@ import type {
   Capabilities,
   SessionState,
   BucketState,
+  HistoryFilters,
   RecordState,
   RecordRouteParams,
   RouteLocation,
@@ -20,11 +21,37 @@ type Props = {
   bucket: BucketState,
   record: RecordState,
   location: RouteLocation,
+  listRecordHistory: (
+    bid: string,
+    cid: string,
+    rid: string,
+    filters: HistoryFilters
+  ) => void,
   listRecordNextHistory: () => void,
   notifyError: (message: string, error: ?Error) => void,
+  routing: Object,
 };
 
 export default class RecordHistory extends PureComponent<Props> {
+  onRecordHistoryEnter() {
+    const { listRecordHistory, params, routing, session } = this.props;
+    const { bid, cid, rid } = params;
+    const {
+      locationBeforeTransitions: { query: filters },
+    } = routing;
+    if (!session.authenticated) {
+      return;
+    }
+    listRecordHistory(bid, cid, rid, filters);
+  }
+
+  componentDidMount = this.onRecordHistoryEnter;
+  componentDidUpdate = (prevProps: Props) => {
+    if (prevProps.location !== this.props.location) {
+      this.onRecordHistoryEnter();
+    }
+  };
+
   render() {
     const {
       params,

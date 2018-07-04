@@ -71,20 +71,6 @@ function onAuthEnter(store: Object, { params }) {
   }
 }
 
-export function onRecordHistoryEnter(store: Object, { params }: RecordRoute) {
-  const { bid, cid, rid } = params;
-  const {
-    session,
-    routing: {
-      locationBeforeTransitions: { query: filters },
-    },
-  } = store.getState();
-  if (!session.authenticated) {
-    return;
-  }
-  store.dispatch(recordActions.listRecordHistory(bid, cid, rid, filters));
-}
-
 function registerPluginsComponentHooks(PageContainer, plugins) {
   // Extract the container wrapped component (see react-redux connect() API)
   const { WrappedComponent } = PageContainer;
@@ -265,8 +251,6 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                     name="history"
                     path="history"
                     component={RecordHistoryPage}
-                    onEnter={onRecordHistoryEnter.bind(null, store)}
-                    onChange={onRecordHistoryEnter.bind(null, store)}
                   />
                 </Route>
               </Route>
