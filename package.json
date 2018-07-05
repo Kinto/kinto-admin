@@ -42,7 +42,7 @@
     "filesize": "^3.3.0",
     "kinto-http": "^4.3.3",
     "react": "^15.6.1",
-    "react-breadcrumbs": "^1.3.16",
+    "react-breadcrumbs": "^2.1.6",
     "react-codemirror2": "^5.0.1",
     "react-dom": "^15.6.1",
     "react-jsonschema-form": "^1.0.2",
