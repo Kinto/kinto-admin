@@ -6,9 +6,16 @@ import type {
   RecordRoute,
 } from "./types";
 
-import React, { Component } from "react";
+import React, { Component, PureComponent } from "react";
 import { Redirect, Route } from "react-router-dom";
+import type { Location, Match } from "react-router-dom";
 import { mergeObjects } from "react-jsonschema-form/lib/utils";
+import { Breadcrumb } from "react-breadcrumbs";
+import type { Dispatch, ActionCreatorOrObjectOfACs } from "redux";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+
+import * as RouteActions from "./actions/route";
 
 import { isObject } from "./utils";
 import { flattenPluginsRoutes } from "./plugin";
@@ -97,6 +104,80 @@ function registerPluginsComponentHooks(PageContainer, plugins) {
     }
   };
 }
+
+type ComponentWrapperProps = {
+  component: React.Node,
+  location: Location,
+  match: Match,
+  routeUpdated: (Object, Location) => void,
+};
+
+class ComponentWrapper extends PureComponent<ComponentWrapperProps> {
+  updateRoute() {
+    const { match, location, routeUpdated } = this.props;
+    routeUpdated(match.params, location);
+  }
+
+  componentDidMount = this.updateRoute;
+  componentDidUpdate = (prevProps: ComponentWrapperProps) => {
+    if (prevProps.location !== this.props.location) {
+      this.updateRoute();
+    }
+  };
+
+  render() {
+    const { component: Component, ...props } = this.props;
+    return <Component {...props} />;
+  }
+}
+
+const routeCreator = ({
+  component: Component,
+  render,
+  routeUpdated,
+  children,
+  ...props
+}) => {
+  return (
+    <Route
+      {...props}
+      render={routeProps => {
+        // If the name of the route starts with a ":" it's a "match param", so resolve it.
+        const title = props.name.startsWith(":")
+          ? routeProps.match.params[props.name.slice(1)]
+          : props.name;
+        return (
+          <Breadcrumb
+            data={{
+              title: title,
+              pathname: routeProps.match.url,
+            }}>
+            {Component ? (
+              <ComponentWrapper
+                component={Component}
+                routeUpdated={routeUpdated}
+                {...routeProps}
+              />
+            ) : render ? (
+              render(routeProps)
+            ) : (
+              children
+            )}
+          </Breadcrumb>
+        );
+      }}
+    />
+  );
+};
+
+function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
+  return bindActionCreators(RouteActions, dispatch);
+}
+
+export const CreateRoute = connect(
+  null,
+  mapDispatchToProps
+)(routeCreator);
 
 export default function getRoutes(store: Object, plugins: Object[] = []) {
   return (

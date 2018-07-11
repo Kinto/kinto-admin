@@ -7,9 +7,11 @@ import type {
 import type { Location, Match } from "react-router-dom";
 import type { Element } from "react";
 import { Component } from "react";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Redirect, Switch } from "react-router-dom";
 import { isObject } from "../utils";
 import { mergeObjects } from "react-jsonschema-form/lib/utils";
+
+import { CreateRoute } from "../routes";
 
 import { PureComponent } from "react";
 import * as React from "react";
@@ -17,6 +19,7 @@ import { Breadcrumbs } from "react-breadcrumbs";
 import HomePage from "../containers/HomePage";
 import Notifications from "../containers/Notifications";
 import Sidebar from "../containers/Sidebar";
+import Buckets from "../containers/bucket/Buckets";
 
 function UserInfo({ session }) {
   const {
@@ -76,32 +79,6 @@ function registerPluginsComponentHooks(PageContainer, plugins) {
   };
 }
 
-type ComponentWrapperProps = {
-  component: React.Node,
-  location: Location,
-  match: Match,
-  routeUpdated: (Object, Location) => void,
-};
-
-class ComponentWrapper extends PureComponent<ComponentWrapperProps> {
-  updateRoute() {
-    const { match, location, routeUpdated } = this.props;
-    routeUpdated(match.params, location);
-  }
-
-  componentDidMount = this.updateRoute;
-  componentDidUpdate = (prevProps: ComponentWrapperProps) => {
-    if (prevProps.location !== this.props.location) {
-      this.updateRoute();
-    }
-  };
-
-  render() {
-    const { component: Component, ...props } = this.props;
-    return <Component {...props} />;
-  }
-}
-
 type Props = {
   session: SessionState,
   logout: () => void,
@@ -117,25 +94,6 @@ type Props = {
 };
 
 export default class App extends PureComponent<Props> {
-  createRoute = ({ component: Component, render, ...props }) => {
-    return (
-      <Route
-        {...props}
-        render={routeProps =>
-          Component ? (
-            <ComponentWrapper
-              component={Component}
-              routeUpdated={this.props.routeUpdated}
-              {...routeProps}
-            />
-          ) : (
-            render(routeProps)
-          )
-        }
-      />
-    );
-  };
-
   render() {
     const {
       session,
@@ -158,7 +116,6 @@ export default class App extends PureComponent<Props> {
       Notifications,
       plugins
     );
-    const CreateRoute = this.createRoute;
     return (
       <div>
         {session.authenticated && (
@@ -186,7 +143,14 @@ export default class App extends PureComponent<Props> {
                   path="/auth/:payload/:token"
                   component={HomePage}
                 />
-                <Route
+                {/* /buckets */}
+                <Redirect exact from="/buckets" to="/" />
+                <CreateRoute
+                  name="buckets"
+                  path="/buckets"
+                  component={Buckets}
+                />
+                <CreateRoute
                   name="not found"
                   component={_ => <h1>Page not found.</h1>}
                 />
