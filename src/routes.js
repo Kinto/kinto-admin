@@ -142,10 +142,10 @@ const routeCreator = ({
     <Route
       {...props}
       render={routeProps => {
-        // If the name of the route starts with a ":" it's a "match param", so resolve it.
-        const title = props.name.startsWith(":")
-          ? routeProps.match.params[props.name.slice(1)]
-          : props.name;
+        // If the title of the route starts with a ":" it's a "match param", so resolve it.
+        const title = props.title.startsWith(":")
+          ? routeProps.match.params[props.title.slice(1)]
+          : props.title;
         return (
           <Breadcrumb
             data={{

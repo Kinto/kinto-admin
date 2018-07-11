@@ -19,7 +19,15 @@ import { Breadcrumbs } from "react-breadcrumbs";
 import HomePage from "../containers/HomePage";
 import Notifications from "../containers/Notifications";
 import Sidebar from "../containers/Sidebar";
-import Buckets from "../containers/bucket/Buckets";
+import BucketCreatePage from "../containers/bucket/BucketCreatePage";
+import BucketGroupsPage from "../containers/bucket/BucketGroupsPage";
+import GroupCreatePage from "../containers/group/GroupCreatePage";
+import GroupAttributesPage from "../containers/group/GroupAttributesPage";
+import GroupPermissionsPage from "../containers/group/GroupPermissionsPage";
+import GroupHistoryPage from "../containers/group/GroupHistoryPage";
+import BucketAttributesPage from "../containers/bucket/BucketAttributesPage";
+import BucketPermissionsPage from "../containers/bucket/BucketPermissionsPage";
+import BucketHistoryPage from "../containers/bucket/BucketHistoryPage";
 
 function UserInfo({ session }) {
   const {
@@ -129,31 +137,108 @@ export default class App extends PureComponent<Props> {
             </div>
             <div className={contentClasses}>
               <HookedNotifications />
-              <Breadcrumbs
-                routes={routes}
-                params={params}
-                separator=" / "
-                excludes={["auth"]}
-              />
+              <Breadcrumbs separator=" / " />
               <Switch>
-                <CreateRoute exact name="home" path="/" component={HomePage} />
+                <CreateRoute exact title="home" path="/" component={HomePage} />
                 <CreateRoute
                   exact
-                  name="auth"
+                  title="auth"
                   path="/auth/:payload/:token"
                   component={HomePage}
                 />
                 {/* /buckets */}
                 <Redirect exact from="/buckets" to="/" />
-                <CreateRoute
-                  name="buckets"
-                  path="/buckets"
-                  component={Buckets}
-                />
-                <CreateRoute
-                  name="not found"
-                  component={_ => <h1>Page not found.</h1>}
-                />
+                <CreateRoute title="home" path="/">
+                  <Switch>
+                    <CreateRoute title="buckets" path="/buckets">
+                      <Switch>
+                        <CreateRoute
+                          exact
+                          title="create"
+                          path="/buckets/create"
+                          component={BucketCreatePage}
+                        />
+                        <Redirect
+                          exact
+                          from="/buckets/:bid"
+                          to="/buckets/:bid/collections"
+                        />
+                        <CreateRoute title=":bid" path="/buckets/:bid">
+                          <Switch>
+                            <CreateRoute
+                              exact
+                              title="groups"
+                              path="/buckets/:bid/groups"
+                              component={BucketGroupsPage}
+                            />
+                            <CreateRoute
+                              title="groups"
+                              path="/buckets/:bid/groups">
+                              <Switch>
+                                <CreateRoute
+                                  exact
+                                  title="create"
+                                  path="/buckets/:bid/groups/create"
+                                  component={GroupCreatePage}
+                                />
+                                <Redirect
+                                  exact
+                                  from="/buckets/:bid/groups/:gid"
+                                  to="/buckets/:bid/groups/:gid/attributes"
+                                />
+                                <CreateRoute
+                                  exact
+                                  title="attributes"
+                                  path="/buckets/:bid/groups/:gid/attributes"
+                                  component={GroupAttributesPage}
+                                />
+                                {/* /buckets/:bid/groups/:gid/permissions */}
+                                <CreateRoute
+                                  exact
+                                  title="permissions"
+                                  path="/buckets/:bid/groups/:gid/permissions"
+                                  component={GroupPermissionsPage}
+                                />
+                                {/* /buckets/:bid/groups/:gid/history */}
+                                <CreateRoute
+                                  exact
+                                  title="history"
+                                  path="/buckets/:bid/groups/:gid/history"
+                                  component={GroupHistoryPage}
+                                />
+                              </Switch>
+                            </CreateRoute>
+                            {/* /buckets/:bid/attributes */}
+                            <CreateRoute
+                              exact
+                              title="attributes"
+                              path="/buckets/:bid/attributes"
+                              component={BucketAttributesPage}
+                            />
+                            {/* /buckets/:bid/permissions */}
+                            <CreateRoute
+                              exact
+                              title="permissions"
+                              path="/buckets/:bid/permissions"
+                              component={BucketPermissionsPage}
+                            />
+                            {/* /buckets/:bid/history */}
+                            <CreateRoute
+                              exact
+                              title="history"
+                              path="/buckets/:bid/history"
+                              component={BucketHistoryPage}
+                            />
+                          </Switch>
+                        </CreateRoute>
+                      </Switch>
+                    </CreateRoute>
+                    <CreateRoute
+                      title="not found"
+                      component={_ => <h1>Page not found.</h1>}
+                    />
+                  </Switch>
+                </CreateRoute>
               </Switch>
             </div>
           </div>

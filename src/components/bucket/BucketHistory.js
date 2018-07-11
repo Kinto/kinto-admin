@@ -50,14 +50,14 @@ export default class BucketHistory extends PureComponent<Props> {
 
   render() {
     const {
-      params,
+      match,
       bucket,
       capabilities,
       location,
       listBucketNextHistory,
       notifyError,
     } = this.props;
-    const { bid } = params;
+    const { bid } = match.params;
     const {
       history: { entries, loaded, hasNextPage: hasNextHistoryPage },
     } = bucket;
