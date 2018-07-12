@@ -326,7 +326,7 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
                     path="permissions"
                     component={RecordPermissionsPage}
                   />
-                  {/* /buckets/:bid/collections/:cid/history */}
+                  {/* /buckets/:bid/collections/:cid/records/:rid/history */}
                   <Route
                     exact
                     name="history"

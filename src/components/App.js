@@ -19,15 +19,20 @@ import { Breadcrumbs } from "react-breadcrumbs";
 import HomePage from "../containers/HomePage";
 import Notifications from "../containers/Notifications";
 import Sidebar from "../containers/Sidebar";
+import BucketAttributesPage from "../containers/bucket/BucketAttributesPage";
+import BucketCollectionsPage from "../containers/bucket/BucketCollectionsPage";
 import BucketCreatePage from "../containers/bucket/BucketCreatePage";
 import BucketGroupsPage from "../containers/bucket/BucketGroupsPage";
-import GroupCreatePage from "../containers/group/GroupCreatePage";
-import GroupAttributesPage from "../containers/group/GroupAttributesPage";
-import GroupPermissionsPage from "../containers/group/GroupPermissionsPage";
-import GroupHistoryPage from "../containers/group/GroupHistoryPage";
-import BucketAttributesPage from "../containers/bucket/BucketAttributesPage";
-import BucketPermissionsPage from "../containers/bucket/BucketPermissionsPage";
 import BucketHistoryPage from "../containers/bucket/BucketHistoryPage";
+import BucketPermissionsPage from "../containers/bucket/BucketPermissionsPage";
+import CollectionAttributesPage from "../containers/collection/CollectionAttributesPage";
+import CollectionCreatePage from "../containers/collection/CollectionCreatePage";
+import CollectionHistoryPage from "../containers/collection/CollectionHistoryPage";
+import CollectionPermissionsPage from "../containers/collection/CollectionPermissionsPage";
+import GroupAttributesPage from "../containers/group/GroupAttributesPage";
+import GroupCreatePage from "../containers/group/GroupCreatePage";
+import GroupHistoryPage from "../containers/group/GroupHistoryPage";
+import GroupPermissionsPage from "../containers/group/GroupPermissionsPage";
 
 function UserInfo({ session }) {
   const {
@@ -230,6 +235,53 @@ export default class App extends PureComponent<Props> {
                               path="/buckets/:bid/history"
                               component={BucketHistoryPage}
                             />
+                            <CreateRoute
+                              exact
+                              title="collections"
+                              path="/buckets/:bid/collections"
+                              component={BucketCollectionsPage}
+                            />
+                            <CreateRoute
+                              title="collections"
+                              path="/buckets/:bid/collections">
+                              <Switch>
+                                <CreateRoute
+                                  exact
+                                  title="create"
+                                  path="/buckets/:bid/collections/create"
+                                  component={CollectionCreatePage}
+                                />
+                                <Redirect
+                                  exact
+                                  from="/buckets/:bid/collections/:cid"
+                                  to="/buckets/:bid/collections/:cid/records"
+                                />
+                                <CreateRoute
+                                  title=":cid"
+                                  path="/buckets/:bid/collections/:cid">
+                                  <Switch>
+                                    <CreateRoute
+                                      exact
+                                      title="attributes"
+                                      path="/buckets/:bid/collections/:cid/attributes"
+                                      component={CollectionAttributesPage}
+                                    />
+                                    <CreateRoute
+                                      exact
+                                      title="permissions"
+                                      path="/buckets/:bid/collections/:cid/permissions"
+                                      component={CollectionPermissionsPage}
+                                    />
+                                    <CreateRoute
+                                      exact
+                                      title="history"
+                                      path="/buckets/:bid/collections/:cid/history"
+                                      component={CollectionHistoryPage}
+                                    />
+                                  </Switch>
+                                </CreateRoute>
+                              </Switch>
+                            </CreateRoute>
                           </Switch>
                         </CreateRoute>
                       </Switch>
