@@ -189,6 +189,7 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
     CollectionRecordsPage,
     plugins
   );
+  const pluginsRoutes = flattenPluginsRoutes(plugins);
   return (
     <Route
       name="home"
@@ -199,6 +200,7 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
           sidebar={hookedSidebar}
           notifications={hookedNotifications}
           collectionRecords={hookedCollectionRecords}
+          pluginsRoutes={pluginsRoutes}
           {...props}
         />
       )}

@@ -84,6 +84,7 @@ type Props = {
   sidebar: Element<*>,
   notifications: Element<*>,
   collectionRecords: Element<*>,
+  pluginsRoutes: Element<*>[],
 };
 
 export default class App extends PureComponent<Props> {
@@ -97,6 +98,7 @@ export default class App extends PureComponent<Props> {
       sidebar: Sidebar,
       notifications: Notifications,
       collectionRecords: CollectionRecordsPage,
+      pluginsRoutes,
     } = this.props;
     const { params } = match;
     const notificationsClass = notificationList.length
@@ -131,6 +133,7 @@ export default class App extends PureComponent<Props> {
                 <Redirect exact from="/buckets" to="/" />
                 <CreateRoute title="home" path="/">
                   <Switch>
+                    {pluginsRoutes}
                     <CreateRoute title="buckets" path="/buckets">
                       <Switch>
                         <CreateRoute

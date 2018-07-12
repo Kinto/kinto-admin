@@ -54,7 +54,11 @@ function* testSaga(getState, action) {
 
 // Plugin exports
 const routes = [
-  { path: "/test/plugin", components: { content: TestPluginContainer } },
+  {
+    path: "/test/plugin",
+    title: "test plugin",
+    component: TestPluginContainer,
+  },
 ];
 
 export const sagas = [[takeEvery, PLUGIN_ACTION_REQUEST, testSaga]];
