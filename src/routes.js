@@ -180,165 +180,28 @@ export const CreateRoute = connect(
 )(routeCreator);
 
 export default function getRoutes(store: Object, plugins: Object[] = []) {
+  const hookedSidebar = registerPluginsComponentHooks(Sidebar, plugins);
+  const hookedNotifications = registerPluginsComponentHooks(
+    Notifications,
+    plugins
+  );
+  const hookedCollectionRecords = registerPluginsComponentHooks(
+    CollectionRecordsPage,
+    plugins
+  );
   return (
     <Route
       name="home"
       path="/"
-      render={props => <App plugins={plugins} {...props} />}>
-      {/* /buckets */}
-      <Route exact name="buckets" path="buckets">
-        <Redirect to="/" />
-        {/* /buckets/:bid/create */}
-        <Route exact name="create" path="create" component={BucketCreatePage} />
-        {/* /buckets/:bid */}
-        <Route exact name=":bid" path=":bid">
-          <Redirect to="collections" />
-          {/* /buckets/:bid/groups */}
-          <Route exact name="groups" path="groups" component={BucketGroupsPage}>
-            {/* /buckets/:bid/groups/create */}
-            <Route
-              exact
-              name="create"
-              path="create"
-              component={GroupCreatePage}
-            />
-            {/* /buckets/:bid/groups/:gid */}
-            <Route exact name=":gid" path=":gid">
-              <Redirect to="attributes" />
-              {/* /buckets/:bid/groups/:gid/attributes */}
-              <Route
-                exact
-                name="attributes"
-                path="attributes"
-                component={GroupAttributesPage}
-              />
-              {/* /buckets/:bid/groups/:gid/permissions */}
-              <Route
-                exact
-                name="permissions"
-                path="permissions"
-                component={GroupPermissionsPage}
-              />
-              {/* /buckets/:bid/groups/:gid/history */}
-              <Route
-                exact
-                name="history"
-                path="history"
-                component={GroupHistoryPage}
-              />
-            </Route>
-          </Route>
-          {/* /buckets/:bid/attributes */}
-          <Route
-            exact
-            name="attributes"
-            path="attributes"
-            component={BucketAttributesPage}
-          />
-          {/* /buckets/:bid/permissions */}
-          <Route
-            exact
-            name="permissions"
-            path="permissions"
-            component={BucketPermissionsPage}
-          />
-          {/* /buckets/:bid/history */}
-          <Route
-            exact
-            name="history"
-            path="history"
-            component={BucketHistoryPage}
-          />
-          {/* /buckets/:bid/collections */}
-          <Route
-            exact
-            name="collections"
-            path="collections"
-            component={BucketCollectionsPage}>
-            {/* /buckets/:bid/collections/create */}
-            <Route
-              exact
-              name="create"
-              path="create"
-              component={CollectionCreatePage}
-            />
-            {/* /buckets/:bid/collections/:cid */}
-            <Route exact name=":cid" path=":cid">
-              <Redirect to="records" />
-              {/* /buckets/:bid/collections/:cid/attributes */}
-              <Route
-                exact
-                name="attributes"
-                path="attributes"
-                component={CollectionAttributesPage}
-              />
-              {/* /buckets/:bid/collections/:cid/permissions */}
-              <Route
-                exact
-                name="permissions"
-                path="permissions"
-                component={CollectionPermissionsPage}
-              />
-              {/* /buckets/:bid/collections/:cid/history */}
-              <Route
-                exact
-                name="history"
-                path="history"
-                component={CollectionHistoryPage}
-              />
-              {/* /buckets/:bid/collections/:cid/records */}
-              <Route
-                exact
-                name="records"
-                path="records"
-                component={registerPluginsComponentHooks(
-                  CollectionRecordsPage,
-                  plugins
-                )}>
-                {/* /buckets/:bid/collections/:cid/records/create */}
-                <Route
-                  exact
-                  name="create"
-                  path="create"
-                  component={RecordCreatePage}
-                />
-                {/* /buckets/:bid/collections/:cid/records/bulk */}
-                <Route
-                  exact
-                  name="bulk create"
-                  path="bulk"
-                  component={RecordBulkPage}
-                />
-                {/* /buckets/:bid/collections/:cid/records/:rid */}
-                <Route exact name=":rid" path=":rid">
-                  <Redirect to="attributes" />
-                  {/* /buckets/:bid/collections/:cid/records/:rid/attributes */}
-                  <Route
-                    exact
-                    name="attributes"
-                    path="attributes"
-                    component={RecordAttributesPage}
-                  />
-                  {/* /buckets/:bid/collections/:cid/records/:rid/permissions */}
-                  <Route
-                    exact
-                    name="permissions"
-                    path="permissions"
-                    component={RecordPermissionsPage}
-                  />
-                  {/* /buckets/:bid/collections/:cid/records/:rid/history */}
-                  <Route
-                    exact
-                    name="history"
-                    path="history"
-                    component={RecordHistoryPage}
-                  />
-                </Route>
-              </Route>
-            </Route>
-          </Route>
-        </Route>
-      </Route>
-    </Route>
+      render={props => (
+        <App
+          plugins={plugins}
+          sidebar={hookedSidebar}
+          notifications={hookedNotifications}
+          collectionRecords={hookedCollectionRecords}
+          {...props}
+        />
+      )}
+    />
   );
 }

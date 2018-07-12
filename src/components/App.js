@@ -29,7 +29,6 @@ import CollectionAttributesPage from "../containers/collection/CollectionAttribu
 import CollectionCreatePage from "../containers/collection/CollectionCreatePage";
 import CollectionHistoryPage from "../containers/collection/CollectionHistoryPage";
 import CollectionPermissionsPage from "../containers/collection/CollectionPermissionsPage";
-import CollectionRecordsPage from "../containers/collection/CollectionRecordsPage";
 import GroupAttributesPage from "../containers/group/GroupAttributesPage";
 import GroupCreatePage from "../containers/group/GroupCreatePage";
 import GroupHistoryPage from "../containers/group/GroupHistoryPage";
@@ -71,33 +70,6 @@ function SessionInfoBar({ session, logout }) {
   );
 }
 
-function registerPluginsComponentHooks(PageContainer, plugins) {
-  // Extract the container wrapped component (see react-redux connect() API)
-  const { WrappedComponent } = PageContainer;
-  // By convention, the hook namespace is the wrapped component name
-  const namespace = WrappedComponent.displayName;
-  if (!namespace) {
-    throw new Error("can't happen -- component with no display name");
-  }
-  // Retrieve all the hooks if any
-  const hooks = plugins.map(plugin => plugin.hooks).filter(isObject);
-  // Merge all the hooks together, recursively grouped by namespaces
-  const mergedHooks = hooks.reduce((acc, hookObject) => {
-    return mergeObjects(acc, hookObject, true);
-  }, {});
-  // Wrap the root component, augmenting its props with the plugin hooks for it.
-  return class extends Component<*> {
-    render() {
-      return (
-        <PageContainer
-          {...this.props}
-          pluginHooks={mergedHooks[namespace] || {}}
-        />
-      );
-    }
-  };
-}
-
 type Props = {
   session: SessionState,
   logout: () => void,
@@ -106,10 +78,12 @@ type Props = {
   sidebar: Element<*>,
   notifications: Element<*>,
   content: Element<*>,
-  plugins: Plugin[],
   location: Location,
   match: Match,
   routeUpdated: (Object, Location) => void,
+  sidebar: Element<*>,
+  notifications: Element<*>,
+  collectionRecords: Element<*>,
 };
 
 export default class App extends PureComponent<Props> {
@@ -118,10 +92,11 @@ export default class App extends PureComponent<Props> {
       session,
       logout,
       notificationList,
-      routes,
-      plugins,
       location,
       match,
+      sidebar: Sidebar,
+      notifications: Notifications,
+      collectionRecords: CollectionRecordsPage,
     } = this.props;
     const { params } = match;
     const notificationsClass = notificationList.length
@@ -130,11 +105,6 @@ export default class App extends PureComponent<Props> {
     const contentClasses = `col-sm-9 content${notificationsClass}`;
     const version =
       process.env.REACT_APP_VERSION || process.env.KINTO_ADMIN_VERSION;
-    const HookedSidebar = registerPluginsComponentHooks(Sidebar, plugins);
-    const HookedNotifications = registerPluginsComponentHooks(
-      Notifications,
-      plugins
-    );
     return (
       <div>
         {session.authenticated && (
@@ -144,10 +114,10 @@ export default class App extends PureComponent<Props> {
           <div className="row">
             <div className="col-sm-3 sidebar">
               <h1 className="kinto-admin-title">Kinto admin</h1>
-              <HookedSidebar location={location} params={params} />
+              <Sidebar location={location} params={params} />
             </div>
             <div className={contentClasses}>
-              <HookedNotifications />
+              <Notifications />
               <Breadcrumbs separator=" / " />
               <Switch>
                 <CreateRoute exact title="home" path="/" component={HomePage} />
@@ -288,10 +258,7 @@ export default class App extends PureComponent<Props> {
                                       exact
                                       title="records"
                                       path="/buckets/:bid/collections/:cid/records"
-                                      component={registerPluginsComponentHooks(
-                                        CollectionRecordsPage,
-                                        plugins
-                                      )}
+                                      component={CollectionRecordsPage}
                                     />
                                     <CreateRoute
                                       title="records"
