@@ -136,11 +136,6 @@ const schema = {
           title: "Attachment required",
           default: false,
         },
-        gzipped: {
-          type: "boolean",
-          title: "Enable Gzip",
-          default: false,
-        },
       },
     },
   },
@@ -191,9 +186,6 @@ const uiSchema = {
     required: {
       "ui:help":
         "Require a file to be attached to each record in the collection.",
-    },
-    gzipped: {
-      "ui:help": "Enable gzipping file on server side on upload.",
     },
   },
   uiSchema: {

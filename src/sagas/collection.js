@@ -125,37 +125,16 @@ export function* listNextHistory(getState: GetStateFn): SagaGen {
   }
 }
 
-function getAttachmentOptions(attachmentsCapability, collectionData) {
-  const { gzipped: defaultGzipped } = attachmentsCapability;
-  let attachmentOptions;
-  if (collectionData != null && collectionData.attachment != null) {
-    let gzipped;
-    if (collectionData.attachment.gzipped != null) {
-      gzipped = collectionData.attachment.gzipped;
-    } else {
-      gzipped = defaultGzipped;
-    }
-    attachmentOptions = { safe: true, gzipped };
-  } else {
-    attachmentOptions = { safe: true };
-  }
-  return attachmentOptions;
-}
-
 export function* createRecord(
   getState: GetStateFn,
   action: ActionType<typeof actions.createRecord>
 ): SagaGen {
-  const { session, collection } = getState();
+  const { session } = getState();
   const { bid, cid, record, attachment } = action;
   try {
     const coll = getCollection(bid, cid);
     if (session.serverInfo.capabilities.attachments != null && attachment) {
-      const attachmentCapability = session.serverInfo.capabilities.attachments;
-      const attachmentOptions = getAttachmentOptions(
-        attachmentCapability,
-        collection.data
-      );
+      const attachmentOptions = { safe: true };
       yield call(
         [coll, coll.addAttachment],
         attachment,
@@ -180,7 +159,6 @@ export function* updateRecord(
 ): SagaGen {
   const {
     session,
-    collection,
     record: { data: currentRecord },
   } = getState();
   const {
@@ -196,12 +174,7 @@ export function* updateRecord(
     if (data) {
       const updatedRecord = { ...data, id: rid, last_modified };
       if (session.serverInfo.capabilities.attachments != null && attachment) {
-        const attachmentCapability =
-          session.serverInfo.capabilities.attachments;
-        const attachmentOptions = getAttachmentOptions(
-          attachmentCapability,
-          collection.data
-        );
+        const attachmentOptions = { safe: true };
         yield call(
           [coll, coll.addAttachment],
           attachment,

@@ -104,7 +104,6 @@ export type CollectionData = {
   attachment?: {
     enabled: boolean,
     required: boolean,
-    gzipped: boolean,
   },
   displayFields?: ?(string[]),
   sort?: string,
