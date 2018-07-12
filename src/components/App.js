@@ -187,42 +187,43 @@ export default class App extends PureComponent<Props> {
                                   to="/buckets/:bid/groups/:gid/attributes"
                                 />
                                 <CreateRoute
-                                  exact
-                                  title="attributes"
-                                  path="/buckets/:bid/groups/:gid/attributes"
-                                  component={GroupAttributesPage}
-                                />
-                                {/* /buckets/:bid/groups/:gid/permissions */}
-                                <CreateRoute
-                                  exact
-                                  title="permissions"
-                                  path="/buckets/:bid/groups/:gid/permissions"
-                                  component={GroupPermissionsPage}
-                                />
-                                {/* /buckets/:bid/groups/:gid/history */}
-                                <CreateRoute
-                                  exact
-                                  title="history"
-                                  path="/buckets/:bid/groups/:gid/history"
-                                  component={GroupHistoryPage}
-                                />
+                                  title=":gid"
+                                  path="/buckets/:bid/groups/:gid">
+                                  <Switch>
+                                    <CreateRoute
+                                      exact
+                                      title="attributes"
+                                      path="/buckets/:bid/groups/:gid/attributes"
+                                      component={GroupAttributesPage}
+                                    />
+                                    <CreateRoute
+                                      exact
+                                      title="permissions"
+                                      path="/buckets/:bid/groups/:gid/permissions"
+                                      component={GroupPermissionsPage}
+                                    />
+                                    <CreateRoute
+                                      exact
+                                      title="history"
+                                      path="/buckets/:bid/groups/:gid/history"
+                                      component={GroupHistoryPage}
+                                    />
+                                  </Switch>
+                                </CreateRoute>
                               </Switch>
                             </CreateRoute>
-                            {/* /buckets/:bid/attributes */}
                             <CreateRoute
                               exact
                               title="attributes"
                               path="/buckets/:bid/attributes"
                               component={BucketAttributesPage}
                             />
-                            {/* /buckets/:bid/permissions */}
                             <CreateRoute
                               exact
                               title="permissions"
                               path="/buckets/:bid/permissions"
                               component={BucketPermissionsPage}
                             />
-                            {/* /buckets/:bid/history */}
                             <CreateRoute
                               exact
                               title="history"
