@@ -29,10 +29,16 @@ import CollectionAttributesPage from "../containers/collection/CollectionAttribu
 import CollectionCreatePage from "../containers/collection/CollectionCreatePage";
 import CollectionHistoryPage from "../containers/collection/CollectionHistoryPage";
 import CollectionPermissionsPage from "../containers/collection/CollectionPermissionsPage";
+import CollectionRecordsPage from "../containers/collection/CollectionRecordsPage";
 import GroupAttributesPage from "../containers/group/GroupAttributesPage";
 import GroupCreatePage from "../containers/group/GroupCreatePage";
 import GroupHistoryPage from "../containers/group/GroupHistoryPage";
 import GroupPermissionsPage from "../containers/group/GroupPermissionsPage";
+import RecordCreatePage from "../containers/record/RecordCreatePage";
+import RecordBulkPage from "../containers/record/RecordBulkPage";
+import RecordAttributesPage from "../containers/record/RecordAttributesPage";
+import RecordPermissionsPage from "../containers/record/RecordPermissionsPage";
+import RecordHistoryPage from "../containers/record/RecordHistoryPage";
 
 function UserInfo({ session }) {
   const {
@@ -278,6 +284,64 @@ export default class App extends PureComponent<Props> {
                                       path="/buckets/:bid/collections/:cid/history"
                                       component={CollectionHistoryPage}
                                     />
+                                    <CreateRoute
+                                      exact
+                                      title="records"
+                                      path="/buckets/:bid/collections/:cid/records"
+                                      component={registerPluginsComponentHooks(
+                                        CollectionRecordsPage,
+                                        plugins
+                                      )}
+                                    />
+                                    <CreateRoute
+                                      title="records"
+                                      path="/buckets/:bid/collections/:cid/records">
+                                      <Switch>
+                                        <CreateRoute
+                                          exact
+                                          title="create"
+                                          path="/buckets/:bid/collections/:cid/records/create"
+                                          component={RecordCreatePage}
+                                        />
+                                        <CreateRoute
+                                          exact
+                                          title="bulk create"
+                                          path="/buckets/:bid/collections/:cid/records/bulk"
+                                          component={RecordBulkPage}
+                                        />
+                                        <Redirect
+                                          exact
+                                          from="/buckets/:bid/collections/:cid/records/:rid"
+                                          to="/buckets/:bid/collections/:cid/records/:rid/attributes"
+                                        />
+                                        <CreateRoute
+                                          title=":rid"
+                                          path="/buckets/:bid/collections/:cid/records/:rid">
+                                          <Switch>
+                                            <CreateRoute
+                                              exact
+                                              title="attributes"
+                                              path="/buckets/:bid/collections/:cid/records/:rid/attributes"
+                                              component={RecordAttributesPage}
+                                            />
+                                            <CreateRoute
+                                              exact
+                                              title="permissions"
+                                              path="permissions"
+                                              path="/buckets/:bid/collections/:cid/records/:rid/permissions"
+                                              component={RecordPermissionsPage}
+                                            />
+                                            <CreateRoute
+                                              exact
+                                              title="history"
+                                              path="history"
+                                              path="/buckets/:bid/collections/:cid/records/:rid/history"
+                                              component={RecordHistoryPage}
+                                            />
+                                          </Switch>
+                                        </CreateRoute>
+                                      </Switch>
+                                    </CreateRoute>
                                   </Switch>
                                 </CreateRoute>
                               </Switch>
