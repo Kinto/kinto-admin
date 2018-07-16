@@ -5,7 +5,7 @@ import type {
   RouteParams,
   BucketEntry,
 } from "../types";
-import type { Location } from "react-router-dom";
+import type { Location, Match } from "react-router-dom";
 
 import { PureComponent } from "react";
 import * as React from "react";
@@ -294,7 +294,7 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
 type SidebarProps = {
   session: SessionState,
   settings: SettingsState,
-  params: RouteParams,
+  match: Match,
   location: Location,
 };
 
@@ -304,7 +304,8 @@ export default class Sidebar extends PureComponent<SidebarProps> {
   static displayName = "Sidebar";
 
   render() {
-    const { session, settings, params, location } = this.props;
+    const { session, settings, match, location } = this.props;
+    const { params } = match;
     const { pathname: currentPath } = location;
     const { bid, cid } = params;
     const { busy, authenticated, buckets = [] } = session;

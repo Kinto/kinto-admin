@@ -7,7 +7,7 @@ import type {
 import type { Location, Match } from "react-router-dom";
 import type { Element } from "react";
 import { Component } from "react";
-import { Redirect, Switch } from "react-router-dom";
+import { Redirect, Switch, Route } from "react-router-dom";
 import { isObject } from "../utils";
 import { mergeObjects } from "react-jsonschema-form/lib/utils";
 
@@ -17,8 +17,6 @@ import { PureComponent } from "react";
 import * as React from "react";
 import { Breadcrumbs } from "react-breadcrumbs";
 import HomePage from "../containers/HomePage";
-import Notifications from "../containers/Notifications";
-import Sidebar from "../containers/Sidebar";
 import BucketAttributesPage from "../containers/bucket/BucketAttributesPage";
 import BucketCollectionsPage from "../containers/bucket/BucketCollectionsPage";
 import BucketCreatePage from "../containers/bucket/BucketCreatePage";
@@ -74,15 +72,8 @@ type Props = {
   session: SessionState,
   logout: () => void,
   notificationList: NotificationsType,
-  routes: Element<*>[],
-  sidebar: Element<*>,
   notifications: Element<*>,
-  content: Element<*>,
-  location: Location,
-  match: Match,
-  routeUpdated: (Object, Location) => void,
   sidebar: Element<*>,
-  notifications: Element<*>,
   collectionRecords: Element<*>,
   pluginsRoutes: Element<*>[],
 };
@@ -93,14 +84,11 @@ export default class App extends PureComponent<Props> {
       session,
       logout,
       notificationList,
-      location,
-      match,
       sidebar: Sidebar,
       notifications: Notifications,
       collectionRecords: CollectionRecordsPage,
       pluginsRoutes,
     } = this.props;
-    const { params } = match;
     const notificationsClass = notificationList.length
       ? " with-notifications"
       : "";
@@ -116,7 +104,16 @@ export default class App extends PureComponent<Props> {
           <div className="row">
             <div className="col-sm-3 sidebar">
               <h1 className="kinto-admin-title">Kinto admin</h1>
-              <Sidebar location={location} params={params} />
+              <Switch>
+                {/* We need a "sidebar route" for each case where the sidebar
+                  needs the :gid or :cid to higlight the proper entry */}
+                <Route
+                  path="/buckets/:bid/collections/:cid"
+                  component={Sidebar}
+                />
+                <Route path="/buckets/:bid" component={Sidebar} />
+                <Route component={Sidebar} />
+              </Switch>
             </div>
             <div className={contentClasses}>
               <Notifications />
