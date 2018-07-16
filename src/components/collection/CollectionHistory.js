@@ -28,16 +28,16 @@ type Props = {
   ) => void,
   listCollectionNextHistory: () => void,
   notifyError: (message: string, error: ?Error) => void,
-  routing: Object,
+  router: Object,
 };
 
 export default class CollectionHistory extends PureComponent<Props> {
   onCollectionHistoryEnter() {
-    const { listCollectionHistory, match, routing, session } = this.props;
+    const { listCollectionHistory, match, router, session } = this.props;
     const { bid, cid } = match.params;
     const {
-      locationBeforeTransitions: { query: filters },
-    } = routing;
+      location: { query: filters },
+    } = router;
     if (!session.authenticated) {
       // We're not authenticated, skip requesting the list of records. This likely
       // occurs when users refresh the page and lose their session.

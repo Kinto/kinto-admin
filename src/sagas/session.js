@@ -8,7 +8,7 @@ import type {
   SagaGen,
 } from "../types";
 
-import { push as updatePath } from "react-router-redux";
+import { push as updatePath } from "connected-react-router";
 import { call, put } from "redux-saga/effects";
 
 import { saveSession, clearSession } from "../store/localStore";

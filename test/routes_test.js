@@ -16,7 +16,7 @@ describe("Routes onEnter", () => {
   const filters = { since: "12" };
   const state = {
     session: { authenticated: true },
-    routing: { locationBeforeTransitions: { query: filters } },
+    router: { location: { query: filters } },
   };
   const store = {
     dispatch() {},

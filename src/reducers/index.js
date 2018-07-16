@@ -1,7 +1,7 @@
 /* @flow */
 
 import { combineReducers } from "redux";
-import { routerReducer } from "react-router-redux";
+import { routerReducer } from "connected-react-router";
 
 import { flattenPluginsReducers } from "../plugin";
 import session from "./session";
@@ -14,7 +14,7 @@ import history from "./history";
 import settings from "./settings";
 
 const standardReducers = {
-  routing: routerReducer,
+  router: routerReducer,
   session,
   bucket,
   collection,

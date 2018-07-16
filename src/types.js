@@ -7,7 +7,7 @@ export type $ReturnType<F> = _$ReturnType<*, F>;
 export type ActionType<T> = $ReturnType<T>;
 
 export type AppState = {
-  routing: Object,
+  router: Object,
   session: SessionState,
   bucket: BucketState,
   collection: CollectionState,

@@ -2,7 +2,7 @@
 import type { ActionType, GetStateFn, SagaGen, RouteParams } from "../types";
 
 import { call, put, take } from "redux-saga/effects";
-import { push as updatePath } from "react-router-redux";
+import { push as updatePath } from "connected-react-router";
 
 import { getClient } from "../client";
 import { storeRedirectURL } from "../actions/session";

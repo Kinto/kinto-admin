@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { push as updatePath } from "react-router-redux";
+import { push as updatePath } from "connected-react-router";
 import { call, put, take } from "redux-saga/effects";
 
 import { notifyError } from "../../src/actions/notifications";

@@ -1,22 +1,17 @@
 /* @flow */
 import type { Plugin } from "../types";
 
-import createHashHistory from "history/createHashHistory";
 import { createStore, applyMiddleware, compose } from "redux";
-import { routerMiddleware } from "react-router-redux";
 import createSagaMiddleware from "redux-saga";
 import createRootReducer from "../reducers";
 import rootSaga from "../sagas";
 
-const sagaMiddleware = createSagaMiddleware();
-const hashHistory = createHashHistory();
+import { connectRouter, routerMiddleware } from "connected-react-router";
 
-const finalCreateStore = compose(
-  applyMiddleware(sagaMiddleware, routerMiddleware(hashHistory)),
-  window.devToolsExtension ? window.devToolsExtension() : f => f
-)(createStore);
+const sagaMiddleware = createSagaMiddleware();
 
 export default function configureStore(
+  browserHistory: Object,
   initialState: Object,
   plugins: Plugin[] = []
 ) {
@@ -25,8 +20,13 @@ export default function configureStore(
   // Each plugin exports a `sagas` attribute.
   const pluginSagas = plugins.map(({ sagas = [] }) => sagas);
 
+  const finalCreateStore = compose(
+    applyMiddleware(sagaMiddleware, routerMiddleware(browserHistory)),
+    window.devToolsExtension ? window.devToolsExtension() : f => f
+  )(createStore);
+
   const store = finalCreateStore(
-    createRootReducer(pluginReducers),
+    connectRouter(browserHistory)(createRootReducer(pluginReducers)),
     initialState
   );
   // Every saga will receive the store getState() function as first argument

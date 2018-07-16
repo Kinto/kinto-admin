@@ -29,16 +29,16 @@ type Props = {
   ) => void,
   listRecordNextHistory: () => void,
   notifyError: (message: string, error: ?Error) => void,
-  routing: Object,
+  router: Object,
 };
 
 export default class RecordHistory extends PureComponent<Props> {
   onRecordHistoryEnter() {
-    const { listRecordHistory, match, routing, session } = this.props;
+    const { listRecordHistory, match, router, session } = this.props;
     const { bid, cid, rid } = match.params;
     const {
-      locationBeforeTransitions: { query: filters },
-    } = routing;
+      location: { query: filters },
+    } = router;
     if (!session.authenticated) {
       return;
     }

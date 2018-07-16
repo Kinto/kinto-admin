@@ -24,16 +24,16 @@ type Props = {
   notifyError: (message: string, error: ?Error) => void,
   location: Location,
   session: SessionState,
-  routing: Object,
+  router: Object,
 };
 
 export default class GroupHistory extends PureComponent<Props> {
   onGroupHistoryEnter() {
-    const { match, listGroupHistory, session, routing } = this.props;
+    const { match, listGroupHistory, session, router } = this.props;
     const { bid, gid } = match.params;
     const {
-      locationBeforeTransitions: { query: filters },
-    } = routing;
+      location: { query: filters },
+    } = router;
     if (!session.authenticated) {
       // We're not authenticated, skip requesting the list of records. This likely
       // occurs when users refresh the page and lose their session.
