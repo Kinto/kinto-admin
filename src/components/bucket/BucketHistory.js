@@ -26,25 +26,25 @@ type Props = {
   router: Object,
 };
 
-export default class BucketHistory extends PureComponent<Props> {
-  onBucketHistoryEnter() {
-    const { listBucketHistory, match, session, router } = this.props;
-    const { bid } = match.params;
-    const {
-      location: { query: filters },
-    } = router;
-    if (!session.authenticated) {
-      // We're not authenticated, skip requesting the list of records. This likely
-      // occurs when users refresh the page and lose their session.
-      return;
-    }
-    listBucketHistory(bid, filters);
+export const onBucketHistoryEnter = (props: Props) => {
+  const { listBucketHistory, match, session, router } = props;
+  const { bid } = match.params;
+  const {
+    location: { query: filters },
+  } = router;
+  if (!session.authenticated) {
+    // We're not authenticated, skip requesting the list of records. This likely
+    // occurs when users refresh the page and lose their session.
+    return;
   }
+  listBucketHistory(bid, filters);
+};
 
-  componentDidMount = this.onBucketHistoryEnter;
+export default class BucketHistory extends PureComponent<Props> {
+  componentDidMount = () => onBucketHistoryEnter(this.props);
   componentDidUpdate = (prevProps: Props) => {
     if (prevProps.location !== this.props.location) {
-      this.onBucketHistoryEnter();
+      onBucketHistoryEnter(this.props);
     }
   };
 

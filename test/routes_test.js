@@ -1,28 +1,21 @@
 import sinon from "sinon";
 
-import * as bucketActions from "../src/actions/bucket";
-import * as collectionActions from "../src/actions/collection";
-import * as groupActions from "../src/actions/group";
-import * as recordActions from "../src/actions/record";
-import {
-  onBucketHistoryEnter,
-  onCollectionHistoryEnter,
-  onGroupHistoryEnter,
-  onRecordHistoryEnter,
-} from "../src/routes";
+import { onBucketHistoryEnter } from "../src/components/bucket/BucketHistory";
+import { onCollectionHistoryEnter } from "../src/components/collection/CollectionHistory";
+import { onGroupHistoryEnter } from "../src/components/group/GroupHistory";
+import { onRecordHistoryEnter } from "../src/components/record/RecordHistory";
 
 describe("Routes onEnter", () => {
   const params = { bid: "bid", cid: "cid", gid: "gid", rid: "rid" };
   const filters = { since: "12" };
-  const state = {
+  const props = {
     session: { authenticated: true },
     router: { location: { query: filters } },
+    match: { params },
   };
   const store = {
     dispatch() {},
-    getState() {
-      return state;
-    },
+    getState() {},
   };
 
   let sandbox;
@@ -38,42 +31,39 @@ describe("Routes onEnter", () => {
 
   describe("Buckets history", () => {
     it("should dispatch load history", () => {
-      onBucketHistoryEnter(store, { params });
-      const action = bucketActions.listBucketHistory("bid", filters);
-      sinon.assert.calledWith(store.dispatch, action);
+      const listBucketHistory = sandbox.spy();
+      onBucketHistoryEnter({
+        ...props,
+        listBucketHistory: listBucketHistory,
+      });
+      sinon.assert.calledWith(listBucketHistory, "bid", filters);
     });
   });
 
   describe("Collections history", () => {
     it("should dispatch load history", () => {
-      onCollectionHistoryEnter(store, { params });
-      const action = collectionActions.listCollectionHistory(
-        "bid",
-        "cid",
-        filters
-      );
-      sinon.assert.calledWith(store.dispatch, action);
+      const listCollectionHistory = sandbox.spy();
+      onCollectionHistoryEnter({
+        ...props,
+        listCollectionHistory: listCollectionHistory,
+      });
+      sinon.assert.calledWith(listCollectionHistory, "bid", "cid", filters);
     });
   });
 
   describe("Groups history", () => {
     it("should dispatch load history", () => {
-      onGroupHistoryEnter(store, { params });
-      const action = groupActions.listGroupHistory("bid", "gid", filters);
-      sinon.assert.calledWith(store.dispatch, action);
+      const listGroupHistory = sandbox.spy();
+      onGroupHistoryEnter({ ...props, listGroupHistory: listGroupHistory });
+      sinon.assert.calledWith(listGroupHistory, "bid", "gid", filters);
     });
   });
 
   describe("Records history", () => {
     it("should dispatch load history", () => {
-      onRecordHistoryEnter(store, { params });
-      const action = recordActions.listRecordHistory(
-        "bid",
-        "cid",
-        "rid",
-        filters
-      );
-      sinon.assert.calledWith(store.dispatch, action);
+      const listRecordHistory = sandbox.spy();
+      onRecordHistoryEnter({ ...props, listRecordHistory: listRecordHistory });
+      sinon.assert.calledWith(listRecordHistory, "bid", "cid", "rid", filters);
     });
   });
 });

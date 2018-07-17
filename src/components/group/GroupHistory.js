@@ -27,25 +27,25 @@ type Props = {
   router: Object,
 };
 
-export default class GroupHistory extends PureComponent<Props> {
-  onGroupHistoryEnter() {
-    const { match, listGroupHistory, session, router } = this.props;
-    const { bid, gid } = match.params;
-    const {
-      location: { query: filters },
-    } = router;
-    if (!session.authenticated) {
-      // We're not authenticated, skip requesting the list of records. This likely
-      // occurs when users refresh the page and lose their session.
-      return;
-    }
-    listGroupHistory && listGroupHistory(bid, gid, filters);
+export const onGroupHistoryEnter = (props: Props) => {
+  const { match, listGroupHistory, session, router } = props;
+  const { bid, gid } = match.params;
+  const {
+    location: { query: filters },
+  } = router;
+  if (!session.authenticated) {
+    // We're not authenticated, skip requesting the list of records. This likely
+    // occurs when users refresh the page and lose their session.
+    return;
   }
+  listGroupHistory && listGroupHistory(bid, gid, filters);
+};
 
-  componentDidMount = this.onGroupHistoryEnter;
+export default class GroupHistory extends PureComponent<Props> {
+  componentDidMount = () => onGroupHistoryEnter(this.props);
   componentDidUpdate = (prevProps: Props) => {
     if (prevProps.location !== this.props.location) {
-      this.onGroupHistoryEnter();
+      onGroupHistoryEnter(this.props);
     }
   };
 

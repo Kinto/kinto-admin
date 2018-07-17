@@ -31,25 +31,25 @@ type Props = {
   router: Object,
 };
 
-export default class CollectionHistory extends PureComponent<Props> {
-  onCollectionHistoryEnter() {
-    const { listCollectionHistory, match, router, session } = this.props;
-    const { bid, cid } = match.params;
-    const {
-      location: { query: filters },
-    } = router;
-    if (!session.authenticated) {
-      // We're not authenticated, skip requesting the list of records. This likely
-      // occurs when users refresh the page and lose their session.
-      return;
-    }
-    listCollectionHistory(bid, cid, filters);
+export const onCollectionHistoryEnter = (props: Props) => {
+  const { listCollectionHistory, match, router, session } = props;
+  const { bid, cid } = match.params;
+  const {
+    location: { query: filters },
+  } = router;
+  if (!session.authenticated) {
+    // We're not authenticated, skip requesting the list of records. This likely
+    // occurs when users refresh the page and lose their session.
+    return;
   }
+  listCollectionHistory(bid, cid, filters);
+};
 
-  componentDidMount = this.onCollectionHistoryEnter;
+export default class CollectionHistory extends PureComponent<Props> {
+  componentDidMount = () => onCollectionHistoryEnter(this.props);
   componentDidUpdate = (prevProps: Props) => {
     if (prevProps.location !== this.props.location) {
-      this.onCollectionHistoryEnter();
+      onCollectionHistoryEnter(this.props);
     }
   };
 

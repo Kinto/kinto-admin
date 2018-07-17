@@ -32,23 +32,23 @@ type Props = {
   router: Object,
 };
 
-export default class RecordHistory extends PureComponent<Props> {
-  onRecordHistoryEnter() {
-    const { listRecordHistory, match, router, session } = this.props;
-    const { bid, cid, rid } = match.params;
-    const {
-      location: { query: filters },
-    } = router;
-    if (!session.authenticated) {
-      return;
-    }
-    listRecordHistory(bid, cid, rid, filters);
+export const onRecordHistoryEnter = (props: Props) => {
+  const { listRecordHistory, match, router, session } = props;
+  const { bid, cid, rid } = match.params;
+  const {
+    location: { query: filters },
+  } = router;
+  if (!session.authenticated) {
+    return;
   }
+  listRecordHistory(bid, cid, rid, filters);
+};
 
-  componentDidMount = this.onRecordHistoryEnter;
+export default class RecordHistory extends PureComponent<Props> {
+  componentDidMount = () => onRecordHistoryEnter(this.props);
   componentDidUpdate = (prevProps: Props) => {
     if (prevProps.location !== this.props.location) {
-      this.onRecordHistoryEnter();
+      onRecordHistoryEnter(this.props);
     }
   };
 
