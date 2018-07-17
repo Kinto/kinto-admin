@@ -2,14 +2,9 @@
 import type {
   SessionState,
   Notifications as NotificationsType,
-  Plugin,
 } from "../types";
-import type { Location, Match } from "react-router-dom";
 import type { Element } from "react";
-import { Component } from "react";
 import { Redirect, Switch, Route } from "react-router-dom";
-import { isObject } from "../utils";
-import { mergeObjects } from "react-jsonschema-form/lib/utils";
 
 import { CreateRoute } from "../routes";
 
