@@ -28,7 +28,7 @@ describe("Routes onEnter", () => {
   let sandbox;
 
   beforeEach(() => {
-    sandbox = sinon.sandbox.create();
+    sandbox = sinon.createSandbox();
     sandbox.stub(store, "dispatch");
   });
 
