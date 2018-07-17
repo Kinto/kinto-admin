@@ -5,7 +5,7 @@ import { ANONYMOUS_AUTH } from "../../src/constants";
 
 describe("localStore", () => {
   describe("history store", () => {
-    before(() => {
+    beforeAll(() => {
       localStore.clearHistory();
     });
 
@@ -54,7 +54,7 @@ describe("localStore", () => {
       buckets: [{}],
     };
 
-    before(() => {
+    beforeAll(() => {
       localStore.clearSession();
     });
 

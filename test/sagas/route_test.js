@@ -24,7 +24,7 @@ describe("route sagas", () => {
     describe("Failure", () => {
       let loadRoute;
 
-      before(() => {
+      beforeAll(() => {
         const batch = () => {};
         setClient({ batch });
         loadRoute = saga.loadRoute({ bid: "bucket" });
@@ -76,7 +76,7 @@ describe("route sagas", () => {
           bid: "bucket",
         };
 
-        before(() => {
+        beforeAll(() => {
           batch = () => {};
           setClient({ batch });
           loadRoute = saga.loadRoute(params);
@@ -122,7 +122,7 @@ describe("route sagas", () => {
           cid: "collection",
         };
 
-        before(() => {
+        beforeAll(() => {
           batch = () => {};
           setClient({ batch });
           loadRoute = saga.loadRoute(params);
@@ -169,7 +169,7 @@ describe("route sagas", () => {
           gid: "group",
         };
 
-        before(() => {
+        beforeAll(() => {
           batch = () => {};
           setClient({ batch });
           loadRoute = saga.loadRoute(params);
@@ -217,7 +217,7 @@ describe("route sagas", () => {
           rid: "record",
         };
 
-        before(() => {
+        beforeAll(() => {
           batch = () => {};
           setClient({ batch });
           loadRoute = saga.loadRoute(params);
@@ -267,7 +267,7 @@ describe("route sagas", () => {
         bid: "bucket",
       };
 
-      before(() => {
+      beforeAll(() => {
         batch = () => {};
         setClient({ batch });
         loadRoute = saga.loadRoute(params);
@@ -316,7 +316,7 @@ describe("route sagas", () => {
         bid: "bucket",
       };
 
-      before(() => {
+      beforeAll(() => {
         batch = () => {};
         setClient({ batch });
         loadRoute = saga.loadRoute(params);
@@ -363,7 +363,7 @@ describe("route sagas", () => {
     describe("Not authenticated", () => {
       let routeUpdated;
 
-      before(() => {
+      beforeAll(() => {
         const getState = () => ({ session: { authenticated: false } });
         const action = actions.routeUpdated({}, { pathname: "/blah" });
         routeUpdated = saga.routeUpdated(getState, action);
@@ -421,7 +421,7 @@ describe("route sagas", () => {
     describe("Pending authentication", () => {
       let routeUpdated;
 
-      before(() => {
+      beforeAll(() => {
         const getState = () => ({ session: { authenticated: false } });
         const action = actions.routeUpdated(
           {
@@ -452,7 +452,7 @@ describe("route sagas", () => {
       let routeUpdated;
       const params = { bid: "bucket", cid: "collection", rid: "record" };
 
-      before(() => {
+      beforeAll(() => {
         const getState = () => ({ session: { authenticated: true } });
         const action = actions.routeUpdated(params, { pathname: "/" });
         routeUpdated = saga.routeUpdated(getState, action);

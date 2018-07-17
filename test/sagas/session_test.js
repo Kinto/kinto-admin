@@ -37,7 +37,7 @@ describe("session sagas", () => {
 
     const sessionState = { serverInfo };
 
-    before(() => {
+    beforeAll(() => {
       getState = () => ({
         session: sessionState,
       });
@@ -69,7 +69,7 @@ describe("session sagas", () => {
 
     const sessionState = { serverInfo };
 
-    before(() => {
+    beforeAll(() => {
       sandbox = createSandbox();
       resetClient();
       getState = () => ({
@@ -196,7 +196,7 @@ describe("session sagas", () => {
 
     const sessionState = { serverInfo };
 
-    before(() => {
+    beforeAll(() => {
       resetClient();
       getState = () => ({
         session: sessionState,
@@ -285,37 +285,36 @@ describe("session sagas", () => {
 
   describe("listBuckets()", () => {
     const settingsState = { sidebarMaxListedCollections: 2 };
+    let client, listBuckets;
+
+    const serverInfo = {
+      url: "http://server.test/v1",
+      user: {
+        bucket: "defaultBucketId",
+      },
+      capabilities: {
+        permissions_endpoint: {},
+      },
+    };
+
+    const sessionState = { serverInfo };
+
+    beforeAll(() => {
+      client = setClient({
+        batch() {},
+        fetchServerInfo() {},
+        listBuckets() {},
+        listPermissions() {},
+      });
+      const getState = () => ({
+        session: sessionState,
+        settings: settingsState,
+      });
+      const action = actions.listBuckets();
+      listBuckets = saga.listBuckets(getState, action);
+    });
 
     describe("Success", () => {
-      let client, listBuckets;
-
-      const serverInfo = {
-        url: "http://server.test/v1",
-        user: {
-          bucket: "defaultBucketId",
-        },
-        capabilities: {
-          permissions_endpoint: {},
-        },
-      };
-
-      const sessionState = { serverInfo };
-
-      before(() => {
-        client = setClient({
-          batch() {},
-          fetchServerInfo() {},
-          listBuckets() {},
-          listPermissions() {},
-        });
-        const getState = () => ({
-          session: sessionState,
-          settings: settingsState,
-        });
-        const action = actions.listBuckets();
-        listBuckets = saga.listBuckets(getState, action);
-      });
-
       it("should fetch the list of buckets", () => {
         expect(listBuckets.next().value).eql(
           call([client, client.listBuckets])
@@ -469,7 +468,7 @@ describe("session sagas", () => {
   describe("sessionLogout()", () => {
     let sessionLogout;
 
-    before(() => {
+    beforeAll(() => {
       setClient({ fake: true });
       const action = actions.logout();
       sessionLogout = saga.sessionLogout(() => {}, action);

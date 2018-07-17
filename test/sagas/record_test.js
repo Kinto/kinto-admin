@@ -16,7 +16,7 @@ describe("record sagas", () => {
     describe("Success", () => {
       let client, listHistory;
 
-      before(() => {
+      beforeAll(() => {
         client = { listHistory() {} };
         setClient({
           bucket() {
@@ -76,7 +76,7 @@ describe("record sagas", () => {
     describe("Failure", () => {
       let listHistory;
 
-      before(() => {
+      beforeAll(() => {
         const action = actions.listRecordHistory(
           "bucket",
           "collection",
@@ -103,7 +103,7 @@ describe("record sagas", () => {
 
     const fakeNext = () => {};
 
-    before(() => {
+    beforeAll(() => {
       const action = actions.listRecordNextHistory();
       const getState = () => ({ record: { history: { next: fakeNext } } });
       listNextHistory = saga.listNextHistory(getState, action);

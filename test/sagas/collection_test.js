@@ -26,7 +26,7 @@ describe("collection sagas", () => {
     describe("Success", () => {
       let collection;
 
-      before(() => {
+      beforeAll(() => {
         collection = { listRecords() {} };
         const bucket = {
           collection() {
@@ -43,7 +43,7 @@ describe("collection sagas", () => {
       describe("Default sort", () => {
         let listRecords;
 
-        before(() => {
+        beforeAll(() => {
           const action = actions.listRecords("bucket", "collection");
           const getState = () => ({
             settings,
@@ -71,7 +71,7 @@ describe("collection sagas", () => {
       describe("Current sort", () => {
         let listRecords;
 
-        before(() => {
+        beforeAll(() => {
           const action = actions.listRecords("bucket", "collection");
           const getState = () => ({
             settings,
@@ -99,7 +99,7 @@ describe("collection sagas", () => {
       describe("Custom sort", () => {
         let listRecords;
 
-        before(() => {
+        beforeAll(() => {
           const action = actions.listRecords("bucket", "collection", "title");
           const getState = () => ({
             settings,
@@ -128,7 +128,7 @@ describe("collection sagas", () => {
     describe("Failure", () => {
       let listRecords, collection;
 
-      before(() => {
+      beforeAll(() => {
         collection = { listRecords() {} };
         const bucket = {
           collection() {
@@ -161,7 +161,7 @@ describe("collection sagas", () => {
     describe("Success", () => {
       let listNextRecords, collection;
 
-      before(() => {
+      beforeAll(() => {
         const action = actions.listNextRecords();
         collection = { listNextRecords() {} };
         const getState = () => ({ settings, collection });
@@ -190,7 +190,7 @@ describe("collection sagas", () => {
     describe("Failure", () => {
       let listNextRecords, collection;
 
-      before(() => {
+      beforeAll(() => {
         const action = actions.listNextRecords();
         collection = { listNextRecords() {} };
         const getState = () => ({ settings, collection });
@@ -209,7 +209,7 @@ describe("collection sagas", () => {
   describe("createRecord()", () => {
     let collection;
 
-    before(() => {
+    beforeAll(() => {
       collection = {
         createRecord() {},
         addAttachment() {},
@@ -229,7 +229,7 @@ describe("collection sagas", () => {
     describe("Attachments disabled", () => {
       let createRecord;
 
-      before(() => {
+      beforeAll(() => {
         const getState = () => ({
           settings,
           session: {
@@ -277,7 +277,7 @@ describe("collection sagas", () => {
 
       const attachment = "data:test/fake";
 
-      before(() => {
+      beforeAll(() => {
         const getState = () => ({
           settings,
           session: {
@@ -331,7 +331,7 @@ describe("collection sagas", () => {
     describe("Failure", () => {
       let createRecord;
 
-      before(() => {
+      beforeAll(() => {
         const getState = () => ({
           settings,
           session: { serverInfo: { capabilities: {} } },
@@ -384,7 +384,7 @@ describe("collection sagas", () => {
           },
         });
 
-        before(() => {
+        beforeAll(() => {
           collection = { updateRecord() {} };
           const bucket = {
             collection() {
@@ -453,7 +453,7 @@ describe("collection sagas", () => {
           permissions,
         });
 
-        before(() => {
+        beforeAll(() => {
           collection = { updateRecord() {} };
           const bucket = {
             collection() {
@@ -520,7 +520,7 @@ describe("collection sagas", () => {
           },
         });
 
-        before(() => {
+        beforeAll(() => {
           updateRecord = saga.updateRecord(getState, action);
           updateRecord.next();
         });
@@ -575,7 +575,7 @@ describe("collection sagas", () => {
       describe("Success", () => {
         let collection, updateRecord;
 
-        before(() => {
+        beforeAll(() => {
           collection = {
             updateRecord() {},
             addAttachment() {},
@@ -640,7 +640,7 @@ describe("collection sagas", () => {
       describe("Failure", () => {
         let updateRecord;
 
-        before(() => {
+        beforeAll(() => {
           updateRecord = saga.updateRecord(getState, action);
           updateRecord.next();
         });
@@ -664,7 +664,7 @@ describe("collection sagas", () => {
     describe("Success", () => {
       let collection, deleteRecord;
 
-      before(() => {
+      beforeAll(() => {
         collection = { deleteRecord() {} };
         const bucket = {
           collection() {
@@ -734,7 +734,7 @@ describe("collection sagas", () => {
     describe("Failure", () => {
       let deleteRecord;
 
-      before(() => {
+      beforeAll(() => {
         const action = actions.deleteRecord("bucket", "collection", 1);
         deleteRecord = saga.deleteRecord(
           () => ({
@@ -762,7 +762,7 @@ describe("collection sagas", () => {
   describe("deleteAttachment()", () => {
     let collection, deleteAttachment;
 
-    before(() => {
+    beforeAll(() => {
       collection = { removeAttachment() {} };
       const bucket = {
         collection() {
@@ -812,7 +812,7 @@ describe("collection sagas", () => {
   describe("bulkCreateRecords()", () => {
     let collection;
 
-    before(() => {
+    beforeAll(() => {
       collection = {
         batch() {},
         addAttachment() {},
@@ -833,7 +833,7 @@ describe("collection sagas", () => {
     describe("Attachments disabled", () => {
       let bulkCreateRecords;
 
-      before(() => {
+      beforeAll(() => {
         const getState = () => ({
           settings,
           session: {
@@ -894,7 +894,7 @@ describe("collection sagas", () => {
     describe("Attachments enabled", () => {
       let bulkCreateRecords;
 
-      before(() => {
+      beforeAll(() => {
         const getState = () => ({
           settings,
           session: {
@@ -965,7 +965,7 @@ describe("collection sagas", () => {
     describe("Failure", () => {
       let bulkCreateRecords;
 
-      before(() => {
+      beforeAll(() => {
         const getState = () => ({
           settings,
           session: {
@@ -1005,7 +1005,7 @@ describe("collection sagas", () => {
     describe("Success", () => {
       let client, listHistory;
 
-      before(() => {
+      beforeAll(() => {
         client = { listHistory() {} };
         setClient({
           bucket() {
@@ -1081,7 +1081,7 @@ describe("collection sagas", () => {
     describe("Failure", () => {
       let listHistory;
 
-      before(() => {
+      beforeAll(() => {
         const action = actions.listCollectionHistory(
           "bucket",
           "collection",
@@ -1109,7 +1109,7 @@ describe("collection sagas", () => {
 
     const fakeNext = () => {};
 
-    before(() => {
+    beforeAll(() => {
       const action = actions.listCollectionNextHistory();
       const getState = () => ({ collection: { history: { next: fakeNext } } });
       listNextHistory = saga.listNextHistory(getState, action);

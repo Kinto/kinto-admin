@@ -13,7 +13,7 @@ describe("Signoff plugin sagas", () => {
     let getState;
 
     describe("onCollectionRecordsRequest()", () => {
-      before(() => {
+      beforeAll(() => {
         getState = () => ({
           session: {
             serverInfo: {
@@ -196,7 +196,7 @@ describe("Signoff plugin sagas", () => {
   describe("review actions", () => {
     let bucket, collection, getState;
 
-    before(() => {
+    beforeAll(() => {
       collection = {
         getData() {},
         setData() {},
@@ -221,7 +221,7 @@ describe("Signoff plugin sagas", () => {
     describe("handleRequestReview()", () => {
       let handleRequestReview;
 
-      before(() => {
+      beforeAll(() => {
         const action = actions.requestReview(":)");
         handleRequestReview = saga.handleRequestReview(getState, action);
       });
@@ -269,7 +269,7 @@ describe("Signoff plugin sagas", () => {
     describe("handleDeclineChanges()", () => {
       let handleDeclineChanges;
 
-      before(() => {
+      beforeAll(() => {
         const action = actions.declineChanges(":(");
         handleDeclineChanges = saga.handleDeclineChanges(getState, action);
       });
@@ -320,7 +320,7 @@ describe("Signoff plugin sagas", () => {
     describe("handleApproveChanges()", () => {
       let handleApproveChanges;
 
-      before(() => {
+      beforeAll(() => {
         const action = actions.approveChanges();
         handleApproveChanges = saga.handleApproveChanges(getState, action);
       });

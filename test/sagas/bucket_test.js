@@ -31,7 +31,7 @@ describe("bucket sagas", () => {
     describe("Success", () => {
       let client, createBucket;
 
-      before(() => {
+      beforeAll(() => {
         client = setClient({ createBucket() {} });
         const action = actions.createBucket("bucket", { a: 1 });
         createBucket = saga.createBucket(() => {}, action);
@@ -80,7 +80,7 @@ describe("bucket sagas", () => {
     describe("Failure", () => {
       let createBucket;
 
-      before(() => {
+      beforeAll(() => {
         const action = actions.createBucket("bucket");
         createBucket = saga.createBucket(() => {}, action);
         createBucket.next();
@@ -106,7 +106,7 @@ describe("bucket sagas", () => {
       describe("Success", () => {
         let bucket, updateBucket;
 
-        before(() => {
+        beforeAll(() => {
           bucket = { setData() {} };
           setClient({
             bucket() {
@@ -162,7 +162,7 @@ describe("bucket sagas", () => {
       describe("Failure", () => {
         let updateBucket;
 
-        before(() => {
+        beforeAll(() => {
           const action = actions.updateBucket("bucket", { data: {} });
           updateBucket = saga.updateBucket(
             () => ({
@@ -194,7 +194,7 @@ describe("bucket sagas", () => {
       describe("Success", () => {
         let bucket, updateBucket;
 
-        before(() => {
+        beforeAll(() => {
           bucket = { setPermissions() {} };
           setClient({
             bucket() {
@@ -253,7 +253,7 @@ describe("bucket sagas", () => {
       describe("Failure", () => {
         let updateBucket;
 
-        before(() => {
+        beforeAll(() => {
           const action = actions.updateBucket("bucket", { permissions: {} });
           updateBucket = saga.updateBucket(
             () => ({
@@ -286,7 +286,7 @@ describe("bucket sagas", () => {
     describe("Success", () => {
       let client, deleteBucket;
 
-      before(() => {
+      beforeAll(() => {
         client = setClient({ deleteBucket() {} });
         const action = actions.deleteBucket("bucket");
         deleteBucket = saga.deleteBucket(
@@ -338,7 +338,7 @@ describe("bucket sagas", () => {
     describe("Failure", () => {
       let deleteBucket;
 
-      before(() => {
+      beforeAll(() => {
         const action = actions.deleteBucket("bucket");
         deleteBucket = saga.deleteBucket(
           () => ({
@@ -367,7 +367,7 @@ describe("bucket sagas", () => {
     describe("Success", () => {
       let bucket, createCollection;
 
-      before(() => {
+      beforeAll(() => {
         bucket = { createCollection() {} };
         setClient({
           bucket() {
@@ -417,7 +417,7 @@ describe("bucket sagas", () => {
     describe("Failure", () => {
       let createCollection;
 
-      before(() => {
+      beforeAll(() => {
         const bucket = { createCollection() {} };
         setClient({
           bucket() {
@@ -447,7 +447,7 @@ describe("bucket sagas", () => {
       describe("Success", () => {
         let bucket, collection, updateCollection;
 
-        before(() => {
+        beforeAll(() => {
           collection = { setData() {} };
           bucket = {
             collection() {
@@ -529,7 +529,7 @@ describe("bucket sagas", () => {
       describe("Success", () => {
         let bucket, collection, updateCollection;
 
-        before(() => {
+        beforeAll(() => {
           collection = { setPermissions() {} };
           bucket = {
             collection() {
@@ -586,7 +586,7 @@ describe("bucket sagas", () => {
       describe("Failure", () => {
         let updateCollection;
 
-        before(() => {
+        beforeAll(() => {
           const action = actions.updateCollection("bucket", "collection", {
             permissions: {},
           });
@@ -617,7 +617,7 @@ describe("bucket sagas", () => {
     describe("Success", () => {
       let bucket, deleteCollection;
 
-      before(() => {
+      beforeAll(() => {
         bucket = { deleteCollection() {} };
         setClient({
           bucket() {
@@ -664,7 +664,7 @@ describe("bucket sagas", () => {
     describe("Failure", () => {
       let deleteCollection;
 
-      before(() => {
+      beforeAll(() => {
         const action = actions.deleteCollection("bucket", "collection");
         deleteCollection = saga.deleteCollection(
           () => ({
@@ -689,7 +689,7 @@ describe("bucket sagas", () => {
     describe("Success", () => {
       let bucket, listBucketCollections;
 
-      before(() => {
+      beforeAll(() => {
         bucket = { listCollections() {} };
         setClient({
           bucket() {
@@ -722,7 +722,7 @@ describe("bucket sagas", () => {
     describe("Failure", () => {
       let listBucketCollections;
 
-      before(() => {
+      beforeAll(() => {
         const action = actions.listBucketCollections("bucket");
         listBucketCollections = saga.listBucketCollections(
           () => ({ settings }),
@@ -747,7 +747,7 @@ describe("bucket sagas", () => {
     describe("Success", () => {
       let bucket, listHistory;
 
-      before(() => {
+      beforeAll(() => {
         bucket = { listHistory() {} };
         setClient({
           bucket() {
@@ -816,7 +816,7 @@ describe("bucket sagas", () => {
     describe("Failure", () => {
       let listHistory;
 
-      before(() => {
+      beforeAll(() => {
         const action = actions.listBucketHistory("bucket");
         listHistory = saga.listHistory(() => ({ settings }), action);
         listHistory.next();
@@ -839,7 +839,7 @@ describe("bucket sagas", () => {
 
     const fakeNext = () => {};
 
-    before(() => {
+    beforeAll(() => {
       const action = actions.listBucketNextHistory();
       const getState = () => ({ bucket: { history: { next: fakeNext } } });
       listNextHistory = saga.listNextHistory(getState, action);
@@ -868,7 +868,7 @@ describe("bucket sagas", () => {
     describe("Success", () => {
       let bucket, createGroup;
 
-      before(() => {
+      beforeAll(() => {
         bucket = { createGroup() {} };
         setClient({
           bucket() {
@@ -909,7 +909,7 @@ describe("bucket sagas", () => {
     describe("Failure", () => {
       let createGroup;
 
-      before(() => {
+      beforeAll(() => {
         const bucket = { createGroup() {} };
         setClient({
           bucket() {
@@ -937,7 +937,7 @@ describe("bucket sagas", () => {
       describe("Success", () => {
         let bucket, updateGroup;
 
-        before(() => {
+        beforeAll(() => {
           bucket = { updateGroup() {} };
           setClient({
             bucket() {
@@ -1011,7 +1011,7 @@ describe("bucket sagas", () => {
         let bucket, updateGroup;
         const loadedGroup = { last_modified: 42 };
 
-        before(() => {
+        beforeAll(() => {
           bucket = { updateGroup() {} };
           setClient({
             bucket() {
@@ -1060,7 +1060,7 @@ describe("bucket sagas", () => {
       describe("Failure", () => {
         let updateGroup;
 
-        before(() => {
+        beforeAll(() => {
           const action = actions.updateGroup("bucket", "group", {
             permissions: {},
           });
@@ -1087,7 +1087,7 @@ describe("bucket sagas", () => {
     describe("Success", () => {
       let bucket, deleteGroup;
 
-      before(() => {
+      beforeAll(() => {
         bucket = { deleteGroup() {} };
         setClient({
           bucket() {
@@ -1128,7 +1128,7 @@ describe("bucket sagas", () => {
     describe("Failure", () => {
       let deleteGroup;
 
-      before(() => {
+      beforeAll(() => {
         const action = actions.deleteGroup("bucket", "group");
         deleteGroup = saga.deleteGroup(
           () => ({

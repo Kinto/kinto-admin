@@ -16,7 +16,7 @@ describe("group sagas", () => {
     describe("Success", () => {
       let client, listHistory;
 
-      before(() => {
+      beforeAll(() => {
         client = { listHistory() {} };
         setClient({
           bucket() {
@@ -67,7 +67,7 @@ describe("group sagas", () => {
     describe("Failure", () => {
       let listHistory;
 
-      before(() => {
+      beforeAll(() => {
         const action = actions.listGroupHistory("bucket", "group");
         listHistory = saga.listHistory(() => ({ settings }), action);
         listHistory.next();
@@ -90,7 +90,7 @@ describe("group sagas", () => {
 
     const fakeNext = () => {};
 
-    before(() => {
+    beforeAll(() => {
       const action = actions.listGroupNextHistory();
       const getState = () => ({ group: { history: { next: fakeNext } } });
       listNextHistory = saga.listNextHistory(getState, action);
