@@ -5,10 +5,9 @@ import React, { Component } from "react";
 import { Provider } from "react-redux";
 import { Switch } from "react-router-dom";
 import { ConnectedRouter } from "connected-react-router";
-import { createHashHistory } from "history";
 
 import getRoutes from "./routes";
-import configureStore from "./store/configureStore";
+import configureStore, { hashHistory } from "./store/configureStore";
 import * as sessionActions from "./actions/session";
 import { loadSession } from "./store/localStore";
 import { getServerByPriority } from "./utils";
@@ -22,8 +21,6 @@ type Props = {
   settings: Object,
 };
 
-const hashHistory = createHashHistory();
-
 export default class KintoAdmin extends Component<Props> {
   store: Object;
 
@@ -35,7 +32,7 @@ export default class KintoAdmin extends Component<Props> {
     super(props);
 
     const { plugins, settings } = props;
-    this.store = configureStore(hashHistory, { settings }, plugins);
+    this.store = configureStore({ settings }, plugins);
     const { history } = this.store.getState();
 
     // Restore saved session, if any
