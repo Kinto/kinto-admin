@@ -1,7 +1,7 @@
 import type { Store } from "redux";
 
 import React from "react";
-import { takeEvery } from "redux-saga";
+import { takeEvery } from "redux-saga/effects";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 

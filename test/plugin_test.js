@@ -1,6 +1,6 @@
 import React from "react";
 import { expect } from "chai";
-import { takeEvery } from "redux-saga";
+import { takeEvery } from "redux-saga/effects";
 
 import {
   flattenPluginsRoutes,
@@ -69,8 +69,8 @@ describe("Plugin API", () => {
       yield 3;
     }
     const plugins = [
-      [[takeEvery, "ACTION_1", saga1], [takeEvery, "ACTION_2", saga2]],
-      [[takeEvery, "ACTION_3", saga3]],
+      [takeEvery("ACTION_1", saga1), takeEvery("ACTION_2", saga2)],
+      [takeEvery("ACTION_3", saga3)],
     ];
 
     it("should append the plugins sagas to the standard watchers", () => {

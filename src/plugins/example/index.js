@@ -1,6 +1,5 @@
 import React from "react";
-import { takeEvery } from "redux-saga";
-import { put } from "redux-saga/effects";
+import { put, takeEvery } from "redux-saga/effects";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
