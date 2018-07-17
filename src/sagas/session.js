@@ -126,7 +126,11 @@ export function* sessionLogout(
   action: ActionType<typeof actions.logout>
 ): SagaGen {
   resetClient();
-  yield put(updatePath("/"));
+  const state = getState();
+  if (state.router.location.pathname !== "/") {
+    // We can't push twice the same path using hash history.
+    yield put(updatePath("/"));
+  }
   yield put(
     notificationActions.notifySuccess("Logged out.", { persistent: true })
   );

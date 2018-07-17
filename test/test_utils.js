@@ -11,7 +11,7 @@ export function createComponent(Component, props) {
 }
 
 export function createSandbox() {
-  const sandbox = sinon.sandbox.create();
+  const sandbox = sinon.createSandbox();
   // Ensure we catch any React warning and mark them as test failures.
   sandbox.stub(console, "error").callsFake((...args) => {
     throw new Error(args);
