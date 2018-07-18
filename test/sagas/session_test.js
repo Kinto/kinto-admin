@@ -184,7 +184,7 @@ describe("session sagas", () => {
   });
 
   describe("setupSession()", () => {
-    let setupSession, getState, action;
+    let sandbox, setupSession, getState, action;
 
     const serverInfo = {
       ...DEFAULT_SERVERINFO,
@@ -203,6 +203,11 @@ describe("session sagas", () => {
       });
       action = actions.setup(authData);
       setupSession = saga.setupSession(getState, action);
+      sandbox = sinon.createSandbox();
+    });
+
+    afterAll(() => {
+      sandbox.restore();
     });
 
     describe("Success", () => {
@@ -272,12 +277,14 @@ describe("session sagas", () => {
         });
         setupSession = saga.setupSession(getState, action);
         setupSession.next(); // call getServerInfo.
-        expect(setupSession.next().value).eql(
-          put(
-            notifyError("Authentication failed.", {
-              message: "Could not authenticate with Basic Auth",
-            })
-          )
+        const mockedNotifyError = sandbox
+          .stub(notificationsActions, "notifyError")
+          .value(() => "notify error action");
+        expect(setupSession.next().value).eql(put("notify error action"));
+        expect(
+          mockedNotifyError.calledOnceWith("Authentication failed.", {
+            message: "Could not authenticate with Basic Auth",
+          })
         );
       });
     });
@@ -285,7 +292,7 @@ describe("session sagas", () => {
 
   describe("listBuckets()", () => {
     const settingsState = { sidebarMaxListedCollections: 2 };
-    let client, listBuckets;
+    let client, listBuckets, sandbox;
 
     const serverInfo = {
       url: "http://server.test/v1",
@@ -312,6 +319,11 @@ describe("session sagas", () => {
       });
       const action = actions.listBuckets();
       listBuckets = saga.listBuckets(getState, action);
+      sandbox = sinon.createSandbox();
+    });
+
+    afterAll(() => {
+      sandbox.restore();
     });
 
     describe("Success", () => {
@@ -458,8 +470,16 @@ describe("session sagas", () => {
 
         const listBuckets = saga.listBuckets(getState, action);
         listBuckets.next();
+        const mockedNotifyError = sandbox
+          .stub(notificationsActions, "notifyError")
+          .value(() => "notify error action");
         expect(listBuckets.throw("error").value).eql(
-          put(notifyError("Couldn't list buckets.", "error"))
+          put(notifyError("notify error action"))
+        );
+        expect(
+          mockedNotifyError.calledOnceWith("Authentication failed.", {
+            message: "Could not authenticate with Basic Auth",
+          })
         );
       });
     });
@@ -471,7 +491,10 @@ describe("session sagas", () => {
     beforeAll(() => {
       setClient({ fake: true });
       const action = actions.logout();
-      sessionLogout = saga.sessionLogout(() => {}, action);
+      sessionLogout = saga.sessionLogout(
+        () => ({ router: { location: { pathname: "/not/home" } } }),
+        action
+      );
     });
 
     it("should redirect to the homepage", () => {
