@@ -48,7 +48,7 @@ describe("RecordCreate component", () => {
     beforeEach(() => {
       createRecord = sinon.spy();
       node = createComponent(RecordCreate, {
-        match: {params: { bid: "bucket", cid: "collection" }},
+        match: { params: { bid: "bucket", cid: "collection" } },
         session: { authenticated: true, serverInfo: { user: "plop" } },
         bucket,
         collection,
