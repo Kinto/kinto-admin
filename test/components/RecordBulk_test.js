@@ -35,7 +35,7 @@ describe("RecordBulk component", () => {
     beforeEach(() => {
       bulkCreateRecords = sinon.spy();
       node = createComponent(RecordBulk, {
-        params: { bid: "bucket", cid: "collection" },
+        match: { params: { bid: "bucket", cid: "collection" } },
         collection,
         bulkCreateRecords,
       });

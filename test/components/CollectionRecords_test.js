@@ -54,7 +54,7 @@ describe("CollectionRecords component", () => {
 
     beforeEach(() => {
       node = createComponent(CollectionRecords, {
-        params: { bid: "bucket", cid: "collection" },
+        match: { params: { bid: "bucket", cid: "collection" } },
         session: { authenticated: true, serverInfo: { user: { id: "plop" } } },
         pluginHooks: {},
         bucket,
@@ -94,7 +94,7 @@ describe("CollectionRecords component", () => {
 
     beforeEach(() => {
       node = createComponent(CollectionRecords, {
-        params: { bid: "bucket", cid: "collection" },
+        match: { params: { bid: "bucket", cid: "collection" } },
         session: { authenticated: true, serverInfo: { user: { id: "plop" } } },
         pluginHooks: {},
         bucket,
@@ -144,7 +144,7 @@ describe("CollectionRecords component", () => {
 
       beforeEach(() => {
         node = createComponent(CollectionRecords, {
-          params: { bid: "bucket", cid: "collection" },
+          match: { params: { bid: "bucket", cid: "collection" } },
           session: { permissions: null },
           pluginHooks: {},
           bucket,
@@ -165,7 +165,7 @@ describe("CollectionRecords component", () => {
 
       beforeEach(() => {
         node = createComponent(CollectionRecords, {
-          params: { bid: "bucket", cid: "collection" },
+          match: { params: { bid: "bucket", cid: "collection" } },
           session: { permissions: [] },
           pluginHooks: {},
           bucket,

@@ -17,7 +17,7 @@ describe("Sidebar component", () => {
   describe("Not authenticated", () => {
     it("should not render any bucket menus", () => {
       const node = createComponent(Sidebar, {
-        params: {},
+        match: { params: {} },
         location: { pathname: "" },
         session: { authenticated: false },
         settings: { sidebarMaxListedCollections: 2 },
@@ -55,7 +55,7 @@ describe("Sidebar component", () => {
       const settings = { sidebarMaxListedCollections: 2 };
 
       node = createComponent(Sidebar, {
-        params,
+        match: { params },
         location,
         session,
         settings,
