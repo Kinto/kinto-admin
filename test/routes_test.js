@@ -1,5 +1,7 @@
 import sinon from "sinon";
 
+import { createSandbox } from "./test_utils";
+
 import { onBucketHistoryEnter } from "../src/components/bucket/BucketHistory";
 import { onCollectionHistoryEnter } from "../src/components/collection/CollectionHistory";
 import { onGroupHistoryEnter } from "../src/components/group/GroupHistory";
@@ -21,7 +23,7 @@ describe("Routes onEnter", () => {
   let sandbox;
 
   beforeEach(() => {
-    sandbox = sinon.createSandbox();
+    sandbox = createSandbox();
     sandbox.stub(store, "dispatch");
   });
 

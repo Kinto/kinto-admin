@@ -203,7 +203,7 @@ describe("session sagas", () => {
       });
       action = actions.setup(authData);
       setupSession = saga.setupSession(getState, action);
-      sandbox = sinon.createSandbox();
+      sandbox = createSandbox();
     });
 
     afterAll(() => {
@@ -319,7 +319,7 @@ describe("session sagas", () => {
       });
       const action = actions.listBuckets();
       listBuckets = saga.listBuckets(getState, action);
-      sandbox = sinon.createSandbox();
+      sandbox = createSandbox();
     });
 
     afterAll(() => {

@@ -1,6 +1,8 @@
 import { expect } from "chai";
 import sinon from "sinon";
 
+import { createSandbox } from "./test_utils";
+
 import configureStore from "../../src/store/configureStore";
 import * as routeSagas from "../../src/sagas/route";
 import * as sessionSagas from "../../src/sagas/session";
@@ -23,7 +25,7 @@ describe("root saga", () => {
   let sandbox;
 
   beforeEach(() => {
-    sandbox = sinon.createSandbox();
+    sandbox = createSandbox();
   });
 
   afterEach(() => {
