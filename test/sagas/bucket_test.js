@@ -1,7 +1,10 @@
+import sinon from "sinon";
 import { expect } from "chai";
 import { put, call } from "redux-saga/effects";
 
-import { notifyError, notifySuccess } from "../../src/actions/notifications";
+import { createSandbox, mockNotifyError } from "../test_utils";
+
+import { notifySuccess } from "../../src/actions/notifications";
 import * as sessionActions from "../../src/actions/session";
 import { redirectTo } from "../../src/actions/route";
 import * as actions from "../../src/actions/bucket";
@@ -26,6 +29,16 @@ describe("bucket sagas", () => {
   const settings = {
     maxPerPage: 42,
   };
+
+  let sandbox;
+
+  beforeAll(() => {
+    sandbox = createSandbox();
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+  });
 
   describe("createBucket()", () => {
     describe("Success", () => {
@@ -88,9 +101,9 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        expect(createBucket.throw("error").value).eql(
-          put(notifyError("Couldn't create bucket.", "error", { clear: true }))
-        );
+        const mocked = mockNotifyError(sandbox);
+        createBucket.throw("error");
+        sinon.assert.calledWith(mocked, "Couldn't create bucket.", "error");
       });
 
       it("should unmark the current session as busy", () => {
@@ -175,11 +188,9 @@ describe("bucket sagas", () => {
         });
 
         it("should dispatch an error notification action", () => {
-          expect(updateBucket.throw("error").value).eql(
-            put(
-              notifyError("Couldn't update bucket.", "error", { clear: true })
-            )
-          );
+          const mocked = mockNotifyError(sandbox);
+          updateBucket.throw("error");
+          sinon.assert.calledWith(mocked, "Couldn't update bucket.", "error");
         });
 
         it("should unmark the current session as busy", () => {
@@ -266,11 +277,9 @@ describe("bucket sagas", () => {
         });
 
         it("should dispatch an error notification action", () => {
-          expect(updateBucket.throw("error").value).eql(
-            put(
-              notifyError("Couldn't update bucket.", "error", { clear: true })
-            )
-          );
+          const mocked = mockNotifyError(sandbox);
+          updateBucket.throw("error");
+          sinon.assert.calledWith(mocked, "Couldn't update bucket.", "error");
         });
 
         it("should unmark the current session as busy", () => {
@@ -350,9 +359,9 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        expect(deleteBucket.throw("error").value).eql(
-          put(notifyError("Couldn't delete bucket.", "error", { clear: true }))
-        );
+        const mocked = mockNotifyError(sandbox);
+        deleteBucket.throw("error");
+        sinon.assert.calledWith(mocked, "Couldn't delete bucket.", "error");
       });
 
       it("should unmark the current collection as busy", () => {
@@ -433,11 +442,9 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        expect(createCollection.throw("error").value).eql(
-          put(
-            notifyError("Couldn't create collection.", "error", { clear: true })
-          )
-        );
+        const mocked = mockNotifyError(sandbox);
+        createCollection.throw("error");
+        sinon.assert.calledWith(mocked, "Couldn't create collection.", "error");
       });
     });
   });
@@ -514,12 +521,12 @@ describe("bucket sagas", () => {
           );
           updateCollection.next();
 
-          expect(updateCollection.throw("error").value).eql(
-            put(
-              notifyError("Couldn't update collection.", "error", {
-                clear: true,
-              })
-            )
+          const mocked = mockNotifyError(sandbox);
+          updateCollection.throw("error");
+          sinon.assert.calledWith(
+            mocked,
+            "Couldn't update collection.",
+            "error"
           );
         });
       });
@@ -601,12 +608,12 @@ describe("bucket sagas", () => {
         });
 
         it("should dispatch an error notification action", () => {
-          expect(updateCollection.throw("error").value).eql(
-            put(
-              notifyError("Couldn't update collection.", "error", {
-                clear: true,
-              })
-            )
+          const mocked = mockNotifyError(sandbox);
+          updateCollection.throw("error");
+          sinon.assert.calledWith(
+            mocked,
+            "Couldn't update collection.",
+            "error"
           );
         });
       });
@@ -676,11 +683,9 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        expect(deleteCollection.throw("error").value).eql(
-          put(
-            notifyError("Couldn't delete collection.", "error", { clear: true })
-          )
-        );
+        const mocked = mockNotifyError(sandbox);
+        deleteCollection.throw("error");
+        sinon.assert.calledWith(mocked, "Couldn't delete collection.", "error");
       });
     });
   });
@@ -732,12 +737,12 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        expect(listBucketCollections.throw("error").value).eql(
-          put(
-            notifyError("Couldn't list bucket collections.", "error", {
-              clear: true,
-            })
-          )
+        const mocked = mockNotifyError(sandbox);
+        listBucketCollections.throw("error");
+        sinon.assert.calledWith(
+          mocked,
+          "Couldn't list bucket collections.",
+          "error"
         );
       });
     });
@@ -823,12 +828,12 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        expect(listHistory.throw("error").value).eql(
-          put(
-            notifyError("Couldn't list bucket history.", "error", {
-              clear: true,
-            })
-          )
+        const mocked = mockNotifyError(sandbox);
+        listHistory.throw("error");
+        sinon.assert.calledWith(
+          mocked,
+          "Couldn't list bucket history.",
+          "error"
         );
       });
     });
@@ -925,9 +930,9 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        expect(createGroup.throw("error").value).eql(
-          put(notifyError("Couldn't create group.", "error", { clear: true }))
-        );
+        const mocked = mockNotifyError(sandbox);
+        createGroup.throw("error");
+        sinon.assert.calledWith(mocked, "Couldn't create group.", "error");
       });
     });
   });
@@ -999,9 +1004,9 @@ describe("bucket sagas", () => {
           );
           updateGroup.next();
 
-          expect(updateGroup.throw("error").value).eql(
-            put(notifyError("Couldn't update group.", "error", { clear: true }))
-          );
+          const mocked = mockNotifyError(sandbox);
+          updateGroup.throw("error");
+          sinon.assert.calledWith(mocked, "Couldn't update group.", "error");
         });
       });
     });
@@ -1075,9 +1080,9 @@ describe("bucket sagas", () => {
         });
 
         it("should dispatch an error notification action", () => {
-          expect(updateGroup.throw("error").value).eql(
-            put(notifyError("Couldn't update group.", "error", { clear: true }))
-          );
+          const mocked = mockNotifyError(sandbox);
+          updateGroup.throw("error");
+          sinon.assert.calledWith(mocked, "Couldn't update group.", "error");
         });
       });
     });
@@ -1140,9 +1145,9 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        expect(deleteGroup.throw("error").value).eql(
-          put(notifyError("Couldn't delete group.", "error", { clear: true }))
-        );
+        const mocked = mockNotifyError(sandbox);
+        deleteGroup.throw("error");
+        sinon.assert.calledWith(mocked, "Couldn't delete group.", "error");
       });
     });
   });

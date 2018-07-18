@@ -1,11 +1,10 @@
 import sinon from "sinon";
 import { expect } from "chai";
-import { createSandbox } from "../test_utils";
+import { createSandbox, mockNotifyError } from "../test_utils";
 import { push as updatePath } from "connected-react-router";
 import { put, call } from "redux-saga/effects";
 
 import { saveSession, clearSession } from "../../src/store/localStore";
-import { notifyError } from "../../src/actions/notifications";
 import * as actions from "../../src/actions/session";
 import * as historyActions from "../../src/actions/history";
 import * as notificationsActions from "../../src/actions/notifications";
@@ -24,6 +23,16 @@ const authData = {
 };
 
 describe("session sagas", () => {
+  let sandbox;
+
+  beforeAll(() => {
+    sandbox = createSandbox();
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+  });
+
   describe("serverChange()", () => {
     let serverChange, getState;
 
@@ -57,7 +66,7 @@ describe("session sagas", () => {
   });
 
   describe("getServerInfo()", () => {
-    let getServerInfo, getState, action, client, sandbox;
+    let getServerInfo, getState, action, client;
 
     const serverInfo = {
       ...DEFAULT_SERVERINFO,
@@ -70,17 +79,12 @@ describe("session sagas", () => {
     const sessionState = { serverInfo };
 
     beforeAll(() => {
-      sandbox = createSandbox();
       resetClient();
       getState = () => ({
         session: sessionState,
       });
       action = actions.getServerInfo(authData);
       getServerInfo = saga.getServerInfo(getState, action);
-    });
-
-    afterEach(() => {
-      sandbox.restore();
     });
 
     describe("Success", () => {
@@ -137,9 +141,9 @@ describe("session sagas", () => {
       });
 
       it("should notify the error", () => {
-        expect(getServerInfo.next().value).eql(
-          put(notifyError("Could not reach server"))
-        );
+        const mocked = mockNotifyError(sandbox);
+        getServerInfo.next();
+        sinon.assert.calledWith(mocked, "Could not reach server");
       });
     });
 
@@ -184,7 +188,7 @@ describe("session sagas", () => {
   });
 
   describe("setupSession()", () => {
-    let sandbox, setupSession, getState, action;
+    let setupSession, getState, action;
 
     const serverInfo = {
       ...DEFAULT_SERVERINFO,
@@ -203,11 +207,6 @@ describe("session sagas", () => {
       });
       action = actions.setup(authData);
       setupSession = saga.setupSession(getState, action);
-      sandbox = createSandbox();
-    });
-
-    afterAll(() => {
-      sandbox.restore();
     });
 
     describe("Success", () => {
@@ -277,22 +276,18 @@ describe("session sagas", () => {
         });
         setupSession = saga.setupSession(getState, action);
         setupSession.next(); // call getServerInfo.
-        const mockedNotifyError = sandbox
-          .stub(notificationsActions, "notifyError")
-          .value(() => "notify error action");
-        expect(setupSession.next().value).eql(put("notify error action"));
-        expect(
-          mockedNotifyError.calledOnceWith("Authentication failed.", {
-            message: "Could not authenticate with Basic Auth",
-          })
-        );
+        const mocked = mockNotifyError(sandbox);
+        setupSession.next();
+        sinon.assert.calledWith(mocked, "Authentication failed.", {
+          message: "Could not authenticate with Basic Auth",
+        });
       });
     });
   });
 
   describe("listBuckets()", () => {
     const settingsState = { sidebarMaxListedCollections: 2 };
-    let client, listBuckets, sandbox;
+    let client, listBuckets;
 
     const serverInfo = {
       url: "http://server.test/v1",
@@ -319,11 +314,6 @@ describe("session sagas", () => {
       });
       const action = actions.listBuckets();
       listBuckets = saga.listBuckets(getState, action);
-      sandbox = createSandbox();
-    });
-
-    afterAll(() => {
-      sandbox.restore();
     });
 
     describe("Success", () => {
@@ -470,17 +460,9 @@ describe("session sagas", () => {
 
         const listBuckets = saga.listBuckets(getState, action);
         listBuckets.next();
-        const mockedNotifyError = sandbox
-          .stub(notificationsActions, "notifyError")
-          .value(() => "notify error action");
-        expect(listBuckets.throw("error").value).eql(
-          put(notifyError("notify error action"))
-        );
-        expect(
-          mockedNotifyError.calledOnceWith("Authentication failed.", {
-            message: "Could not authenticate with Basic Auth",
-          })
-        );
+        const mocked = mockNotifyError(sandbox);
+        listBuckets.throw("error");
+        sinon.assert.calledWith(mocked, "Couldn't list buckets.", "error");
       });
     });
   });

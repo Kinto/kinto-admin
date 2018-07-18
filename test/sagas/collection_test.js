@@ -1,7 +1,10 @@
+import sinon from "sinon";
 import { expect } from "chai";
 import { put, call } from "redux-saga/effects";
 
-import { notifyError, notifySuccess } from "../../src/actions/notifications";
+import { createSandbox, mockNotifyError } from "../test_utils";
+
+import { notifySuccess } from "../../src/actions/notifications";
 import * as actions from "../../src/actions/collection";
 import * as recordActions from "../../src/actions/record";
 import { redirectTo } from "../../src/actions/route";
@@ -21,6 +24,16 @@ describe("collection sagas", () => {
   const settings = {
     maxPerPage: 42,
   };
+
+  let sandbox;
+
+  beforeAll(() => {
+    sandbox = createSandbox();
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+  });
 
   describe("listRecords()", () => {
     describe("Success", () => {
@@ -150,9 +163,9 @@ describe("collection sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        expect(listRecords.throw("error").value).eql(
-          put(notifyError("Couldn't list records.", "error"))
-        );
+        const mocked = mockNotifyError(sandbox);
+        listRecords.throw("error");
+        sinon.assert.calledWith(mocked, "Couldn't list records.", "error");
       });
     });
   });
@@ -199,9 +212,9 @@ describe("collection sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        expect(listNextRecords.throw("error").value).eql(
-          put(notifyError("Couldn't process next page.", "error"))
-        );
+        const mocked = mockNotifyError(sandbox);
+        listNextRecords.throw("error");
+        sinon.assert.calledWith(mocked, "Couldn't process next page.", "error");
       });
     });
   });
@@ -342,9 +355,9 @@ describe("collection sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        expect(createRecord.throw("error").value).eql(
-          put(notifyError("Couldn't create record.", "error"))
-        );
+        const mocked = mockNotifyError(sandbox);
+        createRecord.throw("error");
+        sinon.assert.calledWith(mocked, "Couldn't create record.", "error");
       });
 
       it("should unmark the current record as busy", () => {
@@ -526,9 +539,9 @@ describe("collection sagas", () => {
         });
 
         it("should dispatch an error notification action", () => {
-          expect(updateRecord.throw("error").value).eql(
-            put(notifyError("Couldn't update record.", "error"))
-          );
+          const mocked = mockNotifyError(sandbox);
+          updateRecord.throw("error");
+          sinon.assert.calledWith(mocked, "Couldn't update record.", "error");
         });
 
         it("should unmark the current record as busy", () => {
@@ -646,9 +659,9 @@ describe("collection sagas", () => {
         });
 
         it("should dispatch an error notification action", () => {
-          expect(updateRecord.throw("error").value).eql(
-            put(notifyError("Couldn't update record.", "error"))
-          );
+          const mocked = mockNotifyError(sandbox);
+          updateRecord.throw("error");
+          sinon.assert.calledWith(mocked, "Couldn't update record.", "error");
         });
 
         it("should unmark the current record as busy", () => {
@@ -746,9 +759,9 @@ describe("collection sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        expect(deleteRecord.throw("error").value).eql(
-          put(notifyError("Couldn't delete record.", "error"))
-        );
+        const mocked = mockNotifyError(sandbox);
+        deleteRecord.throw("error");
+        sinon.assert.calledWith(mocked, "Couldn't delete record.", "error");
       });
 
       it("should unmark the current record as busy", () => {
@@ -984,12 +997,12 @@ describe("collection sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        expect(bulkCreateRecords.throw("error").value).eql(
-          put(
-            notifyError("Couldn't create some records.", "error", {
-              details: [],
-            })
-          )
+        const mocked = mockNotifyError(sandbox);
+        bulkCreateRecords.throw("error");
+        sinon.assert.calledWith(
+          mocked,
+          "Couldn't create some records.",
+          "error"
         );
       });
 
@@ -1093,12 +1106,12 @@ describe("collection sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        expect(listHistory.throw("error").value).eql(
-          put(
-            notifyError("Couldn't list collection history.", "error", {
-              clear: true,
-            })
-          )
+        const mocked = mockNotifyError(sandbox);
+        listHistory.throw("error");
+        sinon.assert.calledWith(
+          mocked,
+          "Couldn't list collection history.",
+          "error"
         );
       });
     });

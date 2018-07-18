@@ -1,7 +1,9 @@
+import sinon from "sinon";
 import { expect } from "chai";
 import { put, call } from "redux-saga/effects";
 
-import { notifyError } from "../../src/actions/notifications";
+import { createSandbox, mockNotifyError } from "../test_utils";
+
 import * as actions from "../../src/actions/record";
 import * as saga from "../../src/sagas/record";
 import { setClient } from "../../src/client";
@@ -74,7 +76,7 @@ describe("record sagas", () => {
     });
 
     describe("Failure", () => {
-      let listHistory;
+      let listHistory, sandbox;
 
       beforeAll(() => {
         const action = actions.listRecordHistory(
@@ -84,15 +86,20 @@ describe("record sagas", () => {
         );
         listHistory = saga.listHistory(() => ({ settings }), action);
         listHistory.next();
+        sandbox = createSandbox();
+      });
+
+      afterEach(() => {
+        sandbox.restore();
       });
 
       it("should dispatch an error notification action", () => {
-        expect(listHistory.throw("error").value).eql(
-          put(
-            notifyError("Couldn't list record history.", "error", {
-              clear: true,
-            })
-          )
+        const mocked = mockNotifyError(sandbox);
+        listHistory.throw("error");
+        sinon.assert.calledWith(
+          mocked,
+          "Couldn't list record history.",
+          "error"
         );
       });
     });

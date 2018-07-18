@@ -1,7 +1,6 @@
 import { expect } from "chai";
-import sinon from "sinon";
 
-import { createSandbox } from "./test_utils";
+import { createSandbox } from "../test_utils";
 
 import configureStore from "../../src/store/configureStore";
 import * as routeSagas from "../../src/sagas/route";

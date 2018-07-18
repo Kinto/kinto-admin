@@ -1,8 +1,10 @@
+import sinon from "sinon";
 import { expect } from "chai";
 import { push as updatePath } from "connected-react-router";
 import { call, put, take } from "redux-saga/effects";
 
-import { notifyError } from "../../src/actions/notifications";
+import { createSandbox, mockNotifyError } from "../test_utils";
+
 import { setClient } from "../../src/client";
 import * as actions from "../../src/actions/route";
 import * as notificationActions from "../../src/actions/notifications";
@@ -12,6 +14,16 @@ import { scrollToTop } from "../../src/utils";
 import { SESSION_AUTHENTICATED } from "../../src/constants";
 
 describe("route sagas", () => {
+  let sandbox;
+
+  beforeAll(() => {
+    sandbox = createSandbox();
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+  });
+
   describe("loadRoute()", () => {
     describe("Nothing to load", () => {
       it("should do nothing", () => {
@@ -38,8 +50,12 @@ describe("route sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        expect(loadRoute.next().value).eql(
-          put(notifyError("Couldn't retrieve route resources.", "error"))
+        const mocked = mockNotifyError(sandbox);
+        loadRoute.next();
+        sinon.assert.calledWith(
+          mocked,
+          "Couldn't retrieve route resources.",
+          "error"
         );
       });
     });
@@ -347,14 +363,9 @@ describe("route sagas", () => {
       });
 
       it("should dispatch a notification", () => {
-        expect(loadRoute.next().value).eql(
-          put(
-            notificationActions.notifyError(
-              "Couldn't retrieve route resources.",
-              new Error("Bucket bucket does not exist.")
-            )
-          )
-        );
+        const mocked = mockNotifyError(sandbox);
+        loadRoute.next();
+        sinon.assert.calledWith(mocked, "Couldn't retrieve route resources.");
       });
     });
   });

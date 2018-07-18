@@ -7,6 +7,7 @@ import { findDOMNode } from "react-dom";
 import { ConnectedRouter } from "connected-react-router";
 import { Provider } from "react-redux";
 import configureStore, { hashHistory } from "../src/store/configureStore";
+import * as notificationsActions from "../src/actions/notifications";
 
 export function createComponent(Component, props) {
   const store = configureStore();
@@ -27,4 +28,12 @@ export function createSandbox() {
     throw new Error(args);
   });
   return sandbox;
+}
+
+export function mockNotifyError(sandbox) {
+  return sandbox
+    .stub(notificationsActions, "notifyError")
+    .callsFake((...args) => {
+      return args;
+    });
 }
