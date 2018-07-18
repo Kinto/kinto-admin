@@ -60,6 +60,7 @@ describe("CollectionRecords component", () => {
         bucket,
         collection,
         capabilities,
+        listRecords: () => {},
       });
     });
 
@@ -100,6 +101,7 @@ describe("CollectionRecords component", () => {
         bucket,
         collection,
         capabilities,
+        listRecords: () => {},
       });
     });
 
@@ -150,6 +152,7 @@ describe("CollectionRecords component", () => {
           bucket,
           collection,
           capabilities,
+          listRecords: () => {},
         });
       });
 
@@ -171,6 +174,7 @@ describe("CollectionRecords component", () => {
           bucket,
           collection,
           capabilities,
+          listRecords: () => {},
         });
       });
 
