@@ -4,9 +4,19 @@ import React from "react";
 import sinon from "sinon";
 import { renderIntoDocument } from "react-dom/test-utils";
 import { findDOMNode } from "react-dom";
+import { ConnectedRouter } from "connected-react-router";
+import { Provider } from "react-redux";
+import configureStore, { hashHistory } from "../src/store/configureStore";
 
 export function createComponent(Component, props) {
-  const comp = renderIntoDocument(<Component {...props} />);
+  const store = configureStore();
+  const comp = renderIntoDocument(
+    <Provider store={store}>
+      <ConnectedRouter history={hashHistory}>
+        <Component {...props} />
+      </ConnectedRouter>
+    </Provider>
+  );
   return findDOMNode(comp);
 }
 
