@@ -15,8 +15,8 @@
     "start": "NODE_ENV=development node server/dev.js",
     "tdd": "npm run test --bail",
     "tdd-browser": "npm run test-browser --watch",
-    "test": "NODE_ENV=test node_modules/.bin/jest --watch --setupTestFrameworkScriptFile=`pwd`/test/setup-jsdom.js --testRegex '.*_test.js'",
-    "test-browser": "NODE_ENV=test node_modules/.bin/babel-node node_modules/.bin/_mocha --recursive test-browser/",
+    "test": "NODE_ENV=test node_modules/.bin/jest --watch --setupTestFrameworkScriptFile=`pwd`/test/setup-jsdom.js --testRegex '.*_test.js' --testPathIgnorePatterns 'test-browser/'",
+    "test-browser": "NODE_ENV=test node_modules/.bin/babel-node node_modules/.bin/_mocha --recursive test-browser/ --testPathIgnorePatterns 'test/'",
     "test-all": "npm run lint && npm run flow-check && npm run test"
   },
   "main": "lib/index.js",
@@ -51,7 +51,7 @@
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
     "redux": "^3.0.4",
-    "redux-saga": "^0.15.3",
+    "redux-saga": "^0.16.0",
     "rimraf": "^2.4.4",
     "timeago.js": "^3.0.1"
   },
