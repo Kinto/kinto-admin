@@ -67,8 +67,8 @@ type Props = {
   session: SessionState,
   logout: () => void,
   notificationList: NotificationsType,
-  notifications: Element<*>,
-  sidebar: Element<*>,
+  notifications: React.ComponentType<*>,
+  sidebar: React.ComponentType<*>,
   collectionRecords: Element<*>,
   pluginsRoutes: Element<*>[],
 };
