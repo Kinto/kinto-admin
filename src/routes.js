@@ -1,5 +1,6 @@
 /* @flow */
-import React, { Component, PureComponent } from "react";
+import * as React from "react";
+import { Component, PureComponent } from "react";
 import { Route } from "react-router-dom";
 import type { Location, Match } from "react-router-dom";
 import { mergeObjects } from "react-jsonschema-form/lib/utils";
@@ -17,7 +18,10 @@ import Sidebar from "./containers/Sidebar";
 import Notifications from "./containers/Notifications";
 import CollectionRecordsPage from "./containers/collection/CollectionRecordsPage";
 
-function registerPluginsComponentHooks(PageContainer, plugins) {
+function registerPluginsComponentHooks(
+  PageContainer,
+  plugins
+): React.ComponentType<*> {
   // Extract the container wrapped component (see react-redux connect() API)
   const { WrappedComponent } = PageContainer;
   // By convention, the hook namespace is the wrapped component name
@@ -45,7 +49,7 @@ function registerPluginsComponentHooks(PageContainer, plugins) {
 }
 
 type ComponentWrapperProps = {
-  component: React.Node,
+  component: React.ComponentType<*>,
   location: Location,
   match: Match,
   routeUpdated: (Object, Location) => void,
@@ -131,7 +135,6 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
   const pluginsRoutes = flattenPluginsRoutes(plugins);
   return (
     <Route
-      name="home"
       path="/"
       render={props => (
         <App
