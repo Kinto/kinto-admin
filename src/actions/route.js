@@ -9,6 +9,7 @@ import type {
   RecordResource,
   GroupResource,
 } from "../types";
+import type { Location } from "react-router-dom";
 
 import {
   ROUTE_UPDATED,
@@ -20,11 +21,11 @@ import {
 
 export function routeUpdated(
   params: Object,
-  location: Object
+  location: Location
 ): {
   type: "ROUTE_UPDATED",
   params: Object,
-  location: Object,
+  location: Location,
 } {
   return { type: ROUTE_UPDATED, params, location };
 }

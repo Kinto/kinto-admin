@@ -9,6 +9,7 @@ import type {
 import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
+import { parse } from "query-string";
 
 import BucketTabs from "./BucketTabs";
 import HistoryTable from "../HistoryTable";
@@ -22,15 +23,12 @@ type Props = {
   listBucketNextHistory: () => void,
   notifyError: (message: string, error: ?Error) => void,
   session: SessionState,
-  router: Object,
 };
 
 export const onBucketHistoryEnter = (props: Props) => {
-  const { listBucketHistory, match, session, router } = props;
+  const { listBucketHistory, match, session, location } = props;
   const { bid } = match.params;
-  const {
-    location: { query: filters },
-  } = router;
+  const filters = parse(location.search);
   if (!session.authenticated) {
     // We're not authenticated, skip requesting the list of records. This likely
     // occurs when users refresh the page and lose their session.

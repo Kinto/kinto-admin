@@ -10,6 +10,7 @@ import type {
 import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
+import { parse } from "query-string";
 
 import HistoryTable from "../HistoryTable";
 import RecordTabs from "./RecordTabs";
@@ -29,15 +30,12 @@ type Props = {
   ) => void,
   listRecordNextHistory: () => void,
   notifyError: (message: string, error: ?Error) => void,
-  router: Object,
 };
 
 export const onRecordHistoryEnter = (props: Props) => {
-  const { listRecordHistory, match, router, session } = props;
+  const { listRecordHistory, match, session, location } = props;
   const { bid, cid, rid } = match.params;
-  const {
-    location: { query: filters },
-  } = router;
+  const filters = parse(location.search);
   if (!session.authenticated) {
     return;
   }

@@ -12,8 +12,8 @@ describe("Routes onEnter", () => {
   const filters = { since: "12" };
   const props = {
     session: { authenticated: true },
-    router: { location: { query: filters } },
     match: { params },
+    location: { search: "?since=12" },
   };
   const store = {
     dispatch() {},

@@ -15,7 +15,6 @@ function mapStateToProps(state: AppState) {
     collection: state.collection,
     session: state.session,
     capabilities: state.session.serverInfo.capabilities,
-    router: state.router,
   };
 }
 
