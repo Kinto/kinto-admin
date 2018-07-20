@@ -6,8 +6,8 @@ import type {
   CollectionState,
   CollectionRouteMatch,
   HistoryFilters,
-  RouteLocation,
 } from "../../types";
+import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
 
@@ -20,7 +20,7 @@ type Props = {
   collection: CollectionState,
   capabilities: Capabilities,
   match: CollectionRouteMatch,
-  location: RouteLocation,
+  location: Location,
   listCollectionHistory: (
     bid: string,
     cid: string,

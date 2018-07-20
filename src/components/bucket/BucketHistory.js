@@ -4,9 +4,9 @@ import type {
   BucketState,
   BucketRouteMatch,
   HistoryFilters,
-  RouteLocation,
   SessionState,
 } from "../../types";
+import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
 
@@ -17,11 +17,10 @@ type Props = {
   match: BucketRouteMatch,
   bucket: BucketState,
   capabilities: Capabilities,
-  location: RouteLocation,
+  location: Location,
   listBucketHistory: (bid: string, filters: HistoryFilters) => void,
   listBucketNextHistory: () => void,
   notifyError: (message: string, error: ?Error) => void,
-  location: Location,
   session: SessionState,
   router: Object,
 };

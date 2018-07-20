@@ -6,8 +6,8 @@ import type {
   HistoryFilters,
   RecordState,
   RecordRouteMatch,
-  RouteLocation,
 } from "../../types";
+import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
 
@@ -20,7 +20,7 @@ type Props = {
   capabilities: Capabilities,
   bucket: BucketState,
   record: RecordState,
-  location: RouteLocation,
+  location: Location,
   listRecordHistory: (
     bid: string,
     cid: string,

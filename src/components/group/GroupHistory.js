@@ -3,7 +3,6 @@ import type {
   Capabilities,
   GroupState,
   GroupRouteMatch,
-  RouteLocation,
   SessionState,
 } from "../../types";
 import type { Location } from "react-router-dom";
@@ -17,7 +16,7 @@ type Props = {
   match: GroupRouteMatch,
   group: GroupState,
   capabilities: Capabilities,
-  location: RouteLocation,
+  location: Location,
   hasNextHistory: boolean,
   listGroupHistory: ?Function,
   listGroupNextHistory: ?Function,
