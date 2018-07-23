@@ -24,7 +24,7 @@ install:
   - npm run build
 env:
   - ACTION="build:lib"
-  - ACTION="test-all"
+  - ACTION="test-all:ci"
   - ACTION="cs-check"
   - ACTION="test-browser"
 matrix:
