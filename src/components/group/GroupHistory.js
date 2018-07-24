@@ -28,7 +28,9 @@ type Props = {
 
 export const onGroupHistoryEnter = (props: Props) => {
   const { match, listGroupHistory, session, location } = props;
-  const { bid, gid } = match.params;
+  const {
+    params: { bid, gid },
+  } = match;
   const filters = parse(location.search);
   if (!session.authenticated) {
     // We're not authenticated, skip requesting the list of records. This likely
@@ -55,7 +57,9 @@ export default class GroupHistory extends PureComponent<Props> {
       listGroupNextHistory,
       notifyError,
     } = this.props;
-    const { bid, gid } = match.params;
+    const {
+      params: { bid, gid },
+    } = match;
     const {
       history: { entries, loaded, hasNextPage },
     } = group;

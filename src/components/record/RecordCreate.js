@@ -29,13 +29,17 @@ type Props = {
 export default class RecordCreate extends PureComponent<Props> {
   onSubmit = ({ __attachment__: attachment, ...record }: Object) => {
     const { match, createRecord } = this.props;
-    const { bid, cid } = match.params;
+    const {
+      params: { bid, cid },
+    } = match;
     createRecord(bid, cid, record, attachment);
   };
 
   render() {
     const { match, session, bucket, collection, capabilities } = this.props;
-    const { bid, cid } = match.params;
+    const {
+      params: { bid, cid },
+    } = match;
     return (
       <div>
         <h1>

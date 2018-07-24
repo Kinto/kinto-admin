@@ -31,7 +31,9 @@ type Props = {
 export default class CollectionPermissions_ extends PureComponent<Props> {
   onSubmit = ({ formData }: { formData: CollectionPermissions }) => {
     const { match, updateCollection } = this.props;
-    const { bid, cid } = match.params;
+    const {
+      params: { bid, cid },
+    } = match;
     updateCollection(bid, cid, { permissions: formData });
   };
 
@@ -42,7 +44,9 @@ export default class CollectionPermissions_ extends PureComponent<Props> {
 
   render() {
     const { match, capabilities, collection, bucket } = this.props;
-    const { bid, cid } = match.params;
+    const {
+      params: { bid, cid },
+    } = match;
     const { busy, permissions } = collection;
     const { groups } = bucket;
     const acls: string[] = ["read", "write", "record:create"];

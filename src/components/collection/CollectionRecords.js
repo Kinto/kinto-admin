@@ -337,13 +337,17 @@ export default class CollectionRecords extends PureComponent<Props> {
 
   updateSort = (sort: string) => {
     const { match, listRecords } = this.props;
-    const { bid, cid } = match.params;
+    const {
+      params: { bid, cid },
+    } = match;
     listRecords(bid, cid, sort);
   };
 
   onCollectionRecordsEnter = () => {
     const { collection, listRecords, match, session } = this.props;
-    const { bid, cid } = match.params;
+    const {
+      params: { bid, cid },
+    } = match;
     if (!session.authenticated) {
       // We're not authenticated, skip requesting the list of records. This likely
       // occurs when users refresh the page and lose their session.
@@ -372,7 +376,9 @@ export default class CollectionRecords extends PureComponent<Props> {
       pluginHooks,
       capabilities,
     } = this.props;
-    const { bid, cid } = match.params;
+    const {
+      params: { bid, cid },
+    } = match;
     const {
       busy,
       data,

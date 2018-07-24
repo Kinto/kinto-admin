@@ -25,7 +25,9 @@ type Props = {
 export default class BucketPermissions_ extends PureComponent<Props> {
   onSubmit = ({ formData }: { formData: BucketPermissions }) => {
     const { match, updateBucket } = this.props;
-    const { bid } = match.params;
+    const {
+      params: { bid },
+    } = match;
     updateBucket(bid, { permissions: formData });
   };
 
@@ -36,7 +38,9 @@ export default class BucketPermissions_ extends PureComponent<Props> {
 
   render() {
     const { match, capabilities, bucket } = this.props;
-    const { bid } = match.params;
+    const {
+      params: { bid },
+    } = match;
     const { busy, permissions, groups } = bucket;
     const acls = ["read", "write", "collection:create", "group:create"];
     if (busy) {

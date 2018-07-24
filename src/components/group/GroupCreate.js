@@ -25,7 +25,9 @@ type Props = {
 export default class GroupCreate extends PureComponent<Props> {
   render() {
     const { match, session, bucket, group, createGroup } = this.props;
-    const { bid } = match.params;
+    const {
+      params: { bid },
+    } = match;
     const { busy } = session;
     if (busy) {
       return <Spinner />;

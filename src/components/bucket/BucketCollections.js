@@ -144,7 +144,9 @@ export default class BucketCollections extends PureComponent<Props> {
       capabilities,
       listBucketNextCollections,
     } = this.props;
-    const { bid } = match.params;
+    const {
+      params: { bid },
+    } = match;
     const { collections } = bucket;
 
     const listActions = (

@@ -26,7 +26,9 @@ type Props = {
 export default class RecordBulk extends PureComponent<Props> {
   onSubmit = ({ formData }: { formData: any[] }) => {
     const { match, collection, notifyError, bulkCreateRecords } = this.props;
-    const { bid, cid } = match.params;
+    const {
+      params: { bid, cid },
+    } = match;
     const {
       data: { schema = {} },
     } = collection;
@@ -52,7 +54,9 @@ export default class RecordBulk extends PureComponent<Props> {
       busy,
       data: { schema = {}, uiSchema = {}, attachment },
     } = collection;
-    const { bid, cid } = match.params;
+    const {
+      params: { bid, cid },
+    } = match;
 
     let bulkSchema, bulkUiSchema, bulkFormData;
 

@@ -34,7 +34,9 @@ type Props = {
 
 export const onRecordHistoryEnter = (props: Props) => {
   const { listRecordHistory, match, session, location } = props;
-  const { bid, cid, rid } = match.params;
+  const {
+    params: { bid, cid, rid },
+  } = match;
   const filters = parse(location.search);
   if (!session.authenticated) {
     return;
@@ -59,7 +61,9 @@ export default class RecordHistory extends PureComponent<Props> {
       listRecordNextHistory,
       notifyError,
     } = this.props;
-    const { bid, cid, rid } = match.params;
+    const {
+      params: { bid, cid, rid },
+    } = match;
     const {
       history: { entries, loaded, hasNextPage },
     } = record;

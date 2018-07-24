@@ -95,7 +95,9 @@ type Props = {
 export default class BucketCollections extends PureComponent<Props> {
   render() {
     const { match, session, bucket, capabilities } = this.props;
-    const { bid } = match.params;
+    const {
+      params: { bid },
+    } = match;
     const { groups } = bucket;
 
     const listActions = (

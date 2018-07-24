@@ -27,13 +27,17 @@ type Props = {
 export default class CollectionAttributes extends PureComponent<Props> {
   onSubmit = (formData: CollectionData) => {
     const { match, updateCollection } = this.props;
-    const { bid, cid } = match.params;
+    const {
+      params: { bid, cid },
+    } = match;
     updateCollection(bid, cid, { data: formData });
   };
 
   deleteCollection = (cid: string) => {
     const { deleteCollection, match } = this.props;
-    const { bid } = match.params;
+    const {
+      params: { bid },
+    } = match;
     const message = [
       "This will delete the collection and all the records it contains.",
       "Are you sure?",
@@ -45,7 +49,9 @@ export default class CollectionAttributes extends PureComponent<Props> {
 
   render() {
     const { match, session, bucket, collection, capabilities } = this.props;
-    const { bid, cid } = match.params;
+    const {
+      params: { bid, cid },
+    } = match;
     const { busy, data: formData } = collection;
     if (busy) {
       return <Spinner />;

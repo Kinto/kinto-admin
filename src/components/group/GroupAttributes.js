@@ -35,7 +35,9 @@ export default class GroupAttributes extends PureComponent<Props> {
 
   deleteGroup = (gid: string) => {
     const { deleteGroup, match } = this.props;
-    const { bid } = match.params;
+    const {
+      params: { bid },
+    } = match;
     if (confirm("This will delete the group. Are you sure?")) {
       deleteGroup(bid, gid);
     }
@@ -43,7 +45,9 @@ export default class GroupAttributes extends PureComponent<Props> {
 
   render() {
     const { match, session, bucket, group, capabilities } = this.props;
-    const { bid, gid } = match.params;
+    const {
+      params: { bid, gid },
+    } = match;
     const { busy, data: formData } = group;
     if (busy) {
       return <Spinner />;

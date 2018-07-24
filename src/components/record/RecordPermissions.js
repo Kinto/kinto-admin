@@ -34,7 +34,9 @@ type Props = {
 export default class RecordPermissions_ extends PureComponent<Props> {
   onSubmit = ({ formData }: { formData: Object }) => {
     const { match, updateRecord } = this.props;
-    const { bid, cid, rid } = match.params;
+    const {
+      params: { bid, cid, rid },
+    } = match;
     updateRecord(bid, cid, rid, { permissions: formData });
   };
 
@@ -45,7 +47,9 @@ export default class RecordPermissions_ extends PureComponent<Props> {
 
   render() {
     const { match, capabilities, bucket, record } = this.props;
-    const { bid, cid, rid } = match.params;
+    const {
+      params: { bid, cid, rid },
+    } = match;
     const { groups } = bucket;
     const { busy, permissions } = record;
     const acls = ["read", "write"];

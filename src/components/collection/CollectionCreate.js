@@ -25,7 +25,9 @@ type Props = {
 export default class CollectionCreate extends PureComponent<Props> {
   render() {
     const { match, session, bucket, collection, createCollection } = this.props;
-    const { bid } = match.params;
+    const {
+      params: { bid },
+    } = match;
     const { busy } = session;
     if (busy) {
       return <Spinner />;

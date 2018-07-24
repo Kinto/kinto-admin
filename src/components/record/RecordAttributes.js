@@ -35,7 +35,9 @@ type Props = {
 export default class RecordAttributes extends PureComponent<Props> {
   onSubmit = ({ __attachment__: attachment, ...record }: Object) => {
     const { match, updateRecord } = this.props;
-    const { bid, cid, rid } = match.params;
+    const {
+      params: { bid, cid, rid },
+    } = match;
     updateRecord(bid, cid, rid, { data: record }, attachment);
   };
 
@@ -50,7 +52,9 @@ export default class RecordAttributes extends PureComponent<Props> {
       deleteRecord,
       deleteAttachment,
     } = this.props;
-    const { bid, cid, rid } = match.params;
+    const {
+      params: { bid, cid, rid },
+    } = match;
 
     return (
       <div>

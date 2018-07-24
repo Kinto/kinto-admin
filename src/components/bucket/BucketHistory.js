@@ -27,7 +27,9 @@ type Props = {
 
 export const onBucketHistoryEnter = (props: Props) => {
   const { listBucketHistory, match, session, location } = props;
-  const { bid } = match.params;
+  const {
+    params: { bid },
+  } = match;
   const filters = parse(location.search);
   if (!session.authenticated) {
     // We're not authenticated, skip requesting the list of records. This likely
@@ -54,7 +56,9 @@ export default class BucketHistory extends PureComponent<Props> {
       listBucketNextHistory,
       notifyError,
     } = this.props;
-    const { bid } = match.params;
+    const {
+      params: { bid },
+    } = match;
     const {
       history: { entries, loaded, hasNextPage: hasNextHistoryPage },
     } = bucket;
