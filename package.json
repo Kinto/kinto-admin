@@ -19,7 +19,7 @@
     "test:ci": "npm run test -- --maxWorkers=4",
     "test-browser": "NODE_ENV=test node_modules/.bin/babel-node node_modules/.bin/_mocha --recursive test-browser/ --testPathIgnorePatterns 'test/'",
     "test-all": "npm run lint && npm run flow-check && npm run test",
-    "test-all:ci": "npm run lint && npm run flow-check && npm run test:ci"
+    "test-all:ci": "npm run lint && npm install flow-typed && flow-typed install && npm run flow-check && npm run test:ci"
   },
   "main": "lib/index.js",
   "files": [
