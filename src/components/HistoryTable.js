@@ -1,9 +1,11 @@
 /* @flow */
 
 import type { RecordData, ResourceHistoryEntry, RouteLocation } from "../types";
+import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
 import { diffJson } from "diff";
+import { parse } from "query-string";
 
 import { timeago, humanDate } from "../utils";
 import AdminLink from "./AdminLink";
@@ -284,7 +286,7 @@ function DiffOverview(props) {
 type Props = {
   bid: string,
   cid?: string,
-  location: RouteLocation,
+  location: Location,
   history: ResourceHistoryEntry[],
   historyLoaded: boolean,
   hasNextHistory: boolean,
@@ -356,7 +358,9 @@ export default class HistoryTable extends PureComponent<Props, State> {
       location,
     } = this.props;
     const { current, previous, diffOverview } = this.state;
-    const { since } = location.query;
+    const query = parse(location.search);
+    const routeLocation = { pathname: location.pathname, query };
+    const { since } = query;
     const isFiltered = !!since;
 
     const thead = (
@@ -388,7 +392,7 @@ export default class HistoryTable extends PureComponent<Props, State> {
       <div>
         {isFiltered && (
           <FilterInfo
-            location={location}
+            location={routeLocation}
             enableDiffOverview={enableDiffOverview}
             onDiffOverviewClick={this.onDiffOverviewClick}
             onViewJournalClick={this.onViewJournalClick}

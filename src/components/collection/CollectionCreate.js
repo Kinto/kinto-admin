@@ -5,7 +5,7 @@ import type {
   BucketState,
   CollectionState,
   CollectionData,
-  BucketRouteParams,
+  BucketRouteMatch,
 } from "../../types";
 
 import React, { PureComponent } from "react";
@@ -18,20 +18,16 @@ type Props = {
   bucket: BucketState,
   collection: CollectionState,
   capabilities: Capabilities,
-  params: BucketRouteParams,
+  match: BucketRouteMatch,
   createCollection: (bid: string, data: CollectionData) => void,
 };
 
 export default class CollectionCreate extends PureComponent<Props> {
   render() {
+    const { match, session, bucket, collection, createCollection } = this.props;
     const {
-      params,
-      session,
-      bucket,
-      collection,
-      createCollection,
-    } = this.props;
-    const { bid } = params;
+      params: { bid },
+    } = match;
     const { busy } = session;
     if (busy) {
       return <Spinner />;

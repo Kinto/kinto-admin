@@ -4,7 +4,7 @@ import type {
   SessionState,
   BucketState,
   GroupState,
-  GroupRouteParams,
+  GroupRouteMatch,
   GroupPermissions,
 } from "../../types";
 
@@ -16,7 +16,7 @@ import PermissionsForm from "../PermissionsForm";
 import { canEditGroup } from "../../permission";
 
 type Props = {
-  params: GroupRouteParams,
+  match: GroupRouteMatch,
   session: SessionState,
   bucket: BucketState,
   group: GroupState,
@@ -30,8 +30,10 @@ type Props = {
 
 export default class GroupPermissions_ extends PureComponent<Props> {
   onSubmit = ({ formData }: { formData: GroupPermissions }) => {
-    const { params, updateGroup } = this.props;
-    const { bid, gid } = params;
+    const { match, updateGroup } = this.props;
+    const {
+      params: { bid, gid },
+    } = match;
     updateGroup(bid, gid, { permissions: formData });
   };
 
@@ -41,8 +43,10 @@ export default class GroupPermissions_ extends PureComponent<Props> {
   }
 
   render() {
-    const { params, capabilities, bucket, group } = this.props;
-    const { bid, gid } = params;
+    const { match, capabilities, bucket, group } = this.props;
+    const {
+      params: { bid, gid },
+    } = match;
     const { busy, permissions } = group;
     const { groups } = bucket;
     const acls = ["read", "write"];

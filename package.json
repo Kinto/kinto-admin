@@ -13,11 +13,13 @@
     "publish-to-gh-pages": "npm run build && gh-pages --add --dist build/",
     "publish-to-npm": "npm run build:lib && npm publish",
     "start": "NODE_ENV=development node server/dev.js",
-    "tdd": "NODE_ENV=test node_modules/.bin/babel-node node_modules/.bin/_mocha --require ignore-styles --require ./test/setup-jsdom.js 'test/**/*_test.js' --watch",
-    "tdd-browser": "NODE_ENV=test node_modules/.bin/babel-node node_modules/.bin/_mocha 'test-browser/**/*_test.js' --watch",
-    "test": "NODE_ENV=test node_modules/.bin/babel-node node_modules/.bin/_mocha --require ignore-styles --require ./test/setup-jsdom.js 'test/**/*_test.js'",
-    "test-browser": "NODE_ENV=test node_modules/.bin/babel-node node_modules/.bin/_mocha 'test-browser/**/*_test.js'",
-    "test-all": "npm run lint && npm run flow-check && npm run test"
+    "tdd": "npm run test -- --watch --bail",
+    "tdd-browser": "npm run test-browser --watch",
+    "test": "NODE_ENV=test node_modules/.bin/jest --setupTestFrameworkScriptFile=`pwd`/test/setup-jsdom.js --testRegex '.*_test.js' --testPathIgnorePatterns 'test-browser/'",
+    "test:ci": "npm run test -- --maxWorkers=4",
+    "test-browser": "NODE_ENV=test node_modules/.bin/babel-node node_modules/.bin/_mocha --recursive test-browser/ --testPathIgnorePatterns 'test/'",
+    "test-all": "npm run lint && npm run flow-check && npm run test",
+    "test-all:ci": "npm run lint && npm install flow-typed && flow-typed install && npm run flow-check && npm run test:ci"
   },
   "main": "lib/index.js",
   "files": [
@@ -37,20 +39,22 @@
     "bootstrap": "^3.3.6",
     "btoa": "^1.1.2",
     "codemirror": "^5.30.0",
+    "connected-react-router": "^4.3.0",
     "diff": "^3.2.0",
     "express": "^4.14.0",
     "filesize": "^3.3.0",
+    "history": "^4.7.2",
     "kinto-http": "^4.3.3",
-    "react": "^15.6.1",
-    "react-breadcrumbs": "^1.3.16",
+    "query-string": "^6.1.0",
+    "react": "^16.4.1",
+    "react-breadcrumbs": "^2.1.4",
     "react-codemirror2": "^5.0.1",
-    "react-dom": "^15.6.1",
+    "react-dom": "^16.4.1",
     "react-jsonschema-form": "^1.0.2",
     "react-redux": "^5.0.7",
-    "react-router": "^2.7.0",
-    "react-router-redux": "4.0.8",
+    "react-router-dom": "^4.3.1",
     "redux": "^3.0.4",
-    "redux-saga": "^0.15.3",
+    "redux-saga": "^0.16.0",
     "rimraf": "^2.4.4",
     "timeago.js": "^3.0.1"
   },
@@ -70,7 +74,7 @@
     "chai": "^3.3.0",
     "css-loader": "^0.28.2",
     "enzyme": "^3.3.0",
-    "enzyme-adapter-react-15": "^1.0.5",
+    "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "^4.18.1",
     "eslint-plugin-react": "^7.0.1",
     "extract-text-webpack-plugin": "^4.0.0-alpha.0",
@@ -79,13 +83,13 @@
     "gh-pages": "^1.0.0",
     "html": "1.0.0",
     "ignore-styles": "^5.0.1",
+    "jest": "^23.4.1",
     "jsdom": "^11.0.0",
     "kinto-node-test-server": "1.0.0",
     "mocha": "^5.0.2",
     "mocha-generators": "^2.0.0",
     "nightmare": "^3.0.0",
     "prettier": "1.13.7",
-    "react-addons-test-utils": "^15.2.0",
     "react-test-renderer": "^16.4.1",
     "react-transform-catch-errors": "^1.0.0",
     "react-transform-hmr": "^1.0.1",
@@ -98,11 +102,6 @@
     "webpack-cli": "^3.0.0",
     "webpack-dev-middleware": "^3.0.0",
     "webpack-hot-middleware": "^2.6.0"
-  },
-  "greenkeeper": {
-    "ignore": [
-      "react-router"
-    ]
   },
   "repository": {
     "type": "git",
@@ -118,6 +117,11 @@
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/kinto/kinto-admin/issues"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      ".*\\.css$": "<rootDir>/StubModule.js"
+    }
   },
   "homepage": "https://github.com/kinto/kinto-admin#readme"
 }

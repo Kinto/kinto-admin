@@ -1,6 +1,6 @@
 import React from "react";
 import { expect } from "chai";
-import { takeEvery } from "redux-saga";
+import { takeEvery } from "redux-saga/effects";
 
 import {
   flattenPluginsRoutes,
@@ -11,7 +11,6 @@ import {
 describe("Plugin API", () => {
   describe("flattenPluginsRoutes()", () => {
     const fakeContent = <div className="content" />;
-    const fakeSidebar = <div className="sidebar" />;
     const plugins = [
       {
         routes: [
@@ -32,7 +31,7 @@ describe("Plugin API", () => {
       expect(flattenPluginsRoutes(plugins)[0])
         .to.have.property("type")
         .to.have.property("displayName")
-        .eql("Route");
+        .eql("Connect(routeCreator)");
     });
 
     it("should forward the path prop", () => {
@@ -40,20 +39,6 @@ describe("Plugin API", () => {
         .property("props")
         .property("path")
         .eql("/route/1");
-    });
-
-    it("should merge plugin route components with default ones", () => {
-      const routes = flattenPluginsRoutes(plugins, { sidebar: fakeSidebar });
-      expect(routes[0])
-        .property("props")
-        .property("components")
-        .property("content")
-        .eql(fakeContent);
-      expect(routes[0])
-        .property("props")
-        .property("components")
-        .property("sidebar")
-        .eql(fakeSidebar);
     });
   });
 
@@ -77,9 +62,12 @@ describe("Plugin API", () => {
       const sagas = flattenPluginsSagas(plugins, getState);
 
       expect(sagas).to.have.length.of(3);
-      expect(sagas[0].name).eql("takeEvery(ACTION_1, saga1)");
-      expect(sagas[1].name).eql("takeEvery(ACTION_2, saga2)");
-      expect(sagas[2].name).eql("takeEvery(ACTION_3, saga3)");
+      expect(sagas[0].FORK.args[0]).eql("ACTION_1");
+      expect(sagas[0].FORK.args[1].name).eql("saga1");
+      expect(sagas[1].FORK.args[0]).eql("ACTION_2");
+      expect(sagas[1].FORK.args[1].name).eql("saga2");
+      expect(sagas[2].FORK.args[0]).eql("ACTION_3");
+      expect(sagas[2].FORK.args[1].name).eql("saga3");
     });
   });
 

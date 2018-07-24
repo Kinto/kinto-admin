@@ -158,6 +158,23 @@ $ npm start
 The application is served at [localhost:3000](http://localhost:3000/), and any
 React component update will trigger a hot reload.
 
+## Flow types
+
+To check that the flow types are correct, you first need to install
+[flow-typed](https://github.com/flow-typed/flow-typed), and all the type files
+for the local dependencies installed by npm:
+
+```
+$ npm install --global flow-typed
+$ flow-typed install
+```
+
+You can then check for type issues with:
+
+```
+$ npm run flow-check
+```
+
 ## Tests
 
 To run tests:

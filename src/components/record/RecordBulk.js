@@ -2,7 +2,7 @@
 import type {
   CollectionState,
   RecordData,
-  CollectionRouteParams,
+  CollectionRouteMatch,
 } from "../../types";
 
 import React, { PureComponent } from "react";
@@ -17,7 +17,7 @@ import {
 } from "./RecordForm";
 
 type Props = {
-  params: CollectionRouteParams,
+  match: CollectionRouteMatch,
   collection: CollectionState,
   bulkCreateRecords: (bid: string, cid: string, formData: RecordData[]) => void,
   notifyError: (msg: string, error: ?Error) => void,
@@ -25,8 +25,10 @@ type Props = {
 
 export default class RecordBulk extends PureComponent<Props> {
   onSubmit = ({ formData }: { formData: any[] }) => {
-    const { params, collection, notifyError, bulkCreateRecords } = this.props;
-    const { bid, cid } = params;
+    const { match, collection, notifyError, bulkCreateRecords } = this.props;
+    const {
+      params: { bid, cid },
+    } = match;
     const {
       data: { schema = {} },
     } = collection;
@@ -47,12 +49,14 @@ export default class RecordBulk extends PureComponent<Props> {
   };
 
   render() {
-    const { params, collection } = this.props;
+    const { match, collection } = this.props;
     const {
       busy,
       data: { schema = {}, uiSchema = {}, attachment },
     } = collection;
-    const { bid, cid } = params;
+    const {
+      params: { bid, cid },
+    } = match;
 
     let bulkSchema, bulkUiSchema, bulkFormData;
 

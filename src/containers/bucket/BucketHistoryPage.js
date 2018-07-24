@@ -4,7 +4,7 @@ import type { Dispatch, ActionCreatorOrObjectOfACs } from "redux";
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { push as updatePath } from "react-router-redux";
+import { push as updatePath } from "connected-react-router";
 
 import BucketHistory from "../../components/bucket/BucketHistory";
 import * as BucketActions from "../../actions/bucket";

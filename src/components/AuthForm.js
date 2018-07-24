@@ -399,7 +399,7 @@ export default class AuthForm extends PureComponent<
   AuthFormProps,
   AuthFormState
 > {
-  defaultProps = {
+  static defaultProps = {
     history: [],
   };
 

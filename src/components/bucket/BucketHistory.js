@@ -2,35 +2,63 @@
 import type {
   Capabilities,
   BucketState,
-  BucketRouteParams,
-  RouteLocation,
+  BucketRouteMatch,
+  HistoryFilters,
+  SessionState,
 } from "../../types";
+import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
+import { parse } from "query-string";
 
 import BucketTabs from "./BucketTabs";
 import HistoryTable from "../HistoryTable";
 
 type Props = {
-  params: BucketRouteParams,
+  match: BucketRouteMatch,
   bucket: BucketState,
   capabilities: Capabilities,
-  location: RouteLocation,
+  location: Location,
+  listBucketHistory: (bid: string, filters: HistoryFilters) => void,
   listBucketNextHistory: () => void,
   notifyError: (message: string, error: ?Error) => void,
+  session: SessionState,
+};
+
+export const onBucketHistoryEnter = (props: Props) => {
+  const { listBucketHistory, match, session, location } = props;
+  const {
+    params: { bid },
+  } = match;
+  const filters = parse(location.search);
+  if (!session.authenticated) {
+    // We're not authenticated, skip requesting the list of records. This likely
+    // occurs when users refresh the page and lose their session.
+    return;
+  }
+  listBucketHistory(bid, filters);
 };
 
 export default class BucketHistory extends PureComponent<Props> {
+  componentDidMount = () => onBucketHistoryEnter(this.props);
+  componentDidUpdate = (prevProps: Props) => {
+    if (prevProps.location !== this.props.location) {
+      onBucketHistoryEnter(this.props);
+    }
+  };
+
   render() {
     const {
-      params,
+      match,
       bucket,
       capabilities,
       location,
       listBucketNextHistory,
       notifyError,
     } = this.props;
-    const { bid } = params;
+    const {
+      params: { bid },
+    } = match;
     const {
       history: { entries, loaded, hasNextPage: hasNextHistoryPage },
     } = bucket;

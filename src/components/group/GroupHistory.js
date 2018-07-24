@@ -2,36 +2,64 @@
 import type {
   Capabilities,
   GroupState,
-  GroupRouteParams,
-  RouteLocation,
+  GroupRouteMatch,
+  SessionState,
 } from "../../types";
+import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
+import { parse } from "query-string";
 
 import HistoryTable from "../HistoryTable";
 import CollectionTabs from "./GroupTabs";
 
 type Props = {
-  params: GroupRouteParams,
+  match: GroupRouteMatch,
   group: GroupState,
   capabilities: Capabilities,
-  location: RouteLocation,
+  location: Location,
   hasNextHistory: boolean,
+  listGroupHistory: ?Function,
   listGroupNextHistory: ?Function,
   notifyError: (message: string, error: ?Error) => void,
+  location: Location,
+  session: SessionState,
+};
+
+export const onGroupHistoryEnter = (props: Props) => {
+  const { match, listGroupHistory, session, location } = props;
+  const {
+    params: { bid, gid },
+  } = match;
+  const filters = parse(location.search);
+  if (!session.authenticated) {
+    // We're not authenticated, skip requesting the list of records. This likely
+    // occurs when users refresh the page and lose their session.
+    return;
+  }
+  listGroupHistory && listGroupHistory(bid, gid, filters);
 };
 
 export default class GroupHistory extends PureComponent<Props> {
+  componentDidMount = () => onGroupHistoryEnter(this.props);
+  componentDidUpdate = (prevProps: Props) => {
+    if (prevProps.location !== this.props.location) {
+      onGroupHistoryEnter(this.props);
+    }
+  };
+
   render() {
     const {
-      params,
+      match,
       group,
       capabilities,
       location,
       listGroupNextHistory,
       notifyError,
     } = this.props;
-    const { bid, gid } = params;
+    const {
+      params: { bid, gid },
+    } = match;
     const {
       history: { entries, loaded, hasNextPage },
     } = group;

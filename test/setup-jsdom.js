@@ -4,6 +4,7 @@ var jsdom = require("jsdom");
 // @see https://github.com/facebook/react/issues/5046
 const JSDOM = new jsdom.JSDOM("<!doctype html><html><body></body></html>");
 global.window = JSDOM.window;
+global.window.scrollTo = () => {};
 global.document = window.document;
 global.navigator = global.window.navigator;
 // Fake a window.location to be a real url, and not `about:blank` which breaks
@@ -46,6 +47,6 @@ global.atob = require("atob");
 
 // Setup Enzyme for testing react
 const configure = require("enzyme").configure;
-const Adapter = require("enzyme-adapter-react-15");
+const Adapter = require("enzyme-adapter-react-16");
 
 configure({ adapter: new Adapter() });

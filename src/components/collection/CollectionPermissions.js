@@ -5,7 +5,7 @@ import type {
   BucketState,
   CollectionState,
   CollectionPermissions,
-  CollectionRouteParams,
+  CollectionRouteMatch,
 } from "../../types";
 
 import React, { PureComponent } from "react";
@@ -20,7 +20,7 @@ type Props = {
   bucket: BucketState,
   collection: CollectionState,
   capabilities: Capabilities,
-  params: CollectionRouteParams,
+  match: CollectionRouteMatch,
   updateCollection: (
     bid: string,
     cid: string,
@@ -30,8 +30,10 @@ type Props = {
 
 export default class CollectionPermissions_ extends PureComponent<Props> {
   onSubmit = ({ formData }: { formData: CollectionPermissions }) => {
-    const { params, updateCollection } = this.props;
-    const { bid, cid } = params;
+    const { match, updateCollection } = this.props;
+    const {
+      params: { bid, cid },
+    } = match;
     updateCollection(bid, cid, { permissions: formData });
   };
 
@@ -41,8 +43,10 @@ export default class CollectionPermissions_ extends PureComponent<Props> {
   }
 
   render() {
-    const { params, capabilities, collection, bucket } = this.props;
-    const { bid, cid } = params;
+    const { match, capabilities, collection, bucket } = this.props;
+    const {
+      params: { bid, cid },
+    } = match;
     const { busy, permissions } = collection;
     const { groups } = bucket;
     const acls: string[] = ["read", "write", "record:create"];

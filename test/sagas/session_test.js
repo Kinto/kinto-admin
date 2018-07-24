@@ -1,11 +1,10 @@
 import sinon from "sinon";
 import { expect } from "chai";
-import { createSandbox } from "../test_utils";
-import { push as updatePath } from "react-router-redux";
+import { createSandbox, mockNotifyError } from "../test_utils";
+import { push as updatePath } from "connected-react-router";
 import { put, call } from "redux-saga/effects";
 
 import { saveSession, clearSession } from "../../src/store/localStore";
-import { notifyError } from "../../src/actions/notifications";
 import * as actions from "../../src/actions/session";
 import * as historyActions from "../../src/actions/history";
 import * as notificationsActions from "../../src/actions/notifications";
@@ -24,6 +23,16 @@ const authData = {
 };
 
 describe("session sagas", () => {
+  let sandbox;
+
+  beforeAll(() => {
+    sandbox = createSandbox();
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+  });
+
   describe("serverChange()", () => {
     let serverChange, getState;
 
@@ -37,7 +46,7 @@ describe("session sagas", () => {
 
     const sessionState = { serverInfo };
 
-    before(() => {
+    beforeAll(() => {
       getState = () => ({
         session: sessionState,
       });
@@ -57,7 +66,7 @@ describe("session sagas", () => {
   });
 
   describe("getServerInfo()", () => {
-    let getServerInfo, getState, action, client, sandbox;
+    let getServerInfo, getState, action, client;
 
     const serverInfo = {
       ...DEFAULT_SERVERINFO,
@@ -69,18 +78,13 @@ describe("session sagas", () => {
 
     const sessionState = { serverInfo };
 
-    before(() => {
-      sandbox = createSandbox();
+    beforeAll(() => {
       resetClient();
       getState = () => ({
         session: sessionState,
       });
       action = actions.getServerInfo(authData);
       getServerInfo = saga.getServerInfo(getState, action);
-    });
-
-    afterEach(() => {
-      sandbox.restore();
     });
 
     describe("Success", () => {
@@ -137,9 +141,9 @@ describe("session sagas", () => {
       });
 
       it("should notify the error", () => {
-        expect(getServerInfo.next().value).eql(
-          put(notifyError("Could not reach server"))
-        );
+        const mocked = mockNotifyError(sandbox);
+        getServerInfo.next();
+        sinon.assert.calledWith(mocked, "Could not reach server");
       });
     });
 
@@ -196,7 +200,7 @@ describe("session sagas", () => {
 
     const sessionState = { serverInfo };
 
-    before(() => {
+    beforeAll(() => {
       resetClient();
       getState = () => ({
         session: sessionState,
@@ -272,50 +276,47 @@ describe("session sagas", () => {
         });
         setupSession = saga.setupSession(getState, action);
         setupSession.next(); // call getServerInfo.
-        expect(setupSession.next().value).eql(
-          put(
-            notifyError("Authentication failed.", {
-              message: "Could not authenticate with Basic Auth",
-            })
-          )
-        );
+        const mocked = mockNotifyError(sandbox);
+        setupSession.next();
+        sinon.assert.calledWith(mocked, "Authentication failed.", {
+          message: "Could not authenticate with Basic Auth",
+        });
       });
     });
   });
 
   describe("listBuckets()", () => {
     const settingsState = { sidebarMaxListedCollections: 2 };
+    let client, listBuckets;
+
+    const serverInfo = {
+      url: "http://server.test/v1",
+      user: {
+        bucket: "defaultBucketId",
+      },
+      capabilities: {
+        permissions_endpoint: {},
+      },
+    };
+
+    const sessionState = { serverInfo };
+
+    beforeAll(() => {
+      client = setClient({
+        batch() {},
+        fetchServerInfo() {},
+        listBuckets() {},
+        listPermissions() {},
+      });
+      const getState = () => ({
+        session: sessionState,
+        settings: settingsState,
+      });
+      const action = actions.listBuckets();
+      listBuckets = saga.listBuckets(getState, action);
+    });
 
     describe("Success", () => {
-      let client, listBuckets;
-
-      const serverInfo = {
-        url: "http://server.test/v1",
-        user: {
-          bucket: "defaultBucketId",
-        },
-        capabilities: {
-          permissions_endpoint: {},
-        },
-      };
-
-      const sessionState = { serverInfo };
-
-      before(() => {
-        client = setClient({
-          batch() {},
-          fetchServerInfo() {},
-          listBuckets() {},
-          listPermissions() {},
-        });
-        const getState = () => ({
-          session: sessionState,
-          settings: settingsState,
-        });
-        const action = actions.listBuckets();
-        listBuckets = saga.listBuckets(getState, action);
-      });
-
       it("should fetch the list of buckets", () => {
         expect(listBuckets.next().value).eql(
           call([client, client.listBuckets])
@@ -459,9 +460,9 @@ describe("session sagas", () => {
 
         const listBuckets = saga.listBuckets(getState, action);
         listBuckets.next();
-        expect(listBuckets.throw("error").value).eql(
-          put(notifyError("Couldn't list buckets.", "error"))
-        );
+        const mocked = mockNotifyError(sandbox);
+        listBuckets.throw("error");
+        sinon.assert.calledWith(mocked, "Couldn't list buckets.", "error");
       });
     });
   });
@@ -469,10 +470,13 @@ describe("session sagas", () => {
   describe("sessionLogout()", () => {
     let sessionLogout;
 
-    before(() => {
+    beforeAll(() => {
       setClient({ fake: true });
       const action = actions.logout();
-      sessionLogout = saga.sessionLogout(() => {}, action);
+      sessionLogout = saga.sessionLogout(
+        () => ({ router: { location: { pathname: "/not/home" } } }),
+        action
+      );
     });
 
     it("should redirect to the homepage", () => {

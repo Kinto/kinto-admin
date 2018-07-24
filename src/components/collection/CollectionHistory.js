@@ -4,11 +4,13 @@ import type {
   SessionState,
   BucketState,
   CollectionState,
-  CollectionRouteParams,
-  RouteLocation,
+  CollectionRouteMatch,
+  HistoryFilters,
 } from "../../types";
+import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
+import { parse } from "query-string";
 
 import HistoryTable from "../HistoryTable";
 import CollectionTabs from "./CollectionTabs";
@@ -18,23 +20,51 @@ type Props = {
   bucket: BucketState,
   collection: CollectionState,
   capabilities: Capabilities,
-  params: CollectionRouteParams,
-  location: RouteLocation,
+  match: CollectionRouteMatch,
+  location: Location,
+  listCollectionHistory: (
+    bid: string,
+    cid: string,
+    filters: HistoryFilters
+  ) => void,
   listCollectionNextHistory: () => void,
   notifyError: (message: string, error: ?Error) => void,
 };
 
+export const onCollectionHistoryEnter = (props: Props) => {
+  const { listCollectionHistory, match, session, location } = props;
+  const {
+    params: { bid, cid },
+  } = match;
+  const filters = parse(location.search);
+  if (!session.authenticated) {
+    // We're not authenticated, skip requesting the list of records. This likely
+    // occurs when users refresh the page and lose their session.
+    return;
+  }
+  listCollectionHistory(bid, cid, filters);
+};
+
 export default class CollectionHistory extends PureComponent<Props> {
+  componentDidMount = () => onCollectionHistoryEnter(this.props);
+  componentDidUpdate = (prevProps: Props) => {
+    if (prevProps.location !== this.props.location) {
+      onCollectionHistoryEnter(this.props);
+    }
+  };
+
   render() {
     const {
-      params,
+      match,
       collection,
       capabilities,
       location,
       listCollectionNextHistory,
       notifyError,
     } = this.props;
-    const { bid, cid } = params;
+    const {
+      params: { bid, cid },
+    } = match;
     const {
       history: { entries, loaded, hasNextPage },
     } = collection;

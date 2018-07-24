@@ -3,8 +3,9 @@ import type {
   Capabilities,
   BucketState,
   SessionState,
-  BucketRouteParams,
+  BucketRouteMatch,
 } from "../../types";
+import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
 
@@ -107,23 +108,45 @@ function ListActions(props) {
 }
 
 type Props = {
-  params: BucketRouteParams,
+  match: BucketRouteMatch,
   session: SessionState,
   bucket: BucketState,
   capabilities: Capabilities,
+  listBucketCollections: string => void,
   listBucketNextCollections: () => void,
+  location: Location,
 };
 
 export default class BucketCollections extends PureComponent<Props> {
+  onBucketPageEnter() {
+    const { listBucketCollections, match, session } = this.props;
+    const { params } = match;
+    if (!session.authenticated) {
+      // We're not authenticated, skip requesting the list of records. This likely
+      // occurs when users refresh the page and lose their session.
+      return;
+    }
+    listBucketCollections(params.bid);
+  }
+
+  componentDidMount = this.onBucketPageEnter;
+  componentDidUpdate = (prevProps: Props) => {
+    if (prevProps.location !== this.props.location) {
+      this.onBucketPageEnter();
+    }
+  };
+
   render() {
     const {
-      params,
+      match,
       session,
       bucket,
       capabilities,
       listBucketNextCollections,
     } = this.props;
-    const { bid } = params;
+    const {
+      params: { bid },
+    } = match;
     const { collections } = bucket;
 
     const listActions = (

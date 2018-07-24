@@ -1,7 +1,10 @@
+import sinon from "sinon";
 import { expect } from "chai";
 import { put, call } from "redux-saga/effects";
 
-import { notifyError, notifySuccess } from "../../src/actions/notifications";
+import { createSandbox, mockNotifyError } from "../test_utils";
+
+import { notifySuccess } from "../../src/actions/notifications";
 import * as sessionActions from "../../src/actions/session";
 import { redirectTo } from "../../src/actions/route";
 import * as actions from "../../src/actions/bucket";
@@ -27,11 +30,21 @@ describe("bucket sagas", () => {
     maxPerPage: 42,
   };
 
+  let sandbox;
+
+  beforeAll(() => {
+    sandbox = createSandbox();
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+  });
+
   describe("createBucket()", () => {
     describe("Success", () => {
       let client, createBucket;
 
-      before(() => {
+      beforeAll(() => {
         client = setClient({ createBucket() {} });
         const action = actions.createBucket("bucket", { a: 1 });
         createBucket = saga.createBucket(() => {}, action);
@@ -80,7 +93,7 @@ describe("bucket sagas", () => {
     describe("Failure", () => {
       let createBucket;
 
-      before(() => {
+      beforeAll(() => {
         const action = actions.createBucket("bucket");
         createBucket = saga.createBucket(() => {}, action);
         createBucket.next();
@@ -88,9 +101,9 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        expect(createBucket.throw("error").value).eql(
-          put(notifyError("Couldn't create bucket.", "error", { clear: true }))
-        );
+        const mocked = mockNotifyError(sandbox);
+        createBucket.throw("error");
+        sinon.assert.calledWith(mocked, "Couldn't create bucket.", "error");
       });
 
       it("should unmark the current session as busy", () => {
@@ -106,7 +119,7 @@ describe("bucket sagas", () => {
       describe("Success", () => {
         let bucket, updateBucket;
 
-        before(() => {
+        beforeAll(() => {
           bucket = { setData() {} };
           setClient({
             bucket() {
@@ -162,7 +175,7 @@ describe("bucket sagas", () => {
       describe("Failure", () => {
         let updateBucket;
 
-        before(() => {
+        beforeAll(() => {
           const action = actions.updateBucket("bucket", { data: {} });
           updateBucket = saga.updateBucket(
             () => ({
@@ -175,11 +188,9 @@ describe("bucket sagas", () => {
         });
 
         it("should dispatch an error notification action", () => {
-          expect(updateBucket.throw("error").value).eql(
-            put(
-              notifyError("Couldn't update bucket.", "error", { clear: true })
-            )
-          );
+          const mocked = mockNotifyError(sandbox);
+          updateBucket.throw("error");
+          sinon.assert.calledWith(mocked, "Couldn't update bucket.", "error");
         });
 
         it("should unmark the current session as busy", () => {
@@ -194,7 +205,7 @@ describe("bucket sagas", () => {
       describe("Success", () => {
         let bucket, updateBucket;
 
-        before(() => {
+        beforeAll(() => {
           bucket = { setPermissions() {} };
           setClient({
             bucket() {
@@ -253,7 +264,7 @@ describe("bucket sagas", () => {
       describe("Failure", () => {
         let updateBucket;
 
-        before(() => {
+        beforeAll(() => {
           const action = actions.updateBucket("bucket", { permissions: {} });
           updateBucket = saga.updateBucket(
             () => ({
@@ -266,11 +277,9 @@ describe("bucket sagas", () => {
         });
 
         it("should dispatch an error notification action", () => {
-          expect(updateBucket.throw("error").value).eql(
-            put(
-              notifyError("Couldn't update bucket.", "error", { clear: true })
-            )
-          );
+          const mocked = mockNotifyError(sandbox);
+          updateBucket.throw("error");
+          sinon.assert.calledWith(mocked, "Couldn't update bucket.", "error");
         });
 
         it("should unmark the current session as busy", () => {
@@ -286,7 +295,7 @@ describe("bucket sagas", () => {
     describe("Success", () => {
       let client, deleteBucket;
 
-      before(() => {
+      beforeAll(() => {
         client = setClient({ deleteBucket() {} });
         const action = actions.deleteBucket("bucket");
         deleteBucket = saga.deleteBucket(
@@ -338,7 +347,7 @@ describe("bucket sagas", () => {
     describe("Failure", () => {
       let deleteBucket;
 
-      before(() => {
+      beforeAll(() => {
         const action = actions.deleteBucket("bucket");
         deleteBucket = saga.deleteBucket(
           () => ({
@@ -350,9 +359,9 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        expect(deleteBucket.throw("error").value).eql(
-          put(notifyError("Couldn't delete bucket.", "error", { clear: true }))
-        );
+        const mocked = mockNotifyError(sandbox);
+        deleteBucket.throw("error");
+        sinon.assert.calledWith(mocked, "Couldn't delete bucket.", "error");
       });
 
       it("should unmark the current collection as busy", () => {
@@ -367,7 +376,7 @@ describe("bucket sagas", () => {
     describe("Success", () => {
       let bucket, createCollection;
 
-      before(() => {
+      beforeAll(() => {
         bucket = { createCollection() {} };
         setClient({
           bucket() {
@@ -417,7 +426,7 @@ describe("bucket sagas", () => {
     describe("Failure", () => {
       let createCollection;
 
-      before(() => {
+      beforeAll(() => {
         const bucket = { createCollection() {} };
         setClient({
           bucket() {
@@ -433,11 +442,9 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        expect(createCollection.throw("error").value).eql(
-          put(
-            notifyError("Couldn't create collection.", "error", { clear: true })
-          )
-        );
+        const mocked = mockNotifyError(sandbox);
+        createCollection.throw("error");
+        sinon.assert.calledWith(mocked, "Couldn't create collection.", "error");
       });
     });
   });
@@ -447,7 +454,7 @@ describe("bucket sagas", () => {
       describe("Success", () => {
         let bucket, collection, updateCollection;
 
-        before(() => {
+        beforeAll(() => {
           collection = { setData() {} };
           bucket = {
             collection() {
@@ -514,12 +521,12 @@ describe("bucket sagas", () => {
           );
           updateCollection.next();
 
-          expect(updateCollection.throw("error").value).eql(
-            put(
-              notifyError("Couldn't update collection.", "error", {
-                clear: true,
-              })
-            )
+          const mocked = mockNotifyError(sandbox);
+          updateCollection.throw("error");
+          sinon.assert.calledWith(
+            mocked,
+            "Couldn't update collection.",
+            "error"
           );
         });
       });
@@ -529,7 +536,7 @@ describe("bucket sagas", () => {
       describe("Success", () => {
         let bucket, collection, updateCollection;
 
-        before(() => {
+        beforeAll(() => {
           collection = { setPermissions() {} };
           bucket = {
             collection() {
@@ -586,7 +593,7 @@ describe("bucket sagas", () => {
       describe("Failure", () => {
         let updateCollection;
 
-        before(() => {
+        beforeAll(() => {
           const action = actions.updateCollection("bucket", "collection", {
             permissions: {},
           });
@@ -601,12 +608,12 @@ describe("bucket sagas", () => {
         });
 
         it("should dispatch an error notification action", () => {
-          expect(updateCollection.throw("error").value).eql(
-            put(
-              notifyError("Couldn't update collection.", "error", {
-                clear: true,
-              })
-            )
+          const mocked = mockNotifyError(sandbox);
+          updateCollection.throw("error");
+          sinon.assert.calledWith(
+            mocked,
+            "Couldn't update collection.",
+            "error"
           );
         });
       });
@@ -617,7 +624,7 @@ describe("bucket sagas", () => {
     describe("Success", () => {
       let bucket, deleteCollection;
 
-      before(() => {
+      beforeAll(() => {
         bucket = { deleteCollection() {} };
         setClient({
           bucket() {
@@ -664,7 +671,7 @@ describe("bucket sagas", () => {
     describe("Failure", () => {
       let deleteCollection;
 
-      before(() => {
+      beforeAll(() => {
         const action = actions.deleteCollection("bucket", "collection");
         deleteCollection = saga.deleteCollection(
           () => ({
@@ -676,11 +683,9 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        expect(deleteCollection.throw("error").value).eql(
-          put(
-            notifyError("Couldn't delete collection.", "error", { clear: true })
-          )
-        );
+        const mocked = mockNotifyError(sandbox);
+        deleteCollection.throw("error");
+        sinon.assert.calledWith(mocked, "Couldn't delete collection.", "error");
       });
     });
   });
@@ -689,7 +694,7 @@ describe("bucket sagas", () => {
     describe("Success", () => {
       let bucket, listBucketCollections;
 
-      before(() => {
+      beforeAll(() => {
         bucket = { listCollections() {} };
         setClient({
           bucket() {
@@ -722,7 +727,7 @@ describe("bucket sagas", () => {
     describe("Failure", () => {
       let listBucketCollections;
 
-      before(() => {
+      beforeAll(() => {
         const action = actions.listBucketCollections("bucket");
         listBucketCollections = saga.listBucketCollections(
           () => ({ settings }),
@@ -732,12 +737,12 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        expect(listBucketCollections.throw("error").value).eql(
-          put(
-            notifyError("Couldn't list bucket collections.", "error", {
-              clear: true,
-            })
-          )
+        const mocked = mockNotifyError(sandbox);
+        listBucketCollections.throw("error");
+        sinon.assert.calledWith(
+          mocked,
+          "Couldn't list bucket collections.",
+          "error"
         );
       });
     });
@@ -747,7 +752,7 @@ describe("bucket sagas", () => {
     describe("Success", () => {
       let bucket, listHistory;
 
-      before(() => {
+      beforeAll(() => {
         bucket = { listHistory() {} };
         setClient({
           bucket() {
@@ -816,19 +821,19 @@ describe("bucket sagas", () => {
     describe("Failure", () => {
       let listHistory;
 
-      before(() => {
+      beforeAll(() => {
         const action = actions.listBucketHistory("bucket");
         listHistory = saga.listHistory(() => ({ settings }), action);
         listHistory.next();
       });
 
       it("should dispatch an error notification action", () => {
-        expect(listHistory.throw("error").value).eql(
-          put(
-            notifyError("Couldn't list bucket history.", "error", {
-              clear: true,
-            })
-          )
+        const mocked = mockNotifyError(sandbox);
+        listHistory.throw("error");
+        sinon.assert.calledWith(
+          mocked,
+          "Couldn't list bucket history.",
+          "error"
         );
       });
     });
@@ -839,7 +844,7 @@ describe("bucket sagas", () => {
 
     const fakeNext = () => {};
 
-    before(() => {
+    beforeAll(() => {
       const action = actions.listBucketNextHistory();
       const getState = () => ({ bucket: { history: { next: fakeNext } } });
       listNextHistory = saga.listNextHistory(getState, action);
@@ -868,7 +873,7 @@ describe("bucket sagas", () => {
     describe("Success", () => {
       let bucket, createGroup;
 
-      before(() => {
+      beforeAll(() => {
         bucket = { createGroup() {} };
         setClient({
           bucket() {
@@ -909,7 +914,7 @@ describe("bucket sagas", () => {
     describe("Failure", () => {
       let createGroup;
 
-      before(() => {
+      beforeAll(() => {
         const bucket = { createGroup() {} };
         setClient({
           bucket() {
@@ -925,9 +930,9 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        expect(createGroup.throw("error").value).eql(
-          put(notifyError("Couldn't create group.", "error", { clear: true }))
-        );
+        const mocked = mockNotifyError(sandbox);
+        createGroup.throw("error");
+        sinon.assert.calledWith(mocked, "Couldn't create group.", "error");
       });
     });
   });
@@ -937,7 +942,7 @@ describe("bucket sagas", () => {
       describe("Success", () => {
         let bucket, updateGroup;
 
-        before(() => {
+        beforeAll(() => {
           bucket = { updateGroup() {} };
           setClient({
             bucket() {
@@ -999,9 +1004,9 @@ describe("bucket sagas", () => {
           );
           updateGroup.next();
 
-          expect(updateGroup.throw("error").value).eql(
-            put(notifyError("Couldn't update group.", "error", { clear: true }))
-          );
+          const mocked = mockNotifyError(sandbox);
+          updateGroup.throw("error");
+          sinon.assert.calledWith(mocked, "Couldn't update group.", "error");
         });
       });
     });
@@ -1011,7 +1016,7 @@ describe("bucket sagas", () => {
         let bucket, updateGroup;
         const loadedGroup = { last_modified: 42 };
 
-        before(() => {
+        beforeAll(() => {
           bucket = { updateGroup() {} };
           setClient({
             bucket() {
@@ -1060,7 +1065,7 @@ describe("bucket sagas", () => {
       describe("Failure", () => {
         let updateGroup;
 
-        before(() => {
+        beforeAll(() => {
           const action = actions.updateGroup("bucket", "group", {
             permissions: {},
           });
@@ -1075,9 +1080,9 @@ describe("bucket sagas", () => {
         });
 
         it("should dispatch an error notification action", () => {
-          expect(updateGroup.throw("error").value).eql(
-            put(notifyError("Couldn't update group.", "error", { clear: true }))
-          );
+          const mocked = mockNotifyError(sandbox);
+          updateGroup.throw("error");
+          sinon.assert.calledWith(mocked, "Couldn't update group.", "error");
         });
       });
     });
@@ -1087,7 +1092,7 @@ describe("bucket sagas", () => {
     describe("Success", () => {
       let bucket, deleteGroup;
 
-      before(() => {
+      beforeAll(() => {
         bucket = { deleteGroup() {} };
         setClient({
           bucket() {
@@ -1128,7 +1133,7 @@ describe("bucket sagas", () => {
     describe("Failure", () => {
       let deleteGroup;
 
-      before(() => {
+      beforeAll(() => {
         const action = actions.deleteGroup("bucket", "group");
         deleteGroup = saga.deleteGroup(
           () => ({
@@ -1140,9 +1145,9 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        expect(deleteGroup.throw("error").value).eql(
-          put(notifyError("Couldn't delete group.", "error", { clear: true }))
-        );
+        const mocked = mockNotifyError(sandbox);
+        deleteGroup.throw("error");
+        sinon.assert.calledWith(mocked, "Couldn't delete group.", "error");
       });
     });
   });

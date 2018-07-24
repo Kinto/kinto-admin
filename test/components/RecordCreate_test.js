@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import sinon from "sinon";
-import { Simulate } from "react-addons-test-utils";
+import { Simulate } from "react-dom/test-utils";
 
 import { createSandbox, createComponent } from "../test_utils";
 
@@ -48,7 +48,7 @@ describe("RecordCreate component", () => {
     beforeEach(() => {
       createRecord = sinon.spy();
       node = createComponent(RecordCreate, {
-        params: { bid: "bucket", cid: "collection" },
+        match: { params: { bid: "bucket", cid: "collection" } },
         session: { authenticated: true, serverInfo: { user: "plop" } },
         bucket,
         collection,

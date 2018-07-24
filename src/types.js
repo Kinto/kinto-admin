@@ -7,7 +7,7 @@ export type $ReturnType<F> = _$ReturnType<*, F>;
 export type ActionType<T> = $ReturnType<T>;
 
 export type AppState = {
-  routing: Object,
+  router: Object,
   session: SessionState,
   bucket: BucketState,
   collection: CollectionState,
@@ -229,12 +229,15 @@ export type ResourceHistoryEntry = {
 
 export type EmptyRouteParams = {};
 
-export type BucketRouteParams = {
-  bid: string,
+export type BucketRouteMatch = {
+  params: { bid: string },
+  isExact: boolean,
+  path: string,
+  url: string,
 };
 
 export type BucketRoute = {
-  params: BucketRouteParams,
+  match: BucketRouteMatch,
 };
 
 export type CollectionRouteParams = {
@@ -242,27 +245,44 @@ export type CollectionRouteParams = {
   cid: string,
 };
 
-export type CollectionRoute = {
+export type CollectionRouteMatch = {
   params: CollectionRouteParams,
+  isExact: boolean,
+  path: string,
+  url: string,
 };
 
-export type GroupRouteParams = {
-  bid: string,
-  gid: string,
+export type CollectionRoute = {
+  params: CollectionRouteMatch,
+};
+
+export type GroupRouteMatch = {
+  params: {
+    bid: string,
+    gid: string,
+  },
+  isExact: boolean,
+  path: string,
+  url: string,
 };
 
 export type GroupRoute = {
-  params: GroupRouteParams,
+  params: GroupRouteMatch,
 };
 
-export type RecordRouteParams = {
-  bid: string,
-  cid: string,
-  rid: string,
+export type RecordRouteMatch = {
+  params: {
+    bid: string,
+    cid: string,
+    rid: string,
+  },
+  isExact: boolean,
+  path: string,
+  url: string,
 };
 
 export type RecordRoute = {
-  params: RecordRouteParams,
+  params: RecordRouteMatch,
 };
 
 export type RouteParams = {

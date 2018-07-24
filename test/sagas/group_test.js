@@ -1,7 +1,9 @@
+import sinon from "sinon";
 import { expect } from "chai";
 import { put, call } from "redux-saga/effects";
 
-import { notifyError } from "../../src/actions/notifications";
+import { createSandbox, mockNotifyError } from "../test_utils";
+
 import * as actions from "../../src/actions/group";
 import * as saga from "../../src/sagas/group";
 import { setClient } from "../../src/client";
@@ -12,11 +14,21 @@ describe("group sagas", () => {
     maxPerPage: 42,
   };
 
+  let sandbox;
+
+  beforeAll(() => {
+    sandbox = createSandbox();
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+  });
+
   describe("listHistory()", () => {
     describe("Success", () => {
       let client, listHistory;
 
-      before(() => {
+      beforeAll(() => {
         client = { listHistory() {} };
         setClient({
           bucket() {
@@ -67,19 +79,19 @@ describe("group sagas", () => {
     describe("Failure", () => {
       let listHistory;
 
-      before(() => {
+      beforeAll(() => {
         const action = actions.listGroupHistory("bucket", "group");
         listHistory = saga.listHistory(() => ({ settings }), action);
         listHistory.next();
       });
 
       it("should dispatch an error notification action", () => {
-        expect(listHistory.throw("error").value).eql(
-          put(
-            notifyError("Couldn't list group history.", "error", {
-              clear: true,
-            })
-          )
+        const mocked = mockNotifyError(sandbox);
+        listHistory.throw("error");
+        sinon.assert.calledWith(
+          mocked,
+          "Couldn't list group history.",
+          "error"
         );
       });
     });
@@ -90,7 +102,7 @@ describe("group sagas", () => {
 
     const fakeNext = () => {};
 
-    before(() => {
+    beforeAll(() => {
       const action = actions.listGroupNextHistory();
       const getState = () => ({ group: { history: { next: fakeNext } } });
       listNextHistory = saga.listNextHistory(getState, action);

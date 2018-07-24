@@ -7,7 +7,7 @@ import type {
 } from "../../types";
 
 import React, { PureComponent } from "react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 import BaseForm from "../BaseForm";
 import JSONCollectionForm from "./JSONCollectionForm";

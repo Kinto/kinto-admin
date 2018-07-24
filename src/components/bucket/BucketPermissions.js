@@ -4,7 +4,7 @@ import type {
   BucketState,
   BucketPermissions,
   SessionState,
-  BucketRouteParams,
+  BucketRouteMatch,
 } from "../../types";
 
 import React, { PureComponent } from "react";
@@ -15,7 +15,7 @@ import PermissionsForm from "../PermissionsForm";
 import { canEditBucket } from "../../permission";
 
 type Props = {
-  params: BucketRouteParams,
+  match: BucketRouteMatch,
   session: SessionState,
   bucket: BucketState,
   capabilities: Capabilities,
@@ -24,8 +24,10 @@ type Props = {
 
 export default class BucketPermissions_ extends PureComponent<Props> {
   onSubmit = ({ formData }: { formData: BucketPermissions }) => {
-    const { params, updateBucket } = this.props;
-    const { bid } = params;
+    const { match, updateBucket } = this.props;
+    const {
+      params: { bid },
+    } = match;
     updateBucket(bid, { permissions: formData });
   };
 
@@ -35,8 +37,10 @@ export default class BucketPermissions_ extends PureComponent<Props> {
   }
 
   render() {
-    const { params, capabilities, bucket } = this.props;
-    const { bid } = params;
+    const { match, capabilities, bucket } = this.props;
+    const {
+      params: { bid },
+    } = match;
     const { busy, permissions, groups } = bucket;
     const acls = ["read", "write", "collection:create", "group:create"];
     if (busy) {

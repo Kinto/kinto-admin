@@ -6,7 +6,7 @@ import type {
   CollectionState,
   RecordState,
   RecordData,
-  RecordRouteParams,
+  RecordRouteMatch,
 } from "../../types";
 
 import React, { PureComponent } from "react";
@@ -15,7 +15,7 @@ import RecordForm from "./RecordForm";
 import RecordTabs from "./RecordTabs";
 
 type Props = {
-  params: RecordRouteParams,
+  match: RecordRouteMatch,
   session: SessionState,
   capabilities: Capabilities,
   bucket: BucketState,
@@ -34,14 +34,16 @@ type Props = {
 
 export default class RecordAttributes extends PureComponent<Props> {
   onSubmit = ({ __attachment__: attachment, ...record }: Object) => {
-    const { params, updateRecord } = this.props;
-    const { bid, cid, rid } = params;
+    const { match, updateRecord } = this.props;
+    const {
+      params: { bid, cid, rid },
+    } = match;
     updateRecord(bid, cid, rid, { data: record }, attachment);
   };
 
   render() {
     const {
-      params,
+      match,
       session,
       capabilities,
       bucket,
@@ -50,7 +52,9 @@ export default class RecordAttributes extends PureComponent<Props> {
       deleteRecord,
       deleteAttachment,
     } = this.props;
-    const { bid, cid, rid } = params;
+    const {
+      params: { bid, cid, rid },
+    } = match;
 
     return (
       <div>

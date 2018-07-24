@@ -1,5 +1,6 @@
 /* @flow */
 import type {
+  CollectionRouteMatch,
   CollectionRouteParams,
   SessionState,
   BucketState,
@@ -7,6 +8,7 @@ import type {
   Capabilities,
   RecordData,
 } from "../../types";
+import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
 
@@ -319,12 +321,13 @@ function ListActions(props) {
 
 type Props = CommonProps & {
   pluginHooks: Object,
-  params: CollectionRouteParams,
+  match: CollectionRouteMatch,
   session: SessionState,
   bucket: BucketState,
   collection: CollectionState,
   listRecords: (bid: string, cid: string, sort: ?string) => void,
   listNextRecords: () => void,
+  location: Location,
 };
 
 export default class CollectionRecords extends PureComponent<Props> {
@@ -333,14 +336,37 @@ export default class CollectionRecords extends PureComponent<Props> {
   static displayName = "CollectionRecords";
 
   updateSort = (sort: string) => {
-    const { params, listRecords } = this.props;
-    const { bid, cid } = params;
+    const { match, listRecords } = this.props;
+    const {
+      params: { bid, cid },
+    } = match;
     listRecords(bid, cid, sort);
+  };
+
+  onCollectionRecordsEnter = () => {
+    const { collection, listRecords, match, session } = this.props;
+    const {
+      params: { bid, cid },
+    } = match;
+    if (!session.authenticated) {
+      // We're not authenticated, skip requesting the list of records. This likely
+      // occurs when users refresh the page and lose their session.
+      return;
+    }
+    const { currentSort } = collection;
+    listRecords(bid, cid, currentSort);
+  };
+
+  componentDidMount = this.onCollectionRecordsEnter;
+  componentDidUpdate = (prevProps: Props) => {
+    if (prevProps.location !== this.props.location) {
+      this.onCollectionRecordsEnter();
+    }
   };
 
   render() {
     const {
-      params,
+      match,
       session,
       bucket,
       collection,
@@ -350,7 +376,9 @@ export default class CollectionRecords extends PureComponent<Props> {
       pluginHooks,
       capabilities,
     } = this.props;
-    const { bid, cid } = params;
+    const {
+      params: { bid, cid },
+    } = match;
     const {
       busy,
       data,

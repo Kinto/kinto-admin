@@ -3,7 +3,7 @@ import type {
   Capabilities,
   BucketState,
   SessionState,
-  BucketRouteParams,
+  BucketRouteMatch,
 } from "../../types";
 
 import React, { PureComponent } from "react";
@@ -86,7 +86,7 @@ function ListActions({ bid, session, bucket }) {
 }
 
 type Props = {
-  params: BucketRouteParams,
+  match: BucketRouteMatch,
   session: SessionState,
   bucket: BucketState,
   capabilities: Capabilities,
@@ -94,8 +94,10 @@ type Props = {
 
 export default class BucketCollections extends PureComponent<Props> {
   render() {
-    const { params, session, bucket, capabilities } = this.props;
-    const { bid } = params;
+    const { match, session, bucket, capabilities } = this.props;
+    const {
+      params: { bid },
+    } = match;
     const { groups } = bucket;
 
     const listActions = (

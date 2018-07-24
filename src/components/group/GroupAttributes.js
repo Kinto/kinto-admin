@@ -5,7 +5,7 @@ import type {
   BucketState,
   GroupState,
   GroupData,
-  GroupRouteParams,
+  GroupRouteMatch,
 } from "../../types";
 
 import React, { PureComponent } from "react";
@@ -15,7 +15,7 @@ import GroupForm from "./GroupForm";
 import GroupTabs from "./GroupTabs";
 
 type Props = {
-  params: GroupRouteParams,
+  match: GroupRouteMatch,
   session: SessionState,
   bucket: BucketState,
   group: GroupState,
@@ -26,22 +26,28 @@ type Props = {
 
 export default class GroupAttributes extends PureComponent<Props> {
   onSubmit = (formData: GroupData) => {
-    const { params, updateGroup } = this.props;
-    const { bid, gid } = params;
+    const { match, updateGroup } = this.props;
+    const {
+      params: { bid, gid },
+    } = match;
     updateGroup(bid, gid, { data: formData });
   };
 
   deleteGroup = (gid: string) => {
-    const { deleteGroup, params } = this.props;
-    const { bid } = params;
+    const { deleteGroup, match } = this.props;
+    const {
+      params: { bid },
+    } = match;
     if (confirm("This will delete the group. Are you sure?")) {
       deleteGroup(bid, gid);
     }
   };
 
   render() {
-    const { params, session, bucket, group, capabilities } = this.props;
-    const { bid, gid } = params;
+    const { match, session, bucket, group, capabilities } = this.props;
+    const {
+      params: { bid, gid },
+    } = match;
     const { busy, data: formData } = group;
     if (busy) {
       return <Spinner />;

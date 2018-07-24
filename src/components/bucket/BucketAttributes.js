@@ -4,7 +4,7 @@ import type {
   BucketState,
   BucketData,
   SessionState,
-  BucketRouteParams,
+  BucketRouteMatch,
 } from "../../types";
 
 import React, { PureComponent } from "react";
@@ -14,7 +14,7 @@ import BucketForm from "./BucketForm";
 import BucketTabs from "./BucketTabs";
 
 type Props = {
-  params: BucketRouteParams,
+  match: BucketRouteMatch,
   session: SessionState,
   bucket: BucketState,
   capabilities: Capabilities,
@@ -35,14 +35,18 @@ export default class BucketAttributes extends PureComponent<Props> {
   };
 
   onSubmit = (formData: BucketData) => {
-    const { params, updateBucket } = this.props;
-    const { bid } = params;
+    const { match, updateBucket } = this.props;
+    const {
+      params: { bid },
+    } = match;
     updateBucket(bid, { data: formData });
   };
 
   render() {
-    const { params, session, capabilities, bucket } = this.props;
-    const { bid } = params;
+    const { match, session, capabilities, bucket } = this.props;
+    const {
+      params: { bid },
+    } = match;
     const { busy, data: formData } = bucket;
     if (busy) {
       return <Spinner />;

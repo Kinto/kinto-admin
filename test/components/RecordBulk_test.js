@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import sinon from "sinon";
-import { Simulate } from "react-addons-test-utils";
+import { Simulate } from "react-dom/test-utils";
 
 import { createSandbox, createComponent } from "../test_utils";
 
@@ -35,7 +35,7 @@ describe("RecordBulk component", () => {
     beforeEach(() => {
       bulkCreateRecords = sinon.spy();
       node = createComponent(RecordBulk, {
-        params: { bid: "bucket", cid: "collection" },
+        match: { params: { bid: "bucket", cid: "collection" } },
         collection,
         bulkCreateRecords,
       });

@@ -16,7 +16,6 @@ export function* onCollectionRecordsRequest(getState, action) {
 
   // Current collection is not configured, no need to proceed.
   if (!resource) {
-    console.log("Current collection is not signed");
     yield put(SignoffActions.workflowInfo(null));
     return;
   }

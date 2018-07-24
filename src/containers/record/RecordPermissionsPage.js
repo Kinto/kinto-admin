@@ -4,7 +4,7 @@ import type { Dispatch, ActionCreatorOrObjectOfACs } from "redux";
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { push as updatePath } from "react-router-redux";
+import { push as updatePath } from "connected-react-router";
 
 import RecordPermissions from "../../components/record/RecordPermissions";
 import * as CollectionActions from "../../actions/collection";

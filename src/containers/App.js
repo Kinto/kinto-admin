@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 
 import App from "../components/App";
 import * as SessionActions from "../actions/session";
+import * as RouteActions from "../actions/route";
 
 function mapStateToProps(state: AppState) {
   return {
@@ -16,7 +17,13 @@ function mapStateToProps(state: AppState) {
 }
 
 function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
-  return bindActionCreators(SessionActions, dispatch);
+  return bindActionCreators(
+    {
+      ...SessionActions,
+      ...RouteActions,
+    },
+    dispatch
+  );
 }
 
 export default connect(
