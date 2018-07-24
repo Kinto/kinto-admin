@@ -36,13 +36,17 @@ export default class BucketAttributes extends PureComponent<Props> {
 
   onSubmit = (formData: BucketData) => {
     const { match, updateBucket } = this.props;
-    const { bid } = match.params;
+    const {
+      params: { bid },
+    } = match;
     updateBucket(bid, { data: formData });
   };
 
   render() {
     const { match, session, capabilities, bucket } = this.props;
-    const { bid } = match.params;
+    const {
+      params: { bid },
+    } = match;
     const { busy, data: formData } = bucket;
     if (busy) {
       return <Spinner />;

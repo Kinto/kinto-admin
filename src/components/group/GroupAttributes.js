@@ -27,7 +27,9 @@ type Props = {
 export default class GroupAttributes extends PureComponent<Props> {
   onSubmit = (formData: GroupData) => {
     const { match, updateGroup } = this.props;
-    const { bid, gid } = match.params;
+    const {
+      params: { bid, gid },
+    } = match;
     updateGroup(bid, gid, { data: formData });
   };
 

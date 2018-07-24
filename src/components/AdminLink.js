@@ -20,8 +20,9 @@ export default class AdminLink extends PureComponent<Props> {
   render() {
     const { children, name, params, ...linkProps } = this.props;
     const toUrl = url(name, params);
-    const to =
-      (linkProps.query && `${toUrl}?${stringify(linkProps.query)}`) || toUrl;
+    const to = linkProps.query
+      ? `${toUrl}?${stringify(linkProps.query)}`
+      : toUrl;
     return (
       <Link {...linkProps} to={to}>
         {children}

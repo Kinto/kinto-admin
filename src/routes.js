@@ -1,7 +1,7 @@
 /* @flow */
 import * as React from "react";
 import { Component, PureComponent } from "react";
-import { Route } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import type { Location, Match } from "react-router-dom";
 import { mergeObjects } from "react-jsonschema-form/lib/utils";
 import { Breadcrumb } from "react-breadcrumbs";
@@ -134,18 +134,20 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
   );
   const pluginsRoutes = flattenPluginsRoutes(plugins);
   return (
-    <Route
-      path="/"
-      render={props => (
-        <App
-          plugins={plugins}
-          sidebar={hookedSidebar}
-          notifications={hookedNotifications}
-          collectionRecords={hookedCollectionRecords}
-          pluginsRoutes={pluginsRoutes}
-          {...props}
-        />
-      )}
-    />
+    <Switch>
+      <Route
+        path="/"
+        render={props => (
+          <App
+            plugins={plugins}
+            sidebar={hookedSidebar}
+            notifications={hookedNotifications}
+            collectionRecords={hookedCollectionRecords}
+            pluginsRoutes={pluginsRoutes}
+            {...props}
+          />
+        )}
+      />
+    </Switch>
   );
 }

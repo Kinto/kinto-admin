@@ -3,7 +3,6 @@ import type { Plugin } from "./types";
 
 import React, { Component } from "react";
 import { Provider } from "react-redux";
-import { Switch } from "react-router-dom";
 import { ConnectedRouter } from "connected-react-router";
 
 import getRoutes from "./routes";
@@ -57,7 +56,7 @@ export default class KintoAdmin extends Component<Props> {
     return (
       <Provider store={store}>
         <ConnectedRouter history={hashHistory}>
-          <Switch>{getRoutes(this.store, registerPlugins)}</Switch>
+          {getRoutes(this.store, registerPlugins)}
         </ConnectedRouter>
       </Provider>
     );

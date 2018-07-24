@@ -33,7 +33,9 @@ type Props = {
 
 export const onCollectionHistoryEnter = (props: Props) => {
   const { listCollectionHistory, match, session, location } = props;
-  const { bid, cid } = match.params;
+  const {
+    params: { bid, cid },
+  } = match;
   const filters = parse(location.search);
   if (!session.authenticated) {
     // We're not authenticated, skip requesting the list of records. This likely
