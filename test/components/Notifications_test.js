@@ -23,7 +23,7 @@ describe("Notifications component", () => {
       notifications: [{ type: "error", message: "fail" }],
     });
 
-    expect(node.querySelectorAll(".notification")).to.have.length.of(1);
+    expect(node.querySelectorAll(".notification")).to.have.a.lengthOf(1);
   });
 
   it("should not render a detailed error by default", () => {

@@ -42,7 +42,7 @@ describe("App component", () => {
 
   describe("Session top bar", () => {
     it("should not render a session top bar when not authenticated", () => {
-      expect(app.find(".session-info-bar")).to.have.length(0);
+      expect(app.find(".session-info-bar")).to.have.a.lengthOf(0);
     });
 
     it("should render a session top bar when anonymous", () => {

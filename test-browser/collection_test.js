@@ -39,7 +39,7 @@ describe("Collection tests", function() {
     expect(result).eql("MyCollection");
 
     const { data } = yield client.bucket("MyBucket").listCollections();
-    expect(data).to.have.length.of(1);
+    expect(data).to.have.a.lengthOf(1);
     expect(data[0].id).eql("MyCollection");
   });
 
@@ -73,6 +73,6 @@ describe("Collection tests", function() {
     expect(result).eql(0);
 
     const { data } = yield client.bucket("MyBucket").listCollections();
-    expect(data).to.have.length.of(0);
+    expect(data).to.have.a.lengthOf(0);
   });
 });

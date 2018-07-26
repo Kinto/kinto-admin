@@ -71,7 +71,7 @@ describe("CollectionRecords component", () => {
     it("should render record rows", () => {
       const rows = node.querySelectorAll("tbody tr");
 
-      expect(rows).to.have.length.of(2);
+      expect(rows).to.have.a.lengthOf(2);
       expect(rows[0].querySelectorAll("td")[0].textContent).eql("bar");
       expect(rows[1].querySelectorAll("td")[0].textContent).eql("baz");
     });
@@ -112,7 +112,7 @@ describe("CollectionRecords component", () => {
     it("should render record rows", () => {
       const rows = node.querySelectorAll("tbody tr");
 
-      expect(rows).to.have.length.of(2);
+      expect(rows).to.have.a.lengthOf(2);
       expect(rows[0].querySelectorAll("td")[0].textContent).eql(
         JSON.stringify({ foo: "bar" })
       );

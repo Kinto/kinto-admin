@@ -24,7 +24,7 @@ describe("Sidebar component", () => {
         capabilities: { history: {} },
       });
 
-      expect(node.querySelectorAll(".bucket-menu")).to.have.length.of(0);
+      expect(node.querySelectorAll(".bucket-menu")).to.have.a.lengthOf(0);
     });
   });
 
@@ -65,7 +65,7 @@ describe("Sidebar component", () => {
     });
 
     it("should list the user buckets", () => {
-      expect(bucketMenus).to.have.length.of(2);
+      expect(bucketMenus).to.have.a.lengthOf(2);
     });
 
     it("should list collections for the first bucket", () => {
