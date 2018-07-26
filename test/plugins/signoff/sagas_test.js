@@ -230,7 +230,7 @@ describe("Signoff plugin sagas", () => {
         expect(handleRequestReview.next({ id: "coll" }).value)
           .to.have.property("CALL")
           .to.have.property("args")
-          .to.include({ status: "to-review", last_editor_comment: ":)" });
+          .to.deep.include({ status: "to-review", last_editor_comment: ":)" });
       });
 
       it("should refresh signoff resources status", () => {
@@ -241,7 +241,7 @@ describe("Signoff plugin sagas", () => {
         )
           .to.have.property("CALL")
           .to.have.property("args")
-          .to.include({ bid: "buck", cid: "coll" });
+          .to.deep.include({ bid: "buck", cid: "coll" });
       });
 
       it("should dispatch the routeLoadSuccess action", () => {
@@ -278,7 +278,7 @@ describe("Signoff plugin sagas", () => {
         expect(handleDeclineChanges.next({ id: "coll" }).value)
           .to.have.property("CALL")
           .to.have.property("args")
-          .to.include({
+          .to.deep.include({
             status: "work-in-progress",
             last_reviewer_comment: ":(",
           });
@@ -292,7 +292,7 @@ describe("Signoff plugin sagas", () => {
         )
           .to.have.property("CALL")
           .to.have.property("args")
-          .to.include({ bid: "buck", cid: "coll" });
+          .to.deep.include({ bid: "buck", cid: "coll" });
       });
 
       it("should dispatch the routeLoadSuccess action", () => {
@@ -329,7 +329,7 @@ describe("Signoff plugin sagas", () => {
         expect(handleApproveChanges.next({ id: "coll" }).value)
           .to.have.property("CALL")
           .to.have.property("args")
-          .to.include({ status: "to-sign", last_reviewer_comment: "" });
+          .to.deep.include({ status: "to-sign", last_reviewer_comment: "" });
       });
 
       it("should refresh signoff resources status", () => {
@@ -340,7 +340,7 @@ describe("Signoff plugin sagas", () => {
         )
           .to.have.property("CALL")
           .to.have.property("args")
-          .to.include({ bid: "buck", cid: "coll" });
+          .to.deep.include({ bid: "buck", cid: "coll" });
       });
 
       it("should dispatch the routeLoadSuccess action", () => {

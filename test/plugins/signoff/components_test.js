@@ -87,6 +87,8 @@ describe("SignoffToolBar component", () => {
         },
       },
     });
-    expect(node.querySelectorAll("button.request-review")).to.have.length.of(1);
+    expect(node.querySelectorAll("button.request-review")).to.have.a.lengthOf(
+      1
+    );
   });
 });

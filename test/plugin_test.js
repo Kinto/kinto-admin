@@ -24,7 +24,7 @@ describe("Plugin API", () => {
     ];
 
     it("should flatten plugins routes", () => {
-      expect(flattenPluginsRoutes(plugins)).to.have.length.of(3);
+      expect(flattenPluginsRoutes(plugins)).to.have.a.lengthOf(3);
     });
 
     it("should map to Route components", () => {
@@ -61,7 +61,7 @@ describe("Plugin API", () => {
     it("should append the plugins sagas to the standard watchers", () => {
       const sagas = flattenPluginsSagas(plugins, getState);
 
-      expect(sagas).to.have.length.of(3);
+      expect(sagas).to.have.a.lengthOf(3);
       expect(sagas[0].FORK.args[0]).eql("ACTION_1");
       expect(sagas[0].FORK.args[1].name).eql("saga1");
       expect(sagas[1].FORK.args[0]).eql("ACTION_2");
