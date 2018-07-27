@@ -74,7 +74,7 @@ export default function session(
       return { ...state, authenticated: true };
     }
     case SESSION_LOGOUT: {
-      return DEFAULT;
+      return { ...DEFAULT, serverInfo: state.serverInfo };
     }
     default: {
       return state;
