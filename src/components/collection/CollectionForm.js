@@ -238,7 +238,8 @@ const uiSchema = {
         {"(in seconds) add "}
         <a href="https://kinto.readthedocs.io/en/stable/api/1.x/collections.html#collection-caching">
           client cache headers on read-only requests
-        </a>.
+        </a>
+        .
       </p>
     ),
   },
@@ -282,7 +283,8 @@ function FormInstructions({ onSchemalessLinkClick }) {
         Alternatively, you can create a
         <a href="" onClick={onSchemalessLinkClick}>
           schemaless collection
-        </a>.
+        </a>
+        .
       </p>
     </div>
   );
