@@ -334,7 +334,8 @@ export default class App extends PureComponent<Props> {
                   {version}
                 </a>
               </span>
-            )}.
+            )}
+            .
           </p>
         </div>
       </div>
