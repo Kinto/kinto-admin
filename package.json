@@ -1,6 +1,6 @@
 {
   "name": "kinto-admin",
-  "version": "1.19.2",
+  "version": "1.20.0",
   "description": "Kinto Web Administration Console in React.js",
   "scripts": {
     "build": "rimraf build && NODE_ENV=production node_modules/.bin/webpack --progress --config webpack.prod.js && cp html/prod.html build/index.html",
