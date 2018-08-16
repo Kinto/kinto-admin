@@ -405,7 +405,6 @@ export default class AuthForm extends PureComponent<
 
   constructor(props: Object) {
     super(props);
-    const { schema, uiSchema } = authSchemas(ANONYMOUS_AUTH);
     const {
       history,
       settings: { singleServer },
@@ -417,6 +416,7 @@ export default class AuthForm extends PureComponent<
     // - default
     const server = getServerByPriority(singleServer, history);
     const authType = (history.length && history[0].authType) || ANONYMOUS_AUTH;
+    const { schema, uiSchema } = authSchemas(authType);
     this.state = {
       schema,
       uiSchema,
