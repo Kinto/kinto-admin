@@ -294,10 +294,7 @@ export type RouteParams = {
 
 export type RouteLocation = {
   pathname: string,
-  query: {
-    since?: string,
-    resource_name?: string,
-  },
+  query: HistoryFilters,
 };
 
 export type RouteResources = {

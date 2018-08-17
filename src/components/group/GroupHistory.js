@@ -8,8 +8,8 @@ import type {
 import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
-import { parse } from "query-string";
 
+import { parseHistoryFilters } from "../../utils";
 import HistoryTable from "../HistoryTable";
 import CollectionTabs from "./GroupTabs";
 
@@ -31,7 +31,7 @@ export const onGroupHistoryEnter = (props: Props) => {
   const {
     params: { bid, gid },
   } = match;
-  const filters = parse(location.search);
+  const filters = parseHistoryFilters(location.search);
   if (!session.authenticated) {
     // We're not authenticated, skip requesting the list of records. This likely
     // occurs when users refresh the page and lose their session.

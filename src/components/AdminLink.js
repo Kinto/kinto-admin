@@ -5,7 +5,6 @@ import type { RouteParams } from "../types";
 import { PureComponent } from "react";
 import * as React from "react";
 import { Link } from "react-router-dom";
-import { stringify } from "query-string";
 
 import url from "../url";
 
@@ -21,7 +20,7 @@ export default class AdminLink extends PureComponent<Props> {
     const { children, name, params, ...linkProps } = this.props;
     const toUrl = url(name, params);
     const to = linkProps.query
-      ? `${toUrl}?${stringify(linkProps.query)}`
+      ? `${toUrl}?${new URLSearchParams(linkProps.query).toString()}`
       : toUrl;
     return (
       <Link {...linkProps} to={to}>
