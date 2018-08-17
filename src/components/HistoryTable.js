@@ -5,9 +5,8 @@ import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
 import { diffJson } from "diff";
-import { parse } from "query-string";
 
-import { timeago, humanDate } from "../utils";
+import { timeago, humanDate, parseHistoryFilters } from "../utils";
 import AdminLink from "./AdminLink";
 import Spinner from "./Spinner";
 import PaginatedTable from "./PaginatedTable";
@@ -358,7 +357,7 @@ export default class HistoryTable extends PureComponent<Props, State> {
       location,
     } = this.props;
     const { current, previous, diffOverview } = this.state;
-    const query = parse(location.search);
+    const query = parseHistoryFilters(location.search);
     const routeLocation = { pathname: location.pathname, query };
     const { since } = query;
     const isFiltered = !!since;

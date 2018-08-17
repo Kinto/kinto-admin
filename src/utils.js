@@ -320,3 +320,15 @@ export const getAuthLabel = (authType: string) => {
   }
   return labels[authType];
 };
+
+export function parseHistoryFilters(s: string) {
+  const params = new URLSearchParams(s);
+  const ret = {};
+  if (params.has("since")) {
+    ret.since = params.get("since");
+  }
+  if (params.has("resource_name")) {
+    ret.resource_name = params.get("resource_name");
+  }
+  return ret;
+}

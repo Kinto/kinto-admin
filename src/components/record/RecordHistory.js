@@ -10,8 +10,8 @@ import type {
 import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
-import { parse } from "query-string";
 
+import { parseHistoryFilters } from "../../utils";
 import HistoryTable from "../HistoryTable";
 import RecordTabs from "./RecordTabs";
 
@@ -37,7 +37,7 @@ export const onRecordHistoryEnter = (props: Props) => {
   const {
     params: { bid, cid, rid },
   } = match;
-  const filters = parse(location.search);
+  const filters = parseHistoryFilters(location.search);
   if (!session.authenticated) {
     return;
   }
