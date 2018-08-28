@@ -153,7 +153,7 @@ class HistoryRow extends PureComponent<HistoryRowProps, HistoryRowState> {
     } = target;
 
     return (
-      <tbody>
+      <React.Fragment>
         <tr>
           <td>
             <span title={humanDate(last_modified)}>
@@ -196,22 +196,24 @@ class HistoryRow extends PureComponent<HistoryRowProps, HistoryRowState> {
             </a>
           </td>
         </tr>
-        <tr
-          className="history-row-details"
-          style={{ display: busy || open ? "table-row" : "none" }}>
-          <td colSpan="6">
-            {busy ? (
-              <Spinner />
-            ) : previous ? (
-              <Diff source={entry.target} target={previous.target} />
-            ) : error ? (
-              <p className="alert alert-danger">{error.toString()}</p>
-            ) : (
-              <pre>{JSON.stringify(entry.target, null, 2)}</pre>
-            )}
-          </td>
-        </tr>
-      </tbody>
+        {open ? (
+          <tr
+            className="history-row-details"
+            style={{ display: busy || open ? "table-row" : "none" }}>
+            <td colSpan="6">
+              {busy ? (
+                <Spinner />
+              ) : previous ? (
+                <Diff source={entry.target} target={previous.target} />
+              ) : error ? (
+                <p className="alert alert-danger">{error.toString()}</p>
+              ) : (
+                <pre>{JSON.stringify(entry.target, null, 2)}</pre>
+              )}
+            </td>
+          </tr>
+        ) : null}
+      </React.Fragment>
     );
   }
 }
@@ -405,7 +407,7 @@ export default class HistoryTable extends PureComponent<Props, State> {
           <PaginatedTable
             colSpan={6}
             thead={thead}
-            tbody={tbody}
+            tbody={<tbody>{tbody}</tbody>}
             dataLoaded={historyLoaded}
             hasNextPage={hasNextHistory}
             listNextPage={listNextHistory}
