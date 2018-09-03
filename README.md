@@ -3,6 +3,8 @@
 [![Greenkeeper badge](https://badges.greenkeeper.io/Kinto/kinto-admin.svg)](https://greenkeeper.io/)
 
 [![Build Status](https://travis-ci.org/Kinto/kinto-admin.svg?branch=master)](https://travis-ci.org/Kinto/kinto-admin)
+[![Code Quality: Javascript](https://img.shields.io/lgtm/grade/javascript/g/Kinto/kinto-admin.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Kinto/kinto-admin/context:javascript)
+[![Total Alerts](https://img.shields.io/lgtm/alerts/g/Kinto/kinto-admin.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Kinto/kinto-admin/alerts)
 
 A Web admin UI to manage data from a [Kinto](https://kinto.readthedocs.io/) server. [Demo](http://kinto.github.io/kinto-admin/).
 
