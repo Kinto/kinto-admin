@@ -5,6 +5,7 @@ import type {
   ResourceHistoryEntry,
   Capabilities,
   ServerHistoryEntry,
+  HistoryFilters,
 } from "./types";
 import React from "react";
 import _timeago from "timeago.js";
@@ -321,14 +322,16 @@ export const getAuthLabel = (authType: string) => {
   return labels[authType];
 };
 
-export function parseHistoryFilters(s: string) {
+export function parseHistoryFilters(s: string): HistoryFilters {
   const params = new URLSearchParams(s);
   const ret = {};
-  if (params.has("since")) {
-    ret.since = params.get("since");
+  const since = params.get("since");
+  if (since) {
+    ret.since = since;
   }
-  if (params.has("resource_name")) {
-    ret.resource_name = params.get("resource_name");
+  const resourceName = params.get("resource_name");
+  if (resourceName) {
+    ret.resource_name = resourceName;
   }
   return ret;
 }
