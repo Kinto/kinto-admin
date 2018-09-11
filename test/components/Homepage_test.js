@@ -112,7 +112,7 @@ describe("HomePage component", () => {
             target: { value: "pass" },
           });
 
-          return new Promise(setImmediate).then(() => {
+          const ret = new Promise(setImmediate).then(() => {
             Simulate.submit(node.querySelector("form"));
             sinon.assert.calledWithExactly(setup, {
               server: "http://test.server/v1",
@@ -124,6 +124,8 @@ describe("HomePage component", () => {
               redirectURL: undefined,
             });
           });
+          clock.tick();
+          return ret;
         });
       });
 
@@ -143,7 +145,7 @@ describe("HomePage component", () => {
             target: { value: "pass" },
           });
 
-          return new Promise(setImmediate).then(() => {
+          const ret = new Promise(setImmediate).then(() => {
             Simulate.submit(node.querySelector("form"));
             sinon.assert.calledWithExactly(setup, {
               server: "http://test.server/v1",
@@ -155,6 +157,8 @@ describe("HomePage component", () => {
               redirectURL: undefined,
             });
           });
+          clock.tick();
+          return ret;
         });
       });
 
@@ -167,7 +171,7 @@ describe("HomePage component", () => {
             target: { value: "fxa" },
           });
 
-          return new Promise(setImmediate).then(() => {
+          const ret = new Promise(setImmediate).then(() => {
             Simulate.submit(node.querySelector("form"));
             sinon.assert.calledWithExactly(navigateToExternalAuth, {
               server: "http://test.server/v1",
@@ -176,6 +180,8 @@ describe("HomePage component", () => {
               credentials: {},
             });
           });
+          clock.tick();
+          return ret;
         });
       });
 
@@ -188,7 +194,7 @@ describe("HomePage component", () => {
             target: { value: "openid-google" },
           });
 
-          return new Promise(setImmediate).then(() => {
+          const ret = new Promise(setImmediate).then(() => {
             Simulate.submit(node.querySelector("form"));
             sinon.assert.calledWithExactly(
               navigateToOpenID,
@@ -200,6 +206,8 @@ describe("HomePage component", () => {
               { name: "google" }
             );
           });
+          clock.tick();
+          return ret;
         });
       });
     });
