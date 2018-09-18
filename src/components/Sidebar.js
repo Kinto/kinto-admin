@@ -222,7 +222,7 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
                 className="form-control"
                 placeholder="Filter bucket/collection name"
                 value={this.state.search || ""}
-                onInput={this.updateSearch}
+                onChange={this.updateSearch}
               />
               <span className="input-group-addon">
                 <a href="" className="clear" onClick={this.resetSearch}>
