@@ -5,7 +5,7 @@ var version = require("./package.json").version;
 module.exports = {
   mode: "development",
   devtool: "#inline-source-map",
-  entry: ["babel-polyfill", "webpack-hot-middleware/client", "./index"],
+  entry: ["@babel/polyfill", "webpack-hot-middleware/client", "./index"],
   output: {
     path: path.join(__dirname, "build"),
     filename: "bundle.js",
