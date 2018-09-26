@@ -16,26 +16,50 @@ import AdminLink from "../AdminLink";
 import Spinner from "../Spinner";
 import JSONRecordForm from "./JSONRecordForm";
 import { canCreateRecord, canEditRecord } from "../../permission";
-import { cleanRecord, linkify, buildAttachmentUrl } from "../../utils";
+import { cleanRecord, linkify, buildAttachmentUrl, omit, clone } from "../../utils";
 
 export function extendSchemaWithAttachment(
   schema: Object,
   attachmentConfig: ?{ enabled: boolean, required: boolean },
-  edit: boolean = false
+  record: RecordData
 ): Object {
   if (!attachmentConfig || !attachmentConfig.enabled) {
     return schema;
   }
+  const isCreate = !record.id;
+  const hasAttachment = record.attachment && record.attachment.location;
+
+  // Attachment is only required on create record, or on update if the record
+  // does not have any (required state changed in the mean time).
   const schemaRequired = schema.required || [];
   const required =
-    attachmentConfig.required && !edit
+    attachmentConfig.required && (isCreate || !hasAttachment)
       ? schemaRequired.concat("__attachment__")
       : schemaRequired;
+
+  let schemaProperties;
+  if (isCreate) {
+      // On creation form, there is no need to have the "attachment" attribute fields. They
+      // are all assigned by the server on attachment upload.
+    schemaProperties = omit(schema.properties, ["attachment"]);
+  } else {
+    schemaProperties = clone(schema.properties);
+    const { attachment = {} } = record;
+    // If the attachment is in schema but the attachment does not have any "attachment.original" field,
+    // then hide the set of attribute fields for original (see kinto-attachment gzip feature).
+    if ("attachment" in schemaProperties && !attachment.original) {
+      schemaProperties.attachment.properties = omit(
+        schemaProperties.attachment.properties,
+        ["original"]
+      );
+    }
+  }
+
   return {
     ...schema,
     required,
     properties: {
-      ...schema.properties,
+      ...schemaProperties,
       __attachment__: {
         type: "string",
         format: "data-url",
@@ -55,6 +79,21 @@ export function extendUIWithKintoFields(
       "ui:widget": "text",
       "ui:disabled": !isCreate,
       ...uiSchema.id,
+    },
+    last_modified: {
+      "ui:widget": "hidden",
+      "ui:disabled": !isCreate,
+      ...uiSchema.last_modified,
+    },
+    schema: {
+      "ui:widget": "hidden",
+      "ui:disabled": !isCreate,
+      ...uiSchema.schema,
+    },
+    attachment: {
+      "ui:widget": isCreate ? "hidden" : undefined,
+      "ui:disabled": true,
+      ...uiSchema.attachment,
     },
   };
 }
@@ -296,7 +335,7 @@ export default class RecordForm extends PureComponent<Props, State> {
       );
     }
 
-    const _schema = extendSchemaWithAttachment(schema, attachment, !!record);
+    const _schema = extendSchemaWithAttachment(schema, attachment, recordData);
     let _uiSchema = extendUIWithKintoFields(uiSchema, !record);
     _uiSchema = extendUiSchemaWithAttachment(_uiSchema, attachment);
     _uiSchema = extendUiSchemaWhenDisabled(_uiSchema, !this.allowEditing);
