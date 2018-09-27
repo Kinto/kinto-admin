@@ -184,12 +184,26 @@ describe("humanDate", () => {
 });
 
 describe("buildAttachmentUrl", () => {
+  const capabilities = { attachments: {} };
   it("should return nothing if no attachment is part of the record", () => {
-    expect(buildAttachmentUrl({}, { attachments: {} })).to.be.a("undefined");
+    expect(buildAttachmentUrl({ id: "abc" }, capabilities)).to.be.a(
+      "undefined"
+    );
+  });
+
+  it("should return nothing if the record attachment is incomplete", () => {
+    expect(buildAttachmentUrl({ attachment: {} }, capabilities)).to.be.a(
+      "undefined"
+    );
   });
 
   it("should return nothing if the attachments capability isn't enabled", () => {
-    expect(buildAttachmentUrl({ attachment: {} }, {})).to.be.a("undefined");
+    expect(
+      buildAttachmentUrl(
+        { id: "abc", attachment: { location: "http://" } },
+        { history: {} }
+      )
+    ).to.be.a("undefined");
   });
 
   it("should build an attachment url from the capability config", () => {
