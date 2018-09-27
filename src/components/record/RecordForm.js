@@ -310,20 +310,20 @@ export default class RecordForm extends PureComponent<Props, State> {
       data: { attachment: attachmentConfig },
     } = collection;
     const attachmentRequired = attachmentConfig && attachmentConfig.required;
-    const creation = !record;
+    const isUpdate = !!record;
 
     const alert =
       this.allowEditing || collection.busy ? null : (
         <div className="alert alert-warning">
           You don't have the required permission to
-          {creation ? " create a" : " edit this"} record.
+          {isUpdate ? " edit this" : " create a"} record.
         </div>
       );
 
     return (
       <div>
         {alert}
-        {creation && (
+        {isUpdate && (
           <AttachmentInfo
             capabilities={capabilities}
             record={record}
