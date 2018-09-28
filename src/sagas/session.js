@@ -148,7 +148,7 @@ export function expandBucketsCollections(
   // the /permissions endpoint
   for (const permission of permissions) {
     if (!permission.hasOwnProperty("bucket_id")) {
-      // e.g. root permission.
+      // e.g. { resource_name: "root" } permission.
       continue;
     }
     // Add any missing bucket to the current list
