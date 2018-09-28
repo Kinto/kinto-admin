@@ -199,9 +199,12 @@ export function* listBuckets(
   try {
     const {
       session: {
-        serverInfo: { capabilities: serverCapabilities },
+        serverInfo: { user: userInfo, capabilities: serverCapabilities },
       },
     } = getState();
+
+    const userBucket = userInfo && userInfo.bucket;
+
     // Retrieve and build the list of buckets
     const client = getClient();
     let data;
@@ -215,6 +218,17 @@ export function* listBuckets(
       }
       data = [];
     }
+
+    // If the default_bucket plugin is enabled, show the Default bucket first in the list.
+    if ("default_bucket" in serverCapabilities) {
+      let defaultBucket = data.find(b => b.id == userBucket);
+      if (!defaultBucket) {
+        // It will be shown even if server is empty.
+        defaultBucket = { id: userBucket, last_modified: 0 };
+      }
+      data = [defaultBucket, ...data.filter(b => b.id != userBucket)];
+    }
+
     const responses = yield call([client, client.batch], batch => {
       for (const { id } of data) {
         batch.bucket(id).listCollections();
