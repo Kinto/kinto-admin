@@ -161,7 +161,12 @@ function filterBuckets(buckets, filters): BucketEntry[] {
         return acc;
       }
     }, [])
-    .filter(bucket => !(hideReadOnly && bucket.readonly));
+    .filter(
+      bucket =>
+        !hideReadOnly ||
+        !bucket.readonly ||
+        bucket.collections.some(c => !c.readonly)
+    );
 }
 
 type BucketsMenuState = {

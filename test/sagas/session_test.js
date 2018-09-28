@@ -505,8 +505,8 @@ describe("session sagas", () => {
 
 describe("expandBucketsCollections()", () => {
   const buckets = [
-    { id: "b1", permissions: [], collections: [], readonly: true },
-    { id: "b2", permissions: [], collections: [], readonly: true },
+    { id: "b1", permissions: [], collections: [], readonly: undefined },
+    { id: "b2", permissions: [], collections: [], readonly: undefined },
   ];
 
   function bucketPerm(bucket_id, permissions) {
@@ -525,6 +525,7 @@ describe("expandBucketsCollections()", () => {
   const permissions = [
     bucketPerm("b1", ["read"]),
     bucketPerm("b2", ["read"]),
+    bucketPerm("b4", ["write"]),
     collectionPerm("b1", "b1c1", ["read", "write"]),
     collectionPerm("b2", "b2c1", ["read"]),
     collectionPerm("b3", "b3c1", ["read", "write"]),
@@ -535,7 +536,7 @@ describe("expandBucketsCollections()", () => {
   const tree = saga.expandBucketsCollections(buckets, permissions, 2);
 
   it("should denote a bucket as writable", () => {
-    expect(tree.find(b => b.id === "b1").readonly).to.be.false;
+    expect(tree.find(b => b.id === "b4").readonly).to.be.false;
   });
 
   it("should denote a bucket as readonly", () => {
@@ -557,7 +558,7 @@ describe("expandBucketsCollections()", () => {
   });
 
   it("should infer an implicit bucket", () => {
-    expect(tree.find(b => b.id === "b3").readonly).to.be.false;
+    expect(tree.find(b => b.id === "b3").readonly).to.be.true;
   });
 
   it("should distinguish resource ids", () => {
