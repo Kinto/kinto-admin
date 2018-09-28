@@ -186,10 +186,6 @@ export function expandBucketsCollections(
           return ["write", "record:create"].includes(cp);
         });
       }
-      // If this collection is writable, mark its parent bucket writable
-      if (!collection.readonly) {
-        bucket.readonly = false;
-      }
     }
   }
 
