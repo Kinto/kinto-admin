@@ -284,20 +284,6 @@ const authSchemas = authType => {
           },
         },
       },
-      uiSchema: {
-        authType: {
-          ...baseUISchema.authType,
-          "ui:help": (
-            <span>
-              <b>Note:</b> The
-              <a href="https://github.com/Kinto/kinto-portier">
-                {" kinto-portier "}
-              </a>
-              plugin must be installed on the target server.
-            </span>
-          ),
-        },
-      },
     },
   };
   if (authType in customizedSchemas) {
