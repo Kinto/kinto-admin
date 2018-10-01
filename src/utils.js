@@ -233,7 +233,11 @@ export function buildAttachmentUrl(
   record: RecordData,
   capabilities: Capabilities
 ): ?string {
-  if (record.attachment == null || capabilities.attachments == null) {
+  if (
+    record.attachment == null ||
+    capabilities.attachments == null ||
+    !record.attachment.hasOwnProperty("location")
+  ) {
     return;
   }
   const { base_url = "" } = capabilities.attachments;
