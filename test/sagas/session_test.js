@@ -523,6 +523,7 @@ describe("expandBucketsCollections()", () => {
   }
 
   const permissions = [
+    { resource_name: "root", permissions: ["bucket:create"] },
     bucketPerm("b1", ["read"]),
     bucketPerm("b2", ["read"]),
     bucketPerm("b4", ["write"]),

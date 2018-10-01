@@ -147,6 +147,10 @@ export function expandBucketsCollections(
   // Augment the list of bucket and collections with the ones retrieved from
   // the /permissions endpoint
   for (const permission of permissions) {
+    if (!permission.hasOwnProperty("bucket_id")) {
+      // e.g. { resource_name: "root" } permission.
+      continue;
+    }
     // Add any missing bucket to the current list
     let bucket = bucketsCopy.find(b => b.id === permission.bucket_id);
     if (!bucket) {
