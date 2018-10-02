@@ -54,7 +54,11 @@ describe("RecordAttributes component", () => {
       data: {
         id: "abc",
         foo: "bar",
-        attachment: { location: "path/file.png" },
+        attachment: {
+          location: "path/file.png",
+          mimetype: "image/png",
+          size: 12345,
+        },
       },
       permissions: {},
     };
@@ -78,7 +82,7 @@ describe("RecordAttributes component", () => {
     });
 
     it("should show a delete attachment button", () => {
-      expect(node.querySelector(".attachment-action btn.btn-danger")).to.exist;
+      expect(node.querySelector(".attachment-action .btn.btn-danger")).to.exist;
     });
   });
 });
