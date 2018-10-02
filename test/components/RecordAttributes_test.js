@@ -103,6 +103,7 @@ describe("RecordAttributes component", () => {
       data: {
         id: "abc",
         foo: "bar",
+        schema: 567890,
         attachment: {
           location: "path/file.png",
           mimetype: "image/png",
@@ -129,7 +130,7 @@ describe("RecordAttributes component", () => {
     });
   });
 
-  describe("ID field", () => {
+  describe("Kinto fields", () => {
     let field;
 
     describe("ID in schema", () => {
@@ -223,6 +224,97 @@ describe("RecordAttributes component", () => {
 
         it("should not show the id field", () => {
           expect(node.querySelector("#root_id")).to.not.exist;
+        });
+      });
+    });
+
+    describe("Schema version in schema", () => {
+      const withSchemaVersion = clone(collection);
+      withSchemaVersion.data.schema.properties.version = { type: "number" };
+
+      describe("Schema version not in UISchema", () => {
+        beforeEach(() => {
+          const node = createComponent(RecordAttributes, {
+            ...props,
+            collection: withSchemaVersion,
+          });
+          field = node.querySelector("#root_schema");
+        });
+
+        it("should load the schema value", () => {
+          expect(field.value).to.eql("567890");
+        });
+
+        it("should be a hidden field", () => {
+          expect(field.getAttribute("type")).to.eql("hidden");
+        });
+      });
+
+      describe("Schema version in UISchema", () => {
+        const withUISchema = clone(withSchemaVersion);
+        withUISchema.data.uiSchema = {
+          schema: {
+            "ui:widget": "text",
+          },
+        };
+
+        beforeEach(() => {
+          const node = createComponent(RecordAttributes, {
+            ...props,
+            collection: withUISchema,
+          });
+          field = node.querySelector("#root_id");
+        });
+
+        it("should load the schema value", () => {
+          expect(field.value).to.eql("567890");
+        });
+
+        it("should show a custom field", () => {
+          expect(field.getAttribute("type")).to.eql("text");
+        });
+
+        it("should show the field as disabled", () => {
+          expect(field.hasAttribute("disabled")).to.be.true;
+        });
+      });
+    });
+
+    describe("Schema version not in schema", () => {
+      let node;
+      describe("Schema version not in UISchema", () => {
+        beforeEach(() => {
+          node = createComponent(RecordAttributes, {
+            ...props,
+            collection,
+          });
+        });
+
+        it("should not show the schema field", () => {
+          expect(node.querySelector("#root_schema")).to.not.exist;
+        });
+      });
+
+      describe("Schema version in UISchema", () => {
+        const withUISchema = {
+          ...collection,
+          uiSchema: {
+            schema: {
+              "ui:widget": "textarea",
+            },
+          },
+        };
+
+        beforeEach(() => {
+          const node = createComponent(RecordAttributes, {
+            ...props,
+            collection: withUISchema,
+          });
+          field = node.querySelector("#root_id");
+        });
+
+        it("should not show the schema field", () => {
+          expect(node.querySelector("#root_schema")).to.not.exist;
         });
       });
     });
