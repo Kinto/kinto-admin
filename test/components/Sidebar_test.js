@@ -2,6 +2,7 @@ import { expect } from "chai";
 
 import { createSandbox, createComponent } from "../test_utils";
 import Sidebar from "../../src/components/Sidebar";
+import { clone } from "../../src/utils";
 
 describe("Sidebar component", () => {
   let sandbox;
@@ -48,12 +49,12 @@ describe("Sidebar component", () => {
       ],
     };
 
-    beforeEach(() => {
-      const params = { bid: "mybuck", cid: "mycoll" };
-      const location = { pathname: "" };
-      const capabilities = { history: {} };
-      const settings = { sidebarMaxListedCollections: 2 };
+    const params = { bid: "mybuck", cid: "mycoll" };
+    const location = { pathname: "" };
+    const capabilities = { history: {} };
+    const settings = { sidebarMaxListedCollections: 2 };
 
+    beforeEach(() => {
       node = createComponent(Sidebar, {
         match: { params },
         location,
@@ -95,6 +96,33 @@ describe("Sidebar component", () => {
       )[1];
 
       expect(targetEntry.classList.contains("active")).eql(true);
+    });
+
+    describe("Create bucket", () => {
+      it("should be shown by default", () => {
+        node = createComponent(Sidebar, {
+          match: { params },
+          location,
+          session,
+          settings,
+          capabilities,
+        });
+        expect(node.querySelector(".bucket-create")).to.exist;
+      });
+
+      it("should be hidden if not allowed", () => {
+        const notAllowed = clone(session);
+        notAllowed.permissions = [{ resource_name: "root", permissions: [] }];
+
+        node = createComponent(Sidebar, {
+          match: { params },
+          location,
+          session: notAllowed,
+          settings,
+          capabilities,
+        });
+        expect(node.querySelector(".bucket-create")).to.not.exist;
+      });
     });
   });
 });
