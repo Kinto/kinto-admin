@@ -96,6 +96,39 @@ describe("RecordAttributes component", () => {
     });
   });
 
+  describe("Attachment info shown", () => {
+    let node;
+
+    const record = {
+      data: {
+        id: "abc",
+        foo: "bar",
+        attachment: {
+          location: "path/file.png",
+          mimetype: "image/png",
+          size: 12345,
+        },
+      },
+      permissions: {},
+    };
+
+    beforeEach(() => {
+      node = createComponent(RecordAttributes, {
+        ...props,
+        capabilities: { attachments: { base_url: "" } },
+        record,
+      });
+    });
+
+    it("should render the attachment info", () => {
+      expect(node.querySelector(".attachment-info")).to.exist;
+    });
+
+    it("should show a delete attachment button", () => {
+      expect(node.querySelector(".attachment-action .btn.btn-danger")).to.exist;
+    });
+  });
+
   describe("ID field", () => {
     let field;
 
