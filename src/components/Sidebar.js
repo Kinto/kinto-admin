@@ -43,6 +43,20 @@ function SideBarLink(props: SideBarLinkProps) {
   );
 }
 
+function HomeMenu(props) {
+  const { currentPath, onRefresh } = props;
+  return (
+    <div className="panel panel-default home-menu">
+      <div className="list-group">
+        <SideBarLink name="home" currentPath={currentPath} params={{}}>
+          Home
+          <i onClick={onRefresh} className="glyphicon glyphicon-refresh" />
+        </SideBarLink>
+      </div>
+    </div>
+  );
+}
+
 function CollectionMenuEntry(props) {
   const {
     bucket: { id: bid },
@@ -301,6 +315,7 @@ type SidebarProps = {
   settings: SettingsState,
   match: Match,
   location: Location,
+  listBuckets: () => void,
 };
 
 export default class Sidebar extends PureComponent<SidebarProps> {
@@ -309,7 +324,7 @@ export default class Sidebar extends PureComponent<SidebarProps> {
   static displayName = "Sidebar";
 
   render() {
-    const { session, settings, match, location } = this.props;
+    const { session, settings, match, location, listBuckets } = this.props;
     const { params } = match;
     const { pathname: currentPath } = location;
     const { bid, cid } = params;
@@ -317,13 +332,7 @@ export default class Sidebar extends PureComponent<SidebarProps> {
     const { sidebarMaxListedCollections } = settings;
     return (
       <div>
-        <div className="panel panel-default">
-          <div className="list-group">
-            <SideBarLink name="home" currentPath={currentPath} params={{}}>
-              Home
-            </SideBarLink>
-          </div>
-        </div>
+        <HomeMenu currentPath={currentPath} onRefresh={listBuckets} />
         {authenticated && (
           <BucketsMenu
             busy={busy}
