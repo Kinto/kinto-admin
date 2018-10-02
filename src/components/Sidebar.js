@@ -172,7 +172,6 @@ function filterBuckets(buckets, filters): BucketEntry[] {
 }
 
 type BucketsMenuState = {
-  canCreateBucket: boolean,
   hideReadOnly: boolean,
   search: ?string,
 };
@@ -180,7 +179,7 @@ type BucketsMenuState = {
 class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
   constructor(props: BucketsMenuProps) {
     super(props);
-    this.state = { canCreateBucket: true, hideReadOnly: false, search: null };
+    this.state = { hideReadOnly: false, search: null };
   }
 
   toggleReadOnly = () => {
