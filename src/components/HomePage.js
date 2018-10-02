@@ -85,7 +85,7 @@ function onAuthEnter(match: HomePageRouteMatch, onSuccess, onError) {
     try {
       const { server, redirectURL, authType } = JSON.parse(atob(payload));
       if (authType.startsWith("openid-")) {
-        token = JSON.parse(token).access_token;
+        token = JSON.parse(decodeURIComponent(token)).access_token;
       }
       const credentials = { token };
       onSuccess({ server, authType, credentials, redirectURL });
