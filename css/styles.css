@@ -302,6 +302,11 @@ table.record-list td.load-more {
   color: #fff;
 }
 
+.home-menu i {
+  float: right;
+  margin: .15em -.5em 0 0;
+}
+
 .bucket-menu-entry-edit {
   float: right;
   margin: .15em -.5em 0 0;
