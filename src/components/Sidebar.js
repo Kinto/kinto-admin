@@ -135,6 +135,7 @@ function BucketCollectionsMenu(props) {
 }
 
 type BucketsMenuProps = {
+  canCreateBucket: boolean,
   currentPath: string,
   busy: boolean,
   buckets: BucketEntry[],
@@ -179,7 +180,7 @@ type BucketsMenuState = {
 class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
   constructor(props: BucketsMenuProps) {
     super(props);
-    this.state = { hideReadOnly: false, search: null };
+    this.state = { canCreateBucket: true, hideReadOnly: false, search: null };
   }
 
   toggleReadOnly = () => {
