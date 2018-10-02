@@ -217,9 +217,7 @@ describe("HomePage component", () => {
     describe("History support", () => {
       it("should set the server field value using a default value if there's no history", () => {
         const node = createComponent(HomePage, {
-          match: {
-
-          },
+          match: {},
           serverChange: sandbox.spy(),
           getServerInfo: sandbox.spy(),
           history: [],

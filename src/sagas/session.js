@@ -1,6 +1,7 @@
 /* @flow */
 import type { PermissionEntry } from "kinto-http";
 import type {
+  AuthData,
   ActionType,
   BucketEntry,
   CollectionEntry,
@@ -28,16 +29,18 @@ export function* getServerInfo(
   getState: GetStateFn,
   action: ActionType<typeof actions.getServerInfo>
 ): SagaGen {
-  const { auth }: Object = action;
+  const { auth } = action;
 
-  let processedAuth = auth;
+  let processedAuth: AuthData = auth;
   if (auth.authType.startsWith("openid-")) {
-    processedAuth = {
+    const openIDAuth: OpenIDAuth = {
       ...auth,
       authType: "openid",
       provider: auth.authType.replace("openid-", ""),
     };
+    processedAuth = openIDAuth;
   }
+
   // Set the client globally to the entire app, when the saga starts.
   // We'll compare the remote of this singleton when the server info will be received
   // to prevent race conditions.
@@ -75,7 +78,7 @@ export function* getServerInfo(
 
 export function* setupSession(
   getState: GetStateFn,
-  action: ActionType<typeof actions.setup>
+  action: ActionType<typeof actions.setupSession>
 ): SagaGen {
   const { auth } = action;
   try {
