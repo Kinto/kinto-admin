@@ -315,6 +315,7 @@ type SidebarProps = {
   settings: SettingsState,
   match: Match,
   location: Location,
+  listBuckets: () => void,
 };
 
 export default class Sidebar extends PureComponent<SidebarProps> {
