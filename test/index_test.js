@@ -40,7 +40,7 @@ describe("KintoAdmin", () => {
     it("should call setup with the info stored locally", () => {
       localStore.saveSession(session);
       const setup = sandbox
-        .stub(sessionActions, "setup")
+        .stub(sessionActions, "setupSession")
         .returns({ type: SESSION_SETUP, auth });
       createKintoAdmin();
 

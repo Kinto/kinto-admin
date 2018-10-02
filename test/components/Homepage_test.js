@@ -26,20 +26,21 @@ describe("HomePage component", () => {
   describe("Not authenticated", () => {
     describe("Authentication types", () => {
       let node,
-        setup,
+        setupSession,
         getServerInfo,
         navigateToExternalAuth,
         navigateToOpenID,
         serverChange;
 
       beforeEach(() => {
-        setup = sandbox.spy();
+        setupSession = sandbox.spy();
         serverChange = sandbox.spy();
         getServerInfo = sandbox.spy();
         navigateToExternalAuth = sandbox.spy();
         navigateToOpenID = sandbox.spy();
         node = createComponent(HomePage, {
-          setup,
+          match: {},
+          setupSession,
           serverChange,
           getServerInfo,
           history: ["http://server.test/v1"],
@@ -77,7 +78,8 @@ describe("HomePage component", () => {
 
         beforeEach(() => {
           node = createComponent(HomePage, {
-            setup,
+            match: {},
+            setupSession,
             serverChange,
             getServerInfo,
             history: [],
@@ -114,7 +116,7 @@ describe("HomePage component", () => {
 
           const ret = new Promise(setImmediate).then(() => {
             Simulate.submit(node.querySelector("form"));
-            sinon.assert.calledWithExactly(setup, {
+            sinon.assert.calledWithExactly(setupSession, {
               server: "http://test.server/v1",
               authType: "basicauth",
               credentials: {
@@ -147,7 +149,7 @@ describe("HomePage component", () => {
 
           const ret = new Promise(setImmediate).then(() => {
             Simulate.submit(node.querySelector("form"));
-            sinon.assert.calledWithExactly(setup, {
+            sinon.assert.calledWithExactly(setupSession, {
               server: "http://test.server/v1",
               authType: "ldap",
               credentials: {
@@ -215,6 +217,9 @@ describe("HomePage component", () => {
     describe("History support", () => {
       it("should set the server field value using a default value if there's no history", () => {
         const node = createComponent(HomePage, {
+          match: {
+
+          },
           serverChange: sandbox.spy(),
           getServerInfo: sandbox.spy(),
           history: [],
@@ -229,6 +234,7 @@ describe("HomePage component", () => {
 
       it("should set the server field value using latest entry from history", () => {
         const node = createComponent(HomePage, {
+          match: {},
           serverChange: sandbox.spy(),
           getServerInfo: sandbox.spy(),
           history: [{ server: "http://server.test/v1", authType: "anonymous" }],
@@ -243,6 +249,7 @@ describe("HomePage component", () => {
 
       it("should set the authType field value using latest entry from history for that server", () => {
         const props = {
+          match: {},
           serverChange: sandbox.spy(),
           getServerInfo: sandbox.spy(),
           history: [
@@ -312,6 +319,7 @@ describe("HomePage component", () => {
 
     beforeEach(() => {
       node = createComponent(HomePage, {
+        match: {},
         session: {
           authenticated: true,
           server: "http://test.server/v1",

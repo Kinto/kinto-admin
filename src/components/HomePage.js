@@ -108,7 +108,7 @@ export default class HomePage extends PureComponent<Props> {
       history,
       settings,
       clearHistory,
-      setup,
+      setupSession,
       serverChange,
       getServerInfo,
       navigateToExternalAuth,
@@ -124,7 +124,7 @@ export default class HomePage extends PureComponent<Props> {
           <SessionInfo session={session} />
         ) : (
           <AuthForm
-            setup={setup}
+            setupSession={setupSession}
             serverChange={serverChange}
             getServerInfo={getServerInfo}
             session={session}
