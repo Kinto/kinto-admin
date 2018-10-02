@@ -5,6 +5,7 @@ import { Simulate } from "react-dom/test-utils";
 import { createSandbox, createComponent } from "../test_utils";
 
 import RecordCreate from "../../src/components/record/RecordCreate";
+import { clone } from "../../src/utils";
 
 describe("RecordCreate component", () => {
   let sandbox;
@@ -44,15 +45,19 @@ describe("RecordCreate component", () => {
       },
     };
     const record = { data: {}, permissions: {} };
+    const props = {
+      match: { params: { bid: "bucket", cid: "collection" } },
+      session: { authenticated: true, serverInfo: { user: "plop" } },
+      bucket,
+      collection,
+      record,
+      createRecord,
+    };
 
     beforeEach(() => {
       createRecord = sinon.spy();
       node = createComponent(RecordCreate, {
-        match: { params: { bid: "bucket", cid: "collection" } },
-        session: { authenticated: true, serverInfo: { user: "plop" } },
-        bucket,
-        collection,
-        record,
+        ...props,
         createRecord,
       });
     });
@@ -75,6 +80,97 @@ describe("RecordCreate component", () => {
         { foo: "bar" },
         undefined
       );
+    });
+
+    describe("ID field", () => {
+      let field;
+
+      describe("ID in schema", () => {
+        const withID = clone(collection);
+        withID.data.schema.properties.id = { type: "string" };
+
+        describe("ID not in UISchema", () => {
+          beforeEach(() => {
+            const node = createComponent(RecordCreate, {
+              ...props,
+              collection: withID,
+            });
+            field = node.querySelector("#root_id");
+          });
+
+          it("should show a text field", () => {
+            expect(field.getAttribute("type")).to.eql("text");
+          });
+
+          it("should be editable", () => {
+            expect(field.hasAttribute("disabled")).to.be.false;
+          });
+        });
+
+        describe("ID in UISchema", () => {
+          const withUISchema = clone(withID);
+          withUISchema.data.uiSchema = {
+            id: {
+              "ui:widget": "textarea",
+            },
+          };
+
+          beforeEach(() => {
+            const node = createComponent(RecordCreate, {
+              ...props,
+              collection: withUISchema,
+            });
+            field = node.querySelector("#root_id");
+          });
+
+          it("should show a custom field", () => {
+            expect(field.tagName.toLowerCase()).to.eql("textarea");
+          });
+
+          it("should be editable", () => {
+            expect(field.hasAttribute("disabled")).to.be.false;
+          });
+        });
+      });
+
+      describe("ID not in schema", () => {
+        let node;
+        describe("ID not in UISchema", () => {
+          beforeEach(() => {
+            node = createComponent(RecordCreate, {
+              ...props,
+              collection,
+            });
+          });
+
+          it("should not show the id field", () => {
+            expect(node.querySelector("#root_id")).to.not.exist;
+          });
+        });
+
+        describe("ID in UISchema", () => {
+          const withUISchema = {
+            ...collection,
+            uiSchema: {
+              id: {
+                "ui:widget": "text",
+              },
+            },
+          };
+
+          beforeEach(() => {
+            const node = createComponent(RecordCreate, {
+              ...props,
+              collection: withUISchema,
+            });
+            field = node.querySelector("#root_id");
+          });
+
+          it("should not show the id field", () => {
+            expect(node.querySelector("#root_id")).to.not.exist;
+          });
+        });
+      });
     });
   });
 

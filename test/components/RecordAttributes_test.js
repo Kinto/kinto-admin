@@ -5,6 +5,7 @@ import { Simulate } from "react-dom/test-utils";
 import { createSandbox, createComponent } from "../test_utils";
 
 import RecordAttributes from "../../src/components/record/RecordAttributes";
+import { clone } from "../../src/utils";
 
 describe("RecordAttributes component", () => {
   let sandbox;
@@ -26,40 +27,50 @@ describe("RecordAttributes component", () => {
     },
   };
 
-  describe("Schema defined", () => {
-    let node, updateRecord;
-    const collection = {
-      data: {
-        schema: {
-          type: "object",
-          properties: {
-            id: {
-              type: "string",
-            },
-            foo: {
-              type: "string",
-            },
+  const collection = {
+    data: {
+      schema: {
+        type: "object",
+        properties: {
+          foo: {
+            type: "string",
           },
         },
       },
-      permissions: {
-        write: [],
-      },
-    };
-    const record = { data: { id: "abc", foo: "bar" }, permissions: {} };
+    },
+    permissions: {
+      write: [],
+    },
+  };
+
+  const record = {
+    data: { id: "abc", last_modified: 123, foo: "bar" },
+    permissions: {},
+  };
+
+  const match = { params: { bid: "bucket", cid: "collection", id: "abc" } };
+  const session = { authenticated: true, serverInfo: { user: "plop" } };
+  const capabilities = {};
+  const props = {
+    match,
+    session,
+    capabilities,
+    bucket,
+    collection,
+    record,
+    updateRecord: () => {},
+    deleteRecord: () => {},
+    deleteAttachment: () => {},
+  };
+
+  describe("Simple schema", () => {
+    let node, updateRecord;
 
     beforeEach(() => {
       updateRecord = sinon.spy();
       node = createComponent(RecordAttributes, {
-        match: { params: { bid: "bucket", cid: "collection", id: "abc" } },
-        session: { authenticated: true, serverInfo: { user: "plop" } },
-        capabilities: {},
-        bucket,
-        collection,
-        record,
+        ...props,
         updateRecord,
-        deleteRecord: () => {},
-        deleteAttachment: () => {},
       });
     });
 
@@ -67,22 +78,11 @@ describe("RecordAttributes component", () => {
       expect(node.querySelector("form")).to.exist;
     });
 
-    it("should show the id as disabled", () => {
-      const field = node.querySelector("#root_id");
-      expect(field.value).to.eql("abc");
-      expect(field.hasAttribute("disabled")).to.be.true;
-    });
-
-    it("should show the id as disabled", () => {
-      const field = node.querySelector("#root_foo");
-      expect(field.value).to.eql("bar");
-    });
-
     it("should submitted entered data", () => {
-      Simulate.change(node.querySelector("#root_foo"), {
-        target: { value: "baz" },
-      });
+      const field = node.querySelector("#root_foo");
 
+      expect(field.value).to.eql("bar");
+      Simulate.change(field, { target: { value: "baz" } });
       Simulate.submit(node.querySelector("form"));
 
       sinon.assert.calledWithExactly(
@@ -93,6 +93,105 @@ describe("RecordAttributes component", () => {
         { data: { id: "abc", foo: "baz" } },
         undefined
       );
+    });
+  });
+
+  describe("ID field", () => {
+    let field;
+
+    describe("ID in schema", () => {
+      const withID = clone(collection);
+      withID.data.schema.properties.id = { type: "string" };
+
+      describe("ID not in UISchema", () => {
+        beforeEach(() => {
+          const node = createComponent(RecordAttributes, {
+            ...props,
+            collection: withID,
+          });
+          field = node.querySelector("#root_id");
+        });
+
+        it("should load the id value", () => {
+          expect(field.value).to.eql("abc");
+        });
+
+        it("should show a text field", () => {
+          expect(field.getAttribute("type")).to.eql("text");
+        });
+
+        it("should show the id as disabled", () => {
+          expect(field.hasAttribute("disabled")).to.be.true;
+        });
+      });
+
+      describe("ID in UISchema", () => {
+        const withUISchema = clone(withID);
+        withUISchema.data.uiSchema = {
+          id: {
+            "ui:widget": "textarea",
+          },
+        };
+
+        beforeEach(() => {
+          const node = createComponent(RecordAttributes, {
+            ...props,
+            collection: withUISchema,
+          });
+          field = node.querySelector("#root_id");
+        });
+
+        it("should load the id value", () => {
+          expect(field.value).to.eql("abc");
+        });
+
+        it("should show a custom field", () => {
+          expect(field.tagName.toLowerCase()).to.eql("textarea");
+        });
+
+        it("should show the id as disabled", () => {
+          expect(field.hasAttribute("disabled")).to.be.true;
+        });
+      });
+    });
+
+    describe("ID not in schema", () => {
+      let node;
+      describe("ID not in UISchema", () => {
+        beforeEach(() => {
+          node = createComponent(RecordAttributes, {
+            ...props,
+            collection,
+          });
+        });
+
+        it("should not show the id field", () => {
+          expect(node.querySelector("#root_id")).to.not.exist;
+        });
+      });
+
+      describe("ID in UISchema", () => {
+        const withUISchema = {
+          ...collection,
+          uiSchema: {
+            id: {
+              "ui:widget": "text",
+            },
+          },
+        };
+
+        beforeEach(() => {
+          const node = createComponent(RecordAttributes, {
+            ...props,
+            collection: withUISchema,
+          });
+          field = node.querySelector("#root_id");
+        });
+
+        it("should not show the id field", () => {
+          expect(node.querySelector("#root_id")).to.not.exist;
+        });
+      });
     });
   });
 });

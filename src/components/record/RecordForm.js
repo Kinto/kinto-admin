@@ -50,12 +50,12 @@ export function extendUIWithKintoFields(
   isCreate: boolean
 ): Object {
   return {
+    ...uiSchema,
     id: {
       "ui:widget": "text",
       "ui:disabled": !isCreate,
       ...uiSchema.id,
     },
-    ...uiSchema,
   };
 }
 
