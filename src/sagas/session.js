@@ -224,7 +224,7 @@ export function* listBuckets(
     }
 
     // If the default_bucket plugin is enabled, show the Default bucket first in the list.
-    if ("default_bucket" in serverCapabilities) {
+    if ("default_bucket" in serverCapabilities && userBucket) {
       let defaultBucket = data.find(b => b.id == userBucket);
       if (!defaultBucket) {
         // It will be shown even if server is empty.
