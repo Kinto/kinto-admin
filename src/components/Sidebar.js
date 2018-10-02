@@ -13,6 +13,7 @@ import * as React from "react";
 import Spinner from "./Spinner";
 import AdminLink from "./AdminLink";
 import url from "../url";
+import { canCreateBucket } from "../permission";
 
 type SideBarLinkProps = {
   currentPath: string,
@@ -170,6 +171,7 @@ function filterBuckets(buckets, filters): BucketEntry[] {
 }
 
 type BucketsMenuState = {
+  canCreateBucket: boolean,
   hideReadOnly: boolean,
   search: ?string,
 };
@@ -195,6 +197,7 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
 
   render() {
     const {
+      canCreateBucket,
       currentPath,
       busy,
       buckets,
@@ -205,17 +208,19 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
     const filteredBuckets = filterBuckets(buckets, this.state);
     return (
       <div>
-        <div className="panel panel-default">
-          <div className="list-group">
-            <SideBarLink
-              name="bucket:create"
-              currentPath={currentPath}
-              params={{}}>
-              <i className="glyphicon glyphicon-plus" />
-              Create bucket
-            </SideBarLink>
+        {canCreateBucket && (
+          <div className="panel panel-default bucket-create">
+            <div className="list-group">
+              <SideBarLink
+                name="bucket:create"
+                currentPath={currentPath}
+                params={{}}>
+                <i className="glyphicon glyphicon-plus" />
+                Create bucket
+              </SideBarLink>
+            </div>
           </div>
-        </div>
+        )}
         <div className="panel panel-default sidebar-filters">
           <div className="panel-heading">
             <strong>Filters</strong>
@@ -326,6 +331,7 @@ export default class Sidebar extends PureComponent<SidebarProps> {
         </div>
         {authenticated && (
           <BucketsMenu
+            canCreateBucket={canCreateBucket(session)}
             busy={busy}
             buckets={buckets}
             currentPath={currentPath}

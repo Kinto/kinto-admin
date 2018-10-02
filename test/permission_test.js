@@ -3,6 +3,7 @@ import { expect } from "chai";
 import {
   AUTHENTICATED,
   EVERYONE,
+  canCreateBucket,
   canEditBucket,
   canCreateCollection,
   canEditCollection,
@@ -14,8 +15,34 @@ import {
   permissionsToFormData,
 } from "../src/permission";
 
+describe("canCreateBucket", () => {
+  it("should always return true if no permissions list", () => {
+    const session = { permissions: null };
+    expect(canCreateBucket(session)).eql(true);
+  });
+
+  it("should return false if root perm is not listed", () => {
+    const session = { permissions: [{ bucket_id: "xyz" }] };
+    expect(canCreateBucket(session)).eql(false);
+  });
+
+  it("should return false if perm is not listed", () => {
+    const session = {
+      permissions: [{ resource_name: "root", permissions: [] }],
+    };
+    expect(canCreateBucket(session)).eql(false);
+  });
+
+  it("should return true if perm is listed", () => {
+    const session = {
+      permissions: [{ resource_name: "root", permissions: ["bucket:create"] }],
+    };
+    expect(canCreateBucket(session)).eql(true);
+  });
+});
+
 describe("canEditBucket", () => {
-  it("should always return true if no permisssions list", () => {
+  it("should always return true if no permissions list", () => {
     const session = { permissions: null };
     const bucket = {};
     expect(canEditBucket(session, bucket)).eql(true);
