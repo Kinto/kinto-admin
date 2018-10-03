@@ -241,7 +241,9 @@ export function* listBuckets(
 
     const responses = yield call([client, client.batch], batch => {
       for (const { id } of data) {
-        batch.bucket(id).listCollections();
+        // When reaching the default bucket by its real id, it does not get created.
+        // https://github.com/Kinto/kinto/issues/1791
+        batch.bucket(id == userBucket ? "default" : id).listCollections();
       }
     });
     let buckets: BucketEntry[] = data.map((bucket, index) => {
