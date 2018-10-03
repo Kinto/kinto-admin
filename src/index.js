@@ -37,7 +37,7 @@ export default class KintoAdmin extends Component<Props> {
     // Restore saved session, if any
     const session = loadSession();
     if (session) {
-      this.store.dispatch(sessionActions.setup(session.auth));
+      this.store.dispatch(sessionActions.setupSession(session.auth));
     } else {
       this.store.dispatch(
         sessionActions.getServerInfo({

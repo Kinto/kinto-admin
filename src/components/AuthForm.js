@@ -367,7 +367,7 @@ type AuthFormProps = {
   session: SessionState,
   history: ServerHistoryEntry[],
   settings: SettingsState,
-  setup: (session: Object) => void,
+  setupSession: (session: Object) => void,
   serverChange: () => void,
   getServerInfo: (auth: Object) => void,
   navigateToExternalAuth: (authFormData: Object) => void,
@@ -445,7 +445,7 @@ export default class AuthForm extends PureComponent<
   onSubmit = ({ formData }: { formData: Object }) => {
     const {
       session,
-      setup,
+      setupSession,
       navigateToExternalAuth,
       navigateToOpenID,
     } = this.props;
@@ -481,7 +481,7 @@ export default class AuthForm extends PureComponent<
       // case "basicauth":
       // case "accounts":
       default: {
-        return setup(extendedFormData);
+        return setupSession(extendedFormData);
       }
     }
   };
