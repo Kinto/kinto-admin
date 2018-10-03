@@ -199,7 +199,7 @@ const authSchemas = authType => {
         required: [...baseAuthSchema.required, "credentials"],
         properties: {
           ...baseAuthSchema.properties,
-          ...loginPasswordSchema("Accounts credentials"),
+          ...loginPasswordSchema("Account credentials"),
         },
       },
       uiSchema: {
