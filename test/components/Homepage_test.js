@@ -26,20 +26,21 @@ describe("HomePage component", () => {
   describe("Not authenticated", () => {
     describe("Authentication types", () => {
       let node,
-        setup,
+        setupSession,
         getServerInfo,
         navigateToExternalAuth,
         navigateToOpenID,
         serverChange;
 
       beforeEach(() => {
-        setup = sandbox.spy();
+        setupSession = sandbox.spy();
         serverChange = sandbox.spy();
         getServerInfo = sandbox.spy();
         navigateToExternalAuth = sandbox.spy();
         navigateToOpenID = sandbox.spy();
         node = createComponent(HomePage, {
-          setup,
+          match: {},
+          setupSession,
           serverChange,
           getServerInfo,
           history: ["http://server.test/v1"],
@@ -77,7 +78,8 @@ describe("HomePage component", () => {
 
         beforeEach(() => {
           node = createComponent(HomePage, {
-            setup,
+            match: {},
+            setupSession,
             serverChange,
             getServerInfo,
             history: [],
@@ -114,7 +116,7 @@ describe("HomePage component", () => {
 
           return new Promise(setImmediate).then(() => {
             Simulate.submit(node.querySelector("form"));
-            sinon.assert.calledWithExactly(setup, {
+            sinon.assert.calledWithExactly(setupSession, {
               server: "http://test.server/v1",
               authType: "basicauth",
               credentials: {
@@ -145,7 +147,7 @@ describe("HomePage component", () => {
 
           return new Promise(setImmediate).then(() => {
             Simulate.submit(node.querySelector("form"));
-            sinon.assert.calledWithExactly(setup, {
+            sinon.assert.calledWithExactly(setupSession, {
               server: "http://test.server/v1",
               authType: "ldap",
               credentials: {
@@ -207,6 +209,7 @@ describe("HomePage component", () => {
     describe("History support", () => {
       it("should set the server field value using a default value if there's no history", () => {
         const node = createComponent(HomePage, {
+          match: {},
           serverChange: sandbox.spy(),
           getServerInfo: sandbox.spy(),
           history: [],
@@ -221,6 +224,7 @@ describe("HomePage component", () => {
 
       it("should set the server field value using latest entry from history", () => {
         const node = createComponent(HomePage, {
+          match: {},
           serverChange: sandbox.spy(),
           getServerInfo: sandbox.spy(),
           history: [{ server: "http://server.test/v1", authType: "anonymous" }],
@@ -235,6 +239,7 @@ describe("HomePage component", () => {
 
       it("should set the authType field value using latest entry from history for that server", () => {
         const props = {
+          match: {},
           serverChange: sandbox.spy(),
           getServerInfo: sandbox.spy(),
           history: [
@@ -297,6 +302,38 @@ describe("HomePage component", () => {
         expect(state.formData.authType).eql("openid-google");
       });
     });
+
+    describe("After OpenID redirection", () => {
+      let setupSession;
+
+      beforeEach(() => {
+        setupSession = sinon.spy();
+        createComponent(HomePage, {
+          match: {
+            params: {
+              payload:
+                "eyJzZXJ2ZXIiOiJodHRwczovL2tpbnRvLmRldi5tb3phd3MubmV0L3YxLyIsImF1dGhUeXBlIjoib3BlbmlkLWF1dGgwIiwicmVkaXJlY3RVUkwiOm51bGx9",
+              token:
+                "%7B%22access_token%22%3A%22oXJNgbNayWPKF%22%2C%22id_token%22%3A%22eyJ0eXAd%22%2C%22expires_in%22%3A86400%2C%22token_type%22%3A%22Bearer%22%7D",
+            },
+          },
+          setupSession,
+          serverChange: sandbox.spy(),
+          getServerInfo: sandbox.spy(),
+          history: [],
+          settings: {},
+          session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
+        });
+      });
+
+      it("should setup session when component is mounted", () => {
+        sinon.assert.calledWithExactly(setupSession, {
+          authType: "openid-auth0",
+          credentials: { token: "oXJNgbNayWPKF" },
+          server: "https://kinto.dev.mozaws.net/v1/",
+        });
+      });
+    });
   });
 
   describe("Authenticated", () => {
@@ -304,6 +341,7 @@ describe("HomePage component", () => {
 
     beforeEach(() => {
       node = createComponent(HomePage, {
+        match: {},
         session: {
           authenticated: true,
           server: "http://test.server/v1",

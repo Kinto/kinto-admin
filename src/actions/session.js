@@ -29,7 +29,7 @@ export function sessionBusy(
   return { type: SESSION_BUSY, busy };
 }
 
-export function setup(
+export function setupSession(
   auth: Object
 ): {
   type: "SESSION_SETUP",

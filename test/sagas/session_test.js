@@ -205,7 +205,7 @@ describe("session sagas", () => {
       getState = () => ({
         session: sessionState,
       });
-      action = actions.setup(authData);
+      action = actions.setupSession(authData);
       setupSession = saga.setupSession(getState, action);
     });
 
@@ -254,7 +254,7 @@ describe("session sagas", () => {
             serverInfo,
           },
         });
-        const action = actions.setup(authData);
+        const action = actions.setupSession(authData);
         const setupSession = saga.setupSession(getStateOpenID, action);
         setupSession.next();
 
