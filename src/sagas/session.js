@@ -39,6 +39,8 @@ export function* getServerInfo(
       provider: auth.authType.replace("openid-", ""),
       server: auth.server,
       // $FlowFixMe we know we are dealing with openid, Flow does not.
+      tokenType: auth.tokenType,
+      // $FlowFixMe
       credentials: auth.credentials,
     };
     processedAuth = openIDAuth;

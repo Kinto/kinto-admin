@@ -10,8 +10,9 @@ function getAuthHeader(auth: AuthData): ?string {
   switch (auth.authType) {
     case "fxa":
     case "openid": {
-      const { token }: { token: string } = auth.credentials;
-      return "Bearer " + token;
+      const { tokenType, credentials } = auth;
+      const { token }: { token: string } = credentials;
+      return `${tokenType} ${token}`;
     }
     case "portier": {
       const { token }: { token: string } = auth.credentials;

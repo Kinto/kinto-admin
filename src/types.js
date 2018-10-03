@@ -388,6 +388,7 @@ export type OpenIDAuth = {
   authType: "openid",
   server: string,
   provider: string,
+  headerType: string,
   credentials: {
     token: string,
   },
