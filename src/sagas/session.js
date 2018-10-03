@@ -2,6 +2,7 @@
 import type { PermissionEntry } from "kinto-http";
 import type {
   AuthData,
+  OpenIDAuth,
   ActionType,
   BucketEntry,
   CollectionEntry,
@@ -34,9 +35,11 @@ export function* getServerInfo(
   let processedAuth: AuthData = auth;
   if (auth.authType.startsWith("openid-")) {
     const openIDAuth: OpenIDAuth = {
-      ...auth,
       authType: "openid",
       provider: auth.authType.replace("openid-", ""),
+      server: auth.server,
+      // $FlowFixMe we know we are dealing with openid, Flow does not.
+      credentials: auth.credentials,
     };
     processedAuth = openIDAuth;
   }
