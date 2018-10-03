@@ -310,6 +310,38 @@ describe("HomePage component", () => {
         expect(state.formData.authType).eql("openid-google");
       });
     });
+
+    describe("After OpenID redirection", () => {
+      let setupSession;
+
+      beforeEach(() => {
+        setupSession = sinon.spy();
+        createComponent(HomePage, {
+          match: {
+            params: {
+              payload:
+                "eyJzZXJ2ZXIiOiJodHRwczovL2tpbnRvLmRldi5tb3phd3MubmV0L3YxLyIsImF1dGhUeXBlIjoib3BlbmlkLWF1dGgwIiwicmVkaXJlY3RVUkwiOm51bGx9",
+              token:
+                "%7B%22access_token%22%3A%22oXJNgbNayWPKF%22%2C%22id_token%22%3A%22eyJ0eXAd%22%2C%22expires_in%22%3A86400%2C%22token_type%22%3A%22Bearer%22%7D",
+            },
+          },
+          setupSession,
+          serverChange: sandbox.spy(),
+          getServerInfo: sandbox.spy(),
+          history: [],
+          settings: {},
+          session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
+        });
+      });
+
+      it("should setup session when component is mounted", () => {
+        sinon.assert.calledWithExactly(setupSession, {
+          authType: "openid-auth0",
+          credentials: { token: "oXJNgbNayWPKF" },
+          server: "https://kinto.dev.mozaws.net/v1/",
+        });
+      });
+    });
   });
 
   describe("Authenticated", () => {
