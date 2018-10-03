@@ -96,15 +96,21 @@ export function* setupSession(
     } = getState();
     const { user: { id: userId } = {} } = serverInfo;
     const { authType } = auth;
-    const provider = authType.replace("openid-", ""); // This is only relevant if it's openID, eg openid-google
-    if (
-      authType != "anonymous" &&
-      (!userId ||
-        (!userId.startsWith(authType + ":") &&
-          // If the authType is openid, the userId starts with the provider
-          (authType.startsWith("openid-") &&
-            !userId.startsWith(`${provider}:`))))
-    ) {
+
+    // Here we add a check about the authentication provider.
+    // Because of the legacy ``basicauth`` authentication that accepts any credentials,
+    // we have to make sure that the user didn't get caught by it by accident.
+    // Accept "basicauth" user only if explicitly picked in the auth form.
+    // Consider valid any userID with other auth methods.
+    // Accept an empty userID if Anonymous was explicitly picked in the auth form.
+    // Note: We cannot guess the userId prefix here from the authentication method,
+    // since it not exposed by the server. (eg. *Kinto Accounts* is usually ``account:``...)
+    // See https://kinto.readthedocs.io/en/stable/configuration/settings.html#authentication
+    const hasValidCredentials = userId
+      ? (authType == "basicauth" && userId.startsWith("basicauth:")) ||
+        (authType != "basicauth" && !userId.startsWith("basicauth:"))
+      : authType == "anonymous";
+    if (!hasValidCredentials) {
       yield put(
         notificationActions.notifyError("Authentication failed.", {
           message: `Could not authenticate with ${getAuthLabel(authType)}`,
@@ -113,7 +119,8 @@ export function* setupSession(
       return;
     }
 
-    // We got a valid response; officially declare current user authenticated
+    // We got a valid response; officially declare current user authenticated.
+    // Note, that "authenticated" can also mean "anonymous" if picked in the auth form.
     yield put(actions.setAuthenticated());
     // Store this valid server url in the history
     yield put(historyActions.addHistory(serverInfo.url, auth.authType));

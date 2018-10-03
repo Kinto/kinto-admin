@@ -282,6 +282,31 @@ describe("session sagas", () => {
           message: "Could not authenticate with Basic Auth",
         });
       });
+
+      it("should check the user ID prefix for basicauth", () => {
+        const authData = {
+          server: "http://server.test/v1",
+          authType: "accounts",
+          credentials: { username: "alice", password: "secret" },
+        };
+
+        getState = () => ({
+          session: {
+            serverInfo: {
+              ...serverInfo,
+              user: { id: "basicauth:the-most-confusing-auth-ever" },
+            },
+          },
+        });
+        const action = actions.setupSession(authData);
+        const setupSession = saga.setupSession(getState, action);
+        setupSession.next(); // call getServerInfo.
+        const mocked = mockNotifyError(sandbox);
+        setupSession.next();
+        sinon.assert.calledWith(mocked, "Authentication failed.", {
+          message: "Could not authenticate with Kinto Account Auth",
+        });
+      });
     });
   });
 
