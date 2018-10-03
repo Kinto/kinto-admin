@@ -115,6 +115,7 @@ describe("session sagas", () => {
         const authData = {
           server: "http://server.test/v1",
           authType: "openid-google",
+          tokenType: "Bearer",
           credentials: { token: "the token" },
         };
         action = actions.getServerInfo(authData);
@@ -123,6 +124,7 @@ describe("session sagas", () => {
         sinon.assert.calledWithExactly(setupClient, {
           authType: "openid",
           provider: "google",
+          tokenType: "Bearer",
           server: "http://server.test/v1",
           credentials: { token: "the token" },
         });

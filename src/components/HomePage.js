@@ -95,14 +95,17 @@ export default class HomePage extends PureComponent<Props> {
     try {
       const { server, authType } = JSON.parse(atob(payload));
       token = decodeURIComponent(token);
+      let tokenType;
       if (authType.startsWith("openid-")) {
-        token = JSON.parse(token).access_token;
+        const parsedToken = JSON.parse(token);
+        token = parsedToken.access_token;
+        tokenType = parsedToken.token_type;
       }
       const credentials = { token };
       // This action is bound with the setupSession() saga, which will
       // eventually lead to a call to setupClient() that globally sets
       // the headers of the API client.
-      setupSession({ server, authType, credentials });
+      setupSession({ server, authType, credentials, tokenType });
     } catch (error) {
       const message = "Couldn't proceed with authentication.";
       notifyError(message, error);
