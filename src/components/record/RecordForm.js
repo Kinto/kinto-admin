@@ -16,7 +16,7 @@ import AdminLink from "../AdminLink";
 import Spinner from "../Spinner";
 import JSONRecordForm from "./JSONRecordForm";
 import { canCreateRecord, canEditRecord } from "../../permission";
-import { cleanRecord, linkify, buildAttachmentUrl, omit, clone } from "../../utils";
+import { linkify, buildAttachmentUrl, omit, clone } from "../../utils";
 
 export function extendSchemaWithAttachment(
   schema: Object,
@@ -39,8 +39,8 @@ export function extendSchemaWithAttachment(
 
   let schemaProperties;
   if (isCreate) {
-      // On creation form, there is no need to have the "attachment" attribute fields. They
-      // are all assigned by the server on attachment upload.
+    // On creation form, there is no need to have the "attachment" attribute fields. They
+    // are all assigned by the server on attachment upload.
     schemaProperties = omit(schema.properties, ["attachment"]);
   } else {
     schemaProperties = clone(schema.properties);
@@ -269,11 +269,7 @@ export default class RecordForm extends PureComponent<Props, State> {
     } = collection;
     const emptySchema = Object.keys(schema).length === 0;
 
-    let recordData = {};
-    if (record) {
-      // We may need the record id in the form data (see #609)
-      recordData = { ...cleanRecord(record.data), id: record.data.id };
-    }
+    const recordData = record ? record.data : {};
 
     if (record && record.busy) {
       return <Spinner />;

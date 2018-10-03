@@ -90,7 +90,7 @@ describe("RecordAttributes component", () => {
         "bucket",
         "collection",
         undefined,
-        { data: { id: "abc", foo: "baz" } },
+        { data: { id: "abc", foo: "baz", last_modified: 123 } },
         undefined
       );
     });
@@ -103,7 +103,6 @@ describe("RecordAttributes component", () => {
       data: {
         id: "abc",
         foo: "bar",
-        schema: 567890,
         attachment: {
           location: "path/file.png",
           mimetype: "image/png",
@@ -229,14 +228,25 @@ describe("RecordAttributes component", () => {
     });
 
     describe("Schema version in schema", () => {
+      const record = {
+        data: {
+          id: "abc",
+          last_modified: 123,
+          foo: "bar",
+          schema: 567890,
+        },
+        permissions: {},
+      };
+
       const withSchemaVersion = clone(collection);
-      withSchemaVersion.data.schema.properties.version = { type: "number" };
+      withSchemaVersion.data.schema.properties.schema = { type: "integer" };
 
       describe("Schema version not in UISchema", () => {
         beforeEach(() => {
           const node = createComponent(RecordAttributes, {
             ...props,
             collection: withSchemaVersion,
+            record,
           });
           field = node.querySelector("#root_schema");
         });
@@ -262,8 +272,9 @@ describe("RecordAttributes component", () => {
           const node = createComponent(RecordAttributes, {
             ...props,
             collection: withUISchema,
+            record,
           });
-          field = node.querySelector("#root_id");
+          field = node.querySelector("#root_schema");
         });
 
         it("should load the schema value", () => {
@@ -287,6 +298,7 @@ describe("RecordAttributes component", () => {
           node = createComponent(RecordAttributes, {
             ...props,
             collection,
+            record,
           });
         });
 
@@ -298,6 +310,7 @@ describe("RecordAttributes component", () => {
       describe("Schema version in UISchema", () => {
         const withUISchema = {
           ...collection,
+          record,
           uiSchema: {
             schema: {
               "ui:widget": "textarea",
@@ -306,15 +319,119 @@ describe("RecordAttributes component", () => {
         };
 
         beforeEach(() => {
-          const node = createComponent(RecordAttributes, {
+          createComponent(RecordAttributes, {
             ...props,
             collection: withUISchema,
           });
-          field = node.querySelector("#root_id");
         });
 
         it("should not show the schema field", () => {
           expect(node.querySelector("#root_schema")).to.not.exist;
+        });
+      });
+    });
+
+    describe("Last modified in schema", () => {
+      const record = {
+        data: {
+          id: "abc",
+          last_modified: 123,
+          foo: "bar",
+        },
+        permissions: {},
+      };
+
+      const withLastmodified = clone(collection);
+      withLastmodified.data.schema.properties.last_modified = {
+        type: "integer",
+      };
+
+      describe("Last modified not in UISchema", () => {
+        beforeEach(() => {
+          const node = createComponent(RecordAttributes, {
+            ...props,
+            collection: withLastmodified,
+            record,
+          });
+          field = node.querySelector("#root_last_modified");
+        });
+
+        it("should load the schema value", () => {
+          expect(field.value).to.eql("123");
+        });
+
+        it("should be a hidden field", () => {
+          expect(field.getAttribute("type")).to.eql("hidden");
+        });
+      });
+
+      describe("Last modified in UISchema", () => {
+        const withUISchema = clone(withLastmodified);
+        withUISchema.data.uiSchema = {
+          last_modified: {
+            "ui:widget": "text",
+          },
+        };
+
+        beforeEach(() => {
+          const node = createComponent(RecordAttributes, {
+            ...props,
+            collection: withUISchema,
+            record,
+          });
+          field = node.querySelector("#root_last_modified");
+        });
+
+        it("should load the schema value", () => {
+          expect(field.value).to.eql("123");
+        });
+
+        it("should show a custom field", () => {
+          expect(field.getAttribute("type")).to.eql("text");
+        });
+
+        it("should show the field as disabled", () => {
+          expect(field.hasAttribute("disabled")).to.be.true;
+        });
+      });
+    });
+
+    describe("Last modified not in schema", () => {
+      let node;
+      describe("Last modified not in UISchema", () => {
+        beforeEach(() => {
+          node = createComponent(RecordAttributes, {
+            ...props,
+            collection,
+            record,
+          });
+        });
+
+        it("should not show the schema field", () => {
+          expect(node.querySelector("#root_last_modified")).to.not.exist;
+        });
+      });
+
+      describe("Last modified in UISchema", () => {
+        const withUISchema = {
+          ...collection,
+          record,
+          uiSchema: {
+            last_modified: {
+              "ui:widget": "textarea",
+            },
+          },
+        };
+
+        beforeEach(() => {
+          createComponent(RecordAttributes, {
+            ...props,
+            collection: withUISchema,
+          });
+        });
+
+        it("should not show the schema field", () => {
+          expect(node.querySelector("#root_last_modified")).to.not.exist;
         });
       });
     });
