@@ -88,24 +88,26 @@ export function* setupSession(
     // Fetch server information
     yield call(getServerInfo, getState, actions.getServerInfo(auth));
 
-    // Check that current user was authenticated as expected.
-    // Distinguish anonymous from failed authentication using the user info
-    // in the server info endpoint.
     const {
       session: { serverInfo },
     } = getState();
-    const { user: { id: userId } = {} } = serverInfo;
-    const { authType } = auth;
 
-    // Here we add a check about the authentication provider.
+    // Check that current user was authenticated as expected.
+    // Distinguish anonymous from failed authentication using the user info
+    // in the server info endpoint.
+    //
     // Because of the legacy ``basicauth`` authentication that accepts any credentials,
-    // we have to make sure that the user didn't get caught by it by accident.
-    // Accept "basicauth" user only if explicitly picked in the auth form.
-    // Consider valid any userID with other auth methods.
-    // Accept an empty userID if Anonymous was explicitly picked in the auth form.
+    // we have to make sure that the user wasn't identified with it by accident.
+    //
+    // 1. Accept "basicauth" credentials only if explicitly picked in the auth form.
+    // 2. Consider valid any non empty user ID with the other auth methods.
+    // 3. Accept an empty user ID if *Anonymous* was explicitly picked in the auth form.
+    //
     // Note: We cannot guess the userId prefix here from the authentication method,
     // since it not exposed by the server. (eg. *Kinto Accounts* is usually ``account:``...)
     // See https://kinto.readthedocs.io/en/stable/configuration/settings.html#authentication
+    const { user: { id: userId } = {} } = serverInfo;
+    const { authType } = auth;
     const hasValidCredentials = userId
       ? (authType == "basicauth" && userId.startsWith("basicauth:")) ||
         (authType != "basicauth" && !userId.startsWith("basicauth:"))
