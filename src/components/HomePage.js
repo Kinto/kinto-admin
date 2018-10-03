@@ -93,7 +93,7 @@ export default class HomePage extends PureComponent<Props> {
     }
     // Check for an incoming authentication.
     try {
-      const { server, redirectURL, authType } = JSON.parse(atob(payload));
+      const { server, authType } = JSON.parse(atob(payload));
       token = decodeURIComponent(token);
       if (authType.startsWith("openid-")) {
         token = JSON.parse(token).access_token;
@@ -102,8 +102,7 @@ export default class HomePage extends PureComponent<Props> {
       // This action is bound with the setupSession() saga, which will
       // eventually lead to a call to setupClient() that globally sets
       // the headers of the API client.
-      // The redirectURL is taken into account in the routeUpdated() saga.
-      setupSession({ server, authType, credentials, redirectURL });
+      setupSession({ server, authType, credentials });
     } catch (error) {
       const message = "Couldn't proceed with authentication.";
       notifyError(message, error);
