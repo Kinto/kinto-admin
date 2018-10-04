@@ -220,6 +220,7 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
       sidebarMaxListedCollections,
     } = this.props;
     const filteredBuckets = filterBuckets(buckets, this.state);
+    const sortedBuckets = filteredBuckets.sort((a, b) => (a.id > b.id ? 1 : -1));
     return (
       <div>
         {canCreateBucket && (
@@ -269,7 +270,7 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
         {busy ? (
           <Spinner />
         ) : (
-          filteredBuckets.map((bucket, i) => {
+          sortedBuckets.map((bucket, i) => {
             const { id, collections } = bucket;
             const current = bid === id;
             return (
