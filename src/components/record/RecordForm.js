@@ -143,6 +143,10 @@ function AttachmentInfo(props: AttachmentInfoProps) {
     return null;
   }
 
+  const attachmentURL = buildAttachmentUrl(record, capabilities);
+
+  const FileSize = ({bytes}) => filesize(bytes);
+
   return (
     <div className="panel panel-default attachment-info">
       <div className="panel-heading">
@@ -165,7 +169,11 @@ function AttachmentInfo(props: AttachmentInfoProps) {
             <tbody>
               <tr>
                 <th>Location</th>
-                <td>{linkify(attachment.location)}</td>
+                <td>
+                  <a href={attachmentURL} target="_blank">
+                    {attachment.location}
+                  </a>
+                </td>
               </tr>
               <tr>
                 <th>Filename</th>
@@ -173,7 +181,7 @@ function AttachmentInfo(props: AttachmentInfoProps) {
               </tr>
               <tr>
                 <th>Size</th>
-                <td>{filesize(attachment.size)}</td>
+                <td><FileSize bytes={attachment.size} /></td>
               </tr>
               <tr>
                 <th>Hash</th>
@@ -185,7 +193,7 @@ function AttachmentInfo(props: AttachmentInfoProps) {
               </tr>
             </tbody>
           </table>
-          {!!attachment.original && (
+          {attachment.original && (
             <table className="table table-condensed">
               <tbody>
                 <tr>
@@ -196,7 +204,7 @@ function AttachmentInfo(props: AttachmentInfoProps) {
                   <td>{attachment.original.filename}</td>
                 </tr>
                 <tr>
-                  <td>{filesize(attachment.original.size)}</td>
+                  <td><FileSize bytes={attachment.original.size} /></td>
                 </tr>
                 <tr>
                   <td>{attachment.original.hash}</td>
@@ -210,7 +218,7 @@ function AttachmentInfo(props: AttachmentInfoProps) {
           <div>
             <AttachmentPreview
               mimetype={attachment.mimetype}
-              location={buildAttachmentUrl(record, capabilities)}
+              location={attachmentURL}
             />
             {!attachmentRequired && (
               <p className="text-right attachment-action">
