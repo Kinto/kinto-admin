@@ -127,6 +127,30 @@ describe("RecordAttributes component", () => {
     it("should show a delete attachment button", () => {
       expect(node.querySelector(".attachment-action .btn.btn-danger")).to.exist;
     });
+
+    describe("With Gzipped attachment", () => {
+      const gzipped = clone(record);
+      gzipped.data.attachment.original = {
+        filename: "plop.png",
+        size: 99999,
+      };
+
+      beforeEach(() => {
+        node = createComponent(RecordAttributes, {
+          ...props,
+          capabilities: { attachments: { base_url: "" } },
+          record: gzipped,
+        });
+      });
+
+      it("should show original file attributes", () => {
+        expect(
+          node.querySelector(
+            ".attachment-info table:nth-child(2) tr:nth-child(3) td"
+          ).textContent
+        ).to.eql("97.66 KB");
+      });
+    });
   });
 
   describe("Kinto fields", () => {
