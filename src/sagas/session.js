@@ -176,6 +176,7 @@ export function expandBucketsCollections(
         collections: [],
         permissions: [],
         readonly: true,
+        canCreateCollection: true,
       };
       bucketsCopy.push(bucket);
     }
@@ -185,6 +186,9 @@ export function expandBucketsCollections(
       bucket.readonly = !bucket.permissions.some(bp => {
         return ["write", "collection:create"].includes(bp);
       });
+      bucket.canCreateCollection = bucket.permissions.includes(
+        "collection:create"
+      );
     }
     if ("collection_id" in permission) {
       // Add any missing collection to the current bucket collections list; note
@@ -276,6 +280,7 @@ export function* listBuckets(
         collections,
         permissions: [],
         readonly: true,
+        canCreateCollection: true,
       };
     });
 

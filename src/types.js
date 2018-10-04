@@ -408,6 +408,7 @@ export type BucketEntry = {
   permissions: string[],
   collections: CollectionEntry[],
   readonly: boolean,
+  canCreateCollection: boolean,
   last_modified: number,
 };
 

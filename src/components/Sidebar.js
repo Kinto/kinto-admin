@@ -105,6 +105,7 @@ function BucketCollectionsMenu(props) {
     bid,
     cid,
     sidebarMaxListedCollections,
+    canCreateCollection,
   } = props;
   // collections always contains one more item than what's configured in
   // sidebarMaxListedCollections, so we can render a link to the paginated list
@@ -137,13 +138,15 @@ function BucketCollectionsMenu(props) {
             See all collections
           </SideBarLink>
         )}
-      <SideBarLink
-        name="collection:create"
-        params={{ bid: bucket.id }}
-        currentPath={currentPath}>
-        <i className="glyphicon glyphicon-plus" />
-        Create collection
-      </SideBarLink>
+      {canCreateCollection && (
+        <SideBarLink
+          name="collection:create"
+          params={{ bid: bucket.id }}
+          currentPath={currentPath}>
+          <i className="glyphicon glyphicon-plus" />
+          Create collection
+        </SideBarLink>
+      )}
     </div>
   );
 }
@@ -305,6 +308,7 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
                   bid={bid}
                   cid={cid}
                   sidebarMaxListedCollections={sidebarMaxListedCollections}
+                  canCreateCollection={bucket.canCreateCollection}
                 />
               </div>
             );
