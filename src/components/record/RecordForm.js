@@ -69,12 +69,12 @@ export function extendUIWithKintoFields(
     },
     last_modified: {
       "ui:widget": "hidden",
-      "ui:disabled": !isCreate,
+      "ui:disabled": true,  // Assigned by the server
       ...uiSchema.last_modified,
     },
     schema: {
       "ui:widget": "hidden",
-      "ui:disabled": !isCreate,
+      "ui:disabled": true,  // Assigned by the server
       ...uiSchema.schema,
     },
   };
