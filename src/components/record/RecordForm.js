@@ -16,7 +16,7 @@ import AdminLink from "../AdminLink";
 import Spinner from "../Spinner";
 import JSONRecordForm from "./JSONRecordForm";
 import { canCreateRecord, canEditRecord } from "../../permission";
-import { linkify, buildAttachmentUrl, omit } from "../../utils";
+import { buildAttachmentUrl, omit } from "../../utils";
 
 export function extendSchemaWithAttachment(
   schema: Object,
@@ -27,13 +27,16 @@ export function extendSchemaWithAttachment(
     return schema;
   }
   const isCreate = !record.id;
-  const hasAttachment = record.attachment && record.attachment.location;
+  const attachmentMissing = record.attachment && record.attachment.location;
 
-  // Attachment is only required on create record, or on update if the record
-  // does not have any (required state changed in the mean time).
+  // We add a fake schema field ``__attachment__`` for the file input.
+  // It will be required if the
+  // Attachment form field is only required to receive a file
+  // required, when creating a record, or updating it if it does not have any.
+  // (required setting changed in the mean time).
   const schemaRequired = schema.required || [];
   const required =
-    attachmentConfig.required && (isCreate || !hasAttachment)
+    attachmentConfig.required && (isCreate || attachmentMissing)
       ? schemaRequired.concat("__attachment__")
       : schemaRequired;
 
@@ -69,12 +72,12 @@ export function extendUIWithKintoFields(
     },
     last_modified: {
       "ui:widget": "hidden",
-      "ui:disabled": true,  // Assigned by the server
+      "ui:disabled": true, // Assigned by the server
       ...uiSchema.last_modified,
     },
     schema: {
       "ui:widget": "hidden",
-      "ui:disabled": true,  // Assigned by the server
+      "ui:disabled": true, // Assigned by the server
       ...uiSchema.schema,
     },
   };
@@ -145,7 +148,7 @@ function AttachmentInfo(props: AttachmentInfoProps) {
 
   const attachmentURL = buildAttachmentUrl(record, capabilities);
 
-  const FileSize = ({bytes}) => filesize(bytes);
+  const FileSize = ({ bytes }) => filesize(bytes);
 
   return (
     <div className="panel panel-default attachment-info">
@@ -181,7 +184,9 @@ function AttachmentInfo(props: AttachmentInfoProps) {
               </tr>
               <tr>
                 <th>Size</th>
-                <td><FileSize bytes={attachment.size} /></td>
+                <td>
+                  <FileSize bytes={attachment.size} />
+                </td>
               </tr>
               <tr>
                 <th>Hash</th>
@@ -204,7 +209,9 @@ function AttachmentInfo(props: AttachmentInfoProps) {
                   <td>{attachment.original.filename}</td>
                 </tr>
                 <tr>
-                  <td><FileSize bytes={attachment.original.size} /></td>
+                  <td>
+                    <FileSize bytes={attachment.original.size} />
+                  </td>
                 </tr>
                 <tr>
                   <td>{attachment.original.hash}</td>

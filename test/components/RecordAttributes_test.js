@@ -206,7 +206,7 @@ describe("RecordAttributes component", () => {
           expect(field.tagName.toLowerCase()).to.eql("textarea");
         });
 
-        it("should show the id as disabled", () => {
+        it("should show the custom widget as disabled", () => {
           expect(field.hasAttribute("disabled")).to.be.true;
         });
       });
@@ -309,7 +309,7 @@ describe("RecordAttributes component", () => {
           expect(field.getAttribute("type")).to.eql("text");
         });
 
-        it("should show the field as disabled", () => {
+        it("should show the custom widget as disabled", () => {
           expect(field.hasAttribute("disabled")).to.be.true;
         });
       });
@@ -414,7 +414,7 @@ describe("RecordAttributes component", () => {
           expect(field.getAttribute("type")).to.eql("text");
         });
 
-        it("should show the field as disabled", () => {
+        it("should show the custom widget as disabled", () => {
           expect(field.hasAttribute("disabled")).to.be.true;
         });
       });

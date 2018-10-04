@@ -352,7 +352,7 @@ table.record-list td.load-more {
 .attachment-info table {
   margin-bottom: 0;
   flex-grow: 1;
-  display: block; /* for Flex */
+  display: block; /* flex does not support display:table on items. */
 }
 
 .attachment-info .table-condensed > tbody > tr > td {
