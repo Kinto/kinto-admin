@@ -64,7 +64,11 @@ export default class RecordBulk extends PureComponent<Props> {
       bulkSchema = {
         type: "array",
         definitions: schema.definitions,
-        items: extendSchemaWithAttachment(schema, attachment),
+        items: extendSchemaWithAttachment(
+          schema,
+          attachment,
+          {} /* as for create record */
+        ),
       };
       bulkUiSchema = {
         items: extendUiSchemaWithAttachment(uiSchema, attachment),

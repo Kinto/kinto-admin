@@ -24,6 +24,12 @@ export type Attachment = {
   size: number,
   hash: string,
   mimetype: string,
+  original?: {
+    filename: string,
+    size: number,
+    hash: string,
+    mimetype: string,
+  },
 };
 
 export type BucketState = {
