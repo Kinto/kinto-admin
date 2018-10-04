@@ -16,7 +16,7 @@ import AdminLink from "../AdminLink";
 import Spinner from "../Spinner";
 import JSONRecordForm from "./JSONRecordForm";
 import { canCreateRecord, canEditRecord } from "../../permission";
-import { linkify, buildAttachmentUrl, omit, clone } from "../../utils";
+import { linkify, buildAttachmentUrl, omit } from "../../utils";
 
 export function extendSchemaWithAttachment(
   schema: Object,
