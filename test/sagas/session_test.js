@@ -379,6 +379,8 @@ describe("session sagas", () => {
             {
               bucket_id: "Foo",
               collection_id: "Bar",
+              resource_name: "bucket",
+              permissions: ["read"],
             },
           ],
         };
@@ -407,6 +409,7 @@ describe("session sagas", () => {
                 ],
                 permissions: [],
                 readonly: true,
+                canCreateCollection: true,
               },
               {
                 id: "b2",
@@ -419,6 +422,7 @@ describe("session sagas", () => {
                 ],
                 permissions: [],
                 readonly: true,
+                canCreateCollection: true,
               },
               {
                 id: "Foo",
@@ -429,8 +433,9 @@ describe("session sagas", () => {
                     readonly: true,
                   },
                 ],
-                permissions: [],
+                permissions: ["read"],
                 readonly: true,
+                canCreateCollection: false,
               },
             ])
           )
