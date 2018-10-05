@@ -18,7 +18,7 @@ function DataList(props) {
     <table className="table table-striped table-bordered record-list">
       <thead>
         <tr>
-          <th>Name</th>
+          <th>Id</th>
           <th>Members</th>
           <th>Last mod.</th>
           <th>Actions</th>
@@ -79,7 +79,7 @@ function ListActions({ bid, session, bucket }) {
         name="group:create"
         params={{ bid }}
         className="btn btn-info btn-group-add">
-        Add
+        Create group
       </AdminLink>
     </div>
   );
