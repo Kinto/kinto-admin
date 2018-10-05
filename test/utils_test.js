@@ -1,6 +1,7 @@
 import { expect } from "chai";
 
 import {
+  capitalize,
   cleanRecord,
   renderDisplayField,
   validateSchema,
@@ -12,7 +13,7 @@ import {
 } from "../src/utils";
 
 describe("cleanRecord", () => {
-  it("should remove id, schema and last_modified from properties", () => {
+  it("should remove id, schema, attachment and last_modified from properties", () => {
     expect(
       cleanRecord({
         id: "toto",
@@ -20,11 +21,18 @@ describe("cleanRecord", () => {
         schema: 5638,
         foo: "bar",
         foobar: "foo",
+        attachment: { location: "http://url " },
       })
     ).eql({
       foo: "bar",
       foobar: "foo",
     });
+  });
+});
+
+describe("capitalize", () => {
+  it("should put the first letter uppercase", () => {
+    expect(capitalize("last_modified")).eql("Last Modified");
   });
 });
 

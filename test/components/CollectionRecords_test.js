@@ -89,7 +89,12 @@ describe("CollectionRecords component", () => {
       recordsLoaded: true,
       records: [
         { id: "id1", foo: "bar", last_modified: 1 },
-        { id: "id2", foo: "baz", last_modified: 2 },
+        {
+          id: "id2",
+          foo: "baz",
+          last_modified: 2,
+          attachment: { location: "http://file" },
+        },
       ],
     };
 
@@ -113,10 +118,12 @@ describe("CollectionRecords component", () => {
       const rows = node.querySelectorAll("tbody tr");
 
       expect(rows).to.have.a.lengthOf(2);
-      expect(rows[0].querySelectorAll("td")[0].textContent).eql(
+      expect(rows[0].querySelectorAll("td")[0].textContent).eql("id1");
+      expect(rows[0].querySelectorAll("td")[1].textContent).eql(
         JSON.stringify({ foo: "bar" })
       );
-      expect(rows[1].querySelectorAll("td")[0].textContent).eql(
+      expect(rows[1].querySelectorAll("td")[0].textContent).eql("id2");
+      expect(rows[1].querySelectorAll("td")[1].textContent).eql(
         JSON.stringify({ foo: "baz" })
       );
     });

@@ -12,7 +12,12 @@ import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
 
-import { renderDisplayField, timeago, buildAttachmentUrl } from "../../utils";
+import {
+  capitalize,
+  renderDisplayField,
+  timeago,
+  buildAttachmentUrl,
+} from "../../utils";
 import { canCreateRecord } from "../../permission";
 import AdminLink from "../AdminLink";
 import CollectionTabs from "./CollectionTabs";
@@ -185,7 +190,7 @@ class Table extends PureComponent<TableProps> {
   getFieldTitle(displayField) {
     const { schema } = this.props;
     if (displayField === "__json") {
-      return "JSON";
+      return "Data";
     }
     if (
       this.isSchemaProperty(displayField) &&
@@ -193,7 +198,7 @@ class Table extends PureComponent<TableProps> {
     ) {
       return schema.properties[displayField].title;
     }
-    return displayField;
+    return capitalize(displayField);
   }
 
   isSchemaProperty(displayField) {
@@ -424,7 +429,7 @@ export default class CollectionRecords extends PureComponent<Props> {
             listNextRecords={listNextRecords}
             currentSort={currentSort}
             schema={schema || {}}
-            displayFields={displayFields || ["__json"]}
+            displayFields={displayFields || ["id", "__json"]}
             deleteRecord={deleteRecord}
             updateSort={this.updateSort}
             redirectTo={redirectTo}
