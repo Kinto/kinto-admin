@@ -32,6 +32,7 @@ export const INITIAL_STATE: CollectionState = {
   recordsLoaded: false,
   hasNextRecords: false,
   listNextRecords: null,
+  totalRecords: undefined,
   history: paginator(undefined, { type: "@@INIT" }),
 };
 
@@ -82,13 +83,14 @@ export function collection(
       return { ...state, recordsLoaded: false };
     }
     case COLLECTION_RECORDS_SUCCESS: {
-      const { records, hasNextRecords, listNextRecords } = action;
+      const { records, hasNextRecords, listNextRecords, totalRecords } = action;
       return {
         ...state,
         records: [...state.records, ...records],
         recordsLoaded: true,
         hasNextRecords,
         listNextRecords,
+        totalRecords,
       };
     }
     case COLLECTION_HISTORY_REQUEST:

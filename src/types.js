@@ -99,6 +99,7 @@ export type CollectionState = {
   recordsLoaded: boolean,
   hasNextRecords: boolean,
   listNextRecords: ?Function,
+  totalRecords: ?number,
   history: Paginator<ResourceHistoryEntry>,
 };
 

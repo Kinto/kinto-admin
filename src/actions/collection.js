@@ -60,18 +60,21 @@ export function listNextRecords(): {
 export function listRecordsSuccess(
   records: RecordData[],
   hasNextRecords: boolean,
-  listNextRecords: ?Function
+  listNextRecords: ?Function,
+  totalRecords: number,
 ): {
   type: "COLLECTION_RECORDS_SUCCESS",
   records: RecordData[],
   hasNextRecords: boolean,
   listNextRecords: ?Function,
+  totalRecords: number,
 } {
   return {
     type: COLLECTION_RECORDS_SUCCESS,
     records,
     hasNextRecords,
     listNextRecords,
+    totalRecords,
   };
 }
 

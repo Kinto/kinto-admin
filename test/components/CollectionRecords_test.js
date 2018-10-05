@@ -122,6 +122,37 @@ describe("CollectionRecords component", () => {
     });
   });
 
+  describe("Tabs", () => {
+    let node;
+
+    const collection = {
+      busy: false,
+      data: {},
+      permissions: {},
+      recordsLoaded: true,
+      records: [],
+      totalRecords: 18,
+    };
+
+    beforeEach(() => {
+      node = createComponent(CollectionRecords, {
+        match: { params: { bid: "bucket", cid: "collection" } },
+        session: {},
+        pluginHooks: {},
+        bucket,
+        collection,
+        capabilities,
+        listRecords: () => {},
+      });
+    });
+
+    it("should show the total number of records", () => {
+      expect(node.querySelector(".tabs-container li.active").textContent).to.eql(
+        "Records (18)"
+      );
+    });
+  });
+
   describe("List actions", () => {
     const collection = {
       busy: false,

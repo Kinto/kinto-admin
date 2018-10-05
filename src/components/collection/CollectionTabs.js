@@ -12,11 +12,19 @@ type Props = {
   selected: "records" | "attributes" | "permissions" | "history",
   capabilities: Capabilities,
   children?: React.Node,
+  totalRecords?: ?number,
 };
 
 export default class CollectionTabs extends PureComponent<Props> {
   render() {
-    const { bid, cid, selected, capabilities, children } = this.props;
+    const {
+      bid,
+      cid,
+      selected,
+      capabilities,
+      children,
+      totalRecords,
+    } = this.props;
 
     return (
       <div className="tabs-container">
@@ -26,7 +34,7 @@ export default class CollectionTabs extends PureComponent<Props> {
             className={selected === "records" ? "active" : ""}>
             <AdminLink name="collection:records" params={{ bid, cid }}>
               <i className="glyphicon glyphicon-align-justify" />
-              Records
+              Records {totalRecords ? `(${totalRecords})` : null}
             </AdminLink>
           </li>
           <li
