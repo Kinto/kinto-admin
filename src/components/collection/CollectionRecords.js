@@ -391,6 +391,7 @@ export default class CollectionRecords extends PureComponent<Props> {
       records,
       recordsLoaded,
       hasNextRecords,
+      totalRecords,
     } = collection;
     const { schema, displayFields } = data;
 
@@ -417,7 +418,8 @@ export default class CollectionRecords extends PureComponent<Props> {
           bid={bid}
           cid={cid}
           selected="records"
-          capabilities={capabilities}>
+          capabilities={capabilities}
+          totalRecords={totalRecords}>
           {listActions}
           <Table
             busy={busy}
