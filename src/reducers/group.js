@@ -14,9 +14,7 @@ import {
 import { paginator } from "./shared";
 
 export const INITIAL_STATE: GroupState = {
-  data: {
-    members: [],
-  },
+  data: null,
   busy: false,
   permissions: {
     read: [],
