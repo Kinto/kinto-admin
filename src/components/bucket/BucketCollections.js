@@ -20,8 +20,9 @@ function DataList(props) {
   const thead = (
     <thead>
       <tr>
-        <th>Name</th>
+        <th>Id</th>
         <th>Schema</th>
+        <th>Attachments</th>
         <th>Cache Expires</th>
         <th>Last mod.</th>
         <th>Actions</th>
@@ -32,7 +33,13 @@ function DataList(props) {
   const tbody = (
     <tbody className={!loaded ? "loading" : ""}>
       {entries.map((collection, index) => {
-        const { id: cid, schema, cache_expires, last_modified } = collection;
+        const {
+          id: cid,
+          schema,
+          cache_expires,
+          last_modified,
+          attachment,
+        } = collection;
         // FIXME: last_modified should always be here, but the types
         // don't express that
         const date = last_modified && new Date(last_modified);
@@ -41,6 +48,9 @@ function DataList(props) {
           <tr key={index}>
             <td>{cid}</td>
             <td>{schema ? "Yes" : "No"}</td>
+            <td>
+              {attachment ? (attachment.required ? "Required" : "Yes") : "No"}
+            </td>
             <td>{cache_expires ? `${cache_expires} seconds` : "No"}</td>
             <td>
               <span title={date ? date.toISOString() : ""}>{ageString}</span>
