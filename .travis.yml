@@ -26,8 +26,4 @@ env:
   - ACTION="build:lib"
   - ACTION="test-all:ci"
   - ACTION="cs-check"
-  - ACTION="test-browser"
-matrix:
-  allow_failures:
-    - env: ACTION="test-browser"
 script: npm run $ACTION
