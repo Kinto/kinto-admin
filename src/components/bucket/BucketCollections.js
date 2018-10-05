@@ -111,7 +111,7 @@ function ListActions(props) {
         name="collection:create"
         params={{ bid }}
         className="btn btn-info btn-collection-add">
-        Add
+        Create collection
       </AdminLink>
     </div>
   );

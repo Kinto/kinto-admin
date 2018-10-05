@@ -300,7 +300,7 @@ function ListActions(props) {
       name="record:create"
       params={{ bid, cid }}
       className="btn btn-info btn-record-add">
-      Create
+      Create record
     </AdminLink>,
     <AdminLink
       key="__2"
