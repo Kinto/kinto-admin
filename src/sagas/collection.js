@@ -73,8 +73,12 @@ export function* listNextRecords(getState: GetStateFn): SagaGen {
     return;
   }
   try {
-    const { data, hasNextPage, next, totalRecords } = yield call(listNextRecords);
-    yield put(actions.listRecordsSuccess(data, hasNextPage, next, totalRecords));
+    const { data, hasNextPage, next, totalRecords } = yield call(
+      listNextRecords
+    );
+    yield put(
+      actions.listRecordsSuccess(data, hasNextPage, next, totalRecords)
+    );
     yield call(scrollToBottom);
   } catch (error) {
     yield put(notifyError("Couldn't process next page.", error));

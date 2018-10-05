@@ -61,7 +61,7 @@ export function listRecordsSuccess(
   records: RecordData[],
   hasNextRecords: boolean,
   listNextRecords: ?Function,
-  totalRecords: number,
+  totalRecords: number
 ): {
   type: "COLLECTION_RECORDS_SUCCESS",
   records: RecordData[],
