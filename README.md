@@ -21,7 +21,6 @@ Kinto-based systems.
   - [Hacking on kinto-admin](#hacking-on-kinto-admin)
   - [Development server](#development-server)
   - [Tests](#tests)
-  - [Browser tests](#browser-tests)
   - [FAQ](#faq)
      - [Browser support](#browser-support)
      - [How to display a nested field value using the collection displayFields property?](#how-to-display-a-nested-field-value-using-the-collection-displayfields-property)
@@ -187,27 +186,6 @@ $ npm run test-all
 long time and may result in intermittent failures on Travis
 (see [#146](https://github.com/Kinto/kinto-admin/pull/146)).
 
-## Browser tests
-
-The browser test suite uses [NightmareJS](http://www.nightmarejs.org/) and
-[Electron](http://electron.atom.io/). To run browser tests:
-
-```
-$ npm run dist
-$ npm run test-browser
-```
-
-To show the browser interactions while running them, set the `NIGHTMARE_SHOW` env var:
-
-```
-$ NIGHTMARE_SHOW=1 npm run test-browser
-```
-
-There's also a TDD mode:
-
-```
-$ npm run tdd-browser
-```
 
 ## FAQ
 
