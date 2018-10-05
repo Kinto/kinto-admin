@@ -50,16 +50,15 @@ export function* listRecords(
   const { bid, cid, sort = currentSort } = action;
   try {
     const coll = getCollection(bid, cid);
-    const { data, hasNextPage, next, totalRecords } = yield call(
-      [coll, coll.listRecords],
-      {
-        sort: sort || currentSort || defaultSort,
-        limit: maxPerPage,
-      }
-    );
-    yield put(
-      actions.listRecordsSuccess(data, hasNextPage, next, totalRecords)
-    );
+    const { data, hasNextPage, next } = yield call([coll, coll.listRecords], {
+      sort: sort || currentSort || defaultSort,
+      limit: maxPerPage,
+    });
+    // Show list of records.
+    yield put(actions.listRecordsSuccess(data, hasNextPage, next));
+    // Request number of total records.
+    const totalRecords = yield call([coll, coll.getTotalRecords]);
+    yield put(actions.collectionTotalRecords(totalRecords));
   } catch (error) {
     yield put(notifyError("Couldn't list records.", error));
   }
@@ -73,12 +72,8 @@ export function* listNextRecords(getState: GetStateFn): SagaGen {
     return;
   }
   try {
-    const { data, hasNextPage, next, totalRecords } = yield call(
-      listNextRecords
-    );
-    yield put(
-      actions.listRecordsSuccess(data, hasNextPage, next, totalRecords)
-    );
+    const { data, hasNextPage, next } = yield call(listNextRecords);
+    yield put(actions.listRecordsSuccess(data, hasNextPage, next));
     yield call(scrollToBottom);
   } catch (error) {
     yield put(notifyError("Couldn't process next page.", error));

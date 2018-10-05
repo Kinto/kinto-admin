@@ -11,6 +11,7 @@ import {
   COLLECTION_HISTORY_REQUEST,
   COLLECTION_HISTORY_NEXT_REQUEST,
   COLLECTION_HISTORY_SUCCESS,
+  COLLECTION_TOTAL_RECORDS,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
   ROUTE_LOAD_FAILURE,
@@ -83,13 +84,19 @@ export function collection(
       return { ...state, recordsLoaded: false };
     }
     case COLLECTION_RECORDS_SUCCESS: {
-      const { records, hasNextRecords, listNextRecords, totalRecords } = action;
+      const { records, hasNextRecords, listNextRecords } = action;
       return {
         ...state,
         records: [...state.records, ...records],
         recordsLoaded: true,
         hasNextRecords,
         listNextRecords,
+      };
+    }
+    case COLLECTION_TOTAL_RECORDS: {
+      const { totalRecords } = action;
+      return {
+        ...state,
         totalRecords,
       };
     }

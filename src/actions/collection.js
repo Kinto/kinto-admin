@@ -17,6 +17,7 @@ import {
   COLLECTION_RECORDS_REQUEST,
   COLLECTION_RECORDS_NEXT_REQUEST,
   COLLECTION_RECORDS_SUCCESS,
+  COLLECTION_TOTAL_RECORDS,
   RECORD_CREATE_REQUEST,
   RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
@@ -60,20 +61,29 @@ export function listNextRecords(): {
 export function listRecordsSuccess(
   records: RecordData[],
   hasNextRecords: boolean,
-  listNextRecords: ?Function,
-  totalRecords: number
+  listNextRecords: ?Function
 ): {
   type: "COLLECTION_RECORDS_SUCCESS",
   records: RecordData[],
   hasNextRecords: boolean,
   listNextRecords: ?Function,
-  totalRecords: number,
 } {
   return {
     type: COLLECTION_RECORDS_SUCCESS,
     records,
     hasNextRecords,
     listNextRecords,
+  };
+}
+
+export function collectionTotalRecords(
+  totalRecords: number
+): {
+  type: "COLLECTION_TOTAL_RECORDS",
+  totalRecords: number,
+} {
+  return {
+    type: COLLECTION_TOTAL_RECORDS,
     totalRecords,
   };
 }
