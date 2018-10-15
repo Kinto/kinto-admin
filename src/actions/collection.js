@@ -17,6 +17,7 @@ import {
   COLLECTION_RECORDS_REQUEST,
   COLLECTION_RECORDS_NEXT_REQUEST,
   COLLECTION_RECORDS_SUCCESS,
+  COLLECTION_TOTAL_RECORDS,
   RECORD_CREATE_REQUEST,
   RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
@@ -72,6 +73,18 @@ export function listRecordsSuccess(
     records,
     hasNextRecords,
     listNextRecords,
+  };
+}
+
+export function collectionTotalRecords(
+  totalRecords: number
+): {
+  type: "COLLECTION_TOTAL_RECORDS",
+  totalRecords: number,
+} {
+  return {
+    type: COLLECTION_TOTAL_RECORDS,
+    totalRecords,
   };
 }
 

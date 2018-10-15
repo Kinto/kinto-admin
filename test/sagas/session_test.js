@@ -115,6 +115,7 @@ describe("session sagas", () => {
         const authData = {
           server: "http://server.test/v1",
           authType: "openid-google",
+          tokenType: "Bearer",
           credentials: { token: "the token" },
         };
         action = actions.getServerInfo(authData);
@@ -123,6 +124,7 @@ describe("session sagas", () => {
         sinon.assert.calledWithExactly(setupClient, {
           authType: "openid",
           provider: "google",
+          tokenType: "Bearer",
           server: "http://server.test/v1",
           credentials: { token: "the token" },
         });
@@ -205,7 +207,7 @@ describe("session sagas", () => {
       getState = () => ({
         session: sessionState,
       });
-      action = actions.setup(authData);
+      action = actions.setupSession(authData);
       setupSession = saga.setupSession(getState, action);
     });
 
@@ -254,7 +256,7 @@ describe("session sagas", () => {
             serverInfo,
           },
         });
-        const action = actions.setup(authData);
+        const action = actions.setupSession(authData);
         const setupSession = saga.setupSession(getStateOpenID, action);
         setupSession.next();
 
@@ -280,6 +282,31 @@ describe("session sagas", () => {
         setupSession.next();
         sinon.assert.calledWith(mocked, "Authentication failed.", {
           message: "Could not authenticate with Basic Auth",
+        });
+      });
+
+      it("should check the user ID prefix for basicauth", () => {
+        const authData = {
+          server: "http://server.test/v1",
+          authType: "accounts",
+          credentials: { username: "alice", password: "secret" },
+        };
+
+        getState = () => ({
+          session: {
+            serverInfo: {
+              ...serverInfo,
+              user: { id: "basicauth:the-most-confusing-auth-ever" },
+            },
+          },
+        });
+        const action = actions.setupSession(authData);
+        const setupSession = saga.setupSession(getState, action);
+        setupSession.next(); // call getServerInfo.
+        const mocked = mockNotifyError(sandbox);
+        setupSession.next();
+        sinon.assert.calledWith(mocked, "Authentication failed.", {
+          message: "Could not authenticate with Kinto Account Auth",
         });
       });
     });
@@ -352,6 +379,8 @@ describe("session sagas", () => {
             {
               bucket_id: "Foo",
               collection_id: "Bar",
+              resource_name: "bucket",
+              permissions: ["read"],
             },
           ],
         };
@@ -380,6 +409,7 @@ describe("session sagas", () => {
                 ],
                 permissions: [],
                 readonly: true,
+                canCreateCollection: true,
               },
               {
                 id: "b2",
@@ -392,6 +422,7 @@ describe("session sagas", () => {
                 ],
                 permissions: [],
                 readonly: true,
+                canCreateCollection: true,
               },
               {
                 id: "Foo",
@@ -402,8 +433,9 @@ describe("session sagas", () => {
                     readonly: true,
                   },
                 ],
-                permissions: [],
+                permissions: ["read"],
                 readonly: true,
+                canCreateCollection: false,
               },
             ])
           )

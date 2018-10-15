@@ -16,31 +16,69 @@ import AdminLink from "../AdminLink";
 import Spinner from "../Spinner";
 import JSONRecordForm from "./JSONRecordForm";
 import { canCreateRecord, canEditRecord } from "../../permission";
-import { cleanRecord, linkify, buildAttachmentUrl } from "../../utils";
+import { buildAttachmentUrl, omit } from "../../utils";
 
 export function extendSchemaWithAttachment(
   schema: Object,
   attachmentConfig: ?{ enabled: boolean, required: boolean },
-  edit: boolean = false
+  record: RecordData
 ): Object {
   if (!attachmentConfig || !attachmentConfig.enabled) {
     return schema;
   }
+  const isCreate = !record.id;
+  const attachmentMissing = record.attachment && record.attachment.location;
+
+  // We add a fake schema field ``__attachment__`` for the file input.
+  // It will be required if the
+  // Attachment form field is only required to receive a file
+  // required, when creating a record, or updating it if it does not have any.
+  // (required setting changed in the mean time).
   const schemaRequired = schema.required || [];
   const required =
-    attachmentConfig.required && !edit
+    attachmentConfig.required && (isCreate || attachmentMissing)
       ? schemaRequired.concat("__attachment__")
       : schemaRequired;
+
+  // On forms, there is no need to have the "attachment" attribute fields. They
+  // are shown in the attachment infos, and all assigned by the server automatically
+  // on file upload.
+  let schemaProperties = omit(schema.properties, ["attachment"]);
+
   return {
     ...schema,
     required,
     properties: {
-      ...schema.properties,
+      ...schemaProperties,
       __attachment__: {
         type: "string",
         format: "data-url",
         title: "File attachment",
       },
+    },
+  };
+}
+
+export function extendUIWithKintoFields(
+  uiSchema: Object,
+  isCreate: boolean
+): Object {
+  return {
+    ...uiSchema,
+    id: {
+      "ui:widget": "text",
+      "ui:disabled": !isCreate,
+      ...uiSchema.id,
+    },
+    last_modified: {
+      "ui:widget": "hidden",
+      "ui:disabled": true, // Assigned by the server
+      ...uiSchema.last_modified,
+    },
+    schema: {
+      "ui:widget": "hidden",
+      "ui:disabled": true, // Assigned by the server
+      ...uiSchema.schema,
     },
   };
 }
@@ -85,6 +123,7 @@ function AttachmentPreview({ mimetype, location }) {
 
 type AttachmentInfoProps = {
   record?: RecordState,
+  allowEditing: boolean,
   attachmentRequired: ?boolean,
   deleteAttachment: () => void,
   capabilities: Capabilities,
@@ -92,6 +131,7 @@ type AttachmentInfoProps = {
 
 function AttachmentInfo(props: AttachmentInfoProps) {
   const {
+    allowEditing,
     record: recordState,
     attachmentRequired,
     deleteAttachment,
@@ -105,6 +145,11 @@ function AttachmentInfo(props: AttachmentInfoProps) {
   if (!attachment) {
     return null;
   }
+
+  const attachmentURL = buildAttachmentUrl(record, capabilities);
+
+  const FileSize = ({ bytes }) => filesize(bytes);
+
   return (
     <div className="panel panel-default attachment-info">
       <div className="panel-heading">
@@ -112,53 +157,88 @@ function AttachmentInfo(props: AttachmentInfoProps) {
         <b>Attachment information</b>
       </div>
       <div className="panel-body">
-        {attachmentRequired && (
-          <div className="alert alert-warning">
-            <p>
-              An attachment is required for records in this collection. To
-              replace current attachment, use the <i>File attachment</i> field
-              below.
-            </p>
-          </div>
-        )}
-        <AttachmentPreview
-          mimetype={attachment.mimetype}
-          location={buildAttachmentUrl(record, capabilities)}
-        />
-        <table className="table table-condensed">
-          <tbody>
-            <tr>
-              <th>Location</th>
-              <td>{linkify(attachment.location)}</td>
-            </tr>
-            <tr>
-              <th>Filename</th>
-              <td>{attachment.filename}</td>
-            </tr>
-            <tr>
-              <th>Size</th>
-              <td>{filesize(attachment.size)}</td>
-            </tr>
-            <tr>
-              <th>Hash</th>
-              <td>{attachment.hash}</td>
-            </tr>
-            <tr>
-              <th>Mime-Type</th>
-              <td>{attachment.mimetype}</td>
-            </tr>
-          </tbody>
-        </table>
-        {!attachmentRequired && (
-          <p className="text-right attachment-action">
-            <input
-              type="button"
-              onClick={deleteAttachment}
-              className="btn btn-danger"
-              value="Delete this attachment"
+        {allowEditing &&
+          attachmentRequired && (
+            <div className="alert alert-warning">
+              <p>
+                An attachment is required for records in this collection. To
+                replace current attachment, use the <i>File attachment</i> field
+                below.
+              </p>
+            </div>
+          )}
+        <div className="attachment-attributes">
+          <table className="table table-condensed">
+            <tbody>
+              <tr>
+                <th>Location</th>
+                <td>
+                  <a href={attachmentURL} target="_blank">
+                    {attachment.location}
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <th>Filename</th>
+                <td>{attachment.filename}</td>
+              </tr>
+              <tr>
+                <th>Size</th>
+                <td>
+                  <FileSize bytes={attachment.size} />
+                </td>
+              </tr>
+              <tr>
+                <th>Hash</th>
+                <td>{attachment.hash}</td>
+              </tr>
+              <tr>
+                <th>Mime-Type</th>
+                <td>{attachment.mimetype}</td>
+              </tr>
+            </tbody>
+          </table>
+          {attachment.original && (
+            <table className="table table-condensed">
+              <tbody>
+                <tr>
+                  <th>Pre-gzipped file</th>
+                  <td />
+                </tr>
+                <tr>
+                  <td>{attachment.original.filename}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <FileSize bytes={attachment.original.size} />
+                  </td>
+                </tr>
+                <tr>
+                  <td>{attachment.original.hash}</td>
+                </tr>
+                <tr>
+                  <td>{attachment.original.mimetype}</td>
+                </tr>
+              </tbody>
+            </table>
+          )}
+          <div>
+            <AttachmentPreview
+              mimetype={attachment.mimetype}
+              location={attachmentURL}
             />
-          </p>
-        )}
+            {!attachmentRequired && (
+              <p className="text-right attachment-action">
+                <input
+                  type="button"
+                  onClick={deleteAttachment}
+                  className="btn btn-danger"
+                  value="Delete this attachment"
+                />
+              </p>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -214,8 +294,9 @@ export default class RecordForm extends PureComponent<Props, State> {
     const {
       data: { schema = {}, uiSchema = {}, attachment },
     } = collection;
-    const recordData = (record && record.data) || {};
     const emptySchema = Object.keys(schema).length === 0;
+
+    const recordData = record ? record.data : {};
 
     if (record && record.busy) {
       return <Spinner />;
@@ -269,7 +350,7 @@ export default class RecordForm extends PureComponent<Props, State> {
           )}
           <JSONRecordForm
             disabled={!this.allowEditing}
-            record={JSON.stringify(cleanRecord(recordData), null, 2)}
+            record={JSON.stringify(recordData, null, 2)}
             onSubmit={this.onSubmit}>
             {buttons}
           </JSONRecordForm>
@@ -277,15 +358,16 @@ export default class RecordForm extends PureComponent<Props, State> {
       );
     }
 
-    const _schema = extendSchemaWithAttachment(schema, attachment, !!record);
-    let _uiSchema = extendUiSchemaWithAttachment(uiSchema, attachment);
+    const _schema = extendSchemaWithAttachment(schema, attachment, recordData);
+    let _uiSchema = extendUIWithKintoFields(uiSchema, !record);
+    _uiSchema = extendUiSchemaWithAttachment(_uiSchema, attachment);
     _uiSchema = extendUiSchemaWhenDisabled(_uiSchema, !this.allowEditing);
 
     return (
       <BaseForm
         schema={_schema}
         uiSchema={_uiSchema}
-        formData={cleanRecord(recordData)}
+        formData={recordData}
         onSubmit={this.onSubmit}>
         {buttons}
       </BaseForm>
@@ -310,21 +392,22 @@ export default class RecordForm extends PureComponent<Props, State> {
       data: { attachment: attachmentConfig },
     } = collection;
     const attachmentRequired = attachmentConfig && attachmentConfig.required;
-    const creation = !record;
+    const isUpdate = !!record;
 
     const alert =
       this.allowEditing || collection.busy ? null : (
         <div className="alert alert-warning">
           You don't have the required permission to
-          {creation ? " create a" : " edit this"} record.
+          {isUpdate ? " edit this" : " create a"} record.
         </div>
       );
 
     return (
       <div>
         {alert}
-        {creation && (
+        {isUpdate && (
           <AttachmentInfo
+            allowEditing={this.allowEditing}
             capabilities={capabilities}
             record={record}
             attachmentRequired={attachmentRequired}

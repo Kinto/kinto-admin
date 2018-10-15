@@ -35,6 +35,10 @@ export function timeago(timestamp: number, now: ?number): string {
   return _timeago(nowUTC).format(new Date(Math.min(nowUTC, timestamp)));
 }
 
+export function capitalize(str: string): string {
+  return str.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase());
+}
+
 export function validJSON(string: string): boolean {
   try {
     JSON.parse(string);
@@ -128,7 +132,7 @@ export function validateUiSchema(jsonUiSchema: string, jsonSchema: string) {
 }
 
 export function cleanRecord(record: RecordData): RecordData {
-  return omit(record, ["id", "schema", "last_modified"]);
+  return omit(record, ["id", "schema", "last_modified", "attachment"]);
 }
 
 function handleNestedDisplayField(

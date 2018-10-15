@@ -77,6 +77,7 @@ declare module "kinto-http" {
     setPermissions(permissions: Permissions): Promise<ObjectResponseBody<Resource>>;
     removeAttachment(): Promise<ObjectResponseBody<Resource>>;
     listRecords(options: Object): Promise<ListResponseBody<Resource>>;
+    getTotalRecords(options?: Object): Promise<number>;
     addAttachment(attachment: string, record: Object, options?: Options): Promise<ObjectResponseBody<Resource>>;
     createRecord(record: Object, options?: Options): Promise<ObjectResponseBody<Resource>>;
     updateRecord(record: Object, options?: Options): Promise<ObjectResponseBody<Resource>>;

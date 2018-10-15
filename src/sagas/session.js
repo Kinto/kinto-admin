@@ -1,6 +1,8 @@
 /* @flow */
 import type { PermissionEntry } from "kinto-http";
 import type {
+  AuthData,
+  OpenIDAuth,
   ActionType,
   BucketEntry,
   CollectionEntry,
@@ -28,16 +30,22 @@ export function* getServerInfo(
   getState: GetStateFn,
   action: ActionType<typeof actions.getServerInfo>
 ): SagaGen {
-  const { auth }: Object = action;
+  const { auth } = action;
 
-  let processedAuth = auth;
+  let processedAuth: AuthData = auth;
   if (auth.authType.startsWith("openid-")) {
-    processedAuth = {
-      ...auth,
+    const openIDAuth: OpenIDAuth = {
       authType: "openid",
       provider: auth.authType.replace("openid-", ""),
+      server: auth.server,
+      // $FlowFixMe we know we are dealing with openid, Flow does not.
+      tokenType: auth.tokenType,
+      // $FlowFixMe
+      credentials: auth.credentials,
     };
+    processedAuth = openIDAuth;
   }
+
   // Set the client globally to the entire app, when the saga starts.
   // We'll compare the remote of this singleton when the server info will be received
   // to prevent race conditions.
@@ -75,30 +83,38 @@ export function* getServerInfo(
 
 export function* setupSession(
   getState: GetStateFn,
-  action: ActionType<typeof actions.setup>
+  action: ActionType<typeof actions.setupSession>
 ): SagaGen {
   const { auth } = action;
   try {
     // Fetch server information
     yield call(getServerInfo, getState, actions.getServerInfo(auth));
 
-    // Check that current user was authenticated as expected.
-    // Distinguish anonymous from failed authentication using the user info
-    // in the server info endpoint.
     const {
       session: { serverInfo },
     } = getState();
+
+    // Check that current user was authenticated as expected.
+    // Distinguish anonymous from failed authentication using the user info
+    // in the server info endpoint.
+    //
+    // Because of the legacy ``basicauth`` authentication that accepts any credentials,
+    // we have to make sure that the user wasn't identified with it by accident.
+    //
+    // 1. Accept "basicauth" credentials only if explicitly picked in the auth form.
+    // 2. Consider valid any non empty user ID with the other auth methods.
+    // 3. Accept an empty user ID if *Anonymous* was explicitly picked in the auth form.
+    //
+    // Note: We cannot guess the userId prefix here from the authentication method,
+    // since it not exposed by the server. (eg. *Kinto Accounts* is usually ``account:``...)
+    // See https://kinto.readthedocs.io/en/stable/configuration/settings.html#authentication
     const { user: { id: userId } = {} } = serverInfo;
     const { authType } = auth;
-    const provider = authType.replace("openid-", ""); // This is only relevant if it's openID, eg openid-google
-    if (
-      authType != "anonymous" &&
-      (!userId ||
-        (!userId.startsWith(authType + ":") &&
-          // If the authType is openid, the userId starts with the provider
-          (authType.startsWith("openid-") &&
-            !userId.startsWith(`${provider}:`))))
-    ) {
+    const hasValidCredentials = userId
+      ? (authType == "basicauth" && userId.startsWith("basicauth:")) ||
+        (authType != "basicauth" && !userId.startsWith("basicauth:"))
+      : authType == "anonymous";
+    if (!hasValidCredentials) {
       yield put(
         notificationActions.notifyError("Authentication failed.", {
           message: `Could not authenticate with ${getAuthLabel(authType)}`,
@@ -107,7 +123,8 @@ export function* setupSession(
       return;
     }
 
-    // We got a valid response; officially declare current user authenticated
+    // We got a valid response; officially declare current user authenticated.
+    // Note, that "authenticated" can also mean "anonymous" if picked in the auth form.
     yield put(actions.setAuthenticated());
     // Store this valid server url in the history
     yield put(historyActions.addHistory(serverInfo.url, auth.authType));
@@ -159,6 +176,7 @@ export function expandBucketsCollections(
         collections: [],
         permissions: [],
         readonly: true,
+        canCreateCollection: true,
       };
       bucketsCopy.push(bucket);
     }
@@ -168,6 +186,9 @@ export function expandBucketsCollections(
       bucket.readonly = !bucket.permissions.some(bp => {
         return ["write", "collection:create"].includes(bp);
       });
+      bucket.canCreateCollection = bucket.permissions.includes(
+        "collection:create"
+      );
     }
     if ("collection_id" in permission) {
       // Add any missing collection to the current bucket collections list; note
@@ -224,7 +245,7 @@ export function* listBuckets(
     }
 
     // If the default_bucket plugin is enabled, show the Default bucket first in the list.
-    if ("default_bucket" in serverCapabilities) {
+    if ("default_bucket" in serverCapabilities && userBucket) {
       let defaultBucket = data.find(b => b.id == userBucket);
       if (!defaultBucket) {
         // It will be shown even if server is empty.
@@ -235,7 +256,9 @@ export function* listBuckets(
 
     const responses = yield call([client, client.batch], batch => {
       for (const { id } of data) {
-        batch.bucket(id).listCollections();
+        // When reaching the default bucket by its real id, it does not get created.
+        // https://github.com/Kinto/kinto/issues/1791
+        batch.bucket(id == userBucket ? "default" : id).listCollections();
       }
     });
     let buckets: BucketEntry[] = data.map((bucket, index) => {
@@ -257,6 +280,7 @@ export function* listBuckets(
         collections,
         permissions: [],
         readonly: true,
+        canCreateCollection: true,
       };
     });
 

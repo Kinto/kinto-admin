@@ -43,7 +43,7 @@ describe("root saga", () => {
   describe("Session watchers registration", () => {
     it("should watch for the setup action", () => {
       const saga = sandbox.stub(sessionSagas, "setupSession");
-      const action = sessionActions.setup();
+      const action = sessionActions.setupSession();
 
       expectSagaCalled(saga, action);
     });

@@ -24,6 +24,12 @@ export type Attachment = {
   size: number,
   hash: string,
   mimetype: string,
+  original?: {
+    filename: string,
+    size: number,
+    hash: string,
+    mimetype: string,
+  },
 };
 
 export type BucketState = {
@@ -93,6 +99,7 @@ export type CollectionState = {
   recordsLoaded: boolean,
   hasNextRecords: boolean,
   listNextRecords: ?Function,
+  totalRecords: ?number,
   history: Paginator<ResourceHistoryEntry>,
 };
 
@@ -126,7 +133,7 @@ export type GetStateFn = () => AppState;
 
 export type GroupState = {
   busy: boolean,
-  data: Object,
+  data: ?GroupData,
   permissions: GroupPermissions,
   history: Paginator<ResourceHistoryEntry>,
 };
@@ -135,6 +142,7 @@ export type GroupData = {
   id: string,
   last_modified: number,
   members: string[],
+  [key: string]: any,
 };
 
 export type GroupPermissions = {
@@ -228,6 +236,13 @@ export type ResourceHistoryEntry = {
 };
 
 export type EmptyRouteParams = {};
+
+export type HomePageRouteMatch = {
+  params: { payload: string, token: string },
+  isExact: boolean,
+  path: string,
+  url: string,
+};
 
 export type BucketRouteMatch = {
   params: { bid: string },
@@ -381,6 +396,7 @@ export type OpenIDAuth = {
   authType: "openid",
   server: string,
   provider: string,
+  tokenType: string,
   credentials: {
     token: string,
   },
@@ -400,6 +416,7 @@ export type BucketEntry = {
   permissions: string[],
   collections: CollectionEntry[],
   readonly: boolean,
+  canCreateCollection: boolean,
   last_modified: number,
 };
 

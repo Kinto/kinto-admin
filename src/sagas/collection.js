@@ -54,7 +54,11 @@ export function* listRecords(
       sort: sort || currentSort || defaultSort,
       limit: maxPerPage,
     });
+    // Show list of records.
     yield put(actions.listRecordsSuccess(data, hasNextPage, next));
+    // Request number of total records.
+    const totalRecords = yield call([coll, coll.getTotalRecords]);
+    yield put(actions.collectionTotalRecords(totalRecords));
   } catch (error) {
     yield put(notifyError("Couldn't list records.", error));
   }

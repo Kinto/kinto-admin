@@ -280,7 +280,7 @@ function FormInstructions({ onSchemalessLinkClick }) {
         <li>Decide if you want to enable attaching a file to records.</li>
       </ol>
       <p>
-        Alternatively, you can create a
+        Alternatively, you can create a{" "}
         <a href="" onClick={onSchemalessLinkClick}>
           schemaless collection
         </a>

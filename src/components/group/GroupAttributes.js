@@ -49,7 +49,7 @@ export default class GroupAttributes extends PureComponent<Props> {
       params: { bid, gid },
     } = match;
     const { busy, data: formData } = group;
-    if (busy) {
+    if (busy || formData == null) {
       return <Spinner />;
     }
     return (

@@ -11,6 +11,7 @@ import {
   COLLECTION_HISTORY_REQUEST,
   COLLECTION_HISTORY_NEXT_REQUEST,
   COLLECTION_HISTORY_SUCCESS,
+  COLLECTION_TOTAL_RECORDS,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
   ROUTE_LOAD_FAILURE,
@@ -32,6 +33,7 @@ export const INITIAL_STATE: CollectionState = {
   recordsLoaded: false,
   hasNextRecords: false,
   listNextRecords: null,
+  totalRecords: undefined,
   history: paginator(undefined, { type: "@@INIT" }),
 };
 
@@ -89,6 +91,13 @@ export function collection(
         recordsLoaded: true,
         hasNextRecords,
         listNextRecords,
+      };
+    }
+    case COLLECTION_TOTAL_RECORDS: {
+      const { totalRecords } = action;
+      return {
+        ...state,
+        totalRecords,
       };
     }
     case COLLECTION_HISTORY_REQUEST:

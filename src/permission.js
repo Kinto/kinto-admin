@@ -29,6 +29,14 @@ function can(
   return permEntries.length > 0;
 }
 
+export function canCreateBucket(session: SessionState): boolean {
+  return can(session, (perm: PermissionsListEntry) => {
+    return (
+      perm.resource_name == "root" && perm.permissions.includes("bucket:create")
+    );
+  });
+}
+
 export function canEditBucket(
   session: SessionState,
   bucket: BucketState
@@ -90,6 +98,9 @@ export function canEditGroup(
   group: GroupState
 ): boolean {
   return can(session, (perm: PermissionsListEntry) => {
+    if (group.data == null) {
+      return false;
+    }
     return (
       (perm.resource_name == "bucket" ||
         (perm.resource_name == "group" && perm.group_id == group.data.id)) &&

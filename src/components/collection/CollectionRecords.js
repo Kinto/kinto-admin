@@ -12,7 +12,12 @@ import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
 
-import { renderDisplayField, timeago, buildAttachmentUrl } from "../../utils";
+import {
+  capitalize,
+  renderDisplayField,
+  timeago,
+  buildAttachmentUrl,
+} from "../../utils";
 import { canCreateRecord } from "../../permission";
 import AdminLink from "../AdminLink";
 import CollectionTabs from "./CollectionTabs";
@@ -185,7 +190,7 @@ class Table extends PureComponent<TableProps> {
   getFieldTitle(displayField) {
     const { schema } = this.props;
     if (displayField === "__json") {
-      return "JSON";
+      return "Data";
     }
     if (
       this.isSchemaProperty(displayField) &&
@@ -193,7 +198,7 @@ class Table extends PureComponent<TableProps> {
     ) {
       return schema.properties[displayField].title;
     }
-    return displayField;
+    return capitalize(displayField);
   }
 
   isSchemaProperty(displayField) {
@@ -300,7 +305,7 @@ function ListActions(props) {
       name="record:create"
       params={{ bid, cid }}
       className="btn btn-info btn-record-add">
-      Create
+      Create record
     </AdminLink>,
     <AdminLink
       key="__2"
@@ -386,6 +391,7 @@ export default class CollectionRecords extends PureComponent<Props> {
       records,
       recordsLoaded,
       hasNextRecords,
+      totalRecords,
     } = collection;
     const { schema, displayFields } = data;
 
@@ -412,7 +418,8 @@ export default class CollectionRecords extends PureComponent<Props> {
           bid={bid}
           cid={cid}
           selected="records"
-          capabilities={capabilities}>
+          capabilities={capabilities}
+          totalRecords={totalRecords}>
           {listActions}
           <Table
             busy={busy}
@@ -424,7 +431,7 @@ export default class CollectionRecords extends PureComponent<Props> {
             listNextRecords={listNextRecords}
             currentSort={currentSort}
             schema={schema || {}}
-            displayFields={displayFields || ["__json"]}
+            displayFields={displayFields || ["id", "__json"]}
             deleteRecord={deleteRecord}
             updateSort={this.updateSort}
             redirectTo={redirectTo}
