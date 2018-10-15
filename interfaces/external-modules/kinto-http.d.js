@@ -90,7 +90,7 @@ declare module "kinto-http" {
 
 declare module "kinto-http/lib/endpoint" {
   declare function endpoint(): string;
-  declare module.exports: endpoint;
+  declare module.exports: { endpoint: typeof endpoint };
 }
 
 declare module "kinto-http/lib/utils" {
