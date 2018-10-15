@@ -3,6 +3,10 @@ declare module "react-jsonschema-form" {
 }
 
 declare module "react-jsonschema-form/lib/utils" {
-  declare function mergeObjects(): Object;
-  declare module.exports: mergeObjects;
+  declare function mergeObjects(
+    obj1: Object,
+    obj2: Object,
+    concatArrays: boolean
+  ): Object;
+  declare module.exports: { mergeObjects: typeof mergeObjects };
 }
