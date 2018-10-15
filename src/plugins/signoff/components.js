@@ -181,10 +181,7 @@ export default class SignoffToolBar extends React.Component<
   }
 }
 
-function Comment({ text }: { text: string }): ?React.Element<*> {
-  if (!text) {
-    return null;
-  }
+function Comment({ text }: { text: string }): React.Element<*> {
   return (
     <span title={text} className="signoff-comment">
       {text.split("\n").map((l, i) => (
