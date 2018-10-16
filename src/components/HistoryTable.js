@@ -399,7 +399,7 @@ export default class HistoryTable extends PureComponent<Props, State> {
             onViewJournalClick={this.onViewJournalClick}
           />
         )}
-        {cid && diffOverview && since ? (
+        {cid && diffOverview && since && current && previous ? (
           <DiffOverview since={since} source={current} target={previous} />
         ) : !historyLoaded ? (
           <Spinner />
