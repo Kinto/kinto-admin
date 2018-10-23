@@ -3,6 +3,7 @@
 import type { ServerInfo, SessionState, AuthData } from "../types";
 import {
   SESSION_BUSY,
+  SESSION_SETUP,
   SESSION_SETUP_COMPLETE,
   SESSION_STORE_REDIRECT_URL,
   SESSION_SERVERINFO_SUCCESS,
@@ -20,6 +21,7 @@ export const DEFAULT_SERVERINFO: ServerInfo = {
 
 const DEFAULT: SessionState = {
   busy: false,
+  authenticating: false,
   auth: null,
   authenticated: false,
   permissions: null,
@@ -37,9 +39,12 @@ export default function session(
       const { busy }: { busy: boolean } = action;
       return { ...state, busy };
     }
+    case SESSION_SETUP: {
+      return { ...state, authenticating: true };
+    }
     case SESSION_SETUP_COMPLETE: {
       const { auth }: { auth: AuthData } = action;
-      return { ...state, auth };
+      return { ...state, auth, authenticating: false };
     }
     case SESSION_STORE_REDIRECT_URL: {
       const { redirectURL }: { redirectURL: string } = action;
