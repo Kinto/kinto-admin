@@ -107,14 +107,16 @@ function BucketCollectionsMenu(props) {
     sidebarMaxListedCollections,
     canCreateCollection,
   } = props;
+  // Sort collections by id.
+  const sortedCollections = collections.sort((a, b) => (a.id > b.id ? 1 : -1));
   // collections always contains one more item than what's configured in
   // sidebarMaxListedCollections, so we can render a link to the paginated list
   // of collections. Still, we only want to list that configured number of
   // collections for this bucket menu.
   const slicedCollections =
     sidebarMaxListedCollections !== null
-      ? collections.slice(0, sidebarMaxListedCollections)
-      : collections;
+      ? sortedCollections.slice(0, sidebarMaxListedCollections)
+      : sortedCollections;
   return (
     <div className="collections-menu list-group">
       {slicedCollections.map((collection, index) => {
@@ -231,6 +233,7 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
       sidebarMaxListedCollections,
     } = this.props;
     const filteredBuckets = filterBuckets(buckets, this.state);
+    // Sort buckets by id.
     const sortedBuckets = filteredBuckets.sort(
       (a, b) => (a.id > b.id ? 1 : -1)
     );
