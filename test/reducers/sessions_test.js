@@ -48,6 +48,7 @@ describe("session reducer", () => {
       redirectURL: null,
       serverInfo: {
         url: "",
+        project_name: "Kinto",
         capabilities: {},
       },
     });
@@ -55,6 +56,7 @@ describe("session reducer", () => {
 
   it("SESSION_SERVERINFO_SUCCESS", () => {
     const serverInfo = {
+      project_name: "Remote Settings",
       capabilities: {
         attachments: {},
       },
