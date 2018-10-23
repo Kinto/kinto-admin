@@ -124,10 +124,11 @@ export default class HomePage extends PureComponent<Props> {
       navigateToExternalAuth,
       navigateToOpenID,
     } = this.props;
-    const { authenticated, busy } = session;
+    const { authenticated, busy, serverInfo } = session;
+    const { project_name } = serverInfo;
     return (
       <div>
-        <h1>Kinto Web Administration Console</h1>
+        <h1>{`${project_name} Administration`}</h1>
         {busy ? (
           <Spinner />
         ) : authenticated ? (
