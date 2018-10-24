@@ -2,7 +2,10 @@
 import type { ActionType, GetStateFn, SagaGen, RouteParams } from "../types";
 
 import { call, put, take } from "redux-saga/effects";
-import { push as updatePath } from "connected-react-router";
+import {
+  push as updatePath,
+  replace as replacePath,
+} from "connected-react-router";
 
 import { getClient } from "../client";
 import { storeRedirectURL } from "../actions/session";
@@ -170,5 +173,21 @@ export function* routeRedirect(
   action: ActionType<typeof actions.redirectTo>
 ): SagaGen {
   const { name, params } = action;
-  yield put(updatePath(url(name, params)));
+  const next = url(name, params);
+  const {
+    router: {
+      location: { pathname: current },
+    },
+  } = getState();
+  if (next == current) {
+    // In several places in the code base, we use redirectTo() with the current path
+    // to refresh the state of the page (eg. refresh list after record deletion from the list).
+    // In latest versions of react-router, redirecting to the same URL does not reload the page.
+    // Tackling the issue at its core will happen in Kinto/kinto-admin#272
+    // In the mean time, let's trick the router by going to a fake URL and replacing it immediately.
+    yield put(updatePath("/--fake--"));
+    yield put(replacePath(next));
+  } else {
+    yield put(updatePath(next));
+  }
 }
