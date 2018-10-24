@@ -58,6 +58,22 @@ describe("App component", () => {
       expect(content).to.contain(serverInfo.url);
     });
 
+    it("should display a link to the server docs", () => {
+      const serverInfo = {
+        url: "http://test.server/v1/",
+        project_docs: "https://remote-settings.readthedocs.io/",
+        capabilities: {},
+      };
+      store.dispatch(sessionActions.serverInfoSuccess(serverInfo));
+      store.dispatch(
+        sessionActions.setAuthenticated({ user: { id: "fxa:abc" } })
+      );
+
+      app.update();
+      const infoBar = app.find(".session-info-bar a.project-docs").getDOMNode();
+      expect(infoBar.href).to.eql(serverInfo.project_docs);
+    });
+
     it("should render a session top bar when authenticated", () => {
       const serverInfo = {
         url: "http://test.server/v1/",

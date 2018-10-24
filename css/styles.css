@@ -70,6 +70,10 @@ h1 {
   padding-top: .3em;
 }
 
+.user-info a {
+  margin-left: 1em;
+}
+
 .server-url input:invalid, .server-url input:focus:invalid {
   box-shadow: 0 0 5px 1px red;
 }

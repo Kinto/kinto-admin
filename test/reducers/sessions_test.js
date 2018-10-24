@@ -62,6 +62,7 @@ describe("session reducer", () => {
       serverInfo: {
         url: "",
         project_name: "Kinto",
+        project_docs: "",
         capabilities: {},
       },
     });
