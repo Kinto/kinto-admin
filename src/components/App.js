@@ -115,7 +115,7 @@ export default class App extends PureComponent<Props> {
             </div>
             <div className={contentClasses}>
               <Notifications />
-              <Breadcrumbs separator=" / " />
+              {session.authenticated && <Breadcrumbs separator=" / " />}
               <Switch>
                 <CreateRoute exact title="home" path="/" component={HomePage} />
                 <CreateRoute
