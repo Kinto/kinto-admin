@@ -73,10 +73,10 @@ describe("Sidebar component", () => {
       const collMenus = bucketMenus[0].querySelectorAll(
         ".collections-menu-entry"
       );
-
+      // Sorted alphabetically.
       expect([].map.call(collMenus, x => x.textContent)).eql([
-        "othercoll",
         "mycoll",
+        "othercoll",
       ]);
     });
 
@@ -87,13 +87,13 @@ describe("Sidebar component", () => {
 
       // Note: collections are sliced to 2 items because of the
       // sidebarMaxListedCollections setting
-      expect([].map.call(collMenus, x => x.textContent)).eql(["foo", "bar"]);
+      expect([].map.call(collMenus, x => x.textContent)).eql(["bar", "baz"]);
     });
 
     it("should highlight the selected collection", () => {
       const targetEntry = bucketMenus[0].querySelectorAll(
         ".collections-menu-entry"
-      )[1];
+      )[0];
 
       expect(targetEntry.classList.contains("active")).eql(true);
     });

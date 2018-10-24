@@ -438,6 +438,7 @@ export type ServerHistoryEntry = {
 
 export type ServerInfo = {
   url: string,
+  project_name: string,
   capabilities: Capabilities,
   user?: {
     id: string,

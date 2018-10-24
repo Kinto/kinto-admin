@@ -84,6 +84,9 @@ export default class App extends PureComponent<Props> {
       collectionRecords: CollectionRecordsPage,
       pluginsRoutes,
     } = this.props;
+    const {
+      serverInfo: { project_name },
+    } = session;
     const notificationsClass = notificationList.length
       ? " with-notifications"
       : "";
@@ -98,7 +101,7 @@ export default class App extends PureComponent<Props> {
         <div className="container-fluid main">
           <div className="row">
             <div className="col-sm-3 sidebar">
-              <h1 className="kinto-admin-title">Kinto admin</h1>
+              <h1 className="kinto-admin-title">{project_name}</h1>
               <Switch>
                 {/* We need a "sidebar route" for each case where the sidebar
                   needs the :gid or :cid to higlight the proper entry */}

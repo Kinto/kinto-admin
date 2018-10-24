@@ -107,14 +107,16 @@ function BucketCollectionsMenu(props) {
     sidebarMaxListedCollections,
     canCreateCollection,
   } = props;
+  // Sort collections by id.
+  const sortedCollections = collections.sort((a, b) => (a.id > b.id ? 1 : -1));
   // collections always contains one more item than what's configured in
   // sidebarMaxListedCollections, so we can render a link to the paginated list
   // of collections. Still, we only want to list that configured number of
   // collections for this bucket menu.
   const slicedCollections =
     sidebarMaxListedCollections !== null
-      ? collections.slice(0, sidebarMaxListedCollections)
-      : collections;
+      ? sortedCollections.slice(0, sidebarMaxListedCollections)
+      : sortedCollections;
   return (
     <div className="collections-menu list-group">
       {slicedCollections.map((collection, index) => {
@@ -162,7 +164,7 @@ type BucketsMenuProps = {
 };
 
 function filterBuckets(buckets, filters): BucketEntry[] {
-  const { hideReadOnly, search } = filters;
+  const { showReadOnly, search } = filters;
   return buckets
     .slice(0)
     .reduce((acc, bucket) => {
@@ -180,27 +182,35 @@ function filterBuckets(buckets, filters): BucketEntry[] {
         return acc;
       }
     }, [])
-    .filter(
-      bucket =>
-        !hideReadOnly ||
-        !bucket.readonly ||
-        bucket.collections.some(c => !c.readonly)
-    );
+    .map(bucket => {
+      if (showReadOnly) {
+        return bucket;
+      }
+      const writableCollections = bucket.collections.filter(c => !c.readonly);
+      if (bucket.readonly && writableCollections.length == 0) {
+        return null;
+      }
+      return {
+        ...bucket,
+        collections: writableCollections,
+      };
+    })
+    .filter(Boolean);
 }
 
 type BucketsMenuState = {
-  hideReadOnly: boolean,
+  showReadOnly: boolean,
   search: ?string,
 };
 
 class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
   constructor(props: BucketsMenuProps) {
     super(props);
-    this.state = { hideReadOnly: false, search: null };
+    this.state = { showReadOnly: false, search: null };
   }
 
   toggleReadOnly = () => {
-    this.setState({ hideReadOnly: !this.state.hideReadOnly });
+    this.setState({ showReadOnly: !this.state.showReadOnly });
   };
 
   resetSearch = event => {
@@ -223,6 +233,7 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
       sidebarMaxListedCollections,
     } = this.props;
     const filteredBuckets = filterBuckets(buckets, this.state);
+    // Sort buckets by id.
     const sortedBuckets = filteredBuckets.sort(
       (a, b) => (a.id > b.id ? 1 : -1)
     );
@@ -264,10 +275,10 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
               <label>
                 <input
                   type="checkbox"
-                  value={this.state.hideReadOnly}
+                  value={this.state.showReadOnly}
                   onChange={this.toggleReadOnly}
                 />{" "}
-                Hide readonly buckets
+                Show readonly buckets/collections
               </label>
             </div>
           </form>

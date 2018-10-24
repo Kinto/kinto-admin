@@ -53,7 +53,14 @@ export function* getServerInfo(
 
   try {
     // Fetch server information
-    const serverInfo = yield call([client, client.fetchServerInfo]);
+    let serverInfo = yield call([client, client.fetchServerInfo]);
+
+    // Take the project name from the server. Use "Kinto" if default ("kinto") is used.
+    const { project_name: rawProjectName } = serverInfo;
+    const project_name = rawProjectName == "kinto" ? "Kinto" : rawProjectName;
+    serverInfo = { ...serverInfo, project_name };
+    // Side effect: change window title with project name.
+    document.title = project_name + " Administration";
 
     // Check that the client was not changed in the mean time. This could happen if a request to
     // another server was sent after the current one, but took less time to answer.
