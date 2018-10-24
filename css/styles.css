@@ -67,6 +67,7 @@ h1 {
 
 .user-info {
   float: right;
+  padding-top: .3em;
 }
 
 .server-url input:invalid, .server-url input:focus:invalid {
