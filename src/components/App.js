@@ -53,7 +53,7 @@ function SessionInfoBar({ session, logout }) {
   return (
     <div className="session-info-bar">
       <h1 className="kinto-admin-title">{project_name}</h1>
-      <span class="user-info">
+      <span className="user-info">
         <UserInfo session={session} /> on <strong>{url}</strong>{" "}
         <a
           href=""
