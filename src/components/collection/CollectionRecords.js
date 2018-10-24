@@ -22,6 +22,7 @@ import { canCreateRecord } from "../../permission";
 import AdminLink from "../AdminLink";
 import CollectionTabs from "./CollectionTabs";
 import PaginatedTable from "../PaginatedTable";
+import Spinner from "../Spinner";
 
 type CommonProps = {
   capabilities: Capabilities,
@@ -421,22 +422,25 @@ export default class CollectionRecords extends PureComponent<Props> {
           capabilities={capabilities}
           totalRecords={totalRecords}>
           {listActions}
-          <Table
-            busy={busy}
-            bid={bid}
-            cid={cid}
-            records={records}
-            recordsLoaded={recordsLoaded}
-            hasNextRecords={hasNextRecords}
-            listNextRecords={listNextRecords}
-            currentSort={currentSort}
-            schema={schema || {}}
-            displayFields={displayFields || ["id", "__json"]}
-            deleteRecord={deleteRecord}
-            updateSort={this.updateSort}
-            redirectTo={redirectTo}
-            capabilities={capabilities}
-          />
+          {busy ? (
+            <Spinner />
+          ) : (
+            <Table
+              bid={bid}
+              cid={cid}
+              records={records}
+              recordsLoaded={recordsLoaded}
+              hasNextRecords={hasNextRecords}
+              listNextRecords={listNextRecords}
+              currentSort={currentSort}
+              schema={schema || {}}
+              displayFields={displayFields || ["id", "__json"]}
+              deleteRecord={deleteRecord}
+              updateSort={this.updateSort}
+              redirectTo={redirectTo}
+              capabilities={capabilities}
+            />
+          )}
           {listActions}
         </CollectionTabs>
       </div>
