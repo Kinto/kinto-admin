@@ -298,7 +298,9 @@ export default class RecordForm extends PureComponent<Props, State> {
 
     const recordData = record ? record.data : {};
 
-    if (record && record.busy) {
+    // Show a spinner if the collection metadata is being loaded, or the record
+    // itself on edition.
+    if (collection.busy || (record && record.busy)) {
       return <Spinner />;
     }
 
