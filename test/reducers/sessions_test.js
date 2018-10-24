@@ -3,6 +3,7 @@ import { expect } from "chai";
 import session from "../../src/reducers/session";
 import {
   SESSION_BUSY,
+  SESSION_SETUP,
   SESSION_SETUP_COMPLETE,
   SESSION_SERVERINFO_SUCCESS,
   SESSION_PERMISSIONS_SUCCESS,
@@ -13,6 +14,15 @@ import {
 } from "../../src/constants";
 
 describe("session reducer", () => {
+  const auth = {
+    server: "http://test",
+    authType: "basicauth",
+    credentials: {
+      username: "user",
+      password: "pass",
+    },
+  };
+
   it("SESSION_BUSY", () => {
     expect(
       session(undefined, {
@@ -24,16 +34,18 @@ describe("session reducer", () => {
       .eql(true);
   });
 
-  it("SESSION_SETUP_COMPLETE", () => {
-    const auth = {
-      server: "http://test",
-      authType: "basicauth",
-      credentials: {
-        username: "user",
-        password: "pass",
-      },
-    };
+  it("SESSION_SETUP", () => {
+    expect(
+      session(undefined, {
+        type: SESSION_SETUP,
+        auth,
+      })
+    )
+      .to.have.property("authenticating")
+      .eql(true);
+  });
 
+  it("SESSION_SETUP_COMPLETE", () => {
     expect(
       session(undefined, {
         type: SESSION_SETUP_COMPLETE,
@@ -41,6 +53,7 @@ describe("session reducer", () => {
       })
     ).eql({
       busy: false,
+      authenticating: false,
       authenticated: false,
       auth,
       buckets: [],

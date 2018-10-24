@@ -422,6 +422,7 @@ export type BucketEntry = {
 
 export type SessionState = {
   busy: boolean,
+  authenticating: boolean,
   auth: ?AuthData,
   authenticated: boolean,
   permissions: ?(PermissionsListEntry[]),

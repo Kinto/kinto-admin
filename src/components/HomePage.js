@@ -43,21 +43,17 @@ function ServerProps({ node }: { node: Object }) {
   );
 }
 
-function SessionInfo({ session: { busy, serverInfo } }) {
+function SessionInfo({ session: { serverInfo } }) {
   return (
     <div>
-      {busy ? (
-        <Spinner />
-      ) : (
-        <div className="panel server-info-panel panel-default">
-          <div className="panel-heading">
-            <b>Server information</b>
-          </div>
-          <div className="panel-body">
-            <ServerProps node={serverInfo} />
-          </div>
+      <div className="panel server-info-panel panel-default">
+        <div className="panel-heading">
+          <b>Server information</b>
         </div>
-      )}
+        <div className="panel-body">
+          <ServerProps node={serverInfo} />
+        </div>
+      </div>
     </div>
   );
 }
@@ -124,12 +120,12 @@ export default class HomePage extends PureComponent<Props> {
       navigateToExternalAuth,
       navigateToOpenID,
     } = this.props;
-    const { authenticated, busy, serverInfo } = session;
+    const { authenticated, authenticating, serverInfo } = session;
     const { project_name } = serverInfo;
     return (
       <div>
         <h1>{`${project_name} Administration`}</h1>
-        {busy ? (
+        {authenticating ? (
           <Spinner />
         ) : authenticated ? (
           <SessionInfo session={session} />
