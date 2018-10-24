@@ -7,6 +7,10 @@ h1 {
   font-size: 2.2em;
 }
 
+.main {
+  padding-top: 2.8em;
+}
+
 .sidebar {
   padding-top: 1em;
 }
@@ -24,12 +28,9 @@ h1 {
 }
 
 .breadcrumbs {
+  padding-top: .5em;
   font-size: 1.2em;
   text-transform: lowercase;
-}
-
-.content {
-  padding-top: 3.3em;
 }
 
 .content .list-actions {
@@ -54,8 +55,19 @@ h1 {
 }
 
 .kinto-admin-title {
-  background: transparent url("../images/logo.png") no-repeat right;
+  display: inline-block;
+  font-size: 2em;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 80px;
+
+  background: transparent url("../images/logo.png") no-repeat left;
   background-size: contain;
+}
+
+.user-info {
+  float: right;
+  padding-top: .3em;
 }
 
 .server-url input:invalid, .server-url input:focus:invalid {

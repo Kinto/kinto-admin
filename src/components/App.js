@@ -48,17 +48,20 @@ function UserInfo({ session }) {
 
 function SessionInfoBar({ session, logout }) {
   const {
-    serverInfo: { url },
+    serverInfo: { url, project_name },
   } = session;
   return (
-    <div className="session-info-bar text-right">
-      <UserInfo session={session} /> on <strong>{url}</strong>
-      <a
-        href=""
-        className="btn btn-xs btn-success btn-logout"
-        onClick={event => event.preventDefault() || logout()}>
-        logout
-      </a>
+    <div className="session-info-bar">
+      <h1 className="kinto-admin-title">{project_name}</h1>
+      <span className="user-info">
+        <UserInfo session={session} /> on <strong>{url}</strong>{" "}
+        <a
+          href=""
+          className="btn btn-xs btn-success btn-logout"
+          onClick={event => event.preventDefault() || logout()}>
+          logout
+        </a>
+      </span>
     </div>
   );
 }
@@ -84,9 +87,6 @@ export default class App extends PureComponent<Props> {
       collectionRecords: CollectionRecordsPage,
       pluginsRoutes,
     } = this.props;
-    const {
-      serverInfo: { project_name },
-    } = session;
     const notificationsClass = notificationList.length
       ? " with-notifications"
       : "";
@@ -101,17 +101,18 @@ export default class App extends PureComponent<Props> {
         <div className="container-fluid main">
           <div className="row">
             <div className="col-sm-3 sidebar">
-              <h1 className="kinto-admin-title">{project_name}</h1>
-              <Switch>
-                {/* We need a "sidebar route" for each case where the sidebar
-                  needs the :gid or :cid to higlight the proper entry */}
-                <Route
-                  path="/buckets/:bid/collections/:cid"
-                  component={Sidebar}
-                />
-                <Route path="/buckets/:bid" component={Sidebar} />
-                <Route component={Sidebar} />
-              </Switch>
+              {session.authenticated && (
+                <Switch>
+                  {/* We need a "sidebar route" for each case where the sidebar
+                    needs the :gid or :cid to higlight the proper entry */}
+                  <Route
+                    path="/buckets/:bid/collections/:cid"
+                    component={Sidebar}
+                  />
+                  <Route path="/buckets/:bid" component={Sidebar} />
+                  <Route component={Sidebar} />
+                </Switch>
+              )}
             </div>
             <div className={contentClasses}>
               <Notifications />
