@@ -18,6 +18,7 @@ export const DEFAULT_SERVERINFO: ServerInfo = {
   url: "",
   capabilities: {},
   project_name: "Kinto",
+  project_docs: "",
 };
 
 const DEFAULT: SessionState = {

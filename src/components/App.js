@@ -48,7 +48,7 @@ function UserInfo({ session }) {
 
 function SessionInfoBar({ session, logout }) {
   const {
-    serverInfo: { url, project_name },
+    serverInfo: { url, project_name, project_docs },
   } = session;
   return (
     <div className="session-info-bar">
@@ -56,10 +56,16 @@ function SessionInfoBar({ session, logout }) {
       <span className="user-info">
         <UserInfo session={session} /> on <strong>{url}</strong>{" "}
         <a
+          href={project_docs}
+          target="_blank"
+          className="btn btn-xs btn-default project-docs">
+          <i className="glyphicon glyphicon-question-sign" /> Documentation
+        </a>
+        <a
           href=""
           className="btn btn-xs btn-success btn-logout"
           onClick={event => event.preventDefault() || logout()}>
-          logout
+          <i className="glyphicon glyphicon-log-out" /> Logout
         </a>
       </span>
     </div>
