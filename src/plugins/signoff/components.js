@@ -150,7 +150,7 @@ export default class SignoffToolBar extends React.Component<
             source={source}
             preview={preview}
           />
-          <Approved
+          <Signed
             label="Approved"
             step={2}
             currentStep={step}
