@@ -151,7 +151,7 @@ export default class SignoffToolBar extends React.Component<
             preview={preview}
           />
           <Signed
-            label="Signed"
+            label="Approved"
             step={2}
             currentStep={step}
             canEdit={canSign}
