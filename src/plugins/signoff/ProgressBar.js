@@ -33,8 +33,8 @@ export function ProgressStep({
     currentStep == step
       ? "active"
       : step < currentStep
-        ? "complete"
-        : "disabled";
+      ? "complete"
+      : "disabled";
   return (
     <div className={`col-xs-3 bs-wizard-step ${status}`} key={step}>
       <div className="text-center bs-wizard-stepnum">{label}</div>

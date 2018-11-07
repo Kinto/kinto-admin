@@ -13,11 +13,10 @@ export function loadHistory(): ServerHistoryEntry[] {
   try {
     const history = JSON.parse(jsonHistory);
     // Cope with legacy history which only stored the server as a string, without the authType.
-    const withLegacyHistory = history.map(
-      entry =>
-        typeof entry === "string"
-          ? { server: entry, authType: ANONYMOUS_AUTH }
-          : entry
+    const withLegacyHistory = history.map(entry =>
+      typeof entry === "string"
+        ? { server: entry, authType: ANONYMOUS_AUTH }
+        : entry
     );
     return withLegacyHistory;
   } catch (err) {
