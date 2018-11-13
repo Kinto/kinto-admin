@@ -157,16 +157,15 @@ function AttachmentInfo(props: AttachmentInfoProps) {
         <b>Attachment information</b>
       </div>
       <div className="panel-body">
-        {allowEditing &&
-          attachmentRequired && (
-            <div className="alert alert-warning">
-              <p>
-                An attachment is required for records in this collection. To
-                replace current attachment, use the <i>File attachment</i> field
-                below.
-              </p>
-            </div>
-          )}
+        {allowEditing && attachmentRequired && (
+          <div className="alert alert-warning">
+            <p>
+              An attachment is required for records in this collection. To
+              replace current attachment, use the <i>File attachment</i> field
+              below.
+            </p>
+          </div>
+        )}
         <div className="attachment-attributes">
           <table className="table table-condensed">
             <tbody>
@@ -328,15 +327,14 @@ export default class RecordForm extends PureComponent<Props, State> {
           )}
         </div>
         <div className="col-sm-6 text-right">
-          {this.allowEditing &&
-            record && (
-              <button
-                type="button"
-                className="btn btn-danger delete"
-                onClick={this.deleteRecord}>
-                <i className="glyphicon glyphicon-trash" /> Delete record
-              </button>
-            )}
+          {this.allowEditing && record && (
+            <button
+              type="button"
+              className="btn btn-danger delete"
+              onClick={this.deleteRecord}>
+              <i className="glyphicon glyphicon-trash" /> Delete record
+            </button>
+          )}
         </div>
       </div>
     );

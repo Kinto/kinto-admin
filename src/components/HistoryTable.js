@@ -21,8 +21,8 @@ function Diff({ source, target }) {
         const className = chunk.added
           ? "added"
           : chunk.removed
-            ? "removed"
-            : "";
+          ? "removed"
+          : "";
         const prefixedChunk = chunk.value
           .split("\n")
           .filter(part => part !== "")
@@ -171,20 +171,18 @@ class HistoryRow extends PureComponent<HistoryRowProps, HistoryRowState> {
           </td>
           <td>{user_id}</td>
           <td className="text-center">
-            {resource_name === "record" &&
-              enableDiffOverview &&
-              pos !== 0 && (
-                <span>
-                  <AdminLink
-                    className="btn btn-xs btn-default"
-                    title="Start history log from this point"
-                    name="collection:history"
-                    params={{ bid, cid }}
-                    query={{ since: last_modified, resource_name: "record" }}>
-                    <i className="glyphicon glyphicon-step-backward" />
-                  </AdminLink>{" "}
-                </span>
-              )}
+            {resource_name === "record" && enableDiffOverview && pos !== 0 && (
+              <span>
+                <AdminLink
+                  className="btn btn-xs btn-default"
+                  title="Start history log from this point"
+                  name="collection:history"
+                  params={{ bid, cid }}
+                  query={{ since: last_modified, resource_name: "record" }}>
+                  <i className="glyphicon glyphicon-step-backward" />
+                </AdminLink>{" "}
+              </span>
+            )}
             <a
               href="."
               className="btn btn-xs btn-default"
@@ -246,20 +244,19 @@ function FilterInfo(props) {
         }}>
         View all entries
       </a>
-      {enableDiffOverview &&
-        since != null && (
-          <span>
-            {" | "}
-            <a
-              href="#"
-              onClick={event => {
-                event.preventDefault();
-                onDiffOverviewClick(since);
-              }}>
-              View records list diff overview
-            </a>
-          </span>
-        )}
+      {enableDiffOverview && since != null && (
+        <span>
+          {" | "}
+          <a
+            href="#"
+            onClick={event => {
+              event.preventDefault();
+              onDiffOverviewClick(since);
+            }}>
+            View records list diff overview
+          </a>
+        </span>
+      )}
     </p>
   );
 }

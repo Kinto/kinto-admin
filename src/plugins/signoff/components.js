@@ -62,9 +62,7 @@ type SignoffToolBarProps = {
   cancelPendingConfirm: () => void,
 };
 
-export default class SignoffToolBar extends React.Component<
-  SignoffToolBarProps
-> {
+export default class SignoffToolBar extends React.Component<SignoffToolBarProps> {
   render() {
     const {
       // Global state
@@ -231,9 +229,9 @@ function WorkInProgress(props: WorkInProgressProps) {
         lastEditDate={lastEditDate}
         lastReviewerComment={lastReviewerComment}
       />
-      {active &&
-        lastEditDate &&
-        canEdit && <RequestReviewButton onClick={confirmRequestReview} />}
+      {active && lastEditDate && canEdit && (
+        <RequestReviewButton onClick={confirmRequestReview} />
+      )}
     </ProgressStep>
   );
 }
@@ -256,12 +254,11 @@ function WorkInProgressInfos(props) {
       <li>
         <strong>By: </strong> {lastEditBy}
       </li>
-      {active &&
-        lastReviewerComment && (
-          <li>
-            <strong>Comment: </strong> <Comment text={lastReviewerComment} />
-          </li>
-        )}
+      {active && lastReviewerComment && (
+        <li>
+          <strong>Comment: </strong> <Comment text={lastReviewerComment} />
+        </li>
+      )}
     </ul>
   );
 }
@@ -326,13 +323,12 @@ function Review(props: ReviewProps) {
           hasHistory={hasHistory}
         />
       )}
-      {active &&
-        canEdit && (
-          <ReviewButtons
-            onApprove={approveChanges}
-            onDecline={confirmDeclineChanges}
-          />
-        )}
+      {active && canEdit && (
+        <ReviewButtons
+          onApprove={approveChanges}
+          onDecline={confirmDeclineChanges}
+        />
+      )}
     </ProgressStep>
   );
 }
@@ -373,12 +369,11 @@ function ReviewInfos(props: ReviewInfosProps) {
       <li>
         <strong>By: </strong> {lastReviewRequestBy}
       </li>
-      {active &&
-        lastEditorComment && (
-          <li>
-            <strong>Comment: </strong> <Comment text={lastEditorComment} />
-          </li>
-        )}
+      {active && lastEditorComment && (
+        <li>
+          <strong>Comment: </strong> <Comment text={lastEditorComment} />
+        </li>
+      )}
       <li>
         <strong>Preview: </strong> {link}
       </li>
@@ -446,10 +441,9 @@ function Signed(props: SignedProps) {
   const active = step == currentStep && canEdit;
   return (
     <ProgressStep label={label} currentStep={currentStep} step={step}>
-      {destination &&
-        source.lastSignatureBy && (
-          <SignedInfos source={source} destination={destination} />
-        )}
+      {destination && source.lastSignatureBy && (
+        <SignedInfos source={source} destination={destination} />
+      )}
       {active && <ReSignButton onClick={reSign} />}
     </ProgressStep>
   );

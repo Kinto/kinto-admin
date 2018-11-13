@@ -27,7 +27,7 @@ function ServerProps({ node }: { node: Object }) {
                 {isObject(childNode) || Array.isArray(childNode) ? (
                   <ServerProps node={childNode} />
                 ) : typeof childNode === "string" &&
-                childNode.startsWith("http") ? (
+                  childNode.startsWith("http") ? (
                   <a href={childNode} target="_blank">
                     {childNode}
                   </a>
