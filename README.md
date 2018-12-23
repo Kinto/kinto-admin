@@ -202,7 +202,7 @@ Use the *dot* notation.
 
 For example, if you have the following record:
 
-```
+```json
 {
   "data": {
     "attachment": {
@@ -218,7 +218,7 @@ We tried our best to make it work with properties having dots in their name.
 
 For instance:
 
-```
+```json
 {
   "data": {
     "target": {
