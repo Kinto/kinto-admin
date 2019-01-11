@@ -1,5 +1,7 @@
 /* @flow */
 
+import type { HashHistory } from "history/createHashHistory";
+
 import { combineReducers } from "redux";
 import { connectRouter } from "connected-react-router";
 
@@ -25,7 +27,7 @@ const standardReducers = {
 };
 
 export default function createRootReducer(
-  history,
+  history: HashHistory,
   pluginsReducers: Object[] = []
 ) {
   return combineReducers({
