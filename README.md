@@ -10,6 +10,8 @@ A Web admin UI to manage data from a [Kinto](https://kinto.readthedocs.io/) serv
 Kinto. You can also use it to build administration interfaces for
 Kinto-based systems.
 
+**Note:** This README is meant for developers. If you want to install kinto-admin on your server, head over to the [User Documentation](https://kinto.readthedocs.io/en/stable/kinto-admin.html).
+
 ## Table of Contents
 
   - [Prerequisites](#prerequisites)
