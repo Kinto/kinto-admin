@@ -7,7 +7,7 @@ import createRootReducer from "../reducers";
 import rootSaga from "../sagas";
 import createHashHistory from "history/createHashHistory";
 
-import { connectRouter, routerMiddleware } from "connected-react-router";
+import { routerMiddleware } from "connected-react-router";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -28,7 +28,7 @@ export default function configureStore(
   )(createStore);
 
   const store = finalCreateStore(
-    connectRouter(hashHistory)(createRootReducer(pluginReducers)),
+    createRootReducer(hashHistory, pluginReducers),
     initialState
   );
   // Every saga will receive the store getState() function as first argument

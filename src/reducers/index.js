@@ -1,6 +1,9 @@
 /* @flow */
 
+import type { HashHistory } from "history/createHashHistory";
+
 import { combineReducers } from "redux";
+import { connectRouter } from "connected-react-router";
 
 import { flattenPluginsReducers } from "../plugin";
 import session from "./session";
@@ -23,8 +26,12 @@ const standardReducers = {
   settings,
 };
 
-export default function createRootReducer(pluginsReducers: Object[] = []) {
+export default function createRootReducer(
+  history: HashHistory,
+  pluginsReducers: Object[] = []
+) {
   return combineReducers({
+    router: connectRouter(history),
     ...standardReducers,
     ...flattenPluginsReducers(pluginsReducers, standardReducers),
   });
