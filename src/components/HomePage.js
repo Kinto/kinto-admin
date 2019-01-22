@@ -98,16 +98,18 @@ export default class HomePage extends PureComponent<Props> {
         try {
           // Token is encoded in base64 for a safe path parsing.
           parsedToken = JSON.parse(atob(token));
+          token = parsedToken.access_token;
+          tokenType = parsedToken.token_type;
         } catch (e) {
           // Previous version of Kinto exposed the JSON directly in the URL.
           try {
             parsedToken = JSON.parse(token);
+            token = parsedToken.access_token;
+            tokenType = parsedToken.token_type;
           } catch (e) {
             console.error(`Token doesn't seems to be a valid JSON: {token}`);
           }
         }
-        token = parsedToken.access_token;
-        tokenType = parsedToken.token_type;
       }
       const credentials = { token };
       // This action is bound with the setupSession() saga, which will
