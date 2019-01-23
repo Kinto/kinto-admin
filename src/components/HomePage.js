@@ -107,7 +107,7 @@ export default class HomePage extends PureComponent<Props> {
             token = parsedToken.access_token;
             tokenType = parsedToken.token_type;
           } catch (e) {
-            console.error(`Token doesn't seems to be a valid JSON: {token}`);
+            throw new Error(`Token doesn't seems to be a valid JSON: {token}`);
           }
         }
       }
