@@ -83,6 +83,7 @@ export default class HomePage extends PureComponent<Props> {
     } = this.props;
     const { payload } = params;
     let { token } = params;
+
     if (!payload || !token) {
       // No auth token found in URL.
       return;
@@ -93,9 +94,22 @@ export default class HomePage extends PureComponent<Props> {
       token = decodeURIComponent(token);
       let tokenType;
       if (authType.startsWith("openid-")) {
-        const parsedToken = JSON.parse(token);
-        token = parsedToken.access_token;
-        tokenType = parsedToken.token_type;
+        let parsedToken;
+        try {
+          // Token is encoded in base64 for a safe path parsing.
+          parsedToken = JSON.parse(atob(token));
+          token = parsedToken.access_token;
+          tokenType = parsedToken.token_type;
+        } catch (e) {
+          // Previous version of Kinto exposed the JSON directly in the URL.
+          try {
+            parsedToken = JSON.parse(token);
+            token = parsedToken.access_token;
+            tokenType = parsedToken.token_type;
+          } catch (e) {
+            throw new Error(`Token doesn't seems to be a valid JSON: {token}`);
+          }
+        }
       }
       const credentials = { token };
       // This action is bound with the setupSession() saga, which will
