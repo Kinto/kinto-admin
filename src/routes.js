@@ -139,12 +139,10 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
         path="/"
         render={props => (
           <App
-            plugins={plugins}
             sidebar={hookedSidebar}
             notifications={hookedNotifications}
             collectionRecords={hookedCollectionRecords}
             pluginsRoutes={pluginsRoutes}
-            {...props}
           />
         )}
       />

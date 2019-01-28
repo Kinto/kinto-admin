@@ -7,6 +7,7 @@ import type { Element } from "react";
 import { Redirect, Switch, Route } from "react-router-dom";
 
 import { CreateRoute } from "../routes";
+import * as SessionActions from "../actions/session";
 
 import { PureComponent } from "react";
 import * as React from "react";
@@ -72,14 +73,22 @@ function SessionInfoBar({ session, logout }) {
   );
 }
 
-type Props = {
+export type StateProps = {|
   session: SessionState,
-  logout: () => void,
   notificationList: NotificationsType,
+|};
+
+export type OwnProps = {|
   notifications: React.ComponentType<*>,
   sidebar: React.ComponentType<*>,
-  collectionRecords: Element<*>,
+  collectionRecords: React.ComponentType<*>,
   pluginsRoutes: Element<*>[],
+|};
+
+export type Props = {
+  ...StateProps,
+  ...OwnProps,
+  logout: typeof SessionActions.logout,
 };
 
 export default class App extends PureComponent<Props> {
