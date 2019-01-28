@@ -2,6 +2,7 @@
 import type { Notifications } from "../types";
 
 import React, { PureComponent } from "react";
+import * as actions from "../actions/notifications";
 
 class ErrorDetails extends PureComponent<{ details: Array<string> }> {
   render() {
@@ -23,7 +24,7 @@ type NotificationProps = {
   type: string,
   message: string,
   details: string[],
-  close: () => void,
+  close: () => *,
 };
 
 type NotificationState = {
@@ -96,9 +97,13 @@ export class Notification extends PureComponent<
   }
 }
 
-type Props = {
+export type StateProps = {|
   notifications: Notifications,
-  removeNotification: (index: number) => void,
+|};
+
+export type Props = {
+  ...StateProps,
+  removeNotification: typeof actions.removeNotification,
 };
 
 export default class Notifications_ extends PureComponent<Props> {
