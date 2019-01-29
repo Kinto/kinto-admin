@@ -1,6 +1,11 @@
 /* @flow */
 import type { AppState } from "../../types";
-import type { Dispatch, ActionCreatorOrObjectOfACs } from "redux";
+import type { DispatchAPI } from "redux";
+import type {
+  Props,
+  StateProps,
+  OwnProps,
+} from "../../components/record/RecordCreate";
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -10,16 +15,23 @@ import RecordCreate from "../../components/record/RecordCreate";
 import * as CollectionActions from "../../actions/collection";
 import * as NotificationsActions from "../../actions/notifications";
 
-function mapStateToProps(state: AppState) {
+function mapStateToProps(state: AppState): StateProps {
   return {
     session: state.session,
     bucket: state.bucket,
     collection: state.collection,
-    record: state.record,
+    capabilities: state.session.serverInfo.capabilities,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
+// FIXME: component doesn't need NotificationsActions
+type DispatchProps = {|
+  ...typeof CollectionActions,
+  ...typeof NotificationsActions,
+  updatePath: typeof updatePath,
+|};
+
+function mapDispatchToProps(dispatch: DispatchAPI<*>): DispatchProps {
   return bindActionCreators(
     {
       ...CollectionActions,
@@ -30,7 +42,7 @@ function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
   );
 }
 
-export default connect(
+export default connect<Props, OwnProps, _, _, _, _>( // eslint-disable-line
   mapStateToProps,
   mapDispatchToProps
 )(RecordCreate);

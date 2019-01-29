@@ -3,27 +3,30 @@ import type {
   SessionState,
   BucketState,
   CollectionState,
-  RecordData,
   CollectionRouteMatch,
   Capabilities,
 } from "../../types";
 
 import React, { PureComponent } from "react";
 
+import * as CollectionActions from "../../actions/collection";
 import RecordForm from "./RecordForm";
 
-type Props = {
+export type OwnProps = {|
   match: CollectionRouteMatch,
+|};
+
+export type StateProps = {|
   session: SessionState,
   capabilities: Capabilities,
   bucket: BucketState,
   collection: CollectionState,
-  createRecord: (
-    bid: string,
-    cid: string,
-    record: RecordData,
-    attachment: ?string
-  ) => void,
+|};
+
+export type Props = {
+  ...OwnProps,
+  ...StateProps,
+  createRecord: typeof CollectionActions.createRecord,
 };
 
 export default class RecordCreate extends PureComponent<Props> {
