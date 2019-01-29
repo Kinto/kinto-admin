@@ -1,7 +1,6 @@
 /* @flow */
 import type {
   CollectionRouteMatch,
-  CollectionRouteParams,
   SessionState,
   BucketState,
   CollectionState,
@@ -12,6 +11,8 @@ import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
 
+import * as CollectionActions from "../../actions/collection";
+import * as RouteActions from "../../actions/route";
 import {
   capitalize,
   renderDisplayField,
@@ -24,26 +25,26 @@ import CollectionTabs from "./CollectionTabs";
 import PaginatedTable from "../PaginatedTable";
 import Spinner from "../Spinner";
 
-type CommonProps = {
+type CommonStateProps = {|
   capabilities: Capabilities,
-  // FIXME: rid *must* be passed on calls to deleteRecord
-  deleteRecord: (
-    bid: string,
-    cid: string,
-    rid: ?string,
-    last_modified: ?number
-  ) => void,
-  redirectTo: (name: string, params: CollectionRouteParams) => void,
-};
+|};
 
-type RecordsViewProps = CommonProps & {
+type CommonProps = {|
+  ...CommonStateProps,
+  deleteRecord: typeof CollectionActions.deleteRecord,
+  redirectTo: typeof RouteActions.redirectTo,
+|};
+
+type RecordsViewProps = {|
+  ...CommonProps,
   bid: string,
   cid: string,
   displayFields: string[],
   schema: Object,
-};
+|};
 
-type RowProps = RecordsViewProps & {
+type RowProps = {
+  ...RecordsViewProps,
   record: RecordData,
 };
 
@@ -74,6 +75,10 @@ class Row extends PureComponent<RowProps> {
   onDeleteClick(event) {
     const { bid, cid, record, deleteRecord } = this.props;
     const { id: rid, last_modified } = record;
+    if (!rid) {
+      // FIXME: this shouldn't be possible
+      throw Error("can't happen");
+    }
     if (confirm("Are you sure?")) {
       deleteRecord(bid, cid, rid, last_modified);
     }
@@ -178,10 +183,11 @@ function ColumnSortLink(props) {
   );
 }
 
-type TableProps = RecordsViewProps & {
+type TableProps = {
+  ...RecordsViewProps,
   currentSort: string,
   hasNextRecords: boolean,
-  listNextRecords: () => void,
+  listNextRecords: typeof CollectionActions.listNextRecords,
   records: RecordData[],
   recordsLoaded: boolean,
   updateSort: string => void,
@@ -325,15 +331,27 @@ function ListActions(props) {
   );
 }
 
-type Props = CommonProps & {
-  pluginHooks: Object,
+export type OwnProps = {|
   match: CollectionRouteMatch,
+  location: Location,
+  pluginHooks: Object,
+|};
+
+export type StateProps = {|
+  ...CommonStateProps,
   session: SessionState,
   bucket: BucketState,
   collection: CollectionState,
-  listRecords: (bid: string, cid: string, sort: ?string) => void,
-  listNextRecords: () => void,
-  location: Location,
+|};
+
+export type Props = {
+  ...CommonProps,
+  ...OwnProps,
+  ...StateProps,
+  deleteRecord: typeof CollectionActions.deleteRecord,
+  listRecords: typeof CollectionActions.listRecords,
+  listNextRecords: typeof CollectionActions.listNextRecords,
+  redirectTo: typeof RouteActions.redirectTo,
 };
 
 export default class CollectionRecords extends PureComponent<Props> {

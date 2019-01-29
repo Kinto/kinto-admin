@@ -156,13 +156,13 @@ export function deleteRecord(
   bid: string,
   cid: string,
   rid: string,
-  last_modified: number
+  last_modified?: number
 ): {
   type: "RECORD_DELETE_REQUEST",
   bid: string,
   cid: string,
   rid: string,
-  last_modified: number,
+  last_modified?: number,
 } {
   return { type: RECORD_DELETE_REQUEST, bid, cid, rid, last_modified };
 }
