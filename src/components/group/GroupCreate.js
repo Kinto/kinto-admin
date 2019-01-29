@@ -1,25 +1,31 @@
 /* @flow */
 import type {
-  Capabilities,
   SessionState,
   BucketState,
   GroupState,
-  GroupData,
   BucketRouteMatch,
 } from "../../types";
 
 import React, { PureComponent } from "react";
 
+import * as BucketActions from "../../actions/bucket";
 import GroupForm from "./GroupForm";
 import Spinner from "../Spinner";
 
-type Props = {
+export type OwnProps = {|
   match: BucketRouteMatch,
+|};
+
+export type StateProps = {|
   session: SessionState,
   bucket: BucketState,
   group: GroupState,
-  capabilities: Capabilities,
-  createGroup: (bid: string, data: GroupData) => void,
+|};
+
+export type Props = {
+  ...OwnProps,
+  ...StateProps,
+  createGroup: typeof BucketActions.createGroup,
 };
 
 export default class GroupCreate extends PureComponent<Props> {

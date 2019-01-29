@@ -85,11 +85,19 @@ function ListActions({ bid, session, bucket }) {
   );
 }
 
-type Props = {
+export type OwnProps = {|
   match: BucketRouteMatch,
+|};
+
+export type StateProps = {|
   session: SessionState,
   bucket: BucketState,
   capabilities: Capabilities,
+|};
+
+export type Props = {
+  ...OwnProps,
+  ...StateProps,
 };
 
 export default class BucketCollections extends PureComponent<Props> {
