@@ -9,6 +9,7 @@ import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
 
+import * as BucketActions from "../../actions/bucket";
 import { timeago } from "../../utils";
 import AdminLink from "../AdminLink";
 import BucketTabs from "./BucketTabs";
@@ -117,14 +118,22 @@ function ListActions(props) {
   );
 }
 
-type Props = {
+export type OwnProps = {|
   match: BucketRouteMatch,
+  location: Location,
+|};
+
+export type StateProps = {|
   session: SessionState,
   bucket: BucketState,
   capabilities: Capabilities,
-  listBucketCollections: string => void,
-  listBucketNextCollections: () => void,
-  location: Location,
+|};
+
+export type Props = {
+  ...OwnProps,
+  ...StateProps,
+  listBucketCollections: typeof BucketActions.listBucketCollections,
+  listBucketNextCollections: typeof BucketActions.listBucketNextCollections,
 };
 
 export default class BucketCollections extends PureComponent<Props> {

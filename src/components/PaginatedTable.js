@@ -11,7 +11,7 @@ type Props = {
   dataLoaded: boolean,
   colSpan: number,
   hasNextPage: boolean,
-  listNextPage: ?() => void,
+  listNextPage: ?() => *,
 };
 
 export default class PaginatedTable extends PureComponent<Props> {
