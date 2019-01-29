@@ -1,16 +1,20 @@
 /* @flow */
 import type { AppState } from "../../types";
-import type { Dispatch, ActionCreatorOrObjectOfACs } from "redux";
+import type { DispatchAPI } from "redux";
+import type {
+  Props,
+  StateProps,
+  OwnProps,
+} from "../../components/record/RecordHistory";
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { push as updatePath } from "connected-react-router";
 
 import RecordHistory from "../../components/record/RecordHistory";
 import * as RecordActions from "../../actions/record";
 import * as NotificationsActions from "../../actions/notifications";
 
-function mapStateToProps(state: AppState) {
+function mapStateToProps(state: AppState): StateProps {
   return {
     record: state.record,
     session: state.session,
@@ -18,18 +22,22 @@ function mapStateToProps(state: AppState) {
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
+type DispatchProps = {|
+  ...typeof RecordActions,
+  ...typeof NotificationsActions,
+|};
+
+function mapDispatchToProps(dispatch: DispatchAPI<*>): DispatchProps {
   return bindActionCreators(
     {
       ...RecordActions,
       ...NotificationsActions,
-      updatePath,
     },
     dispatch
   );
 }
 
-export default connect(
+export default connect<Props, OwnProps, _, _, _, _>( // eslint-disable-line
   mapStateToProps,
   mapDispatchToProps
 )(RecordHistory);

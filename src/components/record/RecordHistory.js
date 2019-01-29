@@ -2,8 +2,6 @@
 import type {
   Capabilities,
   SessionState,
-  BucketState,
-  HistoryFilters,
   RecordState,
   RecordRouteMatch,
 } from "../../types";
@@ -11,25 +9,29 @@ import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
 
+import * as RecordActions from "../../actions/record";
+import * as NotificationActions from "../../actions/notifications";
 import { parseHistoryFilters } from "../../utils";
 import HistoryTable from "../HistoryTable";
 import RecordTabs from "./RecordTabs";
 
-type Props = {
+export type OwnProps = {|
   match: RecordRouteMatch,
+  location: Location,
+|};
+
+export type StateProps = {|
   session: SessionState,
   capabilities: Capabilities,
-  bucket: BucketState,
   record: RecordState,
-  location: Location,
-  listRecordHistory: (
-    bid: string,
-    cid: string,
-    rid: string,
-    filters: HistoryFilters
-  ) => void,
-  listRecordNextHistory: () => void,
-  notifyError: (message: string, error: ?Error) => void,
+|};
+
+export type Props = {
+  ...OwnProps,
+  ...StateProps,
+  listRecordHistory: typeof RecordActions.listRecordHistory,
+  listRecordNextHistory: typeof RecordActions.listRecordNextHistory,
+  notifyError: typeof NotificationActions.notifyError,
 };
 
 export const onRecordHistoryEnter = (props: Props) => {
