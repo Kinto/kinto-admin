@@ -10,22 +10,27 @@ import type {
 
 import React, { PureComponent } from "react";
 
+import * as BucketActions from "../../actions/bucket";
 import Spinner from "../Spinner";
 import CollectionTabs from "./CollectionTabs";
 import PermissionsForm from "../PermissionsForm";
 import { canEditCollection } from "../../permission";
 
-type Props = {
+export type OwnProps = {|
+  match: CollectionRouteMatch,
+|};
+
+export type StateProps = {|
   session: SessionState,
   bucket: BucketState,
   collection: CollectionState,
   capabilities: Capabilities,
-  match: CollectionRouteMatch,
-  updateCollection: (
-    bid: string,
-    cid: string,
-    data: { permissions: CollectionPermissions }
-  ) => void,
+|};
+
+export type Props = {
+  ...OwnProps,
+  ...StateProps,
+  updateCollection: typeof BucketActions.updateCollection,
 };
 
 export default class CollectionPermissions_ extends PureComponent<Props> {

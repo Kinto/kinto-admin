@@ -9,17 +9,26 @@ import type {
 
 import React, { PureComponent } from "react";
 
+import * as BucketActions from "../../actions/bucket";
 import Spinner from "../Spinner";
 import BucketTabs from "./BucketTabs";
 import PermissionsForm from "../PermissionsForm";
 import { canEditBucket } from "../../permission";
 
-type Props = {
+export type OwnProps = {|
   match: BucketRouteMatch,
+|};
+
+export type StateProps = {|
   session: SessionState,
   bucket: BucketState,
   capabilities: Capabilities,
-  updateBucket: (bid: string, data: { permissions: BucketPermissions }) => void,
+|};
+
+export type Props = {
+  ...OwnProps,
+  ...StateProps,
+  updateBucket: typeof BucketActions.updateBucket,
 };
 
 export default class BucketPermissions_ extends PureComponent<Props> {

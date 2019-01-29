@@ -1,16 +1,19 @@
 /* @flow */
 import type { AppState } from "../../types";
-import type { Dispatch, ActionCreatorOrObjectOfACs } from "redux";
+import type { DispatchAPI } from "redux";
+import type {
+  Props,
+  StateProps,
+  OwnProps,
+} from "../../components/record/RecordPermissions";
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { push as updatePath } from "connected-react-router";
 
 import RecordPermissions from "../../components/record/RecordPermissions";
 import * as CollectionActions from "../../actions/collection";
-import * as NotificationsActions from "../../actions/notifications";
 
-function mapStateToProps(state: AppState) {
+function mapStateToProps(state: AppState): StateProps {
   return {
     session: state.session,
     capabilities: state.session.serverInfo.capabilities,
@@ -20,18 +23,13 @@ function mapStateToProps(state: AppState) {
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
-  return bindActionCreators(
-    {
-      ...CollectionActions,
-      ...NotificationsActions,
-      updatePath,
-    },
-    dispatch
-  );
+function mapDispatchToProps(
+  dispatch: DispatchAPI<*>
+): typeof CollectionActions {
+  return bindActionCreators(CollectionActions, dispatch);
 }
 
-export default connect(
+export default connect<Props, OwnProps, _, _, _, _>( // eslint-disable-line
   mapStateToProps,
   mapDispatchToProps
 )(RecordPermissions);

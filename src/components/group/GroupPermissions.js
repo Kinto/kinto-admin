@@ -10,22 +10,27 @@ import type {
 
 import React, { PureComponent } from "react";
 
+import * as BucketActions from "../../actions/bucket";
 import Spinner from "../Spinner";
 import GroupTabs from "./GroupTabs";
 import PermissionsForm from "../PermissionsForm";
 import { canEditGroup } from "../../permission";
 
-type Props = {
+export type OwnProps = {|
   match: GroupRouteMatch,
+|};
+
+export type StateProps = {|
   session: SessionState,
   bucket: BucketState,
   group: GroupState,
   capabilities: Capabilities,
-  updateGroup: (
-    bid: string,
-    gid: string,
-    data: { permissions: GroupPermissions }
-  ) => void,
+|};
+
+export type Props = {
+  ...OwnProps,
+  ...StateProps,
+  updateGroup: typeof BucketActions.updateGroup,
 };
 
 export default class GroupPermissions_ extends PureComponent<Props> {

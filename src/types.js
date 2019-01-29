@@ -58,6 +58,16 @@ export type BucketResource = {
   permissions: BucketPermissions,
 };
 
+export type BucketUpdate =
+  | {
+      data: BucketData,
+      permissions?: BucketPermissions,
+    }
+  | {
+      data?: BucketData,
+      permissions: BucketPermissions,
+    };
+
 export type Capabilities = {
   attachments?: Object,
   changes?: Object,
@@ -129,6 +139,16 @@ export type CollectionResource = {
   permissions: CollectionPermissions,
 };
 
+export type CollectionUpdate =
+  | {
+      data: CollectionData,
+      permissions?: CollectionPermissions,
+    }
+  | {
+      data?: CollectionData,
+      permissions: CollectionPermissions,
+    };
+
 export type GetStateFn = () => AppState;
 
 export type GroupState = {
@@ -154,6 +174,16 @@ export type GroupResource = {
   data: GroupData,
   permissions: GroupPermissions,
 };
+
+export type GroupUpdate =
+  | {
+      data: GroupData,
+      permissions?: GroupPermissions,
+    }
+  | {
+      data?: GroupData,
+      permissions: GroupPermissions,
+    };
 
 export type Notification = {
   type: string,
@@ -216,6 +246,16 @@ export type RecordResource = {
   data: RecordData,
   permissions: RecordPermissions,
 };
+
+export type RecordUpdate =
+  | {
+      data: RecordData,
+      permissions?: RecordPermissions,
+    }
+  | {
+      data?: RecordData,
+      permissions: RecordPermissions,
+    };
 
 export type ResourceHistoryEntry = {
   action: "create" | "update" | "delete",

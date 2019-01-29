@@ -2,11 +2,11 @@
 
 import type {
   BucketData,
-  BucketResource,
+  BucketUpdate,
   CollectionData,
-  CollectionResource,
+  CollectionUpdate,
   GroupData,
-  GroupResource,
+  GroupUpdate,
   HistoryFilters,
   ResourceHistoryEntry,
 } from "../types";
@@ -43,11 +43,11 @@ export function createBucket(
 
 export function updateBucket(
   bid: string,
-  bucket: BucketResource
+  bucket: BucketUpdate
 ): {
   type: "BUCKET_UPDATE_REQUEST",
   bid: string,
-  bucket: BucketResource,
+  bucket: BucketUpdate,
 } {
   return { type: BUCKET_UPDATE_REQUEST, bid, bucket };
 }
@@ -137,12 +137,12 @@ export function createCollection(
 export function updateCollection(
   bid: string,
   cid: string,
-  collection: CollectionResource
+  collection: CollectionUpdate
 ): {
   type: "COLLECTION_UPDATE_REQUEST",
   bid: string,
   cid: string,
-  collection: CollectionResource,
+  collection: CollectionUpdate,
 } {
   return { type: COLLECTION_UPDATE_REQUEST, bid, cid, collection };
 }
@@ -172,12 +172,12 @@ export function createGroup(
 export function updateGroup(
   bid: string,
   gid: string,
-  group: GroupResource
+  group: GroupUpdate
 ): {
   type: "GROUP_UPDATE_REQUEST",
   bid: string,
   gid: string,
-  group: GroupResource,
+  group: GroupUpdate,
 } {
   return { type: GROUP_UPDATE_REQUEST, bid, gid, group };
 }

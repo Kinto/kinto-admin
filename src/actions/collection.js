@@ -2,7 +2,7 @@
 
 import type {
   RecordData,
-  RecordResource,
+  RecordUpdate,
   HistoryFilters,
   ResourceHistoryEntry,
 } from "../types";
@@ -139,14 +139,14 @@ export function updateRecord(
   bid: string,
   cid: string,
   rid: string,
-  record: RecordResource,
+  record: RecordUpdate,
   attachment?: string
 ): {
   type: "RECORD_UPDATE_REQUEST",
   bid: string,
   cid: string,
   rid: string,
-  record: RecordResource,
+  record: RecordUpdate,
   attachment?: string,
 } {
   return { type: RECORD_UPDATE_REQUEST, bid, cid, rid, record, attachment };

@@ -5,31 +5,33 @@ import type {
   BucketState,
   CollectionState,
   RecordState,
-  RecordData,
   RecordRouteMatch,
 } from "../../types";
 
 import React, { PureComponent } from "react";
 
+import * as CollectionActions from "../../actions/collection";
 import RecordForm from "./RecordForm";
 import RecordTabs from "./RecordTabs";
 
-type Props = {
+export type OwnProps = {|
   match: RecordRouteMatch,
+|};
+
+export type StateProps = {|
   session: SessionState,
   capabilities: Capabilities,
   bucket: BucketState,
   collection: CollectionState,
   record: RecordState,
-  deleteRecord: (bid: string, cid: string, rid: string) => void,
-  deleteAttachment: (bid: string, cid: string, rid: string) => void,
-  updateRecord: (
-    bid: string,
-    cid: string,
-    rid: string,
-    data: RecordData,
-    attachment: ?string
-  ) => void,
+|};
+
+export type Props = {
+  ...OwnProps,
+  ...StateProps,
+  deleteRecord: typeof CollectionActions.deleteRecord,
+  deleteAttachment: typeof CollectionActions.deleteAttachment,
+  updateRecord: typeof CollectionActions.updateRecord,
 };
 
 export default class RecordAttributes extends PureComponent<Props> {

@@ -6,29 +6,32 @@ import type {
   CollectionState,
   RecordState,
   RecordRouteMatch,
-  RecordPermissions,
 } from "../../types";
 
 import React, { PureComponent } from "react";
 
+import * as CollectionActions from "../../actions/collection";
 import Spinner from "../Spinner";
 import RecordTabs from "./RecordTabs";
 import PermissionsForm from "../PermissionsForm";
 import { canEditRecord } from "../../permission";
 
-type Props = {
+export type OwnProps = {|
   match: RecordRouteMatch,
+|};
+
+export type StateProps = {|
   session: SessionState,
   capabilities: Capabilities,
   bucket: BucketState,
   collection: CollectionState,
   record: RecordState,
-  updateRecord: (
-    bid: string,
-    cid: string,
-    rid: string,
-    data: { permissions: RecordPermissions }
-  ) => void,
+|};
+
+export type Props = {
+  ...OwnProps,
+  ...StateProps,
+  updateRecord: typeof CollectionActions.updateRecord,
 };
 
 export default class RecordPermissions_ extends PureComponent<Props> {
