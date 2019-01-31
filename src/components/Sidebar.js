@@ -10,6 +10,7 @@ import type { Location, Match } from "react-router-dom";
 import { PureComponent } from "react";
 import * as React from "react";
 
+import * as SessionActions from "../actions/session";
 import Spinner from "./Spinner";
 import AdminLink from "./AdminLink";
 import url from "../url";
@@ -333,12 +334,20 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
   }
 }
 
-type SidebarProps = {
-  session: SessionState,
-  settings: SettingsState,
+export type OwnProps = {|
   match: Match,
   location: Location,
-  listBuckets: () => void,
+|};
+
+export type StateProps = {|
+  session: SessionState,
+  settings: SettingsState,
+|};
+
+export type SidebarProps = {
+  ...OwnProps,
+  ...StateProps,
+  listBuckets: typeof SessionActions.listBuckets,
 };
 
 export default class Sidebar extends PureComponent<SidebarProps> {
