@@ -2,10 +2,10 @@
 import * as React from "react";
 import { Component, PureComponent } from "react";
 import { Route, Switch } from "react-router-dom";
-import type { Location, Match } from "react-router-dom";
+import type { ContextRouter, LocationShape } from "react-router-dom";
 import { mergeObjects } from "react-jsonschema-form/lib/utils";
 import { Breadcrumb } from "react-breadcrumbs";
-import type { Dispatch, ActionCreatorOrObjectOfACs } from "redux";
+import type { DispatchAPI } from "redux";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
@@ -49,10 +49,9 @@ function registerPluginsComponentHooks(
 }
 
 type ComponentWrapperProps = {
+  ...ContextRouter,
   component: React.ComponentType<*>,
-  location: Location,
-  match: Match,
-  routeUpdated: (Object, Location) => void,
+  routeUpdated: typeof RouteActions.routeUpdated,
 };
 
 class ComponentWrapper extends PureComponent<ComponentWrapperProps> {
@@ -74,25 +73,43 @@ class ComponentWrapper extends PureComponent<ComponentWrapperProps> {
   }
 }
 
+// FIXME: there's probably a better way to re-use all the props from
+// the Route definition in react-router.d.js
+type RouteCreatorOwnProps = {|
+  component?: React.ComponentType<*>,
+  render?: (router: ContextRouter) => React.Node,
+  children?: React.Node,
+  exact?: boolean,
+  path?: string | string[],
+  location?: LocationShape,
+  title: string,
+|};
+
+type RouteCreatorProps = {
+  ...RouteCreatorOwnProps,
+  routeUpdated: typeof RouteActions.routeUpdated,
+};
+
 const routeCreator = ({
   component: Component,
   render,
   routeUpdated,
   children,
+  title,
   ...props
-}) => {
+}: RouteCreatorProps) => {
   return (
     <Route
       {...props}
       render={routeProps => {
         // If the title of the route starts with a ":" it's a "match param", so resolve it.
-        const title = props.title.startsWith(":")
-          ? routeProps.match.params[props.title.slice(1)]
-          : props.title;
+        const resolvedTitle = title.startsWith(":")
+          ? routeProps.match.params[title.slice(1)]
+          : title;
         return (
           <Breadcrumb
             data={{
-              title: title,
+              title: resolvedTitle,
               pathname: routeProps.match.url,
             }}>
             {Component ? (
@@ -113,11 +130,18 @@ const routeCreator = ({
   );
 };
 
-function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
+function mapDispatchToProps(dispatch: DispatchAPI<*>): typeof RouteActions {
   return bindActionCreators(RouteActions, dispatch);
 }
 
-export const CreateRoute = connect(
+export const CreateRoute = connect<
+  RouteCreatorProps,
+  RouteCreatorOwnProps,
+  _, // eslint-disable-line
+  _, // eslint-disable-line
+  _, // eslint-disable-line
+  _ // eslint-disable-line
+>(
   null,
   mapDispatchToProps
 )(routeCreator);
