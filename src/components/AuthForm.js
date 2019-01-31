@@ -3,6 +3,8 @@ import type { SessionState, SettingsState, ServerHistoryEntry } from "../types";
 
 import React, { PureComponent } from "react";
 
+import * as HistoryActions from "../actions/history";
+import * as SessionActions from "../actions/session";
 import BaseForm from "./BaseForm";
 import {
   debounce,
@@ -367,12 +369,12 @@ type AuthFormProps = {
   session: SessionState,
   history: ServerHistoryEntry[],
   settings: SettingsState,
-  setupSession: (session: Object) => void,
-  serverChange: () => void,
-  getServerInfo: (auth: Object) => void,
-  navigateToExternalAuth: (authFormData: Object) => void,
-  navigateToOpenID: (authFormData: Object, provider: Object) => void,
-  clearHistory: () => void,
+  setupSession: typeof SessionActions.setupSession,
+  serverChange: typeof SessionActions.serverChange,
+  getServerInfo: typeof SessionActions.getServerInfo,
+  navigateToExternalAuth: typeof SessionActions.navigateToExternalAuth,
+  navigateToOpenID: typeof SessionActions.navigateToOpenID,
+  clearHistory: typeof HistoryActions.clearHistory,
 };
 
 type AuthFormState = {

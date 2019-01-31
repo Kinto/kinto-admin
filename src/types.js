@@ -14,7 +14,7 @@ export type AppState = {
   group: GroupState,
   record: RecordState,
   notifications: Notifications,
-  history: string[],
+  history: ServerHistoryEntry[],
   settings: SettingsState,
 };
 
