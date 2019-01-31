@@ -30,7 +30,7 @@ export default function createRootReducer(
   history: HashHistory,
   pluginsReducers: Object[] = []
 ) {
-  return combineReducers({
+  return combineReducers<*, *>({
     router: connectRouter(history),
     ...standardReducers,
     ...flattenPluginsReducers(pluginsReducers, standardReducers),
