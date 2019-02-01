@@ -70,7 +70,7 @@ class ComponentWrapper extends PureComponent<ComponentWrapperProps> {
   render() {
     const {
       component: Component,
-      routeUpdated: _routeUpdated, // eslint-disable-line
+      routeUpdated: _routeUpdated,
       ...props
     } = this.props;
     // Each component takes a different set of OwnProps, which leads
