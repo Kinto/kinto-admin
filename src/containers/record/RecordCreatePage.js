@@ -9,11 +9,9 @@ import type {
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { push as updatePath } from "connected-react-router";
 
 import RecordCreate from "../../components/record/RecordCreate";
 import * as CollectionActions from "../../actions/collection";
-import * as NotificationsActions from "../../actions/notifications";
 
 function mapStateToProps(state: AppState): StateProps {
   return {
@@ -24,22 +22,10 @@ function mapStateToProps(state: AppState): StateProps {
   };
 }
 
-// FIXME: component doesn't need NotificationsActions
-type DispatchProps = {|
-  ...typeof CollectionActions,
-  ...typeof NotificationsActions,
-  updatePath: typeof updatePath,
-|};
-
-function mapDispatchToProps(dispatch: DispatchAPI<*>): DispatchProps {
-  return bindActionCreators(
-    {
-      ...CollectionActions,
-      ...NotificationsActions,
-      updatePath,
-    },
-    dispatch
-  );
+function mapDispatchToProps(
+  dispatch: DispatchAPI<*>
+): typeof CollectionActions {
+  return bindActionCreators(CollectionActions, dispatch);
 }
 
 export default connect<Props, OwnProps, _, _, _, _>( // eslint-disable-line
