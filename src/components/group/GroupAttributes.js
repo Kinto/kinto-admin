@@ -10,18 +10,27 @@ import type {
 
 import React, { PureComponent } from "react";
 
+import * as BucketActions from "../../actions/bucket";
 import Spinner from "../Spinner";
 import GroupForm from "./GroupForm";
 import GroupTabs from "./GroupTabs";
 
-type Props = {
+export type OwnProps = {|
   match: GroupRouteMatch,
+|};
+
+export type StateProps = {|
   session: SessionState,
   bucket: BucketState,
   group: GroupState,
   capabilities: Capabilities,
-  updateGroup: (bid: string, gid: string, payload: { data: GroupData }) => void,
-  deleteGroup: (bid: string, gid: string) => void,
+|};
+
+export type Props = {
+  ...OwnProps,
+  ...StateProps,
+  updateGroup: typeof BucketActions.updateGroup,
+  deleteGroup: typeof BucketActions.deleteGroup,
 };
 
 export default class GroupAttributes extends PureComponent<Props> {

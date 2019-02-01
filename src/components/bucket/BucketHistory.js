@@ -3,26 +3,35 @@ import type {
   Capabilities,
   BucketState,
   BucketRouteMatch,
-  HistoryFilters,
   SessionState,
 } from "../../types";
 import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
 
+import * as BucketActions from "../../actions/bucket";
+import * as NotificationActions from "../../actions/notifications";
 import { parseHistoryFilters } from "../../utils";
 import BucketTabs from "./BucketTabs";
 import HistoryTable from "../HistoryTable";
 
-type Props = {
+export type OwnProps = {|
   match: BucketRouteMatch,
+  location: Location,
+|};
+
+export type StateProps = {|
   bucket: BucketState,
   capabilities: Capabilities,
-  location: Location,
-  listBucketHistory: (bid: string, filters: HistoryFilters) => void,
-  listBucketNextHistory: () => void,
-  notifyError: (message: string, error: ?Error) => void,
   session: SessionState,
+|};
+
+export type Props = {
+  ...OwnProps,
+  ...StateProps,
+  listBucketHistory: typeof BucketActions.listBucketHistory,
+  listBucketNextHistory: typeof BucketActions.listBucketNextHistory,
+  notifyError: typeof NotificationActions.notifyError,
 };
 
 export const onBucketHistoryEnter = (props: Props) => {

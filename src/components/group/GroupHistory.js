@@ -9,21 +9,29 @@ import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
 
+import * as GroupActions from "../../actions/group";
+import * as NotificationActions from "../../actions/notifications";
 import { parseHistoryFilters } from "../../utils";
 import HistoryTable from "../HistoryTable";
 import CollectionTabs from "./GroupTabs";
 
-type Props = {
+export type OwnProps = {|
   match: GroupRouteMatch,
+  location: Location,
+|};
+
+export type StateProps = {|
   group: GroupState,
   capabilities: Capabilities,
-  location: Location,
-  hasNextHistory: boolean,
-  listGroupHistory: ?Function,
-  listGroupNextHistory: ?Function,
-  notifyError: (message: string, error: ?Error) => void,
-  location: Location,
   session: SessionState,
+|};
+
+export type Props = {
+  ...OwnProps,
+  ...StateProps,
+  listGroupHistory: typeof GroupActions.listGroupHistory,
+  listGroupNextHistory: typeof GroupActions.listGroupNextHistory,
+  notifyError: typeof NotificationActions.notifyError,
 };
 
 export const onGroupHistoryEnter = (props: Props) => {

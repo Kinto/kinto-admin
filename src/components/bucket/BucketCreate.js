@@ -1,15 +1,20 @@
 /* @flow */
-import type { SessionState, BucketState, BucketData } from "../../types";
+import type { SessionState, BucketState } from "../../types";
 
 import React, { PureComponent } from "react";
 
+import * as BucketActions from "../../actions/bucket";
 import BucketForm from "./BucketForm";
 import Spinner from "../Spinner";
 
-type Props = {
+export type StateProps = {|
   session: SessionState,
   bucket: BucketState,
-  createBucket: (bid: string, data: BucketData) => void,
+|};
+
+export type Props = {
+  ...StateProps,
+  createBucket: typeof BucketActions.createBucket,
 };
 
 export default class BucketCreate extends PureComponent<Props> {

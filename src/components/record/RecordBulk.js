@@ -1,12 +1,10 @@
 /* @flow */
-import type {
-  CollectionState,
-  RecordData,
-  CollectionRouteMatch,
-} from "../../types";
+import type { CollectionState, CollectionRouteMatch } from "../../types";
 
 import React, { PureComponent } from "react";
 
+import * as CollectionActions from "../../actions/collection";
+import * as NotificationActions from "../../actions/notifications";
 import BaseForm from "../BaseForm";
 import AdminLink from "../AdminLink";
 import Spinner from "../Spinner";
@@ -16,11 +14,19 @@ import {
   extendUiSchemaWithAttachment,
 } from "./RecordForm";
 
-type Props = {
+export type OwnProps = {|
   match: CollectionRouteMatch,
+|};
+
+export type StateProps = {|
   collection: CollectionState,
-  bulkCreateRecords: (bid: string, cid: string, formData: RecordData[]) => void,
-  notifyError: (msg: string, error: ?Error) => void,
+|};
+
+export type Props = {
+  ...OwnProps,
+  ...StateProps,
+  bulkCreateRecords: typeof CollectionActions.bulkCreateRecords,
+  notifyError: typeof NotificationActions.notifyError,
 };
 
 export default class RecordBulk extends PureComponent<Props> {

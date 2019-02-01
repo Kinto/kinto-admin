@@ -2,33 +2,36 @@
 import type {
   Capabilities,
   SessionState,
-  BucketState,
   CollectionState,
   CollectionRouteMatch,
-  HistoryFilters,
 } from "../../types";
 import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
 
+import * as CollectionActions from "../../actions/collection";
+import * as NotificationActions from "../../actions/notifications";
 import { parseHistoryFilters } from "../../utils";
 import HistoryTable from "../HistoryTable";
 import CollectionTabs from "./CollectionTabs";
 
-type Props = {
-  session: SessionState,
-  bucket: BucketState,
-  collection: CollectionState,
-  capabilities: Capabilities,
+export type OwnProps = {|
   match: CollectionRouteMatch,
   location: Location,
-  listCollectionHistory: (
-    bid: string,
-    cid: string,
-    filters: HistoryFilters
-  ) => void,
-  listCollectionNextHistory: () => void,
-  notifyError: (message: string, error: ?Error) => void,
+|};
+
+export type StateProps = {|
+  session: SessionState,
+  collection: CollectionState,
+  capabilities: Capabilities,
+|};
+
+export type Props = {
+  ...OwnProps,
+  ...StateProps,
+  listCollectionHistory: typeof CollectionActions.listCollectionHistory,
+  listCollectionNextHistory: typeof CollectionActions.listCollectionNextHistory,
+  notifyError: typeof NotificationActions.notifyError,
 };
 
 export const onCollectionHistoryEnter = (props: Props) => {

@@ -8,6 +8,9 @@ import type {
 
 import React, { PureComponent } from "react";
 
+import * as HistoryActions from "../actions/history";
+import * as NotificationActions from "../actions/notifications";
+import * as SessionActions from "../actions/session";
 import Spinner from "./Spinner";
 import AuthForm from "./AuthForm";
 import { isObject } from "../utils";
@@ -58,18 +61,26 @@ function SessionInfo({ session: { serverInfo } }) {
   );
 }
 
-type Props = {
+export type OwnProps = {|
   match: HomePageRouteMatch,
+|};
+
+export type StateProps = {|
   session: SessionState,
   settings: SettingsState,
   history: ServerHistoryEntry[],
-  clearHistory: () => void,
-  setupSession: (session: Object) => void,
-  notifyError: (message: string, error: Error) => void,
-  serverChange: () => void,
-  getServerInfo: (auth: Object) => void,
-  navigateToExternalAuth: (authFormData: Object) => void,
-  navigateToOpenID: (authFormData: Object, provider: Object) => void,
+|};
+
+export type Props = {
+  ...OwnProps,
+  ...StateProps,
+  clearHistory: typeof HistoryActions.clearHistory,
+  setupSession: typeof SessionActions.setupSession,
+  notifyError: typeof NotificationActions.notifyError,
+  serverChange: typeof SessionActions.serverChange,
+  getServerInfo: typeof SessionActions.getServerInfo,
+  navigateToExternalAuth: typeof SessionActions.navigateToExternalAuth,
+  navigateToOpenID: typeof SessionActions.navigateToOpenID,
 };
 
 export default class HomePage extends PureComponent<Props> {

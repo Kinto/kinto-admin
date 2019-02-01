@@ -1,25 +1,31 @@
 /* @flow */
 import type {
-  Capabilities,
   SessionState,
   BucketState,
   CollectionState,
-  CollectionData,
   BucketRouteMatch,
 } from "../../types";
 
 import React, { PureComponent } from "react";
 
+import * as BucketActions from "../../actions/bucket";
 import Spinner from "../Spinner";
 import CollectionForm from "./CollectionForm";
 
-type Props = {
+export type OwnProps = {|
+  match: BucketRouteMatch,
+|};
+
+export type StateProps = {|
   session: SessionState,
   bucket: BucketState,
   collection: CollectionState,
-  capabilities: Capabilities,
-  match: BucketRouteMatch,
-  createCollection: (bid: string, data: CollectionData) => void,
+|};
+
+export type Props = {
+  ...OwnProps,
+  ...StateProps,
+  createCollection: typeof BucketActions.createCollection,
 };
 
 export default class CollectionCreate extends PureComponent<Props> {

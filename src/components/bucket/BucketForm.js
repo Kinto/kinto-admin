@@ -84,8 +84,8 @@ type Props = {
   session: SessionState,
   bucket: BucketState,
   formData?: BucketData,
-  deleteBucket?: (bid: string) => void,
-  onSubmit: (data: Object) => void,
+  deleteBucket?: (bid: string) => *,
+  onSubmit: (data: Object) => *,
 };
 
 export default class BucketForm extends PureComponent<Props> {

@@ -1,5 +1,5 @@
 /* @flow */
-import type { Plugin } from "../types";
+import type { AppState, Plugin } from "../types";
 
 import { createStore, applyMiddleware, compose } from "redux";
 import createSagaMiddleware from "redux-saga";
@@ -23,7 +23,10 @@ export default function configureStore(
   const pluginSagas = plugins.map(({ sagas = [] }) => sagas);
 
   const finalCreateStore = compose(
-    applyMiddleware(sagaMiddleware, routerMiddleware(hashHistory)),
+    applyMiddleware<AppState, *, *>(
+      sagaMiddleware,
+      routerMiddleware(hashHistory)
+    ),
     window.devToolsExtension ? window.devToolsExtension() : f => f
   )(createStore);
 

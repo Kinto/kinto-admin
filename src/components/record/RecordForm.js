@@ -11,6 +11,7 @@ import type {
 import React, { PureComponent } from "react";
 import filesize from "filesize";
 
+import * as CollectionActions from "../../actions/collection";
 import BaseForm from "./../BaseForm";
 import AdminLink from "../AdminLink";
 import Spinner from "../Spinner";
@@ -251,8 +252,8 @@ type Props = {
   bucket: BucketState,
   collection: CollectionState,
   record?: RecordState,
-  deleteRecord?: (bid: string, cid: string, rid: string) => void,
-  deleteAttachment?: (bid: string, cid: string, rid: string) => void,
+  deleteRecord?: typeof CollectionActions.deleteRecord,
+  deleteAttachment?: typeof CollectionActions.deleteAttachment,
   onSubmit: (data: RecordData) => void,
   capabilities: Capabilities,
 };

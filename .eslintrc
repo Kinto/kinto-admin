@@ -8,7 +8,7 @@
     "linebreak-style": ["error", "unix"],
     "semi": ["error", "always"],
     "comma-dangle": ["error", "always-multiline"],
-    "no-unused-vars": ["error", {"vars": "all", "args": "none"}],
+    "no-unused-vars": ["error", {"vars": "all", "args": "none", "varsIgnorePattern": "^_"}],
     "no-console": "off",
   },
   "globals": {

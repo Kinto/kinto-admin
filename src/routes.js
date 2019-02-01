@@ -2,10 +2,10 @@
 import * as React from "react";
 import { Component, PureComponent } from "react";
 import { Route, Switch } from "react-router-dom";
-import type { Location, Match } from "react-router-dom";
+import type { ContextRouter, LocationShape } from "react-router-dom";
 import { mergeObjects } from "react-jsonschema-form/lib/utils";
 import { Breadcrumb } from "react-breadcrumbs";
-import type { Dispatch, ActionCreatorOrObjectOfACs } from "redux";
+import type { DispatchAPI } from "redux";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
@@ -49,10 +49,9 @@ function registerPluginsComponentHooks(
 }
 
 type ComponentWrapperProps = {
+  ...ContextRouter,
   component: React.ComponentType<*>,
-  location: Location,
-  match: Match,
-  routeUpdated: (Object, Location) => void,
+  routeUpdated: typeof RouteActions.routeUpdated,
 };
 
 class ComponentWrapper extends PureComponent<ComponentWrapperProps> {
@@ -69,30 +68,84 @@ class ComponentWrapper extends PureComponent<ComponentWrapperProps> {
   };
 
   render() {
-    const { component: Component, ...props } = this.props;
+    const {
+      component: Component,
+      routeUpdated: _routeUpdated,
+      ...props
+    } = this.props;
+    // Each component takes a different set of OwnProps, which leads
+    // to two problems with just calling the component with the props
+    // here.
+    //
+    // - OwnProps is an exact object, so we can't call a component
+    //   with "extra" props. We get all of the ContextRouter props and
+    //   there's no way to distinguish which of those is needed for
+    //   the component, so we have to pass all of them. It's true that
+    //   every OwnProps is essentially derived from the ContextRouter
+    //   type, so we *could* conceptually always use that, but that
+    //   means we don't get a clear understanding of which Route prop
+    //   each component uses. Besides, even if we do that...
+    //
+    // - We also customize the `match` type to better reflect the
+    //   params we expect to get from react-router based on the path.
+    //   react-router just gives us a string map, which isn't super
+    //   helpful. Collection components replace that with
+    //   CollectionRouteMatch etc. to assert that there should always
+    //   be e.g. a bid and a cid. Fixing the types here would require
+    //   adding some extra logic to ensure that the match we get is
+    //   what we expect (and if not.. throw?).
+    //
+    // But if we didn't wrap react-router, everything would be
+    // fine. Why is that? Of course, it's because react-router is
+    // written in JS and the typings in flow-typed aren't
+    // exact. `Route` is specified to take a component of any type,
+    // which gets unified with the OwnProps we actually take, even
+    // though `Route` always passes the complete set of router
+    // props. We can't reproduce this behavior in correctly-typed
+    // code, so let's not even try.
+
+    // $FlowFixMe: maybe wait until we get better types for react-router
     return <Component {...props} />;
   }
 }
+
+// FIXME: there's probably a better way to re-use all the props from
+// the Route definition in react-router.d.js
+type RouteCreatorOwnProps = {|
+  component?: React.ComponentType<*>,
+  render?: (router: ContextRouter) => React.Node,
+  children?: React.Node,
+  exact?: boolean,
+  path?: string | string[],
+  location?: LocationShape,
+  title: string,
+|};
+
+type RouteCreatorProps = {
+  ...RouteCreatorOwnProps,
+  routeUpdated: typeof RouteActions.routeUpdated,
+};
 
 const routeCreator = ({
   component: Component,
   render,
   routeUpdated,
   children,
+  title,
   ...props
-}) => {
+}: RouteCreatorProps) => {
   return (
     <Route
       {...props}
       render={routeProps => {
         // If the title of the route starts with a ":" it's a "match param", so resolve it.
-        const title = props.title.startsWith(":")
-          ? routeProps.match.params[props.title.slice(1)]
-          : props.title;
+        const resolvedTitle = title.startsWith(":")
+          ? routeProps.match.params[title.slice(1)]
+          : title;
         return (
           <Breadcrumb
             data={{
-              title: title,
+              title: resolvedTitle,
               pathname: routeProps.match.url,
             }}>
             {Component ? (
@@ -113,11 +166,18 @@ const routeCreator = ({
   );
 };
 
-function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
+function mapDispatchToProps(dispatch: DispatchAPI<*>): typeof RouteActions {
   return bindActionCreators(RouteActions, dispatch);
 }
 
-export const CreateRoute = connect(
+export const CreateRoute = connect<
+  RouteCreatorProps,
+  RouteCreatorOwnProps,
+  _, // eslint-disable-line
+  _, // eslint-disable-line
+  _, // eslint-disable-line
+  _ // eslint-disable-line
+>(
   null,
   mapDispatchToProps
 )(routeCreator);
@@ -139,12 +199,10 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
         path="/"
         render={props => (
           <App
-            plugins={plugins}
             sidebar={hookedSidebar}
             notifications={hookedNotifications}
             collectionRecords={hookedCollectionRecords}
             pluginsRoutes={pluginsRoutes}
-            {...props}
           />
         )}
       />

@@ -1,16 +1,20 @@
 /* @flow */
 import type { AppState } from "../../types";
-import type { Dispatch, ActionCreatorOrObjectOfACs } from "redux";
+import type { DispatchAPI } from "redux";
+import type {
+  Props,
+  StateProps,
+  OwnProps,
+} from "../../components/group/GroupHistory";
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { push as updatePath } from "connected-react-router";
 
 import GroupHistory from "../../components/group/GroupHistory";
 import * as GroupActions from "../../actions/group";
 import * as NotificationsActions from "../../actions/notifications";
 
-function mapStateToProps(state: AppState) {
+function mapStateToProps(state: AppState): StateProps {
   return {
     group: state.group,
     session: state.session,
@@ -18,18 +22,22 @@ function mapStateToProps(state: AppState) {
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
+type DispatchProps = {|
+  ...typeof GroupActions,
+  ...typeof NotificationsActions,
+|};
+
+function mapDispatchToProps(dispatch: DispatchAPI<*>): DispatchProps {
   return bindActionCreators(
     {
       ...GroupActions,
       ...NotificationsActions,
-      updatePath,
     },
     dispatch
   );
 }
 
-export default connect(
+export default connect<Props, OwnProps, _, _, _, _>( // eslint-disable-line
   mapStateToProps,
   mapDispatchToProps
 )(GroupHistory);

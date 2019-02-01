@@ -10,18 +10,27 @@ import type {
 
 import React, { PureComponent } from "react";
 
+import * as BucketActions from "../../actions/bucket";
 import Spinner from "../Spinner";
 import CollectionForm from "./CollectionForm";
 import CollectionTabs from "./CollectionTabs";
 
-type Props = {
+export type OwnProps = {|
+  match: CollectionRouteMatch,
+|};
+
+export type StateProps = {|
   session: SessionState,
   bucket: BucketState,
   collection: CollectionState,
   capabilities: Capabilities,
-  match: CollectionRouteMatch,
-  updateCollection: (bid: string, cid: string, data: CollectionData) => void,
-  deleteCollection: (bid: string, cid: string) => void,
+|};
+
+export type Props = {
+  ...OwnProps,
+  ...StateProps,
+  updateCollection: typeof BucketActions.updateCollection,
+  deleteCollection: typeof BucketActions.deleteCollection,
 };
 
 export default class CollectionAttributes extends PureComponent<Props> {

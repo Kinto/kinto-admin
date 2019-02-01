@@ -6,6 +6,7 @@ import type { Location } from "react-router-dom";
 import React, { PureComponent } from "react";
 import { diffJson } from "diff";
 
+import * as NotificationActions from "../actions/notifications";
 import { timeago, humanDate, parseHistoryFilters } from "../utils";
 import AdminLink from "./AdminLink";
 import Spinner from "./Spinner";
@@ -290,7 +291,7 @@ type Props = {
   hasNextHistory: boolean,
   listNextHistory: ?Function,
   enableDiffOverview: boolean,
-  notifyError: (message: string, error: Error) => void,
+  notifyError: typeof NotificationActions.notifyError,
 };
 
 type State = {

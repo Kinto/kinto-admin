@@ -1,6 +1,11 @@
 /* @flow */
 import type { AppState } from "../../types";
-import type { Dispatch, ActionCreatorOrObjectOfACs } from "redux";
+import type { DispatchAPI } from "redux";
+import type {
+  Props,
+  StateProps,
+  OwnProps,
+} from "../../components/collection/CollectionRecords";
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -11,7 +16,7 @@ import * as CollectionActions from "../../actions/collection";
 import * as NotificationsActions from "../../actions/notifications";
 import * as RouteActions from "../../actions/route";
 
-function mapStateToProps(state: AppState) {
+function mapStateToProps(state: AppState): StateProps {
   return {
     session: state.session,
     bucket: state.bucket,
@@ -20,7 +25,14 @@ function mapStateToProps(state: AppState) {
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
+type DispatchProps = {|
+  ...typeof CollectionActions,
+  ...typeof NotificationsActions,
+  ...typeof RouteActions,
+  updatePath: typeof updatePath,
+|};
+
+function mapDispatchToProps(dispatch: DispatchAPI<*>): DispatchProps {
   return bindActionCreators(
     {
       ...CollectionActions,
@@ -32,7 +44,7 @@ function mapDispatchToProps(dispatch: Dispatch): ActionCreatorOrObjectOfACs {
   );
 }
 
-export default connect(
+export default connect<Props, OwnProps, _, _, _, _>( // eslint-disable-line
   mapStateToProps,
   mapDispatchToProps
 )(CollectionRecords);

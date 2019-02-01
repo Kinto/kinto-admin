@@ -9,17 +9,26 @@ import type {
 
 import React, { PureComponent } from "react";
 
+import * as BucketActions from "../../actions/bucket";
 import Spinner from "../Spinner";
 import BucketForm from "./BucketForm";
 import BucketTabs from "./BucketTabs";
 
-type Props = {
+export type OwnProps = {|
   match: BucketRouteMatch,
+|};
+
+export type StateProps = {|
   session: SessionState,
   bucket: BucketState,
   capabilities: Capabilities,
-  updateBucket: (bid: string, data: BucketData) => void,
-  deleteBucket: (bid: string) => void,
+|};
+
+export type Props = {
+  ...StateProps,
+  ...OwnProps,
+  updateBucket: typeof BucketActions.updateBucket,
+  deleteBucket: typeof BucketActions.deleteBucket,
 };
 
 export default class BucketAttributes extends PureComponent<Props> {

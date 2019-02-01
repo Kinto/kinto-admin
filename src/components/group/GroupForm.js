@@ -95,8 +95,8 @@ type Props = {
   bucket: BucketState,
   group: GroupState,
   formData?: GroupData,
-  onSubmit: (formData: GroupData) => void,
-  deleteGroup?: (gid: string) => void,
+  onSubmit: (formData: GroupData) => *,
+  deleteGroup?: (gid: string) => *,
 };
 
 export default class GroupForm extends PureComponent<Props> {

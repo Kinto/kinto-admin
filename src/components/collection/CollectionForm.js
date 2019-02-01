@@ -295,8 +295,8 @@ type Props = {
   session: SessionState,
   bucket: BucketState,
   collection: CollectionState,
-  deleteCollection?: (cid: string) => void,
-  onSubmit: (formData: CollectionData) => void,
+  deleteCollection?: (cid: string) => *,
+  onSubmit: (formData: CollectionData) => *,
   formData?: CollectionData,
 };
 
