@@ -91,7 +91,7 @@
     "prettier": "^1.15.1",
     "react-test-renderer": "^16.5.1",
     "redbox-react": "^1.2.6",
-    "sinon": "^6.1.4",
+    "sinon": "^7.2.3",
     "style-loader": "^0.23.0",
     "toctoc": "^0.3.0",
     "url-loader": "^1.0.0",
