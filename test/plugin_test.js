@@ -62,12 +62,12 @@ describe("Plugin API", () => {
       const sagas = flattenPluginsSagas(plugins, getState);
 
       expect(sagas).to.have.a.lengthOf(3);
-      expect(sagas[0].FORK.args[0]).eql("ACTION_1");
-      expect(sagas[0].FORK.args[1].name).eql("saga1");
-      expect(sagas[1].FORK.args[0]).eql("ACTION_2");
-      expect(sagas[1].FORK.args[1].name).eql("saga2");
-      expect(sagas[2].FORK.args[0]).eql("ACTION_3");
-      expect(sagas[2].FORK.args[1].name).eql("saga3");
+      expect(sagas[0].payload.args[0]).eql("ACTION_1");
+      expect(sagas[0].payload.args[1].name).eql("saga1");
+      expect(sagas[1].payload.args[0]).eql("ACTION_2");
+      expect(sagas[1].payload.args[1].name).eql("saga2");
+      expect(sagas[2].payload.args[0]).eql("ACTION_3");
+      expect(sagas[2].payload.args[1].name).eql("saga3");
     });
   });
 

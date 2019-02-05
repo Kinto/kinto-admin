@@ -874,8 +874,8 @@ describe("collection sagas", () => {
 
         // We can't simply test for the passed batch function, so we're testing
         // the provided argument type here.
-        expect(v.CALL.args[0]).to.be.a("function");
-        expect(v.CALL.args[1]).eql({ aggregate: true });
+        expect(v.payload.args[0]).to.be.a("function");
+        expect(v.payload.args[1]).eql({ aggregate: true });
       });
 
       it("should update the route path", () => {
