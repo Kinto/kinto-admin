@@ -239,7 +239,7 @@ describe("Signoff plugin sagas", () => {
 
       it("should update the collection status as 'to-review'", () => {
         expect(handleRequestReview.next({ id: "coll" }).value)
-          .to.have.property("CALL")
+          .to.have.property("payload")
           .to.have.property("args")
           .to.deep.include({ status: "to-review", last_editor_comment: ":)" });
       });
@@ -250,7 +250,7 @@ describe("Signoff plugin sagas", () => {
             data: { id: "coll", status: "to-review" },
           }).value
         )
-          .to.have.property("CALL")
+          .to.have.property("payload")
           .to.have.property("args")
           .to.deep.include(collection_actions.listRecords("buck", "coll"));
       });
@@ -290,7 +290,7 @@ describe("Signoff plugin sagas", () => {
 
       it("should update the collection status as 'work-in-progress'", () => {
         expect(handleDeclineChanges.next({ id: "coll" }).value)
-          .to.have.property("CALL")
+          .to.have.property("payload")
           .to.have.property("args")
           .to.deep.include({
             status: "work-in-progress",
@@ -304,7 +304,7 @@ describe("Signoff plugin sagas", () => {
             data: { id: "coll", status: "work-in-progress" },
           }).value
         )
-          .to.have.property("CALL")
+          .to.have.property("payload")
           .to.have.property("args")
           .to.deep.include(collection_actions.listRecords("buck", "coll"));
       });
@@ -344,7 +344,7 @@ describe("Signoff plugin sagas", () => {
 
       it("should update the collection status as 'to-sign'", () => {
         expect(handleApproveChanges.next({ id: "coll" }).value)
-          .to.have.property("CALL")
+          .to.have.property("payload")
           .to.have.property("args")
           .to.deep.include({ status: "to-sign", last_reviewer_comment: "" });
       });
@@ -355,7 +355,7 @@ describe("Signoff plugin sagas", () => {
             data: { id: "coll", status: "to-sign" },
           }).value
         )
-          .to.have.property("CALL")
+          .to.have.property("payload")
           .to.have.property("args")
           .to.deep.include(collection_actions.listRecords("buck", "coll"));
       });
@@ -395,7 +395,7 @@ describe("Signoff plugin sagas", () => {
 
       it("should update the collection status as 'to-rollback'", () => {
         expect(handleRollbackChanges.next({ id: "coll" }).value)
-          .to.have.property("CALL")
+          .to.have.property("payload")
           .to.have.property("args")
           .to.deep.include({
             status: "to-rollback",
@@ -409,7 +409,7 @@ describe("Signoff plugin sagas", () => {
             data: { id: "coll", status: "to-rollback" },
           }).value
         )
-          .to.have.property("CALL")
+          .to.have.property("payload")
           .to.have.property("args")
           .to.deep.include(collection_actions.listRecords("buck", "coll"));
       });

@@ -106,7 +106,7 @@ describe("route sagas", () => {
 
         it("should batch fetch resources data", () => {
           expect(loadRoute.next().value)
-            .to.have.property("CALL")
+            .to.have.property("payload")
             .to.have.property("context")
             .to.have.property("batch")
             .eql(batch);
@@ -152,7 +152,7 @@ describe("route sagas", () => {
 
         it("should batch fetch resources data", () => {
           expect(loadRoute.next().value)
-            .to.have.property("CALL")
+            .to.have.property("payload")
             .to.have.property("context")
             .to.have.property("batch")
             .eql(batch);
@@ -199,7 +199,7 @@ describe("route sagas", () => {
 
         it("should batch fetch resources data", () => {
           expect(loadRoute.next().value)
-            .to.have.property("CALL")
+            .to.have.property("payload")
             .to.have.property("context")
             .to.have.property("batch")
             .eql(batch);
@@ -247,7 +247,7 @@ describe("route sagas", () => {
 
         it("should batch fetch resources data", () => {
           expect(loadRoute.next().value)
-            .to.have.property("CALL")
+            .to.have.property("payload")
             .to.have.property("context")
             .to.have.property("batch")
             .eql(batch);
@@ -297,7 +297,7 @@ describe("route sagas", () => {
 
       it("should batch fetch resources data", () => {
         expect(loadRoute.next().value)
-          .to.have.property("CALL")
+          .to.have.property("payload")
           .to.have.property("context")
           .to.have.property("batch")
           .eql(batch);
@@ -346,7 +346,7 @@ describe("route sagas", () => {
 
       it("should batch fetch resources data", () => {
         expect(loadRoute.next().value)
-          .to.have.property("CALL")
+          .to.have.property("payload")
           .to.have.property("context")
           .to.have.property("batch")
           .eql(batch);
