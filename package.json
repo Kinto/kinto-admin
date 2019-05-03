@@ -45,7 +45,7 @@
     "kinto-http": "^4.3.3",
     "react": "^16.5.1",
     "react-breadcrumbs": "^2.1.6",
-    "react-codemirror2": "^5.0.1",
+    "react-codemirror2": "^6.0.0",
     "react-dom": "^16.5.1",
     "react-jsonschema-form": "^1.0.2",
     "react-redux": "^6.0.0",
