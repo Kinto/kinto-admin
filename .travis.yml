@@ -14,13 +14,14 @@ before_install:
 before_install:
   - wget https://raw.githubusercontent.com/creationix/nvm/v0.33.0/nvm.sh -O ~/.nvm/nvm.sh
   - source ~/.nvm/nvm.sh
-  - nvm install 6 # for Node v6
+  - nvm install 10 # for Node v10
   - node --version
+  - npm --version
   - pip install https://github.com/Kinto/kinto/zipball/master
 install:
   - export DISPLAY=':99.0'
   - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-  - npm install
+  - npm ci
   - npm run build
 env:
   - ACTION="build:lib"
