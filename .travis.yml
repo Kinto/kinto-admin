@@ -7,10 +7,6 @@ addons:
   apt:
     packages:
     - xvfb
-# cache:
-#   directories:
-#   - node_modules
-before_install:
 before_install:
   - wget https://raw.githubusercontent.com/creationix/nvm/v0.33.0/nvm.sh -O ~/.nvm/nvm.sh
   - source ~/.nvm/nvm.sh
