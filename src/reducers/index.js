@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { HashHistory } from "history";
+import type { HashHistory } from "history/createHashHistory";
 
 import { combineReducers } from "redux";
 import { connectRouter } from "connected-react-router";
