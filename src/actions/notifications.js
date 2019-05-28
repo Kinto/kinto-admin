@@ -2,10 +2,7 @@
 
 import type { ClientError } from "../types";
 
-import {
-  NOTIFICATION_ADDED,
-  NOTIFICATION_REMOVED,
-} from "../constants";
+import { NOTIFICATION_ADDED, NOTIFICATION_REMOVED } from "../constants";
 
 function getErrorDetails(error: ?ClientError): string[] {
   if (!error) {

@@ -72,7 +72,6 @@ export function* getServerInfo(
 
     // Notify they're received
     yield put(actions.serverInfoSuccess(serverInfo));
-
   } catch (error) {
     // As above, we want to ignore this result, if another request was sent in the mean time.
     const currentClient = getClient();

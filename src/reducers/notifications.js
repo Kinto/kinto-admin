@@ -1,10 +1,7 @@
 /* @flow */
 
 import type { Notifications, Notification } from "../types";
-import {
-  NOTIFICATION_ADDED,
-  NOTIFICATION_REMOVED,
-} from "../constants";
+import { NOTIFICATION_ADDED, NOTIFICATION_REMOVED } from "../constants";
 
 const INITIAL_STATE: Notifications = [];
 

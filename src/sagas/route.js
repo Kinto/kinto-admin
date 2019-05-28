@@ -10,10 +10,7 @@ import {
 import { getClient } from "../client";
 import { storeRedirectURL } from "../actions/session";
 import * as actions from "../actions/route";
-import {
-  notifyInfo,
-  notifyError,
-} from "../actions/notifications";
+import { notifyInfo, notifyError } from "../actions/notifications";
 import { SESSION_AUTHENTICATED } from "../constants";
 import { scrollToTop } from "../utils.js";
 import url from "../url";
