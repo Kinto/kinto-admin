@@ -46,7 +46,7 @@ type NotificationAction = {
   },
 };
 
-type Levels = "info" | "success" | "danger";
+type Levels = "info" | "success" | "warning" | "danger";
 
 function notify(
   type: Levels,
@@ -78,6 +78,13 @@ export function notifySuccess(
   options: Object = {}
 ): NotificationAction {
   return notify("success", message, options);
+}
+
+export function notifyWarning(
+  message: string,
+  options: Object = {}
+): NotificationAction {
+  return notify("warning", message, options);
 }
 
 export function notifyError(

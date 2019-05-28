@@ -15,18 +15,8 @@ export default function notifications(
 ): Notifications {
   switch (action.type) {
     case NOTIFICATION_ADDED: {
-      const {
-        clear,
-        notification,
-      }: {
-        clear: boolean,
-        notification: Notification,
-      } = action;
-      if (clear) {
-        return [notification];
-      } else {
-        return [...state, notification];
-      }
+      const { notification }: { notification: Notification } = action;
+      return [...state, notification];
     }
     case NOTIFICATION_REMOVED: {
       const { index }: { index: number } = action;
