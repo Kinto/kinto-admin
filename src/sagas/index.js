@@ -29,6 +29,11 @@ export default function* rootSaga(
     takeEvery(c.SESSION_GET_SERVERINFO, sessionSagas.getServerInfo, getState),
     takeEvery(c.SESSION_BUCKETS_REQUEST, sessionSagas.listBuckets, getState),
     takeEvery(c.SESSION_LOGOUT, sessionSagas.sessionLogout, getState),
+    takeEvery(
+      c.SESSION_COPY_AUTHENTICATION_HEADER,
+      sessionSagas.sessionCopyAuthenticationHeader,
+      getState
+    ),
     // route
     takeEvery(c.ROUTE_REDIRECT, routeSagas.routeRedirect, getState),
     takeEvery(c.ROUTE_UPDATED, routeSagas.routeUpdated, getState),
