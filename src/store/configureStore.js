@@ -5,7 +5,7 @@ import { createStore, applyMiddleware, compose } from "redux";
 import createSagaMiddleware from "redux-saga";
 import createRootReducer from "../reducers";
 import rootSaga from "../sagas";
-import createHashHistory from "history/createHashHistory";
+import { createHashHistory } from "history";
 
 import { routerMiddleware } from "connected-react-router";
 
