@@ -134,7 +134,7 @@ export function* setupSession(
     // Note, that "authenticated" can also mean "anonymous" if picked in the auth form.
     yield put(actions.setAuthenticated());
     // Store this valid server url in the history
-    yield put(historyActions.addHistory(serverInfo.url, auth.authType));
+    yield put(historyActions.addHistory(serverInfo.url, authType));
 
     yield put(actions.listBuckets());
     yield put(actions.setupComplete(auth));
@@ -168,6 +168,9 @@ export function* sessionCopyAuthenticationHeader(
   const {
     session: { auth },
   } = getState();
+  if (!auth) {
+    return;
+  }
   const authHeader = getAuthHeader(auth);
   yield call(copyToClipboard, authHeader);
   yield put(

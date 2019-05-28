@@ -336,7 +336,8 @@ describe("HomePage component", () => {
 
       it("should setup session when component is mounted", () => {
         sinon.assert.calledWithExactly(setupSession, {
-          authType: "openid-auth0",
+          authType: "openid",
+          provider: "auth0",
           tokenType: "Bearer",
           credentials: { token: "oXJNgbNayWPKF" },
           server: "https://kinto.dev.mozaws.net/v1/",

@@ -31,10 +31,10 @@ export function sessionBusy(
 }
 
 export function setupSession(
-  auth: Object
+  auth: AuthData
 ): {
   type: "SESSION_SETUP",
-  auth: Object,
+  auth: AuthData,
 } {
   return { type: SESSION_SETUP, auth };
 }
