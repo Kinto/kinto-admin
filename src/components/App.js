@@ -108,16 +108,12 @@ export default class App extends PureComponent<Props> {
       copyAuthenticationHeader,
       session,
       logout,
-      notificationList,
       sidebar: Sidebar,
       notifications: Notifications,
       collectionRecords: CollectionRecordsPage,
       pluginsRoutes,
     } = this.props;
-    const notificationsClass = notificationList.length
-      ? " with-notifications"
-      : "";
-    const contentClasses = `col-sm-9 content${notificationsClass}`;
+    const contentClasses = `col-sm-9 content`;
     const version =
       process.env.REACT_APP_VERSION || process.env.KINTO_ADMIN_VERSION;
     return (

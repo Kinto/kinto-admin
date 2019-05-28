@@ -103,14 +103,4 @@ describe("App component", () => {
       sinon.assert.called(sessionActions.logout);
     });
   });
-
-  describe("Notifications", () => {
-    it("should add a class when notifications are provided", () => {
-      ({ notificationList: [{ message: "blah" }] });
-      store.dispatch(notificationActions.notifySuccess("blah"));
-      app.update();
-
-      expect(app.find(".with-notifications").length).to.equal(1);
-    });
-  });
 });
