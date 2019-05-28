@@ -1,5 +1,8 @@
 /* @flow */
 import type {
+  OpenIDAuth,
+  TokenAuth,
+  PortierAuth,
   HomePageRouteMatch,
   SessionState,
   SettingsState,
@@ -101,10 +104,15 @@ export default class HomePage extends PureComponent<Props> {
     }
     // Check for an incoming authentication.
     try {
-      const { server, authType } = JSON.parse(atob(payload));
+      let { server, authType } = JSON.parse(atob(payload));
       token = decodeURIComponent(token);
-      let tokenType;
+
+      let authData: OpenIDAuth | TokenAuth | PortierAuth;
+
       if (authType.startsWith("openid-")) {
+        const provider = authType.split("-")[1]; // eg. `"openid-auth0"`.
+        authType = "openid";
+        let tokenType;
         let parsedToken;
         try {
           // Token is encoded in base64 for a safe path parsing.
@@ -121,12 +129,32 @@ export default class HomePage extends PureComponent<Props> {
             throw new Error(`Token doesn't seems to be a valid JSON: {token}`);
           }
         }
+        authData = {
+          authType,
+          server,
+          provider,
+          tokenType,
+          credentials: { token },
+        };
+      } else if (authType == "fxa") {
+        authData = {
+          authType: "fxa",
+          server,
+          credentials: { token },
+        };
+      } else if (authType == "portier") {
+        authData = {
+          authType: "portier",
+          server,
+          credentials: { token },
+        };
+      } else {
+        throw new Error(`Unsupported token authentication "${authType}"`);
       }
-      const credentials = { token };
       // This action is bound with the setupSession() saga, which will
       // eventually lead to a call to setupClient() that globally sets
       // the headers of the API client.
-      setupSession({ server, authType, credentials, tokenType });
+      setupSession(authData);
     } catch (error) {
       const message = "Couldn't proceed with authentication.";
       notifyError(message, error);

@@ -98,6 +98,7 @@ export type OwnProps = {|
 export type Props = {
   ...StateProps,
   ...OwnProps,
+  copyAuthenticationHeader: typeof SessionActions.copyAuthenticationHeader,
   logout: typeof SessionActions.logout,
 };
 
