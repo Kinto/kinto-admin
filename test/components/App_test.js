@@ -12,7 +12,6 @@ import App from "../../src/containers/App";
 import Sidebar from "../../src/containers/Sidebar";
 import Notifications from "../../src/containers/Notifications";
 import CollectionRecordsPage from "../../src/containers/collection/CollectionRecordsPage";
-import * as notificationActions from "../../src/actions/notifications";
 import * as sessionActions from "../../src/actions/session";
 
 describe("App component", () => {

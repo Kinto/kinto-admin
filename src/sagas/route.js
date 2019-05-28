@@ -13,7 +13,6 @@ import * as actions from "../actions/route";
 import {
   notifyInfo,
   notifyError,
-  clearNotifications,
 } from "../actions/notifications";
 import { SESSION_AUTHENTICATED } from "../constants";
 import { scrollToTop } from "../utils.js";
@@ -127,9 +126,6 @@ export function* routeUpdated(
   const { params, location } = action;
   const { token, payload } = params;
 
-  // Clear notifications on each route update
-  yield put(clearNotifications());
-
   // Check for a non-authenticated session; if we're requesting anything other
   // than the homepage, proceed with a redirection.
   if (!authenticated && location.pathname !== "/") {
@@ -152,8 +148,6 @@ export function* routeUpdated(
       yield put(notifyInfo("Authentication required.", { persistent: true }));
       // pause until the user is authenticated
       yield take(SESSION_AUTHENTICATED);
-      // clear auth related notifications
-      yield put(clearNotifications({ force: true }));
       // Redirect the user to the initially requested URL
       yield put(updatePath(location.pathname));
       // Clear stored redirectURL

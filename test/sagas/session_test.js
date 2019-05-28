@@ -58,11 +58,6 @@ describe("session sagas", () => {
         put(actions.serverInfoSuccess(DEFAULT_SERVERINFO))
       );
     });
-    it("should clear the notifications", () => {
-      expect(serverChange.next().value).eql(
-        put(notificationsActions.clearNotifications({ force: true }))
-      );
-    });
   });
 
   describe("getServerInfo()", () => {
@@ -101,12 +96,6 @@ describe("session sagas", () => {
       it("should send a serverInfoSuccess", () => {
         expect(getServerInfo.next(serverInfo).value).eql(
           put(actions.serverInfoSuccess(serverInfo))
-        );
-      });
-
-      it("should clear the notifications", () => {
-        expect(getServerInfo.next().value).eql(
-          put(notificationsActions.clearNotifications({ force: true }))
         );
       });
 

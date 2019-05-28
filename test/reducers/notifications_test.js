@@ -4,7 +4,6 @@ import notifications from "../../src/reducers/notifications";
 import {
   NOTIFICATION_ADDED,
   NOTIFICATION_REMOVED,
-  NOTIFICATION_CLEAR,
 } from "../../src/constants";
 
 describe("notifications reducer", () => {
@@ -32,26 +31,5 @@ describe("notifications reducer", () => {
         index: 1,
       })
     ).eql([1, 3]);
-  });
-
-  it("NOTIFICATION_CLEAR", () => {
-    expect(
-      notifications(
-        [{ persistent: false }, { persistent: true }, { persistent: false }],
-        {
-          type: NOTIFICATION_CLEAR,
-        }
-      )
-    ).eql([{ persistent: true }]);
-
-    expect(
-      notifications(
-        [{ persistent: false }, { persistent: true }, { persistent: false }],
-        {
-          type: NOTIFICATION_CLEAR,
-          force: true,
-        }
-      )
-    ).eql([]);
   });
 });

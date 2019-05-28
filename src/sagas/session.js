@@ -23,7 +23,6 @@ import { getClient, setupClient, resetClient, getAuthHeader } from "../client";
 
 export function* serverChange(): SagaGen {
   yield put(actions.serverInfoSuccess(DEFAULT_SERVERINFO));
-  yield put(notificationActions.clearNotifications({ force: true }));
 }
 
 export function* getServerInfo(
@@ -74,7 +73,6 @@ export function* getServerInfo(
     // Notify they're received
     yield put(actions.serverInfoSuccess(serverInfo));
 
-    yield put(notificationActions.clearNotifications({ force: true }));
   } catch (error) {
     // As above, we want to ignore this result, if another request was sent in the mean time.
     const currentClient = getClient();

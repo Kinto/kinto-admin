@@ -5,7 +5,6 @@ import type { ClientError } from "../types";
 import {
   NOTIFICATION_ADDED,
   NOTIFICATION_REMOVED,
-  NOTIFICATION_CLEAR,
 } from "../constants";
 
 function getErrorDetails(error: ?ClientError): string[] {
@@ -105,13 +104,4 @@ export function removeNotification(
   index: number,
 } {
   return { type: NOTIFICATION_REMOVED, index };
-}
-
-export function clearNotifications(
-  options: Object = {}
-): {
-  type: "NOTIFICATION_CLEAR",
-  force: boolean,
-} {
-  return { type: NOTIFICATION_CLEAR, force: !!options.force };
 }
