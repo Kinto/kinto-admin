@@ -15,6 +15,7 @@ import {
   SESSION_BUCKETS_REQUEST,
   SESSION_BUCKETS_SUCCESS,
   SESSION_AUTHENTICATED,
+  SESSION_COPY_AUTHENTICATION_HEADER,
   SESSION_LOGOUT,
 } from "../constants";
 
@@ -108,6 +109,12 @@ export function setAuthenticated(): {
   type: "SESSION_AUTHENTICATED",
 } {
   return { type: SESSION_AUTHENTICATED };
+}
+
+export function copyAuthenticationHeader(): {
+  type: "SESSION_COPY_AUTHENTICATION_HEADER",
+} {
+  return { type: SESSION_COPY_AUTHENTICATION_HEADER };
 }
 
 export function logout(): {

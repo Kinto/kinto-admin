@@ -343,3 +343,15 @@ export function parseHistoryFilters(s: string): HistoryFilters {
   }
   return ret;
 }
+
+/**
+ * Copy specified string to OS clipboard.
+ */
+export async function copyToClipboard(s: string) {
+  const { state } = await navigator.permissions.query({
+    name: "clipboard-write",
+  });
+  if (state == "granted" || state == "prompt") {
+    await navigator.clipboard.writeText(s);
+  }
+}

@@ -6,8 +6,10 @@ import KintoClient from "kinto-http";
 
 let client: ?KintoClient;
 
-function getAuthHeader(auth: AuthData): ?string {
-  switch (auth.authType) {
+export function getAuthHeader(auth: AuthData): ?string {
+  // For openid, `authType` can be suffixed (eg. `"openid-auth0"`).
+  const authType = auth.authType.split("-")[0];
+  switch (authType) {
     case "fxa": {
       const { token } = auth.credentials;
       return `Bearer ${token}`;

@@ -47,7 +47,7 @@ function UserInfo({ session }) {
   );
 }
 
-function SessionInfoBar({ session, logout }) {
+function SessionInfoBar({ session, logout, copyAuthenticationHeader }) {
   const {
     serverInfo: { url, project_name, project_docs },
   } = session;
@@ -55,16 +55,26 @@ function SessionInfoBar({ session, logout }) {
     <div className="session-info-bar">
       <h1 className="kinto-admin-title">{project_name}</h1>
       <span className="user-info">
-        <UserInfo session={session} /> on <strong>{url}</strong>{" "}
+        <UserInfo session={session} />
+        on <strong>{url}</strong>{" "}
+        <a
+          href=""
+          className="btn btn-xs btn-link"
+          title="Copy authentication header"
+          onClick={event =>
+            event.preventDefault() || copyAuthenticationHeader()
+          }>
+          <i className="glyphicon glyphicon-copy" />
+        </a>
         <a
           href={project_docs}
           target="_blank"
-          className="btn btn-xs btn-default project-docs">
+          className="spaced btn btn-xs btn-default project-docs">
           <i className="glyphicon glyphicon-question-sign" /> Documentation
         </a>
         <a
           href=""
-          className="btn btn-xs btn-success btn-logout"
+          className="spaced btn btn-xs btn-success btn-logout"
           onClick={event => event.preventDefault() || logout()}>
           <i className="glyphicon glyphicon-log-out" /> Logout
         </a>
@@ -94,6 +104,7 @@ export type Props = {
 export default class App extends PureComponent<Props> {
   render() {
     const {
+      copyAuthenticationHeader,
       session,
       logout,
       notificationList,
@@ -111,7 +122,11 @@ export default class App extends PureComponent<Props> {
     return (
       <div>
         {session.authenticated && (
-          <SessionInfoBar session={session} logout={logout} />
+          <SessionInfoBar
+            session={session}
+            logout={logout}
+            copyAuthenticationHeader={copyAuthenticationHeader}
+          />
         )}
         <div className="container-fluid main">
           <div className="row">

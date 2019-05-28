@@ -18,8 +18,8 @@ import * as notificationActions from "../actions/notifications";
 import * as actions from "../actions/session";
 import * as historyActions from "../actions/history";
 import { DEFAULT_SERVERINFO } from "../reducers/session";
-import { clone, getAuthLabel } from "../utils";
-import { getClient, setupClient, resetClient } from "../client";
+import { clone, getAuthLabel, copyToClipboard } from "../utils";
+import { getClient, setupClient, resetClient, getAuthHeader } from "../client";
 
 export function* serverChange(): SagaGen {
   yield put(actions.serverInfoSuccess(DEFAULT_SERVERINFO));
@@ -159,6 +159,22 @@ export function* sessionLogout(
     notificationActions.notifySuccess("Logged out.", { persistent: true })
   );
   yield call(clearSession);
+}
+
+export function* sessionCopyAuthenticationHeader(
+  getState: GetStateFn,
+  action: ActionType<typeof actions.copyAuthenticationHeader>
+): SagaGen {
+  const {
+    session: { auth },
+  } = getState();
+  const authHeader = getAuthHeader(auth);
+  yield call(copyToClipboard, authHeader);
+  yield put(
+    notificationActions.notifySuccess("Header copied to clipboard", {
+      persistent: false,
+    })
+  );
 }
 
 export function expandBucketsCollections(
