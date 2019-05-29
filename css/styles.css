@@ -442,3 +442,32 @@ form button[type="submit"].btn-primary {
     transform: scale(1.0);
   }
 }
+
+/*
+ * react-bs-notifier uses Font Awesome: alias the classes to glyphicons instead.
+ */
+i.fa {
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  font-family: "Glyphicons Halflings";
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.fa.fa-check:before {
+  content: "\e013";
+}
+
+.fa-exclamation-circle:before {
+  content: "\e101";
+}
+
+.fa-info:before {
+  content: "\e086";
+}
+
+.fa-warning:before {
+  content: "\e107";
+}
