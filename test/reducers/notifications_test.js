@@ -1,10 +1,7 @@
 import { expect } from "chai";
 
 import notifications from "../../src/reducers/notifications";
-import {
-  NOTIFICATION_ADDED,
-  NOTIFICATION_REMOVED,
-} from "../../src/constants";
+import { NOTIFICATION_ADDED, NOTIFICATION_REMOVED } from "../../src/constants";
 
 describe("notifications reducer", () => {
   it("NOTIFICATION_ADDED", () => {

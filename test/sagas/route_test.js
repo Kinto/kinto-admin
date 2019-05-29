@@ -394,9 +394,7 @@ describe("route sagas", () => {
 
       it("should dispatch a notification", () => {
         expect(routeUpdated.next().value).eql(
-          put(
-            notificationActions.notifyInfo("Authentication required.")
-          )
+          put(notificationActions.notifyInfo("Authentication required."))
         );
       });
 

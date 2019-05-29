@@ -50,7 +50,11 @@ function notify(
   message: string,
   options: Object = {}
 ): NotificationAction {
-  const { clear = true, details = [], timeout = DEFAULT_NOTIFICATIONS_TIMEOUT } = options;
+  const {
+    clear = true,
+    details = [],
+    timeout = DEFAULT_NOTIFICATIONS_TIMEOUT,
+  } = options;
   return {
     type: NOTIFICATION_ADDED,
     clear,
@@ -91,7 +95,7 @@ export function notifyError(
 ): NotificationAction {
   console.error(error);
   return notify("danger", message, {
-    timeout: null,  // Do not auto-hide errors.
+    timeout: null, // Do not auto-hide errors.
     details: options.details || getErrorDetails(error),
   });
 }

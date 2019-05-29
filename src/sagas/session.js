@@ -152,9 +152,7 @@ export function* sessionLogout(
     // We can't push twice the same path using hash history.
     yield put(updatePath("/"));
   }
-  yield put(
-    notificationActions.notifySuccess("Logged out.")
-  );
+  yield put(notificationActions.notifySuccess("Logged out."));
   yield call(clearSession);
 }
 
@@ -170,9 +168,7 @@ export function* sessionCopyAuthenticationHeader(
   }
   const authHeader = getAuthHeader(auth);
   yield call(copyToClipboard, authHeader);
-  yield put(
-    notificationActions.notifySuccess("Header copied to clipboard")
-  );
+  yield put(notificationActions.notifySuccess("Header copied to clipboard"));
 }
 
 export function expandBucketsCollections(
