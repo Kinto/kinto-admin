@@ -4,6 +4,8 @@ import type { ClientError } from "../types";
 
 import { NOTIFICATION_ADDED, NOTIFICATION_REMOVED } from "../constants";
 
+const DEFAULT_NOTIFICATIONS_TIMEOUT = 4000; // milliseconds
+
 function getErrorDetails(error: ?ClientError): string[] {
   if (!error) {
     return [];
@@ -49,7 +51,7 @@ function notify(
   message: string,
   options: Object = {}
 ): NotificationAction {
-  const { clear = true, persistent = false, details = [] } = options;
+  const { clear = true, persistent = false, details = [], timeout = DEFAULT_NOTIFICATIONS_TIMEOUT } = options;
   return {
     type: NOTIFICATION_ADDED,
     clear,
@@ -58,6 +60,7 @@ function notify(
       persistent,
       message,
       details,
+      timeout,
     },
   };
 }
@@ -90,6 +93,7 @@ export function notifyError(
 ): NotificationAction {
   console.error(error);
   return notify("danger", message, {
+    timeout: null,  // Do not auto-hide errors.
     details: options.details || getErrorDetails(error),
   });
 }

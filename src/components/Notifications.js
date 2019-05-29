@@ -38,9 +38,9 @@ export default class Notifications_ extends PureComponent<Props> {
   render() {
     const { notifications, removeNotification } = this.props;
     const alerts = notifications.map(
-      ({ type, message: headline, details }, i) => {
+      ({ message: headline, details, ...attrs }, i) => {
         const message = <ErrorDetails details={details} />;
-        return { id: i, type, headline, message };
+        return { id: i, headline, message, ...attrs };
       }
     );
     const onDismiss = ({ id: index }) => removeNotification(index);
