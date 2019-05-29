@@ -274,7 +274,7 @@ describe("collection sagas", () => {
 
       it("should dispatch a notification", () => {
         expect(createRecord.next().value).eql(
-          put(notifySuccess("Record added."))
+          put(notifySuccess("Record created."))
         );
       });
 
@@ -330,7 +330,7 @@ describe("collection sagas", () => {
 
       it("should dispatch a notification", () => {
         expect(createRecord.next().value).eql(
-          put(notifySuccess("Record added."))
+          put(notifySuccess("Record created."))
         );
       });
 

@@ -149,7 +149,7 @@ export function* createRecord(
       yield call([coll, coll.createRecord], record, { safe: true });
     }
     yield put(redirectTo("collection:records", { bid, cid }));
-    yield put(notifySuccess("Record added."));
+    yield put(notifySuccess("Record created."));
   } catch (error) {
     yield put(notifyError("Couldn't create record.", error));
   } finally {
