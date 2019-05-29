@@ -38,7 +38,6 @@ type NotificationAction = {
   notification: {
     type: Levels,
     message: string,
-    persistent: boolean,
     message: string,
     details: string[],
   },
@@ -51,13 +50,12 @@ function notify(
   message: string,
   options: Object = {}
 ): NotificationAction {
-  const { clear = true, persistent = false, details = [], timeout = DEFAULT_NOTIFICATIONS_TIMEOUT } = options;
+  const { clear = true, details = [], timeout = DEFAULT_NOTIFICATIONS_TIMEOUT } = options;
   return {
     type: NOTIFICATION_ADDED,
     clear,
     notification: {
       type,
-      persistent,
       message,
       details,
       timeout,

@@ -507,9 +507,7 @@ describe("session sagas", () => {
     it("should notify users they're logged out", () => {
       expect(sessionLogout.next().value).eql(
         put(
-          notificationsActions.notifySuccess("Logged out.", {
-            persistent: true,
-          })
+          notificationsActions.notifySuccess("Logged out.")
         )
       );
     });

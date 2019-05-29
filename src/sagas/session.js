@@ -153,7 +153,7 @@ export function* sessionLogout(
     yield put(updatePath("/"));
   }
   yield put(
-    notificationActions.notifySuccess("Logged out.", { persistent: true })
+    notificationActions.notifySuccess("Logged out.")
   );
   yield call(clearSession);
 }
@@ -171,9 +171,7 @@ export function* sessionCopyAuthenticationHeader(
   const authHeader = getAuthHeader(auth);
   yield call(copyToClipboard, authHeader);
   yield put(
-    notificationActions.notifySuccess("Header copied to clipboard", {
-      persistent: false,
-    })
+    notificationActions.notifySuccess("Header copied to clipboard")
   );
 }
 

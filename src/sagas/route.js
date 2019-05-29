@@ -142,7 +142,7 @@ export function* routeUpdated(
       // Store current requested URL, wait for user authentication then redirect
       yield put(storeRedirectURL(location.pathname));
       yield put(actions.redirectTo("home", {}));
-      yield put(notifyInfo("Authentication required.", { persistent: true }));
+      yield put(notifyInfo("Authentication required."));
       // pause until the user is authenticated
       yield take(SESSION_AUTHENTICATED);
       // Redirect the user to the initially requested URL

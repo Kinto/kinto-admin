@@ -14,14 +14,6 @@ describe("notifications reducer", () => {
         notification: 3,
       })
     ).eql([1, 2, 3]);
-
-    expect(
-      notifications([1, 2], {
-        type: NOTIFICATION_ADDED,
-        clear: true,
-        notification: 3,
-      })
-    ).eql([3]);
   });
 
   it("NOTIFICATION_REMOVED", () => {
