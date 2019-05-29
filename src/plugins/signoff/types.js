@@ -12,10 +12,16 @@ export type SignoffState = {
   pendingConfirmDeclineChanges: boolean,
 };
 
+export type ChangesList = {
+  since: number,
+  deleted: number,
+  updated: number,
+}
+
 export type SourceInfo = {
   bid: string,
   cid: string,
-  changes: Object,
+  changes: ChangesList,
 
   lastEditBy: string,
   lastEditDate: number,
