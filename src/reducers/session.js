@@ -9,6 +9,7 @@ import {
   SESSION_SERVERINFO_SUCCESS,
   SESSION_PERMISSIONS_SUCCESS,
   SESSION_AUTHENTICATED,
+  SESSION_AUTHENTICATION_FAILED,
   SESSION_BUCKETS_REQUEST,
   SESSION_BUCKETS_SUCCESS,
   SESSION_LOGOUT,
@@ -79,6 +80,9 @@ export default function session(
     }
     case SESSION_AUTHENTICATED: {
       return { ...state, authenticated: true };
+    }
+    case SESSION_AUTHENTICATION_FAILED: {
+      return { ...state, authenticating: false, authenticated: false };
     }
     case SESSION_LOGOUT: {
       return { ...DEFAULT, serverInfo: state.serverInfo };

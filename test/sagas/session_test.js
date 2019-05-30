@@ -283,6 +283,9 @@ describe("session sagas", () => {
         sinon.assert.calledWith(mocked, "Authentication failed.", {
           message: "Could not authenticate with Basic Auth",
         });
+        expect(setupSession.next().value).eql(
+          put(actions.authenticationFailed())
+        );
       });
 
       it("should check the user ID prefix for basicauth", () => {
