@@ -32,14 +32,18 @@ function getErrorDetails(error: ?ClientError): string[] {
   }
 }
 
+type NotificationOptions = {
+  details?: string[],
+  timeout?: ?number,
+};
+
 type NotificationAction = {
   type: "NOTIFICATION_ADDED",
-  clear: boolean,
   notification: {
     type: Levels,
     message: string,
-    message: string,
     details: string[],
+    timeout: ?number,
   },
 };
 
@@ -48,16 +52,14 @@ type Levels = "info" | "success" | "warning" | "danger";
 function notify(
   type: Levels,
   message: string,
-  options: Object = {}
+  options: NotificationOptions = {}
 ): NotificationAction {
   const {
-    clear = true,
     details = [],
     timeout = DEFAULT_NOTIFICATIONS_TIMEOUT,
   } = options;
   return {
     type: NOTIFICATION_ADDED,
-    clear,
     notification: {
       type,
       message,
@@ -69,21 +71,21 @@ function notify(
 
 export function notifyInfo(
   message: string,
-  options: Object = {}
+  options: NotificationOptions = {}
 ): NotificationAction {
   return notify("info", message, options);
 }
 
 export function notifySuccess(
   message: string,
-  options: Object = {}
+  options: NotificationOptions = {}
 ): NotificationAction {
   return notify("success", message, options);
 }
 
 export function notifyWarning(
   message: string,
-  options: Object = {}
+  options: NotificationOptions = {}
 ): NotificationAction {
   return notify("warning", message, options);
 }
@@ -91,7 +93,7 @@ export function notifyWarning(
 export function notifyError(
   message: string,
   error: ?ClientError,
-  options: Object = {}
+  options: NotificationOptions = {}
 ): NotificationAction {
   console.error(error);
   return notify("danger", message, {

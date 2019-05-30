@@ -5,16 +5,19 @@ import React, { PureComponent } from "react";
 import { AlertList } from "react-bs-notifier";
 import * as actions from "../actions/notifications";
 
-class ErrorDetails extends PureComponent<{ details: Array<string> }> {
+class NotificationDetails extends PureComponent<{ details: Array<string> }> {
   render() {
     const { details } = this.props;
     if (details.length === 0) {
       return null;
     }
+    if (details.length === 1) {
+      return details[0];
+    }
     return (
       <ul>
-        {details.map((error, index) => {
-          return <li key={index}>{error}</li>;
+        {details.map((detail, index) => {
+          return <li key={index}>{detail}</li>;
         })}
       </ul>
     );
@@ -39,7 +42,7 @@ export default class Notifications_ extends PureComponent<Props> {
     const { notifications, removeNotification } = this.props;
     const alerts = notifications.map(
       ({ message: headline, details = [], ...attrs }, i) => {
-        const message = <ErrorDetails details={details} />;
+        const message = <NotificationDetails details={details} />;
         return { id: i, headline, message, ...attrs };
       }
     );
