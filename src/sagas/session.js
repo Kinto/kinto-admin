@@ -127,6 +127,8 @@ export function* setupSession(
           message: `Could not authenticate with ${getAuthLabel(authType)}`,
         })
       );
+      // Show back login form.
+      yield put(actions.authenticationFailed());
       return;
     }
 
