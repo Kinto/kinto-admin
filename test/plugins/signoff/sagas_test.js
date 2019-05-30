@@ -112,7 +112,7 @@ describe("Signoff plugin sagas", () => {
           },
           previewAttributes: {},
           destinationAttributes: {},
-          changes: {},
+          changesOnPreview: {},
         };
 
         const result = saga.onCollectionRecordsRequest(getState, action);
@@ -140,7 +140,7 @@ describe("Signoff plugin sagas", () => {
               source: {
                 bid: "stage",
                 cid: "source-plugins",
-                changes: {},
+                changesOnPreview: {},
                 lastEditBy: "Last Edit By",
                 lastEditDate: 1523811083971,
                 lastEditorComment: "Last Editor Comment",

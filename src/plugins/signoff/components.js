@@ -351,9 +351,9 @@ function ReviewInfos(props: ReviewInfosProps) {
     lastReviewRequestBy,
     lastReviewRequestDate,
     lastEditorComment,
-    changes = {},
+    changesOnPreview = {},
   } = source;
-  const { since, deleted, updated } = changes;
+  const { since, deleted, updated } = changesOnPreview;
   const detailsLink = hasHistory && (
     <AdminLink
       name="collection:history"

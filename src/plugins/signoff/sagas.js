@@ -77,7 +77,7 @@ export function* onCollectionRecordsRequest(
   yield put(SignoffActions.workflowInfo(basicInfos));
 
   // Obtain information for workflow (last update, authors, etc).
-  const { sourceAttributes, changes } = yield call(
+  const { sourceAttributes, changesOnPreview } = yield call(
     fetchWorkflowInfo,
     source,
     preview,
@@ -118,7 +118,7 @@ export function* onCollectionRecordsRequest(
     lastSignatureBy,
     lastSignatureDate,
     status,
-    changes,
+    changesOnPreview,
     editors_group,
     reviewers_group,
   };
@@ -133,24 +133,25 @@ export async function fetchWorkflowInfo(
   source: CapabilityResource,
   preview: ?CapabilityResource,
   destination: CapabilityResource
-): Promise<{ sourceAttributes: Object, changes: ChangesList }> {
+): Promise<{ sourceAttributes: Object, changesOnPreview: ChangesList }> {
   const client = getClient();
-  const { bucket: bid, collection: cid } = source;
-  const colClient = client.bucket(bid).collection(cid);
+  const sourceClient = client.bucket(source.bucket).collection(source.collection);
 
-  const sourceAttributes = await colClient.getData();
+  // Figure out what was changed on the preview collection since last approval.
+  const sourceAttributes = await sourceClient.getData();
   const lastSigned: number = Date.parse(sourceAttributes.last_signature_date);
-  const { data: sourceChanges } = await colClient.listRecords({
+  const { data: previewChanges } = await sourceClient.listRecords({
     since: `"${lastSigned}"`,
   });
-  const changes = {
+  const changesOnPreview = {
     since: lastSigned,
-    deleted: sourceChanges.filter(r => r.deleted).length,
-    updated: sourceChanges.filter(r => !r.deleted).length,
+    deleted: previewChanges.filter(r => r.deleted).length,
+    updated: previewChanges.filter(r => !r.deleted).length,
   };
+
   return {
     sourceAttributes,
-    changes,
+    changesOnPreview,
   };
 }
 
