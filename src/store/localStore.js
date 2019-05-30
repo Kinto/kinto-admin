@@ -40,7 +40,7 @@ export function clearHistory(): ServerHistoryEntry[] {
   return saveHistory([]);
 }
 
-export function loadSession(): ?Object {
+export function loadSession(): ?SessionState {
   try {
     return JSON.parse(sessionStorage.getItem(SESSION_KEY) || "null");
   } catch (err) {
