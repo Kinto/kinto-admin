@@ -93,8 +93,8 @@ export async function fetchWorkflowInfo(source, preview, destination) {
   const colClient = client.bucket(bid).collection(cid);
 
   const sourceAttributes = await colClient.getData();
-  const lastSigned = Date.parse(sourceAttributes.last_signature_date);
-  const { data: sourceChanges } = await colClient.listRecords({ since: lastSigned });
+  const lastSigned : number = Date.parse(sourceAttributes.last_signature_date);
+  const { data: sourceChanges } = await colClient.listRecords({ since: `"${lastSigned}"` });
   const changes = {
     since: lastSigned,
     deleted: sourceChanges.filter(r => r.deleted).length,

@@ -41,6 +41,12 @@ declare module "kinto-http" {
     permissions: string[],
   };
 
+  declare type ListRecordsOptions = {
+    sort?: string,
+    limit?: number,
+    since?: string,
+  };
+
   declare class KintoClient {
     remote: string;
     defaultReqOptions: {
@@ -65,7 +71,7 @@ declare module "kinto-http" {
     deleteCollection(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>;
     listCollections(options?: Options): Promise<ListResponseBody<Resource>>;
     setData(data: Object, options?: Options): Promise<Object>,
-    listHistory(options: Object): Promise<ListResponseBody<Object>>;
+    listHistory(options: Options): Promise<ListResponseBody<Object>>;
     createGroup(id: ?string, members: string[], options?: Options): Promise<ObjectResponseBody<Resource>>;
     updateGroup(group: Object, options?: Options): Promise<ObjectResponseBody<Resource>>;
     deleteGroup(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>;
@@ -76,7 +82,7 @@ declare module "kinto-http" {
     setData(data: Object, options?: Options): Promise<Object>;
     setPermissions(permissions: Permissions): Promise<ObjectResponseBody<Resource>>;
     removeAttachment(): Promise<ObjectResponseBody<Resource>>;
-    listRecords(options: Object): Promise<ListResponseBody<Resource>>;
+    listRecords(options: ListRecordsOptions): Promise<ListResponseBody<Resource>>;
     getTotalRecords(options?: Object): Promise<number>;
     addAttachment(attachment: string, record: Object, options?: Options): Promise<ObjectResponseBody<Resource>>;
     createRecord(record: Object, options?: Options): Promise<ObjectResponseBody<Resource>>;
