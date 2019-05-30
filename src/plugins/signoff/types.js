@@ -16,7 +16,7 @@ export type ChangesList = {
   since: number,
   deleted: number,
   updated: number,
-}
+};
 
 export type SourceInfo = {
   bid: string,

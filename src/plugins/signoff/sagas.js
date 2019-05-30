@@ -37,10 +37,12 @@ export function* onCollectionRecordsRequest(getState, action) {
   yield put(SignoffActions.workflowInfo(basicInfos));
 
   // Obtain information for workflow (last update, authors, etc).
-  const {
-    sourceAttributes,
-    changes,
-  } = yield call(fetchWorkflowInfo, source, preview, destination);
+  const { sourceAttributes, changes } = yield call(
+    fetchWorkflowInfo,
+    source,
+    preview,
+    destination
+  );
 
   // Workflow component state.
 
@@ -93,8 +95,10 @@ export async function fetchWorkflowInfo(source, preview, destination) {
   const colClient = client.bucket(bid).collection(cid);
 
   const sourceAttributes = await colClient.getData();
-  const lastSigned : number = Date.parse(sourceAttributes.last_signature_date);
-  const { data: sourceChanges } = await colClient.listRecords({ since: `"${lastSigned}"` });
+  const lastSigned: number = Date.parse(sourceAttributes.last_signature_date);
+  const { data: sourceChanges } = await colClient.listRecords({
+    since: `"${lastSigned}"`,
+  });
   const changes = {
     since: lastSigned,
     deleted: sourceChanges.filter(r => r.deleted).length,
