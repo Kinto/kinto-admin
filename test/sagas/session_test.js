@@ -140,7 +140,10 @@ describe("session sagas", () => {
       it("should notify the error", () => {
         const mocked = mockNotifyError(sandbox);
         getServerInfo.next();
-        sinon.assert.calledWith(mocked, "Could not reach server http://server.test/v1");
+        sinon.assert.calledWith(
+          mocked,
+          "Could not reach server http://server.test/v1"
+        );
       });
     });
 
@@ -237,7 +240,11 @@ describe("session sagas", () => {
 
       it("should notify the success", () => {
         expect(setupSession.next().value).eql(
-          put(notificationsActions.notifySuccess("Authenticated.", { details: ["Basic Auth"] }))
+          put(
+            notificationsActions.notifySuccess("Authenticated.", {
+              details: ["Basic Auth"],
+            })
+          )
         );
       });
 

@@ -82,7 +82,12 @@ export function* getServerInfo(
 
     // Reset the server info that we might have added previously to the state.
     yield put(actions.serverInfoSuccess(DEFAULT_SERVERINFO));
-    yield put(notificationActions.notifyError(`Could not reach server ${auth.server}`, error));
+    yield put(
+      notificationActions.notifyError(
+        `Could not reach server ${auth.server}`,
+        error
+      )
+    );
   }
 }
 
@@ -136,7 +141,11 @@ export function* setupSession(
 
     yield put(actions.listBuckets());
     yield put(actions.setupComplete(auth));
-    yield put(notificationActions.notifySuccess("Authenticated.", { details: [getAuthLabel(authType)] }));
+    yield put(
+      notificationActions.notifySuccess("Authenticated.", {
+        details: [getAuthLabel(authType)],
+      })
+    );
   } catch (error) {
     yield put(
       notificationActions.notifyError("Couldn't complete session setup.", error)

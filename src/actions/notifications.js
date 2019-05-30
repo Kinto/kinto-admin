@@ -2,7 +2,11 @@
 
 import type { ClientError } from "../types";
 
-import { NOTIFICATION_ADDED, NOTIFICATION_REMOVED, NOTIFICATION_CLEAR } from "../constants";
+import {
+  NOTIFICATION_ADDED,
+  NOTIFICATION_REMOVED,
+  NOTIFICATION_CLEAR,
+} from "../constants";
 
 const DEFAULT_NOTIFICATIONS_TIMEOUT = 4000; // milliseconds
 
@@ -54,10 +58,7 @@ function notify(
   message: string,
   options: NotificationOptions = {}
 ): NotificationAction {
-  const {
-    details = [],
-    timeout = DEFAULT_NOTIFICATIONS_TIMEOUT,
-  } = options;
+  const { details = [], timeout = DEFAULT_NOTIFICATIONS_TIMEOUT } = options;
   return {
     type: NOTIFICATION_ADDED,
     notification: {
