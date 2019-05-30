@@ -229,6 +229,12 @@ describe("session sagas", () => {
         );
       });
 
+      it("should notify the success", () => {
+        expect(setupSession.next().value).eql(
+          put(notificationsActions.notifySuccess("Authenticated.", { details: ["Basic Auth"] }))
+        );
+      });
+
       it("should correctly authenticate the user when using openID", () => {
         const authData = {
           server: "http://server.test/v1",

@@ -135,6 +135,7 @@ export function* setupSession(
 
     yield put(actions.listBuckets());
     yield put(actions.setupComplete(auth));
+    yield put(notificationActions.notifySuccess("Authenticated.", { details: [getAuthLabel(authType)] }));
   } catch (error) {
     yield put(
       notificationActions.notifyError("Couldn't complete session setup.", error)
