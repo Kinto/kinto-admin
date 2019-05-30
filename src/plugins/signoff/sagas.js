@@ -37,16 +37,16 @@ export function* onCollectionRecordsRequest(getState, action) {
   yield put(SignoffActions.workflowInfo(basicInfos));
 
   // Obtain information for workflow (last update, authors, etc).
-  const {
-    sourceAttributes,
-    previewAttributes,
-    destinationAttributes,
-    changes,
-  } = yield call(fetchWorkflowInfo, source, preview, destination);
+  const { sourceAttributes, changes } = yield call(
+    fetchWorkflowInfo,
+    source,
+    preview,
+    destination
+  );
 
   // Workflow component state.
 
-  let {
+  const {
     status,
     last_edit_by: lastEditBy,
     last_edit_date: nLastEditDate,
@@ -59,31 +59,10 @@ export function* onCollectionRecordsRequest(getState, action) {
     last_signature_by: lastSignatureBy,
     last_signature_date: nLastSignatureDate,
   } = sourceAttributes;
-  let lastEditDate = Date.parse(nLastEditDate);
-  let lastReviewRequestDate = Date.parse(nLastReviewRequestDate);
-  let lastReviewDate = Date.parse(nLastReviewDate);
-  let lastSignatureDate = Date.parse(nLastSignatureDate);
-
-  // Backwards compatibility for old server versions.
-  // This code could be removed after a few releases have been deployed to prod.
-  // (ie. no server rollback)
-  const {
-    capabilities: {
-      signer: { version },
-    },
-  } = serverInfo;
-  if (version < "3.2.0") {
-    // Some of these values will be wrong and disturbing in case of
-    // signature refresh.
-    lastEditBy = sourceAttributes.last_author;
-    lastEditDate = sourceAttributes.last_modified;
-    lastReviewRequestBy = sourceAttributes.last_editor;
-    lastReviewRequestDate = previewAttributes.last_modified;
-    lastReviewBy = sourceAttributes.last_reviewer;
-    lastReviewDate = destinationAttributes.last_modified;
-    lastSignatureBy = lastReviewBy;
-    lastSignatureDate = lastReviewDate;
-  }
+  const lastEditDate = Date.parse(nLastEditDate);
+  const lastReviewRequestDate = Date.parse(nLastReviewRequestDate);
+  const lastReviewDate = Date.parse(nLastReviewDate);
+  const lastSignatureDate = Date.parse(nLastSignatureDate);
 
   const sourceInfo = {
     bid: source.bucket,
@@ -110,57 +89,23 @@ export function* onCollectionRecordsRequest(getState, action) {
   yield put(SignoffActions.workflowInfo(collectionsInfo));
 }
 
-export function* fetchWorkflowInfo(source, preview, destination) {
-  // Obtain collections attributes for source, preview and destination.
+export async function fetchWorkflowInfo(source, preview, destination) {
   const client = getClient();
-  const fetchInfos = batch => {
-    batch
-      .bucket(source.bucket)
-      .collection(source.collection)
-      .getData();
-    batch
-      .bucket(preview.bucket)
-      .collection(preview.collection)
-      .getData();
-    batch
-      .bucket(destination.bucket)
-      .collection(destination.collection)
-      .getData();
-  };
-  const resp = yield call([client, client.batch], fetchInfos);
-  // Extract the `data` attribute from each response body, and defaults to
-  // empty {} if missing (eg. if preview or destination don't exist yet).
-  const respData = resp.map(({ status, body: { data = {} } }, index) => data);
-  const [sourceAttributes, previewAttributes, destinationAttributes] = respData;
-  // Fetch the source changes made since the last signature (since=0 means everything).
-  const lastSigned = String(destinationAttributes.last_modified || 0);
   const { bucket: bid, collection: cid } = source;
   const colClient = client.bucket(bid).collection(cid);
-  const { data: sourceChanges } = yield call(
-    [colClient, colClient.listRecords],
-    { since: lastSigned }
-  );
-  // Here, `lastUpdated` gives us the timestamp of the most recently changed record.
-  // Which can be different from `sourceAttributes.last_modified` since the collection
-  // attributes can be changed independently from the records.
-  let lastUpdated;
-  if (sourceChanges.length > 0) {
-    // Some changes exist. Easy, take latest timestamp.
-    lastUpdated = sourceChanges[0].last_modified;
-  } else {
-    // Empty changes list: either never signed, or not changed since last signature.
-    lastUpdated = lastSigned === "0" ? null : sourceAttributes.last_modified;
-  }
+
+  const sourceAttributes = await colClient.getData();
+  const lastSigned: number = Date.parse(sourceAttributes.last_signature_date);
+  const { data: sourceChanges } = await colClient.listRecords({
+    since: `"${lastSigned}"`,
+  });
   const changes = {
     since: lastSigned,
-    lastUpdated,
     deleted: sourceChanges.filter(r => r.deleted).length,
     updated: sourceChanges.filter(r => !r.deleted).length,
   };
   return {
     sourceAttributes,
-    previewAttributes,
-    destinationAttributes,
     changes,
   };
 }
