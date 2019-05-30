@@ -140,7 +140,7 @@ describe("session sagas", () => {
       it("should notify the error", () => {
         const mocked = mockNotifyError(sandbox);
         getServerInfo.next();
-        sinon.assert.calledWith(mocked, "Could not reach server");
+        sinon.assert.calledWith(mocked, "Could not reach server http://server.test/v1");
       });
     });
 

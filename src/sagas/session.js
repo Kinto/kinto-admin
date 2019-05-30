@@ -82,7 +82,7 @@ export function* getServerInfo(
 
     // Reset the server info that we might have added previously to the state.
     yield put(actions.serverInfoSuccess(DEFAULT_SERVERINFO));
-    yield put(notificationActions.notifyError("Could not reach server", error));
+    yield put(notificationActions.notifyError(`Could not reach server ${auth.server}`, error));
   }
 }
 
