@@ -77,7 +77,11 @@ export type Capabilities = {
   history?: Object,
   permissions_endpoint?: Object,
   schema?: Object,
-  signer?: Object,
+  signer?: {
+    resources: Object[],
+    editors_group: string,
+    reviewers_group: string,
+  },
 };
 
 export type ClientErrorData = {

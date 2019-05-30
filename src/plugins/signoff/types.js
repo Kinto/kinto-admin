@@ -19,21 +19,21 @@ export type ChangesList = {
 };
 
 export type SourceInfo = {
+  // Basic Info (before loading from info server)
   bid: string,
   cid: string,
-  changes: ChangesList,
-
-  lastEditBy: string,
-  lastEditDate: number,
-  lastReviewRequestBy: string,
-  lastReviewRequestDate: number,
-  lastEditorComment: string,
-  lastReviewBy: string,
-  lastReviewDate: number,
-  lastReviewerComment: string,
-  lastSignatureBy: string,
-  lastSignatureDate: number,
-
+  // Full info.
+  changes?: ChangesList,
+  lastEditBy?: string,
+  lastEditDate?: number,
+  lastReviewRequestBy?: string,
+  lastReviewRequestDate?: number,
+  lastEditorComment?: string,
+  lastReviewBy?: string,
+  lastReviewDate?: number,
+  lastReviewerComment?: string,
+  lastSignatureBy?: string,
+  lastSignatureDate?: number,
   editors_group?: string,
   reviewers_group?: string,
 };
