@@ -12,7 +12,6 @@ import App from "../../src/containers/App";
 import Sidebar from "../../src/containers/Sidebar";
 import Notifications from "../../src/containers/Notifications";
 import CollectionRecordsPage from "../../src/containers/collection/CollectionRecordsPage";
-import * as notificationActions from "../../src/actions/notifications";
 import * as sessionActions from "../../src/actions/session";
 
 describe("App component", () => {
@@ -102,16 +101,6 @@ describe("App component", () => {
       app.find(".btn-logout").simulate("click");
 
       sinon.assert.called(sessionActions.logout);
-    });
-  });
-
-  describe("Notifications", () => {
-    it("should add a class when notifications are provided", () => {
-      ({ notificationList: [{ message: "blah" }] });
-      store.dispatch(notificationActions.notifySuccess("blah"));
-      app.update();
-
-      expect(app.find(".with-notifications").length).to.equal(1);
     });
   });
 });

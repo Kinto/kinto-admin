@@ -187,7 +187,6 @@ export type GroupUpdate =
 
 export type Notification = {
   type: string,
-  persistent: boolean,
   message: string,
   details: string[],
 };

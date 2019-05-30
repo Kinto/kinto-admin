@@ -58,6 +58,7 @@ describe("session sagas", () => {
         put(actions.serverInfoSuccess(DEFAULT_SERVERINFO))
       );
     });
+
     it("should clear the notifications", () => {
       expect(serverChange.next().value).eql(
         put(notificationsActions.clearNotifications({ force: true }))
@@ -104,12 +105,6 @@ describe("session sagas", () => {
         );
       });
 
-      it("should clear the notifications", () => {
-        expect(getServerInfo.next().value).eql(
-          put(notificationsActions.clearNotifications({ force: true }))
-        );
-      });
-
       it("should split the auth if it's openID", () => {
         const setupClient = sandbox.spy(clientUtils, "setupClient");
         const authData = {
@@ -145,7 +140,10 @@ describe("session sagas", () => {
       it("should notify the error", () => {
         const mocked = mockNotifyError(sandbox);
         getServerInfo.next();
-        sinon.assert.calledWith(mocked, "Could not reach server");
+        sinon.assert.calledWith(
+          mocked,
+          "Could not reach server http://server.test/v1"
+        );
       });
     });
 
@@ -237,6 +235,16 @@ describe("session sagas", () => {
       it("should mark the session setup as completed", () => {
         expect(setupSession.next().value).eql(
           put(actions.setupComplete(authData))
+        );
+      });
+
+      it("should notify the success", () => {
+        expect(setupSession.next().value).eql(
+          put(
+            notificationsActions.notifySuccess("Authenticated.", {
+              details: ["Basic Auth"],
+            })
+          )
         );
       });
 
@@ -520,11 +528,7 @@ describe("session sagas", () => {
 
     it("should notify users they're logged out", () => {
       expect(sessionLogout.next().value).eql(
-        put(
-          notificationsActions.notifySuccess("Logged out.", {
-            persistent: true,
-          })
-        )
+        put(notificationsActions.notifySuccess("Logged out."))
       );
     });
 

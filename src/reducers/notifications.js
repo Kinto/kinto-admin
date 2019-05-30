@@ -15,26 +15,15 @@ export default function notifications(
 ): Notifications {
   switch (action.type) {
     case NOTIFICATION_ADDED: {
-      const {
-        clear,
-        notification,
-      }: {
-        clear: boolean,
-        notification: Notification,
-      } = action;
-      if (clear) {
-        return [notification];
-      } else {
-        return [...state, notification];
-      }
+      const { notification }: { notification: Notification } = action;
+      return [...state, notification];
     }
     case NOTIFICATION_REMOVED: {
       const { index }: { index: number } = action;
       return [...state.slice(0, index), ...state.slice(index + 1)];
     }
     case NOTIFICATION_CLEAR: {
-      const { force }: { force: boolean } = action;
-      return force ? INITIAL_STATE : state.filter(notif => notif.persistent);
+      return INITIAL_STATE;
     }
     default: {
       return state;

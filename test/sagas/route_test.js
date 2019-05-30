@@ -380,12 +380,6 @@ describe("route sagas", () => {
         routeUpdated = saga.routeUpdated(getState, action);
       });
 
-      it("should clear notification", () => {
-        expect(routeUpdated.next().value).eql(
-          put(notificationActions.clearNotifications())
-        );
-      });
-
       it("should store the post-auth redirect URL", () => {
         expect(routeUpdated.next().value).eql(
           put(sessionActions.storeRedirectURL("/blah"))
@@ -400,22 +394,12 @@ describe("route sagas", () => {
 
       it("should dispatch a notification", () => {
         expect(routeUpdated.next().value).eql(
-          put(
-            notificationActions.notifyInfo("Authentication required.", {
-              persistent: true,
-            })
-          )
+          put(notificationActions.notifyInfo("Authentication required."))
         );
       });
 
       it("should wait for the SESSION_AUTHENTICATED event", () => {
         expect(routeUpdated.next().value).eql(take(SESSION_AUTHENTICATED));
-      });
-
-      it("should clear the notification", () => {
-        expect(routeUpdated.next().value).eql(
-          put(notificationActions.clearNotifications({ force: true }))
-        );
       });
 
       it("should redirect the user to the initially requested URL", () => {
@@ -444,12 +428,6 @@ describe("route sagas", () => {
         routeUpdated = saga.routeUpdated(getState, action);
       });
 
-      it("should clear notification", () => {
-        expect(routeUpdated.next().value).eql(
-          put(notificationActions.clearNotifications())
-        );
-      });
-
       it("should wait for the SESSION_AUTHENTICATED event", () => {
         expect(routeUpdated.next().value).eql(take(SESSION_AUTHENTICATED));
       });
@@ -467,12 +445,6 @@ describe("route sagas", () => {
         const getState = () => ({ session: { authenticated: true } });
         const action = actions.routeUpdated(params, { pathname: "/" });
         routeUpdated = saga.routeUpdated(getState, action);
-      });
-
-      it("should clear notification", () => {
-        expect(routeUpdated.next().value).eql(
-          put(notificationActions.clearNotifications())
-        );
       });
 
       it("should load route resources", () => {

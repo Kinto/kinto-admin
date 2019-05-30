@@ -23,7 +23,7 @@ import { getClient, setupClient, resetClient, getAuthHeader } from "../client";
 
 export function* serverChange(): SagaGen {
   yield put(actions.serverInfoSuccess(DEFAULT_SERVERINFO));
-  yield put(notificationActions.clearNotifications({ force: true }));
+  yield put(notificationActions.clearNotifications());
 }
 
 export function* getServerInfo(
@@ -73,8 +73,6 @@ export function* getServerInfo(
 
     // Notify they're received
     yield put(actions.serverInfoSuccess(serverInfo));
-
-    yield put(notificationActions.clearNotifications({ force: true }));
   } catch (error) {
     // As above, we want to ignore this result, if another request was sent in the mean time.
     const currentClient = getClient();
@@ -84,7 +82,12 @@ export function* getServerInfo(
 
     // Reset the server info that we might have added previously to the state.
     yield put(actions.serverInfoSuccess(DEFAULT_SERVERINFO));
-    yield put(notificationActions.notifyError("Could not reach server", error));
+    yield put(
+      notificationActions.notifyError(
+        `Could not reach server ${auth.server}`,
+        error
+      )
+    );
   }
 }
 
@@ -140,6 +143,11 @@ export function* setupSession(
 
     yield put(actions.listBuckets());
     yield put(actions.setupComplete(auth));
+    yield put(
+      notificationActions.notifySuccess("Authenticated.", {
+        details: [getAuthLabel(authType)],
+      })
+    );
   } catch (error) {
     yield put(
       notificationActions.notifyError("Couldn't complete session setup.", error)
@@ -157,9 +165,7 @@ export function* sessionLogout(
     // We can't push twice the same path using hash history.
     yield put(updatePath("/"));
   }
-  yield put(
-    notificationActions.notifySuccess("Logged out.", { persistent: true })
-  );
+  yield put(notificationActions.notifySuccess("Logged out."));
   yield call(clearSession);
 }
 
@@ -175,11 +181,7 @@ export function* sessionCopyAuthenticationHeader(
   }
   const authHeader = getAuthHeader(auth);
   yield call(copyToClipboard, authHeader);
-  yield put(
-    notificationActions.notifySuccess("Header copied to clipboard", {
-      persistent: false,
-    })
-  );
+  yield put(notificationActions.notifySuccess("Header copied to clipboard"));
 }
 
 export function expandBucketsCollections(

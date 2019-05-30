@@ -20,40 +20,10 @@ describe("Notifications component", () => {
   it("should render an error", () => {
     const node = createComponent(Notifications, {
       removeNotification,
-      notifications: [{ type: "error", message: "fail" }],
+      notifications: [{ type: "danger", message: "fail" }],
     });
 
-    expect(node.querySelectorAll(".notification")).to.have.a.lengthOf(1);
-  });
-
-  it("should not render a detailed error by default", () => {
-    const node = createComponent(Notifications, {
-      removeNotification,
-      notifications: [{ type: "error", message: "fail", details: ["a", "b"] }],
-    });
-
-    expect(
-      [].map.call(
-        node.querySelectorAll(".notification ul li"),
-        n => n.textContent
-      )
-    ).eql([]);
-  });
-
-  it("should render a detailed error when clicking the details button", () => {
-    const node = createComponent(Notifications, {
-      removeNotification,
-      notifications: [{ type: "error", message: "fail", details: ["a", "b"] }],
-    });
-
-    Simulate.click(node.querySelector(".btn-details"));
-
-    expect(
-      [].map.call(
-        node.querySelectorAll(".notification ul li"),
-        n => n.textContent
-      )
-    ).eql(["a", "b"]);
+    expect(node.querySelectorAll(".alert")).to.have.a.lengthOf(1);
   });
 
   it("should render multiple notifications", () => {
@@ -61,12 +31,12 @@ describe("Notifications component", () => {
       removeNotification,
       notifications: [
         { type: "info", message: "info" },
-        { type: "error", message: "fail" },
+        { type: "danger", message: "fail" },
       ],
     });
 
     expect(
-      [].map.call(node.querySelectorAll(".notification p"), n => n.textContent)
+      [].map.call(node.querySelectorAll(".alert h4"), n => n.textContent)
     ).eql(["info", "fail"]);
   });
 

@@ -8,6 +8,8 @@ import {
   NOTIFICATION_CLEAR,
 } from "../constants";
 
+const DEFAULT_NOTIFICATIONS_TIMEOUT = 4000; // milliseconds
+
 function getErrorDetails(error: ?ClientError): string[] {
   if (!error) {
     return [];
@@ -34,59 +36,69 @@ function getErrorDetails(error: ?ClientError): string[] {
   }
 }
 
+type NotificationOptions = {
+  details?: string[],
+  timeout?: ?number,
+};
+
 type NotificationAction = {
   type: "NOTIFICATION_ADDED",
-  clear: boolean,
   notification: {
     type: Levels,
     message: string,
-    persistent: boolean,
-    message: string,
     details: string[],
+    timeout: ?number,
   },
 };
 
-type Levels = "info" | "success" | "danger";
+type Levels = "info" | "success" | "warning" | "danger";
 
 function notify(
   type: Levels,
   message: string,
-  options: Object = {}
+  options: NotificationOptions = {}
 ): NotificationAction {
-  const { clear = true, persistent = false, details = [] } = options;
+  const { details = [], timeout = DEFAULT_NOTIFICATIONS_TIMEOUT } = options;
   return {
     type: NOTIFICATION_ADDED,
-    clear,
     notification: {
       type,
-      persistent,
       message,
       details,
+      timeout,
     },
   };
 }
 
 export function notifyInfo(
   message: string,
-  options: Object = {}
+  options: NotificationOptions = {}
 ): NotificationAction {
   return notify("info", message, options);
 }
 
 export function notifySuccess(
   message: string,
-  options: Object = {}
+  options: NotificationOptions = {}
 ): NotificationAction {
   return notify("success", message, options);
+}
+
+export function notifyWarning(
+  message: string,
+  options: NotificationOptions = {}
+): NotificationAction {
+  return notify("warning", message, options);
 }
 
 export function notifyError(
   message: string,
   error: ?ClientError,
-  options: Object = {}
+  options: NotificationOptions = {}
 ): NotificationAction {
   console.error(error);
   return notify("danger", message, {
+    timeout: null, // Do not auto-hide errors.
     details: options.details || getErrorDetails(error),
   });
 }
@@ -100,11 +112,8 @@ export function removeNotification(
   return { type: NOTIFICATION_REMOVED, index };
 }
 
-export function clearNotifications(
-  options: Object = {}
-): {
+export function clearNotifications(): {
   type: "NOTIFICATION_CLEAR",
-  force: boolean,
 } {
-  return { type: NOTIFICATION_CLEAR, force: !!options.force };
+  return { type: NOTIFICATION_CLEAR };
 }
