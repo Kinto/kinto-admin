@@ -2,7 +2,7 @@
 
 import type { ClientError } from "../types";
 
-import { NOTIFICATION_ADDED, NOTIFICATION_REMOVED } from "../constants";
+import { NOTIFICATION_ADDED, NOTIFICATION_REMOVED, NOTIFICATION_CLEAR } from "../constants";
 
 const DEFAULT_NOTIFICATIONS_TIMEOUT = 4000; // milliseconds
 
@@ -109,4 +109,10 @@ export function removeNotification(
   index: number,
 } {
   return { type: NOTIFICATION_REMOVED, index };
+}
+
+export function clearNotifications(): {
+  type: "NOTIFICATION_CLEAR",
+} {
+  return { type: NOTIFICATION_CLEAR };
 }

@@ -1,7 +1,7 @@
 /* @flow */
 
 import type { Notifications, Notification } from "../types";
-import { NOTIFICATION_ADDED, NOTIFICATION_REMOVED } from "../constants";
+import { NOTIFICATION_ADDED, NOTIFICATION_REMOVED, NOTIFICATION_CLEAR } from "../constants";
 
 const INITIAL_STATE: Notifications = [];
 
@@ -17,6 +17,9 @@ export default function notifications(
     case NOTIFICATION_REMOVED: {
       const { index }: { index: number } = action;
       return [...state.slice(0, index), ...state.slice(index + 1)];
+    }
+    case NOTIFICATION_CLEAR: {
+      return INITIAL_STATE;
     }
     default: {
       return state;

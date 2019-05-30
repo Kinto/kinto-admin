@@ -23,6 +23,7 @@ import { getClient, setupClient, resetClient, getAuthHeader } from "../client";
 
 export function* serverChange(): SagaGen {
   yield put(actions.serverInfoSuccess(DEFAULT_SERVERINFO));
+  yield put(notificationActions.clearNotifications());
 }
 
 export function* getServerInfo(

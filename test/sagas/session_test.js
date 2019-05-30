@@ -58,6 +58,12 @@ describe("session sagas", () => {
         put(actions.serverInfoSuccess(DEFAULT_SERVERINFO))
       );
     });
+
+    it("should clear the notifications", () => {
+      expect(serverChange.next().value).eql(
+        put(notificationsActions.clearNotifications({ force: true }))
+      );
+    });
   });
 
   describe("getServerInfo()", () => {
