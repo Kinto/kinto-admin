@@ -77,12 +77,7 @@ export function* onCollectionRecordsRequest(
   yield put(SignoffActions.workflowInfo(basicInfos));
 
   // Obtain information for workflow (last update, authors, etc).
-  const { sourceAttributes, changesOnSource, changesOnPreview } = yield call(
-    fetchWorkflowInfo,
-    source,
-    preview,
-    destination
-  );
+  const sourceAttributes = yield call(fetchSourceAttributes, source);
 
   // Workflow component state.
 
@@ -118,8 +113,6 @@ export function* onCollectionRecordsRequest(
     lastSignatureBy,
     lastSignatureDate,
     status,
-    changesOnSource,
-    changesOnPreview,
     editors_group,
     reviewers_group,
   };
@@ -128,90 +121,82 @@ export function* onCollectionRecordsRequest(
     source: sourceInfo,
   };
   yield put(SignoffActions.workflowInfo(collectionsInfo));
-}
 
-export async function fetchWorkflowInfo(
-  source: CapabilityResource,
-  preview: ?CapabilityResource,
-  destination: CapabilityResource
-): Promise<{
-  sourceAttributes: Object,
-  changesOnSource?: ?ChangesList,
-  changesOnPreview?: ?ChangesList,
-}> {
-  const client = getClient();
-
-  const sourceClient = client
-    .bucket(source.bucket)
-    .collection(source.collection);
-  const sourceAttributes = await sourceClient.getData();
-
-  // Don't bother fetching changes if current collection is signed (no pending changes).
-  if (!preview || sourceAttributes.status == "signed") {
+  // If no preview collection / no review enabled: do not fetch changes.
+  if (!preview) {
     // Note that we don't really have to support collections with preview disabled UI.
     // The collections with review disabled are very likely to be manipulated by scripts anyway.
-    return { sourceAttributes };
+    return;
   }
-  // kinto-signer always creates the preview/destination collections.
-  // We get their records timetamp, because it's only bumped when records are changed,
-  // unlike the metadata timestamp which is bumped on signature refresh.
-  const [
-    {
-      headers: { ETag: previewETag },
-    },
-    {
-      headers: { ETag: destinationETag },
-    },
-  ] = await client.batch(batch => {
-    batch
-      .bucket(preview.bucket)
-      .collection(preview.collection)
-      .listRecords({ filters: { _before: 0 } });
-    batch
-      .bucket(destination.bucket)
-      .collection(destination.collection)
-      .listRecords({ filters: { _before: 0 } });
-  });
-  const previewTimestamp = parseInt(previewETag.replace('"', ""), 10);
-  const destinationTimestamp = parseInt(destinationETag.replace('"', ""), 10);
 
-  // Figure out what was changed on the preview collection since last approval.
-  // There can be changes if the timestamp is more recent.
+  let changesOnSource = null;
   let changesOnPreview = null;
-  if (previewTimestamp > destinationTimestamp) {
-    const previewClient = client
-      .bucket(source.bucket)
-      .collection(source.collection);
-    const { data: previewChanges } = await previewClient.listRecords({
-      since: destinationETag,
-      fields: "deleted", // limit amount of data to fetch.
-    });
-    changesOnPreview = {
-      since: destinationTimestamp,
-      deleted: previewChanges.filter(r => r.deleted).length,
-      updated: previewChanges.filter(r => !r.deleted).length,
-    };
-  }
 
   // Figure out what was changed on the source collection since review request.
   // There can be changes on source only if status is work-in-progress.
-  let changesOnSource = null;
   if (sourceAttributes.status == "work-in-progress") {
-    const { data: sourceChanges } = await sourceClient.listRecords({
-      since: previewETag,
-      fields: "deleted", // limit amount of data to fetch.
-    });
-    changesOnSource = {
-      since: previewTimestamp,
-      deleted: sourceChanges.filter(r => r.deleted).length,
-      updated: sourceChanges.filter(r => !r.deleted).length,
-    };
+    changesOnSource = yield call(fetchChangesInfo, source, preview);
+    // Figure out what was changed on the preview collection since last approval.
+    // Don't bother fetching changes if current collection is signed (no pending changes).
+  } else if (status != "signed") {
+    changesOnPreview = yield call(fetchChangesInfo, source, destination);
+  } else {
+    // Status is signed. No changes to show.
+    return;
   }
 
+  const collectionsInfoWithChanges = {
+    ...collectionsInfo,
+    source: {
+      ...sourceInfo,
+      changesOnSource,
+      changesOnPreview,
+    },
+  };
+  yield put(SignoffActions.workflowInfo(collectionsInfoWithChanges));
+}
+
+export async function fetchSourceAttributes(
+  source: CapabilityResource
+): Promise<Object> {
+  const client = getClient();
+  const sourceClient = client
+    .bucket(source.bucket)
+    .collection(source.collection);
+  return sourceClient.getData();
+}
+
+export async function fetchChangesInfo(
+  source: CapabilityResource,
+  other: CapabilityResource
+): Promise<ChangesList> {
+  const client = getClient();
+
+  // We get the records timetamp, because it's only bumped when records are changed,
+  // unlike the metadata timestamp which is bumped on signature refresh.
+  const [
+    {
+      headers: { ETag: sinceETag },
+    },
+  ] = await client.batch(batch => {
+    batch
+      .bucket(other.bucket)
+      .collection(other.collection)
+      .listRecords({ filters: { _before: 0 } }); // we're only interested in headers.
+  });
+  // Look up changes since ETag.
+  const { data: changes } = await client
+    .bucket(source.bucket)
+    .collection(source.collection)
+    .listRecords({
+      since: sinceETag,
+      fields: "deleted", // limit amount of data to fetch.
+    });
+  const since: number = parseInt(sinceETag.replace('"', ""), 10);
   return {
-    sourceAttributes,
-    changesOnSource,
-    changesOnPreview,
+    since,
+    deleted: changes.filter(r => r.deleted).length,
+    updated: changes.filter(r => !r.deleted).length,
   };
 }
 

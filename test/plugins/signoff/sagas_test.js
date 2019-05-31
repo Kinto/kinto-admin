@@ -89,45 +89,79 @@ describe("Signoff plugin sagas", () => {
         );
       });
 
-      it("should update the workflow info with groups", () => {
+      it("should update the workflow info with source attributes", () => {
         const action = collection_actions.listRecords(
           "stage",
           "source-plugins",
           ""
         );
-        const fetchWorkflowInfoResult = {
-          sourceAttributes: {
-            last_edit_by: "Last Edit By",
-            last_edit_date: "2018-04-15T16:51:23.971129+00:00",
-            last_review_request_by: "Last Review Request By",
-            last_review_request_date: "2018-04-16T16:51:23.971129+00:00",
-            last_editor_comment: "Last Editor Comment",
-            last_review_by: "Last Review By",
-            last_review_date: "2018-04-17T16:51:23.971129+00:00",
-            last_reviewer_comment: "Last Reviewer Comment",
-            last_signature_by: "Last Signature By",
-            last_signature_date: "2018-04-18T16:51:23.971129+00:00",
-            last_modified: "sourceAttributes.last_modified",
-            status: "to-review",
-          },
-          previewAttributes: {},
-          destinationAttributes: {},
-          changesOnSource: {},
-          changesOnPreview: {},
+        const fetchSourceAttributesResult = {
+          last_edit_by: "Last Edit By",
+          last_edit_date: "2018-04-15T16:51:23.971129+00:00",
+          last_review_request_by: "Last Review Request By",
+          last_review_request_date: "2018-04-16T16:51:23.971129+00:00",
+          last_editor_comment: "Last Editor Comment",
+          last_review_by: "Last Review By",
+          last_review_date: "2018-04-17T16:51:23.971129+00:00",
+          last_reviewer_comment: "Last Reviewer Comment",
+          last_signature_by: "Last Signature By",
+          last_signature_date: "2018-04-18T16:51:23.971129+00:00",
+          last_modified: "sourceAttributes.last_modified",
+          status: "to-review",
         };
 
         const result = saga.onCollectionRecordsRequest(getState, action);
         result.next().value; // put(), tested above
         expect(result.next().value).eql(
+          call(saga.fetchSourceAttributes, {
+            bucket: "stage",
+            collection: "source-plugins",
+          })
+        );
+
+        const workflowInfo = {
+          source: {
+            bid: "stage",
+            cid: "source-plugins",
+            lastEditBy: "Last Edit By",
+            lastEditDate: 1523811083971,
+            lastEditorComment: "Last Editor Comment",
+            lastReviewRequestBy: "Last Review Request By",
+            lastReviewRequestDate: 1523897483971,
+            lastReviewerComment: "Last Reviewer Comment",
+            lastReviewBy: "Last Review By",
+            lastReviewDate: 1523983883971,
+            lastSignatureBy: "Last Signature By",
+            lastSignatureDate: 1524070283971,
+            editors_group: "{collection_id}_editors_who_wear_cool_sneakers",
+            reviewers_group: undefined,
+            status: "to-review",
+          },
+          preview: {
+            bid: "preview",
+            cid: "preview-plugins",
+          },
+          destination: {
+            bid: "prod",
+            cid: "dest-plugins",
+          },
+        };
+        expect(result.next(fetchSourceAttributesResult).value).eql(
+          put(actions.workflowInfo(workflowInfo))
+        );
+
+        // Changes will be fetched for the preview collection
+        const changesListResult = {
+          since: 12345,
+          updated: 2,
+          deleted: 0,
+        };
+        expect(result.next().value).eql(
           call(
-            saga.fetchWorkflowInfo,
+            saga.fetchChangesInfo,
             {
               bucket: "stage",
               collection: "source-plugins",
-            },
-            {
-              bucket: "preview",
-              collection: "preview-plugins",
             },
             {
               bucket: "prod",
@@ -135,38 +169,16 @@ describe("Signoff plugin sagas", () => {
             }
           )
         );
-        expect(result.next(fetchWorkflowInfoResult).value).eql(
-          put(
-            actions.workflowInfo({
-              source: {
-                bid: "stage",
-                cid: "source-plugins",
-                changesOnSource: {},
-                changesOnPreview: {},
-                lastEditBy: "Last Edit By",
-                lastEditDate: 1523811083971,
-                lastEditorComment: "Last Editor Comment",
-                lastReviewRequestBy: "Last Review Request By",
-                lastReviewRequestDate: 1523897483971,
-                lastReviewerComment: "Last Reviewer Comment",
-                lastReviewBy: "Last Review By",
-                lastReviewDate: 1523983883971,
-                lastSignatureBy: "Last Signature By",
-                lastSignatureDate: 1524070283971,
-                editors_group: "{collection_id}_editors_who_wear_cool_sneakers",
-                reviewers_group: undefined,
-                status: "to-review",
-              },
-              preview: {
-                bid: "preview",
-                cid: "preview-plugins",
-              },
-              destination: {
-                bid: "prod",
-                cid: "dest-plugins",
-              },
-            })
-          )
+        const workflowInfoWithChanges = {
+          ...workflowInfo,
+          source: {
+            ...workflowInfo.source,
+            changesOnPreview: changesListResult,
+            changesOnSource: null,
+          },
+        };
+        expect(result.next(changesListResult).value).eql(
+          put(actions.workflowInfo(workflowInfoWithChanges))
         );
       });
 

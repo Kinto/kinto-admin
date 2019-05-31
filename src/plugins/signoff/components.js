@@ -273,7 +273,7 @@ function WorkInProgressInfos(props) {
           <strong>Comment: </strong> <Comment text={lastReviewerComment} />
         </li>
       )}
-      {active && (
+      {active && changesOnSource && (
         <DiffInfo
           hasHistory={hasHistory}
           bid={bid}
@@ -389,7 +389,7 @@ function ReviewInfos(props: ReviewInfosProps) {
       <li>
         <strong>Preview: </strong> {link}
       </li>
-      {active && (
+      {active && changesOnPreview && (
         <DiffInfo
           hasHistory={hasHistory}
           bid={bid}
