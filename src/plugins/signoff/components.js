@@ -192,7 +192,10 @@ function Comment({ text }: { text: string }): React.Element<*> {
   );
 }
 
-function HumanDate({ timestamp }: { timestamp: number }) {
+function HumanDate({ timestamp }: { timestamp: ?number }) {
+  if (!timestamp) {
+    return "N/A";
+  }
   return <span title={humanDate(timestamp)}>{timeago(timestamp)}</span>;
 }
 

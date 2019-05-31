@@ -1,11 +1,51 @@
+/* @flow */
+import type {
+  ActionType,
+  GetStateFn,
+  SagaGen,
+  ServerInfo,
+  BucketResource,
+  CollectionResource,
+} from "../../types";
+import type { ChangesList } from "./types";
+
 import { call, put } from "redux-saga/effects";
 import { getClient } from "../../client";
 import { routeLoadSuccess } from "../../actions/route";
+import * as collectionActions from "../../actions/collection";
 import { notifySuccess, notifyError } from "../../actions/notifications";
 
 import * as SignoffActions from "./actions";
 
-export function* onCollectionRecordsRequest(getState, action) {
+type CapabilityResource = {
+  bucket: string,
+  collection: string,
+};
+
+type SignerResource = {
+  source: CapabilityResource,
+  preview?: CapabilityResource,
+  destination: CapabilityResource,
+  editors_group: string,
+  reviewers_group: string,
+};
+
+function assertResourceId(
+  resource: BucketResource | CollectionResource
+): string {
+  const {
+    data: { id: id },
+  } = resource;
+  if (!id) {
+    throw new Error("Inconsistent state.");
+  }
+  return id;
+}
+
+export function* onCollectionRecordsRequest(
+  getState: GetStateFn,
+  action: ActionType<typeof collectionActions.listRecords>
+): SagaGen {
   const { bid, cid } = action;
   const {
     session: { serverInfo },
@@ -22,7 +62,7 @@ export function* onCollectionRecordsRequest(getState, action) {
 
   const {
     source,
-    preview = {},
+    preview,
     destination,
     editors_group,
     reviewers_group,
@@ -32,7 +72,7 @@ export function* onCollectionRecordsRequest(getState, action) {
   const basicInfos = {
     source: { bid: source.bucket, cid: source.collection },
     destination: { bid: destination.bucket, cid: destination.collection },
-    preview: { bid: preview.bucket, cid: preview.collection },
+    preview: preview ? { bid: preview.bucket, cid: preview.collection } : null,
   };
   yield put(SignoffActions.workflowInfo(basicInfos));
 
@@ -89,7 +129,11 @@ export function* onCollectionRecordsRequest(getState, action) {
   yield put(SignoffActions.workflowInfo(collectionsInfo));
 }
 
-export async function fetchWorkflowInfo(source, preview, destination) {
+export async function fetchWorkflowInfo(
+  source: CapabilityResource,
+  preview: ?CapabilityResource,
+  destination: CapabilityResource
+): Promise<{ sourceAttributes: Object, changes: ChangesList }> {
   const client = getClient();
   const { bucket: bid, collection: cid } = source;
   const colClient = client.bucket(bid).collection(cid);
@@ -110,7 +154,10 @@ export async function fetchWorkflowInfo(source, preview, destination) {
   };
 }
 
-export function* handleRequestReview(getState, action) {
+export function* handleRequestReview(
+  getState: GetStateFn,
+  action: ActionType<typeof SignoffActions.requestReview>
+): SagaGen {
   const { bucket } = getState();
   const { comment } = action;
   try {
@@ -118,22 +165,35 @@ export function* handleRequestReview(getState, action) {
       status: "to-review",
       last_editor_comment: comment,
     });
-    const {
-      data: { id: bid },
-    } = bucket;
+    const bid = assertResourceId(bucket);
     const {
       data: { id: cid },
     } = collection;
     // Go through the same saga as page load to refresh attributes after signoff changes.
-    yield call(onCollectionRecordsRequest, getState, { bid, cid });
-    yield put(routeLoadSuccess({ bucket, collection }));
+    yield call(
+      onCollectionRecordsRequest,
+      getState,
+      collectionActions.listRecords(bid, cid)
+    );
+    yield put(
+      routeLoadSuccess({
+        bucket,
+        collection,
+        groups: [],
+        group: null,
+        record: null,
+      })
+    );
     yield put(notifySuccess("Review requested."));
   } catch (e) {
     yield put(notifyError("Couldn't request review.", e));
   }
 }
 
-export function* handleDeclineChanges(getState, action) {
+export function* handleDeclineChanges(
+  getState: GetStateFn,
+  action: ActionType<typeof SignoffActions.declineChanges>
+): SagaGen {
   const { bucket } = getState();
   const { comment } = action;
   try {
@@ -141,22 +201,35 @@ export function* handleDeclineChanges(getState, action) {
       status: "work-in-progress",
       last_reviewer_comment: comment,
     });
-    const {
-      data: { id: bid },
-    } = bucket;
+    const bid = assertResourceId(bucket);
     const {
       data: { id: cid },
     } = collection;
     // Go through the same saga as page load to refresh attributes after signoff changes.
-    yield call(onCollectionRecordsRequest, getState, { bid, cid });
-    yield put(routeLoadSuccess({ bucket, collection }));
+    yield call(
+      onCollectionRecordsRequest,
+      getState,
+      collectionActions.listRecords(bid, cid)
+    );
+    yield put(
+      routeLoadSuccess({
+        bucket,
+        collection,
+        groups: [],
+        group: null,
+        record: null,
+      })
+    );
     yield put(notifySuccess("Changes declined."));
   } catch (e) {
     yield put(notifyError("Couldn't decline changes.", e));
   }
 }
 
-export function* handleApproveChanges(getState, action) {
+export function* handleApproveChanges(
+  getState: GetStateFn,
+  action: ActionType<typeof SignoffActions.approveChanges>
+): SagaGen {
   const { bucket } = getState();
   try {
     const collection = yield call(_updateCollectionAttributes, getState, {
@@ -164,31 +237,46 @@ export function* handleApproveChanges(getState, action) {
       last_reviewer_comment: "",
     });
 
-    const {
-      data: { id: bid },
-    } = bucket;
+    const bid = assertResourceId(bucket);
     const {
       data: { id: cid },
     } = collection;
     // Go through the same saga as page load to refresh attributes after signoff changes.
-    yield call(onCollectionRecordsRequest, getState, { bid, cid });
-    yield put(routeLoadSuccess({ bucket, collection }));
+    yield call(
+      onCollectionRecordsRequest,
+      getState,
+      collectionActions.listRecords(bid, cid)
+    );
+    yield put(
+      routeLoadSuccess({
+        bucket,
+        collection,
+        groups: [],
+        group: null,
+        record: null,
+      })
+    );
     yield put(notifySuccess("Signature requested."));
   } catch (e) {
     yield put(notifyError("Couldn't approve changes.", e));
   }
 }
 
-function _updateCollectionAttributes(getState, data) {
+function _updateCollectionAttributes(
+  getState: GetStateFn,
+  data: {
+    status: string,
+    last_reviewer_comment?: string,
+    last_editor_comment?: string,
+  }
+): Promise<{ data: { id: string } }> {
   const client = getClient();
+  const { bucket, collection } = getState();
+  const bid = assertResourceId(bucket);
+  const cid = assertResourceId(collection);
   const {
-    bucket: {
-      data: { id: bid },
-    },
-    collection: {
-      data: { id: cid, last_modified },
-    },
-  } = getState();
+    data: { last_modified },
+  } = collection;
   const coll = client.bucket(bid).collection(cid);
   return (
     coll
@@ -199,20 +287,24 @@ function _updateCollectionAttributes(getState, data) {
   );
 }
 
-function _pickSignoffResource(serverInfo, bid, cid) {
+function _pickSignoffResource(
+  serverInfo: ServerInfo,
+  bid: string,
+  cid: string
+): ?SignerResource {
   const {
-    capabilities: { signer = { resources: [] } },
+    capabilities: { signer },
   } = serverInfo;
-  if (signer.resources.length == 0) {
+  if (!signer) {
     console.log("kinto-signer is not enabled.");
+    return null;
   }
-  let resource = signer.resources.filter(
-    ({ source: { bucket, collection } }) => {
-      // If the source has no collection info, it means that reviewing was configured
-      // by bucket on the server, and that it applies to every collection (thus this one too).
-      return bucket == bid && (!collection || collection == cid);
-    }
-  )[0];
+  const resources: SignerResource[] = signer.resources;
+  let resource = resources.filter(({ source: { bucket, collection } }) => {
+    // If the source has no collection info, it means that reviewing was configured
+    // by bucket on the server, and that it applies to every collection (thus this one too).
+    return bucket == bid && (!collection || collection == cid);
+  })[0];
   // The whole UI expects to have collection information for source/preview/destination.
   // If configured by bucket, fill-up the missing attribute as if it would be configured
   // explicitly for this collection.

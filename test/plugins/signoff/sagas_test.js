@@ -241,7 +241,7 @@ describe("Signoff plugin sagas", () => {
         )
           .to.have.property("CALL")
           .to.have.property("args")
-          .to.deep.include({ bid: "buck", cid: "coll" });
+          .to.deep.include(collection_actions.listRecords("buck", "coll"));
       });
 
       it("should dispatch the routeLoadSuccess action", () => {
@@ -254,6 +254,9 @@ describe("Signoff plugin sagas", () => {
             routeLoadSuccess({
               bucket: { data: { id: "buck" } },
               collection: { data: { id: "coll", status: "to-review" } },
+              groups: [],
+              group: null,
+              record: null,
             })
           )
         );
@@ -292,7 +295,7 @@ describe("Signoff plugin sagas", () => {
         )
           .to.have.property("CALL")
           .to.have.property("args")
-          .to.deep.include({ bid: "buck", cid: "coll" });
+          .to.deep.include(collection_actions.listRecords("buck", "coll"));
       });
 
       it("should dispatch the routeLoadSuccess action", () => {
@@ -305,6 +308,9 @@ describe("Signoff plugin sagas", () => {
             routeLoadSuccess({
               bucket: { data: { id: "buck" } },
               collection: { data: { id: "coll", status: "work-in-progress" } },
+              groups: [],
+              group: null,
+              record: null,
             })
           )
         );
@@ -340,7 +346,7 @@ describe("Signoff plugin sagas", () => {
         )
           .to.have.property("CALL")
           .to.have.property("args")
-          .to.deep.include({ bid: "buck", cid: "coll" });
+          .to.deep.include(collection_actions.listRecords("buck", "coll"));
       });
 
       it("should dispatch the routeLoadSuccess action", () => {
@@ -353,6 +359,9 @@ describe("Signoff plugin sagas", () => {
             routeLoadSuccess({
               bucket: { data: { id: "buck" } },
               collection: { data: { id: "coll", status: "to-sign" } },
+              groups: [],
+              group: null,
+              record: null,
             })
           )
         );

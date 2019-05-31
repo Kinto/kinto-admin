@@ -79,6 +79,7 @@ declare module "kinto-http" {
 
   declare class Collection {
     constructor(): void;
+    getData(): Promise<Object>;
     setData(data: Object, options?: Options): Promise<Object>;
     setPermissions(permissions: Permissions): Promise<ObjectResponseBody<Resource>>;
     removeAttachment(): Promise<ObjectResponseBody<Resource>>;

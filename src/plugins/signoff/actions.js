@@ -46,10 +46,10 @@ export function cancelPendingConfirm(): {
 }
 
 export function workflowInfo(
-  collectionsInfo: CollectionsInfo
+  collectionsInfo: ?CollectionsInfo // called with `null` when signoff not enabled.
 ): {
   type: "SIGNOFF_WORKFLOW_INFO",
-  collectionsInfo: CollectionsInfo,
+  collectionsInfo: ?CollectionsInfo,
 } {
   return {
     type: constants.SIGNOFF_WORKFLOW_INFO,

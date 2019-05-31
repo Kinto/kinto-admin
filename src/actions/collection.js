@@ -42,12 +42,12 @@ export function resetCollection(): {
 export function listRecords(
   bid: string,
   cid: string,
-  sort: string
+  sort?: string
 ): {
   type: "COLLECTION_RECORDS_REQUEST",
   bid: string,
   cid: string,
-  sort: string,
+  sort: ?string,
 } {
   return { type: COLLECTION_RECORDS_REQUEST, bid, cid, sort };
 }
