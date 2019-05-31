@@ -1,5 +1,12 @@
 /* @flow */
-import type { ActionType, GetStateFn, SagaGen, ServerInfo } from "../../types";
+import type {
+  ActionType,
+  GetStateFn,
+  SagaGen,
+  ServerInfo,
+  BucketResource,
+  CollectionResource,
+} from "../../types";
 import type { ChangesList } from "./types";
 
 import { call, put } from "redux-saga/effects";
@@ -22,6 +29,18 @@ type SignerResource = {
   editors_group: string,
   reviewers_group: string,
 };
+
+function assertResourceId(
+  resource: BucketResource | CollectionResource
+): string {
+  const {
+    data: { id: id },
+  } = resource;
+  if (!id) {
+    throw new Error("Inconsistent state.");
+  }
+  return id;
+}
 
 export function* onCollectionRecordsRequest(
   getState: GetStateFn,
@@ -146,12 +165,7 @@ export function* handleRequestReview(
       status: "to-review",
       last_editor_comment: comment,
     });
-    const {
-      data: { id: bid },
-    } = bucket;
-    if (!bid) {
-      throw new Error("Inconsistent state."); // won't happen (but flow does not know).
-    }
+    const bid = assertResourceId(bucket);
     const {
       data: { id: cid },
     } = collection;
@@ -187,12 +201,7 @@ export function* handleDeclineChanges(
       status: "work-in-progress",
       last_reviewer_comment: comment,
     });
-    const {
-      data: { id: bid },
-    } = bucket;
-    if (!bid) {
-      throw new Error("Inconsistent state."); // won't happen (but flow does not know).
-    }
+    const bid = assertResourceId(bucket);
     const {
       data: { id: cid },
     } = collection;
@@ -228,12 +237,7 @@ export function* handleApproveChanges(
       last_reviewer_comment: "",
     });
 
-    const {
-      data: { id: bid },
-    } = bucket;
-    if (!bid) {
-      throw new Error("Inconsistent state."); // won't happen (but flow does not know).
-    }
+    const bid = assertResourceId(bucket);
     const {
       data: { id: cid },
     } = collection;
@@ -267,17 +271,12 @@ function _updateCollectionAttributes(
   }
 ): Promise<{ data: { id: string } }> {
   const client = getClient();
+  const { bucket, collection } = getState();
+  const bid = assertResourceId(bucket);
+  const cid = assertResourceId(collection);
   const {
-    bucket: {
-      data: { id: bid },
-    },
-    collection: {
-      data: { id: cid, last_modified },
-    },
-  } = getState();
-  if (!bid || !cid) {
-    throw new Error("Inconsistent state."); // won't happen (but flow does not know).
-  }
+    data: { last_modified },
+  } = collection;
   const coll = client.bucket(bid).collection(cid);
   return (
     coll
