@@ -112,6 +112,7 @@ describe("Signoff plugin sagas", () => {
           },
           previewAttributes: {},
           destinationAttributes: {},
+          changesOnSource: {},
           changesOnPreview: {},
         };
 
@@ -140,6 +141,7 @@ describe("Signoff plugin sagas", () => {
               source: {
                 bid: "stage",
                 cid: "source-plugins",
+                changesOnSource: {},
                 changesOnPreview: {},
                 lastEditBy: "Last Edit By",
                 lastEditDate: 1523811083971,

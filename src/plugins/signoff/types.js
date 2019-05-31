@@ -23,6 +23,7 @@ export type SourceInfo = {
   bid: string,
   cid: string,
   // Full info.
+  changesOnSource?: ChangesList,
   changesOnPreview?: ChangesList,
   lastEditBy?: string,
   lastEditDate?: number,

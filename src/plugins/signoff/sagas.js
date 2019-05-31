@@ -77,7 +77,7 @@ export function* onCollectionRecordsRequest(
   yield put(SignoffActions.workflowInfo(basicInfos));
 
   // Obtain information for workflow (last update, authors, etc).
-  const { sourceAttributes, changesOnPreview } = yield call(
+  const { sourceAttributes, changesOnSource, changesOnPreview } = yield call(
     fetchWorkflowInfo,
     source,
     preview,
@@ -118,6 +118,7 @@ export function* onCollectionRecordsRequest(
     lastSignatureBy,
     lastSignatureDate,
     status,
+    changesOnSource,
     changesOnPreview,
     editors_group,
     reviewers_group,
@@ -133,24 +134,83 @@ export async function fetchWorkflowInfo(
   source: CapabilityResource,
   preview: ?CapabilityResource,
   destination: CapabilityResource
-): Promise<{ sourceAttributes: Object, changesOnPreview: ChangesList }> {
+): Promise<{
+  sourceAttributes: Object,
+  changesOnSource?: ?ChangesList,
+  changesOnPreview?: ?ChangesList,
+}> {
   const client = getClient();
-  const sourceClient = client.bucket(source.bucket).collection(source.collection);
+
+  const sourceClient = client
+    .bucket(source.bucket)
+    .collection(source.collection);
+  const sourceAttributes = await sourceClient.getData();
+
+  // Don't bother fetching changes if current collection is signed (no pending changes).
+  if (!preview || sourceAttributes.status == "signed") {
+    // Note that we don't really have to support collections with preview disabled UI.
+    // The collections with review disabled are very likely to be manipulated by scripts anyway.
+    return { sourceAttributes };
+  }
+  // kinto-signer always creates the preview/destination collections.
+  // We get their records timetamp, because it's only bumped when records are changed,
+  // unlike the metadata timestamp which is bumped on signature refresh.
+  const [
+    {
+      headers: { ETag: previewETag },
+    },
+    {
+      headers: { ETag: destinationETag },
+    },
+  ] = await client.batch(batch => {
+    batch
+      .bucket(preview.bucket)
+      .collection(preview.collection)
+      .listRecords({ filters: { _before: 0 } });
+    batch
+      .bucket(destination.bucket)
+      .collection(destination.collection)
+      .listRecords({ filters: { _before: 0 } });
+  });
+  const previewTimestamp = parseInt(previewETag.replace('"', ""), 10);
+  const destinationTimestamp = parseInt(destinationETag.replace('"', ""), 10);
 
   // Figure out what was changed on the preview collection since last approval.
-  const sourceAttributes = await sourceClient.getData();
-  const lastSigned: number = Date.parse(sourceAttributes.last_signature_date);
-  const { data: previewChanges } = await sourceClient.listRecords({
-    since: `"${lastSigned}"`,
-  });
-  const changesOnPreview = {
-    since: lastSigned,
-    deleted: previewChanges.filter(r => r.deleted).length,
-    updated: previewChanges.filter(r => !r.deleted).length,
-  };
+  // There can be changes if the timestamp is more recent.
+  let changesOnPreview = null;
+  if (previewTimestamp > destinationTimestamp) {
+    const previewClient = client
+      .bucket(source.bucket)
+      .collection(source.collection);
+    const { data: previewChanges } = await previewClient.listRecords({
+      since: destinationETag,
+      fields: "deleted", // limit amount of data to fetch.
+    });
+    changesOnPreview = {
+      since: destinationTimestamp,
+      deleted: previewChanges.filter(r => r.deleted).length,
+      updated: previewChanges.filter(r => !r.deleted).length,
+    };
+  }
+
+  // Figure out what was changed on the source collection since review request.
+  // There can be changes on source only if status is work-in-progress.
+  let changesOnSource = null;
+  if (sourceAttributes.status == "work-in-progress") {
+    const { data: sourceChanges } = await sourceClient.listRecords({
+      since: previewETag,
+      fields: "deleted", // limit amount of data to fetch.
+    });
+    changesOnSource = {
+      since: previewTimestamp,
+      deleted: sourceChanges.filter(r => r.deleted).length,
+      updated: sourceChanges.filter(r => !r.deleted).length,
+    };
+  }
 
   return {
     sourceAttributes,
+    changesOnSource,
     changesOnPreview,
   };
 }
