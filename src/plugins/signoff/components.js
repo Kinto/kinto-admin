@@ -104,7 +104,13 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
     if (!collectionsInfo) {
       return null;
     }
-    const { source, destination, preview } = collectionsInfo;
+    const {
+      source,
+      destination,
+      preview,
+      changesOnSource,
+      changesOnPreview,
+    } = collectionsInfo;
 
     const canRequestReview = canEdit && isEditor(source, sessionState);
     const canReview =
@@ -138,6 +144,7 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
             hasHistory={hasHistory}
             confirmRequestReview={confirmRequestReview}
             source={source}
+            changes={changesOnSource}
           />
           <Review
             label="Waiting review"
@@ -149,6 +156,7 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
             confirmDeclineChanges={confirmDeclineChanges}
             source={source}
             preview={preview}
+            changes={changesOnPreview}
           />
           <Signed
             label="Approved"
@@ -213,6 +221,7 @@ type WorkInProgressProps = {
   confirmRequestReview: () => void,
   source: SourceInfo,
   hasHistory: boolean,
+  changes: ?ChangesList,
 };
 
 function WorkInProgress(props: WorkInProgressProps) {
@@ -224,6 +233,7 @@ function WorkInProgress(props: WorkInProgressProps) {
     confirmRequestReview,
     source,
     hasHistory,
+    changes,
   } = props;
 
   const active = step == currentStep;
@@ -234,6 +244,7 @@ function WorkInProgress(props: WorkInProgressProps) {
         active={active}
         source={source}
         hasHistory={hasHistory}
+        changes={changes}
       />
       {active && source.lastEditDate && canEdit && (
         <RequestReviewButton onClick={confirmRequestReview} />
@@ -242,16 +253,15 @@ function WorkInProgress(props: WorkInProgressProps) {
   );
 }
 
-function WorkInProgressInfos(props) {
-  const { active, source, hasHistory } = props;
-  const {
-    bid,
-    cid,
-    lastEditBy,
-    lastEditDate,
-    lastReviewerComment,
-    changesOnSource = {},
-  } = source;
+type WorkInProgressInfosProps = {
+  active: boolean,
+  source: SourceInfo,
+  hasHistory: boolean,
+  changes: ?ChangesList,
+};
+function WorkInProgressInfos(props: WorkInProgressInfosProps) {
+  const { active, source, hasHistory, changes } = props;
+  const { bid, cid, lastEditBy, lastEditDate, lastReviewerComment } = source;
   if (!lastEditDate) {
     return (
       <ul>
@@ -273,12 +283,12 @@ function WorkInProgressInfos(props) {
           <strong>Comment: </strong> <Comment text={lastReviewerComment} />
         </li>
       )}
-      {active && changesOnSource && (
+      {active && changes && (
         <DiffInfo
           hasHistory={hasHistory}
           bid={bid}
           cid={cid}
-          changes={changesOnSource}
+          changes={changes}
         />
       )}
     </ul>
@@ -308,6 +318,7 @@ type ReviewProps = {
   confirmDeclineChanges: () => void,
   source: SourceInfo,
   preview: ?PreviewInfo,
+  changes: ?ChangesList,
 };
 
 function Review(props: ReviewProps) {
@@ -321,6 +332,7 @@ function Review(props: ReviewProps) {
     confirmDeclineChanges,
     source,
     preview,
+    changes,
   } = props;
   const active = step == currentStep;
 
@@ -343,6 +355,7 @@ function Review(props: ReviewProps) {
           source={source}
           link={link}
           hasHistory={hasHistory}
+          changes={changes}
         />
       )}
       {active && canEdit && (
@@ -360,17 +373,17 @@ type ReviewInfosProps = {
   source: SourceInfo,
   link: any,
   hasHistory: boolean,
+  changes: ?ChangesList,
 };
 
 function ReviewInfos(props: ReviewInfosProps) {
-  const { active, source, link, hasHistory } = props;
+  const { active, source, link, hasHistory, changes } = props;
   const {
     bid,
     cid,
     lastReviewRequestBy,
     lastReviewRequestDate,
     lastEditorComment,
-    changesOnPreview,
   } = source;
   return (
     <ul>
@@ -389,12 +402,12 @@ function ReviewInfos(props: ReviewInfosProps) {
       <li>
         <strong>Preview: </strong> {link}
       </li>
-      {active && changesOnPreview && (
+      {active && changes && (
         <DiffInfo
           hasHistory={hasHistory}
           bid={bid}
           cid={cid}
-          changes={changesOnPreview}
+          changes={changes}
         />
       )}
     </ul>

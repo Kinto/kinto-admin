@@ -147,11 +147,8 @@ export function* onCollectionRecordsRequest(
 
   const collectionsInfoWithChanges = {
     ...collectionsInfo,
-    source: {
-      ...sourceInfo,
-      changesOnSource,
-      changesOnPreview,
-    },
+    changesOnSource,
+    changesOnPreview,
   };
   yield put(SignoffActions.workflowInfo(collectionsInfoWithChanges));
 }

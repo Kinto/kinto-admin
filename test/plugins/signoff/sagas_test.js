@@ -171,11 +171,8 @@ describe("Signoff plugin sagas", () => {
         );
         const workflowInfoWithChanges = {
           ...workflowInfo,
-          source: {
-            ...workflowInfo.source,
-            changesOnPreview: changesListResult,
-            changesOnSource: null,
-          },
+          changesOnPreview: changesListResult,
+          changesOnSource: null,
         };
         expect(result.next(changesListResult).value).eql(
           put(actions.workflowInfo(workflowInfoWithChanges))
