@@ -43,9 +43,9 @@ describe("group sagas", () => {
           call([client, client.listHistory], {
             filters: {
               group_id: "group",
+              "gt_target.data.last_modified": undefined,
             },
             limit: 42,
-            since: undefined,
           })
         );
       });
@@ -67,8 +67,8 @@ describe("group sagas", () => {
           call([client, client.listHistory], {
             filters: {
               group_id: "group",
+              "gt_target.data.last_modified": 42,
             },
-            since: 42,
             limit: 42,
           })
         );

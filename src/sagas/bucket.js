@@ -231,11 +231,11 @@ export function* listHistory(
     const { data, hasNextPage, next } = yield call(
       [bucket, bucket.listHistory],
       {
-        since,
         limit: maxPerPage,
         filters: {
           resource_name,
           exclude_resource_name: "record",
+          "gt_target.data.last_modified": since,
         },
       }
     );

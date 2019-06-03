@@ -28,10 +28,10 @@ export function* listHistory(
     const { data, hasNextPage, next } = yield call(
       [bucket, bucket.listHistory],
       {
-        since,
         limit: maxPerPage,
         filters: {
           group_id: gid,
+          "gt_target.data.last_modified": since,
         },
       }
     );

@@ -1032,11 +1032,11 @@ describe("collection sagas", () => {
       it("should fetch history on collection", () => {
         expect(listHistory.next().value).eql(
           call([client, client.listHistory], {
-            since: undefined,
             limit: 42,
             filters: {
               resource_name: undefined,
               collection_id: "collection",
+              "gt_target.data.last_modified": undefined,
             },
           })
         );
@@ -1052,8 +1052,8 @@ describe("collection sagas", () => {
             filters: {
               resource_name: undefined,
               collection_id: "collection",
+              "gt_target.data.last_modified": 42,
             },
-            since: 42,
             limit: 42,
           })
         );
@@ -1070,8 +1070,8 @@ describe("collection sagas", () => {
             filters: {
               resource_name: "record",
               collection_id: "collection",
+              "gt_target.data.last_modified": 42,
             },
-            since: 42,
             limit: 42,
           })
         );

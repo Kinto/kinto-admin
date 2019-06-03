@@ -769,9 +769,9 @@ describe("bucket sagas", () => {
             filters: {
               resource_name: undefined,
               exclude_resource_name: "record",
+              "gt_target.data.last_modified": undefined,
             },
             limit: 42,
-            since: undefined,
           })
         );
       });
@@ -791,9 +791,9 @@ describe("bucket sagas", () => {
             filters: {
               resource_name: undefined,
               exclude_resource_name: "record",
+              "gt_target.data.last_modified": 42,
             },
             limit: 42,
-            since: 42,
           })
         );
       });
@@ -809,9 +809,9 @@ describe("bucket sagas", () => {
             filters: {
               resource_name: "bucket",
               exclude_resource_name: "record",
+              "gt_target.data.last_modified": 42,
             },
             limit: 42,
-            since: 42,
           })
         );
       });
