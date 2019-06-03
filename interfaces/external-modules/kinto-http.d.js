@@ -87,8 +87,10 @@ declare module "kinto-http" {
     createCollection(id: ?string, options?: Options): Promise<ObjectResponseBody<Resource>>;
     deleteCollection(id: string, options?: Options): Promise<ObjectResponseBody<Resource>>;
     listCollections(options?: Options): Promise<ListResponseBody<Resource>>;
+    getCollectionsTimestamp(): Promise<string>;
     listHistory(options: Options): Promise<ListResponseBody<Object>>;
     listGroups(): Promise<ListResponseBody<Resource>>;
+    getGroupsTimestamp(): Promise<string>;
     getGroup(id: string, options?: Options): Promise<ListResponseBody<Resource>>;
     createGroup(id: ?string, members: string[], options?: Options): Promise<ObjectResponseBody<Resource>>;
     updateGroup(group: Object, options?: Options): Promise<ObjectResponseBody<Resource>>;
@@ -102,6 +104,7 @@ declare module "kinto-http" {
     setPermissions(permissions: Permissions): Promise<ObjectResponseBody<Resource>>;
     removeAttachment(): Promise<ObjectResponseBody<Resource>>;
     listRecords(options: ListRecordsOptions): Promise<ListResponseBody<Resource>>;
+    getRecordsTimestamp(): Promise<string>;
     getTotalRecords(options?: Object): Promise<number>;
     addAttachment(attachment: string, record: Object, options?: Options): Promise<ObjectResponseBody<Resource>>;
     getRecord(rid: string, options?: Options): Promise<ObjectResponseBody<Resource>>;
