@@ -15,7 +15,7 @@ describe("localStore", () => {
 
     it("should load legacy history", () => {
       const HISTORY_KEY = "kinto-admin-server-history";
-      sessionStorage.setItem(
+      localStorage.setItem(
         HISTORY_KEY,
         JSON.stringify(["someServer", "otherServer"])
       );
