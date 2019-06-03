@@ -10,7 +10,6 @@ import * as recordActions from "../../src/actions/record";
 import { redirectTo } from "../../src/actions/route";
 import * as saga from "../../src/sagas/collection";
 import { setClient } from "../../src/client";
-import { scrollToBottom } from "../../src/utils";
 
 const record = { id: 1, foo: "bar1" };
 const record2 = { id: 2, foo: "bar2" };
@@ -193,10 +192,6 @@ describe("collection sagas", () => {
         expect(listNextRecords.next(result).value).eql(
           put(actions.listRecordsSuccess(records, false, fakeNext))
         );
-      });
-
-      it("should scroll to page bottom", () => {
-        expect(listNextRecords.next().value).eql(call(scrollToBottom));
       });
     });
 
@@ -1140,10 +1135,6 @@ describe("collection sagas", () => {
           next: fakeNext,
         }).value
       ).eql(put(actions.listCollectionHistorySuccess([], true, fakeNext)));
-    });
-
-    it("should scroll the window to the bottom", () => {
-      expect(listNextHistory.next().value).eql(call(scrollToBottom));
     });
   });
 });

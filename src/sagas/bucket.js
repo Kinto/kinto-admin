@@ -8,7 +8,6 @@ import { notifySuccess, notifyError } from "../actions/notifications";
 import { sessionBusy, listBuckets } from "../actions/session";
 import { redirectTo } from "../actions/route";
 import * as actions from "../actions/bucket";
-import { scrollToBottom } from "../utils.js";
 
 function getBucket(bid) {
   return getClient().bucket(bid);
@@ -211,7 +210,6 @@ export function* listBucketNextCollections(getState: GetStateFn): SagaGen {
   try {
     const { data, hasNextPage, next } = yield call(fetchNextCollections);
     yield put(actions.listBucketCollectionsSuccess(data, hasNextPage, next));
-    yield call(scrollToBottom);
   } catch (error) {
     yield put(notifyError("Couldn't process next page.", error));
   }
@@ -259,7 +257,6 @@ export function* listNextHistory(getState: GetStateFn): SagaGen {
   try {
     const { data, hasNextPage, next } = yield call(fetchNextHistory);
     yield put(actions.listBucketHistorySuccess(data, hasNextPage, next));
-    yield call(scrollToBottom);
   } catch (error) {
     yield put(notifyError("Couldn't process next page.", error));
   }

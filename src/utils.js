@@ -258,11 +258,6 @@ export function scrollToTop(): Promise<void> {
   return Promise.resolve();
 }
 
-export function scrollToBottom(): Promise<void> {
-  window.scrollTo(0, window.document.body.scrollHeight);
-  return Promise.resolve();
-}
-
 export function sortHistoryEntryPermissions(
   entry: ResourceHistoryEntry
 ): ResourceHistoryEntry {

@@ -10,7 +10,6 @@ import { redirectTo } from "../../src/actions/route";
 import * as actions from "../../src/actions/bucket";
 import * as saga from "../../src/sagas/bucket";
 import { setClient } from "../../src/client";
-import { scrollToBottom } from "../../src/utils";
 
 const collectionData = {
   schema: {},
@@ -862,10 +861,6 @@ describe("bucket sagas", () => {
           next: fakeNext,
         }).value
       ).eql(put(actions.listBucketHistorySuccess([], true, fakeNext)));
-    });
-
-    it("should scroll the window to the bottom", () => {
-      expect(listNextHistory.next().value).eql(call(scrollToBottom));
     });
   });
 
