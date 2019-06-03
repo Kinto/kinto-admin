@@ -399,8 +399,6 @@ export default class HistoryTable extends PureComponent<Props, State> {
         )}
         {cid && diffOverview && since && current && previous ? (
           <DiffOverview since={since} source={current} target={previous} />
-        ) : !historyLoaded ? (
-          <Spinner />
         ) : (
           <PaginatedTable
             colSpan={6}
