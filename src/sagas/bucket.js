@@ -277,7 +277,7 @@ export function* createGroup(
       data: groupData,
       safe: true,
     });
-    yield put(redirectTo("group:attributes", { bid, gid }));
+    yield put(redirectTo("bucket:groups", { bid }));
     yield put(notifySuccess("Group created."));
   } catch (error) {
     yield put(notifyError("Couldn't create group.", error));
@@ -305,7 +305,7 @@ export function* updateGroup(
     if (data) {
       const updatedGroup = { ...data, id: gid, last_modified };
       yield call([bucket, bucket.updateGroup], updatedGroup, { safe: true });
-      yield put(redirectTo("group:attributes", { bid, gid }));
+      yield put(redirectTo("bucket:groups", { bid }));
       yield put(notifySuccess("Group attributes updated."));
     } else if (permissions) {
       yield call([bucket, bucket.updateGroup], loadedData, {
