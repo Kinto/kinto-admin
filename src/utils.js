@@ -4,7 +4,7 @@ import type {
   RecordData,
   ResourceHistoryEntry,
   Capabilities,
-  ServerHistoryEntry,
+  ServerEntry,
   HistoryFilters,
 } from "./types";
 import React from "react";
@@ -289,7 +289,7 @@ export function debounce(fn: any, delay: number) {
 
 export function getServerByPriority(
   singleServer: ?string,
-  history: ?(ServerHistoryEntry[])
+  servers: ?(ServerEntry[])
 ) {
   // Return the server URL value, by priority:
   // - single server mode
@@ -297,7 +297,7 @@ export function getServerByPriority(
   // - default
   return (
     singleServer ||
-    (history && history.length && history[0].server) ||
+    (servers && servers.length && servers[0].server) ||
     DEFAULT_KINTO_SERVER
   );
 }

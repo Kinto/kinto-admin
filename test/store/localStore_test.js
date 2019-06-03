@@ -4,43 +4,43 @@ import * as localStore from "../../src/store/localStore";
 import { ANONYMOUS_AUTH } from "../../src/constants";
 
 describe("localStore", () => {
-  describe("history store", () => {
+  describe("servers store", () => {
     beforeAll(() => {
-      localStore.clearHistory();
+      localStore.clearServers();
     });
 
-    it("should load initial history", () => {
-      expect(localStore.loadHistory()).eql([]);
+    it("should load initial servers", () => {
+      expect(localStore.loadServers()).eql([]);
     });
 
-    it("should load legacy history", () => {
+    it("should load legacy servers", () => {
       const HISTORY_KEY = "kinto-admin-server-history";
       localStorage.setItem(
         HISTORY_KEY,
         JSON.stringify(["someServer", "otherServer"])
       );
-      expect(localStore.loadHistory()).eql([
+      expect(localStore.loadServers()).eql([
         { server: "someServer", authType: ANONYMOUS_AUTH },
         { server: "otherServer", authType: ANONYMOUS_AUTH },
       ]);
     });
 
-    it("should save and load history", () => {
-      localStore.saveHistory([
+    it("should save and load servers", () => {
+      localStore.saveServers([
         { server: "foo", authType: ANONYMOUS_AUTH },
         { server: "bar", authType: ANONYMOUS_AUTH },
       ]);
 
-      expect(localStore.loadHistory()).eql([
+      expect(localStore.loadServers()).eql([
         { server: "foo", authType: ANONYMOUS_AUTH },
         { server: "bar", authType: ANONYMOUS_AUTH },
       ]);
     });
 
-    it("should clear history", () => {
-      localStore.clearHistory();
+    it("should clear servers", () => {
+      localStore.clearServers();
 
-      expect(localStore.loadHistory()).eql([]);
+      expect(localStore.loadServers()).eql([]);
     });
   });
 

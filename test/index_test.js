@@ -50,7 +50,7 @@ describe("KintoAdmin", () => {
       });
     });
 
-    it("should call getServerInfo on the server if no session was stored and no history", () => {
+    it("should call getServerInfo on the server if no session was stored and no servers history", () => {
       const getServerInfo = sandbox.spy(sessionActions, "getServerInfo");
       createKintoAdmin();
 
@@ -70,10 +70,10 @@ describe("KintoAdmin", () => {
       });
     });
 
-    it("should call getServerInfo on the server from the history if there is one", () => {
+    it("should call getServerInfo on the server from the servers history if there is one", () => {
       const getServerInfo = sandbox.spy(sessionActions, "getServerInfo");
       const store = configureStore({
-        history: [
+        servers: [
           { server: "http://server.history/v1", authType: ANONYMOUS_AUTH },
         ],
       });

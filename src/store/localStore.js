@@ -1,11 +1,11 @@
 /* @flow */
-import type { SessionState, ServerHistoryEntry } from "../types";
+import type { SessionState, ServerEntry } from "../types";
 import { ANONYMOUS_AUTH } from "../constants";
 
 const HISTORY_KEY = "kinto-admin-server-history";
 const SESSION_KEY = "kinto-admin-session";
 
-export function loadHistory(): ServerHistoryEntry[] {
+export function loadServers(): ServerEntry[] {
   const jsonHistory = localStorage.getItem(HISTORY_KEY);
   if (!jsonHistory) {
     return [];
@@ -24,9 +24,7 @@ export function loadHistory(): ServerHistoryEntry[] {
   }
 }
 
-export function saveHistory(
-  history: ServerHistoryEntry[]
-): ServerHistoryEntry[] {
+export function saveServers(history: ServerEntry[]): ServerEntry[] {
   try {
     localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
   } catch (err) {
@@ -36,8 +34,8 @@ export function saveHistory(
   return history;
 }
 
-export function clearHistory(): ServerHistoryEntry[] {
-  return saveHistory([]);
+export function clearServers(): ServerEntry[] {
+  return saveServers([]);
 }
 
 export function loadSession(): ?SessionState {
