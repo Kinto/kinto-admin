@@ -243,7 +243,7 @@ function FilterInfo(props) {
           document.location.hash = pathname;
           onViewJournalClick();
         }}>
-        View all entries
+        List view
       </a>
       {enableDiffOverview && since != null && (
         <span>
@@ -254,7 +254,7 @@ function FilterInfo(props) {
               event.preventDefault();
               onDiffOverviewClick(since);
             }}>
-            View records list diff overview
+            Diff view
           </a>
         </span>
       )}
