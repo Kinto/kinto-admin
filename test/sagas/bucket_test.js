@@ -896,9 +896,8 @@ describe("bucket sagas", () => {
       it("should update the route path", () => {
         expect(createGroup.next().value).eql(
           put(
-            redirectTo("group:attributes", {
+            redirectTo("bucket:groups", {
               bid: "bucket",
-              gid: "group",
             })
           )
         );
@@ -976,9 +975,8 @@ describe("bucket sagas", () => {
         it("should update the route path", () => {
           expect(updateGroup.next().value).eql(
             put(
-              redirectTo("group:attributes", {
+              redirectTo("bucket:groups", {
                 bid: "bucket",
-                gid: "group",
               })
             )
           );
