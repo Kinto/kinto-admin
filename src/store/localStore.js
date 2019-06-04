@@ -6,7 +6,7 @@ const HISTORY_KEY = "kinto-admin-server-history";
 const SESSION_KEY = "kinto-admin-session";
 
 export function loadHistory(): ServerHistoryEntry[] {
-  const jsonHistory = sessionStorage.getItem(HISTORY_KEY);
+  const jsonHistory = localStorage.getItem(HISTORY_KEY);
   if (!jsonHistory) {
     return [];
   }
@@ -28,7 +28,7 @@ export function saveHistory(
   history: ServerHistoryEntry[]
 ): ServerHistoryEntry[] {
   try {
-    sessionStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
   } catch (err) {
     // Not much to do here, let's fail silently
   }
