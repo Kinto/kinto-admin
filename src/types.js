@@ -14,7 +14,7 @@ export type AppState = {
   group: GroupState,
   record: RecordState,
   notifications: Notifications,
-  history: ServerHistoryEntry[],
+  servers: ServerEntry[],
   settings: SettingsState,
 };
 
@@ -474,7 +474,7 @@ export type SessionState = {
   redirectURL: ?string,
 };
 
-export type ServerHistoryEntry = {
+export type ServerEntry = {
   server: string,
   authType: string,
 };

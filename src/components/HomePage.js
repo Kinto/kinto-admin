@@ -6,12 +6,12 @@ import type {
   HomePageRouteMatch,
   SessionState,
   SettingsState,
-  ServerHistoryEntry,
+  ServerEntry,
 } from "../types";
 
 import React, { PureComponent } from "react";
 
-import * as HistoryActions from "../actions/history";
+import * as ServersActions from "../actions/servers";
 import * as NotificationActions from "../actions/notifications";
 import * as SessionActions from "../actions/session";
 import Spinner from "./Spinner";
@@ -71,13 +71,13 @@ export type OwnProps = {|
 export type StateProps = {|
   session: SessionState,
   settings: SettingsState,
-  history: ServerHistoryEntry[],
+  servers: ServerEntry[],
 |};
 
 export type Props = {
   ...OwnProps,
   ...StateProps,
-  clearHistory: typeof HistoryActions.clearHistory,
+  clearServers: typeof ServersActions.clearServers,
   setupSession: typeof SessionActions.setupSession,
   notifyError: typeof NotificationActions.notifyError,
   serverChange: typeof SessionActions.serverChange,
@@ -164,9 +164,9 @@ export default class HomePage extends PureComponent<Props> {
   render() {
     const {
       session,
-      history,
+      servers,
       settings,
-      clearHistory,
+      clearServers,
       setupSession,
       serverChange,
       getServerInfo,
@@ -189,8 +189,8 @@ export default class HomePage extends PureComponent<Props> {
             getServerInfo={getServerInfo}
             session={session}
             settings={settings}
-            history={history}
-            clearHistory={clearHistory}
+            servers={servers}
+            clearServers={clearServers}
             navigateToExternalAuth={navigateToExternalAuth}
             navigateToOpenID={navigateToOpenID}
           />

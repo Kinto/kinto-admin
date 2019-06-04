@@ -9,20 +9,20 @@ import { connect } from "react-redux";
 import HomePage from "../components/HomePage";
 import * as NotificationActions from "../actions/notifications";
 import * as SessionActions from "../actions/session";
-import * as HistoryActions from "../actions/history";
+import * as ServersActions from "../actions/servers";
 
 function mapStateToProps(state: AppState): StateProps {
   return {
     session: state.session,
     settings: state.settings,
-    history: state.history,
+    servers: state.servers,
   };
 }
 
 type DispatchProps = {|
   ...typeof SessionActions,
   ...typeof NotificationActions,
-  ...typeof HistoryActions,
+  ...typeof ServersActions,
 |};
 
 function mapDispatchToProps(dispatch: DispatchAPI<*>): DispatchProps {
@@ -30,7 +30,7 @@ function mapDispatchToProps(dispatch: DispatchAPI<*>): DispatchProps {
     {
       ...SessionActions,
       ...NotificationActions,
-      ...HistoryActions,
+      ...ServersActions,
     },
     dispatch
   );

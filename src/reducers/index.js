@@ -12,7 +12,7 @@ import collection from "./collection";
 import record from "./record";
 import group from "./group";
 import notifications from "./notifications";
-import history from "./history";
+import servers from "./servers";
 import settings from "./settings";
 
 const standardReducers = {
@@ -22,7 +22,7 @@ const standardReducers = {
   group,
   record,
   notifications,
-  history,
+  servers,
   settings,
 };
 

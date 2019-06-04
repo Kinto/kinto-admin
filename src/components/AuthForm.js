@@ -1,9 +1,9 @@
 /* @flow */
-import type { SessionState, SettingsState, ServerHistoryEntry } from "../types";
+import type { SessionState, SettingsState, ServerEntry } from "../types";
 
 import React, { PureComponent } from "react";
 
-import * as HistoryActions from "../actions/history";
+import * as ServersActions from "../actions/servers";
 import * as SessionActions from "../actions/session";
 import BaseForm from "./BaseForm";
 import {
@@ -64,8 +64,8 @@ class ServerHistory extends PureComponent<
 
   clear = event => {
     event.preventDefault();
-    const { clearHistory } = this.props.options;
-    clearHistory();
+    const { clearServers } = this.props.options;
+    clearServers();
     this.setState({ menuOpened: false });
   };
 
@@ -91,7 +91,7 @@ class ServerHistory extends PureComponent<
   render() {
     const { menuOpened } = this.state;
     const { id, value, placeholder, options } = this.props;
-    const { history, pattern } = options;
+    const { servers, pattern } = options;
     return (
       <div className="input-group server-url">
         <input
@@ -111,14 +111,14 @@ class ServerHistory extends PureComponent<
             <span className="caret" />
           </button>
           <ul className="dropdown-menu dropdown-menu-right">
-            {history.length === 0 ? (
+            {servers.length === 0 ? (
               <li>
                 <a onClick={this.toggleMenu}>
                   <em>No server history</em>
                 </a>
               </li>
             ) : (
-              history.map(({ server }, key) => (
+              servers.map(({ server }, key) => (
                 <li key={key}>
                   <a href="#" onClick={this.select(server)}>
                     {server}
@@ -305,10 +305,10 @@ const authSchemas = authType => {
 };
 
 /**
- * Use the server history for the default server field value when available.
+ * Use the servers history for the default server field value when available.
  */
-function extendSchemaWithHistory(schema, history, authMethods, singleServer) {
-  const serverURL = getServerByPriority(singleServer, history);
+function extendSchemaWithHistory(schema, servers, authMethods, singleServer) {
+  const serverURL = getServerByPriority(singleServer, servers);
   return {
     ...schema,
     properties: {
@@ -327,12 +327,12 @@ function extendSchemaWithHistory(schema, history, authMethods, singleServer) {
 }
 
 /**
- * Use the server history for the default server field value when available.
+ * Use the servers history for the default server field value when available.
  */
 function extendUiSchemaWithHistory(
   uiSchema,
-  history,
-  clearHistory,
+  servers,
+  clearServers,
   getServerInfo,
   serverChange,
   singleServer,
@@ -360,21 +360,21 @@ function extendUiSchemaWithHistory(
     server: {
       ...uiSchema.server,
       "ui:widget": ServerHistory,
-      "ui:options": { history, clearHistory, getServerInfo, serverChange },
+      "ui:options": { servers, clearServers, getServerInfo, serverChange },
     },
   };
 }
 
 type AuthFormProps = {
   session: SessionState,
-  history: ServerHistoryEntry[],
+  servers: ServerEntry[],
   settings: SettingsState,
   setupSession: typeof SessionActions.setupSession,
   serverChange: typeof SessionActions.serverChange,
   getServerInfo: typeof SessionActions.getServerInfo,
   navigateToExternalAuth: typeof SessionActions.navigateToExternalAuth,
   navigateToOpenID: typeof SessionActions.navigateToOpenID,
-  clearHistory: typeof HistoryActions.clearHistory,
+  clearServers: typeof ServersActions.clearServers,
 };
 
 type AuthFormState = {
@@ -388,13 +388,13 @@ export default class AuthForm extends PureComponent<
   AuthFormState
 > {
   static defaultProps = {
-    history: [],
+    servers: [],
   };
 
   constructor(props: Object) {
     super(props);
     const {
-      history,
+      servers,
       settings: { singleServer },
     } = this.props;
 
@@ -402,8 +402,8 @@ export default class AuthForm extends PureComponent<
     // - single server mode
     // - most recently used
     // - default
-    const server = getServerByPriority(singleServer, history);
-    const authType = (history.length && history[0].authType) || ANONYMOUS_AUTH;
+    const server = getServerByPriority(singleServer, servers);
+    const authType = (servers.length && servers[0].authType) || ANONYMOUS_AUTH;
     const { schema, uiSchema } = authSchemas(authType);
     this.state = {
       schema,
@@ -519,8 +519,8 @@ export default class AuthForm extends PureComponent<
     if (isObjectEmpty(prevCapabilities) && !isObjectEmpty(newCapabilities)) {
       // The `capabilities` (and thus the auth methods) have changed following
       // a successful `getServerInfo`, update the default auth method with the
-      // one from the history, if we have one for this server.
-      const serverHistoryEntry = this.props.history.find(
+      // one from the servers, if we have one for this server.
+      const serverHistoryEntry = this.props.servers.find(
         ({ server }) => server === newServer
       );
       if (serverHistoryEntry) {
@@ -537,8 +537,8 @@ export default class AuthForm extends PureComponent<
 
   render() {
     const {
-      history,
-      clearHistory,
+      servers,
+      clearServers,
       getServerInfo,
       serverChange,
       settings,
@@ -549,14 +549,14 @@ export default class AuthForm extends PureComponent<
     const singleAuthMethod = authMethods.length === 1;
     const finalSchema = extendSchemaWithHistory(
       schema,
-      history,
+      servers,
       authMethods,
       singleServer
     );
     const finalUiSchema = extendUiSchemaWithHistory(
       uiSchema,
-      history,
-      clearHistory,
+      servers,
+      clearServers,
       getServerInfo,
       serverChange,
       singleServer,

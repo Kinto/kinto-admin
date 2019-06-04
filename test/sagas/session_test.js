@@ -6,7 +6,7 @@ import { put, call } from "redux-saga/effects";
 
 import { saveSession, clearSession } from "../../src/store/localStore";
 import * as actions from "../../src/actions/session";
-import * as historyActions from "../../src/actions/history";
+import * as serversActions from "../../src/actions/servers";
 import * as notificationsActions from "../../src/actions/notifications";
 import * as saga from "../../src/sagas/session";
 import * as clientUtils from "../../src/client";
@@ -224,7 +224,7 @@ describe("session sagas", () => {
 
       it("should add server to recent history", () => {
         expect(setupSession.next().value).eql(
-          put(historyActions.addHistory("http://server.test/v1", "basicauth"))
+          put(serversActions.addServer("http://server.test/v1", "basicauth"))
         );
       });
 

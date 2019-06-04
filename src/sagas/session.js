@@ -16,7 +16,7 @@ import { call, put } from "redux-saga/effects";
 import { saveSession, clearSession } from "../store/localStore";
 import * as notificationActions from "../actions/notifications";
 import * as actions from "../actions/session";
-import * as historyActions from "../actions/history";
+import * as serversActions from "../actions/servers";
 import { DEFAULT_SERVERINFO } from "../reducers/session";
 import { clone, getAuthLabel, copyToClipboard } from "../utils";
 import { getClient, setupClient, resetClient, getAuthHeader } from "../client";
@@ -139,7 +139,7 @@ export function* setupSession(
     // Note, that "authenticated" can also mean "anonymous" if picked in the auth form.
     yield put(actions.setAuthenticated());
     // Store this valid server url in the history
-    yield put(historyActions.addHistory(serverInfo.url, authType));
+    yield put(serversActions.addServer(serverInfo.url, authType));
 
     yield put(actions.listBuckets());
     yield put(actions.setupComplete(auth));

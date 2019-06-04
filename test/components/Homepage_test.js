@@ -43,7 +43,7 @@ describe("HomePage component", () => {
           setupSession,
           serverChange,
           getServerInfo,
-          history: ["http://server.test/v1"],
+          servers: ["http://server.test/v1"],
           settings: {
             singleServer: null,
           },
@@ -82,7 +82,7 @@ describe("HomePage component", () => {
             setupSession,
             serverChange,
             getServerInfo,
-            history: [],
+            servers: [],
             settings: {
               singleServer: serverURL,
             },
@@ -214,13 +214,13 @@ describe("HomePage component", () => {
       });
     });
 
-    describe("History support", () => {
-      it("should set the server field value using a default value if there's no history", () => {
+    describe("Servers history support", () => {
+      it("should set the server field value using a default value if there's no servers", () => {
         const node = createComponent(HomePage, {
           match: {},
           serverChange: sandbox.spy(),
           getServerInfo: sandbox.spy(),
-          history: [],
+          servers: [],
           settings: {},
           session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
         });
@@ -230,12 +230,12 @@ describe("HomePage component", () => {
         );
       });
 
-      it("should set the server field value using latest entry from history", () => {
+      it("should set the server field value using latest entry from servers", () => {
         const node = createComponent(HomePage, {
           match: {},
           serverChange: sandbox.spy(),
           getServerInfo: sandbox.spy(),
-          history: [{ server: "http://server.test/v1", authType: "anonymous" }],
+          servers: [{ server: "http://server.test/v1", authType: "anonymous" }],
           settings: {},
           session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
         });
@@ -245,12 +245,12 @@ describe("HomePage component", () => {
         );
       });
 
-      it("should set the authType field value using latest entry from history for that server", () => {
+      it("should set the authType field value using latest entry from servers history for that server", () => {
         const props = {
           match: {},
           serverChange: sandbox.spy(),
           getServerInfo: sandbox.spy(),
-          history: [
+          servers: [
             { server: "http://server.test/v1", authType: "basicauth" },
             { server: "http://test.server/v1", authType: "openid-google" },
           ],
@@ -265,7 +265,7 @@ describe("HomePage component", () => {
           "basicauth"
         );
 
-        // Changing the server to another element from the history.
+        // Changing the server to another element from the servers history.
         wrapper.find("input#root_server").simulate("change", {
           target: { value: "http://test.server/v1" },
         });
@@ -302,7 +302,7 @@ describe("HomePage component", () => {
             },
           },
         });
-        // authType is now set to the value we have from the history.
+        // authType is now set to the value we have from the servers history.
         // TODO: for some reason, we don't have a "input#root_authType" anymore
         // at this point, so we need to get at the `authType` value some other
         // way, here by looking into the state.
@@ -328,7 +328,7 @@ describe("HomePage component", () => {
           setupSession,
           serverChange: sandbox.spy(),
           getServerInfo: sandbox.spy(),
-          history: [],
+          servers: [],
           settings: {},
           session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
         });
