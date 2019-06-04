@@ -305,7 +305,7 @@ const authSchemas = authType => {
 };
 
 /**
- * Use the server servers for the default server field value when available.
+ * Use the servers history for the default server field value when available.
  */
 function extendSchemaWithHistory(schema, servers, authMethods, singleServer) {
   const serverURL = getServerByPriority(singleServer, servers);
@@ -327,7 +327,7 @@ function extendSchemaWithHistory(schema, servers, authMethods, singleServer) {
 }
 
 /**
- * Use the server servers for the default server field value when available.
+ * Use the servers history for the default server field value when available.
  */
 function extendUiSchemaWithHistory(
   uiSchema,
