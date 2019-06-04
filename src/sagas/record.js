@@ -6,7 +6,6 @@ import { call, put } from "redux-saga/effects";
 import { getClient } from "../client";
 import { notifyError } from "../actions/notifications";
 import * as actions from "../actions/record";
-import { scrollToBottom } from "../utils.js";
 
 function getBucket(bid) {
   return getClient().bucket(bid);
@@ -56,7 +55,6 @@ export function* listNextHistory(getState: GetStateFn): SagaGen {
   try {
     const { data, hasNextPage, next } = yield call(fetchNextHistory);
     yield put(actions.listRecordHistorySuccess(data, hasNextPage, next));
-    yield call(scrollToBottom);
   } catch (error) {
     yield put(notifyError("Couldn't process next page.", error));
   }

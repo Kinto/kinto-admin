@@ -8,7 +8,6 @@ import { notifySuccess, notifyError } from "../actions/notifications";
 import { recordBusy, resetRecord } from "../actions/record";
 import { redirectTo } from "../actions/route";
 import * as actions from "../actions/collection";
-import { scrollToBottom } from "../utils.js";
 
 function getBucket(bid) {
   return getClient().bucket(bid);
@@ -74,7 +73,6 @@ export function* listNextRecords(getState: GetStateFn): SagaGen {
   try {
     const { data, hasNextPage, next } = yield call(listNextRecords);
     yield put(actions.listRecordsSuccess(data, hasNextPage, next));
-    yield call(scrollToBottom);
   } catch (error) {
     yield put(notifyError("Couldn't process next page.", error));
   }
@@ -123,7 +121,6 @@ export function* listNextHistory(getState: GetStateFn): SagaGen {
   try {
     const { data, hasNextPage, next } = yield call(fetchNextHistory);
     yield put(actions.listCollectionHistorySuccess(data, hasNextPage, next));
-    yield call(scrollToBottom);
   } catch (error) {
     yield put(notifyError("Couldn't process next page.", error));
   }

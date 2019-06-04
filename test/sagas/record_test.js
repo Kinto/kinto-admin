@@ -7,7 +7,6 @@ import { createSandbox, mockNotifyError } from "../test_utils";
 import * as actions from "../../src/actions/record";
 import * as saga from "../../src/sagas/record";
 import { setClient } from "../../src/client";
-import { scrollToBottom } from "../../src/utils";
 
 describe("record sagas", () => {
   const settings = {
@@ -128,10 +127,6 @@ describe("record sagas", () => {
           next: fakeNext,
         }).value
       ).eql(put(actions.listRecordHistorySuccess([], true, fakeNext)));
-    });
-
-    it("should scroll the window to the bottom", () => {
-      expect(listNextHistory.next().value).eql(call(scrollToBottom));
     });
   });
 });
