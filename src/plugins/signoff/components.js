@@ -5,6 +5,7 @@ import type {
   SourceInfo,
   PreviewInfo,
   DestinationInfo,
+  ChangesList,
 } from "./types";
 
 import { PureComponent } from "react";
@@ -103,7 +104,13 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
     if (!collectionsInfo) {
       return null;
     }
-    const { source, destination, preview } = collectionsInfo;
+    const {
+      source,
+      destination,
+      preview,
+      changesOnSource,
+      changesOnPreview,
+    } = collectionsInfo;
 
     const canRequestReview = canEdit && isEditor(source, sessionState);
     const canReview =
@@ -134,8 +141,10 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
             step={0}
             currentStep={step}
             canEdit={canRequestReview}
+            hasHistory={hasHistory}
             confirmRequestReview={confirmRequestReview}
             source={source}
+            changes={changesOnSource}
           />
           <Review
             label="Waiting review"
@@ -147,6 +156,7 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
             confirmDeclineChanges={confirmDeclineChanges}
             source={source}
             preview={preview}
+            changes={changesOnPreview}
           />
           <Signed
             label="Approved"
@@ -210,6 +220,8 @@ type WorkInProgressProps = {
   step: number,
   confirmRequestReview: () => void,
   source: SourceInfo,
+  hasHistory: boolean,
+  changes: ?ChangesList,
 };
 
 function WorkInProgress(props: WorkInProgressProps) {
@@ -220,27 +232,36 @@ function WorkInProgress(props: WorkInProgressProps) {
     step,
     confirmRequestReview,
     source,
+    hasHistory,
+    changes,
   } = props;
 
   const active = step == currentStep;
-  const { lastEditBy, lastEditDate, lastReviewerComment } = source;
+
   return (
     <ProgressStep label={label} currentStep={currentStep} step={step}>
       <WorkInProgressInfos
         active={active}
-        lastEditBy={lastEditBy}
-        lastEditDate={lastEditDate}
-        lastReviewerComment={lastReviewerComment}
+        source={source}
+        hasHistory={hasHistory}
+        changes={changes}
       />
-      {active && lastEditDate && canEdit && (
+      {active && source.lastEditDate && canEdit && (
         <RequestReviewButton onClick={confirmRequestReview} />
       )}
     </ProgressStep>
   );
 }
 
-function WorkInProgressInfos(props) {
-  const { active, lastEditBy, lastEditDate, lastReviewerComment } = props;
+type WorkInProgressInfosProps = {
+  active: boolean,
+  source: SourceInfo,
+  hasHistory: boolean,
+  changes: ?ChangesList,
+};
+function WorkInProgressInfos(props: WorkInProgressInfosProps) {
+  const { active, source, hasHistory, changes } = props;
+  const { bid, cid, lastEditBy, lastEditDate, lastReviewerComment } = source;
   if (!lastEditDate) {
     return (
       <ul>
@@ -261,6 +282,14 @@ function WorkInProgressInfos(props) {
         <li>
           <strong>Comment: </strong> <Comment text={lastReviewerComment} />
         </li>
+      )}
+      {active && changes && (
+        <DiffInfo
+          hasHistory={hasHistory}
+          bid={bid}
+          cid={cid}
+          changes={changes}
+        />
       )}
     </ul>
   );
@@ -289,6 +318,7 @@ type ReviewProps = {
   confirmDeclineChanges: () => void,
   source: SourceInfo,
   preview: ?PreviewInfo,
+  changes: ?ChangesList,
 };
 
 function Review(props: ReviewProps) {
@@ -302,6 +332,7 @@ function Review(props: ReviewProps) {
     confirmDeclineChanges,
     source,
     preview,
+    changes,
   } = props;
   const active = step == currentStep;
 
@@ -324,6 +355,7 @@ function Review(props: ReviewProps) {
           source={source}
           link={link}
           hasHistory={hasHistory}
+          changes={changes}
         />
       )}
       {active && canEdit && (
@@ -341,28 +373,18 @@ type ReviewInfosProps = {
   source: SourceInfo,
   link: any,
   hasHistory: boolean,
+  changes: ?ChangesList,
 };
 
 function ReviewInfos(props: ReviewInfosProps) {
-  const { active, source, link, hasHistory } = props;
+  const { active, source, link, hasHistory, changes } = props;
   const {
     bid,
     cid,
     lastReviewRequestBy,
     lastReviewRequestDate,
     lastEditorComment,
-    changes = {},
   } = source;
-  const { since, deleted, updated } = changes;
-  const detailsLink = hasHistory && (
-    <AdminLink
-      name="collection:history"
-      params={{ bid, cid }}
-      query={{ since, resource_name: "record" }}>
-      details...
-    </AdminLink>
-  );
-
   return (
     <ul>
       <li>
@@ -380,23 +402,46 @@ function ReviewInfos(props: ReviewInfosProps) {
       <li>
         <strong>Preview: </strong> {link}
       </li>
-      {active && (
-        <li>
-          <strong>Changes: </strong>
-          <DiffStats updated={updated} deleted={deleted} /> {detailsLink}
-        </li>
+      {active && changes && (
+        <DiffInfo
+          hasHistory={hasHistory}
+          bid={bid}
+          cid={cid}
+          changes={changes}
+        />
       )}
     </ul>
   );
 }
 
-function DiffStats(props: { updated: number, deleted: number }) {
-  const { updated, deleted } = props;
+function DiffInfo(props: {
+  bid: string,
+  cid: string,
+  hasHistory: boolean,
+  changes: ChangesList,
+}) {
+  const { bid, cid, changes, hasHistory } = props;
+  const { since, deleted = 0, updated = 0 } = changes || {};
+  if (deleted === 0 && updated === 0) {
+    return null;
+  }
+  const detailsLink = hasHistory && (
+    <AdminLink
+      name="collection:history"
+      params={{ bid, cid }}
+      query={{ since, resource_name: "record" }}>
+      details...
+    </AdminLink>
+  );
   return (
-    <span className="diffstats">
-      {updated > 0 && <span className="text-green">+{updated}</span>}
-      {deleted > 0 && <span className="text-red">-{deleted}</span>}
-    </span>
+    <li>
+      <strong>Changes: </strong>
+      <span className="diffstats">
+        {updated > 0 && <span className="text-green">+{updated}</span>}
+        {deleted > 0 && <span className="text-red">-{deleted}</span>}
+      </span>{" "}
+      {detailsLink}
+    </li>
   );
 }
 

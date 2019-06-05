@@ -4,6 +4,13 @@ export type CollectionsInfo = {
   source: SourceInfo,
   destination: DestinationInfo,
   preview: ?PreviewInfo,
+  // List of changes, present or absent depending on status.
+  // If work-in-progress, show changes since the last review request. It will be
+  // null if no changes were made.
+  changesOnSource?: ?ChangesList,
+  // If to-review, show changes since the last approval. It will be null if no
+  // changes were made.
+  changesOnPreview?: ?ChangesList,
 };
 
 export type SignoffState = {
@@ -23,7 +30,6 @@ export type SourceInfo = {
   bid: string,
   cid: string,
   // Full info.
-  changes?: ChangesList,
   lastEditBy?: string,
   lastEditDate?: number,
   lastReviewRequestBy?: string,

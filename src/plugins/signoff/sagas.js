@@ -77,12 +77,7 @@ export function* onCollectionRecordsRequest(
   yield put(SignoffActions.workflowInfo(basicInfos));
 
   // Obtain information for workflow (last update, authors, etc).
-  const { sourceAttributes, changes } = yield call(
-    fetchWorkflowInfo,
-    source,
-    preview,
-    destination
-  );
+  const sourceAttributes = yield call(fetchSourceAttributes, source);
 
   // Workflow component state.
 
@@ -118,7 +113,6 @@ export function* onCollectionRecordsRequest(
     lastSignatureBy,
     lastSignatureDate,
     status,
-    changes,
     editors_group,
     reviewers_group,
   };
@@ -127,30 +121,73 @@ export function* onCollectionRecordsRequest(
     source: sourceInfo,
   };
   yield put(SignoffActions.workflowInfo(collectionsInfo));
+
+  // If no preview collection / no review enabled: do not fetch changes.
+  if (!preview) {
+    // Note that we don't really have to support collections with preview disabled UI.
+    // The collections with review disabled are very likely to be manipulated by scripts anyway.
+    return;
+  }
+
+  let changesOnSource = null;
+  let changesOnPreview = null;
+
+  // Figure out what was changed on the source collection since review request.
+  // There can be changes on source only if status is work-in-progress.
+  if (sourceAttributes.status == "work-in-progress") {
+    changesOnSource = yield call(fetchChangesInfo, source, preview);
+    // Figure out what was changed on the preview collection since last approval.
+    // Don't bother fetching changes if current collection is signed (no pending changes).
+  } else if (status != "signed") {
+    changesOnPreview = yield call(fetchChangesInfo, source, destination);
+  } else {
+    // Status is signed. No changes to show.
+    return;
+  }
+
+  const collectionsInfoWithChanges = {
+    ...collectionsInfo,
+    changesOnSource,
+    changesOnPreview,
+  };
+  yield put(SignoffActions.workflowInfo(collectionsInfoWithChanges));
 }
 
-export async function fetchWorkflowInfo(
-  source: CapabilityResource,
-  preview: ?CapabilityResource,
-  destination: CapabilityResource
-): Promise<{ sourceAttributes: Object, changes: ChangesList }> {
+export async function fetchSourceAttributes(
+  source: CapabilityResource
+): Promise<Object> {
   const client = getClient();
-  const { bucket: bid, collection: cid } = source;
-  const colClient = client.bucket(bid).collection(cid);
+  const sourceClient = client
+    .bucket(source.bucket)
+    .collection(source.collection);
+  return sourceClient.getData();
+}
 
-  const sourceAttributes = await colClient.getData();
-  const lastSigned: number = Date.parse(sourceAttributes.last_signature_date);
-  const { data: sourceChanges } = await colClient.listRecords({
-    since: `"${lastSigned}"`,
-  });
-  const changes = {
-    since: lastSigned,
-    deleted: sourceChanges.filter(r => r.deleted).length,
-    updated: sourceChanges.filter(r => !r.deleted).length,
-  };
+export async function fetchChangesInfo(
+  source: CapabilityResource,
+  other: CapabilityResource
+): Promise<ChangesList> {
+  const client = getClient();
+
+  // We get the records timetamp, because it's only bumped when records are changed,
+  // unlike the metadata timestamp which is bumped on signature refresh.
+  const sinceETag = await client
+    .bucket(other.bucket)
+    .collection(other.collection)
+    .getRecordsTimestamp();
+  // Look up changes since ETag.
+  const { data: changes } = await client
+    .bucket(source.bucket)
+    .collection(source.collection)
+    .listRecords({
+      since: sinceETag,
+      fields: "deleted", // limit amount of data to fetch.
+    });
+  const since: number = parseInt(sinceETag.replace('"', ""), 10);
   return {
-    sourceAttributes,
-    changes,
+    since,
+    deleted: changes.filter(r => r.deleted).length,
+    updated: changes.filter(r => !r.deleted).length,
   };
 }
 
