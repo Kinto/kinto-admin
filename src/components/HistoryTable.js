@@ -14,22 +14,42 @@ import PaginatedTable from "./PaginatedTable";
 import { getClient } from "../client";
 import { omit, sortHistoryEntryPermissions } from "../utils";
 
+// Number of lines to show above/below changes in diffs.
+const DIFF_CONTEXT = 3;
+
 function Diff({ source, target }) {
   const diff = diffJson(target, source);
   return (
     <pre className="json-record">
       {diff.map((chunk, i) => {
+        const isFirstChunk = i == 0;
+        const isLastChunk = i == diff.length - 1;
         const className = chunk.added
           ? "added"
           : chunk.removed
           ? "removed"
           : "";
-        const prefixedChunk = chunk.value
-          .split("\n")
-          .filter(part => part !== "")
-          .map(part => {
+
+        let lines = chunk.value.split("\n").filter(part => part !== "");
+
+        // Truncate beginning of first chunk if larger than context.
+        if (isFirstChunk && lines.length > DIFF_CONTEXT) {
+          lines = ["..."].concat(lines.slice(-DIFF_CONTEXT));
+          // Truncate end of last chunk if larger than context.
+        } else if (isLastChunk && lines.length > DIFF_CONTEXT) {
+          lines = lines.slice(0, DIFF_CONTEXT).concat(["..."]);
+          // Truncate middle chunk only if larger than twice the context (above + below).
+        } else if (lines.length > DIFF_CONTEXT * 2) {
+          lines = lines
+            .slice(DIFF_CONTEXT)
+            .concat(["..."])
+            .concat(lines.slice(-DIFF_CONTEXT));
+        }
+
+        const prefixedChunk = lines
+          .map(line => {
             const prefix = chunk.added ? "+ " : chunk.removed ? "- " : "  ";
-            return prefix + part;
+            return prefix + line;
           })
           .join("\n");
         return (
