@@ -1036,41 +1036,19 @@ describe("collection sagas", () => {
             filters: {
               resource_name: undefined,
               collection_id: "collection",
-              "gt_target.data.last_modified": undefined,
             },
           })
         );
       });
 
       it("should filter from timestamp if provided", () => {
-        const action = actions.listCollectionHistory("bucket", "collection", {
-          since: 42,
-        });
+        const action = actions.listCollectionHistory("bucket", "collection");
         const historySaga = saga.listHistory(() => ({ settings }), action);
         expect(historySaga.next().value).eql(
           call([client, client.listHistory], {
             filters: {
               resource_name: undefined,
               collection_id: "collection",
-              "gt_target.data.last_modified": 42,
-            },
-            limit: 42,
-          })
-        );
-      });
-
-      it("should filter from resource_name if provided", () => {
-        const action = actions.listCollectionHistory("bucket", "collection", {
-          since: 42,
-          resource_name: "record",
-        });
-        const historySaga = saga.listHistory(() => ({ settings }), action);
-        expect(historySaga.next().value).eql(
-          call([client, client.listHistory], {
-            filters: {
-              resource_name: "record",
-              collection_id: "collection",
-              "gt_target.data.last_modified": 42,
             },
             limit: 42,
           })

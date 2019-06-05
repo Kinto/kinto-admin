@@ -224,7 +224,7 @@ export function* listHistory(
   } = getState();
   const {
     bid,
-    filters: { resource_name, since },
+    filters: { resource_name },
   } = action;
   try {
     const bucket = getBucket(bid);
@@ -235,7 +235,6 @@ export function* listHistory(
         filters: {
           resource_name,
           exclude_resource_name: "record",
-          "gt_target.data.last_modified": since,
         },
       }
     );

@@ -43,7 +43,6 @@ describe("group sagas", () => {
           call([client, client.listHistory], {
             filters: {
               group_id: "group",
-              "gt_target.data.last_modified": undefined,
             },
             limit: 42,
           })
@@ -55,22 +54,6 @@ describe("group sagas", () => {
         const result = { data: history };
         expect(listHistory.next(result).value).eql(
           put(actions.listGroupHistorySuccess(history))
-        );
-      });
-
-      it("should filter from timestamp if provided", () => {
-        const action = actions.listGroupHistory("bucket", "group", {
-          since: 42,
-        });
-        const historySaga = saga.listHistory(() => ({ settings }), action);
-        expect(historySaga.next().value).eql(
-          call([client, client.listHistory], {
-            filters: {
-              group_id: "group",
-              "gt_target.data.last_modified": 42,
-            },
-            limit: 42,
-          })
         );
       });
     });

@@ -769,7 +769,6 @@ describe("bucket sagas", () => {
             filters: {
               resource_name: undefined,
               exclude_resource_name: "record",
-              "gt_target.data.last_modified": undefined,
             },
             limit: 42,
           })
@@ -783,24 +782,8 @@ describe("bucket sagas", () => {
         );
       });
 
-      it("should filter from timestamp if provided", () => {
-        const action = actions.listBucketHistory("bucket", { since: 42 });
-        const historySaga = saga.listHistory(() => ({ settings }), action);
-        expect(historySaga.next().value).eql(
-          call([bucket, bucket.listHistory], {
-            filters: {
-              resource_name: undefined,
-              exclude_resource_name: "record",
-              "gt_target.data.last_modified": 42,
-            },
-            limit: 42,
-          })
-        );
-      });
-
       it("should filter by resource_name if provided", () => {
         const action = actions.listBucketHistory("bucket", {
-          since: 42,
           resource_name: "bucket",
         });
         const historySaga = saga.listHistory(() => ({ settings }), action);
@@ -809,7 +792,6 @@ describe("bucket sagas", () => {
             filters: {
               resource_name: "bucket",
               exclude_resource_name: "record",
-              "gt_target.data.last_modified": 42,
             },
             limit: 42,
           })
