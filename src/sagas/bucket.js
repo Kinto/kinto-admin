@@ -224,14 +224,13 @@ export function* listHistory(
   } = getState();
   const {
     bid,
-    filters: { resource_name, since },
+    filters: { resource_name },
   } = action;
   try {
     const bucket = getBucket(bid);
     const { data, hasNextPage, next } = yield call(
       [bucket, bucket.listHistory],
       {
-        since,
         limit: maxPerPage,
         filters: {
           resource_name,

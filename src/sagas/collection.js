@@ -88,14 +88,13 @@ export function* listHistory(
   const {
     bid,
     cid,
-    filters: { since, resource_name },
+    filters: { resource_name },
   } = action;
   try {
     const bucket = getBucket(bid);
     const { data, hasNextPage, next } = yield call(
       [bucket, bucket.listHistory],
       {
-        since,
         limit: maxPerPage,
         filters: {
           resource_name,

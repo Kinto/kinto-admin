@@ -35,11 +35,11 @@ describe("record sagas", () => {
       it("should fetch history on record", () => {
         expect(listHistory.next().value).eql(
           call([client, client.listHistory], {
-            since: undefined,
             limit: 42,
             filters: {
               collection_id: "collection",
               record_id: "record",
+              "gt_target.data.last_modified": undefined,
             },
           })
         );
@@ -58,8 +58,8 @@ describe("record sagas", () => {
             filters: {
               collection_id: "collection",
               record_id: "record",
+              "gt_target.data.last_modified": 42,
             },
-            since: 42,
             limit: 42,
           })
         );
