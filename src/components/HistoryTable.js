@@ -4,10 +4,9 @@ import type { RecordData, ResourceHistoryEntry, RouteLocation } from "../types";
 import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
-import { diffJson } from "diff";
 
 import * as NotificationActions from "../actions/notifications";
-import { timeago, humanDate, parseHistoryFilters } from "../utils";
+import { diffJson, timeago, humanDate, parseHistoryFilters } from "../utils";
 import AdminLink from "./AdminLink";
 import Spinner from "./Spinner";
 import PaginatedTable from "./PaginatedTable";
@@ -15,26 +14,18 @@ import { getClient } from "../client";
 import { omit, sortHistoryEntryPermissions } from "../utils";
 
 function Diff({ source, target }: { source: Object, target: Object }) {
-  const diff = diffJson(target, source);
+  const diff = diffJson(source, target);
   return (
     <pre className="json-record">
-      {diff.map((chunk, i) => {
-        const className = chunk.added
+      {diff.map((chunk: string, i) => {
+        const className = chunk.startsWith("+")
           ? "added"
-          : chunk.removed
+          : chunk.startsWith("-")
           ? "removed"
           : "";
-        const prefixedChunk = chunk.value
-          .split("\n")
-          .filter(part => part !== "")
-          .map(part => {
-            const prefix = chunk.added ? "+ " : chunk.removed ? "- " : "  ";
-            return prefix + part;
-          })
-          .join("\n");
         return (
           <div key={i} className={className}>
-            <code>{prefixedChunk}</code>
+            <code>{chunk}</code>
           </div>
         );
       })}
