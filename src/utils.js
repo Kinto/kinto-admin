@@ -9,6 +9,7 @@ import type {
 } from "./types";
 import React from "react";
 import _timeago from "timeago.js";
+import { diffJson as diff } from "diff";
 import { DEFAULT_KINTO_SERVER } from "./constants";
 
 export function clone(obj: any) {
@@ -349,4 +350,39 @@ export async function copyToClipboard(s: ?string) {
   if (state == "granted" || state == "prompt") {
     await navigator.clipboard.writeText(s || "");
   }
+}
+
+export function diffJson(a: Object, b: Object, context: number = 3): string[] {
+  // Number of lines to show above/below changes in diffs.
+  const chunks = diff(a, b);
+  return chunks.map((chunk, i) => {
+    const isFirstChunk = i == 0;
+    const isLastChunk = i == chunks.length - 1;
+
+    // Remove empty lines.
+    let lines = chunk.value.split("\n").filter(part => part !== "");
+
+    // Truncate beginning of first chunk if larger than context.
+    if (isFirstChunk && lines.length > context) {
+      lines = ["..."].concat(lines.slice(-context));
+      // Truncate end of last chunk if larger than context.
+    } else if (isLastChunk && lines.length > context) {
+      lines = lines.slice(0, context).concat(["..."]);
+      // Truncate middle chunk only if larger than twice the context (above + below).
+    } else if (lines.length > context * 2) {
+      lines = lines
+        .slice(context)
+        .concat(["..."])
+        .concat(lines.slice(-context));
+    }
+
+    // Prefix chunk lines with sign.
+    const prefixedChunk = lines
+      .map(line => {
+        const prefix = chunk.added ? "+ " : chunk.removed ? "- " : "  ";
+        return prefix + line;
+      })
+      .join("\n");
+    return prefixedChunk;
+  });
 }
