@@ -362,17 +362,19 @@ export function diffJson(a: Object, b: Object, context: number = 3): string[] {
     // Remove empty lines.
     let lines = chunk.value.split("\n").filter(part => part !== "");
 
-    // Truncate beginning of first chunk if larger than context.
-    if (isFirstChunk && lines.length > context) {
-      lines = ["..."].concat(lines.slice(-context));
-      // Truncate end of last chunk if larger than context.
-    } else if (isLastChunk && lines.length > context) {
-      lines = lines.slice(0, context).concat(["..."]);
-      // Truncate middle chunk only if larger than twice the context (above + below).
-    } else if (lines.length > context * 2) {
-      lines = lines.slice(0, context)
-        .concat(["..."])
-        .concat(lines.slice(-context));
+    if (!chunk.added && !chunk.removed) {
+      // Truncate beginning of first chunk if larger than context.
+      if (isFirstChunk && lines.length > context) {
+        lines = ["..."].concat(lines.slice(-context));
+        // Truncate end of last chunk if larger than context.
+      } else if (isLastChunk && lines.length > context) {
+        lines = lines.slice(0, context).concat(["..."]);
+        // Truncate middle chunk only if larger than twice the context (above + below).
+      } else if (lines.length > context * 2) {
+        lines = lines.slice(0, context)
+          .concat(["..."])
+          .concat(lines.slice(-context));
+      }
     }
 
     // Prefix chunk lines with sign.

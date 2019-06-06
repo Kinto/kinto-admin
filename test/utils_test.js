@@ -352,4 +352,12 @@ describe("diffJson", function() {
       '+   "i": "i"',
       '  }' ]);
   });
+
+  it("should not truncate diff chunks", () => {
+    const a = { a: 1, b: 2, c: 3, d: 4, e: 5, f: 6, g: 7, h: 8, i: 9 };
+    const b = {};
+    const diff = diffJson(a, b);
+    expect(diff).eql([ '- {\n-   "a": 1,\n-   "b": 2,\n-   "c": 3,\n-   "d": 4,\n-   "e": 5,\n-   "f": 6,\n-   "g": 7,\n-   "h": 8,\n-   "i": 9\n- }',
+      '+ {}' ]);
+  });
 });
