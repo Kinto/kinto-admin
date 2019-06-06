@@ -370,8 +370,7 @@ export function diffJson(a: Object, b: Object, context: number = 3): string[] {
       lines = lines.slice(0, context).concat(["..."]);
       // Truncate middle chunk only if larger than twice the context (above + below).
     } else if (lines.length > context * 2) {
-      lines = lines
-        .slice(context)
+      lines = lines.slice(0, context)
         .concat(["..."])
         .concat(lines.slice(-context));
     }
