@@ -87,10 +87,14 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
       collectionState
     );
 
+    const {
+      data: { id: bid },
+    } = bucketState;
+
     // The above sagas refresh the global state via `routeLoadSuccess` actions.
     // Use the global so that the toolbar is refreshed when status changes.
     const {
-      data: { status },
+      data: { id: cid, status },
     } = collectionState;
 
     // Information loaded via this plugin.
@@ -99,11 +103,13 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
       pendingConfirmReviewRequest,
       pendingConfirmDeclineChanges,
     } = signoff;
+
     // Hide toolbar if server has not kinto-signer plugin,
     // or if this collection is not configured to be signed.
     if (!collectionsInfo) {
       return null;
     }
+
     const {
       source,
       destination,
@@ -121,7 +127,7 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
     const hasHistory = "history" in sessionState.serverInfo.capabilities;
 
     // Default status is request review
-    const step = status == "to-review" ? 1 : status == "signed" ? 2 : 0;
+    const currentStep = status == "to-review" ? 1 : status == "signed" ? 2 : 0;
     return (
       <div>
         {hasHistory ? null : (
@@ -139,7 +145,8 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
           <WorkInProgress
             label="Work in progress"
             step={0}
-            currentStep={step}
+            currentStep={currentStep}
+            isCurrentUrl={source.bid == bid && source.cid == cid}
             canEdit={canRequestReview}
             hasHistory={hasHistory}
             confirmRequestReview={confirmRequestReview}
@@ -149,7 +156,8 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
           <Review
             label="Waiting review"
             step={1}
-            currentStep={step}
+            currentStep={currentStep}
+            isCurrentUrl={!!preview && preview.bid == bid && preview.cid == cid}
             canEdit={canReview}
             hasHistory={hasHistory}
             approveChanges={approveChanges}
@@ -161,7 +169,8 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
           <Signed
             label="Approved"
             step={2}
-            currentStep={step}
+            currentStep={currentStep}
+            isCurrentUrl={destination.bid == bid && destination.cid == cid}
             canEdit={canSign}
             reSign={approveChanges}
             source={source}
@@ -218,6 +227,7 @@ type WorkInProgressProps = {
   canEdit: boolean,
   currentStep: number,
   step: number,
+  isCurrentUrl: boolean,
   confirmRequestReview: () => void,
   source: SourceInfo,
   hasHistory: boolean,
@@ -230,23 +240,25 @@ function WorkInProgress(props: WorkInProgressProps) {
     canEdit,
     currentStep,
     step,
+    isCurrentUrl,
     confirmRequestReview,
     source,
     hasHistory,
     changes,
   } = props;
 
-  const active = step == currentStep;
+  const isCurrentStep = step == currentStep;
 
   return (
     <ProgressStep label={label} currentStep={currentStep} step={step}>
       <WorkInProgressInfos
-        active={active}
+        isCurrentStep={isCurrentStep}
+        isCurrentUrl={isCurrentUrl}
         source={source}
         hasHistory={hasHistory}
         changes={changes}
       />
-      {active && source.lastEditDate && canEdit && (
+      {isCurrentStep && source.lastEditDate && canEdit && (
         <RequestReviewButton onClick={confirmRequestReview} />
       )}
     </ProgressStep>
@@ -254,13 +266,14 @@ function WorkInProgress(props: WorkInProgressProps) {
 }
 
 type WorkInProgressInfosProps = {
-  active: boolean,
+  isCurrentStep: boolean,
+  isCurrentUrl: boolean,
   source: SourceInfo,
   hasHistory: boolean,
   changes: ?ChangesList,
 };
 function WorkInProgressInfos(props: WorkInProgressInfosProps) {
-  const { active, source, hasHistory, changes } = props;
+  const { isCurrentStep, isCurrentUrl, source, hasHistory, changes } = props;
   const { bid, cid, lastEditBy, lastEditDate, lastReviewerComment } = source;
   if (!lastEditDate) {
     return (
@@ -278,12 +291,20 @@ function WorkInProgressInfos(props: WorkInProgressInfosProps) {
       <li>
         <strong>By: </strong> {lastEditBy}
       </li>
-      {active && lastReviewerComment && (
+      {isCurrentStep && lastReviewerComment && (
         <li>
           <strong>Comment: </strong> <Comment text={lastReviewerComment} />
         </li>
       )}
-      {active && changes && (
+      {!isCurrentUrl && (
+        <li>
+          <strong>Source: </strong>
+          <AdminLink name="collection:records" params={{ bid, cid }}>
+            {`${bid}/${cid}`}
+          </AdminLink>
+        </li>
+      )}
+      {isCurrentStep && changes && (
         <DiffInfo
           hasHistory={hasHistory}
           bid={bid}
@@ -314,6 +335,7 @@ type ReviewProps = {
   hasHistory: boolean,
   currentStep: number,
   step: number,
+  isCurrentUrl: boolean,
   approveChanges: () => void,
   confirmDeclineChanges: () => void,
   source: SourceInfo,
@@ -328,17 +350,18 @@ function Review(props: ReviewProps) {
     hasHistory,
     currentStep,
     step,
+    isCurrentUrl,
     approveChanges,
     confirmDeclineChanges,
     source,
     preview,
     changes,
   } = props;
-  const active = step == currentStep;
+  const isCurrentStep = step == currentStep;
 
   // If preview disabled, the preview object is empty.
   let link = "disabled";
-  if (preview && preview.bid && preview.cid) {
+  if (preview) {
     const { bid, cid } = preview;
     link = (
       <AdminLink name="collection:records" params={{ bid, cid }}>
@@ -351,14 +374,15 @@ function Review(props: ReviewProps) {
     <ProgressStep label={label} currentStep={currentStep} step={step}>
       {source.lastReviewRequestBy && (
         <ReviewInfos
-          active={active}
+          isCurrentStep={isCurrentStep}
+          isCurrentUrl={isCurrentUrl}
           source={source}
           link={link}
           hasHistory={hasHistory}
           changes={changes}
         />
       )}
-      {active && canEdit && (
+      {isCurrentStep && canEdit && (
         <ReviewButtons
           onApprove={approveChanges}
           onDecline={confirmDeclineChanges}
@@ -369,15 +393,23 @@ function Review(props: ReviewProps) {
 }
 
 type ReviewInfosProps = {
-  active: boolean,
+  isCurrentStep: boolean,
   source: SourceInfo,
   link: any,
+  isCurrentUrl: boolean,
   hasHistory: boolean,
   changes: ?ChangesList,
 };
 
 function ReviewInfos(props: ReviewInfosProps) {
-  const { active, source, link, hasHistory, changes } = props;
+  const {
+    isCurrentStep,
+    source,
+    link,
+    hasHistory,
+    changes,
+    isCurrentUrl,
+  } = props;
   const {
     bid,
     cid,
@@ -394,15 +426,17 @@ function ReviewInfos(props: ReviewInfosProps) {
       <li>
         <strong>By: </strong> {lastReviewRequestBy}
       </li>
-      {active && lastEditorComment && (
+      {isCurrentStep && lastEditorComment && (
         <li>
           <strong>Comment: </strong> <Comment text={lastEditorComment} />
         </li>
       )}
-      <li>
-        <strong>Preview: </strong> {link}
-      </li>
-      {active && changes && (
+      {!isCurrentUrl && (
+        <li>
+          <strong>Preview: </strong> {link}
+        </li>
+      )}
+      {isCurrentStep && changes && (
         <DiffInfo
           hasHistory={hasHistory}
           bid={bid}
@@ -471,6 +505,7 @@ type SignedProps = {
   canEdit: boolean,
   currentStep: number,
   step: number,
+  isCurrentUrl: boolean,
   reSign: () => void,
   source: SourceInfo,
   destination: ?DestinationInfo,
@@ -482,28 +517,34 @@ function Signed(props: SignedProps) {
     canEdit,
     currentStep,
     step,
+    isCurrentUrl,
     reSign,
     source,
     destination,
   } = props;
-  const active = step == currentStep && canEdit;
+  const isCurrentStep = step == currentStep && canEdit;
   return (
     <ProgressStep label={label} currentStep={currentStep} step={step}>
       {destination && source.lastSignatureBy && (
-        <SignedInfos source={source} destination={destination} />
+        <SignedInfos
+          source={source}
+          destination={destination}
+          isCurrentUrl={isCurrentUrl}
+        />
       )}
-      {active && <ReSignButton onClick={reSign} />}
+      {isCurrentStep && <ReSignButton onClick={reSign} />}
     </ProgressStep>
   );
 }
 
 type SignedInfosProps = {
+  isCurrentUrl: boolean,
   source: SourceInfo,
   destination: DestinationInfo,
 };
 
 function SignedInfos(props: SignedInfosProps) {
-  const { source, destination } = props;
+  const { isCurrentUrl, source, destination } = props;
   const {
     lastReviewBy,
     lastReviewDate,
@@ -533,12 +574,14 @@ function SignedInfos(props: SignedInfosProps) {
           {lastSignatureBy}
         </li>
       )}
-      <li>
-        <strong>Destination: </strong>
-        <AdminLink name="collection:records" params={{ bid, cid }}>
-          {`${bid}/${cid}`}
-        </AdminLink>
-      </li>
+      {!isCurrentUrl && (
+        <li>
+          <strong>Destination: </strong>
+          <AdminLink name="collection:records" params={{ bid, cid }}>
+            {`${bid}/${cid}`}
+          </AdminLink>
+        </li>
+      )}
     </ul>
   );
 }
