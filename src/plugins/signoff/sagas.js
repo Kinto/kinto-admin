@@ -337,10 +337,21 @@ function _pickSignoffResource(
     return null;
   }
   const resources: SignerResource[] = signer.resources;
-  let resource = resources.filter(({ source: { bucket, collection } }) => {
-    // If the source has no collection info, it means that reviewing was configured
+  let resource = resources.filter(({ source, preview, destination }) => {
+    // If the resource has no collection info, it means that reviewing was configured
     // by bucket on the server, and that it applies to every collection (thus this one too).
-    return bucket == bid && (!collection || collection == cid);
+    return (
+      // We are viewing the source.
+      (source.bucket == bid &&
+        (!source.collection || source.collection == cid)) ||
+      // Preview is enabled and we are viewing it.
+      (preview &&
+        (preview.bucket == bid &&
+          (!preview.collection || preview.collection == cid))) ||
+      // We are viewing the destination.
+      (destination.bucket == bid &&
+        (!destination.collection || destination.collection == cid))
+    );
   })[0];
   // The whole UI expects to have collection information for source/preview/destination.
   // If configured by bucket, fill-up the missing attribute as if it would be configured

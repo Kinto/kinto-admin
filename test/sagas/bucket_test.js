@@ -771,7 +771,6 @@ describe("bucket sagas", () => {
               exclude_resource_name: "record",
             },
             limit: 42,
-            since: undefined,
           })
         );
       });
@@ -783,24 +782,8 @@ describe("bucket sagas", () => {
         );
       });
 
-      it("should filter from timestamp if provided", () => {
-        const action = actions.listBucketHistory("bucket", { since: 42 });
-        const historySaga = saga.listHistory(() => ({ settings }), action);
-        expect(historySaga.next().value).eql(
-          call([bucket, bucket.listHistory], {
-            filters: {
-              resource_name: undefined,
-              exclude_resource_name: "record",
-            },
-            limit: 42,
-            since: 42,
-          })
-        );
-      });
-
       it("should filter by resource_name if provided", () => {
         const action = actions.listBucketHistory("bucket", {
-          since: 42,
           resource_name: "bucket",
         });
         const historySaga = saga.listHistory(() => ({ settings }), action);
@@ -811,7 +794,6 @@ describe("bucket sagas", () => {
               exclude_resource_name: "record",
             },
             limit: 42,
-            since: 42,
           })
         );
       });

@@ -13,7 +13,7 @@ import PaginatedTable from "./PaginatedTable";
 import { getClient } from "../client";
 import { omit, sortHistoryEntryPermissions } from "../utils";
 
-function Diff({ source, target }) {
+function Diff({ source, target }: { source: Object, target: Object }) {
   const diff = diffJson(source, target);
   return (
     <pre className="json-record">
@@ -34,7 +34,7 @@ function Diff({ source, target }) {
 }
 
 function fetchPreviousVersion(
-  bid,
+  bid: string,
   entry: ResourceHistoryEntry
 ): Promise<?ResourceHistoryEntry> {
   const { uri, last_modified } = entry;
@@ -208,17 +208,19 @@ class HistoryRow extends PureComponent<HistoryRowProps, HistoryRowState> {
   }
 }
 
-function FilterInfo(props) {
+type FilterInfoProps = {
+  location: RouteLocation,
+  enableDiffOverview: boolean,
+  onViewJournalClick: () => void,
+  onDiffOverviewClick: (timestamp: string) => void,
+};
+
+function FilterInfo(props: FilterInfoProps) {
   const {
     location,
     enableDiffOverview,
     onViewJournalClick,
     onDiffOverviewClick,
-  }: {
-    location: RouteLocation,
-    enableDiffOverview: boolean,
-    onViewJournalClick: () => void,
-    onDiffOverviewClick: (timestamp: string) => void,
   } = props;
   const {
     pathname,
@@ -253,8 +255,13 @@ function FilterInfo(props) {
   );
 }
 
-function DiffOverview(props) {
-  const { source, target, since } = props;
+type DiffOverviewProps = {
+  source: RecordData[],
+  target: RecordData[],
+  since: string,
+};
+
+function DiffOverview({ source, target, since }: DiffOverviewProps) {
   return (
     <div>
       <div className="alert alert-info">
@@ -273,7 +280,7 @@ function DiffOverview(props) {
   );
 }
 
-type Props = {
+type HistoryTableProps = {
   bid: string,
   cid?: string,
   location: Location,
@@ -285,19 +292,22 @@ type Props = {
   notifyError: typeof NotificationActions.notifyError,
 };
 
-type State = {
+type HistoryTableState = {
   diffOverview: boolean,
   busy: boolean,
   current: ?(RecordData[]),
   previous: ?(RecordData[]),
 };
 
-export default class HistoryTable extends PureComponent<Props, State> {
+export default class HistoryTable extends PureComponent<
+  HistoryTableProps,
+  HistoryTableState
+> {
   static defaultProps = {
     enableDiffOverview: false,
   };
 
-  constructor(props: Props) {
+  constructor(props: HistoryTableProps) {
     super(props);
     this.state = {
       diffOverview: false,
