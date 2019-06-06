@@ -364,10 +364,12 @@ export function diffJson(a: Object, b: Object, context: number = 3): string[] {
 
     if (!chunk.added && !chunk.removed) {
       // Truncate beginning of first chunk if larger than context.
-      if (isFirstChunk && lines.length > context) {
+      // The opening brace "{" does not count as context, hence +1.
+      if (isFirstChunk && lines.length > context + 1) {
         lines = ["..."].concat(lines.slice(-context));
         // Truncate end of last chunk if larger than context.
-      } else if (isLastChunk && lines.length > context) {
+        // The closing brace "}" does not count as context, hence +1.
+      } else if (isLastChunk && lines.length > context + 1) {
         lines = lines.slice(0, context).concat(["..."]);
         // Truncate middle chunk only if larger than twice the context (above + below).
       } else if (lines.length > context * 2) {

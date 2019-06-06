@@ -327,6 +327,19 @@ describe("diffJson", function() {
     ]);
   });
 
+  it("should not truncate if first or last is smaller than context", () => {
+    const a = { a: 1, b: 2, c: 3, d: 4, e: 5, f: 6, g: 7, h: 8, i: 9 };
+    const b = { ...a, d: "d", f: "f" };
+    const diff = diffJson(a, b);
+    expect(diff).eql([ '  {\n    "a": 1,\n    "b": 2,\n    "c": 3,',
+      '-   "d": 4,',
+      '+   "d": "d",',
+      '    "e": 5,',
+      '-   "f": 6,',
+      '+   "f": "f",',
+      '    "g": 7,\n    "h": 8,\n    "i": 9\n  }' ]);
+  });
+
   it("should not truncate if smaller than context", () => {
     const a = { a: 1, b: 2, c: 3, d: 4, e: 5, f: 6, g: 7, h: 8, i: 9 };
     const b = { ...a, b: "b", g: "h" };
