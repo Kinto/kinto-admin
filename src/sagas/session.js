@@ -120,6 +120,11 @@ export function* setupSession(
     // See https://kinto.readthedocs.io/en/stable/configuration/settings.html#authentication
     const { user: { id: userId } = {} } = serverInfo;
     const { authType } = auth;
+    const fullAuthType =
+      auth.authType === "openid"
+        ? `${auth.authType}-${auth.provider}`
+        : authType;
+    const authLabel = getAuthLabel(fullAuthType);
     const hasValidCredentials = userId
       ? (authType == "basicauth" && userId.startsWith("basicauth:")) ||
         (authType != "basicauth" && !userId.startsWith("basicauth:"))
@@ -127,7 +132,7 @@ export function* setupSession(
     if (!hasValidCredentials) {
       yield put(
         notificationActions.notifyError("Authentication failed.", {
-          message: `Could not authenticate with ${getAuthLabel(authType)}`,
+          message: `Could not authenticate with ${authLabel}`,
         })
       );
       // Show back login form.
@@ -145,7 +150,7 @@ export function* setupSession(
     yield put(actions.setupComplete(auth));
     yield put(
       notificationActions.notifySuccess("Authenticated.", {
-        details: [getAuthLabel(authType)],
+        details: [authLabel],
       })
     );
   } catch (error) {
