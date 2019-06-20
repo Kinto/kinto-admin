@@ -443,6 +443,9 @@ form button[type="submit"].btn-primary {
   }
 }
 
+.notifications .alert {
+  margin-top: 3em;
+}
 /*
  * react-bs-notifier uses Font Awesome: alias the classes to glyphicons instead.
  */
