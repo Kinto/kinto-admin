@@ -349,7 +349,7 @@ export async function copyToClipboard(s: ?string) {
     ({ state } = await navigator.permissions.query({
       name: "clipboard-write",
     }));
-  } catch(e) {
+  } catch (e) {
     console.error(e);
     // XXX See https://bugzilla.mozilla.org/show_bug.cgi?id=1560373
     state = "firefox";
