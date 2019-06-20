@@ -344,10 +344,17 @@ export function parseHistoryFilters(s: string): HistoryFilters {
  * Copy specified string to OS clipboard.
  */
 export async function copyToClipboard(s: ?string) {
-  const { state } = await navigator.permissions.query({
-    name: "clipboard-write",
-  });
-  if (state == "granted" || state == "prompt") {
+  let state;
+  try {
+    ({ state } = await navigator.permissions.query({
+      name: "clipboard-write",
+    }));
+  } catch(e) {
+    console.error(e);
+    // XXX See https://bugzilla.mozilla.org/show_bug.cgi?id=1560373
+    state = "firefox";
+  }
+  if (["granted", "prompt", "firefox"].includes(state)) {
     await navigator.clipboard.writeText(s || "");
   }
 }
