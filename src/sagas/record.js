@@ -18,12 +18,7 @@ export function* listHistory(
   const {
     settings: { maxPerPage },
   } = getState();
-  const {
-    bid,
-    cid,
-    rid,
-    filters: { since },
-  } = action;
+  const { bid, cid, rid } = action;
   try {
     const bucket = getBucket(bid);
     const { data, hasNextPage, next } = yield call(
@@ -33,7 +28,6 @@ export function* listHistory(
         filters: {
           collection_id: cid,
           record_id: rid,
-          "gt_target.data.last_modified": since,
         },
       }
     );

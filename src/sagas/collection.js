@@ -88,7 +88,7 @@ export function* listHistory(
   const {
     bid,
     cid,
-    filters: { resource_name },
+    filters: { resource_name, since },
   } = action;
   try {
     const bucket = getBucket(bid);
@@ -99,6 +99,7 @@ export function* listHistory(
         filters: {
           resource_name,
           collection_id: cid,
+          "gt_target.data.last_modified": since,
         },
       }
     );
