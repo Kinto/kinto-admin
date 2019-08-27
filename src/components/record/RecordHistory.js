@@ -11,7 +11,6 @@ import React, { PureComponent } from "react";
 
 import * as RecordActions from "../../actions/record";
 import * as NotificationActions from "../../actions/notifications";
-import { parseHistoryFilters } from "../../utils";
 import HistoryTable from "../HistoryTable";
 import RecordTabs from "./RecordTabs";
 
@@ -35,15 +34,14 @@ export type Props = {
 };
 
 export const onRecordHistoryEnter = (props: Props) => {
-  const { listRecordHistory, match, session, location } = props;
+  const { listRecordHistory, match, session } = props;
   const {
     params: { bid, cid, rid },
   } = match;
-  const filters = parseHistoryFilters(location.search);
   if (!session.authenticated) {
     return;
   }
-  listRecordHistory(bid, cid, rid, filters);
+  listRecordHistory(bid, cid, rid);
 };
 
 export default class RecordHistory extends PureComponent<Props> {

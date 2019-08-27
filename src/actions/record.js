@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { HistoryFilters, ResourceHistoryEntry } from "../types";
+import type { ResourceHistoryEntry } from "../types";
 
 import {
   RECORD_BUSY,
@@ -28,16 +28,14 @@ export function resetRecord(): {
 export function listRecordHistory(
   bid: string,
   cid: string,
-  rid: string,
-  filters: HistoryFilters = {}
+  rid: string
 ): {
   type: "RECORD_HISTORY_REQUEST",
   bid: string,
   cid: string,
   rid: string,
-  filters: HistoryFilters,
 } {
-  return { type: RECORD_HISTORY_REQUEST, bid, cid, rid, filters };
+  return { type: RECORD_HISTORY_REQUEST, bid, cid, rid };
 }
 
 export function listRecordNextHistory(): {

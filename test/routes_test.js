@@ -38,7 +38,7 @@ describe("Routes onEnter", () => {
         ...props,
         listBucketHistory: listBucketHistory,
       });
-      sinon.assert.calledWith(listBucketHistory, "bid", filters);
+      sinon.assert.calledWith(listBucketHistory, "bid");
     });
   });
 
@@ -57,7 +57,7 @@ describe("Routes onEnter", () => {
     it("should dispatch load history", () => {
       const listGroupHistory = sandbox.spy();
       onGroupHistoryEnter({ ...props, listGroupHistory: listGroupHistory });
-      sinon.assert.calledWith(listGroupHistory, "bid", "gid", filters);
+      sinon.assert.calledWith(listGroupHistory, "bid", "gid");
     });
   });
 
@@ -65,7 +65,7 @@ describe("Routes onEnter", () => {
     it("should dispatch load history", () => {
       const listRecordHistory = sandbox.spy();
       onRecordHistoryEnter({ ...props, listRecordHistory: listRecordHistory });
-      sinon.assert.calledWith(listRecordHistory, "bid", "cid", "rid", filters);
+      sinon.assert.calledWith(listRecordHistory, "bid", "cid", "rid");
     });
   });
 });

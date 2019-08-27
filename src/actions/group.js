@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { HistoryFilters, ResourceHistoryEntry } from "../types";
+import type { ResourceHistoryEntry } from "../types";
 
 import {
   GROUP_BUSY,
@@ -27,15 +27,13 @@ export function resetGroup(): {
 
 export function listGroupHistory(
   bid: string,
-  gid: string,
-  filters: HistoryFilters = {}
+  gid: string
 ): {
   type: "GROUP_HISTORY_REQUEST",
   bid: string,
   gid: string,
-  filters: HistoryFilters,
 } {
-  return { type: GROUP_HISTORY_REQUEST, bid, gid, filters };
+  return { type: GROUP_HISTORY_REQUEST, bid, gid };
 }
 
 export function listGroupNextHistory(): {
