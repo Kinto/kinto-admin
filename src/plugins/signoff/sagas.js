@@ -227,6 +227,42 @@ export function* handleRequestReview(
   }
 }
 
+export function* handleRollbackChanges(
+  getState: GetStateFn,
+  action: ActionType<typeof SignoffActions.rollbackChanges>
+): SagaGen {
+  const { bucket } = getState();
+  const { comment } = action;
+  try {
+    const collection = yield call(_updateCollectionAttributes, getState, {
+      status: "to-rollback",
+      last_editor_comment: comment,
+    });
+    const bid = assertResourceId(bucket);
+    const {
+      data: { id: cid },
+    } = collection;
+    // Go through the same saga as page load to refresh attributes after signoff changes.
+    yield call(
+      onCollectionRecordsRequest,
+      getState,
+      collectionActions.listRecords(bid, cid)
+    );
+    yield put(
+      routeLoadSuccess({
+        bucket,
+        collection,
+        groups: [],
+        group: null,
+        record: null,
+      })
+    );
+    yield put(notifySuccess("Changes were rolled back."));
+  } catch (e) {
+    yield put(notifyError("Couldn't rollback changes.", e));
+  }
+}
+
 export function* handleDeclineChanges(
   getState: GetStateFn,
   action: ActionType<typeof SignoffActions.declineChanges>

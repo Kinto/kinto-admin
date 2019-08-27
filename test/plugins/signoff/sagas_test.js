@@ -384,5 +384,59 @@ describe("Signoff plugin sagas", () => {
         );
       });
     });
+
+    describe("handleRollbackChanges()", () => {
+      let handleRollbackChanges;
+
+      beforeAll(() => {
+        const action = actions.rollbackChanges("start over");
+        handleRollbackChanges = saga.handleRollbackChanges(getState, action);
+      });
+
+      it("should update the collection status as 'to-rollback'", () => {
+        expect(handleRollbackChanges.next({ id: "coll" }).value)
+          .to.have.property("CALL")
+          .to.have.property("args")
+          .to.deep.include({
+            status: "to-rollback",
+            last_editor_comment: "start over",
+          });
+      });
+
+      it("should refresh signoff resources status", () => {
+        expect(
+          handleRollbackChanges.next({
+            data: { id: "coll", status: "to-rollback" },
+          }).value
+        )
+          .to.have.property("CALL")
+          .to.have.property("args")
+          .to.deep.include(collection_actions.listRecords("buck", "coll"));
+      });
+
+      it("should dispatch the routeLoadSuccess action", () => {
+        expect(
+          handleRollbackChanges.next({
+            data: { id: "coll", status: "to-rollback" },
+          }).value
+        ).eql(
+          put(
+            routeLoadSuccess({
+              bucket: { data: { id: "buck" } },
+              collection: { data: { id: "coll", status: "to-rollback" } },
+              groups: [],
+              group: null,
+              record: null,
+            })
+          )
+        );
+      });
+
+      it("should dispatch a success notification", () => {
+        expect(handleRollbackChanges.next().value).eql(
+          put(notifySuccess("Changes were rolled back."))
+        );
+      });
+    });
   });
 });
