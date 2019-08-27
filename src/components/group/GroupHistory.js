@@ -11,7 +11,6 @@ import React, { PureComponent } from "react";
 
 import * as GroupActions from "../../actions/group";
 import * as NotificationActions from "../../actions/notifications";
-import { parseHistoryFilters } from "../../utils";
 import HistoryTable from "../HistoryTable";
 import CollectionTabs from "./GroupTabs";
 
@@ -35,17 +34,16 @@ export type Props = {
 };
 
 export const onGroupHistoryEnter = (props: Props) => {
-  const { match, listGroupHistory, session, location } = props;
+  const { match, listGroupHistory, session } = props;
   const {
     params: { bid, gid },
   } = match;
-  const filters = parseHistoryFilters(location.search);
   if (!session.authenticated) {
     // We're not authenticated, skip requesting the list of records. This likely
     // occurs when users refresh the page and lose their session.
     return;
   }
-  listGroupHistory && listGroupHistory(bid, gid, filters);
+  listGroupHistory && listGroupHistory(bid, gid);
 };
 
 export default class GroupHistory extends PureComponent<Props> {

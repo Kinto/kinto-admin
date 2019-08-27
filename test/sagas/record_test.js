@@ -39,28 +39,7 @@ describe("record sagas", () => {
             filters: {
               collection_id: "collection",
               record_id: "record",
-              "gt_target.data.last_modified": undefined,
             },
-          })
-        );
-      });
-
-      it("should filter from timestamp if provided", () => {
-        const action = actions.listRecordHistory(
-          "bucket",
-          "collection",
-          "record",
-          { since: 42 }
-        );
-        const historySaga = saga.listHistory(() => ({ settings }), action);
-        expect(historySaga.next().value).eql(
-          call([client, client.listHistory], {
-            filters: {
-              collection_id: "collection",
-              record_id: "record",
-              "gt_target.data.last_modified": 42,
-            },
-            limit: 42,
           })
         );
       });
