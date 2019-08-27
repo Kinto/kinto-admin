@@ -463,7 +463,11 @@ function DiffInfo(props: {
     <AdminLink
       name="collection:history"
       params={{ bid, cid }}
-      query={{ since, resource_name: "record" }}>
+      query={{
+        since,
+        resource_name: "record",
+        exclude_user_id: "plugin:kinto-signer",
+      }}>
       details...
     </AdminLink>
   );
