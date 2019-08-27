@@ -337,6 +337,10 @@ export function parseHistoryFilters(s: string): HistoryFilters {
   if (resourceName) {
     ret.resource_name = resourceName;
   }
+  const excludeUserId = params.get("exclude_user_id");
+  if (excludeUserId) {
+    ret.exclude_user_id = excludeUserId;
+  }
   return ret;
 }
 

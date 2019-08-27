@@ -1036,6 +1036,7 @@ describe("collection sagas", () => {
             filters: {
               resource_name: undefined,
               collection_id: "collection",
+              exclude_user_id: undefined,
               "gt_target.data.last_modified": undefined,
             },
           })
@@ -1052,6 +1053,26 @@ describe("collection sagas", () => {
             filters: {
               resource_name: undefined,
               collection_id: "collection",
+              exclude_user_id: undefined,
+              "gt_target.data.last_modified": 42,
+            },
+            limit: 42,
+          })
+        );
+      });
+
+      it("should filter user ids if provided", () => {
+        const action = actions.listCollectionHistory("bucket", "collection", {
+          since: 42,
+          exclude_user_id: "plugin:kinto-signer",
+        });
+        const historySaga = saga.listHistory(() => ({ settings }), action);
+        expect(historySaga.next().value).eql(
+          call([client, client.listHistory], {
+            filters: {
+              resource_name: undefined,
+              collection_id: "collection",
+              exclude_user_id: "plugin:kinto-signer",
               "gt_target.data.last_modified": 42,
             },
             limit: 42,

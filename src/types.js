@@ -102,6 +102,7 @@ export type ClientError = {
 export type HistoryFilters = {
   since?: string,
   resource_name?: string,
+  exclude_user_id?: string,
 };
 
 export type CollectionState = {
