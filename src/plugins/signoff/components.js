@@ -199,7 +199,7 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
         )}
         {pendingConfirmRollbackChanges && (
           <CommentDialog
-            description="Leave some notes:"
+            description="This will reset the collection to the latest approved content. All pending changes will be lost. Are you sure?"
             confirmLabel="Rollback changes"
             onConfirm={rollbackChanges}
             onCancel={cancelPendingConfirm}
