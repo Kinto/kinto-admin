@@ -252,7 +252,7 @@ export function formDataToPermissions(bid: string, formData: Object): Object {
   const permissionsList = principals.concat(fromGroups).concat(fromGeneric);
   return permissionsList.reduce((acc, { principal, permissions = [] }) => {
     for (const permissionName of permissions) {
-      if (!acc.hasOwnProperty(permissionName)) {
+      if (!Object.prototype.hasOwnProperty.call(acc, permissionName)) {
         acc[permissionName] = [principal];
       } else {
         acc[permissionName] = [...acc[permissionName], principal];

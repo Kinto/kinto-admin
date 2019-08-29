@@ -62,7 +62,7 @@ export function validateSchema(jsonSchema: string) {
       error: "The schema is not an object",
     },
     {
-      test: () => schema.hasOwnProperty("type"),
+      test: () => Object.prototype.hasOwnProperty.call(schema, "type"),
       error: "The schema has no type",
     },
     {
@@ -70,7 +70,7 @@ export function validateSchema(jsonSchema: string) {
       error: "The schema type is not 'object'",
     },
     {
-      test: () => schema.hasOwnProperty("properties"),
+      test: () => Object.prototype.hasOwnProperty.call(schema, "properties"),
       error: "The schema has no 'properties' property",
     },
     {
@@ -98,7 +98,10 @@ export function validateUiSchema(jsonUiSchema: string, jsonSchema: string) {
   } catch (err) {
     throw "The uiSchema is not valid JSON";
   }
-  const hasOrder: boolean = uiSchema.hasOwnProperty("ui:order");
+  const hasOrder: boolean = Object.prototype.hasOwnProperty.call(
+    uiSchema,
+    "ui:order"
+  );
   let checks: Array<{ test: () => boolean, error: string }> = [
     {
       test: () => isObject(uiSchema),
@@ -143,7 +146,7 @@ function handleNestedDisplayField(
   const fields = displayField.split(".");
 
   // If the first part matches, we try to render its value.
-  if (record.hasOwnProperty(fields[0])) {
+  if (Object.prototype.hasOwnProperty.call(record, fields[0])) {
     return renderDisplayField(record[fields[0]], fields.slice(1).join("."));
   }
 
@@ -155,10 +158,10 @@ function handleNestedDisplayField(
   });
 
   // For all the properties candidates
-  for (let key of candidates) {
+  for (const key of candidates) {
     let nextCandidate = [];
     // For all parts of the displayField
-    for (let part of fields) {
+    for (const part of fields) {
       // If the candidate matches the key we try a longer one.
       let candidate = nextCandidate.concat([part]).join(".");
       if (key.indexOf(candidate) !== -1) {
@@ -197,7 +200,7 @@ export function renderDisplayField(record: Object, displayField: string): any {
   if (!record) {
     return "<unknown>";
   }
-  if (record.hasOwnProperty(displayField)) {
+  if (Object.prototype.hasOwnProperty.call(record, displayField)) {
     const field = record[displayField];
     if (typeof field === "string") {
       return linkify(field);
@@ -241,7 +244,7 @@ export function buildAttachmentUrl(
   if (
     record.attachment == null ||
     capabilities.attachments == null ||
-    !record.attachment.hasOwnProperty("location")
+    !Object.prototype.hasOwnProperty.call(record.attachment, "location")
   ) {
     return;
   }

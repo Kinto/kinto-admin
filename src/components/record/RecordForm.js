@@ -91,7 +91,7 @@ export function extendUiSchemaWithAttachment(
   if (
     !attachmentConfig ||
     !attachmentConfig.enabled ||
-    !uiSchema.hasOwnProperty("ui:order")
+    !Object.prototype.hasOwnProperty.call(uiSchema, "ui:order")
   ) {
     return uiSchema;
   }
