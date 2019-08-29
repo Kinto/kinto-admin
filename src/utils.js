@@ -158,10 +158,10 @@ function handleNestedDisplayField(
   });
 
   // For all the properties candidates
-  for (let key of candidates) {
+  for (const key of candidates) {
     let nextCandidate = [];
     // For all parts of the displayField
-    for (let part of fields) {
+    for (const part of fields) {
       // If the candidate matches the key we try a longer one.
       let candidate = nextCandidate.concat([part]).join(".");
       if (key.indexOf(candidate) !== -1) {
