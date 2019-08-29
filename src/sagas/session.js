@@ -199,7 +199,7 @@ export function expandBucketsCollections(
   // Augment the list of bucket and collections with the ones retrieved from
   // the /permissions endpoint
   for (const permission of permissions) {
-    if (!permission.hasOwnProperty("bucket_id")) {
+    if (!Object.prototype.hasOwnProperty.call(permission, "bucket_id")) {
       // e.g. { resource_name: "root" } permission.
       continue;
     }

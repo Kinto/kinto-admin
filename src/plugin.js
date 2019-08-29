@@ -59,7 +59,7 @@ function extendReducers(pluginReducers, standardReducers) {
     // existing reducer with the plugin one
     return {
       ...acc,
-      [name]: standardReducers.hasOwnProperty(name)
+      [name]: Object.prototype.hasOwnProperty.call(standardReducers, name)
         ? extendReducer(standardReducer, pluginReducer)
         : pluginReducer,
     };

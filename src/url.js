@@ -47,7 +47,7 @@ const URLS = {
 };
 
 export default function url(name: string, params: RouteParams): string {
-  if (!URLS.hasOwnProperty(name)) {
+  if (!Object.prototype.hasOwnProperty.call(URLS, name)) {
     throw new Error(`Unknown URL name: ${name}`);
   }
   return URLS[name](params);

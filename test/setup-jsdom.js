@@ -17,7 +17,9 @@ global.sessionStorage = (function() {
   var _state = {};
   return {
     getItem(key) {
-      return _state.hasOwnProperty(key) ? _state[key] : undefined;
+      return Object.prototype.hasOwnProperty.call(_state, key)
+        ? _state[key]
+        : undefined;
     },
     setItem(key, value) {
       _state[key] = value === null ? "null" : value; // that's the spec
