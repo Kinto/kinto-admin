@@ -13,6 +13,7 @@ import signoffReducer from "./reducer";
 import {
   onCollectionRecordsRequest,
   handleRequestReview,
+  handleRollbackChanges,
   handleDeclineChanges,
   handleApproveChanges,
 } from "./sagas";
@@ -38,6 +39,7 @@ export const sagas = [
     onCollectionRecordsRequest,
   ],
   [takeEvery, pluginConstants.PLUGIN_REVIEW_REQUEST, handleRequestReview],
+  [takeEvery, pluginConstants.PLUGIN_ROLLBACK_CHANGES, handleRollbackChanges],
   [takeEvery, pluginConstants.PLUGIN_DECLINE_REQUEST, handleDeclineChanges],
   [takeEvery, pluginConstants.PLUGIN_SIGNOFF_REQUEST, handleApproveChanges],
 ];

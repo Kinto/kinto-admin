@@ -17,6 +17,7 @@ export type SignoffState = {
   collectionsInfo: ?CollectionsInfo,
   pendingConfirmReviewRequest: boolean,
   pendingConfirmDeclineChanges: boolean,
+  pendingConfirmRollbackChanges: boolean,
 };
 
 export type ChangesList = {

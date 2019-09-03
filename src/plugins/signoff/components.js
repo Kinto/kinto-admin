@@ -56,6 +56,8 @@ type SignoffToolBarProps = {
   collectionState: CollectionState,
   signoff: SignoffState,
   requestReview: string => void,
+  rollbackChanges: string => void,
+  confirmRollbackChanges: () => void,
   confirmRequestReview: () => void,
   approveChanges: () => void,
   declineChanges: string => void,
@@ -75,6 +77,8 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
       // Actions
       confirmRequestReview,
       requestReview,
+      rollbackChanges,
+      confirmRollbackChanges,
       approveChanges,
       confirmDeclineChanges,
       cancelPendingConfirm,
@@ -101,6 +105,7 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
     const {
       collectionsInfo,
       pendingConfirmReviewRequest,
+      pendingConfirmRollbackChanges,
       pendingConfirmDeclineChanges,
     } = signoff;
 
@@ -123,6 +128,7 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
       canEdit &&
       isReviewer(source, sessionState) &&
       !hasRequestedReview(source, sessionState);
+    const canRollback = true;
     const canSign = canEdit && isReviewer(source, sessionState);
     const hasHistory = "history" in sessionState.serverInfo.capabilities;
 
@@ -159,6 +165,7 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
             currentStep={currentStep}
             isCurrentUrl={!!preview && preview.bid == bid && preview.cid == cid}
             canEdit={canReview}
+            canRollback={canRollback}
             hasHistory={hasHistory}
             approveChanges={approveChanges}
             confirmDeclineChanges={confirmDeclineChanges}
@@ -177,11 +184,24 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
             destination={destination}
           />
         </ProgressBar>
+
+        {canRollback && status != "signed" && (
+          <RollbackChangesButton onClick={confirmRollbackChanges} />
+        )}
+
         {pendingConfirmReviewRequest && (
           <CommentDialog
             description="Leave some notes for the reviewer:"
             confirmLabel="Request review"
             onConfirm={requestReview}
+            onCancel={cancelPendingConfirm}
+          />
+        )}
+        {pendingConfirmRollbackChanges && (
+          <CommentDialog
+            description="This will reset the collection to the latest approved content. All pending changes will be lost. Are you sure?"
+            confirmLabel="Rollback changes"
+            onConfirm={rollbackChanges}
             onCancel={cancelPendingConfirm}
           />
         )}
@@ -321,6 +341,15 @@ function RequestReviewButton(props: { onClick: () => void }) {
   return (
     <button className="btn btn-info request-review" onClick={onClick}>
       <i className="glyphicon glyphicon-comment" /> Request review...
+    </button>
+  );
+}
+
+function RollbackChangesButton(props: { onClick: () => void }) {
+  const { onClick } = props;
+  return (
+    <button className="btn btn-info rollback-changes" onClick={onClick}>
+      <i className="glyphicon glyphicon-remove-sign" /> Rollback changes...
     </button>
   );
 }

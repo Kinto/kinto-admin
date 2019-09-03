@@ -18,6 +18,21 @@ export function requestReview(
   return { type: constants.PLUGIN_REVIEW_REQUEST, comment };
 }
 
+export function confirmRollbackChanges(): {
+  type: "PLUGIN_CONFIRM_ROLLBACK_CHANGES",
+} {
+  return { type: constants.PLUGIN_CONFIRM_ROLLBACK_CHANGES };
+}
+
+export function rollbackChanges(
+  comment: string
+): {
+  type: "PLUGIN_ROLLBACK_CHANGES",
+  comment: string,
+} {
+  return { type: constants.PLUGIN_ROLLBACK_CHANGES, comment };
+}
+
 export function confirmDeclineChanges(): {
   type: "PLUGIN_CONFIRM_DECLINE_CHANGES",
 } {

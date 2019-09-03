@@ -46,3 +46,10 @@
   max-height: 4em;
   white-space: pre-line;
 }
+
+/* Rollback button on top */
+.rollback-changes {
+  position: absolute;
+  top: 152px;
+  right: 30px;
+}
