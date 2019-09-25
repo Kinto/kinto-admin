@@ -194,7 +194,7 @@ class HistoryRow extends PureComponent<HistoryRowProps, HistoryRowState> {
               {busy ? (
                 <Spinner />
               ) : previous ? (
-                <Diff source={entry.target} target={previous.target} />
+                <Diff source={previous.target} target={entry.target} />
               ) : error ? (
                 <p className="alert alert-danger">{error.toString()}</p>
               ) : (
