@@ -9,7 +9,6 @@ import { ConnectedRouter } from "connected-react-router";
 import { Provider } from "react-redux";
 
 import App from "../../src/containers/App";
-import Sidebar from "../../src/containers/Sidebar";
 import Notifications from "../../src/containers/Notifications";
 import CollectionRecordsPage from "../../src/containers/collection/CollectionRecordsPage";
 import * as sessionActions from "../../src/actions/session";
