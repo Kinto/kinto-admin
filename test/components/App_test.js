@@ -25,7 +25,6 @@ describe("App component", () => {
       <Provider store={store}>
         <ConnectedRouter history={hashHistory}>
           <App
-            sidebar={Sidebar}
             notifications={Notifications}
             collectionRecordsPage={CollectionRecordsPage}
           />
