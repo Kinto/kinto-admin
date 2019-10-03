@@ -290,7 +290,7 @@ describe("RecordAttributes component", () => {
           schema: {
             "ui:widget": "text",
             "ui:options": {
-              "inputType": "text",
+              inputType: "text",
             },
           },
         };
@@ -398,7 +398,7 @@ describe("RecordAttributes component", () => {
           last_modified: {
             "ui:widget": "text",
             "ui:options": {
-              "inputType": "text",
+              inputType: "text",
             },
           },
         };
