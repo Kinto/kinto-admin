@@ -289,6 +289,9 @@ describe("RecordAttributes component", () => {
         withUISchema.data.uiSchema = {
           schema: {
             "ui:widget": "text",
+            "ui:options": {
+              inputType: "text",
+            },
           },
         };
 
@@ -394,6 +397,9 @@ describe("RecordAttributes component", () => {
         withUISchema.data.uiSchema = {
           last_modified: {
             "ui:widget": "text",
+            "ui:options": {
+              inputType: "text",
+            },
           },
         };
 
