@@ -2,8 +2,7 @@
 
 import React from "react";
 import sinon from "sinon";
-import { renderIntoDocument } from "react-dom/test-utils";
-import { findDOMNode } from "react-dom";
+import ReactDOM from "react-dom";
 import { ConnectedRouter } from "connected-react-router";
 import { Provider } from "react-redux";
 import configureStore, { hashHistory } from "../src/store/configureStore";
@@ -11,14 +10,16 @@ import * as notificationsActions from "../src/actions/notifications";
 
 export function createComponent(Component, props) {
   const store = configureStore();
-  const comp = renderIntoDocument(
+  const domContainer = document.createElement("div");
+  ReactDOM.render(
     <Provider store={store}>
       <ConnectedRouter history={hashHistory}>
         <Component {...props} />
       </ConnectedRouter>
-    </Provider>
+    </Provider>,
+    domContainer
   );
-  return findDOMNode(comp);
+  return domContainer.children.length == 0 ? null : domContainer;
 }
 
 export function createSandbox() {
