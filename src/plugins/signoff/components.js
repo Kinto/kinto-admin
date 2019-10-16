@@ -129,7 +129,7 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
       canEdit &&
       isReviewer(source, sessionState) &&
       !hasRequestedReview(source, sessionState);
-    const canRollback = true;
+    const canRollback = canEdit;
     const canSign = canEdit && isReviewer(source, sessionState);
     const hasHistory = "history" in sessionState.serverInfo.capabilities;
 
