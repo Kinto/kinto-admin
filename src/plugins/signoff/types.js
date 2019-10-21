@@ -31,6 +31,7 @@ export type SourceInfo = {
   bid: string,
   cid: string,
   // Full info.
+  status?: string,
   lastEditBy?: string,
   lastEditDate?: number,
   lastReviewRequestBy?: string,

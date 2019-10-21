@@ -98,9 +98,8 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
     // The above sagas refresh the global state via `routeLoadSuccess` actions.
     // Use the global so that the toolbar is refreshed when status changes.
     const {
-      data: { id: cid, status },
+      data: { id: cid },
     } = collectionState;
-
     // Information loaded via this plugin.
     const {
       collectionsInfo,
@@ -123,12 +122,14 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
       changesOnPreview,
     } = collectionsInfo;
 
+    const { status } = source;
+
     const canRequestReview = canEdit && isEditor(source, sessionState);
     const canReview =
       canEdit &&
       isReviewer(source, sessionState) &&
       !hasRequestedReview(source, sessionState);
-    const canRollback = true;
+    const canRollback = canEdit;
     const canSign = canEdit && isReviewer(source, sessionState);
     const hasHistory = "history" in sessionState.serverInfo.capabilities;
 
