@@ -33,7 +33,9 @@ export function timeago(timestamp: number, now: ?number): string {
   // In our use case, we should never show relative time in the future.
   // For example, if local computer is late, the server timestamp will appear
   // to be in the future. Hence use "now" as a maximum.
-  return format(new Date(Math.min(timestamp, nowUTC)), { relativeDate: new Date(nowUTC) });
+  return format(new Date(Math.min(timestamp, nowUTC)), {
+    relativeDate: new Date(nowUTC),
+  });
 }
 
 export function capitalize(str: string): string {
