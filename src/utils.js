@@ -8,7 +8,7 @@ import type {
   HistoryFilters,
 } from "./types";
 import React from "react";
-import _timeago from "timeago.js";
+import { format } from "timeago.js";
 import { diffJson as diff } from "diff";
 import { DEFAULT_KINTO_SERVER } from "./constants";
 
@@ -33,7 +33,9 @@ export function timeago(timestamp: number, now: ?number): string {
   // In our use case, we should never show relative time in the future.
   // For example, if local computer is late, the server timestamp will appear
   // to be in the future. Hence use "now" as a maximum.
-  return _timeago(nowUTC).format(new Date(Math.min(nowUTC, timestamp)));
+  return format(new Date(Math.min(timestamp, nowUTC)), {
+    relativeDate: new Date(nowUTC),
+  });
 }
 
 export function capitalize(str: string): string {
