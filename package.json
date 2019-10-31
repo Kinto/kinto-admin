@@ -40,7 +40,7 @@
     "connected-react-router": "^6.2.0",
     "diff": "^4.0.1",
     "express": "^4.14.0",
-    "filesize": "^5.0.1",
+    "filesize": "^6.0.0",
     "history": "^4.9.0",
     "kinto-http": "^4.7.0",
     "react": "^16.8.6",
