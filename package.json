@@ -80,7 +80,7 @@
     "eslint-plugin-react": "^7.0.1",
     "extract-text-webpack-plugin": "^4.0.0-alpha.0",
     "file-loader": "^4.2.0",
-    "flow-bin": "^0.110.0",
+    "flow-bin": "^0.111.1",
     "gh-pages": "^2.0.0",
     "html": "1.0.0",
     "ignore-styles": "^5.0.1",
