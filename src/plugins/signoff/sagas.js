@@ -382,8 +382,8 @@ function _pickSignoffResource(
         (!source.collection || source.collection == cid)) ||
       // Preview is enabled and we are viewing it.
       (preview &&
-        (preview.bucket == bid &&
-          (!preview.collection || preview.collection == cid))) ||
+        preview.bucket == bid &&
+          (!preview.collection || preview.collection == cid)) ||
       // We are viewing the destination.
       (destination.bucket == bid &&
         (!destination.collection || destination.collection == cid))

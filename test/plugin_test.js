@@ -54,7 +54,10 @@ describe("Plugin API", () => {
       yield 3;
     }
     const plugins = [
-      [[takeEvery, "ACTION_1", saga1], [takeEvery, "ACTION_2", saga2]],
+      [
+        [takeEvery, "ACTION_1", saga1],
+        [takeEvery, "ACTION_2", saga2],
+      ],
       [[takeEvery, "ACTION_3", saga3]],
     ];
 
