@@ -4,10 +4,6 @@
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
     "react/react-in-jsx-scope": "error",
-    "curly": ["error"],
-    "linebreak-style": ["error", "unix"],
-    "semi": ["error", "always"],
-    "comma-dangle": ["error", "always-multiline"],
     "no-unused-vars": ["error", {"vars": "all", "args": "none", "varsIgnorePattern": "^_"}],
     "no-console": "off",
   },
@@ -20,7 +16,10 @@
     "node": true,
     "jest": true
   },
-  "extends": "eslint:recommended",
+  "extends": [
+    "eslint:recommended",
+    "prettier"
+  ],
   "parserOptions": {
     "ecmaVersion": 2018,
     "sourceType": "module",
