@@ -96,7 +96,7 @@
     "sinon": "^8.0.0",
     "style-loader": "^1.0.0",
     "toctoc": "^0.3.0",
-    "url-loader": "^2.1.0",
+    "url-loader": "^3.0.0",
     "webpack": "^4.16.2",
     "webpack-cli": "^3.1.0",
     "webpack-dev-middleware": "^3.0.0",
