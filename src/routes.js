@@ -121,10 +121,10 @@ type RouteCreatorOwnProps = {|
   title: string,
 |};
 
-type RouteCreatorProps = {
+type RouteCreatorProps = {|
   ...RouteCreatorOwnProps,
   routeUpdated: typeof RouteActions.routeUpdated,
-};
+|};
 
 const routeCreator = ({
   component: Component,
@@ -166,8 +166,13 @@ const routeCreator = ({
   );
 };
 
-function mapDispatchToProps(dispatch: DispatchAPI<*>): typeof RouteActions {
-  return bindActionCreators(RouteActions, dispatch);
+function mapDispatchToProps(
+  dispatch: DispatchAPI<*>
+): {| routeUpdated: typeof RouteActions.routeUpdated |} {
+  return bindActionCreators(
+    { routeUpdated: RouteActions.routeUpdated },
+    dispatch
+  );
 }
 
 export const CreateRoute = connect<
