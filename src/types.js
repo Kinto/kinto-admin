@@ -190,11 +190,11 @@ export type GroupUpdate =
       permissions: GroupPermissions,
     };
 
-export type Notification = {
+export type Notification = {|
   type: string,
   message: string,
   details: string[],
-};
+|};
 
 export type Notifications = Notification[];
 
@@ -356,13 +356,13 @@ export type RouteLocation = {
   query: HistoryFilters,
 };
 
-export type RouteResources = {
+export type RouteResources = {|
   bucket: BucketResource,
   groups: GroupData[],
   collection: ?CollectionResource,
   record: ?RecordResource,
   group: ?GroupResource,
-};
+|};
 
 export type AuthMethod =
   | "anonymous"

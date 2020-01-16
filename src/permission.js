@@ -333,6 +333,13 @@ export function preparePermissionsForm(
     },
   };
 
+  const groupSchema = {
+    classNames: "field-groups",
+  };
+  for (let group of groups) {
+    groupSchema[group.id] = { "ui:widget": "checkboxes" };
+  }
+
   const uiSchema = {
     anonymous: {
       "ui:widget": "checkboxes",
@@ -356,12 +363,7 @@ export function preparePermissionsForm(
         },
       },
     },
-    groups: {
-      classNames: "field-groups",
-      ...groups.reduce((acc, group) => {
-        return { ...acc, [group.id]: { "ui:widget": "checkboxes" } };
-      }, {}),
-    },
+    groups: groupSchema,
   };
 
   return { schema, uiSchema };
