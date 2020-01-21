@@ -28,7 +28,7 @@
   "engineStrict": false,
   "engines": {
     "npm": "^2.14.7",
-    "node": ">=4"
+    "node": ">=10"
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
@@ -86,7 +86,7 @@
     "html": "1.0.0",
     "ignore-styles": "^5.0.1",
     "jest": "^24.1.0",
-    "jsdom": "^15.0.0",
+    "jsdom": "^16.0.1",
     "kinto-node-test-server": "^1.0.2",
     "mocha": "^7.0.0",
     "mocha-generators": "^2.0.0",
