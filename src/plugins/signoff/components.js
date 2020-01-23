@@ -130,7 +130,6 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
       isReviewer(source, sessionState) &&
       !hasRequestedReview(source, sessionState);
     const canRollback = canEdit;
-    const canSign = canEdit && isReviewer(source, sessionState);
     const hasHistory = "history" in sessionState.serverInfo.capabilities;
 
     // Default status is request review
@@ -179,8 +178,6 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
             step={2}
             currentStep={currentStep}
             isCurrentUrl={destination.bid == bid && destination.cid == cid}
-            canEdit={canSign}
-            reSign={approveChanges}
             source={source}
             destination={destination}
           />
@@ -536,27 +533,15 @@ function ReviewButtons(props: {
 
 type SignedProps = {
   label: string,
-  canEdit: boolean,
   currentStep: number,
   step: number,
   isCurrentUrl: boolean,
-  reSign: () => void,
   source: SourceInfo,
   destination: ?DestinationInfo,
 };
 
 function Signed(props: SignedProps) {
-  const {
-    label,
-    canEdit,
-    currentStep,
-    step,
-    isCurrentUrl,
-    reSign,
-    source,
-    destination,
-  } = props;
-  const isCurrentStep = step == currentStep && canEdit;
+  const { label, currentStep, step, isCurrentUrl, source, destination } = props;
   return (
     <ProgressStep label={label} currentStep={currentStep} step={step}>
       {destination && source.lastSignatureBy && (
@@ -566,7 +551,6 @@ function Signed(props: SignedProps) {
           isCurrentUrl={isCurrentUrl}
         />
       )}
-      {isCurrentStep && <ReSignButton onClick={reSign} />}
     </ProgressStep>
   );
 }
@@ -617,15 +601,6 @@ function SignedInfos(props: SignedInfosProps) {
         </li>
       )}
     </ul>
-  );
-}
-
-function ReSignButton(props: { onClick: () => void }) {
-  const { onClick } = props;
-  return (
-    <button className="btn btn-info" onClick={onClick}>
-      <i className="glyphicon glyphicon-repeat" /> Re-sign
-    </button>
   );
 }
 
