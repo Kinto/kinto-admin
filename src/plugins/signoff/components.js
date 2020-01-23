@@ -541,14 +541,7 @@ type SignedProps = {
 };
 
 function Signed(props: SignedProps) {
-  const {
-    label,
-    currentStep,
-    step,
-    isCurrentUrl,
-    source,
-    destination,
-  } = props;
+  const { label, currentStep, step, isCurrentUrl, source, destination } = props;
   return (
     <ProgressStep label={label} currentStep={currentStep} step={step}>
       {destination && source.lastSignatureBy && (
