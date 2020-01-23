@@ -39,6 +39,7 @@ export default function signoff(
         collectionsInfo,
         pendingConfirmReviewRequest: false,
         pendingConfirmDeclineChanges: false,
+        pendingConfirmRollbackChanges: false,
       };
     }
     default: {
