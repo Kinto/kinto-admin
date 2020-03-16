@@ -46,7 +46,7 @@
     "react": "^16.8.6",
     "react-breadcrumbs": "^2.1.6",
     "react-bs-notifier": "^5.0.0",
-    "react-codemirror2": "^6.0.0",
+    "react-codemirror2": "^7.0.0",
     "react-dom": "^16.8.6",
     "react-jsonschema-form": "^1.8.0",
     "react-redux": "^7.1.1",
