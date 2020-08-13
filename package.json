@@ -85,7 +85,7 @@
     "gh-pages": "^2.0.0",
     "html": "1.0.0",
     "ignore-styles": "^5.0.1",
-    "jest": "^25.1.0",
+    "jest": "^26.3.0",
     "jsdom": "^16.0.1",
     "kinto-node-test-server": "^1.0.2",
     "mocha": "^7.0.0",
