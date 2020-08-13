@@ -80,7 +80,7 @@
     "eslint-config-prettier": "^6.5.0",
     "eslint-plugin-react": "^7.0.1",
     "extract-text-webpack-plugin": "^4.0.0-alpha.0",
-    "file-loader": "^5.0.2",
+    "file-loader": "^6.0.0",
     "flow-bin": "^0.120.1",
     "gh-pages": "^2.0.0",
     "html": "1.0.0",
