@@ -52,9 +52,7 @@ function fetchCollectionStateAt(
   cid: string,
   timestamp: ?string
 ): Promise<Object[]> {
-  const coll = getClient()
-    .bucket(bid)
-    .collection(cid);
+  const coll = getClient().bucket(bid).collection(cid);
   const query = timestamp ? { at: parseInt(timestamp, 10) } : {};
   return coll.listRecords(query).then(({ data: records }) => {
     // clean entries for easier review

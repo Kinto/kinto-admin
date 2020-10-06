@@ -21,17 +21,13 @@ describe("configureStore()", () => {
       });
 
       it("should register a plugin reducer", () => {
-        expect(store.getState())
-          .to.have.property("count")
-          .eql(0);
+        expect(store.getState()).to.have.property("count").eql(0);
       });
 
       it("should forward actions to the registered plugin reducer", () => {
         store.dispatch({ type: "INC" });
 
-        expect(store.getState())
-          .to.have.property("count")
-          .eql(1);
+        expect(store.getState()).to.have.property("count").eql(1);
       });
     });
 

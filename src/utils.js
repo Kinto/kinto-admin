@@ -114,10 +114,7 @@ export function validateUiSchema(jsonUiSchema: string, jsonSchema: string) {
     const order = uiSchema["ui:order"];
     const properties: string[] = Object.keys(schema.properties);
     const arrayId = (array: string[]): string =>
-      array
-        .slice()
-        .sort()
-        .toString();
+      array.slice().sort().toString();
     checks = checks.concat([
       {
         test: () => Array.isArray(order),

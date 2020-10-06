@@ -84,9 +84,7 @@ describe("session reducer", () => {
       serverInfo,
     });
 
-    expect(state)
-      .to.have.property("serverInfo")
-      .eql(serverInfo);
+    expect(state).to.have.property("serverInfo").eql(serverInfo);
   });
 
   it("SESSION_PERMISSIONS_SUCCESS", () => {
@@ -101,9 +99,7 @@ describe("session reducer", () => {
       permissions,
     });
 
-    expect(state)
-      .to.have.property("permissions")
-      .eql(permissions);
+    expect(state).to.have.property("permissions").eql(permissions);
   });
 
   it("SESSION_BUCKETS_REQUEST", () => {
@@ -111,9 +107,7 @@ describe("session reducer", () => {
       type: SESSION_BUCKETS_REQUEST,
     });
 
-    expect(state)
-      .to.have.property("busy")
-      .eql(true);
+    expect(state).to.have.property("busy").eql(true);
   });
 
   it("SESSION_BUCKETS_SUCCESS", () => {
@@ -124,12 +118,8 @@ describe("session reducer", () => {
       buckets,
     });
 
-    expect(state)
-      .to.have.property("buckets")
-      .eql(buckets);
-    expect(state)
-      .to.have.property("busy")
-      .eql(false);
+    expect(state).to.have.property("buckets").eql(buckets);
+    expect(state).to.have.property("busy").eql(false);
   });
 
   it("SESSION_AUTHENTICATED", () => {
@@ -140,9 +130,7 @@ describe("session reducer", () => {
       }
     );
 
-    expect(state)
-      .to.have.property("authenticated")
-      .eql(true);
+    expect(state).to.have.property("authenticated").eql(true);
   });
 
   it("SESSION_LOGOUT", () => {
