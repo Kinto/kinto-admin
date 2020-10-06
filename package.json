@@ -42,7 +42,7 @@
     "express": "^4.14.0",
     "filesize": "^6.0.1",
     "history": "^4.9.0",
-    "kinto-http": "^4.7.0",
+    "kinto-http": "^5.1.1",
     "react": "^16.8.6",
     "react-breadcrumbs": "^2.1.6",
     "react-bs-notifier": "^6.0.0",
