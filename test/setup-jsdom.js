@@ -13,7 +13,7 @@ global.navigator = global.window.navigator;
 JSDOM.reconfigure({ url: "http://server.test/" });
 
 // Setup dumb sessionStorage for tests
-global.sessionStorage = (function() {
+global.sessionStorage = (function () {
   var _state = {};
   return {
     getItem(key) {

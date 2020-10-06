@@ -258,7 +258,7 @@ describe("buildAttachmentUrl", () => {
   });
 });
 
-describe("timeago", function() {
+describe("timeago", function () {
   it("should convert a timestamp", () => {
     const now = new Date().getTime();
     expect(timeago(now - 86400000, now)).eql("1 day ago");
@@ -304,7 +304,7 @@ describe("sortHistoryEntryPermissions()", () => {
   });
 });
 
-describe("diffJson", function() {
+describe("diffJson", function () {
   it("should return diff as string lines", () => {
     const diff = diffJson({ x: 0, a: 1, b: 2 }, { x: 0, a: 1, b: 3 });
     expect(diff).eql([

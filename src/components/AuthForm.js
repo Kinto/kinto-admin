@@ -167,7 +167,7 @@ const baseUISchema = {
   },
 };
 
-const loginPasswordSchema = function(title) {
+const loginPasswordSchema = function (title) {
   return {
     credentials: {
       type: "object",
