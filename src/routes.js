@@ -3,7 +3,7 @@ import * as React from "react";
 import { Component, PureComponent } from "react";
 import { Route, Switch } from "react-router-dom";
 import type { ContextRouter, LocationShape } from "react-router-dom";
-import { mergeObjects } from "react-jsonschema-form/lib/utils";
+import { utils as formUtils } from "@rjsf/core";
 import { Breadcrumb } from "react-breadcrumbs";
 import type { DispatchAPI } from "redux";
 import { bindActionCreators } from "redux";
@@ -33,7 +33,7 @@ function registerPluginsComponentHooks(
   const hooks = plugins.map(plugin => plugin.hooks).filter(isObject);
   // Merge all the hooks together, recursively grouped by namespaces
   const mergedHooks = hooks.reduce((acc, hookObject) => {
-    return mergeObjects(acc, hookObject, true);
+    return formUtils.mergeObjects(acc, hookObject, true);
   }, {});
   // Wrap the root component, augmenting its props with the plugin hooks for it.
   return class extends Component<*> {

@@ -1,6 +1,6 @@
 /* @flow */
 import React, { PureComponent } from "react";
-import Form from "react-jsonschema-form";
+import Form from "@rjsf/core";
 
 import TagsField from "./TagsField";
 
