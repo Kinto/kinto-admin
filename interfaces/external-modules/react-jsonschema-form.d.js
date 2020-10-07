@@ -1,12 +1,9 @@
-declare module "react-jsonschema-form" {
-  declare module.exports: React.Component;
-}
-
-declare module "react-jsonschema-form/lib/utils" {
+declare module "@rjsf/core" {
   declare function mergeObjects(
     obj1: Object,
     obj2: Object,
     concatArrays: boolean
   ): Object;
-  declare module.exports: { mergeObjects: typeof mergeObjects };
+  declare export var utils: { mergeObjects: typeof mergeObjects };
+  declare export default React.Component;
 }

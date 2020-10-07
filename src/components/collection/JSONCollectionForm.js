@@ -4,7 +4,7 @@ import type { CollectionData } from "../../types";
 import { PureComponent } from "react";
 import * as React from "react";
 
-import Form from "react-jsonschema-form";
+import Form from "@rjsf/core";
 
 import JSONEditor from "../JSONEditor";
 import { validJSON, omit } from "../../utils";
