@@ -25,6 +25,9 @@ describe("root saga", () => {
 
   beforeEach(() => {
     sandbox = createSandbox();
+    // To match the behavior of older versions of redux-saga, we're ignoring
+    // calls to console.error from these tests.
+    jest.spyOn(console, "error").mockImplementation(() => {});
   });
 
   afterEach(() => {
