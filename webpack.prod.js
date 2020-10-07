@@ -1,6 +1,6 @@
 var path = require("path");
 var webpack = require("webpack");
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 var version = require("./package.json").version;
 
 module.exports = {
@@ -16,7 +16,7 @@ module.exports = {
   },
   plugins: [
     new webpack.IgnorePlugin(/^(buffertools)$/), // unwanted "deeper" dependency
-    new ExtractTextPlugin({ filename: "styles.css", allChunks: true }),
+    new MiniCssExtractPlugin({ filename: "styles.css" }),
     new webpack.DefinePlugin({
       "process.env": {
         KINTO_ADMIN_VERSION: JSON.stringify(version),
@@ -36,7 +36,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract("css-loader"),
+        loader: [MiniCssExtractPlugin.loader, "css-loader"],
       },
       { test: /\.png$/, loader: "url-loader", options: { limit: 10000 } },
       { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader" },
