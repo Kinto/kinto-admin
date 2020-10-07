@@ -17,7 +17,8 @@
     "test": "cross-env NODE_ENV=test jest",
     "test:ci": "npm run test -- --maxWorkers=4",
     "test-all": "npm run lint && npm run flow-check && npm run test",
-    "test-all:ci": "npm run lint && npm install flow-typed && flow-typed install && npm run flow-check && npm run test:ci"
+    "test-all:ci": "npm run lint && npm install flow-typed && flow-typed install && npm run flow-check && npm run test:ci",
+    "postinstall": "patch-package"
   },
   "main": "lib/index.js",
   "files": [
@@ -91,6 +92,7 @@
     "kinto-node-test-server": "^2.0.0",
     "mocha": "^8.1.1",
     "mocha-generators": "^2.0.0",
+    "patch-package": "^6.2.2",
     "prettier": "^2.1.2",
     "react-test-renderer": "^16.5.1",
     "redbox-react": "^1.2.6",
