@@ -365,7 +365,7 @@ describe("session sagas", () => {
         const buckets = { data: [{ id: "b1" }, { id: "b2" }] };
 
         expect(listBuckets.next(buckets).value)
-          .to.have.property("CALL")
+          .to.have.property("payload")
           .to.have.property("fn")
           .eql(client.batch);
       });
@@ -474,7 +474,7 @@ describe("session sagas", () => {
           listBuckets.throw(new Error("HTTP 403"));
           // Saga continues without failing.
           expect(listBuckets.next().value)
-            .to.have.property("CALL")
+            .to.have.property("payload")
             .to.have.property("fn")
             .eql(client.listPermissions);
         });
@@ -484,7 +484,7 @@ describe("session sagas", () => {
           listBuckets.throw(new Error("HTTP 401"));
           // Saga continues without failing.
           expect(listBuckets.next().value)
-            .to.have.property("CALL")
+            .to.have.property("payload")
             .to.have.property("fn")
             .eql(client.listPermissions);
         });
