@@ -175,7 +175,7 @@ function mapDispatchToProps(
   );
 }
 
-export const CreateRoute = connect<
+export const CreateRoute = (connect<
   RouteCreatorProps,
   RouteCreatorOwnProps,
   _, // eslint-disable-line
@@ -185,7 +185,7 @@ export const CreateRoute = connect<
 >(
   null,
   mapDispatchToProps
-)(routeCreator);
+)(routeCreator): any);
 
 export default function getRoutes(store: Object, plugins: Object[] = []) {
   const hookedSidebar = registerPluginsComponentHooks(Sidebar, plugins);
