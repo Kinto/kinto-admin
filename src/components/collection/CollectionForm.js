@@ -9,6 +9,9 @@ import type {
 import React, { PureComponent } from "react";
 import { Link } from "react-router-dom";
 
+import { ReactComponent as Check2Icon } from "bootstrap-icons/icons/check2.svg";
+import { ReactComponent as TrashIcon } from "bootstrap-icons/icons/trash.svg";
+
 import BaseForm from "../BaseForm";
 import JSONCollectionForm from "./JSONCollectionForm";
 import JSONEditor from "../JSONEditor";
@@ -72,7 +75,7 @@ function DeleteForm({ cid, onSubmit }) {
             }
           }}>
           <button type="submit" className="btn btn-danger">
-            <i className="glyphicon glyphicon-trash" /> Delete collection
+            <TrashIcon className="icon" /> Delete collection
           </button>
         </BaseForm>
       </div>
@@ -388,7 +391,7 @@ export default class CollectionForm extends PureComponent<Props, State> {
           type="submit"
           disabled={!this.allowEditing}
           className="btn btn-primary">
-          <i className="glyphicon glyphicon-ok" />
+          <Check2Icon className="icon" />
           {` ${creation ? "Create" : "Update"} collection`}
         </button>
         {" or "}

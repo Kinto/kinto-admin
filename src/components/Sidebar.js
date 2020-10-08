@@ -10,6 +10,16 @@ import type { Location, Match } from "react-router-dom";
 import { PureComponent } from "react";
 import * as React from "react";
 
+import { ReactComponent as PlusIcon } from "bootstrap-icons/icons/plus.svg";
+import { ReactComponent as XCircleFillIcon } from "bootstrap-icons/icons/x-circle-fill.svg";
+import { ReactComponent as Folder2Icon } from "bootstrap-icons/icons/folder2.svg";
+import { ReactComponent as Folder2OpenIcon } from "bootstrap-icons/icons/folder2-open.svg";
+import { ReactComponent as GearIcon } from "bootstrap-icons/icons/gear.svg";
+import { ReactComponent as LockIcon } from "bootstrap-icons/icons/lock.svg";
+import { ReactComponent as JustifyIcon } from "bootstrap-icons/icons/justify.svg";
+import { ReactComponent as ThreeDotsIcon } from "bootstrap-icons/icons/three-dots.svg";
+import { ReactComponent as ArrowRepeatIcon } from "bootstrap-icons/icons/arrow-repeat.svg";
+
 import * as SessionActions from "../actions/session";
 import Spinner from "./Spinner";
 import AdminLink from "./AdminLink";
@@ -52,7 +62,7 @@ function HomeMenu(props) {
       <div className="list-group">
         <SideBarLink name="home" currentPath={currentPath} params={{}}>
           Home
-          <i onClick={onRefresh} className="glyphicon glyphicon-refresh" />
+          <ArrowRepeatIcon onClick={onRefresh} className="icon" />
         </SideBarLink>
       </div>
     </div>
@@ -80,9 +90,9 @@ function CollectionMenuEntry(props) {
         currentPath={currentPath}
         className="">
         {collection.readonly ? (
-          <i className="glyphicon glyphicon-lock" />
+          <LockIcon className="icon" />
         ) : (
-          <i className="glyphicon glyphicon-align-justify" />
+          <JustifyIcon className="icon" />
         )}
         {cid}
       </SideBarLink>
@@ -92,7 +102,7 @@ function CollectionMenuEntry(props) {
         currentPath={currentPath}
         className="collections-menu-entry-edit"
         title="Edit collection attributes">
-        <i className="glyphicon glyphicon-cog" />
+        <GearIcon className="icon" />
       </SideBarLink>
     </div>
   );
@@ -137,7 +147,7 @@ function BucketCollectionsMenu(props) {
             name="bucket:collections"
             params={{ bid: bucket.id }}
             currentPath={currentPath}>
-            <i className="glyphicon glyphicon-option-horizontal" />
+            <ThreeDotsIcon className="icon" />
             See all collections
           </SideBarLink>
         )}
@@ -146,7 +156,7 @@ function BucketCollectionsMenu(props) {
           name="collection:create"
           params={{ bid: bucket.id }}
           currentPath={currentPath}>
-          <i className="glyphicon glyphicon-plus" />
+          <PlusIcon className="icon" />
           Create collection
         </SideBarLink>
       )}
@@ -247,7 +257,7 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
                 name="bucket:create"
                 currentPath={currentPath}
                 params={{}}>
-                <i className="glyphicon glyphicon-plus" />
+                <PlusIcon className="icon" />
                 Create bucket
               </SideBarLink>
             </div>
@@ -268,7 +278,7 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
               />
               <span className="input-group-addon">
                 <a href="" className="clear" onClick={this.resetSearch}>
-                  <i className="glyphicon glyphicon-remove-sign" />
+                  <XCircleFillIcon className="icon" />
                 </a>
               </span>
             </div>
@@ -298,13 +308,11 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
                 } bucket-menu`}>
                 <div className="panel-heading">
                   {bucket.readonly ? (
-                    <i className="glyphicon glyphicon-lock" />
+                    <LockIcon className="icon" />
+                  ) : current ? (
+                    <Folder2OpenIcon className="icon" />
                   ) : (
-                    <i
-                      className={`glyphicon glyphicon-folder-${
-                        current ? "open" : "close"
-                      }`}
-                    />
+                    <Folder2Icon className="icon" />
                   )}
                   <strong>{id}</strong> bucket
                   <SideBarLink
@@ -313,7 +321,7 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
                     currentPath={currentPath}
                     className="bucket-menu-entry-edit"
                     title="Manage bucket">
-                    <i className="glyphicon glyphicon-cog" />
+                    <GearIcon className="icon" />
                   </SideBarLink>
                 </div>
                 <BucketCollectionsMenu

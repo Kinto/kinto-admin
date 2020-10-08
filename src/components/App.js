@@ -33,6 +33,10 @@ import RecordAttributesPage from "../containers/record/RecordAttributesPage";
 import RecordPermissionsPage from "../containers/record/RecordPermissionsPage";
 import RecordHistoryPage from "../containers/record/RecordHistoryPage";
 
+import { ReactComponent as BoxArrowRight } from "bootstrap-icons/icons/box-arrow-right.svg";
+import { ReactComponent as QuestionCircleFillIcon } from "bootstrap-icons/icons/question-circle-fill.svg";
+import { ReactComponent as ClipboardIcon } from "bootstrap-icons/icons/clipboard.svg";
+
 function UserInfo({ session }) {
   const {
     serverInfo: { user = {} },
@@ -65,19 +69,19 @@ function SessionInfoBar({ session, logout, copyAuthenticationHeader }) {
           onClick={event =>
             event.preventDefault() || copyAuthenticationHeader()
           }>
-          <i className="glyphicon glyphicon-copy" />
+          <ClipboardIcon className="icon" />
         </a>
         <a
           href={project_docs}
           target="_blank"
           className="spaced btn btn-xs btn-default project-docs">
-          <i className="glyphicon glyphicon-question-sign" /> Documentation
+          <QuestionCircleFillIcon className="icon" /> Documentation
         </a>
         <a
           href=""
           className="spaced btn btn-xs btn-success btn-logout"
           onClick={event => event.preventDefault() || logout()}>
-          <i className="glyphicon glyphicon-log-out" /> Logout
+          <BoxArrowRight className="icon" /> Logout
         </a>
       </span>
     </div>

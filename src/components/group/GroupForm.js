@@ -8,6 +8,9 @@ import type {
 
 import React, { PureComponent } from "react";
 
+import { ReactComponent as Check2Icon } from "bootstrap-icons/icons/check2.svg";
+import { ReactComponent as TrashIcon } from "bootstrap-icons/icons/trash.svg";
+
 import BaseForm from "../BaseForm";
 import AdminLink from "../AdminLink";
 import JSONEditor from "../JSONEditor";
@@ -81,7 +84,7 @@ function DeleteForm({ gid, onSubmit }) {
             }
           }}>
           <button type="submit" className="btn btn-danger">
-            <i className="glyphicon glyphicon-trash" /> Delete group
+            <TrashIcon className="icon" /> Delete group
           </button>
         </BaseForm>
       </div>
@@ -159,7 +162,7 @@ export default class GroupForm extends PureComponent<Props> {
           type="submit"
           disabled={!formIsEditable}
           className="btn btn-primary">
-          <i className="glyphicon glyphicon-ok" />
+          <Check2Icon className="icon" />
           {` ${creation ? "Create" : "Update"} group`}
         </button>
         {" or "}
