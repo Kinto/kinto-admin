@@ -94,7 +94,7 @@ class Row extends PureComponent<RowProps> {
   render() {
     const { bid, cid, record, displayFields, capabilities } = this.props;
     const { id: rid } = record;
-    const attachmentUrl = "#"; // buildAttachmentUrl(record, capabilities);
+    const attachmentUrl = buildAttachmentUrl(record, capabilities);
     return (
       <tr onDoubleClick={this.onDoubleClick.bind(this)}>
         {displayFields.map((displayField, index) => {
