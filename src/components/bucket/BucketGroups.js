@@ -8,6 +8,9 @@ import type {
 
 import React, { PureComponent } from "react";
 
+import { ReactComponent as GearIcon } from "bootstrap-icons/icons/gear.svg";
+import { ReactComponent as ClockHistoryIcon } from "bootstrap-icons/icons/clock-history.svg";
+
 import { timeago } from "../../utils";
 import AdminLink from "../AdminLink";
 import BucketTabs from "./BucketTabs";
@@ -49,7 +52,7 @@ function DataList(props) {
                       params={{ bid, gid }}
                       className="btn btn-xs btn-default"
                       title="View group history">
-                      <i className="glyphicon glyphicon-time" />
+                      <ClockHistoryIcon className="icon" />
                     </AdminLink>
                   )}
                   <AdminLink
@@ -57,7 +60,7 @@ function DataList(props) {
                     params={{ bid, gid }}
                     className="btn btn-xs btn-default"
                     title="Edit groups attributes">
-                    <i className="glyphicon glyphicon-cog" />
+                    <GearIcon className="icon" />
                   </AdminLink>
                 </div>
               </td>

@@ -4,6 +4,11 @@ import type { Capabilities } from "../../types";
 import { PureComponent } from "react";
 import * as React from "react";
 
+import { ReactComponent as GearIcon } from "bootstrap-icons/icons/gear.svg";
+import { ReactComponent as LockIcon } from "bootstrap-icons/icons/lock.svg";
+import { ReactComponent as JustifyIcon } from "bootstrap-icons/icons/justify.svg";
+import { ReactComponent as ClockHistoryIcon } from "bootstrap-icons/icons/clock-history.svg";
+
 import AdminLink from "../AdminLink";
 
 type Props = {
@@ -33,7 +38,7 @@ export default class CollectionTabs extends PureComponent<Props> {
             role="presentation"
             className={selected === "records" ? "active" : ""}>
             <AdminLink name="collection:records" params={{ bid, cid }}>
-              <i className="glyphicon glyphicon-align-justify" />
+              <JustifyIcon className="icon" />
               Records {totalRecords ? `(${totalRecords})` : null}
             </AdminLink>
           </li>
@@ -41,7 +46,7 @@ export default class CollectionTabs extends PureComponent<Props> {
             role="presentation"
             className={selected === "attributes" ? "active" : ""}>
             <AdminLink name="collection:attributes" params={{ bid, cid }}>
-              <i className="glyphicon glyphicon-cog" />
+              <GearIcon className="icon" />
               Attributes
             </AdminLink>
           </li>
@@ -49,7 +54,7 @@ export default class CollectionTabs extends PureComponent<Props> {
             role="presentation"
             className={selected === "permissions" ? "active" : ""}>
             <AdminLink name="collection:permissions" params={{ bid, cid }}>
-              <i className="glyphicon glyphicon-lock" />
+              <LockIcon className="icon" />
               Permissions
             </AdminLink>
           </li>
@@ -58,7 +63,7 @@ export default class CollectionTabs extends PureComponent<Props> {
               role="presentation"
               className={selected === "history" ? "active" : ""}>
               <AdminLink name="collection:history" params={{ bid, cid }}>
-                <i className="glyphicon glyphicon-time" />
+                <ClockHistoryIcon className="icon" />
                 History
               </AdminLink>
             </li>

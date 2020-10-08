@@ -11,6 +11,13 @@ import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
 
+import { ReactComponent as PaperclipIcon } from "bootstrap-icons/icons/paperclip.svg";
+import { ReactComponent as PencilIcon } from "bootstrap-icons/icons/pencil.svg";
+import { ReactComponent as LockIcon } from "bootstrap-icons/icons/lock.svg";
+import { ReactComponent as TrashIcon } from "bootstrap-icons/icons/trash.svg";
+import { ReactComponent as SortUpIcon } from "bootstrap-icons/icons/sort-up.svg";
+import { ReactComponent as SortDownIcon } from "bootstrap-icons/icons/sort-down.svg";
+
 import * as CollectionActions from "../../actions/collection";
 import * as RouteActions from "../../actions/route";
 import {
@@ -104,7 +111,7 @@ class Row extends PureComponent<RowProps> {
                 className="btn btn-sm btn-default"
                 title="The record has an attachment"
                 target="_blank">
-                <i className="glyphicon glyphicon-paperclip" />
+                <PaperclipIcon className="icon" />
               </a>
             )}
             <AdminLink
@@ -112,21 +119,21 @@ class Row extends PureComponent<RowProps> {
               params={{ bid, cid, rid }}
               className="btn btn-sm btn-info"
               title="Edit record">
-              <i className="glyphicon glyphicon-pencil" />
+              <PencilIcon className="icon" />
             </AdminLink>
             <AdminLink
               name="record:permissions"
               params={{ bid, cid, rid }}
               className="btn btn-sm btn-warning"
               title="Record permissions">
-              <i className="glyphicon glyphicon-lock" />
+              <LockIcon className="icon" />
             </AdminLink>
             <button
               type="button"
               className="btn btn-sm btn-danger"
               onClick={this.onDeleteClick.bind(this)}
               title="Delete record">
-              <i className="glyphicon glyphicon-trash" />
+              <TrashIcon className="icon" />
             </button>
           </div>
         </td>
@@ -152,7 +159,11 @@ function SortLink(props) {
           updateSort(column);
         }
       }}>
-      <i className={`glyphicon glyphicon-menu-${dir}`} />
+      {dir === "up" ? (
+        <SortUpIcon className="icon" />
+      ) : (
+        <SortDownIcon className="icon" />
+      )}
     </a>
   );
 }

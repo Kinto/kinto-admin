@@ -11,6 +11,10 @@ import type {
 import { PureComponent } from "react";
 import * as React from "react";
 
+import { ReactComponent as ChatLeftIcon } from "bootstrap-icons/icons/chat-left.svg";
+import { ReactComponent as XCircleFillIcon } from "bootstrap-icons/icons/x-circle-fill.svg";
+import { ReactComponent as Check2Icon } from "bootstrap-icons/icons/check2.svg";
+
 import { canEditCollection } from "../../permission";
 import { timeago, humanDate } from "../../utils";
 import AdminLink from "../../components/AdminLink";
@@ -338,7 +342,7 @@ function RequestReviewButton(props: { onClick: () => void }) {
   const { onClick } = props;
   return (
     <button className="btn btn-info request-review" onClick={onClick}>
-      <i className="glyphicon glyphicon-comment" /> Request review...
+      <ChatLeftIcon className="icon" /> Request review...
     </button>
   );
 }
@@ -347,7 +351,7 @@ function RollbackChangesButton(props: { onClick: () => void }) {
   const { onClick } = props;
   return (
     <button className="btn btn-info rollback-changes" onClick={onClick}>
-      <i className="glyphicon glyphicon-remove-sign" /> Rollback changes...
+      <XCircleFillIcon className="icon" /> Rollback changes...
     </button>
   );
 }
@@ -518,10 +522,10 @@ function ReviewButtons(props: {
   return (
     <div className="btn-group">
       <button className="btn btn-success" onClick={onApprove}>
-        <i className="glyphicon glyphicon-ok" /> Approve
+        <Check2Icon className="icon" /> Approve
       </button>
       <button className="btn btn-danger" onClick={onDecline}>
-        <i className="glyphicon glyphicon-comment" /> Decline...
+        <ChatLeftIcon className="icon" /> Decline...
       </button>
     </div>
   );
@@ -671,7 +675,7 @@ class CommentDialog extends PureComponent<
                   type="button"
                   className="btn btn-primary"
                   onClick={onClickConfirm}>
-                  <i className="glyphicon glyphicon-ok" /> {confirmLabel}
+                  <Check2Icon className="icon" /> {confirmLabel}
                 </button>
               </div>
             </div>

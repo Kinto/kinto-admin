@@ -4,6 +4,12 @@ import type { Capabilities } from "../../types";
 import { PureComponent } from "react";
 import * as React from "react";
 
+import { ReactComponent as GearIcon } from "bootstrap-icons/icons/gear.svg";
+import { ReactComponent as LockIcon } from "bootstrap-icons/icons/lock.svg";
+import { ReactComponent as JustifyIcon } from "bootstrap-icons/icons/justify.svg";
+import { ReactComponent as PersonFillIcon } from "bootstrap-icons/icons/person-fill.svg";
+import { ReactComponent as ClockHistoryIcon } from "bootstrap-icons/icons/clock-history.svg";
+
 import AdminLink from "../AdminLink";
 
 type Props = {
@@ -24,7 +30,7 @@ export default class BucketTabs extends PureComponent<Props> {
             role="presentation"
             className={selected === "collections" ? "active" : ""}>
             <AdminLink name="bucket:collections" params={{ bid }}>
-              <i className="glyphicon glyphicon-align-justify" />
+              <JustifyIcon className="icon" />
               Collections
             </AdminLink>
           </li>
@@ -32,7 +38,7 @@ export default class BucketTabs extends PureComponent<Props> {
             role="presentation"
             className={selected === "groups" ? "active" : ""}>
             <AdminLink name="bucket:groups" params={{ bid }}>
-              <i className="glyphicon glyphicon-user" />
+              <PersonFillIcon className="icon" />
               Groups
             </AdminLink>
           </li>
@@ -40,7 +46,7 @@ export default class BucketTabs extends PureComponent<Props> {
             role="presentation"
             className={selected === "attributes" ? "active" : ""}>
             <AdminLink name="bucket:attributes" params={{ bid }}>
-              <i className="glyphicon glyphicon-cog" />
+              <GearIcon className="icon" />
               Attributes
             </AdminLink>
           </li>
@@ -48,7 +54,7 @@ export default class BucketTabs extends PureComponent<Props> {
             role="presentation"
             className={selected === "permissions" ? "active" : ""}>
             <AdminLink name="bucket:permissions" params={{ bid }}>
-              <i className="glyphicon glyphicon-lock" />
+              <LockIcon className="icon" />
               Permissions
             </AdminLink>
           </li>
@@ -57,7 +63,7 @@ export default class BucketTabs extends PureComponent<Props> {
               role="presentation"
               className={selected === "history" ? "active" : ""}>
               <AdminLink name="bucket:history" params={{ bid }}>
-                <i className="glyphicon glyphicon-time" />
+                <ClockHistoryIcon className="icon" />
                 History
               </AdminLink>
             </li>
