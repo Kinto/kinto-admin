@@ -174,7 +174,7 @@ describe("RecordAttributes component", () => {
         });
 
         it("should show a text field", () => {
-          expect(field.getAttribute("type")).to.eql("text");
+          expect(field.getAttribute("type")).to.eql("string");
         });
 
         it("should show the id as disabled", () => {
@@ -309,7 +309,7 @@ describe("RecordAttributes component", () => {
         });
 
         it("should show a custom field", () => {
-          expect(field.getAttribute("type")).to.eql("text");
+          expect(field.getAttribute("type")).to.eql("integer");
         });
 
         it("should show the custom widget as disabled", () => {
@@ -417,7 +417,7 @@ describe("RecordAttributes component", () => {
         });
 
         it("should show a custom field", () => {
-          expect(field.getAttribute("type")).to.eql("text");
+          expect(field.getAttribute("type")).to.eql("integer");
         });
 
         it("should show the custom widget as disabled", () => {

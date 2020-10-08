@@ -1,6 +1,6 @@
 /* @flow */
 import React, { PureComponent } from "react";
-import Form from "@rjsf/core";
+import Form from "@rjsf/bootstrap-4";
 
 import TagsField from "./TagsField";
 

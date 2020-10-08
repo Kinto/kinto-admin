@@ -155,7 +155,7 @@ describe("CollectionRecords component", () => {
 
     it("should show the total number of records", () => {
       expect(
-        node.querySelector(".tabs-container li.active").textContent
+        node.querySelector(".card-header-tabs .nav-link.active").textContent
       ).to.eql("Records (18)");
     });
   });

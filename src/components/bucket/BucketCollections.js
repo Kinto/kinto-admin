@@ -65,7 +65,7 @@ function DataList(props) {
                 <AdminLink
                   name="collection:records"
                   params={{ bid, cid }}
-                  className="btn btn-xs btn-default"
+                  className="btn btn-sm btn-secondary"
                   title="Browse collection">
                   <JustifyIcon className="icon" />
                 </AdminLink>
@@ -73,7 +73,7 @@ function DataList(props) {
                   <AdminLink
                     name="collection:history"
                     params={{ bid, cid }}
-                    className="btn btn-xs btn-default"
+                    className="btn btn-sm btn-secondary"
                     title="View collection history">
                     <ClockHistoryIcon className="icon" />
                   </AdminLink>
@@ -81,7 +81,7 @@ function DataList(props) {
                 <AdminLink
                   name="collection:attributes"
                   params={{ bid, cid }}
-                  className="btn btn-xs btn-default"
+                  className="btn btn-sm btn-secondary"
                   title="Edit collection attributes">
                   <GearIcon className="icon" />
                 </AdminLink>

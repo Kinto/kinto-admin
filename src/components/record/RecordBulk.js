@@ -109,8 +109,8 @@ export default class RecordBulk extends PureComponent<Props> {
         {busy ? (
           <Spinner />
         ) : (
-          <div className="panel panel-default">
-            <div className="panel-body">
+          <div className="card">
+            <div className="card-body">
               <BaseForm
                 schema={bulkSchema}
                 uiSchema={bulkUiSchema}

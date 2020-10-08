@@ -24,54 +24,69 @@ export default class BucketTabs extends PureComponent<Props> {
     const { bid, selected, capabilities, children } = this.props;
 
     return (
-      <div className="tabs-container">
-        <ul className="nav nav-tabs nav-justified">
-          <li
-            role="presentation"
-            className={selected === "collections" ? "active" : ""}>
-            <AdminLink name="bucket:collections" params={{ bid }}>
-              <JustifyIcon className="icon" />
-              Collections
-            </AdminLink>
-          </li>
-          <li
-            role="presentation"
-            className={selected === "groups" ? "active" : ""}>
-            <AdminLink name="bucket:groups" params={{ bid }}>
-              <PersonFillIcon className="icon" />
-              Groups
-            </AdminLink>
-          </li>
-          <li
-            role="presentation"
-            className={selected === "attributes" ? "active" : ""}>
-            <AdminLink name="bucket:attributes" params={{ bid }}>
-              <GearIcon className="icon" />
-              Attributes
-            </AdminLink>
-          </li>
-          <li
-            role="presentation"
-            className={selected === "permissions" ? "active" : ""}>
-            <AdminLink name="bucket:permissions" params={{ bid }}>
-              <LockIcon className="icon" />
-              Permissions
-            </AdminLink>
-          </li>
-          {"history" in capabilities && (
-            <li
-              role="presentation"
-              className={selected === "history" ? "active" : ""}>
-              <AdminLink name="bucket:history" params={{ bid }}>
-                <ClockHistoryIcon className="icon" />
-                History
+      <div className="card">
+        <div className="card-header">
+          <ul className="nav nav-tabs card-header-tabs">
+            <li className="nav-item" role="presentation">
+              <AdminLink
+                name="bucket:collections"
+                params={{ bid }}
+                className={
+                  selected === "collections" ? "nav-link active" : "nav-link"
+                }>
+                <JustifyIcon className="icon" />
+                Collections
               </AdminLink>
             </li>
-          )}
-        </ul>
-        <div className="panel panel-default">
-          <div className="panel-body">{children}</div>
+            <li className="nav-item" role="presentation">
+              <AdminLink
+                name="bucket:groups"
+                params={{ bid }}
+                className={
+                  selected === "groups" ? "nav-link active" : "nav-link"
+                }>
+                <PersonFillIcon className="icon" />
+                Groups
+              </AdminLink>
+            </li>
+            <li className="nav-item" role="presentation">
+              <AdminLink
+                name="bucket:attributes"
+                params={{ bid }}
+                className={
+                  selected === "attributes" ? "nav-link active" : "nav-link"
+                }>
+                <GearIcon className="icon" />
+                Attributes
+              </AdminLink>
+            </li>
+            <li className="nav-item" role="presentation">
+              <AdminLink
+                name="bucket:permissions"
+                params={{ bid }}
+                className={
+                  selected === "permissions" ? "nav-link active" : "nav-link"
+                }>
+                <LockIcon className="icon" />
+                Permissions
+              </AdminLink>
+            </li>
+            {"history" in capabilities && (
+              <li className="nav-item" role="presentation">
+                <AdminLink
+                  name="bucket:history"
+                  params={{ bid }}
+                  className={
+                    selected === "history" ? "nav-link active" : "nav-link"
+                  }>
+                  <ClockHistoryIcon className="icon" />
+                  History
+                </AdminLink>
+              </li>
+            )}
+          </ul>
         </div>
+        <div className="card-body">{children}</div>
       </div>
     );
   }

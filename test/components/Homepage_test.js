@@ -367,7 +367,7 @@ describe("HomePage component", () => {
     });
 
     it("should render server information heading", () => {
-      expect(node.querySelector(".panel-heading").textContent).eql(
+      expect(node.querySelector(".card-header").textContent).eql(
         "Server information"
       );
     });

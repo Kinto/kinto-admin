@@ -21,7 +21,21 @@ h1 {
   padding-top: 1em;
 }
 
-.sidebar-filters > .panel-body {
+.sidebar .card {
+  margin-bottom: 20px;
+}
+
+.card.panel-info .card-header {
+  background-color: #cce5ff;
+  border-color: #b8daff;
+}
+
+.sidebar .list-group-item {
+  border-left: none;
+  border-right: none;
+}
+
+.sidebar-filters > .card-body {
   padding: 15px 15px 0 15px;
 }
 
@@ -61,7 +75,7 @@ h1 {
   font-size: 2em;
   margin-top: 0;
   margin-bottom: 0;
-  padding-left: 80px;
+  padding-left: 100px;
 
   background: transparent url("../images/logo.png") no-repeat left;
   background-size: contain;
@@ -70,6 +84,7 @@ h1 {
 .user-info {
   float: right;
   padding-top: 0.3em;
+  font-size: 14px;
 }
 
 .user-info a.spaced {
@@ -240,7 +255,7 @@ table.record-list td.load-more {
   color: red;
 }
 
-.panel-heading > .icon,
+.card-header > .icon,
 .list-group-item .icon,
 .nav-tabs li .icon {
   margin-right: 0.5em;

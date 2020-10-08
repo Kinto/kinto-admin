@@ -108,7 +108,7 @@ class Row extends PureComponent<RowProps> {
             {attachmentUrl && (
               <a
                 href={attachmentUrl}
-                className="btn btn-sm btn-default"
+                className="btn btn-sm btn-secondary"
                 title="The record has an attachment"
                 target="_blank">
                 <PaperclipIcon className="icon" />
@@ -147,7 +147,7 @@ function SortLink(props) {
   return (
     <a
       href="#"
-      className={`sort-link ${active ? "active label label-default" : ""}`}
+      className={`sort-link ${active ? "active badge badge-secondary" : ""}`}
       onClick={event => {
         event.preventDefault();
         if (active) {
