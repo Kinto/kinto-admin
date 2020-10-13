@@ -517,3 +517,14 @@ i.fa:before {
 .fa-warning:before {
   background-image: url("~bootstrap-icons/icons/exclamation-triangle-fill.svg");
 }
+
+.rjsf pre {
+  padding: 9.5px;
+  margin: 0 0 10px;
+  line-height: 1.42857143;
+  word-break: break-all;
+  word-wrap: break-word;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
