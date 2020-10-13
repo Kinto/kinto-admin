@@ -1,4 +1,4 @@
-declare module "@rjsf/core" {
+declare module "kinto-admin-form" {
   declare function mergeObjects(
     obj1: Object,
     obj2: Object,

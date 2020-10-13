@@ -99,7 +99,7 @@ describe("RecordCreate component", () => {
           });
 
           it("should show a text field", () => {
-            expect(field.getAttribute("type")).to.eql("string");
+            expect(field.getAttribute("type")).to.eql("text");
           });
 
           it("should be editable", () => {
