@@ -44,7 +44,7 @@
     "express": "^4.14.0",
     "filesize": "^6.0.1",
     "history": "^4.9.0",
-    "kinto-admin-form": "0.0.0-experimental-d9a106d08",
+    "kinto-admin-form": "0.0.0-experimental-8183a9c80",
     "kinto-http": "^5.1.1",
     "react": "^16.8.6",
     "react-bootstrap": "^1.3.0",
