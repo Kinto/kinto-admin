@@ -3,7 +3,7 @@ import * as React from "react";
 import { Component, PureComponent } from "react";
 import { Route, Switch } from "react-router-dom";
 import type { ContextRouter, LocationShape } from "react-router-dom";
-import { utils as formUtils } from "@rjsf/core";
+import { utils as formUtils } from "kinto-admin-form";
 import { Breadcrumb } from "react-breadcrumbs";
 import type { DispatchAPI } from "redux";
 import { bindActionCreators } from "redux";
