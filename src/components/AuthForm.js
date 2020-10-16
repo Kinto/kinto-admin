@@ -270,6 +270,9 @@ const authSchemas = authType => {
           },
         },
       },
+      uiSchema: {
+        ...baseUISchema,
+      },
     },
   };
   if (authType in customizedSchemas) {
