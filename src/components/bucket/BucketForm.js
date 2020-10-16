@@ -56,8 +56,8 @@ function DeleteForm({ bid, onSubmit }) {
     return errors;
   };
   return (
-    <div className="panel panel-danger">
-      <div className="card-header">
+    <div className="card border-danger">
+      <div className="alert-danger card-header">
         <strong>Danger Zone</strong>
       </div>
       <div className="card-body">

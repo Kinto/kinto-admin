@@ -30,11 +30,6 @@ h1 {
   border-color: #b8daff;
 }
 
-.sidebar .list-group-item {
-  border-left: none;
-  border-right: none;
-}
-
 .sidebar-filters > .card-body {
   padding: 15px 15px 0 15px;
 }
@@ -518,6 +513,10 @@ i.fa:before {
   background-image: url("~bootstrap-icons/icons/exclamation-triangle-fill.svg");
 }
 
+.rjsf {
+  margin-bottom: 1.25rem;
+}
+
 .rjsf pre {
   padding: 9.5px;
   margin: 0 0 10px;
@@ -527,4 +526,17 @@ i.fa:before {
   background-color: #f5f5f5;
   border: 1px solid #ccc;
   border-radius: 4px;
+}
+
+.rjsf input[type="radio"],
+.rjsf input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.rjsf legend {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.rjsf .control-label {
+  font-weight: 700;
 }

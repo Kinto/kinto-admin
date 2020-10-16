@@ -11,6 +11,12 @@ export default class BaseForm<Props, State = void> extends PureComponent<
   State
 > {
   render() {
-    return <Form {...this.props} fields={adminFields} />;
+    return (
+      <Form
+        {...this.props}
+        className={`rjsf ${this.props.className ? this.props.className : ""}`}
+        fields={adminFields}
+      />
+    );
   }
 }

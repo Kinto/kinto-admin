@@ -61,7 +61,7 @@ function HomeMenu(props) {
   const { currentPath, onRefresh } = props;
   return (
     <div className="card home-menu">
-      <div className="list-group">
+      <div className="list-group list-group-flush">
         <SideBarLink name="home" currentPath={currentPath} params={{}}>
           Home
           <ArrowRepeatIcon onClick={onRefresh} className="icon" />
@@ -131,7 +131,7 @@ function BucketCollectionsMenu(props) {
       ? sortedCollections.slice(0, sidebarMaxListedCollections)
       : sortedCollections;
   return (
-    <div className="collections-menu list-group">
+    <div className="collections-menu list-group list-group-flush">
       {slicedCollections.map((collection, index) => {
         return (
           <CollectionMenuEntry
@@ -254,7 +254,7 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
       <div>
         {canCreateBucket && (
           <div className="card bucket-create">
-            <div className="list-group">
+            <div className="list-group list-group-flush">
               <SideBarLink
                 name="bucket:create"
                 currentPath={currentPath}
@@ -270,30 +270,34 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
             <strong>Filters</strong>
           </div>
           <form className="form card-body">
-            <div className="input-group">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Filter bucket/collection name"
-                value={this.state.search || ""}
-                onChange={this.updateSearch}
-              />
-              <div className="input-group-append">
-                <button
-                  href=""
-                  className="btn btn-outline-secondary"
-                  onClick={this.resetSearch}>
-                  <XCircleFillIcon className="icon" />
-                </button>
+            <div className="form-group">
+              <div className="input-group">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Filter bucket/collection name"
+                  value={this.state.search || ""}
+                  onChange={this.updateSearch}
+                />
+                <div className="input-group-append">
+                  <button
+                    href=""
+                    className="btn btn-outline-secondary"
+                    onClick={this.resetSearch}>
+                    <XCircleFillIcon className="icon" />
+                  </button>
+                </div>
               </div>
             </div>
-            <div className="checkbox">
-              <label>
-                <input
-                  type="checkbox"
-                  value={this.state.showReadOnly}
-                  onChange={this.toggleReadOnly}
-                />{" "}
+            <div className="form-group form-check">
+              <input
+                className="form-check-input"
+                id="read-only-toggle"
+                type="checkbox"
+                value={this.state.showReadOnly}
+                onChange={this.toggleReadOnly}
+              />
+              <label className="form-check-label" htmlFor="read-only-toggle">
                 Show readonly buckets/collections
               </label>
             </div>
