@@ -64,7 +64,7 @@ function SessionInfoBar({ session, logout, copyAuthenticationHeader }) {
         <strong>{url}</strong>{" "}
         <a
           href=""
-          className="btn btn-xs btn-link"
+          className="btn btn-sm btn-link"
           title="Copy authentication header"
           onClick={event =>
             event.preventDefault() || copyAuthenticationHeader()
@@ -74,12 +74,12 @@ function SessionInfoBar({ session, logout, copyAuthenticationHeader }) {
         <a
           href={project_docs}
           target="_blank"
-          className="spaced btn btn-xs btn-default project-docs">
+          className="spaced btn btn-sm btn-secondary project-docs">
           <QuestionCircleFillIcon className="icon" /> Documentation
         </a>
         <a
           href=""
-          className="spaced btn btn-xs btn-success btn-logout"
+          className="spaced btn btn-sm btn-success btn-logout"
           onClick={event => event.preventDefault() || logout()}>
           <BoxArrowRight className="icon" /> Logout
         </a>

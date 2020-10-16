@@ -2,6 +2,10 @@
 import type { SessionState, SettingsState, ServerEntry } from "../types";
 
 import React, { PureComponent } from "react";
+import InputGroup from "react-bootstrap/InputGroup";
+import FormControl from "react-bootstrap/FormControl";
+import Dropdown from "react-bootstrap/Dropdown";
+import DropdownButton from "react-bootstrap/DropdownButton";
 
 import * as ServersActions from "../actions/servers";
 import * as SessionActions from "../actions/session";
@@ -36,9 +40,7 @@ type ServerHistoryProps = {
   onChange: string => void,
 };
 
-type ServerHistoryState = {
-  menuOpened: boolean,
-};
+type ServerHistoryState = {};
 
 class ServerHistory extends PureComponent<
   ServerHistoryProps,
@@ -46,27 +48,20 @@ class ServerHistory extends PureComponent<
 > {
   constructor(props) {
     super(props);
-    this.state = { menuOpened: false };
   }
 
   select = server => {
     return event => {
       event.preventDefault();
       this.props.onChange(server);
-      this.setState({ menuOpened: false });
       this.debouncedFetchServerInfo(server);
     };
-  };
-
-  toggleMenu = () => {
-    this.setState({ menuOpened: !this.state.menuOpened });
   };
 
   clear = event => {
     event.preventDefault();
     const { clearServers } = this.props.options;
     clearServers();
-    this.setState({ menuOpened: false });
   };
 
   onServerChange = event => {
@@ -89,52 +84,41 @@ class ServerHistory extends PureComponent<
   debouncedFetchServerInfo = debounce(this.fetchServerInfo, 500);
 
   render() {
-    const { menuOpened } = this.state;
     const { id, value, placeholder, options } = this.props;
     const { servers, pattern } = options;
     return (
-      <div className="input-group server-url">
-        <input
+      <InputGroup>
+        <FormControl
           type="text"
           id={id}
-          className="form-control"
           placeholder={placeholder}
           pattern={pattern}
           value={value}
           onChange={this.onServerChange}
         />
-        <div className={`input-group-btn ${menuOpened ? "open" : ""}`}>
-          <button
-            type="button"
-            className="btn btn-default dropdown-toggle"
-            onClick={this.toggleMenu}>
-            <span className="caret" />
-          </button>
-          <ul className="dropdown-menu dropdown-menu-right">
-            {servers.length === 0 ? (
-              <li>
-                <a onClick={this.toggleMenu}>
-                  <em>No server history</em>
+        <DropdownButton
+          as={InputGroup.Append}
+          variant="outline-secondary"
+          title="Servers">
+          {servers.length === 0 ? (
+            <Dropdown.Item>
+              <em>No server history</em>
+            </Dropdown.Item>
+          ) : (
+            servers.map(({ server }, key) => (
+              <Dropdown.Item key={key}>
+                <a href="#" onClick={this.select(server)}>
+                  {server}
                 </a>
-              </li>
-            ) : (
-              servers.map(({ server }, key) => (
-                <li key={key}>
-                  <a href="#" onClick={this.select(server)}>
-                    {server}
-                  </a>
-                </li>
-              ))
-            )}
-            <li role="separator" className="divider" />
-            <li>
-              <a href="#" onClick={this.clear}>
-                Clear
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
+              </Dropdown.Item>
+            ))
+          )}
+          <Dropdown.Divider />
+          <Dropdown.Item href="#" onClick={this.clear}>
+            Clear
+          </Dropdown.Item>
+        </DropdownButton>
+      </InputGroup>
     );
   }
 }
@@ -563,8 +547,8 @@ export default class AuthForm extends PureComponent<
       singleAuthMethod
     );
     return (
-      <div className="panel panel-default">
-        <div className="panel-body">
+      <div className="card">
+        <div className="card-body">
           <BaseForm
             schema={finalSchema}
             uiSchema={finalUiSchema}

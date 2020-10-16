@@ -51,8 +51,8 @@ export default class RecordCreate extends PureComponent<Props> {
             {bid}/{cid}
           </b>
         </h1>
-        <div className="panel panel-default">
-          <div className="panel-body">
+        <div className="card">
+          <div className="card-body">
             <RecordForm
               bid={bid}
               cid={cid}

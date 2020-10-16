@@ -32,7 +32,7 @@ global.sessionStorage = (function () {
 
 // Enable rjsf safe render completion
 // see https://github.com/mozilla-services/react-jsonschema-form/commit/6159cb4834a082b2af2154e6f978b9ad57e96d51
-var Form = require("@rjsf/core").default;
+var Form = require("kinto-admin-form").default;
 Form.defaultProps = {
   ...Form.defaultProps,
   safeRenderCompletion: true,

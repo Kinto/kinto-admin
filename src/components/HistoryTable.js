@@ -168,7 +168,7 @@ class HistoryRow extends PureComponent<HistoryRowProps, HistoryRowState> {
             {resource_name === "record" && enableDiffOverview && pos !== 0 && (
               <span>
                 <AdminLink
-                  className="btn btn-xs btn-default"
+                  className="btn btn-sm btn-secondary"
                   title="Start history log from this point"
                   name="collection:history"
                   params={{ bid, cid }}
@@ -179,7 +179,7 @@ class HistoryRow extends PureComponent<HistoryRowProps, HistoryRowState> {
             )}
             <a
               href="."
-              className="btn btn-xs btn-default"
+              className="btn btn-sm btn-secondary"
               onClick={this.toggle}
               title="View entry details">
               {open ? (

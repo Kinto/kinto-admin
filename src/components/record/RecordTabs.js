@@ -24,38 +24,47 @@ export default class RecordTabs extends PureComponent<Props> {
     const { bid, cid, rid, selected, capabilities, children } = this.props;
 
     return (
-      <div className="tabs-container">
-        <ul className="nav nav-tabs nav-justified">
-          <li
-            role="presentation"
-            className={selected === "attributes" ? "active" : ""}>
-            <AdminLink name="record:attributes" params={{ bid, cid, rid }}>
-              <GearIcon className="icon" />
-              Attributes
-            </AdminLink>
-          </li>
-          <li
-            role="presentation"
-            className={selected === "permissions" ? "active" : ""}>
-            <AdminLink name="record:permissions" params={{ bid, cid, rid }}>
-              <LockIcon className="icon" />
-              Permissions
-            </AdminLink>
-          </li>
-          {"history" in capabilities && (
-            <li
-              role="presentation"
-              className={selected === "history" ? "active" : ""}>
-              <AdminLink name="record:history" params={{ bid, cid, rid }}>
-                <ClockHistoryIcon className="icon" />
-                History
+      <div className="card">
+        <div className="card-header">
+          <ul className="nav nav-tabs card-header-tabs">
+            <li className="nav-item" role="presentation">
+              <AdminLink
+                name="record:attributes"
+                params={{ bid, cid, rid }}
+                className={
+                  selected === "attributes" ? "nav-link active" : "nav-link"
+                }>
+                <GearIcon className="icon" />
+                Attributes
               </AdminLink>
             </li>
-          )}
-        </ul>
-        <div className="panel panel-default">
-          <div className="panel-body">{children}</div>
+            <li className="nav-item" role="presentation">
+              <AdminLink
+                name="record:permissions"
+                params={{ bid, cid, rid }}
+                className={
+                  selected === "permissions" ? "nav-link active" : "nav-link"
+                }>
+                <LockIcon className="icon" />
+                Permissions
+              </AdminLink>
+            </li>
+            {"history" in capabilities && (
+              <li className="nav-item" role="presentation">
+                <AdminLink
+                  name="record:history"
+                  params={{ bid, cid, rid }}
+                  className={
+                    selected === "history" ? "nav-link active" : "nav-link"
+                  }>
+                  <ClockHistoryIcon className="icon" />
+                  History
+                </AdminLink>
+              </li>
+            )}
+          </ul>
         </div>
+        <div className="card-body">{children}</div>
       </div>
     );
   }

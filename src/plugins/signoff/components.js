@@ -667,7 +667,7 @@ class CommentDialog extends PureComponent<
               <div className="modal-footer">
                 <button
                   type="button"
-                  className="btn btn-default"
+                  className="btn btn-secondary"
                   onClick={onCancel}>
                   Cancel
                 </button>

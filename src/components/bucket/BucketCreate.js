@@ -27,8 +27,8 @@ export default class BucketCreate extends PureComponent<Props> {
     return (
       <div>
         <h1>Create a new bucket</h1>
-        <div className="panel panel-default">
-          <div className="panel-body">
+        <div className="card">
+          <div className="card-body">
             <BucketForm
               session={session}
               bucket={bucket}

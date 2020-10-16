@@ -52,11 +52,11 @@ function ServerProps({ node }: { node: Object }) {
 function SessionInfo({ session: { serverInfo } }) {
   return (
     <div>
-      <div className="panel server-info-panel panel-default">
-        <div className="panel-heading">
+      <div className="card server-info-panel">
+        <div className="card-header">
           <b>Server information</b>
         </div>
-        <div className="panel-body">
+        <div className="card-body">
           <ServerProps node={serverInfo} />
         </div>
       </div>

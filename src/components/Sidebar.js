@@ -46,7 +46,9 @@ function SideBarLink(props: SideBarLinkProps) {
   const targetUrl = url(name, params);
   const active = currentPath === targetUrl ? "active" : "";
   const classes =
-    className !== undefined ? className : `list-group-item ${active}`;
+    className !== undefined
+      ? className
+      : `list-group-item list-group-item-action ${active}`;
 
   return (
     <AdminLink {...otherProps} name={name} params={params} className={classes}>
@@ -58,8 +60,8 @@ function SideBarLink(props: SideBarLinkProps) {
 function HomeMenu(props) {
   const { currentPath, onRefresh } = props;
   return (
-    <div className="panel panel-default home-menu">
-      <div className="list-group">
+    <div className="card home-menu">
+      <div className="list-group list-group-flush">
         <SideBarLink name="home" currentPath={currentPath} params={{}}>
           Home
           <ArrowRepeatIcon onClick={onRefresh} className="icon" />
@@ -129,7 +131,7 @@ function BucketCollectionsMenu(props) {
       ? sortedCollections.slice(0, sidebarMaxListedCollections)
       : sortedCollections;
   return (
-    <div className="collections-menu list-group">
+    <div className="collections-menu list-group list-group-flush">
       {slicedCollections.map((collection, index) => {
         return (
           <CollectionMenuEntry
@@ -251,8 +253,8 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
     return (
       <div>
         {canCreateBucket && (
-          <div className="panel panel-default bucket-create">
-            <div className="list-group">
+          <div className="card bucket-create">
+            <div className="list-group list-group-flush">
               <SideBarLink
                 name="bucket:create"
                 currentPath={currentPath}
@@ -263,32 +265,39 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
             </div>
           </div>
         )}
-        <div className="panel panel-default sidebar-filters">
-          <div className="panel-heading">
+        <div className="card sidebar-filters">
+          <div className="card-header">
             <strong>Filters</strong>
           </div>
-          <form className="form panel-body">
-            <div className="input-group">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Filter bucket/collection name"
-                value={this.state.search || ""}
-                onChange={this.updateSearch}
-              />
-              <span className="input-group-addon">
-                <a href="" className="clear" onClick={this.resetSearch}>
-                  <XCircleFillIcon className="icon" />
-                </a>
-              </span>
-            </div>
-            <div className="checkbox">
-              <label>
+          <form className="form card-body">
+            <div className="form-group">
+              <div className="input-group">
                 <input
-                  type="checkbox"
-                  value={this.state.showReadOnly}
-                  onChange={this.toggleReadOnly}
-                />{" "}
+                  type="text"
+                  className="form-control"
+                  placeholder="Filter bucket/collection name"
+                  value={this.state.search || ""}
+                  onChange={this.updateSearch}
+                />
+                <div className="input-group-append">
+                  <button
+                    href=""
+                    className="btn btn-outline-secondary"
+                    onClick={this.resetSearch}>
+                    <XCircleFillIcon className="icon" />
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="form-group form-check">
+              <input
+                className="form-check-input"
+                id="read-only-toggle"
+                type="checkbox"
+                value={this.state.showReadOnly}
+                onChange={this.toggleReadOnly}
+              />
+              <label className="form-check-label" htmlFor="read-only-toggle">
                 Show readonly buckets/collections
               </label>
             </div>
@@ -303,10 +312,10 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
             return (
               <div
                 key={i}
-                className={`panel panel-${
+                className={`card panel-${
                   current ? "info" : "default"
                 } bucket-menu`}>
-                <div className="panel-heading">
+                <div className="card-header">
                   {bucket.readonly ? (
                     <LockIcon className="icon" />
                   ) : current ? (

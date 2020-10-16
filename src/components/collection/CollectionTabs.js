@@ -32,46 +32,58 @@ export default class CollectionTabs extends PureComponent<Props> {
     } = this.props;
 
     return (
-      <div className="tabs-container">
-        <ul className="nav nav-tabs nav-justified">
-          <li
-            role="presentation"
-            className={selected === "records" ? "active" : ""}>
-            <AdminLink name="collection:records" params={{ bid, cid }}>
-              <JustifyIcon className="icon" />
-              Records {totalRecords ? `(${totalRecords})` : null}
-            </AdminLink>
-          </li>
-          <li
-            role="presentation"
-            className={selected === "attributes" ? "active" : ""}>
-            <AdminLink name="collection:attributes" params={{ bid, cid }}>
-              <GearIcon className="icon" />
-              Attributes
-            </AdminLink>
-          </li>
-          <li
-            role="presentation"
-            className={selected === "permissions" ? "active" : ""}>
-            <AdminLink name="collection:permissions" params={{ bid, cid }}>
-              <LockIcon className="icon" />
-              Permissions
-            </AdminLink>
-          </li>
-          {"history" in capabilities && (
-            <li
-              role="presentation"
-              className={selected === "history" ? "active" : ""}>
-              <AdminLink name="collection:history" params={{ bid, cid }}>
-                <ClockHistoryIcon className="icon" />
-                History
+      <div className="card">
+        <div className="card-header">
+          <ul className="nav nav-tabs card-header-tabs">
+            <li className="nav-item" role="presentation">
+              <AdminLink
+                name="collection:records"
+                params={{ bid, cid }}
+                className={
+                  selected === "records" ? "nav-link active" : "nav-link"
+                }>
+                <JustifyIcon className="icon" />
+                Records {totalRecords ? `(${totalRecords})` : null}
               </AdminLink>
             </li>
-          )}
-        </ul>
-        <div className="panel panel-default">
-          <div className="panel-body">{children}</div>
+            <li className="nav-item" role="presentation">
+              <AdminLink
+                name="collection:attributes"
+                params={{ bid, cid }}
+                className={
+                  selected === "attributes" ? "nav-link active" : "nav-link"
+                }>
+                <GearIcon className="icon" />
+                Attributes
+              </AdminLink>
+            </li>
+            <li className="nav-item" role="presentation">
+              <AdminLink
+                name="collection:permissions"
+                params={{ bid, cid }}
+                className={
+                  selected === "permissions" ? "nav-link active" : "nav-link"
+                }>
+                <LockIcon className="icon" />
+                Permissions
+              </AdminLink>
+            </li>
+            {"history" in capabilities && (
+              <li className="nav-item" role="presentation">
+                <AdminLink
+                  name="collection:history"
+                  params={{ bid, cid }}
+                  className={
+                    selected === "history" ? "nav-link active" : "nav-link"
+                  }>
+                  <ClockHistoryIcon className="icon" />
+                  History
+                </AdminLink>
+              </li>
+            )}
+          </ul>
         </div>
+        <div className="card-body">{children}</div>
       </div>
     );
   }

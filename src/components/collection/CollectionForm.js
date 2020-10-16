@@ -58,11 +58,11 @@ function DeleteForm({ cid, onSubmit }) {
     return errors;
   };
   return (
-    <div className="panel panel-danger">
-      <div className="panel-heading">
+    <div className="card border-danger">
+      <div className="alert-danger card-header">
         <strong>Danger Zone</strong>
       </div>
-      <div className="panel-body">
+      <div className="card-body">
         <p>
           Delete the <b>{cid}</b> collection and all the records it contains.
         </p>

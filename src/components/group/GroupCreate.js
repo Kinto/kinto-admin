@@ -43,8 +43,8 @@ export default class GroupCreate extends PureComponent<Props> {
         <h1>
           Create a new group in <b>{bid}</b> bucket
         </h1>
-        <div className="panel panel-default">
-          <div className="panel-body">
+        <div className="card">
+          <div className="card-body">
             <GroupForm
               session={session}
               bucket={bucket}

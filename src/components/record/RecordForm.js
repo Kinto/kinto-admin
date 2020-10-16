@@ -156,12 +156,12 @@ function AttachmentInfo(props: AttachmentInfoProps) {
   const FileSize = ({ bytes }) => filesize(bytes);
 
   return (
-    <div className="panel panel-default attachment-info">
-      <div className="panel-heading">
+    <div className="card attachment-info">
+      <div className="card-header">
         <PaperclipIcon className="icon" />
         <b>Attachment information</b>
       </div>
-      <div className="panel-body">
+      <div className="card-body">
         {allowEditing && attachmentRequired && (
           <div className="alert alert-warning">
             <p>

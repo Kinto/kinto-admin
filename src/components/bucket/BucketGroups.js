@@ -50,7 +50,7 @@ function DataList(props) {
                     <AdminLink
                       name="group:history"
                       params={{ bid, gid }}
-                      className="btn btn-xs btn-default"
+                      className="btn btn-sm btn-secondary"
                       title="View group history">
                       <ClockHistoryIcon className="icon" />
                     </AdminLink>
@@ -58,7 +58,7 @@ function DataList(props) {
                   <AdminLink
                     name="group:attributes"
                     params={{ bid, gid }}
-                    className="btn btn-xs btn-default"
+                    className="btn btn-sm btn-secondary"
                     title="Edit groups attributes">
                     <GearIcon className="icon" />
                   </AdminLink>

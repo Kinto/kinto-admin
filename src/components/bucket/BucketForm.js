@@ -56,11 +56,11 @@ function DeleteForm({ bid, onSubmit }) {
     return errors;
   };
   return (
-    <div className="panel panel-danger">
-      <div className="panel-heading">
+    <div className="card border-danger">
+      <div className="alert-danger card-header">
         <strong>Danger Zone</strong>
       </div>
-      <div className="panel-body">
+      <div className="card-body">
         <p>
           Delete the <b>{bid}</b> bucket and all the collections and records it
           contains.
