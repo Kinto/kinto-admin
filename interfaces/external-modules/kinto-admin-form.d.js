@@ -5,5 +5,17 @@ declare module "kinto-admin-form" {
     concatArrays: boolean
   ): Object;
   declare export var utils: { mergeObjects: typeof mergeObjects };
-  declare export default React.Component;
+  declare export type FormProps = {|
+    className?: string,
+    validate?: Function,
+    uiSchema?: any,
+    schema?: any,
+    onSubmit?: Function,
+    onChange?: Function,
+    formData?: any,
+    children?: any,
+    fields?: any,
+  |};
+  declare export default class KintoAdminForm
+    extends React$Component<FormProps> {}
 }

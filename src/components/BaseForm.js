@@ -1,15 +1,13 @@
 /* @flow */
 import React, { PureComponent } from "react";
+import type { FormProps } from "kinto-admin-form";
 import Form from "kinto-admin-form";
 
 import TagsField from "./TagsField";
 
 const adminFields = { tags: TagsField };
 
-export default class BaseForm<Props, State = void> extends PureComponent<
-  Props,
-  State
-> {
+export default class BaseForm extends PureComponent<FormProps> {
   render() {
     return (
       <Form
