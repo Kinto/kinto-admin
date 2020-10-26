@@ -171,10 +171,20 @@ export async function fetchChangesInfo(
 
   // We get the records timetamp, because it's only bumped when records are changed,
   // unlike the metadata timestamp which is bumped on signature refresh.
-  const sinceETag = await client
+  let sinceETag = await client
     .bucket(other.bucket)
     .collection(other.collection)
     .getRecordsTimestamp();
+
+  if (!sinceETag) {
+    const data = await client
+      .bucket(other.bucket)
+      .collection(other.collection)
+      .getData();
+    console.log(other, data);
+    sinceETag = data.last_modified;
+  }
+
   // Look up changes since ETag.
   const { data: changes } = await client
     .bucket(source.bucket)
