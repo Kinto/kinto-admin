@@ -181,8 +181,7 @@ export async function fetchChangesInfo(
       .bucket(other.bucket)
       .collection(other.collection)
       .getData();
-    console.log(other, data);
-    sinceETag = data.last_modified;
+    sinceETag = `${data.last_modified}`;
   }
 
   // Look up changes since ETag.
