@@ -11,12 +11,12 @@ import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
 
-import { ReactComponent as PaperclipIcon } from "bootstrap-icons/icons/paperclip.svg";
-import { ReactComponent as PencilIcon } from "bootstrap-icons/icons/pencil.svg";
-import { ReactComponent as LockIcon } from "bootstrap-icons/icons/lock.svg";
-import { ReactComponent as TrashIcon } from "bootstrap-icons/icons/trash.svg";
-import { ReactComponent as SortUpIcon } from "bootstrap-icons/icons/sort-up.svg";
-import { ReactComponent as SortDownIcon } from "bootstrap-icons/icons/sort-down.svg";
+import { Paperclip } from "react-bootstrap-icons";
+import { Pencil } from "react-bootstrap-icons";
+import { Lock } from "react-bootstrap-icons";
+import { Trash } from "react-bootstrap-icons";
+import { SortUp } from "react-bootstrap-icons";
+import { SortDown } from "react-bootstrap-icons";
 
 import * as CollectionActions from "../../actions/collection";
 import * as RouteActions from "../../actions/route";
@@ -111,7 +111,7 @@ class Row extends PureComponent<RowProps> {
                 className="btn btn-sm btn-secondary"
                 title="The record has an attachment"
                 target="_blank">
-                <PaperclipIcon className="icon" />
+                <Paperclip className="icon" />
               </a>
             )}
             <AdminLink
@@ -119,21 +119,21 @@ class Row extends PureComponent<RowProps> {
               params={{ bid, cid, rid }}
               className="btn btn-sm btn-info"
               title="Edit record">
-              <PencilIcon className="icon" />
+              <Pencil className="icon" />
             </AdminLink>
             <AdminLink
               name="record:permissions"
               params={{ bid, cid, rid }}
               className="btn btn-sm btn-warning"
               title="Record permissions">
-              <LockIcon className="icon" />
+              <Lock className="icon" />
             </AdminLink>
             <button
               type="button"
               className="btn btn-sm btn-danger"
               onClick={this.onDeleteClick.bind(this)}
               title="Delete record">
-              <TrashIcon className="icon" />
+              <Trash className="icon" />
             </button>
           </div>
         </td>
@@ -160,9 +160,9 @@ function SortLink(props) {
         }
       }}>
       {dir === "up" ? (
-        <SortUpIcon className="icon" />
+        <SortUp className="icon" />
       ) : (
-        <SortDownIcon className="icon" />
+        <SortDown className="icon" />
       )}
     </a>
   );

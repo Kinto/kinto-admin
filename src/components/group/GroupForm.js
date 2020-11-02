@@ -8,8 +8,8 @@ import type {
 
 import React, { PureComponent } from "react";
 
-import { ReactComponent as Check2Icon } from "bootstrap-icons/icons/check2.svg";
-import { ReactComponent as TrashIcon } from "bootstrap-icons/icons/trash.svg";
+import { Check2 } from "react-bootstrap-icons";
+import { Trash } from "react-bootstrap-icons";
 
 import BaseForm from "../BaseForm";
 import AdminLink from "../AdminLink";
@@ -84,7 +84,7 @@ function DeleteForm({ gid, onSubmit }) {
             }
           }}>
           <button type="submit" className="btn btn-danger">
-            <TrashIcon className="icon" /> Delete group
+            <Trash className="icon" /> Delete group
           </button>
         </BaseForm>
       </div>
@@ -162,7 +162,7 @@ export default class GroupForm extends PureComponent<Props> {
           type="submit"
           disabled={!formIsEditable}
           className="btn btn-primary">
-          <Check2Icon className="icon" />
+          <Check2 className="icon" />
           {` ${creation ? "Create" : "Update"} group`}
         </button>
         {" or "}

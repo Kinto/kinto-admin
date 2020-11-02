@@ -5,9 +5,9 @@ import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
 
-import { ReactComponent as EyeIcon } from "bootstrap-icons/icons/eye.svg";
-import { ReactComponent as EyeSlashIcon } from "bootstrap-icons/icons/eye-slash.svg";
-import { ReactComponent as SkipStartIcon } from "bootstrap-icons/icons/skip-start.svg";
+import { Eye } from "react-bootstrap-icons";
+import { EyeSlash } from "react-bootstrap-icons";
+import { SkipStart } from "react-bootstrap-icons";
 
 import * as NotificationActions from "../actions/notifications";
 import { diffJson, timeago, humanDate, parseHistoryFilters } from "../utils";
@@ -173,7 +173,7 @@ class HistoryRow extends PureComponent<HistoryRowProps, HistoryRowState> {
                   name="collection:history"
                   params={{ bid, cid }}
                   query={{ since: last_modified, resource_name: "record" }}>
-                  <SkipStartIcon className="icon" />
+                  <SkipStart className="icon" />
                 </AdminLink>{" "}
               </span>
             )}
@@ -182,11 +182,7 @@ class HistoryRow extends PureComponent<HistoryRowProps, HistoryRowState> {
               className="btn btn-sm btn-secondary"
               onClick={this.toggle}
               title="View entry details">
-              {open ? (
-                <EyeSlashIcon className="icon" />
-              ) : (
-                <EyeIcon className="icon" />
-              )}
+              {open ? <EyeSlash className="icon" /> : <Eye className="icon" />}
             </a>
           </td>
         </tr>

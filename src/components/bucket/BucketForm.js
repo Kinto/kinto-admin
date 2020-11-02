@@ -4,8 +4,8 @@ import type { BucketState, BucketData, SessionState } from "../../types";
 import React, { PureComponent } from "react";
 import { Link } from "react-router-dom";
 
-import { ReactComponent as Check2Icon } from "bootstrap-icons/icons/check2.svg";
-import { ReactComponent as TrashIcon } from "bootstrap-icons/icons/trash.svg";
+import { Check2 } from "react-bootstrap-icons";
+import { Trash } from "react-bootstrap-icons";
 
 import BaseForm from "../BaseForm";
 import JSONEditor from "../JSONEditor";
@@ -74,7 +74,7 @@ function DeleteForm({ bid, onSubmit }) {
             }
           }}>
           <button type="submit" className="btn btn-danger">
-            <TrashIcon className="icon" /> Delete bucket
+            <Trash className="icon" /> Delete bucket
           </button>
         </BaseForm>
       </div>
@@ -137,7 +137,7 @@ export default class BucketForm extends PureComponent<Props> {
           type="submit"
           disabled={!formIsEditable}
           className="btn btn-primary">
-          <Check2Icon className="icon" />
+          <Check2 className="icon" />
           {` ${creation ? "Create" : "Update"} bucket`}
         </button>
         {" or "}

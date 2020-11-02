@@ -10,15 +10,15 @@ import type { Location, Match } from "react-router-dom";
 import { PureComponent } from "react";
 import * as React from "react";
 
-import { ReactComponent as PlusIcon } from "bootstrap-icons/icons/plus.svg";
-import { ReactComponent as XCircleFillIcon } from "bootstrap-icons/icons/x-circle-fill.svg";
-import { ReactComponent as Folder2Icon } from "bootstrap-icons/icons/folder2.svg";
-import { ReactComponent as Folder2OpenIcon } from "bootstrap-icons/icons/folder2-open.svg";
-import { ReactComponent as GearIcon } from "bootstrap-icons/icons/gear.svg";
-import { ReactComponent as LockIcon } from "bootstrap-icons/icons/lock.svg";
-import { ReactComponent as JustifyIcon } from "bootstrap-icons/icons/justify.svg";
-import { ReactComponent as ThreeDotsIcon } from "bootstrap-icons/icons/three-dots.svg";
-import { ReactComponent as ArrowRepeatIcon } from "bootstrap-icons/icons/arrow-repeat.svg";
+import { Plus } from "react-bootstrap-icons";
+import { XCircleFill } from "react-bootstrap-icons";
+import { Folder2 } from "react-bootstrap-icons";
+import { Folder2Open } from "react-bootstrap-icons";
+import { Gear } from "react-bootstrap-icons";
+import { Lock } from "react-bootstrap-icons";
+import { Justify } from "react-bootstrap-icons";
+import { ThreeDots } from "react-bootstrap-icons";
+import { ArrowRepeat } from "react-bootstrap-icons";
 
 import * as SessionActions from "../actions/session";
 import Spinner from "./Spinner";
@@ -64,7 +64,7 @@ function HomeMenu(props) {
       <div className="list-group list-group-flush">
         <SideBarLink name="home" currentPath={currentPath} params={{}}>
           Home
-          <ArrowRepeatIcon onClick={onRefresh} className="icon" />
+          <ArrowRepeat onClick={onRefresh} className="icon" />
         </SideBarLink>
       </div>
     </div>
@@ -92,9 +92,9 @@ function CollectionMenuEntry(props) {
         currentPath={currentPath}
         className="">
         {collection.readonly ? (
-          <LockIcon className="icon" />
+          <Lock className="icon" />
         ) : (
-          <JustifyIcon className="icon" />
+          <Justify className="icon" />
         )}
         {cid}
       </SideBarLink>
@@ -104,7 +104,7 @@ function CollectionMenuEntry(props) {
         currentPath={currentPath}
         className="collections-menu-entry-edit"
         title="Edit collection attributes">
-        <GearIcon className="icon" />
+        <Gear className="icon" />
       </SideBarLink>
     </div>
   );
@@ -149,7 +149,7 @@ function BucketCollectionsMenu(props) {
             name="bucket:collections"
             params={{ bid: bucket.id }}
             currentPath={currentPath}>
-            <ThreeDotsIcon className="icon" />
+            <ThreeDots className="icon" />
             See all collections
           </SideBarLink>
         )}
@@ -158,7 +158,7 @@ function BucketCollectionsMenu(props) {
           name="collection:create"
           params={{ bid: bucket.id }}
           currentPath={currentPath}>
-          <PlusIcon className="icon" />
+          <Plus className="icon" />
           Create collection
         </SideBarLink>
       )}
@@ -259,7 +259,7 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
                 name="bucket:create"
                 currentPath={currentPath}
                 params={{}}>
-                <PlusIcon className="icon" />
+                <Plus className="icon" />
                 Create bucket
               </SideBarLink>
             </div>
@@ -284,7 +284,7 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
                     href=""
                     className="btn btn-outline-secondary"
                     onClick={this.resetSearch}>
-                    <XCircleFillIcon className="icon" />
+                    <XCircleFill className="icon" />
                   </button>
                 </div>
               </div>
@@ -317,11 +317,11 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
                 } bucket-menu`}>
                 <div className="card-header">
                   {bucket.readonly ? (
-                    <LockIcon className="icon" />
+                    <Lock className="icon" />
                   ) : current ? (
-                    <Folder2OpenIcon className="icon" />
+                    <Folder2Open className="icon" />
                   ) : (
-                    <Folder2Icon className="icon" />
+                    <Folder2 className="icon" />
                   )}
                   <strong>{id}</strong> bucket
                   <SideBarLink
@@ -330,7 +330,7 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
                     currentPath={currentPath}
                     className="bucket-menu-entry-edit"
                     title="Manage bucket">
-                    <GearIcon className="icon" />
+                    <Gear className="icon" />
                   </SideBarLink>
                 </div>
                 <BucketCollectionsMenu
