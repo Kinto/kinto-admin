@@ -9,9 +9,9 @@ import type { Location } from "react-router-dom";
 
 import React, { PureComponent } from "react";
 
-import { ReactComponent as GearIcon } from "bootstrap-icons/icons/gear.svg";
-import { ReactComponent as JustifyIcon } from "bootstrap-icons/icons/justify.svg";
-import { ReactComponent as ClockHistoryIcon } from "bootstrap-icons/icons/clock-history.svg";
+import { Gear } from "react-bootstrap-icons";
+import { Justify } from "react-bootstrap-icons";
+import { ClockHistory } from "react-bootstrap-icons";
 
 import * as BucketActions from "../../actions/bucket";
 import { timeago } from "../../utils";
@@ -67,7 +67,7 @@ function DataList(props) {
                   params={{ bid, cid }}
                   className="btn btn-sm btn-secondary"
                   title="Browse collection">
-                  <JustifyIcon className="icon" />
+                  <Justify className="icon" />
                 </AdminLink>
                 {"history" in capabilities && (
                   <AdminLink
@@ -75,7 +75,7 @@ function DataList(props) {
                     params={{ bid, cid }}
                     className="btn btn-sm btn-secondary"
                     title="View collection history">
-                    <ClockHistoryIcon className="icon" />
+                    <ClockHistory className="icon" />
                   </AdminLink>
                 )}
                 <AdminLink
@@ -83,7 +83,7 @@ function DataList(props) {
                   params={{ bid, cid }}
                   className="btn btn-sm btn-secondary"
                   title="Edit collection attributes">
-                  <GearIcon className="icon" />
+                  <Gear className="icon" />
                 </AdminLink>
               </div>
             </td>

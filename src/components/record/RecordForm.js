@@ -11,9 +11,9 @@ import type {
 import React, { PureComponent } from "react";
 import filesize from "filesize";
 
-import { ReactComponent as Check2Icon } from "bootstrap-icons/icons/check2.svg";
-import { ReactComponent as TrashIcon } from "bootstrap-icons/icons/trash.svg";
-import { ReactComponent as PaperclipIcon } from "bootstrap-icons/icons/paperclip.svg";
+import { Check2 } from "react-bootstrap-icons";
+import { Trash } from "react-bootstrap-icons";
+import { Paperclip } from "react-bootstrap-icons";
 
 import * as CollectionActions from "../../actions/collection";
 import BaseForm from "./../BaseForm";
@@ -158,7 +158,7 @@ function AttachmentInfo(props: AttachmentInfoProps) {
   return (
     <div className="card attachment-info">
       <div className="card-header">
-        <PaperclipIcon className="icon" />
+        <Paperclip className="icon" />
         <b>Attachment information</b>
       </div>
       <div className="card-body">
@@ -315,7 +315,7 @@ export default class RecordForm extends PureComponent<Props, State> {
             type="submit"
             className="btn btn-primary"
             disabled={!this.allowEditing}>
-            <Check2Icon className="icon" />
+            <Check2 className="icon" />
             {` ${record ? "Update" : "Create"} record`}
           </button>
           {" or "}
@@ -337,7 +337,7 @@ export default class RecordForm extends PureComponent<Props, State> {
               type="button"
               className="btn btn-danger delete"
               onClick={this.deleteRecord}>
-              <TrashIcon className="icon" /> Delete record
+              <Trash className="icon" /> Delete record
             </button>
           )}
         </div>

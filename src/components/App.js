@@ -33,9 +33,9 @@ import RecordAttributesPage from "../containers/record/RecordAttributesPage";
 import RecordPermissionsPage from "../containers/record/RecordPermissionsPage";
 import RecordHistoryPage from "../containers/record/RecordHistoryPage";
 
-import { ReactComponent as BoxArrowRight } from "bootstrap-icons/icons/box-arrow-right.svg";
-import { ReactComponent as QuestionCircleFillIcon } from "bootstrap-icons/icons/question-circle-fill.svg";
-import { ReactComponent as ClipboardIcon } from "bootstrap-icons/icons/clipboard.svg";
+import { BoxArrowRight } from "react-bootstrap-icons";
+import { QuestionCircleFill } from "react-bootstrap-icons";
+import { Clipboard } from "react-bootstrap-icons";
 
 function UserInfo({ session }) {
   const {
@@ -69,13 +69,13 @@ function SessionInfoBar({ session, logout, copyAuthenticationHeader }) {
           onClick={event =>
             event.preventDefault() || copyAuthenticationHeader()
           }>
-          <ClipboardIcon className="icon" />
+          <Clipboard className="icon" />
         </a>
         <a
           href={project_docs}
           target="_blank"
           className="spaced btn btn-sm btn-secondary project-docs">
-          <QuestionCircleFillIcon className="icon" /> Documentation
+          <QuestionCircleFill className="icon" /> Documentation
         </a>
         <a
           href=""

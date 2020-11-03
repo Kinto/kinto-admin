@@ -11,9 +11,9 @@ import type {
 import { PureComponent } from "react";
 import * as React from "react";
 
-import { ReactComponent as ChatLeftIcon } from "bootstrap-icons/icons/chat-left.svg";
-import { ReactComponent as XCircleFillIcon } from "bootstrap-icons/icons/x-circle-fill.svg";
-import { ReactComponent as Check2Icon } from "bootstrap-icons/icons/check2.svg";
+import { ChatLeft } from "react-bootstrap-icons";
+import { XCircleFill } from "react-bootstrap-icons";
+import { Check2 } from "react-bootstrap-icons";
 
 import { canEditCollection } from "../../permission";
 import { timeago, humanDate } from "../../utils";
@@ -342,7 +342,7 @@ function RequestReviewButton(props: { onClick: () => void }) {
   const { onClick } = props;
   return (
     <button className="btn btn-info request-review" onClick={onClick}>
-      <ChatLeftIcon className="icon" /> Request review...
+      <ChatLeft className="icon" /> Request review...
     </button>
   );
 }
@@ -351,7 +351,7 @@ function RollbackChangesButton(props: { onClick: () => void }) {
   const { onClick } = props;
   return (
     <button className="btn btn-info rollback-changes" onClick={onClick}>
-      <XCircleFillIcon className="icon" /> Rollback changes...
+      <XCircleFill className="icon" /> Rollback changes...
     </button>
   );
 }
@@ -522,10 +522,10 @@ function ReviewButtons(props: {
   return (
     <div className="btn-group">
       <button className="btn btn-success" onClick={onApprove}>
-        <Check2Icon className="icon" /> Approve
+        <Check2 className="icon" /> Approve
       </button>
       <button className="btn btn-danger" onClick={onDecline}>
-        <ChatLeftIcon className="icon" /> Decline...
+        <ChatLeft className="icon" /> Decline...
       </button>
     </div>
   );
@@ -675,7 +675,7 @@ class CommentDialog extends PureComponent<
                   type="button"
                   className="btn btn-primary"
                   onClick={onClickConfirm}>
-                  <Check2Icon className="icon" /> {confirmLabel}
+                  <Check2 className="icon" /> {confirmLabel}
                 </button>
               </div>
             </div>

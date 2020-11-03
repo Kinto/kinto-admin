@@ -3,9 +3,9 @@ import type { Capabilities } from "../../types";
 
 import React, { PureComponent } from "react";
 
-import { ReactComponent as GearIcon } from "bootstrap-icons/icons/gear.svg";
-import { ReactComponent as LockIcon } from "bootstrap-icons/icons/lock.svg";
-import { ReactComponent as ClockHistoryIcon } from "bootstrap-icons/icons/clock-history.svg";
+import { Gear } from "react-bootstrap-icons";
+import { Lock } from "react-bootstrap-icons";
+import { ClockHistory } from "react-bootstrap-icons";
 
 import AdminLink from "../AdminLink";
 
@@ -32,7 +32,7 @@ export default class GroupTabs extends PureComponent<Props> {
                 className={
                   selected === "attributes" ? "nav-link active" : "nav-link"
                 }>
-                <GearIcon className="icon" />
+                <Gear className="icon" />
                 Attributes
               </AdminLink>
             </li>
@@ -43,7 +43,7 @@ export default class GroupTabs extends PureComponent<Props> {
                 className={
                   selected === "permissions" ? "nav-link active" : "nav-link"
                 }>
-                <LockIcon className="icon" />
+                <Lock className="icon" />
                 Permissions
               </AdminLink>
             </li>
@@ -55,7 +55,7 @@ export default class GroupTabs extends PureComponent<Props> {
                   className={
                     selected === "history" ? "nav-link active" : "nav-link"
                   }>
-                  <ClockHistoryIcon className="icon" />
+                  <ClockHistory className="icon" />
                   History
                 </AdminLink>
               </li>
