@@ -136,10 +136,11 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
     const canRollback = canEdit;
     const hasHistory = "history" in sessionState.serverInfo.capabilities;
 
+    const isCurrentUrl = source.bid == bid && source.cid == cid;
     // Default status is request review
     const currentStep = status == "to-review" ? 1 : status == "signed" ? 2 : 0;
     return (
-      <div>
+      <div className={isCurrentUrl ? "interactive" : "informative"}>
         {hasHistory ? null : (
           <div className="alert alert-warning">
             <p>
@@ -156,7 +157,7 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
             label="Work in progress"
             step={0}
             currentStep={currentStep}
-            isCurrentUrl={source.bid == bid && source.cid == cid}
+            isCurrentUrl={isCurrentUrl}
             canEdit={canRequestReview}
             hasHistory={hasHistory}
             confirmRequestReview={confirmRequestReview}

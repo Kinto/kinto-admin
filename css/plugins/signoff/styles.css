@@ -1,3 +1,7 @@
+.informative {
+  filter: grayscale(0.8);
+}
+
 /*Form Wizard*/
 .bs-wizard {margin-top: 40px;}
 .progress-steps .row.bs-wizard { border-bottom: 0; }
