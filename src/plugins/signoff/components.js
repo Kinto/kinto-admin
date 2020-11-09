@@ -644,41 +644,46 @@ class CommentDialog extends PureComponent<
     const onClickConfirm = () => onConfirm(comment);
 
     return (
-      <div className="modal-open">
-        <div
-          className="modal fade in"
-          role="dialog"
-          style={{ display: "block" }}>
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <button type="button" className="close" onClick={onCancel}>
-                  <span>×</span>
-                </button>
-                <h4 className="modal-title">Confirmation</h4>
-              </div>
-              <div className="modal-body">
-                <p>{description}</p>
-                <textarea
-                  className="form-control"
-                  placeholder="Comment..."
-                  onChange={this.onCommentChange}
-                />
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={onCancel}>
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={onClickConfirm}>
-                  <Check2 className="icon" /> {confirmLabel}
-                </button>
-              </div>
+      <div
+        className="modal"
+        tabIndex="-1"
+        role="dialog"
+        style={{ display: "block" }}>
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Confirmation</h5>
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                onClick={onCancel}>
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              <p>{description}</p>
+              <textarea
+                className="form-control"
+                placeholder="Comment..."
+                onChange={this.onCommentChange}
+              />
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={onClickConfirm}>
+                {confirmLabel}
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-dismiss="modal"
+                onClick={onCancel}>
+                Close
+              </button>
             </div>
           </div>
         </div>

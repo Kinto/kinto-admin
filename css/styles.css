@@ -540,3 +540,7 @@ i.fa:before {
 .rjsf .control-label {
   font-weight: 700;
 }
+
+.modal {
+  background-color: rgba(0,0,0,0.3);
+}
