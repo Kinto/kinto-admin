@@ -21,6 +21,14 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
 
-      - name: Check
+      - name: Code Style
         run: |
           npm run cs-check
+
+      - name: Lint
+        run: |
+          npm run lint
+
+      - name: Flow check
+        run: |
+          npm run flow-check
