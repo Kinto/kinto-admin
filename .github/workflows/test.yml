@@ -42,4 +42,4 @@ jobs:
       - name: Test
         run: |
           export DISPLAY=':99.0'
-          npm test-all:ci
+          npm run test-all:ci
