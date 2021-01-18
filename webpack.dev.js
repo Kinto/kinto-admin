@@ -27,6 +27,8 @@ module.exports = {
     extensions: [
       ".js",
       ".jsx",
+      ".ts",
+      ".tsx",
       ".css",
       ".eot",
       "png",
@@ -39,7 +41,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.(jsx?|tsx?)$/,
         loader: "babel-loader",
         exclude: /node_modules/,
         include: [path.join(__dirname), path.join(__dirname, "src")],

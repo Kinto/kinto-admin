@@ -24,12 +24,12 @@ module.exports = {
     }),
   ],
   resolve: {
-    extensions: [".js", ".jsx", ".css", ".png"],
+    extensions: [".js", ".jsx", ".ts", ".tsx", ".css", ".png"],
   },
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.(jsx?|tsx?)$/,
         loader: "babel-loader",
         exclude: /node_modules/,
         include: [path.join(__dirname), path.join(__dirname, "src")],

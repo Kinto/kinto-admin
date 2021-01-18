@@ -2,11 +2,9 @@
   "presets": [
     "@babel/preset-react",
     "@babel/preset-env",
-    "@babel/preset-flow"
+    "@babel/preset-typescript"
   ],
   "plugins": [
-    "@babel/plugin-syntax-flow",
-    "@babel/plugin-transform-flow-strip-types",
     "@babel/plugin-transform-runtime",
     "@babel/plugin-proposal-object-rest-spread",
     "@babel/plugin-proposal-class-properties"
