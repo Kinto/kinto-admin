@@ -1,0 +1,28 @@
+diff --git a/node_modules/kinto-http/lib/index.d.ts b/node_modules/kinto-http/lib/index.d.ts
+index 06f7979..3dd995a 100644
+--- a/node_modules/kinto-http/lib/index.d.ts
++++ b/node_modules/kinto-http/lib/index.d.ts
+@@ -1,8 +1,8 @@
+ import KintoClientBase, { KintoClientOptions, SUPPORTED_PROTOCOL_VERSION } from "./base";
+ import { AggregateResponse } from "./batch";
+ import Collection from "./collection";
+-import { KintoObject, KintoIdObject, KintoResponse, Permission } from "./types";
++import { KintoObject, KintoIdObject, KintoResponse, Permission, PermissionData } from "./types";
+ export default class KintoClient extends KintoClientBase {
+     constructor(remote: string, options?: Partial<KintoClientOptions>);
+ }
+-export { KintoObject, KintoIdObject, Collection, AggregateResponse, KintoResponse, Permission, SUPPORTED_PROTOCOL_VERSION };
++export { KintoObject, KintoIdObject, Collection, AggregateResponse, KintoResponse, Permission, PermissionData, SUPPORTED_PROTOCOL_VERSION };
+diff --git a/node_modules/kinto-http/lib/types.d.ts b/node_modules/kinto-http/lib/types.d.ts
+index 4714f55..b4a3c56 100644
+--- a/node_modules/kinto-http/lib/types.d.ts
++++ b/node_modules/kinto-http/lib/types.d.ts
+@@ -64,7 +64,7 @@ export interface KintoResponse<T = unknown> {
+     };
+ }
+ export interface HistoryEntry<T> {
+-    action: string;
++    action: "create" | "update" | "delete";
+     collection_id: string;
+     date: string;
+     id: string;
