@@ -1,11 +1,15 @@
 {
-  "parser": "babel-eslint",
+  "parser": "@typescript-eslint/parser",
   "rules": {
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
     "react/react-in-jsx-scope": "error",
-    "no-unused-vars": ["error", {"vars": "all", "args": "none", "varsIgnorePattern": "^_"}],
-    "no-console": "off",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { "vars": "all", "args": "none", "varsIgnorePattern": "^_" }
+    ],
+    "no-console": "off"
   },
   "globals": {
     "Generator": true
@@ -16,10 +20,7 @@
     "node": true,
     "jest": true
   },
-  "extends": [
-    "eslint:recommended",
-    "prettier"
-  ],
+  "extends": ["prettier/@typescript-eslint"],
   "parserOptions": {
     "ecmaVersion": 2018,
     "sourceType": "module",
@@ -27,7 +28,5 @@
       "jsx": true
     }
   },
-  "plugins": [
-    "react"
-  ]
+  "plugins": ["react", "@typescript-eslint/eslint-plugin"]
 }
