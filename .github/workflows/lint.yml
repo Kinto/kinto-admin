@@ -28,7 +28,3 @@ jobs:
       - name: Lint
         run: |
           npm run lint
-
-      - name: Flow check
-        run: |
-          npm run flow-check
