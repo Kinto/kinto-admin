@@ -1,0 +1,30 @@
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+name: Code Style
+jobs:
+  chore:
+    name: Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Print environment
+        run: |
+          node --version
+          npm --version
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Code Style
+        run: |
+          npm run cs-check
+
+      - name: Lint
+        run: |
+          npm run lint
