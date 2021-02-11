@@ -222,8 +222,11 @@ function FilterInfo(props: FilterInfoProps) {
   } = props;
   const {
     pathname,
-    query: { since },
+    query: { since, resource_name },
   } = location;
+
+  const listURL = pathname + "?" + new URLSearchParams({since, resource_name}).toString();
+
   return (
     <p>
       Since {since ? humanDate(since) : ""}.{" "}
@@ -231,11 +234,12 @@ function FilterInfo(props: FilterInfoProps) {
         href="#"
         onClick={event => {
           event.preventDefault();
-          document.location.hash = pathname;
+          document.location.hash = listURL;
           onViewJournalClick();
         }}>
         List view
       </a>
+
       {enableDiffOverview && since != null && (
         <span>
           {" | "}
