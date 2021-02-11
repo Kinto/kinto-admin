@@ -359,6 +359,7 @@ export default class HistoryTable extends PureComponent<
       cid,
       location,
     } = this.props;
+    const { busy } = this.state;
     const { current, previous, diffOverview } = this.state;
     const query = parseHistoryFilters(location.search);
     const routeLocation = { pathname: location.pathname, query };
@@ -400,7 +401,9 @@ export default class HistoryTable extends PureComponent<
             onViewJournalClick={this.onViewJournalClick}
           />
         )}
-        {cid && diffOverview && since && current && previous ? (
+        {busy ? (
+          <Spinner />
+        ) : cid && diffOverview && since && current && previous ? (
           <DiffOverview since={since} source={previous} target={current} />
         ) : (
           <PaginatedTable
