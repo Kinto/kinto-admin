@@ -264,6 +264,11 @@ type DiffOverviewProps = {
 };
 
 function DiffOverview({ source, target, since }: DiffOverviewProps) {
+  if (!source || !target) {
+    // When something goes wrong while retrieving history (notification is shown).
+    return null;
+  }
+
   return (
     <div>
       <div className="alert alert-info">
@@ -277,6 +282,7 @@ function DiffOverview({ source, target, since }: DiffOverviewProps) {
           metadata are omitted for easier review.
         </p>
       </div>
+
       <Diff source={source} target={target} />
     </div>
   );
@@ -324,14 +330,14 @@ export default class HistoryTable extends PureComponent<
     if (!enableDiffOverview || cid == null) {
       return;
     }
-    this.setState({ busy: true });
+    this.setState({ busy: true, diffOverview: true });
     fetchCollectionStateAt(bid, cid)
       .then(current => {
         this.setState({ current });
         return fetchCollectionStateAt(bid, cid, since);
       })
       .then(previous => {
-        this.setState({ previous, busy: false, diffOverview: true });
+        this.setState({ previous, busy: false });
       })
       .catch(err => {
         notifyError("Couldn't compute records list diff overview", err);
@@ -356,7 +362,6 @@ export default class HistoryTable extends PureComponent<
       hasNextHistory,
       listNextHistory,
       bid,
-      cid,
       location,
     } = this.props;
     const { busy } = this.state;
@@ -403,7 +408,7 @@ export default class HistoryTable extends PureComponent<
         )}
         {busy ? (
           <Spinner />
-        ) : cid && diffOverview && since && current && previous ? (
+        ) : diffOverview ? (
           <DiffOverview since={since} source={previous} target={current} />
         ) : (
           <PaginatedTable
