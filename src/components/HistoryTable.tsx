@@ -225,7 +225,8 @@ function FilterInfo(props: FilterInfoProps) {
     query: { since, resource_name },
   } = location;
 
-  const listURL = pathname + "?" + new URLSearchParams({since, resource_name}).toString();
+  const listURL =
+    pathname + "?" + new URLSearchParams({ since, resource_name }).toString();
 
   return (
     <p>
@@ -239,7 +240,6 @@ function FilterInfo(props: FilterInfoProps) {
         }}>
         List view
       </a>
-
       {enableDiffOverview && since != null && (
         <span>
           {" | "}
