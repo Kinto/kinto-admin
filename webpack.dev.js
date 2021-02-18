@@ -4,7 +4,7 @@ var version = require("./package.json").version;
 
 module.exports = {
   mode: "development",
-  devtool: "#inline-source-map",
+  devtool: "inline-source-map",
   entry: ["@babel/polyfill", "webpack-hot-middleware/client", "./index"],
   output: {
     path: path.join(__dirname, "build"),
@@ -12,7 +12,7 @@ module.exports = {
     publicPath: "/",
   },
   optimization: {
-    noEmitOnErrors: true,
+    emitOnErrors: false,
   },
   plugins: [
     new webpack.IgnorePlugin(/^(buffertools)$/), // unwanted "deeper" dependency
