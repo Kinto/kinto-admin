@@ -264,6 +264,11 @@ type DiffOverviewProps = {
 };
 
 function DiffOverview({ source, target, since }: DiffOverviewProps) {
+  if (!source || !target) {
+    // When something goes wrong while retrieving history (notification is shown).
+    return null;
+  }
+
   return (
     <div>
       <div className="alert alert-info">
@@ -277,6 +282,7 @@ function DiffOverview({ source, target, since }: DiffOverviewProps) {
           metadata are omitted for easier review.
         </p>
       </div>
+
       <Diff source={source} target={target} />
     </div>
   );
@@ -324,14 +330,14 @@ export default class HistoryTable extends PureComponent<
     if (!enableDiffOverview || cid == null) {
       return;
     }
-    this.setState({ busy: true });
+    this.setState({ busy: true, diffOverview: true });
     fetchCollectionStateAt(bid, cid)
       .then(current => {
         this.setState({ current });
         return fetchCollectionStateAt(bid, cid, since);
       })
       .then(previous => {
-        this.setState({ previous, busy: false, diffOverview: true });
+        this.setState({ previous, busy: false });
       })
       .catch(err => {
         notifyError("Couldn't compute records list diff overview", err);
@@ -356,9 +362,9 @@ export default class HistoryTable extends PureComponent<
       hasNextHistory,
       listNextHistory,
       bid,
-      cid,
       location,
     } = this.props;
+    const { busy } = this.state;
     const { current, previous, diffOverview } = this.state;
     const query = parseHistoryFilters(location.search);
     const routeLocation = { pathname: location.pathname, query };
@@ -378,17 +384,29 @@ export default class HistoryTable extends PureComponent<
       </thead>
     );
 
-    const tbody = history.map((entry, index) => {
-      return (
-        <HistoryRow
-          key={index}
-          pos={index}
-          enableDiffOverview={enableDiffOverview}
-          bid={bid}
-          entry={entry}
-        />
-      );
-    });
+    const tbody = (
+      <tbody className={!historyLoaded ? "loading" : ""}>
+        {history.length === 0 ? (
+          <tr>
+            <td colSpan={6}>
+              {historyLoaded ? "No history entry found." : <Spinner />}
+            </td>
+          </tr>
+        ) : (
+          history.map((entry, index) => {
+            return (
+              <HistoryRow
+                key={index}
+                pos={index}
+                enableDiffOverview={enableDiffOverview}
+                bid={bid}
+                entry={entry}
+              />
+            );
+          })
+        )}
+      </tbody>
+    );
 
     return (
       <div>
@@ -400,13 +418,15 @@ export default class HistoryTable extends PureComponent<
             onViewJournalClick={this.onViewJournalClick}
           />
         )}
-        {cid && diffOverview && since && current && previous ? (
+        {busy ? (
+          <Spinner />
+        ) : diffOverview ? (
           <DiffOverview since={since} source={previous} target={current} />
         ) : (
           <PaginatedTable
             colSpan={6}
             thead={thead}
-            tbody={<tbody>{tbody}</tbody>}
+            tbody={tbody}
             dataLoaded={historyLoaded}
             hasNextPage={hasNextHistory}
             listNextPage={listNextHistory}
