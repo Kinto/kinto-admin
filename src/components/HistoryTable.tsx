@@ -384,17 +384,29 @@ export default class HistoryTable extends PureComponent<
       </thead>
     );
 
-    const tbody = history.map((entry, index) => {
-      return (
-        <HistoryRow
-          key={index}
-          pos={index}
-          enableDiffOverview={enableDiffOverview}
-          bid={bid}
-          entry={entry}
-        />
-      );
-    });
+    const tbody = (
+      <tbody className={!historyLoaded ? "loading" : ""}>
+        {history.length === 0 ? (
+          <tr>
+            <td colSpan={6}>
+              {historyLoaded ? "No history entry found." : <Spinner />}
+            </td>
+          </tr>
+        ) : (
+          history.map((entry, index) => {
+            return (
+              <HistoryRow
+                key={index}
+                pos={index}
+                enableDiffOverview={enableDiffOverview}
+                bid={bid}
+                entry={entry}
+              />
+            );
+          })
+        )}
+      </tbody>
+    );
 
     return (
       <div>
@@ -414,7 +426,7 @@ export default class HistoryTable extends PureComponent<
           <PaginatedTable
             colSpan={6}
             thead={thead}
-            tbody={<tbody>{tbody}</tbody>}
+            tbody={tbody}
             dataLoaded={historyLoaded}
             hasNextPage={hasNextHistory}
             listNextPage={listNextHistory}
