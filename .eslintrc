@@ -20,7 +20,7 @@
     "node": true,
     "jest": true
   },
-  "extends": ["prettier/@typescript-eslint"],
+  "extends": ["prettier"],
   "parserOptions": {
     "ecmaVersion": 2018,
     "sourceType": "module",
