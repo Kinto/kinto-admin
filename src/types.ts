@@ -114,6 +114,13 @@ export type CollectionState = {
   history: Paginator<ResourceHistoryEntry>;
 };
 
+export type CollectionStatus =
+  | "signed"
+  | "to-review"
+  | "to-rollback"
+  | "to-sign"
+  | "work-in-progress";
+
 export type CollectionData = {
   id?: string;
   last_modified?: number;
@@ -126,7 +133,10 @@ export type CollectionData = {
   displayFields?: string[] | null | undefined;
   sort?: string;
   cache_expires?: number;
-  status?: string;
+  status?: CollectionStatus;
+  last_review_request_by?: string;
+  last_editor_comment?: string;
+  last_reviewer_comment?: string;
 };
 
 export type CollectionPermissions = {
@@ -241,6 +251,11 @@ export type RecordData = {
   attachment?: Attachment;
   __attachment__?: string;
 };
+
+export interface ValidRecord extends RecordData {
+  id: string;
+  [key: string]: any;
+}
 
 export type RecordPermissions = {
   write: string[];
