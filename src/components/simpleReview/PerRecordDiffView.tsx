@@ -24,6 +24,7 @@ export default function PerRecordDiffView({
   collectionData,
 }: PerRecordDiffViewProps) {
   const [showExtraFields, setShowExtraFields] = useState(false);
+  const [showAllLines, setShowAllLines] = useState(false);
   const changes = findChangeTypes(
     oldRecords,
     newRecords,
@@ -35,7 +36,7 @@ export default function PerRecordDiffView({
     case "work-in-progress":
       return (
         <div>
-          <div className="form-check mb-3">
+          <div className="form-check form-check-inline mb-3">
             <input
               className="form-check-input"
               type="checkbox"
@@ -48,6 +49,19 @@ export default function PerRecordDiffView({
             </label>
           </div>
 
+          <div className="form-check form-check-inline mb-3">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              checked={showAllLines}
+              onChange={e => setShowAllLines(e.currentTarget.checked)}
+              id="showAllLines"
+            />
+            <label className="form-check-label" htmlFor="showAllLines">
+              Show all lines
+            </label>
+          </div>
+
           {changes.map(({ id, changeType, source, target }) => (
             <Diff
               key={id}
@@ -55,6 +69,7 @@ export default function PerRecordDiffView({
               changeType={changeType}
               source={source}
               target={target}
+              allLines={showAllLines}
             />
           ))}
         </div>
@@ -75,12 +90,14 @@ function Diff({
   source,
   target,
   className = "",
+  allLines = false,
 }: {
   id: string;
   changeType: ChangeType;
   source?: ValidRecord;
   target?: ValidRecord;
   className?: string;
+  allLines?: boolean;
 }) {
   let diff: string[];
 
@@ -93,7 +110,7 @@ function Diff({
       .split("\n")
       .map(line => `+ ${line}`);
   } else {
-    diff = diffJson(source, target);
+    diff = diffJson(source, target, allLines ? "all" : undefined);
   }
 
   return (
