@@ -1,12 +1,15 @@
 import type { AppState, ValidRecord } from "../../types";
 import type { Dispatch } from "redux";
-import type { StateProps } from "../../components/simpleReview/SimpleReview";
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
+import type { StateProps } from "../../components/simpleReview/SimpleReview";
 import SimpleReview from "../../components/simpleReview/SimpleReview";
+
+import { SignoffState } from "../../plugins/signoff/types";
 import * as SignoffActions from "../../plugins/signoff/actions";
+import * as CollectionActions from "../../actions/collection";
 import { getClient } from "../../client";
 
 function fetchRecords(bid: string, cid: string): Promise<ValidRecord[]> {
@@ -16,11 +19,12 @@ function fetchRecords(bid: string, cid: string): Promise<ValidRecord[]> {
   });
 }
 
-function mapStateToProps(state: AppState): StateProps {
+function mapStateToProps(
+  state: AppState & { signoff: SignoffState }
+): StateProps {
   return {
     session: state.session,
-    bucket: state.bucket,
-    collection: state.collection,
+    signoff: state.signoff,
     fetchRecords,
   };
 }
@@ -29,6 +33,7 @@ function mapDispatchToProps(dispatch: Dispatch): typeof SignoffActions {
   return bindActionCreators(
     {
       ...SignoffActions,
+      ...CollectionActions,
     },
     dispatch
   );

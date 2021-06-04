@@ -15,6 +15,8 @@ function defaultSimpleViewDiffsProps(
     newRecords: [],
     collectionData: {
       status: "to-review",
+      bid: "a",
+      cid: "b",
     },
     ...props,
   };
@@ -27,6 +29,8 @@ describe("PerRecordDiffView component", () => {
       defaultSimpleViewDiffsProps({
         collectionData: {
           status: "signed",
+          bid: "a",
+          cid: "b",
         },
       })
     );
@@ -64,11 +68,13 @@ describe("findChangeTypes", () => {
       { id: "b", changeType: ChangeType.ADD, target: { id: "b" } },
     ]);
   });
+
   it("should find removed items", () => {
     expect(findChangeTypes([{ id: "a" }, { id: "b" }], [{ id: "a" }])).eql([
       { id: "b", changeType: ChangeType.REMOVE, source: { id: "b" } },
     ]);
   });
+
   it("should find updated items", () => {
     expect(
       findChangeTypes(
@@ -84,6 +90,7 @@ describe("findChangeTypes", () => {
       },
     ]);
   });
+
   it("should find empty updated items", () => {
     expect(
       findChangeTypes(
@@ -99,6 +106,7 @@ describe("findChangeTypes", () => {
       },
     ]);
   });
+
   it("should sort by id", () => {
     const sources = [
       { id: "a" },

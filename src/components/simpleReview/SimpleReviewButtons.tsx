@@ -1,6 +1,6 @@
 import CommentDialog from "../CommentDialog";
 import React, { useState } from "react";
-import { CollectionStatus } from "../../types";
+import { CollectionStatus } from "../../plugins/signoff/types";
 
 export interface SimpleReviewButtonsProps {
   status: CollectionStatus;
@@ -43,7 +43,7 @@ export default function SimpleReviewButtons({
       </div>
       {dialog === "reject" && (
         <CommentDialog
-          description="Leave a comment for the editor:"
+          description="Leave a comment for the editor. Note that these changes will not be undone (you can use the 'Rollback' button for that):"
           confirmLabel="Reject changes"
           onConfirm={declineChanges}
           onClose={() => setDialog("")}

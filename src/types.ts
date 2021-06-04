@@ -114,13 +114,6 @@ export type CollectionState = {
   history: Paginator<ResourceHistoryEntry>;
 };
 
-export type CollectionStatus =
-  | "signed"
-  | "to-review"
-  | "to-rollback"
-  | "to-sign"
-  | "work-in-progress";
-
 export type CollectionData = {
   id?: string;
   last_modified?: number;
@@ -133,7 +126,7 @@ export type CollectionData = {
   displayFields?: string[] | null | undefined;
   sort?: string;
   cache_expires?: number;
-  status?: CollectionStatus;
+  status?: string;
   last_review_request_by?: string;
   last_editor_comment?: string;
   last_reviewer_comment?: string;

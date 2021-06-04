@@ -2,16 +2,21 @@ import { expect } from "chai";
 import { createComponent } from "../../test_utils";
 
 import SimpleReviewHeader from "../../../src/components/simpleReview/SimpleReviewHeader";
+import { SourceInfo } from "../../../src/plugins/signoff/types";
 
-const toReviewProps = {
+const toReviewProps: SourceInfo = {
+  bid: "a",
+  cid: "b",
   status: "to-review",
-  last_review_request_by: "ana",
-  last_editor_comment: "please review",
+  lastReviewRequestBy: "ana",
+  lastEditorComment: "please review",
 };
 
-const wipProps = {
+const wipProps: SourceInfo = {
+  bid: "a",
+  cid: "b",
   status: "work-in-progress",
-  last_reviewer_comment: "no thanks",
+  lastReviewerComment: "no thanks",
 };
 
 describe("SimpleReviewHeader component", () => {

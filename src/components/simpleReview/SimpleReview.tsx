@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from "react";
 import type {
   SessionState,
-  BucketState,
-  CollectionState,
   ValidRecord,
+  CollectionRouteMatch,
 } from "../../types";
 
 import * as SignoffActions from "../../plugins/signoff/actions";
+import * as CollectionActions from "../../actions/collection";
 import SimpleReviewButtons from "./SimpleReviewButtons";
 import SimpleReviewHeader from "./SimpleReviewHeader";
 import PerRecordDiffView from "./PerRecordDiffView";
+import { isReviewer } from "../../plugins/signoff/components";
+import { SignoffState } from "../../plugins/signoff/types";
+import Spinner from "../Spinner";
 
 export type StateProps = {
+  signoff?: SignoffState;
   session: SessionState;
-  bucket: BucketState;
-  collection: CollectionState;
   fetchRecords(bid: string, cid: string): Promise<Array<ValidRecord>>;
 };
 
@@ -22,24 +24,30 @@ export type SimpleReviewProps = StateProps & {
   approveChanges: typeof SignoffActions.approveChanges;
   declineChanges: typeof SignoffActions.declineChanges;
   rollbackChanges: typeof SignoffActions.rollbackChanges;
+  listRecords: typeof CollectionActions.listRecords;
+  match: CollectionRouteMatch;
+  location: Location;
 };
 
 export default function SimpleReview({
-  bucket,
-  collection,
+  signoff,
   session,
   fetchRecords,
   approveChanges,
   declineChanges,
   rollbackChanges,
+  listRecords,
+  match,
 }: SimpleReviewProps) {
-  const bid = bucket.data.id;
-  const cid = collection.data.id;
-  const isReviewer = session.serverInfo.user?.principals?.includes(
-    `/buckets/${bid}/groups/${cid}-reviewers`
-  );
-  const isReviewableBucket = bid?.match("-workspace");
+  const signoffSource = signoff?.collectionsInfo?.source;
+  const sourceBid = signoffSource?.bid;
+  const sourceCid = signoffSource?.cid;
 
+  const signoffDest = signoff?.collectionsInfo?.destination;
+  const destBid = signoffDest?.bid;
+  const destCid = signoffDest?.cid;
+
+  const canReview = signoffSource ? isReviewer(signoffSource, session) : false;
   const [records, setRecords] = useState<{
     loading: boolean;
     newRecords: ValidRecord[];
@@ -51,31 +59,41 @@ export default function SimpleReview({
   });
 
   useEffect(() => {
+    async function load() {
+      const {
+        params: { bid, cid },
+      } = match;
+      if (bid && cid) {
+        // For signoff
+        listRecords(bid, cid, "id");
+      }
+    }
+    load();
+  }, [match.params.bid, match.params.cid]);
+
+  useEffect(() => {
     async function getRecords() {
-      if (isReviewableBucket && isReviewer && bid && cid) {
-        setRecords({ newRecords: [], oldRecords: [], loading: true });
-        const oldRecords = await fetchRecords(
-          bid.replace("-workspace", ""),
-          cid
-        );
-        const newRecords = await fetchRecords(bid, cid);
+      if (destCid && destBid && sourceBid && sourceCid) {
+        setRecords({ oldRecords: [], newRecords: [], loading: true });
+        const newRecords = await fetchRecords(sourceBid, sourceCid);
+        const oldRecords = await fetchRecords(destBid, destCid);
         setRecords({ oldRecords, newRecords, loading: false });
       }
     }
     getRecords();
-  }, [bid, cid]);
+  }, [destBid, destCid, sourceBid, sourceCid]);
 
   let message = "";
   if (session.authenticating) {
-    message = "Loading...";
+    return <Spinner />;
   } else if (!session.authenticated) {
     message = "Not authenticated";
-  } else if (!isReviewableBucket || !collection.data.status) {
+  } else if (!signoffSource || !signoffSource?.status) {
     message = "This is not a collection that supports reviews.";
-  } else if (session.authenticated && !isReviewer) {
-    message = `You do not have review permissions for the ${collection.data.id} collection. Please contact an authorized reviewer.`;
+  } else if (session.authenticated && !canReview) {
+    message = `You do not have review permissions for the ${sourceCid} collection. Please contact an authorized reviewer.`;
   } else if (records.loading) {
-    message = "Loading...";
+    return <Spinner />;
   }
 
   if (message) {
@@ -84,10 +102,10 @@ export default function SimpleReview({
 
   return (
     <div className="p-4">
-      {["to-review", "work-in-progress"].includes(collection.data.status) && (
-        <SimpleReviewHeader {...collection.data}>
+      {["to-review", "work-in-progress"].includes(signoffSource.status) && (
+        <SimpleReviewHeader {...signoffSource}>
           <SimpleReviewButtons
-            status={collection.data.status}
+            status={signoffSource.status}
             approveChanges={approveChanges}
             declineChanges={declineChanges}
             rollbackChanges={rollbackChanges}
@@ -98,7 +116,7 @@ export default function SimpleReview({
       <PerRecordDiffView
         oldRecords={records.oldRecords}
         newRecords={records.newRecords}
-        collectionData={collection.data}
+        collectionData={signoffSource}
       />
     </div>
   );

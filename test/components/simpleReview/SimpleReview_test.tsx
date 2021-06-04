@@ -7,7 +7,43 @@ import SimpleReview, {
   SimpleReviewProps,
 } from "../../../src/components/simpleReview/SimpleReview";
 
-import { SessionState, BucketState } from "../../../src/types";
+import { SessionState } from "../../../src/types";
+import { SignoffState } from "../../../src/plugins/signoff/types";
+
+function signoffFactory(): SignoffState {
+  return {
+    collectionsInfo: {
+      source: {
+        bid: "main-workspace",
+        cid: "my-collection",
+        editors_group: "{collection_id}-editors",
+        reviewers_group: "{collection_id}-reviewers",
+        lastEditBy: "account:experimenter",
+        lastEditDate: 1622816256864,
+        lastEditorComment: undefined,
+        lastReviewBy: undefined,
+        lastReviewDate: NaN,
+        lastReviewRequestBy: undefined,
+        lastReviewRequestDate: NaN,
+        lastReviewerComment: undefined,
+        lastSignatureBy: "account:admin",
+        lastSignatureDate: 1622816219752,
+        status: "work-in-progress",
+      },
+      destination: {
+        bid: "main",
+        cid: "my-collection",
+      },
+      preview: {
+        bid: "main-preview",
+        cid: "my-collection",
+      },
+    },
+    pendingConfirmReviewRequest: false,
+    pendingConfirmDeclineChanges: false,
+    pendingConfirmRollbackChanges: false,
+  };
+}
 
 function sessionFactory(props: Partial<SessionState> = null): SessionState {
   return {
@@ -43,18 +79,15 @@ async function renderSimpleReview(props: Partial<SimpleReviewProps> = null) {
   let node: HTMLElement;
   await testUtils.act(async () => {
     node = createComponent(SimpleReview, {
-      bucket: {
-        data: {
-          id: "main-workspace",
+      match: {
+        params: {
+          bid: "main-workspace",
+          cid: "my-collection",
         },
       },
-      collection: {
-        data: {
-          id: "my-collection",
-          status: "to-review",
-        },
-      },
+      listRecords() {},
       session: sessionFactory(),
+      signoff: signoffFactory(),
       async fetchRecords() {},
       ...props,
     });
@@ -63,11 +96,11 @@ async function renderSimpleReview(props: Partial<SimpleReviewProps> = null) {
 }
 
 describe("SimpleTest component", () => {
-  it("should render loading when authenticating", async () => {
+  it("should render spinner when authenticating", async () => {
     const node = await renderSimpleReview({
       session: sessionFactory({ authenticated: false, authenticating: true }),
     });
-    expect(node.textContent).to.equal("Loading...");
+    expect(node.querySelector(".spinner")).to.be.ok;
   });
 
   it("should render not authenticated", async () => {
@@ -85,13 +118,7 @@ describe("SimpleTest component", () => {
   });
 
   it("should render not reviewable", async () => {
-    const node = await renderSimpleReview({
-      bucket: {
-        data: {
-          id: "main", // reviewable buckets end in -workspace
-        },
-      } as BucketState,
-    });
+    const node = await renderSimpleReview({ signoff: undefined });
     expect(node.textContent).to.equal(
       "This is not a collection that supports reviews."
     );

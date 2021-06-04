@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { omit, diffJson } from "../../utils";
-import type { CollectionState, ValidRecord } from "../../types";
+import type { ValidRecord } from "../../types";
 import { diffArrays, diffJson as diff } from "diff";
+import { SourceInfo } from "../../plugins/signoff/types";
 
 export enum ChangeType {
   ADD = "add",
@@ -15,7 +16,7 @@ export const EXTRA_FIELDS = ["last_modified", "schema"];
 export interface PerRecordDiffViewProps {
   oldRecords: ValidRecord[];
   newRecords: ValidRecord[];
-  collectionData: CollectionState["data"];
+  collectionData: SourceInfo;
 }
 
 export default function PerRecordDiffView({
@@ -45,7 +46,7 @@ export default function PerRecordDiffView({
               id="showExtraFields"
             />
             <label className="form-check-label" htmlFor="showExtraFields">
-              Show <code>last_modified</code> changes
+              Show record timestamps
             </label>
           </div>
 
