@@ -30,7 +30,7 @@ import RecordBulkPage from "../containers/record/RecordBulkPage";
 import RecordAttributesPage from "../containers/record/RecordAttributesPage";
 import RecordPermissionsPage from "../containers/record/RecordPermissionsPage";
 import RecordHistoryPage from "../containers/record/RecordHistoryPage";
-import SimpleReviewPage from "../containers/simpleReview/SimpleReviewPage";
+import SimpleReviewPage from "../plugins/signoff/SimpleReview/SimpleReviewPage";
 
 import { BoxArrowRight } from "react-bootstrap-icons";
 import { QuestionCircleFill } from "react-bootstrap-icons";

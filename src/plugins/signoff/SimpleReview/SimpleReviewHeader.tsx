@@ -1,5 +1,5 @@
 import React from "react";
-import { SourceInfo } from "../../plugins/signoff/types";
+import { SourceInfo } from "../types";
 
 export default function SimpleReviewHeader({
   status,

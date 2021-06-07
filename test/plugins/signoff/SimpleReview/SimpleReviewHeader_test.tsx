@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import { createComponent } from "../../test_utils";
+import { createComponent } from "../../../test_utils";
 
-import SimpleReviewHeader from "../../../src/components/simpleReview/SimpleReviewHeader";
-import { SourceInfo } from "../../../src/plugins/signoff/types";
+import SimpleReviewHeader from "../../../../src/plugins/signoff/SimpleReview/SimpleReviewHeader";
+import { SourceInfo } from "../../../../src/plugins/signoff/types";
 
 const toReviewProps: SourceInfo = {
   bid: "a",

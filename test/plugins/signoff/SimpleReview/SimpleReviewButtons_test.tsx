@@ -1,11 +1,11 @@
 import { expect } from "chai";
-import { createComponent } from "../../test_utils";
+import { createComponent } from "../../../test_utils";
 import ReactDomTestUtils from "react-dom/test-utils";
 import sinon from "sinon";
 
 import SimpleReviewButtons, {
   SimpleReviewButtonsProps,
-} from "../../../src/components/simpleReview/SimpleReviewButtons";
+} from "../../../../src/plugins/signoff/SimpleReview/SimpleReviewButtons";
 
 function renderButtons(props: Partial<SimpleReviewButtonsProps> = null) {
   const approveChanges = sinon.stub();

@@ -1,11 +1,11 @@
 import { expect } from "chai";
-import { createComponent } from "../../test_utils";
+import { createComponent } from "../../../test_utils";
 
 import PerRecordDiffView, {
   PerRecordDiffViewProps,
   findChangeTypes,
   ChangeType,
-} from "../../../src/components/simpleReview/PerRecordDiffView";
+} from "../../../../src/plugins/signoff/SimpleReview/PerRecordDiffView";
 
 function defaultSimpleViewDiffsProps(
   props: Partial<PerRecordDiffViewProps> = null
