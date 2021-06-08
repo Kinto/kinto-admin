@@ -250,6 +250,10 @@ table.record-list td.load-more {
   color: red;
 }
 
+.json-record-simple-review {
+  white-space: pre-wrap;
+}
+
 .card-header > .icon,
 .list-group-item .icon,
 .nav-tabs li .icon {
@@ -542,5 +546,5 @@ i.fa:before {
 }
 
 .modal {
-  background-color: rgba(0,0,0,0.3);
+  background-color: rgba(0, 0, 0, 0.3);
 }

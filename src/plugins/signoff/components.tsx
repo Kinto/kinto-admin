@@ -41,7 +41,7 @@ function isEditor(source, sessionState) {
   return isMember("editors_group", source, sessionState);
 }
 
-function isReviewer(source, sessionState) {
+export function isReviewer(source: SourceInfo, sessionState: SessionState) {
   return isMember("reviewers_group", source, sessionState);
 }
 

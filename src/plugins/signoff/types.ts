@@ -24,12 +24,19 @@ export type ChangesList = {
   updated: number;
 };
 
+export type CollectionStatus =
+  | "signed"
+  | "to-review"
+  | "to-rollback"
+  | "to-sign"
+  | "work-in-progress";
+
 export type SourceInfo = {
   // Basic Info (before loading from info server)
   bid: string;
   cid: string;
   // Full info.
-  status?: string;
+  status?: CollectionStatus;
   lastEditBy?: string;
   lastEditDate?: number;
   lastReviewRequestBy?: string;

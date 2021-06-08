@@ -365,8 +365,12 @@ export async function copyToClipboard(s: string | null | undefined) {
   }
 }
 
-export function diffJson(a: Object, b: Object, context: number = 3): string[] {
+export function diffJson(
+  a: Object,
+  b: Object,
   // Number of lines to show above/below changes in diffs.
+  nLines: number | "all" = 3
+): string[] {
   const chunks = diff(a, b);
   return chunks.map((chunk, i) => {
     const isFirstChunk = i == 0;
@@ -374,6 +378,8 @@ export function diffJson(a: Object, b: Object, context: number = 3): string[] {
 
     // Remove empty lines.
     let lines = chunk.value.split("\n").filter(part => part !== "");
+
+    const context: number = nLines === "all" ? lines.length : nLines;
 
     if (!chunk.added && !chunk.removed) {
       // Truncate beginning of first chunk if larger than context.
