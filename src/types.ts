@@ -217,9 +217,7 @@ export type Plugin = {
     [key: string]: Reducer<any, any>;
   };
   sagas: [][];
-  register: (
-    store: Store<AppState, any>
-  ) => {
+  register: (store: Store<AppState, any>) => {
     hooks?: any;
     routes?: any[];
   };

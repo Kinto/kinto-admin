@@ -117,13 +117,8 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
       return null;
     }
 
-    const {
-      source,
-      destination,
-      preview,
-      changesOnSource,
-      changesOnPreview,
-    } = collectionsInfo;
+    const { source, destination, preview, changesOnSource, changesOnPreview } =
+      collectionsInfo;
 
     const { status } = source;
 
@@ -432,14 +427,8 @@ type ReviewInfosProps = {
 };
 
 function ReviewInfos(props: ReviewInfosProps) {
-  const {
-    isCurrentStep,
-    source,
-    link,
-    hasHistory,
-    changes,
-    isCurrentUrl,
-  } = props;
+  const { isCurrentStep, source, link, hasHistory, changes, isCurrentUrl } =
+    props;
   const {
     bid,
     cid,
@@ -566,12 +555,8 @@ type SignedInfosProps = {
 
 function SignedInfos(props: SignedInfosProps) {
   const { isCurrentUrl, source, destination } = props;
-  const {
-    lastReviewBy,
-    lastReviewDate,
-    lastSignatureBy,
-    lastSignatureDate,
-  } = source;
+  const { lastReviewBy, lastReviewDate, lastSignatureBy, lastSignatureDate } =
+    source;
   const { bid, cid } = destination;
   return (
     <ul>

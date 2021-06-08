@@ -22,9 +22,7 @@ import {
   RECORD_BULK_CREATE_REQUEST,
 } from "../constants";
 
-export function collectionBusy(
-  busy: boolean
-): {
+export function collectionBusy(busy: boolean): {
   type: "COLLECTION_BUSY";
   busy: boolean;
 } {
@@ -74,9 +72,7 @@ export function listRecordsSuccess(
   };
 }
 
-export function collectionTotalRecords(
-  totalRecords: number
-): {
+export function collectionTotalRecords(totalRecords: number): {
   type: "COLLECTION_TOTAL_RECORDS";
   totalRecords: number;
 } {

@@ -431,12 +431,8 @@ export default class AuthForm extends PureComponent<
   };
 
   onSubmit = ({ formData }: { formData: any }) => {
-    const {
-      session,
-      setupSession,
-      navigateToExternalAuth,
-      navigateToOpenID,
-    } = this.props;
+    const { session, setupSession, navigateToExternalAuth, navigateToOpenID } =
+      this.props;
     let { authType } = formData;
     let openidProvider = null;
     if (authType.startsWith("openid-")) {
@@ -522,13 +518,8 @@ export default class AuthForm extends PureComponent<
   }
 
   render() {
-    const {
-      servers,
-      clearServers,
-      getServerInfo,
-      serverChange,
-      settings,
-    } = this.props;
+    const { servers, clearServers, getServerInfo, serverChange, settings } =
+      this.props;
     const { schema, uiSchema, formData } = this.state;
     const { singleServer } = settings;
     const authMethods = this.getSupportedAuthMethods();

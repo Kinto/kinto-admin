@@ -8,9 +8,7 @@ import {
   RECORD_HISTORY_SUCCESS,
 } from "../constants";
 
-export function recordBusy(
-  busy: boolean
-): {
+export function recordBusy(busy: boolean): {
   type: "RECORD_BUSY";
   busy: boolean;
 } {

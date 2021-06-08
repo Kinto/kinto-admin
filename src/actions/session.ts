@@ -20,36 +20,28 @@ import {
 
 type NavigationResult = ActionType<typeof notifyError> | { type: null };
 
-export function sessionBusy(
-  busy: boolean
-): {
+export function sessionBusy(busy: boolean): {
   type: "SESSION_BUSY";
   busy: boolean;
 } {
   return { type: SESSION_BUSY, busy };
 }
 
-export function setupSession(
-  auth: AuthData
-): {
+export function setupSession(auth: AuthData): {
   type: "SESSION_SETUP";
   auth: AuthData;
 } {
   return { type: SESSION_SETUP, auth };
 }
 
-export function setupComplete(
-  auth: AuthData
-): {
+export function setupComplete(auth: AuthData): {
   type: "SESSION_SETUP_COMPLETE";
   auth: AuthData;
 } {
   return { type: SESSION_SETUP_COMPLETE, auth };
 }
 
-export function storeRedirectURL(
-  redirectURL: string | null | undefined
-): {
+export function storeRedirectURL(redirectURL: string | null | undefined): {
   type: "SESSION_STORE_REDIRECT_URL";
   redirectURL: string | null | undefined;
 } {
@@ -62,27 +54,21 @@ export function serverChange(): {
   return { type: SESSION_SERVER_CHANGE };
 }
 
-export function getServerInfo(
-  auth: AuthData
-): {
+export function getServerInfo(auth: AuthData): {
   type: "SESSION_GET_SERVERINFO";
   auth: AuthData;
 } {
   return { type: SESSION_GET_SERVERINFO, auth };
 }
 
-export function serverInfoSuccess(
-  serverInfo: ServerInfo
-): {
+export function serverInfoSuccess(serverInfo: ServerInfo): {
   type: "SESSION_SERVERINFO_SUCCESS";
   serverInfo: ServerInfo;
 } {
   return { type: SESSION_SERVERINFO_SUCCESS, serverInfo };
 }
 
-export function permissionsListSuccess(
-  permissions: Object[]
-): {
+export function permissionsListSuccess(permissions: Object[]): {
   type: "SESSION_PERMISSIONS_SUCCESS";
   permissions: Object[];
 } {
@@ -95,9 +81,7 @@ export function listBuckets(): {
   return { type: SESSION_BUCKETS_REQUEST };
 }
 
-export function bucketsSuccess(
-  buckets: Object[]
-): {
+export function bucketsSuccess(buckets: Object[]): {
   type: "SESSION_BUCKETS_SUCCESS";
   buckets: Object[];
 } {

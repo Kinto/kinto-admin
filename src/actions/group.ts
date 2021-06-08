@@ -8,9 +8,7 @@ import {
   GROUP_HISTORY_SUCCESS,
 } from "../constants";
 
-export function groupBusy(
-  busy: boolean
-): {
+export function groupBusy(busy: boolean): {
   type: "GROUP_BUSY";
   busy: boolean;
 } {

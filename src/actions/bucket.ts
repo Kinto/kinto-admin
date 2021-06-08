@@ -50,9 +50,7 @@ export function updateBucket(
   return { type: BUCKET_UPDATE_REQUEST, bid, bucket };
 }
 
-export function deleteBucket(
-  bid: string
-): {
+export function deleteBucket(bid: string): {
   type: "BUCKET_DELETE_REQUEST";
   bid: string;
 } {
@@ -63,9 +61,7 @@ export function resetBucket(): { type: "BUCKET_RESET" } {
   return { type: BUCKET_RESET };
 }
 
-export function listBucketCollections(
-  bid: string
-): {
+export function listBucketCollections(bid: string): {
   type: "BUCKET_COLLECTIONS_REQUEST";
   bid: string;
 } {

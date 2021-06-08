@@ -35,14 +35,8 @@ type SideBarLinkProps = {
 };
 
 function SideBarLink(props: SideBarLinkProps) {
-  const {
-    currentPath,
-    name,
-    params,
-    children,
-    className,
-    ...otherProps
-  } = props;
+  const { currentPath, name, params, children, className, ...otherProps } =
+    props;
   const targetUrl = url(name, params);
   const active = currentPath === targetUrl ? "active" : "";
   const classes =
