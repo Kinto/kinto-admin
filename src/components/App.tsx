@@ -30,6 +30,7 @@ import RecordBulkPage from "../containers/record/RecordBulkPage";
 import RecordAttributesPage from "../containers/record/RecordAttributesPage";
 import RecordPermissionsPage from "../containers/record/RecordPermissionsPage";
 import RecordHistoryPage from "../containers/record/RecordHistoryPage";
+import SimpleReviewPage from "../plugins/signoff/SimpleReview/SimpleReviewPage";
 
 import { BoxArrowRight } from "react-bootstrap-icons";
 import { QuestionCircleFill } from "react-bootstrap-icons";
@@ -285,6 +286,12 @@ export default class App extends PureComponent<Props> {
                                       title="history"
                                       path="/buckets/:bid/collections/:cid/history"
                                       component={CollectionHistoryPage}
+                                    />
+                                    <CreateRoute
+                                      exact
+                                      title="simple-review"
+                                      path="/buckets/:bid/collections/:cid/simple-review"
+                                      component={SimpleReviewPage}
                                     />
                                     <CreateRoute
                                       exact
