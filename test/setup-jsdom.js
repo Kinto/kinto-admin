@@ -12,8 +12,7 @@ global.navigator = global.window.navigator;
 // component constructor.
 JSDOM.reconfigure({ url: "http://server.test/" });
 
-// Setup dumb sessionStorage for tests
-global.sessionStorage = (function () {
+function fakeStorage() {
   var _state = {};
   return {
     getItem(key) {
@@ -28,7 +27,11 @@ global.sessionStorage = (function () {
       delete _state[key];
     },
   };
-})();
+}
+
+// Setup dumb sessionStorage and localStorage for tests
+global.sessionStorage = fakeStorage();
+global.localStorage = fakeStorage();
 
 // Enable rjsf safe render completion
 // see https://github.com/mozilla-services/react-jsonschema-form/commit/6159cb4834a082b2af2154e6f978b9ad57e96d51
