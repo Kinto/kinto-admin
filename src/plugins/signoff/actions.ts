@@ -8,9 +8,7 @@ export function confirmRequestReview(): {
   return { type: constants.PLUGIN_CONFIRM_REVIEW_REQUEST };
 }
 
-export function requestReview(
-  comment: string
-): {
+export function requestReview(comment: string): {
   type: "PLUGIN_REVIEW_REQUEST";
   comment: string;
 } {
@@ -23,9 +21,7 @@ export function confirmRollbackChanges(): {
   return { type: constants.PLUGIN_CONFIRM_ROLLBACK_CHANGES };
 }
 
-export function rollbackChanges(
-  comment: string
-): {
+export function rollbackChanges(comment: string): {
   type: "PLUGIN_ROLLBACK_CHANGES";
   comment: string;
 } {
@@ -38,9 +34,7 @@ export function confirmDeclineChanges(): {
   return { type: constants.PLUGIN_CONFIRM_DECLINE_CHANGES };
 }
 
-export function declineChanges(
-  comment: string
-): {
+export function declineChanges(comment: string): {
   type: "PLUGIN_DECLINE_REQUEST";
   comment: string;
 } {

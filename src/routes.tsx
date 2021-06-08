@@ -152,9 +152,9 @@ const routeCreator = ({
   );
 };
 
-function mapDispatchToProps(
-  dispatch: Dispatch
-): { routeUpdated: typeof RouteActions.routeUpdated } {
+function mapDispatchToProps(dispatch: Dispatch): {
+  routeUpdated: typeof RouteActions.routeUpdated;
+} {
   return bindActionCreators(
     { routeUpdated: RouteActions.routeUpdated },
     dispatch

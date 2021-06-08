@@ -220,9 +220,8 @@ export function expandBucketsCollections(
       bucket.readonly = !bucket.permissions.some(bp => {
         return ["write", "collection:create"].includes(bp);
       });
-      bucket.canCreateCollection = bucket.permissions.includes(
-        "collection:create"
-      );
+      bucket.canCreateCollection =
+        bucket.permissions.includes("collection:create");
     }
     if ("collection_id" in permission) {
       // Add any missing collection to the current bucket collections list; note

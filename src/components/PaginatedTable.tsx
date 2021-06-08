@@ -14,14 +14,8 @@ type Props = {
 
 export default class PaginatedTable extends PureComponent<Props> {
   render() {
-    const {
-      thead,
-      tbody,
-      dataLoaded,
-      colSpan,
-      hasNextPage,
-      listNextPage,
-    } = this.props;
+    const { thead, tbody, dataLoaded, colSpan, hasNextPage, listNextPage } =
+      this.props;
     return (
       <table className="table table-striped table-bordered record-list">
         {thead}

@@ -209,9 +209,8 @@ export function* deleteRecord(
   action: ActionType<typeof actions.deleteRecord>
 ): SagaGen {
   const { bid, cid, rid, last_modified: actionLastModified } = action;
-  const {
-    record: currentRecord = { data: {} as { last_modified?: number } },
-  } = getState();
+  const { record: currentRecord = { data: {} as { last_modified?: number } } } =
+    getState();
   const { last_modified = actionLastModified } = currentRecord.data;
   try {
     const coll = getCollection(bid, cid);

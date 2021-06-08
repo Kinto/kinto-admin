@@ -21,14 +21,8 @@ type Props = {
 
 export default class CollectionTabs extends PureComponent<Props> {
   render() {
-    const {
-      bid,
-      cid,
-      selected,
-      capabilities,
-      children,
-      totalRecords,
-    } = this.props;
+    const { bid, cid, selected, capabilities, children, totalRecords } =
+      this.props;
 
     return (
       <div className="card">

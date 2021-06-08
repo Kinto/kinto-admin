@@ -101,9 +101,7 @@ export function notifyError(
   });
 }
 
-export function removeNotification(
-  index: number
-): {
+export function removeNotification(index: number): {
   type: "NOTIFICATION_REMOVED";
   index: number;
 } {

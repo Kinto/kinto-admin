@@ -59,13 +59,8 @@ export function* onCollectionRecordsRequest(
     return;
   }
 
-  const {
-    source,
-    preview,
-    destination,
-    editors_group,
-    reviewers_group,
-  } = resource;
+  const { source, preview, destination, editors_group, reviewers_group } =
+    resource;
 
   // Show basic infos for this collection while fetching more details.
   const basicInfos = {

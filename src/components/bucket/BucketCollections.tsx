@@ -158,13 +158,8 @@ export default class BucketCollections extends PureComponent<Props> {
   };
 
   render() {
-    const {
-      match,
-      session,
-      bucket,
-      capabilities,
-      listBucketNextCollections,
-    } = this.props;
+    const { match, session, bucket, capabilities, listBucketNextCollections } =
+      this.props;
     const {
       params: { bid },
     } = match;
