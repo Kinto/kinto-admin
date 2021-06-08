@@ -129,6 +129,7 @@
     "url": "https://github.com/kinto/kinto-admin/issues"
   },
   "jest": {
+    "testEnvironment": "jsdom",
     "moduleNameMapper": {
       ".*\\.css$": "<rootDir>/StubModule.js"
     }
