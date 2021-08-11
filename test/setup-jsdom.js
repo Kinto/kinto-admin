@@ -52,6 +52,6 @@ const configure = require("enzyme").configure;
 const Adapter = require("enzyme-adapter-react-16");
 
 // node fetch
-global.fetch = require('node-fetch');
+global.fetch = require("node-fetch");
 
 configure({ adapter: new Adapter() });
