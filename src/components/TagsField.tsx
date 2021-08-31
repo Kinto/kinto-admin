@@ -69,7 +69,7 @@ export default class TagsField extends PureComponent<Props, State> {
     const { uiSchema, required, readonly } = this.props;
     const { tagsString } = this.state;
     return (
-      <div className="form-group field field-string">
+      <div className="mb-3 field field-string">
         <label className="control-label">
           {this.props.schema.title || this.props.name}
           {required ? "*" : ""}
