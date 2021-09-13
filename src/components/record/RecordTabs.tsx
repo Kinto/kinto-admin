@@ -32,7 +32,8 @@ export default class RecordTabs extends PureComponent<Props> {
                 params={{ bid, cid, rid }}
                 className={
                   selected === "attributes" ? "nav-link active" : "nav-link"
-                }>
+                }
+              >
                 <Gear className="icon" />
                 Attributes
               </AdminLink>
@@ -43,7 +44,8 @@ export default class RecordTabs extends PureComponent<Props> {
                 params={{ bid, cid, rid }}
                 className={
                   selected === "permissions" ? "nav-link active" : "nav-link"
-                }>
+                }
+              >
                 <Lock className="icon" />
                 Permissions
               </AdminLink>
@@ -55,7 +57,8 @@ export default class RecordTabs extends PureComponent<Props> {
                   params={{ bid, cid, rid }}
                   className={
                     selected === "history" ? "nav-link active" : "nav-link"
-                  }>
+                  }
+                >
                   <ClockHistory className="icon" />
                   History
                 </AdminLink>

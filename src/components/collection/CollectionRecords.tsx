@@ -106,7 +106,8 @@ class Row extends PureComponent<RowProps> {
                 href={attachmentUrl}
                 className="btn btn-sm btn-secondary"
                 title="The record has an attachment"
-                target="_blank">
+                target="_blank"
+              >
                 <Paperclip className="icon" />
               </a>
             )}
@@ -114,21 +115,24 @@ class Row extends PureComponent<RowProps> {
               name="record:attributes"
               params={{ bid, cid, rid }}
               className="btn btn-sm btn-info"
-              title="Edit record">
+              title="Edit record"
+            >
               <Pencil className="icon" />
             </AdminLink>
             <AdminLink
               name="record:permissions"
               params={{ bid, cid, rid }}
               className="btn btn-sm btn-warning"
-              title="Record permissions">
+              title="Record permissions"
+            >
               <Lock className="icon" />
             </AdminLink>
             <button
               type="button"
               className="btn btn-sm btn-danger"
               onClick={this.onDeleteClick.bind(this)}
-              title="Delete record">
+              title="Delete record"
+            >
               <Trash className="icon" />
             </button>
           </div>
@@ -154,7 +158,8 @@ function SortLink(props) {
           // by default use ASC order
           updateSort(column);
         }
-      }}>
+      }}
+    >
       {dir === "up" ? (
         <SortUp className="icon" />
       ) : (
@@ -317,14 +322,16 @@ function ListActions(props) {
       key="__1"
       name="record:create"
       params={{ bid, cid }}
-      className="btn btn-info btn-record-add">
+      className="btn btn-info btn-record-add"
+    >
       Create record
     </AdminLink>,
     <AdminLink
       key="__2"
       name="record:bulk"
       params={{ bid, cid }}
-      className="btn btn-info btn-record-bulk-add">
+      className="btn btn-info btn-record-bulk-add"
+    >
       Bulk create
     </AdminLink>,
   ];
@@ -442,7 +449,8 @@ export default class CollectionRecords extends PureComponent<Props> {
           cid={cid}
           selected="records"
           capabilities={capabilities}
-          totalRecords={totalRecords}>
+          totalRecords={totalRecords}
+        >
           {listActions}
           {busy ? (
             <Spinner />

@@ -157,7 +157,8 @@ class HistoryRow extends PureComponent<HistoryRowProps, HistoryRowState> {
           <td>
             <AdminLink
               name={`${resource_name}:attributes`}
-              params={{ bid, cid, gid, rid }}>
+              params={{ bid, cid, gid, rid }}
+            >
               {objectId}
             </AdminLink>
           </td>
@@ -170,7 +171,8 @@ class HistoryRow extends PureComponent<HistoryRowProps, HistoryRowState> {
                   title="Start history log from this point"
                   name="collection:history"
                   params={{ bid, cid }}
-                  query={{ since: last_modified, resource_name: "record" }}>
+                  query={{ since: last_modified, resource_name: "record" }}
+                >
                   <SkipStart className="icon" />
                 </AdminLink>{" "}
               </span>
@@ -179,7 +181,8 @@ class HistoryRow extends PureComponent<HistoryRowProps, HistoryRowState> {
               href="."
               className="btn btn-sm btn-secondary"
               onClick={this.toggle}
-              title="View entry details">
+              title="View entry details"
+            >
               {open ? <EyeSlash className="icon" /> : <Eye className="icon" />}
             </a>
           </td>
@@ -187,7 +190,8 @@ class HistoryRow extends PureComponent<HistoryRowProps, HistoryRowState> {
         {open ? (
           <tr
             className="history-row-details"
-            style={{ display: busy || open ? "table-row" : "none" }}>
+            style={{ display: busy || open ? "table-row" : "none" }}
+          >
             <td colSpan={6}>
               {busy ? (
                 <Spinner />
@@ -237,7 +241,8 @@ function FilterInfo(props: FilterInfoProps) {
           event.preventDefault();
           document.location.hash = listURL;
           onViewJournalClick();
-        }}>
+        }}
+      >
         List view
       </a>
       {enableDiffOverview && since != null && (
@@ -248,7 +253,8 @@ function FilterInfo(props: FilterInfoProps) {
             onClick={event => {
               event.preventDefault();
               onDiffOverviewClick(since);
-            }}>
+            }}
+          >
             Diff view
           </a>
         </span>

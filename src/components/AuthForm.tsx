@@ -98,7 +98,8 @@ class ServerHistory extends PureComponent<
         <DropdownButton
           as={InputGroup.Append}
           variant="outline-secondary"
-          title="Servers">
+          title="Servers"
+        >
           {servers.length === 0 ? (
             <Dropdown.Item>
               <em>No server history</em>
@@ -547,7 +548,8 @@ export default class AuthForm extends PureComponent<
             uiSchema={finalUiSchema}
             formData={formData}
             onChange={this.onChange}
-            onSubmit={this.onSubmit}>
+            onSubmit={this.onSubmit}
+          >
             <button type="submit" className="btn btn-info">
               {"Sign in using "}
               {getAuthLabel(formData.authType)}

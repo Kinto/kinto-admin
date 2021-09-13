@@ -76,7 +76,8 @@ export default class CollectionAttributes extends PureComponent<Props> {
           bid={bid}
           cid={cid}
           selected="attributes"
-          capabilities={capabilities}>
+          capabilities={capabilities}
+        >
           <CollectionForm
             bid={bid}
             cid={cid}

@@ -70,7 +70,8 @@ export default class RecordAttributes extends PureComponent<Props> {
           cid={cid}
           rid={rid}
           selected="attributes"
-          capabilities={capabilities}>
+          capabilities={capabilities}
+        >
           <RecordForm
             bid={bid}
             cid={cid}

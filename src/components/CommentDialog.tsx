@@ -21,7 +21,8 @@ export default function CommentDialog({
       className="modal"
       tabIndex={-1}
       role="dialog"
-      style={{ display: "block" }}>
+      style={{ display: "block" }}
+    >
       <div className="modal-dialog" role="document">
         <div className="modal-content">
           <div className="modal-header">
@@ -31,7 +32,8 @@ export default function CommentDialog({
               className="close"
               data-dismiss="modal"
               aria-label="Close"
-              onClick={onClose}>
+              onClick={onClose}
+            >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -51,14 +53,16 @@ export default function CommentDialog({
               onClick={() => {
                 onConfirm(value);
                 onClose();
-              }}>
+              }}
+            >
               {confirmLabel}
             </button>
             <button
               type="button"
               className="btn btn-secondary"
               data-dismiss="modal"
-              onClick={onClose}>
+              onClick={onClose}
+            >
               Close
             </button>
           </div>

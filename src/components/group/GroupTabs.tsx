@@ -30,7 +30,8 @@ export default class GroupTabs extends PureComponent<Props> {
                 params={{ bid, gid }}
                 className={
                   selected === "attributes" ? "nav-link active" : "nav-link"
-                }>
+                }
+              >
                 <Gear className="icon" />
                 Attributes
               </AdminLink>
@@ -41,7 +42,8 @@ export default class GroupTabs extends PureComponent<Props> {
                 params={{ bid, gid }}
                 className={
                   selected === "permissions" ? "nav-link active" : "nav-link"
-                }>
+                }
+              >
                 <Lock className="icon" />
                 Permissions
               </AdminLink>
@@ -53,7 +55,8 @@ export default class GroupTabs extends PureComponent<Props> {
                   params={{ bid, gid }}
                   className={
                     selected === "history" ? "nav-link active" : "nav-link"
-                  }>
+                  }
+                >
                   <ClockHistory className="icon" />
                   History
                 </AdminLink>

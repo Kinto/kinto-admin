@@ -61,7 +61,8 @@ export default class BucketPermissions_ extends PureComponent<Props> {
         <BucketTabs
           bid={bid}
           capabilities={capabilities}
-          selected="permissions">
+          selected="permissions"
+        >
           <PermissionsForm
             bid={bid}
             groups={groups}

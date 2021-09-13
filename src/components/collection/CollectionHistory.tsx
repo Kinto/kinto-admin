@@ -82,7 +82,8 @@ export default class CollectionHistory extends PureComponent<Props> {
           bid={bid}
           cid={cid}
           selected="history"
-          capabilities={capabilities}>
+          capabilities={capabilities}
+        >
           <HistoryTable
             enableDiffOverview
             bid={bid}

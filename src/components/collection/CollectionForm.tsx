@@ -72,7 +72,8 @@ function DeleteForm({ cid, onSubmit }) {
             if (typeof onSubmit === "function") {
               onSubmit(formData);
             }
-          }}>
+          }}
+        >
           <button type="submit" className="btn btn-danger">
             <Trash className="icon" /> Delete collection
           </button>
@@ -392,7 +393,8 @@ export default class CollectionForm extends PureComponent<Props, State> {
         <button
           type="submit"
           disabled={!this.allowEditing}
-          className="btn btn-primary">
+          className="btn btn-primary"
+        >
           <Check2 className="icon" />
           {` ${creation ? "Create" : "Update"} collection`}
         </button>
@@ -412,7 +414,8 @@ export default class CollectionForm extends PureComponent<Props, State> {
           <JSONCollectionForm
             cid={cid}
             formData={collection.data}
-            onSubmit={this.onSubmit}>
+            onSubmit={this.onSubmit}
+          >
             {buttons}
           </JSONCollectionForm>
         ) : (
@@ -429,7 +432,8 @@ export default class CollectionForm extends PureComponent<Props, State> {
                   : { ..._uiSchema, "ui:disabled": true }
               }
               validate={validate}
-              onSubmit={this.onSubmit}>
+              onSubmit={this.onSubmit}
+            >
               {buttons}
             </BaseForm>
           </div>

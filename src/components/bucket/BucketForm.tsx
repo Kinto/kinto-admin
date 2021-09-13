@@ -71,7 +71,8 @@ function DeleteForm({ bid, onSubmit }) {
             if (typeof onSubmit === "function") {
               onSubmit(formData);
             }
-          }}>
+          }}
+        >
           <button type="submit" className="btn btn-danger">
             <Trash className="icon" /> Delete bucket
           </button>
@@ -135,7 +136,8 @@ export default class BucketForm extends PureComponent<Props> {
         <button
           type="submit"
           disabled={!formIsEditable}
-          className="btn btn-primary">
+          className="btn btn-primary"
+        >
           <Check2 className="icon" />
           {` ${creation ? "Create" : "Update"} bucket`}
         </button>
@@ -157,7 +159,8 @@ export default class BucketForm extends PureComponent<Props> {
             }
             formData={formDataSerialized}
             validate={validate}
-            onSubmit={this.onSubmit}>
+            onSubmit={this.onSubmit}
+          >
             {buttons}
           </BaseForm>
         )}

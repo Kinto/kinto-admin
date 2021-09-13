@@ -44,7 +44,8 @@ export default class JSONRecordForm extends PureComponent<Props> {
           formData={record}
           uiSchema={disabled ? { ...uiSchema, "ui:disabled": true } : uiSchema}
           validate={validate}
-          onSubmit={this.onSubmit}>
+          onSubmit={this.onSubmit}
+        >
           {children}
         </BaseForm>
       </div>

@@ -113,7 +113,8 @@ export default class RecordBulk extends PureComponent<Props> {
                 schema={bulkSchema}
                 uiSchema={bulkUiSchema}
                 formData={bulkFormData}
-                onSubmit={this.onSubmit}>
+                onSubmit={this.onSubmit}
+              >
                 <input
                   type="submit"
                   className="btn btn-primary"

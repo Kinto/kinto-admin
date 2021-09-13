@@ -23,12 +23,14 @@ export default function SimpleReviewButtons({
           <>
             <button
               className="btn btn-success"
-              onClick={() => approveChanges()}>
+              onClick={() => approveChanges()}
+            >
               Approve
             </button>{" "}
             <button
               className="btn btn-danger"
-              onClick={() => setDialog("reject")}>
+              onClick={() => setDialog("reject")}
+            >
               Reject
             </button>
           </>
@@ -36,7 +38,8 @@ export default function SimpleReviewButtons({
         {status === "work-in-progress" && (
           <button
             className="btn btn-danger"
-            onClick={() => setDialog("rollback")}>
+            onClick={() => setDialog("rollback")}
+          >
             Rollback
           </button>
         )}

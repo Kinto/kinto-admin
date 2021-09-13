@@ -68,13 +68,15 @@ function SessionInfoBar({ session, logout, copyAuthenticationHeader }) {
           onClick={event => {
             event.preventDefault();
             copyAuthenticationHeader();
-          }}>
+          }}
+        >
           <Clipboard className="icon" />
         </a>
         <a
           href={project_docs}
           target="_blank"
-          className="spaced btn btn-sm btn-secondary project-docs">
+          className="spaced btn btn-sm btn-secondary project-docs"
+        >
           <QuestionCircleFill className="icon" /> Documentation
         </a>
         <a
@@ -83,7 +85,8 @@ function SessionInfoBar({ session, logout, copyAuthenticationHeader }) {
           onClick={event => {
             event.preventDefault();
             logout();
-          }}>
+          }}
+        >
           <BoxArrowRight className="icon" /> Logout
         </a>
       </span>
@@ -187,7 +190,8 @@ export default class App extends PureComponent<Props> {
                             />
                             <CreateRoute
                               title="groups"
-                              path="/buckets/:bid/groups">
+                              path="/buckets/:bid/groups"
+                            >
                               <Switch>
                                 <CreateRoute
                                   exact
@@ -202,7 +206,8 @@ export default class App extends PureComponent<Props> {
                                 />
                                 <CreateRoute
                                   title=":gid"
-                                  path="/buckets/:bid/groups/:gid">
+                                  path="/buckets/:bid/groups/:gid"
+                                >
                                   <Switch>
                                     <CreateRoute
                                       exact
@@ -252,7 +257,8 @@ export default class App extends PureComponent<Props> {
                             />
                             <CreateRoute
                               title="collections"
-                              path="/buckets/:bid/collections">
+                              path="/buckets/:bid/collections"
+                            >
                               <Switch>
                                 <CreateRoute
                                   exact
@@ -267,7 +273,8 @@ export default class App extends PureComponent<Props> {
                                 />
                                 <CreateRoute
                                   title=":cid"
-                                  path="/buckets/:bid/collections/:cid">
+                                  path="/buckets/:bid/collections/:cid"
+                                >
                                   <Switch>
                                     <CreateRoute
                                       exact
@@ -301,7 +308,8 @@ export default class App extends PureComponent<Props> {
                                     />
                                     <CreateRoute
                                       title="records"
-                                      path="/buckets/:bid/collections/:cid/records">
+                                      path="/buckets/:bid/collections/:cid/records"
+                                    >
                                       <Switch>
                                         <CreateRoute
                                           exact
@@ -322,7 +330,8 @@ export default class App extends PureComponent<Props> {
                                         />
                                         <CreateRoute
                                           title=":rid"
-                                          path="/buckets/:bid/collections/:cid/records/:rid">
+                                          path="/buckets/:bid/collections/:cid/records/:rid"
+                                        >
                                           <Switch>
                                             <CreateRoute
                                               exact
@@ -378,7 +387,8 @@ export default class App extends PureComponent<Props> {
               <span>
                 &nbsp;v
                 <a
-                  href={`https://github.com/Kinto/kinto-admin/releases/tag/v${version}`}>
+                  href={`https://github.com/Kinto/kinto-admin/releases/tag/v${version}`}
+                >
                   {version}
                 </a>
               </span>

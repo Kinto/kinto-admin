@@ -65,7 +65,8 @@ function DataList(props) {
                   name="collection:records"
                   params={{ bid, cid }}
                   className="btn btn-sm btn-secondary"
-                  title="Browse collection">
+                  title="Browse collection"
+                >
                   <Justify className="icon" />
                 </AdminLink>
                 {"history" in capabilities && (
@@ -73,7 +74,8 @@ function DataList(props) {
                     name="collection:history"
                     params={{ bid, cid }}
                     className="btn btn-sm btn-secondary"
-                    title="View collection history">
+                    title="View collection history"
+                  >
                     <ClockHistory className="icon" />
                   </AdminLink>
                 )}
@@ -81,7 +83,8 @@ function DataList(props) {
                   name="collection:attributes"
                   params={{ bid, cid }}
                   className="btn btn-sm btn-secondary"
-                  title="Edit collection attributes">
+                  title="Edit collection attributes"
+                >
                   <Gear className="icon" />
                 </AdminLink>
               </div>
@@ -114,7 +117,8 @@ function ListActions(props) {
       <AdminLink
         name="collection:create"
         params={{ bid }}
-        className="btn btn-info btn-collection-add">
+        className="btn btn-info btn-collection-add"
+      >
         Create collection
       </AdminLink>
     </div>
@@ -177,7 +181,8 @@ export default class BucketCollections extends PureComponent<Props> {
         <BucketTabs
           bid={bid}
           selected="collections"
-          capabilities={capabilities}>
+          capabilities={capabilities}
+        >
           {listActions}
           {collections.loaded && collections.entries.length === 0 ? (
             <div className="alert alert-info">

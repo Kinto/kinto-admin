@@ -84,7 +84,8 @@ function CollectionMenuEntry(props) {
         name="collection:records"
         params={{ bid, cid }}
         currentPath={currentPath}
-        className="">
+        className=""
+      >
         {collection.readonly ? (
           <Lock className="icon" />
         ) : (
@@ -97,7 +98,8 @@ function CollectionMenuEntry(props) {
         params={{ bid, cid }}
         currentPath={currentPath}
         className="collections-menu-entry-edit"
-        title="Edit collection attributes">
+        title="Edit collection attributes"
+      >
         <Gear className="icon" />
       </SideBarLink>
     </div>
@@ -142,7 +144,8 @@ function BucketCollectionsMenu(props) {
           <SideBarLink
             name="bucket:collections"
             params={{ bid: bucket.id }}
-            currentPath={currentPath}>
+            currentPath={currentPath}
+          >
             <ThreeDots className="icon" />
             See all collections
           </SideBarLink>
@@ -151,7 +154,8 @@ function BucketCollectionsMenu(props) {
         <SideBarLink
           name="collection:create"
           params={{ bid: bucket.id }}
-          currentPath={currentPath}>
+          currentPath={currentPath}
+        >
           <Plus className="icon" />
           Create collection
         </SideBarLink>
@@ -252,7 +256,8 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
               <SideBarLink
                 name="bucket:create"
                 currentPath={currentPath}
-                params={{}}>
+                params={{}}
+              >
                 <Plus className="icon" />
                 Create bucket
               </SideBarLink>
@@ -276,7 +281,8 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
                 <div className="input-group-append">
                   <button
                     className="btn btn-outline-secondary"
-                    onClick={this.resetSearch}>
+                    onClick={this.resetSearch}
+                  >
                     <XCircleFill className="icon" />
                   </button>
                 </div>
@@ -307,7 +313,8 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
                 key={i}
                 className={`card panel-${
                   current ? "info" : "default"
-                } bucket-menu`}>
+                } bucket-menu`}
+              >
                 <div className="card-header">
                   {bucket.readonly ? (
                     <Lock className="icon" />
@@ -322,7 +329,8 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
                     params={{ bid: id }}
                     currentPath={currentPath}
                     className="bucket-menu-entry-edit"
-                    title="Manage bucket">
+                    title="Manage bucket"
+                  >
                     <Gear className="icon" />
                   </SideBarLink>
                 </div>

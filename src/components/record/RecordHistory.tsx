@@ -79,7 +79,8 @@ export default class RecordHistory extends PureComponent<Props> {
           cid={cid}
           rid={rid}
           selected="history"
-          capabilities={capabilities}>
+          capabilities={capabilities}
+        >
           <HistoryTable
             bid={bid}
             historyLoaded={loaded}

@@ -69,7 +69,8 @@ export default class CollectionPermissions_ extends PureComponent<Props> {
           bid={bid}
           cid={cid}
           capabilities={capabilities}
-          selected="permissions">
+          selected="permissions"
+        >
           <PermissionsForm
             bid={bid}
             groups={groups}

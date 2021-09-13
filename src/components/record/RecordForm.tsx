@@ -309,7 +309,8 @@ export default class RecordForm extends PureComponent<Props, State> {
           <button
             type="submit"
             className="btn btn-primary"
-            disabled={!this.allowEditing}>
+            disabled={!this.allowEditing}
+          >
             <Check2 className="icon" />
             {` ${record ? "Update" : "Create"} record`}
           </button>
@@ -331,7 +332,8 @@ export default class RecordForm extends PureComponent<Props, State> {
             <button
               type="button"
               className="btn btn-danger delete"
-              onClick={this.deleteRecord}>
+              onClick={this.deleteRecord}
+            >
               <Trash className="icon" /> Delete record
             </button>
           )}
@@ -351,7 +353,8 @@ export default class RecordForm extends PureComponent<Props, State> {
           <JSONRecordForm
             disabled={!this.allowEditing}
             record={JSON.stringify(recordData, null, 2)}
-            onSubmit={this.onSubmit}>
+            onSubmit={this.onSubmit}
+          >
             {buttons}
           </JSONRecordForm>
         </div>
@@ -368,7 +371,8 @@ export default class RecordForm extends PureComponent<Props, State> {
         schema={_schema}
         uiSchema={_uiSchema}
         formData={recordData}
-        onSubmit={this.onSubmit}>
+        onSubmit={this.onSubmit}
+      >
         {buttons}
       </BaseForm>
     );

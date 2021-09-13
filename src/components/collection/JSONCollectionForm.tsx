@@ -84,7 +84,8 @@ export default class JSONCollectionForm extends PureComponent<Props> {
         uiSchema={_uiSchema}
         formData={formDataSerialized}
         validate={validate}
-        onSubmit={this.onSubmit}>
+        onSubmit={this.onSubmit}
+      >
         {children}
       </Form>
     );
