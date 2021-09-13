@@ -50,7 +50,8 @@ function DataList(props) {
                       name="group:history"
                       params={{ bid, gid }}
                       className="btn btn-sm btn-secondary"
-                      title="View group history">
+                      title="View group history"
+                    >
                       <ClockHistory className="icon" />
                     </AdminLink>
                   )}
@@ -58,7 +59,8 @@ function DataList(props) {
                     name="group:attributes"
                     params={{ bid, gid }}
                     className="btn btn-sm btn-secondary"
-                    title="Edit groups attributes">
+                    title="Edit groups attributes"
+                  >
                     <Gear className="icon" />
                   </AdminLink>
                 </div>
@@ -80,7 +82,8 @@ function ListActions({ bid, session, bucket }) {
       <AdminLink
         name="group:create"
         params={{ bid }}
-        className="btn btn-info btn-group-add">
+        className="btn btn-info btn-group-add"
+      >
         Create group
       </AdminLink>
     </div>

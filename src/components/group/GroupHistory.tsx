@@ -80,7 +80,8 @@ export default class GroupHistory extends PureComponent<Props> {
           bid={bid}
           gid={gid}
           selected="history"
-          capabilities={capabilities}>
+          capabilities={capabilities}
+        >
           <HistoryTable
             bid={bid}
             historyLoaded={loaded}

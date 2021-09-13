@@ -133,7 +133,8 @@ const routeCreator = ({
             data={{
               title: resolvedTitle,
               pathname: routeProps.match.url,
-            }}>
+            }}
+          >
             {Component ? (
               <ComponentWrapper
                 component={Component}

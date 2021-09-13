@@ -71,7 +71,8 @@ export default class RecordPermissions_ extends PureComponent<Props> {
           cid={cid}
           rid={rid}
           capabilities={capabilities}
-          selected="permissions">
+          selected="permissions"
+        >
           <PermissionsForm
             bid={bid}
             groups={groups}

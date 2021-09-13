@@ -72,7 +72,8 @@ export default class GroupAttributes extends PureComponent<Props> {
           bid={bid}
           gid={gid}
           selected="attributes"
-          capabilities={capabilities}>
+          capabilities={capabilities}
+        >
           <GroupForm
             bid={bid}
             gid={gid}

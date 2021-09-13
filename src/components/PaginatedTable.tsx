@@ -37,7 +37,8 @@ export default class PaginatedTable extends PureComponent<Props> {
                       if (listNextPage) {
                         listNextPage();
                       }
-                    }}>
+                    }}
+                  >
                     Load more
                   </a>
                 )}

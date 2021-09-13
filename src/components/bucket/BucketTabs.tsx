@@ -32,7 +32,8 @@ export default class BucketTabs extends PureComponent<Props> {
                 params={{ bid }}
                 className={
                   selected === "collections" ? "nav-link active" : "nav-link"
-                }>
+                }
+              >
                 <Justify className="icon" />
                 Collections
               </AdminLink>
@@ -43,7 +44,8 @@ export default class BucketTabs extends PureComponent<Props> {
                 params={{ bid }}
                 className={
                   selected === "groups" ? "nav-link active" : "nav-link"
-                }>
+                }
+              >
                 <PersonFill className="icon" />
                 Groups
               </AdminLink>
@@ -54,7 +56,8 @@ export default class BucketTabs extends PureComponent<Props> {
                 params={{ bid }}
                 className={
                   selected === "attributes" ? "nav-link active" : "nav-link"
-                }>
+                }
+              >
                 <Gear className="icon" />
                 Attributes
               </AdminLink>
@@ -65,7 +68,8 @@ export default class BucketTabs extends PureComponent<Props> {
                 params={{ bid }}
                 className={
                   selected === "permissions" ? "nav-link active" : "nav-link"
-                }>
+                }
+              >
                 <Lock className="icon" />
                 Permissions
               </AdminLink>
@@ -77,7 +81,8 @@ export default class BucketTabs extends PureComponent<Props> {
                   params={{ bid }}
                   className={
                     selected === "history" ? "nav-link active" : "nav-link"
-                  }>
+                  }
+                >
                   <ClockHistory className="icon" />
                   History
                 </AdminLink>

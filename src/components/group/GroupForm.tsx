@@ -81,7 +81,8 @@ function DeleteForm({ gid, onSubmit }) {
             if (typeof onSubmit === "function") {
               onSubmit(formData);
             }
-          }}>
+          }}
+        >
           <button type="submit" className="btn btn-danger">
             <Trash className="icon" /> Delete group
           </button>
@@ -161,7 +162,8 @@ export default class GroupForm extends PureComponent<Props> {
         <button
           type="submit"
           disabled={!formIsEditable}
-          className="btn btn-primary">
+          className="btn btn-primary"
+        >
           <Check2 className="icon" />
           {` ${creation ? "Create" : "Update"} group`}
         </button>
@@ -185,7 +187,8 @@ export default class GroupForm extends PureComponent<Props> {
             }
             formData={formDataSerialized}
             validate={validate}
-            onSubmit={this.onSubmit}>
+            onSubmit={this.onSubmit}
+          >
             {buttons}
           </BaseForm>
         )}
