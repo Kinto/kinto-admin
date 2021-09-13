@@ -148,7 +148,7 @@ describe("RecordAttributes component", () => {
           node.querySelector(
             ".attachment-info table:nth-child(2) tr:nth-child(3) td"
           ).textContent
-        ).to.eql("97.66 KB");
+        ).to.eql("100 kB");
       });
     });
   });
