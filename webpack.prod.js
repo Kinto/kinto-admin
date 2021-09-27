@@ -15,7 +15,9 @@ module.exports = {
     publicPath: "/kinto-admin/",
   },
   plugins: [
-    new webpack.IgnorePlugin(/^(buffertools)$/), // unwanted "deeper" dependency
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^(buffertools)$/, // unwanted "deeper" dependency
+    }),
     new MiniCssExtractPlugin({ filename: "styles.css" }),
     new webpack.DefinePlugin({
       "process.env": {

@@ -15,7 +15,9 @@ module.exports = {
     emitOnErrors: false,
   },
   plugins: [
-    new webpack.IgnorePlugin(/^(buffertools)$/), // unwanted "deeper" dependency
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^(buffertools)$/, // unwanted "deeper" dependency
+    }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
       "process.env": {
