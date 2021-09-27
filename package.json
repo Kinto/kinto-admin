@@ -26,6 +26,9 @@
     "images",
     "lib"
   ],
+  "jest": {
+    "testEnvironment": "node"
+  },
   "engineStrict": false,
   "engines": {
     "npm": "^2.14.7",
