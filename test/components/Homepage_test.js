@@ -114,20 +114,16 @@ describe("HomePage component", () => {
             target: { value: "pass" },
           });
 
-          const ret = new Promise(setImmediate).then(() => {
-            Simulate.submit(node.querySelector("form"));
-            sinon.assert.calledWithExactly(setupSession, {
-              server: "http://test.server/v1",
-              authType: "basicauth",
-              credentials: {
-                username: "user",
-                password: "pass",
-              },
-              redirectURL: undefined,
-            });
+          Simulate.submit(node.querySelector("form"));
+          sinon.assert.calledWithExactly(setupSession, {
+            server: "http://test.server/v1",
+            authType: "basicauth",
+            credentials: {
+              username: "user",
+              password: "pass",
+            },
+            redirectURL: undefined,
           });
-          clock.tick();
-          return ret;
         });
       });
 
@@ -146,21 +142,16 @@ describe("HomePage component", () => {
           Simulate.change(node.querySelector("#root_credentials_password"), {
             target: { value: "pass" },
           });
-
-          const ret = new Promise(setImmediate).then(() => {
-            Simulate.submit(node.querySelector("form"));
-            sinon.assert.calledWithExactly(setupSession, {
-              server: "http://test.server/v1",
-              authType: "ldap",
-              credentials: {
-                username: "you@email.com",
-                password: "pass",
-              },
-              redirectURL: undefined,
-            });
+          Simulate.submit(node.querySelector("form"));
+          sinon.assert.calledWithExactly(setupSession, {
+            server: "http://test.server/v1",
+            authType: "ldap",
+            credentials: {
+              username: "you@email.com",
+              password: "pass",
+            },
+            redirectURL: undefined,
           });
-          clock.tick();
-          return ret;
         });
       });
 
@@ -173,17 +164,13 @@ describe("HomePage component", () => {
             target: { value: "fxa" },
           });
 
-          const ret = new Promise(setImmediate).then(() => {
-            Simulate.submit(node.querySelector("form"));
-            sinon.assert.calledWithExactly(navigateToExternalAuth, {
-              server: "http://test.server/v1",
-              authType: "fxa",
-              redirectURL: undefined,
-              credentials: {},
-            });
+          Simulate.submit(node.querySelector("form"));
+          sinon.assert.calledWithExactly(navigateToExternalAuth, {
+            server: "http://test.server/v1",
+            authType: "fxa",
+            redirectURL: undefined,
+            credentials: {},
           });
-          clock.tick();
-          return ret;
         });
       });
 
@@ -195,21 +182,16 @@ describe("HomePage component", () => {
           Simulate.change(node.querySelectorAll("[type=radio]")[4], {
             target: { value: "openid-google" },
           });
-
-          const ret = new Promise(setImmediate).then(() => {
-            Simulate.submit(node.querySelector("form"));
-            sinon.assert.calledWithExactly(
-              navigateToOpenID,
-              {
-                server: "http://test.server/v1",
-                redirectURL: undefined,
-                authType: "openid-google",
-              },
-              { name: "google" }
-            );
-          });
-          clock.tick();
-          return ret;
+          Simulate.submit(node.querySelector("form"));
+          sinon.assert.calledWithExactly(
+            navigateToOpenID,
+            {
+              server: "http://test.server/v1",
+              redirectURL: undefined,
+              authType: "openid-google",
+            },
+            { name: "google" }
+          );
         });
       });
     });

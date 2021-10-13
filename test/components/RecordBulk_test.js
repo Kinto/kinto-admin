@@ -46,29 +46,19 @@ describe("RecordBulk component", () => {
     });
 
     it("should submitted entered data", () => {
-      return new Promise(setImmediate)
-        .then(() => {
-          Simulate.change(node.querySelector("#root_0_foo"), {
-            target: { value: "bar1" },
-          });
-          return new Promise(setImmediate);
-        })
-        .then(() => {
-          Simulate.change(node.querySelector("#root_1_foo"), {
-            target: { value: "bar2" },
-          });
-          return new Promise(setImmediate);
-        })
-        .then(() => {
-          Simulate.submit(node.querySelector("form"));
-
-          sinon.assert.calledWithExactly(
-            bulkCreateRecords,
-            "bucket",
-            "collection",
-            [{ foo: "bar1" }, { foo: "bar2" }]
-          );
-        });
+      Simulate.change(node.querySelector("#root_0_foo"), {
+        target: { value: "bar1" },
+      });
+      Simulate.change(node.querySelector("#root_1_foo"), {
+        target: { value: "bar2" },
+      });
+      Simulate.submit(node.querySelector("form"));
+      sinon.assert.calledWithExactly(
+        bulkCreateRecords,
+        "bucket",
+        "collection",
+        [{ foo: "bar1" }, { foo: "bar2" }]
+      );
     });
   });
 
