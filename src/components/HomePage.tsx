@@ -160,7 +160,6 @@ export default class HomePage extends PureComponent<Props> {
   };
 
   render() {
-    console.log(this.props);
     const {
       session,
       servers,
