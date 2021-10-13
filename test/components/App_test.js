@@ -14,12 +14,13 @@ import CollectionRecordsPage from "../../src/containers/collection/CollectionRec
 import * as sessionActions from "../../src/actions/session";
 
 describe("App component", () => {
-  let app, sandbox, store;
+  let app, clock, sandbox, store;
 
   beforeEach(() => {
     sandbox = createSandbox();
     sandbox.spy(sessionActions, "logout");
     store = configureStore();
+    clock = sinon.useFakeTimers();
     app = mount(
       <Provider store={store}>
         <ConnectedRouter history={hashHistory}>
@@ -35,6 +36,7 @@ describe("App component", () => {
   afterEach(() => {
     sessionActions.logout.restore();
     sandbox.restore();
+    clock.restore();
   });
 
   describe("Session top bar", () => {
@@ -97,7 +99,7 @@ describe("App component", () => {
       expect(content).to.not.contain(credentials.password);
 
       app.find(".btn-logout").simulate("click");
-
+      clock.tick();
       sinon.assert.called(sessionActions.logout);
     });
   });

@@ -1,19 +1,21 @@
 import { expect } from "chai";
-import sinon from "sinon";
+import sinon, { useFakeTimers } from "sinon";
 import { Simulate } from "react-dom/test-utils";
 
 import { createSandbox, createComponent } from "../test_utils";
 import TagsField from "../../src/components/TagsField";
 
 describe("TagsField component", () => {
-  let sandbox;
+  let clock, sandbox;
 
   beforeEach(() => {
     sandbox = createSandbox();
+    clock = useFakeTimers();
   });
 
   afterEach(() => {
     sandbox.restore();
+    clock.restore();
   });
 
   describe("Separator", () => {
@@ -61,7 +63,7 @@ describe("TagsField component", () => {
       expect(node.querySelector("input").value).eql("a, b, a");
     });
 
-    it("should drop duplicates with an uniqueItems enabled schema", done => {
+    it("should drop duplicates with an uniqueItems enabled schema", () => {
       const onChange = sinon.spy();
       const node = createComponent(TagsField, {
         schema: { uniqueItems: true },
@@ -72,11 +74,8 @@ describe("TagsField component", () => {
       Simulate.change(node.querySelector("input"), {
         target: { value: "a, b, a" },
       });
-
-      setImmediate(() => {
-        sinon.assert.calledWithExactly(onChange, ["a", "b"]);
-        done();
-      });
+      clock.tick();
+      sinon.assert.calledWithExactly(onChange, ["a", "b"]);
     });
   });
 });

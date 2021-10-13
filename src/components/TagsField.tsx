@@ -61,8 +61,7 @@ export default class TagsField extends PureComponent<Props, State> {
       onChange,
     } = this.props;
     const tags = toTagList(tagsString, this.separator, uniqueItems);
-    this.setState({ tagsString });
-    setImmediate(() => onChange(tags));
+    this.setState({ tagsString }, () => onChange(tags));
   };
 
   render() {
