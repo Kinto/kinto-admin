@@ -269,7 +269,7 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
             <strong>Filters</strong>
           </div>
           <form className="form card-body">
-            <div className="mb-3">
+            <div className="form-group">
               <div className="input-group">
                 <input
                   type="text"
@@ -288,7 +288,7 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
                 </div>
               </div>
             </div>
-            <div className="mb-3 form-check">
+            <div className="form-group form-check">
               <input
                 className="form-check-input"
                 id="read-only-toggle"
