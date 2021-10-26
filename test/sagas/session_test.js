@@ -284,13 +284,16 @@ describe("session sagas", () => {
             },
           },
         });
+        jest.spyOn(console, "error").mockImplementation(() => {});
         setupSession = saga.setupSession(getState, action);
         setupSession.next(); // call getServerInfo.
-        const mocked = mockNotifyError(sandbox);
-        setupSession.next();
-        sinon.assert.calledWith(mocked, "Authentication failed.", {
-          message: "Could not authenticate with Basic Auth",
-        });
+        expect(setupSession.next().value).eql(
+          put(
+            notificationsActions.notifyError("Authentication failed.", {
+              message: "Could not authenticate with Basic Auth",
+            })
+          )
+        );
         expect(setupSession.next().value).eql(
           put(actions.authenticationFailed())
         );

@@ -12,9 +12,11 @@ function getErrorDetails(error: ClientError | null | undefined): string[] {
   if (!error) {
     return [];
   }
-  const { data: errorData, message } = error;
+  const {
+    data: { code, message: errorMessage, details: errorDetails } = {},
+    message,
+  } = error;
   let details = [message];
-  const { code, message: errorMessage, details: errorDetails } = errorData;
   if (!code) {
     return details;
   }
