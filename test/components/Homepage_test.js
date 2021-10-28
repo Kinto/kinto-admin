@@ -208,7 +208,7 @@ describe("HomePage component", () => {
         });
 
         expect(node.querySelector("#root_server").value).eql(
-          "https://kinto.dev.mozaws.net/v1/"
+          "https://demo.kinto-storage.org/v1/"
         );
       });
 
@@ -322,7 +322,7 @@ describe("HomePage component", () => {
           provider: "auth0",
           tokenType: "Bearer",
           credentials: { token: "oXJNgbNayWPKF" },
-          server: "https://kinto.dev.mozaws.net/v1/",
+          server: "https://demo.kinto-storage.org/v1/",
         });
       });
     });

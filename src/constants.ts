@@ -1,4 +1,4 @@
-export const DEFAULT_KINTO_SERVER = "https://kinto.dev.mozaws.net/v1/";
+export const DEFAULT_KINTO_SERVER = "https://demo.kinto-storage.org/v1/";
 export const ANONYMOUS_AUTH = "anonymous";
 
 export const ATTACHMENT_DELETE_REQUEST = "ATTACHMENT_DELETE_REQUEST";
