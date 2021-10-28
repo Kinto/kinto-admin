@@ -6,7 +6,7 @@ import { ConnectedRouter } from "connected-react-router";
 
 import getRoutes from "./routes";
 import configureStore, { hashHistory } from "./store/configureStore";
-import * as sessionActions from "./actions/session";
+import { sessionActions } from "./slices/session";
 import { loadSession } from "./store/localStore";
 import { getServerByPriority } from "./utils";
 

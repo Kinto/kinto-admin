@@ -1,8 +1,8 @@
 import sinon from "sinon";
 
 import { createSandbox, createComponent } from "./test_utils";
-import * as sessionActions from "../src/actions/session";
-import { DEFAULT_KINTO_SERVER, SESSION_SETUP } from "../src/constants";
+import { sessionActions } from "../src/slices/session";
+import { DEFAULT_KINTO_SERVER } from "../src/constants";
 import KintoAdmin from "../src/index";
 import * as localStore from "../src/store/localStore";
 import configureStore from "../src/store/configureStore";
@@ -41,7 +41,7 @@ describe("KintoAdmin", () => {
       localStore.saveSession(session);
       const setup = sandbox
         .stub(sessionActions, "setupSession")
-        .returns({ type: SESSION_SETUP, auth });
+        .returns({ type: "session/setupSession", payload: auth });
       createKintoAdmin();
 
       sinon.assert.calledWithExactly(setup, {

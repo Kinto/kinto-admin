@@ -5,7 +5,7 @@ import type {
 import { Redirect, Switch, Route } from "react-router-dom";
 
 import { CreateRoute } from "../routes";
-import * as SessionActions from "../actions/session";
+import { sessionActions } from "../slices/session";
 
 import { PureComponent } from "react";
 import * as React from "react";
@@ -108,8 +108,8 @@ export type OwnProps = {
 
 export type Props = OwnProps &
   StateProps & {
-    copyAuthenticationHeader: typeof SessionActions.copyAuthenticationHeader;
-    logout: typeof SessionActions.logout;
+    copyAuthenticationHeader: typeof sessionActions.copyAuthenticationHeader;
+    logout: typeof sessionActions.logout;
   };
 
 export default class App extends PureComponent<Props> {

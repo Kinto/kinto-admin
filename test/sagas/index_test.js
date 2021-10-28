@@ -8,7 +8,7 @@ import * as sessionSagas from "../../src/sagas/session";
 import * as bucketSagas from "../../src/sagas/bucket";
 import * as collectionSagas from "../../src/sagas/collection";
 import * as routeActions from "../../src/actions/route";
-import * as sessionActions from "../../src/actions/session";
+import { sessionActions } from "../../src/slices/session";
 import * as bucketActions from "../../src/actions/bucket";
 import * as collectionActions from "../../src/actions/collection";
 

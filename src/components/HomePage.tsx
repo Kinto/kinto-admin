@@ -12,7 +12,7 @@ import React, { PureComponent } from "react";
 
 import * as ServersActions from "../actions/servers";
 import * as NotificationActions from "../actions/notifications";
-import * as SessionActions from "../actions/session";
+import { sessionActions } from "../slices/session";
 import Spinner from "./Spinner";
 import AuthForm from "./AuthForm";
 import { isObject } from "../utils";
@@ -76,12 +76,12 @@ export type StateProps = {
 export type Props = OwnProps &
   StateProps & {
     clearServers: typeof ServersActions.clearServers;
-    setupSession: typeof SessionActions.setupSession;
+    setupSession: typeof sessionActions.setupSession;
     notifyError: typeof NotificationActions.notifyError;
-    serverChange: typeof SessionActions.serverChange;
-    getServerInfo: typeof SessionActions.getServerInfo;
-    navigateToExternalAuth: typeof SessionActions.navigateToExternalAuth;
-    navigateToOpenID: typeof SessionActions.navigateToOpenID;
+    serverChange: typeof sessionActions.serverChange;
+    getServerInfo: typeof sessionActions.getServerInfo;
+    navigateToExternalAuth: typeof sessionActions.navigateToExternalAuth;
+    navigateToOpenID: typeof sessionActions.navigateToOpenID;
   };
 
 export default class HomePage extends PureComponent<Props> {

@@ -14,9 +14,11 @@ import { call, put } from "redux-saga/effects";
 
 import { saveSession, clearSession } from "../store/localStore";
 import * as notificationActions from "../actions/notifications";
-import * as actions from "../actions/session";
+import {
+  sessionActions as actions,
+  DEFAULT_SERVERINFO,
+} from "../slices/session";
 import * as serversActions from "../actions/servers";
-import { DEFAULT_SERVERINFO } from "../reducers/session";
 import { clone, getAuthLabel, copyToClipboard } from "../utils";
 import { getClient, setupClient, resetClient, getAuthHeader } from "../client";
 
@@ -29,7 +31,7 @@ export function* getServerInfo(
   getState: GetStateFn,
   action: ActionType<typeof actions.getServerInfo>
 ): SagaGen {
-  const { auth } = action;
+  const { payload: auth } = action;
 
   let processedAuth: AuthData = auth;
   if (auth.authType.startsWith("openid-")) {
@@ -94,7 +96,7 @@ export function* setupSession(
   getState: GetStateFn,
   action: ActionType<typeof actions.setupSession>
 ): SagaGen {
-  const { auth } = action;
+  const { payload: auth } = action;
   try {
     // Fetch server information
     yield call(getServerInfo, getState, actions.getServerInfo(auth));

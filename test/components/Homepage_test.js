@@ -7,7 +7,7 @@ import { mount } from "enzyme";
 import { createSandbox, createComponent } from "../test_utils";
 import HomePage from "../../src/components/HomePage";
 import AuthForm from "../../src/components/AuthForm";
-import { DEFAULT_SERVERINFO } from "../../src/reducers/session";
+import { DEFAULT_SERVERINFO } from "../../src/slices/session";
 
 describe("HomePage component", () => {
   let sandbox;

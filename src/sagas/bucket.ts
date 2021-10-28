@@ -4,7 +4,7 @@ import { call, put } from "redux-saga/effects";
 
 import { getClient } from "../client";
 import { notifySuccess, notifyError } from "../actions/notifications";
-import { sessionBusy, listBuckets } from "../actions/session";
+import { sessionActions } from "../slices/session";
 import { redirectTo } from "../actions/route";
 import * as actions from "../actions/bucket";
 
@@ -23,15 +23,15 @@ export function* createBucket(
   const { bid, data } = action;
   try {
     const client = getClient();
-    yield put(sessionBusy(true));
+    yield put(sessionActions.sessionBusy(true));
     yield call([client, client.createBucket], bid, { data, safe: true });
-    yield put(listBuckets());
+    yield put(sessionActions.listBuckets());
     yield put(redirectTo("bucket:attributes", { bid }));
     yield put(notifySuccess("Bucket created."));
   } catch (error) {
     yield put(notifyError("Couldn't create bucket.", error));
   } finally {
-    yield put(sessionBusy(false));
+    yield put(sessionActions.sessionBusy(false));
   }
 }
 
@@ -50,7 +50,7 @@ export function* updateBucket(
   } = getState();
   try {
     const bucket = getBucket(bid);
-    yield put(sessionBusy(true));
+    yield put(sessionActions.sessionBusy(true));
     if (data) {
       const updatedBucket = { ...data, last_modified };
       yield call([bucket, bucket.setData], updatedBucket, {
@@ -69,7 +69,7 @@ export function* updateBucket(
   } catch (error) {
     yield put(notifyError("Couldn't update bucket.", error));
   } finally {
-    yield put(sessionBusy(false));
+    yield put(sessionActions.sessionBusy(false));
   }
 }
 
@@ -85,18 +85,18 @@ export function* deleteBucket(
   } = getState();
   try {
     const client = getClient();
-    yield put(sessionBusy(true));
+    yield put(sessionActions.sessionBusy(true));
     yield call([client, client.deleteBucket], bid, {
       safe: true,
       last_modified,
     });
-    yield put(listBuckets());
+    yield put(sessionActions.listBuckets());
     yield put(redirectTo("home", {}));
     yield put(notifySuccess("Bucket deleted."));
   } catch (error) {
     yield put(notifyError("Couldn't delete bucket.", error));
   } finally {
-    yield put(sessionBusy(false));
+    yield put(sessionActions.sessionBusy(false));
   }
 }
 
@@ -111,7 +111,7 @@ export function* createCollection(
     yield call([bucket, bucket.createCollection], cid, { data, safe: true });
     yield put(redirectTo("collection:records", { bid, cid }));
     yield put(notifySuccess("Collection created."));
-    yield put(listBuckets());
+    yield put(sessionActions.listBuckets());
   } catch (error) {
     yield put(notifyError("Couldn't create collection.", error));
   }
@@ -169,7 +169,7 @@ export function* deleteCollection(
     });
     yield put(redirectTo("bucket:collections", { bid }));
     yield put(notifySuccess("Collection deleted."));
-    yield put(listBuckets());
+    yield put(sessionActions.listBuckets());
   } catch (error) {
     yield put(notifyError("Couldn't delete collection.", error));
   }

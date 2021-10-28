@@ -10,7 +10,7 @@ import * as bucketSagas from "./bucket";
 import * as groupSagas from "./group";
 import * as collectionSagas from "./collection";
 import * as recordSagas from "./record";
-
+import { sessionActions } from "../slices/session";
 /**
  * Registers saga watchers.
  *
@@ -23,13 +23,33 @@ export default function* rootSaga(
 ): SagaGen {
   const standardSagas = [
     // session
-    takeEvery(c.SESSION_SETUP, sessionSagas.setupSession, getState),
-    takeEvery(c.SESSION_SERVER_CHANGE, sessionSagas.serverChange, getState),
-    takeEvery(c.SESSION_GET_SERVERINFO, sessionSagas.getServerInfo, getState),
-    takeEvery(c.SESSION_BUCKETS_REQUEST, sessionSagas.listBuckets, getState),
-    takeEvery(c.SESSION_LOGOUT, sessionSagas.sessionLogout, getState),
     takeEvery(
-      c.SESSION_COPY_AUTHENTICATION_HEADER,
+      sessionActions.setupSession.toString(),
+      sessionSagas.setupSession,
+      getState
+    ),
+    takeEvery(
+      sessionActions.serverChange.toString(),
+      sessionSagas.serverChange,
+      getState
+    ),
+    takeEvery(
+      sessionActions.getServerInfo.toString(),
+      sessionSagas.getServerInfo,
+      getState
+    ),
+    takeEvery(
+      sessionActions.listBuckets.toString(),
+      sessionSagas.listBuckets,
+      getState
+    ),
+    takeEvery(
+      sessionActions.logout.toString(),
+      sessionSagas.sessionLogout,
+      getState
+    ),
+    takeEvery(
+      sessionActions.copyAuthenticationHeader.toString(),
       sessionSagas.sessionCopyAuthenticationHeader,
       getState
     ),

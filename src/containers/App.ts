@@ -6,7 +6,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
 import App from "../components/App";
-import * as SessionActions from "../actions/session";
+import { sessionActions } from "../slices/session";
 import * as RouteActions from "../actions/route";
 
 function mapStateToProps(state: AppState): StateProps {
@@ -16,12 +16,12 @@ function mapStateToProps(state: AppState): StateProps {
   };
 }
 
-type DispatchProps = typeof SessionActions & typeof RouteActions;
+type DispatchProps = typeof sessionActions & typeof RouteActions;
 
 function mapDispatchToProps(dispatch: Dispatch): DispatchProps {
   return bindActionCreators(
     {
-      ...SessionActions,
+      ...sessionActions,
       ...RouteActions,
     },
     dispatch

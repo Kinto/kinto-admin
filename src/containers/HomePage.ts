@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 
 import HomePage from "../components/HomePage";
 import * as NotificationActions from "../actions/notifications";
-import * as SessionActions from "../actions/session";
+import { sessionActions } from "../slices/session";
 import * as ServersActions from "../actions/servers";
 
 function mapStateToProps(state: AppState): StateProps {
@@ -18,14 +18,14 @@ function mapStateToProps(state: AppState): StateProps {
   };
 }
 
-type DispatchProps = typeof SessionActions &
+type DispatchProps = typeof sessionActions &
   typeof NotificationActions &
   typeof ServersActions;
 
 function mapDispatchToProps(dispatch: Dispatch): DispatchProps {
   return bindActionCreators(
     {
-      ...SessionActions,
+      ...sessionActions,
       ...NotificationActions,
       ...ServersActions,
     },

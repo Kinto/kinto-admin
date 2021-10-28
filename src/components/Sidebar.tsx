@@ -19,7 +19,7 @@ import { Justify } from "react-bootstrap-icons";
 import { ThreeDots } from "react-bootstrap-icons";
 import { ArrowRepeat } from "react-bootstrap-icons";
 
-import * as SessionActions from "../actions/session";
+import { sessionActions } from "../slices/session";
 import Spinner from "./Spinner";
 import AdminLink from "./AdminLink";
 import url from "../url";
@@ -361,7 +361,7 @@ export type StateProps = {
 
 export type SidebarProps = OwnProps &
   StateProps & {
-    listBuckets: typeof SessionActions.listBuckets;
+    listBuckets: typeof sessionActions.listBuckets;
   };
 
 export default class Sidebar extends PureComponent<SidebarProps> {

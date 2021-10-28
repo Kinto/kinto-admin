@@ -7,7 +7,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 
 import * as ServersActions from "../actions/servers";
-import * as SessionActions from "../actions/session";
+import { sessionActions } from "../slices/session";
 import BaseForm from "./BaseForm";
 import {
   debounce,
@@ -356,11 +356,11 @@ type AuthFormProps = {
   session: SessionState;
   servers: ServerEntry[];
   settings: SettingsState;
-  setupSession: typeof SessionActions.setupSession;
-  serverChange: typeof SessionActions.serverChange;
-  getServerInfo: typeof SessionActions.getServerInfo;
-  navigateToExternalAuth: typeof SessionActions.navigateToExternalAuth;
-  navigateToOpenID: typeof SessionActions.navigateToOpenID;
+  setupSession: typeof sessionActions.setupSession;
+  serverChange: typeof sessionActions.serverChange;
+  getServerInfo: typeof sessionActions.getServerInfo;
+  navigateToExternalAuth: typeof sessionActions.navigateToExternalAuth;
+  navigateToOpenID: typeof sessionActions.navigateToOpenID;
   clearServers: typeof ServersActions.clearServers;
 };
 

@@ -11,7 +11,7 @@ import { Provider } from "react-redux";
 import App from "../../src/containers/App";
 import Notifications from "../../src/containers/Notifications";
 import CollectionRecordsPage from "../../src/containers/collection/CollectionRecordsPage";
-import * as sessionActions from "../../src/actions/session";
+import { sessionActions } from "../../src/slices/session";
 
 describe("App component", () => {
   let app, clock, sandbox, store;

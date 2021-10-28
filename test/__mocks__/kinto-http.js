@@ -1,4 +1,4 @@
-import { DEFAULT_SERVERINFO } from "../../src/reducers/session";
+import { DEFAULT_SERVERINFO } from "../../src/slices/session";
 
 export const mockFetchServerInfo = jest
   .fn()

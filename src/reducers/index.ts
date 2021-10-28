@@ -4,7 +4,7 @@ import { combineReducers } from "redux";
 import { connectRouter } from "connected-react-router";
 
 import { flattenPluginsReducers } from "../plugin";
-import session from "./session";
+import session from "../slices/session";
 import bucket from "./bucket";
 import collection from "./collection";
 import record from "./record";

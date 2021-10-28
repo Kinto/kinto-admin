@@ -8,10 +8,9 @@ import { createSandbox, mockNotifyError } from "../test_utils";
 import { setClient } from "../../src/client";
 import * as actions from "../../src/actions/route";
 import * as notificationActions from "../../src/actions/notifications";
-import * as sessionActions from "../../src/actions/session";
+import { sessionActions } from "../../src/slices/session";
 import * as saga from "../../src/sagas/route";
 import { scrollToTop } from "../../src/utils";
-import { SESSION_AUTHENTICATED } from "../../src/constants";
 
 describe("route sagas", () => {
   let sandbox;
@@ -398,8 +397,10 @@ describe("route sagas", () => {
         );
       });
 
-      it("should wait for the SESSION_AUTHENTICATED event", () => {
-        expect(routeUpdated.next().value).eql(take(SESSION_AUTHENTICATED));
+      it("should wait for the session/setAuthenticated event", () => {
+        expect(routeUpdated.next().value).eql(
+          take(sessionActions.setAuthenticated.toString())
+        );
       });
 
       it("should redirect the user to the initially requested URL", () => {
@@ -428,8 +429,10 @@ describe("route sagas", () => {
         routeUpdated = saga.routeUpdated(getState, action);
       });
 
-      it("should wait for the SESSION_AUTHENTICATED event", () => {
-        expect(routeUpdated.next().value).eql(take(SESSION_AUTHENTICATED));
+      it("should wait for the session/setAuthenticated event", () => {
+        expect(routeUpdated.next().value).eql(
+          take(sessionActions.setAuthenticated.toString())
+        );
       });
 
       it("should redirect to the initially requested URL", () => {

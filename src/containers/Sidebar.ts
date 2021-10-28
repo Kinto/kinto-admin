@@ -5,7 +5,7 @@ import type { StateProps } from "../components/Sidebar";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import Sidebar from "../components/Sidebar";
-import * as SessionActions from "../actions/session";
+import { sessionActions } from "../slices/session";
 
 function mapStateToProps(state: AppState): StateProps {
   return {
@@ -14,10 +14,10 @@ function mapStateToProps(state: AppState): StateProps {
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch): typeof SessionActions {
+function mapDispatchToProps(dispatch: Dispatch): typeof sessionActions {
   return bindActionCreators(
     {
-      ...SessionActions,
+      ...sessionActions,
     },
     dispatch
   );

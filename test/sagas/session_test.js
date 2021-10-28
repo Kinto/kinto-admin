@@ -5,13 +5,15 @@ import { push as updatePath } from "connected-react-router";
 import { put, call } from "redux-saga/effects";
 
 import { saveSession, clearSession } from "../../src/store/localStore";
-import * as actions from "../../src/actions/session";
+import {
+  sessionActions as actions,
+  DEFAULT_SERVERINFO,
+} from "../../src/slices/session";
 import * as serversActions from "../../src/actions/servers";
 import * as notificationsActions from "../../src/actions/notifications";
 import * as saga from "../../src/sagas/session";
 import * as clientUtils from "../../src/client";
 import { getClient, setClient, resetClient } from "../../src/client";
-import { DEFAULT_SERVERINFO } from "../../src/reducers/session";
 
 const authData = {
   server: "http://server.test/v1",

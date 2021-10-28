@@ -7,10 +7,9 @@ import {
 } from "connected-react-router";
 
 import { getClient } from "../client";
-import { storeRedirectURL } from "../actions/session";
+import { sessionActions } from "../slices/session";
 import * as actions from "../actions/route";
 import { notifyInfo, notifyError } from "../actions/notifications";
-import { SESSION_AUTHENTICATED } from "../constants";
 import { scrollToTop } from "../utils";
 import url from "../url";
 
@@ -129,7 +128,7 @@ export function* routeUpdated(
       // We've just been redirected with an auth token and payload
       const { redirectURL } = JSON.parse(atob(payload));
       // Wait until we're actually authenticated
-      yield take(SESSION_AUTHENTICATED);
+      yield take(sessionActions.setAuthenticated.toString());
       // Redirect to the initially requested URL (if any)
       if (redirectURL) {
         yield put(updatePath(redirectURL));
@@ -139,15 +138,15 @@ export function* routeUpdated(
     } else {
       // We're requesting an app URL requiring authentication while we're not;
       // Store current requested URL, wait for user authentication then redirect
-      yield put(storeRedirectURL(location.pathname));
+      yield put(sessionActions.storeRedirectURL(location.pathname));
       yield put(actions.redirectTo("home", {}));
       yield put(notifyInfo("Authentication required."));
       // pause until the user is authenticated
-      yield take(SESSION_AUTHENTICATED);
+      yield take(sessionActions.setAuthenticated.toString());
       // Redirect the user to the initially requested URL
       yield put(updatePath(location.pathname));
       // Clear stored redirectURL
-      yield put(storeRedirectURL(null));
+      yield put(sessionActions.storeRedirectURL(null));
     }
   } else {
     // Load route related resources

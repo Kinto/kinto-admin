@@ -1,17 +1,7 @@
 import { expect } from "chai";
 
-import session from "../../src/reducers/session";
-import {
-  SESSION_BUSY,
-  SESSION_SETUP,
-  SESSION_SETUP_COMPLETE,
-  SESSION_SERVERINFO_SUCCESS,
-  SESSION_PERMISSIONS_SUCCESS,
-  SESSION_AUTHENTICATED,
-  SESSION_BUCKETS_REQUEST,
-  SESSION_BUCKETS_SUCCESS,
-  SESSION_LOGOUT,
-} from "../../src/constants";
+import session from "../../src/slices/session";
+import { sessionActions } from "../../src/slices/session";
 
 describe("session reducer", () => {
   const auth = {
@@ -23,35 +13,20 @@ describe("session reducer", () => {
     },
   };
 
-  it("SESSION_BUSY", () => {
-    expect(
-      session(undefined, {
-        type: SESSION_BUSY,
-        busy: true,
-      })
-    )
+  it("sessionBusy", () => {
+    expect(session(undefined, sessionActions.sessionBusy(true)))
       .to.have.property("busy")
       .eql(true);
   });
 
-  it("SESSION_SETUP", () => {
-    expect(
-      session(undefined, {
-        type: SESSION_SETUP,
-        auth,
-      })
-    )
+  it("setupSession", () => {
+    expect(session(undefined, sessionActions.setupSession(auth)))
       .to.have.property("authenticating")
       .eql(true);
   });
 
-  it("SESSION_SETUP_COMPLETE", () => {
-    expect(
-      session(undefined, {
-        type: SESSION_SETUP_COMPLETE,
-        auth,
-      })
-    ).eql({
+  it("setupComplete", () => {
+    expect(session(undefined, sessionActions.setupComplete(auth))).eql({
       busy: false,
       authenticating: false,
       authenticated: false,
@@ -68,7 +43,7 @@ describe("session reducer", () => {
     });
   });
 
-  it("SESSION_SERVERINFO_SUCCESS", () => {
+  it("serverInfoSuccess", () => {
     const serverInfo = {
       project_name: "Remote Settings",
       capabilities: {
@@ -79,69 +54,58 @@ describe("session reducer", () => {
       },
     };
 
-    const state = session(undefined, {
-      type: SESSION_SERVERINFO_SUCCESS,
-      serverInfo,
-    });
+    const state = session(
+      undefined,
+      sessionActions.serverInfoSuccess(serverInfo)
+    );
 
     expect(state).to.have.property("serverInfo").eql(serverInfo);
   });
 
-  it("SESSION_PERMISSIONS_SUCCESS", () => {
+  it("permissionsListSuccess", () => {
     const permissions = [
       {
         uri: "/some/object",
       },
     ];
 
-    const state = session(undefined, {
-      type: SESSION_PERMISSIONS_SUCCESS,
-      permissions,
-    });
+    const state = session(
+      undefined,
+      sessionActions.permissionsListSuccess(permissions)
+    );
 
     expect(state).to.have.property("permissions").eql(permissions);
   });
 
-  it("SESSION_BUCKETS_REQUEST", () => {
-    const state = session(undefined, {
-      type: SESSION_BUCKETS_REQUEST,
-    });
+  it("listBuckets", () => {
+    const state = session(undefined, sessionActions.listBuckets());
 
     expect(state).to.have.property("busy").eql(true);
   });
 
-  it("SESSION_BUCKETS_SUCCESS", () => {
+  it("bucketsSuccess", () => {
     const buckets = [];
 
-    const state = session(undefined, {
-      type: SESSION_BUCKETS_SUCCESS,
-      buckets,
-    });
-
+    const state = session(undefined, sessionActions.bucketsSuccess(buckets));
     expect(state).to.have.property("buckets").eql(buckets);
     expect(state).to.have.property("busy").eql(false);
   });
 
-  it("SESSION_AUTHENTICATED", () => {
+  it("setAuthenticated", () => {
     const state = session(
       { authenticated: false },
-      {
-        type: SESSION_AUTHENTICATED,
-      }
+      sessionActions.setAuthenticated()
     );
-
     expect(state).to.have.property("authenticated").eql(true);
   });
 
-  it("SESSION_LOGOUT", () => {
-    const state = { authenticated: true };
-
-    expect(
-      session(state, {
-        type: SESSION_LOGOUT,
-      })
-    )
-      .to.have.property("authenticated")
-      .eql(false);
+  it("logout", () => {
+    const oldServerInfo = {
+      url: "example.com",
+    };
+    const oldState = { authenticated: true, serverInfo: oldServerInfo };
+    const newState = session(oldState, sessionActions.logout());
+    expect(newState).to.have.property("authenticated").eql(false);
+    expect(newState.serverInfo).to.have.property("url").eql("example.com");
   });
 });

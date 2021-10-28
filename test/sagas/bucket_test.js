@@ -5,7 +5,7 @@ import { put, call } from "redux-saga/effects";
 import { createSandbox, mockNotifyError } from "../test_utils";
 
 import { notifySuccess } from "../../src/actions/notifications";
-import * as sessionActions from "../../src/actions/session";
+import { sessionActions } from "../../src/slices/session";
 import { redirectTo } from "../../src/actions/route";
 import * as actions from "../../src/actions/bucket";
 import * as saga from "../../src/sagas/bucket";
