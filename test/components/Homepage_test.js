@@ -302,7 +302,7 @@ describe("HomePage component", () => {
           match: {
             params: {
               payload:
-                "eyJzZXJ2ZXIiOiJodHRwczovL2tpbnRvLmRldi5tb3phd3MubmV0L3YxLyIsImF1dGhUeXBlIjoib3BlbmlkLWF1dGgwIiwicmVkaXJlY3RVUkwiOm51bGx9",
+                "eyJzZXJ2ZXIiOiJodHRwczovL2RlbW8ua2ludG8tc3RvcmFnZS5vcmcvdjEvIiwiYXV0aFR5cGUiOiJvcGVuaWQtYXV0aDAiLCJyZWRpcmVjdFVSTCI6bnVsbH0",
               token:
                 "%7B%22access_token%22%3A%22oXJNgbNayWPKF%22%2C%22id_token%22%3A%22eyJ0eXAd%22%2C%22expires_in%22%3A86400%2C%22token_type%22%3A%22Bearer%22%7D",
             },
