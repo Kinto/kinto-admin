@@ -239,7 +239,7 @@ If you use `target.merkle.tree.file.name` it will render the string
 
 ## Releasing
 
-1. Bump the version number in package.json
+1. Bump the version number in `package.json` and run `npm i` to propagate that version to `package-lock.json`
 2. Commit with `git commit -a -m "Bump vX.Y.Z"`
 3. Create the tag with `git tag vX.Y.Z`
 4. Push the commit with `git push`
