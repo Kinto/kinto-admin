@@ -26,7 +26,6 @@
     "images",
     "lib"
   ],
-  "engineStrict": false,
   "engines": {
     "npm": ">=8",
     "node": ">=16"
