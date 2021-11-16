@@ -32,7 +32,7 @@ Kinto-based systems.
 
 ## Prerequisites
 
-NodeJS v4+ and npm 2.14+ should be installed and available on your machine.
+NodeJS v16+ and npm 8+ should be installed and available on your machine.
 
 Various pre-commit hooks are available to help prevent you from
 pushing sub-optimal code; to use these, ``pip install --user

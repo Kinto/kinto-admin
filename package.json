@@ -26,10 +26,9 @@
     "images",
     "lib"
   ],
-  "engineStrict": false,
   "engines": {
-    "npm": "^2.14.7",
-    "node": ">=10"
+    "npm": ">=8",
+    "node": ">=16"
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
