@@ -20,7 +20,7 @@ global.atob = require("atob");
 
 // Setup Enzyme for testing react
 const configure = require("enzyme").configure;
-const Adapter = require("@wojtekmaj/enzyme-adapter-react-17");
+const Adapter = require("enzyme-adapter-react-16");
 
 // node fetch
 global.fetch = require("node-fetch");
