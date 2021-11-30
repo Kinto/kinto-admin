@@ -9,8 +9,7 @@ import * as SessionActions from "../actions/session";
 
 import { PureComponent } from "react";
 import * as React from "react";
-import { Breadcrumbs } from "react-breadcrumbs";
-import HomePage from "../containers/HomePage";
+import Breadcrumbs from "./Breadcrumbs";
 import BucketAttributesPage from "../containers/bucket/BucketAttributesPage";
 import BucketCollectionsPage from "../containers/bucket/BucketCollectionsPage";
 import BucketCreatePage from "../containers/bucket/BucketCreatePage";
@@ -21,6 +20,7 @@ import CollectionAttributesPage from "../containers/collection/CollectionAttribu
 import CollectionCreatePage from "../containers/collection/CollectionCreatePage";
 import CollectionHistoryPage from "../containers/collection/CollectionHistoryPage";
 import CollectionPermissionsPage from "../containers/collection/CollectionPermissionsPage";
+import HomePage from "../containers/HomePage";
 import GroupAttributesPage from "../containers/group/GroupAttributesPage";
 import GroupCreatePage from "../containers/group/GroupCreatePage";
 import GroupHistoryPage from "../containers/group/GroupHistoryPage";

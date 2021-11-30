@@ -16,8 +16,7 @@
     "test": "cross-env NODE_ENV=test jest",
     "test:ci": "npm run test -- --maxWorkers=4",
     "test-all": "npm run lint && npm run build:lib && npm run test",
-    "test-all:ci": "npm run lint && npm run build:lib && npm run test:ci",
-    "postinstall": "patch-package"
+    "test-all:ci": "npm run lint && npm run build:lib && npm run test:ci"
   },
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -46,11 +45,9 @@
     "kinto-admin-form": "0.0.0-experimental-8183a9c80",
     "kinto-http": "^5.1.1",
     "lodash": "^4.17.21",
-    "patch-package": "^6.2.2",
     "react": "^16.8.6",
     "react-bootstrap": "^1.3.0",
     "react-bootstrap-icons": "^1.1.0",
-    "react-breadcrumbs": "^2.1.6",
     "react-bs-notifier": "^6.0.0",
     "react-codemirror2": "^7.0.0",
     "react-dom": "^16.8.6",

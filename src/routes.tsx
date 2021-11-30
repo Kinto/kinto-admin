@@ -3,7 +3,6 @@ import { Component, PureComponent } from "react";
 import { Route, Switch } from "react-router-dom";
 import type { RouteComponentProps } from "react-router-dom";
 import { utils as formUtils } from "kinto-admin-form";
-import { Breadcrumb } from "react-breadcrumbs";
 import type { Dispatch } from "redux";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -124,29 +123,16 @@ const routeCreator = ({
     <Route
       {...props}
       render={routeProps => {
-        // If the title of the route starts with a ":" it's a "match param", so resolve it.
-        const resolvedTitle = title.startsWith(":")
-          ? routeProps.match.params[title.slice(1)]
-          : title;
-        return (
-          <Breadcrumb
-            data={{
-              title: resolvedTitle,
-              pathname: routeProps.match.url,
-            }}
-          >
-            {Component ? (
-              <ComponentWrapper
-                component={Component}
-                routeUpdated={routeUpdated}
-                {...routeProps}
-              />
-            ) : render ? (
-              render(routeProps)
-            ) : (
-              children
-            )}
-          </Breadcrumb>
+        return Component ? (
+          <ComponentWrapper
+            component={Component}
+            routeUpdated={routeUpdated}
+            {...routeProps}
+          />
+        ) : render ? (
+          render(routeProps)
+        ) : (
+          children
         );
       }}
     />

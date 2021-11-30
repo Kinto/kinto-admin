@@ -11,6 +11,7 @@ import {
   buildAttachmentUrl,
   timeago,
   sortHistoryEntryPermissions,
+  breadcrumbifyPath,
 } from "../src/utils";
 
 describe("cleanRecord", () => {
@@ -407,6 +408,21 @@ describe("diffJson", function () {
       '-   "h": 8,',
       '+   "h": "h",',
       '    "i": 9,\n    "j": 10,\n    "k": 11,\n    "l": 12\n  }',
+    ]);
+  });
+});
+
+describe("breadcrumbify", () => {
+  test("breadcrumbify", () => {
+    expect(breadcrumbifyPath("/")).eql([["home", "/"]]);
+    expect(breadcrumbifyPath("/foo")).eql([
+      ["home", "/"],
+      ["foo", "/foo"],
+    ]);
+    expect(breadcrumbifyPath("/foo/bar")).eql([
+      ["home", "/"],
+      ["foo", "/foo"],
+      ["bar", "/foo/bar"],
     ]);
   });
 });
