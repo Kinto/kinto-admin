@@ -34,8 +34,8 @@ describe("Signoff plugin sagas", () => {
                         bucket: "prod",
                         collection: "dest-plugins",
                       },
-                      editors_group:
-                        "{collection_id}_editors_who_wear_cool_sneakers",
+                      reviewers_group:
+                        "{collection_id}_reviewers_who_wear_cool_sneakers",
                     },
                     {
                       source: {
@@ -133,8 +133,7 @@ describe("Signoff plugin sagas", () => {
             lastReviewDate: 1523983883971,
             lastSignatureBy: "Last Signature By",
             lastSignatureDate: 1524070283971,
-            editors_group: "{collection_id}_editors_who_wear_cool_sneakers",
-            reviewers_group: undefined,
+            reviewers_group: "{collection_id}_reviewers_who_wear_cool_sneakers",
             status: "to-review",
           },
           preview: {

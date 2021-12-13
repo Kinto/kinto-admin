@@ -75,7 +75,6 @@ export type Capabilities = {
   schema?: any;
   signer?: {
     resources: any[];
-    editors_group: string;
     reviewers_group: string;
   };
 };

@@ -20,7 +20,6 @@ describe("SignoffToolBar component", () => {
           history: {},
           signer: {
             reviewers_group: "reviewers",
-            editors_group: "{collection_id}_editors",
           },
         },
       },
@@ -73,22 +72,8 @@ describe("SignoffToolBar component", () => {
     expect(node).eql(null);
   });
 
-  it("should show the request review button if current user is editor", () => {
-    // As the group is configured with a placeholder on the server, the group
-    // name is resolved with the current collection.
-    const node = createComponent(SignoffToolBar, {
-      ...props,
-      sessionState: {
-        ...props.sessionState,
-        serverInfo: {
-          ...props.sessionState.serverInfo,
-          user: {
-            id: "fxa:yo",
-            principals: ["fxa:yo", "/buckets/stage/groups/certs_editors"],
-          },
-        },
-      },
-    });
+  it("should show the request review button if current user has write access", () => {
+    const node = createComponent(SignoffToolBar, props);
     expect(node.querySelectorAll("button.request-review")).to.have.a.lengthOf(
       1
     );

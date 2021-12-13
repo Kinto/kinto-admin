@@ -47,7 +47,6 @@ export type SourceInfo = {
   lastReviewerComment?: string;
   lastSignatureBy?: string;
   lastSignatureDate?: number;
-  editors_group?: string;
   reviewers_group?: string;
 };
 

@@ -37,10 +37,6 @@ function isMember(groupKey, source, sessionState) {
   return principals.includes(expectedPrincipal);
 }
 
-function isEditor(source, sessionState) {
-  return isMember("editors_group", source, sessionState);
-}
-
 export function isReviewer(source: SourceInfo, sessionState: SessionState) {
   return isMember("reviewers_group", source, sessionState);
 }
@@ -122,7 +118,7 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
 
     const { status } = source;
 
-    const canRequestReview = canEdit && isEditor(source, sessionState);
+    const canRequestReview = canEdit;
     const canReview =
       canEdit &&
       isReviewer(source, sessionState) &&

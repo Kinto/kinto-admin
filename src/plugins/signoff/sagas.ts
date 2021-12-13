@@ -25,7 +25,6 @@ type SignerResource = {
   source: CapabilityResource;
   preview?: CapabilityResource;
   destination: CapabilityResource;
-  editors_group: string;
   reviewers_group: string;
 };
 
@@ -59,8 +58,7 @@ export function* onCollectionRecordsRequest(
     return;
   }
 
-  const { source, preview, destination, editors_group, reviewers_group } =
-    resource;
+  const { source, preview, destination, reviewers_group } = resource;
 
   // Show basic infos for this collection while fetching more details.
   const basicInfos = {
@@ -107,7 +105,6 @@ export function* onCollectionRecordsRequest(
     lastSignatureBy,
     lastSignatureDate,
     status,
-    editors_group,
     reviewers_group,
   };
   const collectionsInfo = {

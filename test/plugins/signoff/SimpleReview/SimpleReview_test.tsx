@@ -16,7 +16,6 @@ function signoffFactory(): SignoffState {
       source: {
         bid: "main-workspace",
         cid: "my-collection",
-        editors_group: "{collection_id}-editors",
         reviewers_group: "{collection_id}-reviewers",
         lastEditBy: "account:experimenter",
         lastEditDate: 1622816256864,
