@@ -7,8 +7,8 @@ import { connect } from "react-redux";
 import type { StateProps } from "./SimpleReview";
 import SimpleReview from "./SimpleReview";
 
-import { SignoffState } from "../types";
-import * as SignoffActions from "../actions";
+import { SignoffState } from "../../../types";
+import * as SignoffActions from "../../../actions/signoff";
 import * as CollectionActions from "../../../actions/collection";
 import { getClient } from "../../../client";
 

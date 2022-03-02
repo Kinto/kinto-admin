@@ -6,17 +6,17 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import * as adminConstants from "../../constants";
-import * as pluginConstants from "./constants";
-import * as SignoffActions from "./actions";
+import * as pluginConstants from "../../constants";
+import * as SignoffActions from "../../actions/signoff";
 import SignoffToolBar from "./components";
-import signoffReducer from "./reducer";
+import signoffReducer from "../../reducers/signoff";
 import {
   onCollectionRecordsRequest,
   handleRequestReview,
   handleRollbackChanges,
   handleDeclineChanges,
   handleApproveChanges,
-} from "./sagas";
+} from "../../sagas/signoff";
 
 import "../../../css/plugins/signoff/styles.css";
 

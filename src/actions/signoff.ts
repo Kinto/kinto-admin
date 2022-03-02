@@ -1,6 +1,6 @@
-import type { CollectionsInfo } from "./types";
+import type { CollectionsInfo } from "../types";
 
-import * as constants from "./constants";
+import * as constants from "../constants";
 
 export function confirmRequestReview(): {
   type: "PLUGIN_CONFIRM_REVIEW_REQUEST";

@@ -4,9 +4,9 @@ import { call, put } from "redux-saga/effects";
 import { notifySuccess } from "../../../src/actions/notifications";
 import { routeLoadSuccess } from "../../../src/actions/route";
 import { setClient } from "../../../src/client";
-import * as actions from "../../../src/plugins/signoff/actions";
+import * as actions from "../../../src/actions/signoff";
 import * as collection_actions from "../../../src/actions/collection";
-import * as saga from "../../../src/plugins/signoff/sagas";
+import * as saga from "../../../src/sagas/signoff";
 
 describe("Signoff plugin sagas", () => {
   describe("list hook", () => {
