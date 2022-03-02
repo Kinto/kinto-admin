@@ -5,16 +5,16 @@ import type {
   ServerInfo,
   BucketResource,
   CollectionResource,
-} from "../../types";
-import type { ChangesList } from "./types";
+  ChangesList,
+} from "../types";
 
 import { call, put } from "redux-saga/effects";
-import { getClient } from "../../client";
-import { routeLoadSuccess } from "../../actions/route";
-import * as collectionActions from "../../actions/collection";
-import { notifySuccess, notifyError } from "../../actions/notifications";
+import { getClient } from "../client";
+import { routeLoadSuccess } from "../actions/route";
+import * as collectionActions from "../actions/collection";
+import { notifySuccess, notifyError } from "../actions/notifications";
 
-import * as SignoffActions from "./actions";
+import * as SignoffActions from "../actions/signoff";
 
 type CapabilityResource = {
   bucket: string;
