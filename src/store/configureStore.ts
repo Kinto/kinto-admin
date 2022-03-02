@@ -18,8 +18,6 @@ export default function configureStore(
 ) {
   // Each plugin exports a `reducers` attribute.
   const pluginReducers = plugins.map(({ reducers = {} }) => reducers);
-  // Each plugin exports a `sagas` attribute.
-  const pluginSagas = plugins.map(({ sagas = [] }) => sagas);
 
   const finalCreateStore = compose(
     applyMiddleware<AppState, any, any>(
@@ -39,6 +37,6 @@ export default function configureStore(
   // Every saga will receive the store getState() function as first argument
   // by default; this allows sagas to share the same signature and access the
   // state consistently.
-  sagaMiddleware.run(rootSaga, store.getState.bind(store), pluginSagas);
+  sagaMiddleware.run(rootSaga, store.getState.bind(store));
   return store;
 }

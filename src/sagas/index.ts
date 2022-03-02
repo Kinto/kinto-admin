@@ -1,8 +1,7 @@
-import type { GetStateFn, PluginSagas, SagaGen } from "../types";
+import type { GetStateFn, SagaGen } from "../types";
 
 import { all, takeEvery } from "redux-saga/effects";
 
-import { flattenPluginsSagas } from "../plugin";
 import * as c from "../constants";
 import * as sessionSagas from "./session";
 import * as routeSagas from "./route";
@@ -10,18 +9,15 @@ import * as bucketSagas from "./bucket";
 import * as groupSagas from "./group";
 import * as collectionSagas from "./collection";
 import * as recordSagas from "./record";
+import * as signoffSagas from "./signoff";
 
 /**
  * Registers saga watchers.
  *
  * @param {Function} getState Function to obtain the current store state.
- * @param {Array}    sagas  The list of plugin sagas.
  */
-export default function* rootSaga(
-  getState: GetStateFn,
-  pluginsSagas: PluginSagas = []
-): SagaGen {
-  const standardSagas = [
+export default function* rootSaga(getState: GetStateFn): SagaGen {
+  const sagas = [
     // session
     takeEvery(c.SESSION_SETUP, sessionSagas.setupSession, getState),
     takeEvery(c.SESSION_SERVER_CHANGE, sessionSagas.serverChange, getState),
@@ -123,7 +119,33 @@ export default function* rootSaga(
       collectionSagas.deleteAttachment,
       getState
     ),
+    // signoff
+    takeEvery(
+      c.COLLECTION_RECORDS_REQUEST,
+      signoffSagas.onCollectionRecordsRequest,
+      getState
+    ),
+    takeEvery(
+      c.PLUGIN_REVIEW_REQUEST,
+      signoffSagas.handleRequestReview,
+      getState
+    ),
+    takeEvery(
+      c.PLUGIN_ROLLBACK_CHANGES,
+      signoffSagas.handleRollbackChanges,
+      getState
+    ),
+    takeEvery(
+      c.PLUGIN_DECLINE_REQUEST,
+      signoffSagas.handleDeclineChanges,
+      getState
+    ),
+    takeEvery(
+      c.PLUGIN_SIGNOFF_REQUEST,
+      signoffSagas.handleApproveChanges,
+      getState
+    ),
   ];
 
-  yield all([...standardSagas, ...flattenPluginsSagas(pluginsSagas, getState)]);
+  yield all(sagas);
 }

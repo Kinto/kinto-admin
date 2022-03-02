@@ -226,8 +226,6 @@ export type Plugin = {
   };
 };
 
-export type PluginSagas = Array<Array<any>>;
-
 export type RecordState = {
   busy: boolean;
   data: RecordData;

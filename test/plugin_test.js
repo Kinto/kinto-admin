@@ -2,11 +2,7 @@ import React from "react";
 import { expect } from "chai";
 import { takeEvery } from "redux-saga/effects";
 
-import {
-  flattenPluginsRoutes,
-  flattenPluginsSagas,
-  flattenPluginsReducers,
-} from "../src/plugin";
+import { flattenPluginsRoutes, flattenPluginsReducers } from "../src/plugin";
 
 describe("Plugin API", () => {
   describe("flattenPluginsRoutes()", () => {
@@ -39,38 +35,6 @@ describe("Plugin API", () => {
         .property("props")
         .property("path")
         .eql("/route/1");
-    });
-  });
-
-  describe("flattenPluginsSagas()", () => {
-    function getState() {}
-    function* saga1() {
-      yield 1;
-    }
-    function* saga2() {
-      yield 2;
-    }
-    function* saga3() {
-      yield 3;
-    }
-    const plugins = [
-      [
-        [takeEvery, "ACTION_1", saga1],
-        [takeEvery, "ACTION_2", saga2],
-      ],
-      [[takeEvery, "ACTION_3", saga3]],
-    ];
-
-    it("should append the plugins sagas to the standard watchers", () => {
-      const sagas = flattenPluginsSagas(plugins, getState);
-
-      expect(sagas).to.have.a.lengthOf(3);
-      expect(sagas[0].payload.args[0]).eql("ACTION_1");
-      expect(sagas[0].payload.args[1].name).eql("saga1");
-      expect(sagas[1].payload.args[0]).eql("ACTION_2");
-      expect(sagas[1].payload.args[1].name).eql("saga2");
-      expect(sagas[2].payload.args[0]).eql("ACTION_3");
-      expect(sagas[2].payload.args[1].name).eql("saga3");
     });
   });
 

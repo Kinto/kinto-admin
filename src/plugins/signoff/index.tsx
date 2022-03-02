@@ -1,22 +1,13 @@
 import type { Store } from "redux";
 
 import React from "react";
-import { takeEvery } from "redux-saga/effects";
+
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import * as adminConstants from "../../constants";
-import * as pluginConstants from "../../constants";
 import * as SignoffActions from "../../actions/signoff";
 import SignoffToolBar from "./components";
 import signoffReducer from "../../reducers/signoff";
-import {
-  onCollectionRecordsRequest,
-  handleRequestReview,
-  handleRollbackChanges,
-  handleDeclineChanges,
-  handleApproveChanges,
-} from "../../sagas/signoff";
 
 import "../../../css/plugins/signoff/styles.css";
 
@@ -32,17 +23,7 @@ export const reducers = {
 // Sagas
 //
 
-export const sagas = [
-  [
-    takeEvery,
-    adminConstants.COLLECTION_RECORDS_REQUEST,
-    onCollectionRecordsRequest,
-  ],
-  [takeEvery, pluginConstants.PLUGIN_REVIEW_REQUEST, handleRequestReview],
-  [takeEvery, pluginConstants.PLUGIN_ROLLBACK_CHANGES, handleRollbackChanges],
-  [takeEvery, pluginConstants.PLUGIN_DECLINE_REQUEST, handleDeclineChanges],
-  [takeEvery, pluginConstants.PLUGIN_SIGNOFF_REQUEST, handleApproveChanges],
-];
+export const sagas = [];
 
 //
 // Container
