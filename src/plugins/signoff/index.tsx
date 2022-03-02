@@ -7,23 +7,8 @@ import { bindActionCreators } from "redux";
 
 import * as SignoffActions from "../../actions/signoff";
 import SignoffToolBar from "./components";
-import signoffReducer from "../../reducers/signoff";
 
 import "../../../css/plugins/signoff/styles.css";
-
-//
-// Reducers
-//
-
-export const reducers = {
-  signoff: signoffReducer,
-};
-
-//
-// Sagas
-//
-
-export const sagas = [];
 
 //
 // Container

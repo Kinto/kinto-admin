@@ -30,8 +30,8 @@ export default class KintoAdmin extends Component<Props> {
   constructor(props: Props) {
     super(props);
 
-    const { plugins, settings } = props;
-    this.store = configureStore({ settings }, plugins);
+    const { settings } = props;
+    this.store = configureStore({ settings });
     const { servers } = this.store.getState();
 
     // Restore saved session, if any

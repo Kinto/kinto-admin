@@ -16,9 +16,6 @@ export default function configureStore(
   initialState: Object = {},
   plugins: Plugin[] = []
 ) {
-  // Each plugin exports a `reducers` attribute.
-  const pluginReducers = plugins.map(({ reducers = {} }) => reducers);
-
   const finalCreateStore = compose(
     applyMiddleware<AppState, any, any>(
       sagaMiddleware,
@@ -31,7 +28,7 @@ export default function configureStore(
   )(createStore);
 
   const store = finalCreateStore(
-    createRootReducer(hashHistory, pluginReducers),
+    createRootReducer(hashHistory),
     initialState as any
   );
   // Every saga will receive the store getState() function as first argument

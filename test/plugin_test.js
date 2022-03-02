@@ -1,8 +1,7 @@
 import React from "react";
 import { expect } from "chai";
-import { takeEvery } from "redux-saga/effects";
 
-import { flattenPluginsRoutes, flattenPluginsReducers } from "../src/plugin";
+import { flattenPluginsRoutes } from "../src/plugin";
 
 describe("Plugin API", () => {
   describe("flattenPluginsRoutes()", () => {
@@ -35,36 +34,6 @@ describe("Plugin API", () => {
         .property("props")
         .property("path")
         .eql("/route/1");
-    });
-  });
-
-  describe("flattenPluginsReducers()", () => {
-    const plugins = [
-      {
-        foo() {},
-        bar() {},
-      },
-      {
-        baz() {},
-      },
-    ];
-
-    it("should flatten reducers", () => {
-      expect(flattenPluginsReducers(plugins, {})).to.have.keys(
-        "foo",
-        "bar",
-        "baz"
-      );
-    });
-
-    it("should extend standard reducers", () => {
-      // Note: actual reducer extensibility is tested in configureStore_test.js
-      const foo = () => {};
-      expect(flattenPluginsReducers(plugins, { foo })).to.have.keys(
-        "foo",
-        "bar",
-        "baz"
-      );
     });
   });
 });
