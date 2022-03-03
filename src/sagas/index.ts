@@ -126,22 +126,22 @@ export default function* rootSaga(getState: GetStateFn): SagaGen {
       getState
     ),
     takeEvery(
-      c.PLUGIN_REVIEW_REQUEST,
+      c.SIGNOFF_REVIEW_REQUEST,
       signoffSagas.handleRequestReview,
       getState
     ),
     takeEvery(
-      c.PLUGIN_ROLLBACK_CHANGES,
+      c.SIGNOFF_ROLLBACK_CHANGES,
       signoffSagas.handleRollbackChanges,
       getState
     ),
     takeEvery(
-      c.PLUGIN_DECLINE_REQUEST,
+      c.SIGNOFF_DECLINE_REQUEST,
       signoffSagas.handleDeclineChanges,
       getState
     ),
     takeEvery(
-      c.PLUGIN_SIGNOFF_REQUEST,
+      c.SIGNOFF_SIGNOFF_REQUEST,
       signoffSagas.handleApproveChanges,
       getState
     ),
