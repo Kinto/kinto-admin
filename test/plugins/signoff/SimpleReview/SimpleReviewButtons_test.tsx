@@ -5,7 +5,7 @@ import sinon from "sinon";
 
 import SimpleReviewButtons, {
   SimpleReviewButtonsProps,
-} from "../../../../src/plugins/signoff/SimpleReview/SimpleReviewButtons";
+} from "../../../../src/components/signoff/SimpleReview/SimpleReviewButtons";
 
 function renderButtons(props: Partial<SimpleReviewButtonsProps> = null) {
   const approveChanges = sinon.stub();

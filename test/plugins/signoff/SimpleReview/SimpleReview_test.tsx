@@ -5,10 +5,9 @@ import testUtils from "react-dom/test-utils";
 import { createComponent } from "../../../test_utils";
 import SimpleReview, {
   SimpleReviewProps,
-} from "../../../../src/plugins/signoff/SimpleReview/SimpleReview";
+} from "../../../../src/components/signoff/SimpleReview/SimpleReview";
 
-import { SessionState } from "../../../../src/types";
-import { SignoffState } from "../../../../src/plugins/signoff/types";
+import { SessionState, SignoffState } from "../../../../src/types";
 
 function signoffFactory(): SignoffState {
   return {

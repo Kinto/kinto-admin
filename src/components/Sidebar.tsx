@@ -365,8 +365,6 @@ export type SidebarProps = OwnProps &
   };
 
 export default class Sidebar extends PureComponent<SidebarProps> {
-  // This is useful to identify wrapped component for plugin hooks when code is
-  // minified; see https://github.com/facebook/react/issues/4915
   static displayName = "Sidebar";
 
   render() {

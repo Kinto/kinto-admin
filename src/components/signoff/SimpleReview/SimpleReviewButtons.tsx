@@ -1,6 +1,6 @@
-import CommentDialog from "../../../components/CommentDialog";
+import CommentDialog from "../../CommentDialog";
 import React, { useState } from "react";
-import { CollectionStatus } from "../types";
+import { CollectionStatus } from "../../../types";
 
 export interface SimpleReviewButtonsProps {
   status: CollectionStatus;

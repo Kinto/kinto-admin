@@ -30,6 +30,7 @@ import AdminLink from "../AdminLink";
 import CollectionTabs from "./CollectionTabs";
 import PaginatedTable from "../PaginatedTable";
 import Spinner from "../Spinner";
+import SignoffContainer from "../../containers/Signoff";
 
 type CommonStateProps = {
   capabilities: Capabilities;
@@ -313,7 +314,7 @@ class Table extends PureComponent<TableProps> {
 }
 
 function ListActions(props) {
-  const { bid, cid, session, bucket, collection, hooks = [] } = props;
+  const { bid, cid, session, bucket, collection } = props;
   if (session.busy || collection.busy) {
     return null;
   }
@@ -334,12 +335,15 @@ function ListActions(props) {
     >
       Bulk create
     </AdminLink>,
+    <SignoffContainer key="request-signoff-toolbar" />,
   ];
   return (
     <div className="list-actions">
-      {canCreateRecord(session, bucket, collection)
-        ? [...defaultButtons, ...hooks]
-        : hooks}
+      {canCreateRecord(session, bucket, collection) ? (
+        defaultButtons
+      ) : (
+        <SignoffContainer key="request-signoff-toolbar" />
+      )}
     </div>
   );
 }
@@ -347,7 +351,6 @@ function ListActions(props) {
 export type OwnProps = {
   match: CollectionRouteMatch;
   location: Location;
-  pluginHooks: any;
 };
 
 export type StateProps = CommonStateProps & {
@@ -366,8 +369,6 @@ export type Props = CommonProps &
   };
 
 export default class CollectionRecords extends PureComponent<Props> {
-  // This is useful to identify wrapped component for plugin hooks when code is
-  // minified; see https://github.com/facebook/react/issues/4915
   static displayName = "CollectionRecords";
 
   updateSort = (sort: string) => {
@@ -408,7 +409,6 @@ export default class CollectionRecords extends PureComponent<Props> {
       deleteRecord,
       listNextRecords,
       redirectTo,
-      pluginHooks,
       capabilities,
     } = this.props;
     const {
@@ -432,7 +432,6 @@ export default class CollectionRecords extends PureComponent<Props> {
         bucket={bucket}
         session={session}
         collection={collection}
-        hooks={pluginHooks.ListActions}
       />
     );
 

@@ -5,7 +5,7 @@ import PerRecordDiffView, {
   PerRecordDiffViewProps,
   findChangeTypes,
   ChangeType,
-} from "../../../../src/plugins/signoff/SimpleReview/PerRecordDiffView";
+} from "../../../../src/components/signoff/SimpleReview/PerRecordDiffView";
 
 function defaultSimpleViewDiffsProps(
   props: Partial<PerRecordDiffViewProps> = null

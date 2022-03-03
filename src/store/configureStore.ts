@@ -1,4 +1,4 @@
-import type { AppState, Plugin } from "../types";
+import type { AppState } from "../types";
 
 import { createStore, applyMiddleware, compose } from "redux";
 import createSagaMiddleware from "redux-saga";
@@ -12,10 +12,7 @@ const sagaMiddleware = createSagaMiddleware();
 
 export const hashHistory = createHashHistory();
 
-export default function configureStore(
-  initialState: Object = {},
-  plugins: Plugin[] = []
-) {
+export default function configureStore(initialState: Object = {}) {
   const finalCreateStore = compose(
     applyMiddleware<AppState, any, any>(
       sagaMiddleware,

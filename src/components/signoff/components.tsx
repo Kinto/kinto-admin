@@ -75,7 +75,7 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
       sessionState,
       bucketState,
       collectionState,
-      // Plugin state
+      // Component state
       signoff = {} as SignoffState,
       // Actions
       confirmRequestReview,
@@ -103,7 +103,7 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
     const {
       data: { id: cid },
     } = collectionState;
-    // Information loaded via this plugin.
+
     const {
       collectionsInfo,
       pendingConfirmReviewRequest,

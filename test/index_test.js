@@ -33,7 +33,6 @@ describe("KintoAdmin", () => {
     };
     const createKintoAdmin = (settings = {}) =>
       createComponent(KintoAdmin, {
-        plugins: [],
         settings,
       });
 

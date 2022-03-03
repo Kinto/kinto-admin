@@ -1,5 +1,3 @@
-import { Reducer, Store } from "redux";
-
 export type ActionType<T extends (...args: any[]) => any> = ReturnType<T>;
 
 export type AppState = {
@@ -212,19 +210,6 @@ export type Permissions =
   | GroupPermissions
   | CollectionPermissions
   | RecordPermissions;
-
-export type Plugin = {
-  hooks?: any;
-  routes?: any[];
-  reducers?: {
-    [key: string]: Reducer<any, any>;
-  };
-  sagas: [][];
-  register: (store: Store<AppState, any>) => {
-    hooks?: any;
-    routes?: any[];
-  };
-};
 
 export type RecordState = {
   busy: boolean;

@@ -3,16 +3,16 @@ import type {
   SessionState,
   ValidRecord,
   CollectionRouteMatch,
+  SignoffState,
 } from "../../../types";
 
-import * as SignoffActions from "../actions";
+import * as SignoffActions from "../../../actions/signoff";
 import * as CollectionActions from "../../../actions/collection";
 import SimpleReviewButtons from "./SimpleReviewButtons";
 import SimpleReviewHeader from "./SimpleReviewHeader";
 import PerRecordDiffView from "./PerRecordDiffView";
 import { isReviewer } from "../components";
-import { SignoffState } from "../types";
-import Spinner from "../../../components/Spinner";
+import Spinner from "../../Spinner";
 
 export type StateProps = {
   signoff?: SignoffState;

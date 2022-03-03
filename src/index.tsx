@@ -1,5 +1,3 @@
-import type { Plugin } from "./types";
-
 import React, { Component } from "react";
 import { Provider } from "react-redux";
 import { ConnectedRouter } from "connected-react-router";
@@ -16,16 +14,11 @@ import "../css/styles.css";
 import { Store } from "redux";
 
 type Props = {
-  plugins: Plugin[];
   settings: any;
 };
 
 export default class KintoAdmin extends Component<Props> {
   store: Store;
-
-  static defaultProps = {
-    plugins: [],
-  };
 
   constructor(props: Props) {
     super(props);
@@ -50,13 +43,10 @@ export default class KintoAdmin extends Component<Props> {
 
   render() {
     const { store } = this;
-    const { plugins } = this.props;
-    const registerPlugins = plugins.map(plugin => plugin.register(store));
-
     return (
       <Provider store={store}>
         <ConnectedRouter history={hashHistory}>
-          {getRoutes(this.store, registerPlugins)}
+          {getRoutes(this.store)}
         </ConnectedRouter>
       </Provider>
     );

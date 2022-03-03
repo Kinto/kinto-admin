@@ -8,7 +8,7 @@ import * as actions from "../../../src/actions/signoff";
 import * as collection_actions from "../../../src/actions/collection";
 import * as saga from "../../../src/sagas/signoff";
 
-describe("Signoff plugin sagas", () => {
+describe("Signoff sagas", () => {
   describe("list hook", () => {
     let getState;
 
