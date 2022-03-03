@@ -103,7 +103,6 @@ export type OwnProps = {
   notifications: React.ComponentType;
   sidebar: React.ComponentType;
   collectionRecords: React.ComponentType;
-  pluginsRoutes: React.ComponentType[];
 };
 
 export type Props = OwnProps &
@@ -121,7 +120,6 @@ export default class App extends PureComponent<Props> {
       sidebar: Sidebar,
       notifications: Notifications,
       collectionRecords: CollectionRecordsPage,
-      pluginsRoutes,
     } = this.props;
     const contentClasses = `col-sm-9 content`;
     const version =
@@ -166,7 +164,6 @@ export default class App extends PureComponent<Props> {
                 <Redirect exact from="/buckets" to="/" />
                 <CreateRoute title="home" path="/">
                   <Switch>
-                    {pluginsRoutes}
                     <CreateRoute title="buckets" path="/buckets">
                       <Switch>
                         <CreateRoute

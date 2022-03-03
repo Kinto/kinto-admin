@@ -10,7 +10,6 @@ import { connect } from "react-redux";
 import * as RouteActions from "./actions/route";
 
 import { isObject } from "./utils";
-import { flattenPluginsRoutes } from "./plugin";
 import App from "./containers/App";
 import Sidebar from "./containers/Sidebar";
 import Notifications from "./containers/Notifications";
@@ -160,7 +159,7 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
     CollectionRecordsPage,
     plugins
   );
-  const pluginsRoutes = flattenPluginsRoutes(plugins);
+
   return (
     <Switch>
       <Route
@@ -170,7 +169,6 @@ export default function getRoutes(store: Object, plugins: Object[] = []) {
             sidebar={hookedSidebar}
             notifications={hookedNotifications}
             collectionRecords={hookedCollectionRecords}
-            pluginsRoutes={pluginsRoutes}
           />
         )}
       />
