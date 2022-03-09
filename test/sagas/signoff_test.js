@@ -1,12 +1,12 @@
 import { expect } from "chai";
 import { call, put } from "redux-saga/effects";
 
-import { notifySuccess } from "../../../src/actions/notifications";
-import { routeLoadSuccess } from "../../../src/actions/route";
-import { setClient } from "../../../src/client";
-import * as actions from "../../../src/actions/signoff";
-import * as collection_actions from "../../../src/actions/collection";
-import * as saga from "../../../src/sagas/signoff";
+import { notifySuccess } from "../../src/actions/notifications";
+import { routeLoadSuccess } from "../../src/actions/route";
+import { setClient } from "../../src/client";
+import * as actions from "../../src/actions/signoff";
+import * as collection_actions from "../../src/actions/collection";
+import * as saga from "../../src/sagas/signoff";
 
 describe("Signoff sagas", () => {
   describe("list hook", () => {
