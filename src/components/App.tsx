@@ -31,7 +31,7 @@ import RecordBulkPage from "../containers/record/RecordBulkPage";
 import RecordAttributesPage from "../containers/record/RecordAttributesPage";
 import RecordPermissionsPage from "../containers/record/RecordPermissionsPage";
 import RecordHistoryPage from "../containers/record/RecordHistoryPage";
-import SimpleReviewPage from "./signoff/SimpleReview/SimpleReviewPage";
+import SimpleReviewPage from "../containers/signoff/SimpleReviewPage";
 import Sidebar from "../containers/Sidebar";
 import Notifications from "../containers/Notifications";
 

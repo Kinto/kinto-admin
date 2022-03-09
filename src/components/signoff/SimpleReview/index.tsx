@@ -11,7 +11,7 @@ import * as CollectionActions from "../../../actions/collection";
 import SimpleReviewButtons from "./SimpleReviewButtons";
 import SimpleReviewHeader from "./SimpleReviewHeader";
 import PerRecordDiffView from "./PerRecordDiffView";
-import { isReviewer } from "../components";
+import { isReviewer } from "../SignoffToolBar";
 import Spinner from "../../Spinner";
 
 export type StateProps = {

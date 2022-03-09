@@ -1,8 +1,8 @@
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import * as SignoffActions from "../actions/signoff";
-import SignoffToolBar from "../components/signoff/components";
+import * as SignoffActions from "../../actions/signoff";
+import SignoffToolBar from "../../components/signoff/SignoffToolBar";
 
 function mapStateToProps(state) {
   const {

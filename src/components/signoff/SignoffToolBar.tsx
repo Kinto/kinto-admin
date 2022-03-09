@@ -16,7 +16,7 @@ import { Check2 } from "react-bootstrap-icons";
 
 import { canEditCollection } from "../../permission";
 import { timeago, humanDate } from "../../utils";
-import AdminLink from "../../components/AdminLink";
+import AdminLink from "../AdminLink";
 import { ProgressBar, ProgressStep } from "./ProgressBar";
 
 function isMember(groupKey, source, sessionState) {
@@ -486,8 +486,7 @@ function DiffInfo(props: {
         since,
         resource_name: "record",
         exclude_user_id: "plugin:kinto-signer",
-      }}
-    >
+      }}>
       details...
     </AdminLink>
   );
@@ -632,8 +631,7 @@ class CommentDialog extends PureComponent<
         className="modal"
         tabIndex={-1}
         role="dialog"
-        style={{ display: "block" }}
-      >
+        style={{ display: "block" }}>
         <div className="modal-dialog" role="document">
           <div className="modal-content">
             <div className="modal-header">
@@ -643,8 +641,7 @@ class CommentDialog extends PureComponent<
                 className="close"
                 data-dismiss="modal"
                 aria-label="Close"
-                onClick={onCancel}
-              >
+                onClick={onCancel}>
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
@@ -660,16 +657,14 @@ class CommentDialog extends PureComponent<
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={onClickConfirm}
-              >
+                onClick={onClickConfirm}>
                 {confirmLabel}
               </button>
               <button
                 type="button"
                 className="btn btn-secondary"
                 data-dismiss="modal"
-                onClick={onCancel}
-              >
+                onClick={onCancel}>
                 Close
               </button>
             </div>

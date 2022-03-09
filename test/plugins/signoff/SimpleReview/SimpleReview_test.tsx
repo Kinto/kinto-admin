@@ -5,7 +5,7 @@ import testUtils from "react-dom/test-utils";
 import { createComponent } from "../../../test_utils";
 import SimpleReview, {
   SimpleReviewProps,
-} from "../../../../src/components/signoff/SimpleReview/SimpleReview";
+} from "../../../../src/components/signoff/SimpleReview";
 
 import { SessionState, SignoffState } from "../../../../src/types";
 
