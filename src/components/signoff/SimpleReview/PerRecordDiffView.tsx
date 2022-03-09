@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { omit, diffJson } from "../../../utils";
-import type { ValidRecord } from "../../../types";
+import type { ValidRecord, SourceInfo } from "../../../types";
 import { diffArrays, diffJson as diff } from "diff";
-import { SourceInfo } from "../types";
 
 export enum ChangeType {
   ADD = "add",
