@@ -318,32 +318,31 @@ function ListActions(props) {
   if (session.busy || collection.busy) {
     return null;
   }
-  const defaultButtons = [
-    <AdminLink
-      key="__1"
-      name="record:create"
-      params={{ bid, cid }}
-      className="btn btn-info btn-record-add"
-    >
-      Create record
-    </AdminLink>,
-    <AdminLink
-      key="__2"
-      name="record:bulk"
-      params={{ bid, cid }}
-      className="btn btn-info btn-record-bulk-add"
-    >
-      Bulk create
-    </AdminLink>,
-    <SignoffContainer key="request-signoff-toolbar" />,
-  ];
   return (
     <div className="list-actions">
-      {canCreateRecord(session, bucket, collection) ? (
-        defaultButtons
-      ) : (
-        <SignoffContainer key="request-signoff-toolbar" />
+      {canCreateRecord(session, bucket, collection) && (
+        <>
+          <AdminLink
+            key="__1"
+            name="record:create"
+            params={{ bid, cid }}
+            className="btn btn-info btn-record-add"
+          >
+            Create record
+          </AdminLink>
+          <AdminLink
+            key="__2"
+            name="record:bulk"
+            params={{ bid, cid }}
+            className="btn btn-info btn-record-bulk-add"
+          >
+            Bulk create
+          </AdminLink>
+        </>
       )}
+      {/* won't render if kinto-signer not enabled or collection not configured
+       to be signed */}
+      <SignoffContainer key="request-signoff-toolbar" />
     </div>
   );
 }
