@@ -10,7 +10,6 @@ import * as SessionActions from "../actions/session";
 function mapStateToProps(state: AppState): StateProps {
   return {
     session: state.session,
-    settings: state.settings,
   };
 }
 

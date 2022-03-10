@@ -1,5 +1,10 @@
 export const DEFAULT_KINTO_SERVER = "https://demo.kinto-storage.org/v1/";
 export const ANONYMOUS_AUTH = "anonymous";
+export const MAX_PER_PAGE = 200;
+export const SINGLE_SERVER = process.env.SINGLE_SERVER
+  ? document.location.toString().split("/admin/")[0]
+  : null;
+export const SIDEBAR_MAX_LISTED_COLLECTIONS = 10;
 
 export const ATTACHMENT_DELETE_REQUEST = "ATTACHMENT_DELETE_REQUEST";
 

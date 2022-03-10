@@ -5,6 +5,7 @@ import { call, put } from "redux-saga/effects";
 import { getClient } from "../client";
 import { notifyError } from "../actions/notifications";
 import * as actions from "../actions/record";
+import { MAX_PER_PAGE } from "../constants";
 
 function getBucket(bid) {
   return getClient().bucket(bid);
@@ -14,16 +15,13 @@ export function* listHistory(
   getState: GetStateFn,
   action: ActionType<typeof actions.listRecordHistory>
 ): SagaGen {
-  const {
-    settings: { maxPerPage },
-  } = getState();
   const { bid, cid, rid } = action;
   try {
     const bucket = getBucket(bid);
     const { data, hasNextPage, next } = yield call(
       [bucket, bucket.listHistory],
       {
-        limit: maxPerPage,
+        limit: MAX_PER_PAGE,
         filters: {
           collection_id: cid,
           record_id: rid,

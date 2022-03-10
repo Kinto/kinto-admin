@@ -77,22 +77,8 @@ This will generate production-ready assets in the `build` folder.
 
 ### Admin settings
 
-The `KintoAdmin` component accepts a `settings` prop, where you can define the following options:
-
-- `maxPerPage`: The max number of results per page in lists (default: `200`).
-- `singleServer`: The server URL to be used (default: `null`). This removes the ability to connect to multiple servers.
-- `sidebarMaxListedCollections`: The maximum number of bucket collections entries to list in the sidebar.
-
-Example:
-
-```jsx
-import KintoAdmin from "kinto-admin";
-
-ReactDOM.render(
-  <KintoAdmin settings={{maxPerPage: 42}}/>,
-  document.getElementById("root")
-);
-```
+Set the following environment variables to control these options:
+- `SINGLE_SERVER`: The server URL to be used. Setting this environment variable removes the ability to connect to multiple servers.
 
 ### Build customization
 

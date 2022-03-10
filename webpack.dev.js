@@ -23,6 +23,7 @@ module.exports = {
     new webpack.DefinePlugin({
       "process.env": {
         KINTO_ADMIN_VERSION: JSON.stringify(version),
+        SINGLE_SERVER: JSON.stringify(process.env.SINGLE_SERVER),
       },
     }),
     new HtmlWebpackPlugin({

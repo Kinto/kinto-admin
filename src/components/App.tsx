@@ -111,8 +111,7 @@ export default class App extends PureComponent<Props> {
   render() {
     const { copyAuthenticationHeader, session, logout } = this.props;
     const contentClasses = `col-sm-9 content`;
-    const version =
-      process.env.REACT_APP_VERSION || process.env.KINTO_ADMIN_VERSION;
+    const version = process.env.KINTO_ADMIN_VERSION;
     return (
       <div>
         {session.authenticated && (

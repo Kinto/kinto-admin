@@ -1,4 +1,4 @@
-import type { SessionState, SettingsState, ServerEntry } from "../types";
+import type { SessionState, ServerEntry } from "../types";
 
 import React, { PureComponent } from "react";
 import InputGroup from "react-bootstrap/InputGroup";
@@ -16,7 +16,7 @@ import {
   isObjectEmpty,
   omit,
 } from "../utils";
-import { ANONYMOUS_AUTH } from "../constants";
+import { ANONYMOUS_AUTH, SINGLE_SERVER } from "../constants";
 
 const anonymousAuthData = server => ({
   authType: ANONYMOUS_AUTH,
@@ -355,7 +355,6 @@ function extendUiSchemaWithHistory(
 type AuthFormProps = {
   session: SessionState;
   servers: ServerEntry[];
-  settings: SettingsState;
   setupSession: typeof SessionActions.setupSession;
   serverChange: typeof SessionActions.serverChange;
   getServerInfo: typeof SessionActions.getServerInfo;
@@ -380,16 +379,13 @@ export default class AuthForm extends PureComponent<
 
   constructor(props: AuthFormProps) {
     super(props);
-    const {
-      servers,
-      settings: { singleServer },
-    } = this.props;
+    const { servers } = this.props;
 
     // Initialize the server URL value, by priority:
     // - single server mode
     // - most recently used
     // - default
-    const server = getServerByPriority(singleServer, servers);
+    const server = getServerByPriority(SINGLE_SERVER, servers);
     const authType = (servers.length && servers[0].authType) || ANONYMOUS_AUTH;
     const { schema, uiSchema } = authSchemas(authType);
     this.state = {
@@ -519,17 +515,15 @@ export default class AuthForm extends PureComponent<
   }
 
   render() {
-    const { servers, clearServers, getServerInfo, serverChange, settings } =
-      this.props;
+    const { servers, clearServers, getServerInfo, serverChange } = this.props;
     const { schema, uiSchema, formData } = this.state;
-    const { singleServer } = settings;
     const authMethods = this.getSupportedAuthMethods();
     const singleAuthMethod = authMethods.length === 1;
     const finalSchema = extendSchemaWithHistory(
       schema,
       servers,
       authMethods,
-      singleServer
+      SINGLE_SERVER
     );
     const finalUiSchema = extendUiSchemaWithHistory(
       uiSchema,
@@ -537,7 +531,7 @@ export default class AuthForm extends PureComponent<
       clearServers,
       getServerInfo,
       serverChange,
-      singleServer,
+      SINGLE_SERVER,
       singleAuthMethod
     );
     return (

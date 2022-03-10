@@ -12,19 +12,14 @@ import "bootstrap/dist/css/bootstrap.css";
 import "codemirror/lib/codemirror.css";
 import "../css/styles.css";
 import { Store } from "redux";
+import { SINGLE_SERVER } from "./constants";
 
-type Props = {
-  settings: any;
-};
-
-export default class KintoAdmin extends Component<Props> {
+export default class KintoAdmin extends Component {
   store: Store;
 
-  constructor(props: Props) {
+  constructor(props) {
     super(props);
-
-    const { settings } = props;
-    this.store = configureStore({ settings });
+    this.store = configureStore();
     const { servers } = this.store.getState();
 
     // Restore saved session, if any
@@ -35,7 +30,7 @@ export default class KintoAdmin extends Component<Props> {
       this.store.dispatch(
         sessionActions.getServerInfo({
           authType: "anonymous",
-          server: getServerByPriority(settings.singleServer, servers),
+          server: getServerByPriority(SINGLE_SERVER, servers),
         })
       );
     }

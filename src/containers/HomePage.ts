@@ -13,7 +13,6 @@ import * as ServersActions from "../actions/servers";
 function mapStateToProps(state: AppState): StateProps {
   return {
     session: state.session,
-    settings: state.settings,
     servers: state.servers,
   };
 }

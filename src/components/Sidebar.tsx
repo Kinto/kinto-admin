@@ -1,9 +1,4 @@
-import type {
-  SessionState,
-  SettingsState,
-  RouteParams,
-  BucketEntry,
-} from "../types";
+import type { SessionState, RouteParams, BucketEntry } from "../types";
 import type { RouteComponentProps } from "react-router-dom";
 
 import { PureComponent } from "react";
@@ -24,6 +19,7 @@ import Spinner from "./Spinner";
 import AdminLink from "./AdminLink";
 import url from "../url";
 import { canCreateBucket } from "../permission";
+import { SIDEBAR_MAX_LISTED_COLLECTIONS } from "../constants";
 
 type SideBarLinkProps = {
   currentPath: string;
@@ -107,49 +103,34 @@ function CollectionMenuEntry(props) {
 }
 
 function BucketCollectionsMenu(props) {
-  const {
-    currentPath,
-    bucket,
-    collections,
-    bid,
-    cid,
-    sidebarMaxListedCollections,
-    canCreateCollection,
-  } = props;
-  // Sort collections by id.
-  const sortedCollections = collections.sort((a, b) => (a.id > b.id ? 1 : -1));
-  // collections always contains one more item than what's configured in
-  // sidebarMaxListedCollections, so we can render a link to the paginated list
-  // of collections. Still, we only want to list that configured number of
-  // collections for this bucket menu.
-  const slicedCollections =
-    sidebarMaxListedCollections !== null
-      ? sortedCollections.slice(0, sidebarMaxListedCollections)
-      : sortedCollections;
+  const { currentPath, bucket, collections, bid, cid, canCreateCollection } =
+    props;
   return (
     <div className="collections-menu list-group list-group-flush">
-      {slicedCollections.map((collection, index) => {
-        return (
-          <CollectionMenuEntry
-            key={index}
-            currentPath={currentPath}
-            active={bid === bucket.id && cid === collection.id}
-            bucket={bucket}
-            collection={collection}
-          />
-        );
-      })}
-      {sidebarMaxListedCollections != null &&
-        collections.length > sidebarMaxListedCollections && (
-          <SideBarLink
-            name="bucket:collections"
-            params={{ bid: bucket.id }}
-            currentPath={currentPath}
-          >
-            <ThreeDots className="icon" />
-            See all collections
-          </SideBarLink>
-        )}
+      {collections
+        .sort((a, b) => (a.id > b.id ? 1 : -1))
+        .slice(0, SIDEBAR_MAX_LISTED_COLLECTIONS)
+        .map((collection, index) => {
+          return (
+            <CollectionMenuEntry
+              key={index}
+              currentPath={currentPath}
+              active={bid === bucket.id && cid === collection.id}
+              bucket={bucket}
+              collection={collection}
+            />
+          );
+        })}
+      {collections.length > SIDEBAR_MAX_LISTED_COLLECTIONS && (
+        <SideBarLink
+          name="bucket:collections"
+          params={{ bid: bucket.id }}
+          currentPath={currentPath}
+        >
+          <ThreeDots className="icon" />
+          See all collections
+        </SideBarLink>
+      )}
       {canCreateCollection && (
         <SideBarLink
           name="collection:create"
@@ -171,7 +152,6 @@ type BucketsMenuProps = {
   buckets: BucketEntry[];
   bid: string | null | undefined;
   cid: string | null | undefined;
-  sidebarMaxListedCollections: number | null | undefined;
 };
 
 function filterBuckets(buckets, filters): BucketEntry[] {
@@ -234,15 +214,8 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
   };
 
   render() {
-    const {
-      canCreateBucket,
-      currentPath,
-      busy,
-      buckets,
-      bid,
-      cid,
-      sidebarMaxListedCollections,
-    } = this.props;
+    const { canCreateBucket, currentPath, busy, buckets, bid, cid } =
+      this.props;
     const filteredBuckets = filterBuckets(buckets, this.state);
     // Sort buckets by id.
     const sortedBuckets = filteredBuckets.sort((a, b) =>
@@ -340,7 +313,6 @@ class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
                   currentPath={currentPath}
                   bid={bid}
                   cid={cid}
-                  sidebarMaxListedCollections={sidebarMaxListedCollections}
                   canCreateCollection={bucket.canCreateCollection}
                 />
               </div>
@@ -356,7 +328,6 @@ export type OwnProps = RouteComponentProps<{ cid: string; bid: string }>;
 
 export type StateProps = {
   session: SessionState;
-  settings: SettingsState;
 };
 
 export type SidebarProps = OwnProps &
@@ -368,12 +339,11 @@ export default class Sidebar extends PureComponent<SidebarProps> {
   static displayName = "Sidebar";
 
   render() {
-    const { session, settings, match, location, listBuckets } = this.props;
+    const { session, match, location, listBuckets } = this.props;
     const { params } = match;
     const { pathname: currentPath } = location;
     const { bid, cid } = params;
     const { busy, authenticated, buckets = [] } = session;
-    const { sidebarMaxListedCollections } = settings;
     return (
       <div>
         <HomeMenu currentPath={currentPath} onRefresh={listBuckets} />
@@ -385,7 +355,6 @@ export default class Sidebar extends PureComponent<SidebarProps> {
             currentPath={currentPath}
             bid={bid}
             cid={cid}
-            sidebarMaxListedCollections={sidebarMaxListedCollections}
           />
         )}
       </div>
