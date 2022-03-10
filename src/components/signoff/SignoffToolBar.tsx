@@ -75,7 +75,6 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
       sessionState,
       bucketState,
       collectionState,
-      // Component state
       signoff = {} as SignoffState,
       // Actions
       confirmRequestReview,
