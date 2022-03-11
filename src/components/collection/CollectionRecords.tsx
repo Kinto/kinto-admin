@@ -340,8 +340,8 @@ function ListActions(props) {
           </AdminLink>
         </>
       )}
-      {/* won't render if kinto-signer not enabled or collection not configured
-       to be signed */}
+      {/* won't render if the signer capability is not enabled on the server
+       or collection not configured to be signed */}
       <SignoffContainer key="request-signoff-toolbar" />
     </div>
   );
