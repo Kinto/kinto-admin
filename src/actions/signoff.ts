@@ -1,4 +1,4 @@
-import type { CollectionsInfo } from "../types";
+import type { SignoffCollectionsInfo } from "../types";
 
 import * as constants from "../constants";
 
@@ -54,10 +54,10 @@ export function cancelPendingConfirm(): {
 }
 
 export function workflowInfo(
-  collectionsInfo: CollectionsInfo | null // called with `null` when signoff not enabled.
+  collectionsInfo: SignoffCollectionsInfo | null // called with `null` when signoff not enabled.
 ): {
   type: "SIGNOFF_WORKFLOW_INFO";
-  collectionsInfo: CollectionsInfo | null;
+  collectionsInfo: SignoffCollectionsInfo | null;
 } {
   return {
     type: constants.SIGNOFF_WORKFLOW_INFO,

@@ -493,8 +493,8 @@ export type PermissionsListEntry = {
   uri: string;
 };
 
-export type CollectionsInfo = {
-  source: SourceInfo;
+export type SignoffCollectionsInfo = {
+  source: SignoffSourceInfo;
   destination: DestinationInfo;
   preview: PreviewInfo | null | undefined;
   // List of changes, present or absent depending on status.
@@ -507,7 +507,7 @@ export type CollectionsInfo = {
 };
 
 export type SignoffState = {
-  collectionsInfo: CollectionsInfo | null | undefined;
+  collectionsInfo: SignoffCollectionsInfo | null | undefined;
   pendingConfirmReviewRequest: boolean;
   pendingConfirmDeclineChanges: boolean;
   pendingConfirmRollbackChanges: boolean;
@@ -519,19 +519,19 @@ export type ChangesList = {
   updated: number;
 };
 
-export type CollectionStatus =
+export type SignoffCollectionStatus =
   | "signed"
   | "to-review"
   | "to-rollback"
   | "to-sign"
   | "work-in-progress";
 
-export type SourceInfo = {
+export type SignoffSourceInfo = {
   // Basic Info (before loading from info server)
   bid: string;
   cid: string;
   // Full info.
-  status?: CollectionStatus;
+  status?: SignoffCollectionStatus;
   lastEditBy?: string;
   lastEditDate?: number;
   lastReviewRequestBy?: string;

@@ -1,9 +1,9 @@
 import CommentDialog from "../../CommentDialog";
 import React, { useState } from "react";
-import { CollectionStatus } from "../../../types";
+import { SignoffCollectionStatus } from "../../../types";
 
 export interface SimpleReviewButtonsProps {
-  status: CollectionStatus;
+  status: SignoffCollectionStatus;
   approveChanges(): void;
   declineChanges(text: string): void;
   rollbackChanges(text: string): void;

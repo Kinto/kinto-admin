@@ -1,7 +1,7 @@
 import type { BucketState, SessionState, CollectionState } from "../../types";
 import type {
   SignoffState,
-  SourceInfo,
+  SignoffSourceInfo,
   PreviewInfo,
   DestinationInfo,
   ChangesList,
@@ -41,7 +41,10 @@ function isEditor(source, sessionState) {
   return isMember("editors_group", source, sessionState);
 }
 
-export function isReviewer(source: SourceInfo, sessionState: SessionState) {
+export function isReviewer(
+  source: SignoffSourceInfo,
+  sessionState: SessionState
+) {
   return isMember("reviewers_group", source, sessionState);
 }
 
@@ -244,7 +247,7 @@ type WorkInProgressProps = {
   step: number;
   isCurrentUrl: boolean;
   confirmRequestReview: () => void;
-  source: SourceInfo;
+  source: SignoffSourceInfo;
   hasHistory: boolean;
   changes: ChangesList | null;
 };
@@ -283,7 +286,7 @@ function WorkInProgress(props: WorkInProgressProps) {
 type WorkInProgressInfosProps = {
   isCurrentStep: boolean;
   isCurrentUrl: boolean;
-  source: SourceInfo;
+  source: SignoffSourceInfo;
   hasHistory: boolean;
   changes: ChangesList | null;
 };
@@ -362,7 +365,7 @@ type ReviewProps = {
   isCurrentUrl: boolean;
   approveChanges: () => void;
   confirmDeclineChanges: () => void;
-  source: SourceInfo;
+  source: SignoffSourceInfo;
   preview: PreviewInfo | null;
   changes: ChangesList | null;
 };
@@ -418,7 +421,7 @@ function Review(props: ReviewProps) {
 
 type ReviewInfosProps = {
   isCurrentStep: boolean;
-  source: SourceInfo;
+  source: SignoffSourceInfo;
   link: React.ReactNode;
   isCurrentUrl: boolean;
   hasHistory: boolean;
@@ -528,7 +531,7 @@ type SignedProps = {
   currentStep: number;
   step: number;
   isCurrentUrl: boolean;
-  source: SourceInfo;
+  source: SignoffSourceInfo;
   destination: DestinationInfo | null;
 };
 
@@ -549,7 +552,7 @@ function Signed(props: SignedProps) {
 
 type SignedInfosProps = {
   isCurrentUrl: boolean;
-  source: SourceInfo;
+  source: SignoffSourceInfo;
   destination: DestinationInfo;
 };
 
