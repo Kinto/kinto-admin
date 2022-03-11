@@ -49,8 +49,8 @@ export function* onCollectionRecordsRequest(
   const {
     session: { serverInfo },
   } = getState();
-  // See if currently viewed collection is among kinto-signer resources
-  // described in server info capabilities.
+  // See if currently viewed collection is among kinto-remote-settings signer
+  // resources described in server info capabilities.
   const resource = _pickSignoffResource(serverInfo, bid, cid);
 
   // Current collection is not configured, no need to proceed.
@@ -372,7 +372,7 @@ function _pickSignoffResource(
     capabilities: { signer },
   } = serverInfo;
   if (!signer) {
-    console.log("kinto-signer is not enabled.");
+    console.log("kinto-remote-settings signer is not enabled.");
     return null;
   }
   const resources: SignerResource[] = signer.resources;

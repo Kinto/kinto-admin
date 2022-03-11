@@ -113,8 +113,8 @@ export default class SignoffToolBar extends React.Component<SignoffToolBarProps>
       pendingConfirmDeclineChanges,
     } = signoff;
 
-    // Hide toolbar if server has not kinto-signer plugin,
-    // or if this collection is not configured to be signed.
+    // Hide toolbar if signer capability is not enabled on the server or
+    // collection not configured to be signed
     if (!collectionsInfo) {
       return null;
     }
