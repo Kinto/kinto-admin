@@ -1,6 +1,6 @@
-import type { SignoffState } from "./types";
+import type { SignoffState } from "../types";
 
-import * as constants from "./constants";
+import * as constants from "../constants";
 
 const INITIAL_STATE: SignoffState = {
   collectionsInfo: null,
@@ -14,16 +14,16 @@ export default function signoff(
   action: any
 ): SignoffState {
   switch (action.type) {
-    case constants.PLUGIN_CONFIRM_REVIEW_REQUEST: {
+    case constants.SIGNOFF_CONFIRM_REVIEW_REQUEST: {
       return { ...state, pendingConfirmReviewRequest: true };
     }
-    case constants.PLUGIN_CONFIRM_DECLINE_CHANGES: {
+    case constants.SIGNOFF_CONFIRM_DECLINE_CHANGES: {
       return { ...state, pendingConfirmDeclineChanges: true };
     }
-    case constants.PLUGIN_CONFIRM_ROLLBACK_CHANGES: {
+    case constants.SIGNOFF_CONFIRM_ROLLBACK_CHANGES: {
       return { ...state, pendingConfirmRollbackChanges: true };
     }
-    case constants.PLUGIN_CANCEL_PENDING_CONFIRM: {
+    case constants.SIGNOFF_CANCEL_PENDING_CONFIRM: {
       return {
         ...state,
         pendingConfirmReviewRequest: false,

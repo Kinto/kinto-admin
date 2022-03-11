@@ -20,6 +20,7 @@ import CollectionAttributesPage from "../containers/collection/CollectionAttribu
 import CollectionCreatePage from "../containers/collection/CollectionCreatePage";
 import CollectionHistoryPage from "../containers/collection/CollectionHistoryPage";
 import CollectionPermissionsPage from "../containers/collection/CollectionPermissionsPage";
+import CollectionRecordsPage from "../containers/collection/CollectionRecordsPage";
 import HomePage from "../containers/HomePage";
 import GroupAttributesPage from "../containers/group/GroupAttributesPage";
 import GroupCreatePage from "../containers/group/GroupCreatePage";
@@ -30,7 +31,9 @@ import RecordBulkPage from "../containers/record/RecordBulkPage";
 import RecordAttributesPage from "../containers/record/RecordAttributesPage";
 import RecordPermissionsPage from "../containers/record/RecordPermissionsPage";
 import RecordHistoryPage from "../containers/record/RecordHistoryPage";
-import SimpleReviewPage from "../plugins/signoff/SimpleReview/SimpleReviewPage";
+import SimpleReviewPage from "../containers/signoff/SimpleReviewPage";
+import Sidebar from "../containers/Sidebar";
+import Notifications from "../containers/Notifications";
 
 import { BoxArrowRight } from "react-bootstrap-icons";
 import { QuestionCircleFill } from "react-bootstrap-icons";
@@ -99,30 +102,14 @@ export type StateProps = {
   notificationList: NotificationsType;
 };
 
-export type OwnProps = {
-  notifications: React.ComponentType;
-  sidebar: React.ComponentType;
-  collectionRecords: React.ComponentType;
-  pluginsRoutes: React.ComponentType[];
+export type Props = StateProps & {
+  copyAuthenticationHeader: typeof SessionActions.copyAuthenticationHeader;
+  logout: typeof SessionActions.logout;
 };
-
-export type Props = OwnProps &
-  StateProps & {
-    copyAuthenticationHeader: typeof SessionActions.copyAuthenticationHeader;
-    logout: typeof SessionActions.logout;
-  };
 
 export default class App extends PureComponent<Props> {
   render() {
-    const {
-      copyAuthenticationHeader,
-      session,
-      logout,
-      sidebar: Sidebar,
-      notifications: Notifications,
-      collectionRecords: CollectionRecordsPage,
-      pluginsRoutes,
-    } = this.props;
+    const { copyAuthenticationHeader, session, logout } = this.props;
     const contentClasses = `col-sm-9 content`;
     const version =
       process.env.REACT_APP_VERSION || process.env.KINTO_ADMIN_VERSION;
@@ -166,7 +153,6 @@ export default class App extends PureComponent<Props> {
                 <Redirect exact from="/buckets" to="/" />
                 <CreateRoute title="home" path="/">
                   <Switch>
-                    {pluginsRoutes}
                     <CreateRoute title="buckets" path="/buckets">
                       <Switch>
                         <CreateRoute

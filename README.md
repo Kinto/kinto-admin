@@ -17,7 +17,6 @@ Kinto-based systems.
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
      - [Admin settings](#admin-settings)
-     - [Plugins](#plugins)
      - [Build customization](#build-customization)
         - [Building for relative paths](#building-for-relative-paths)
   - [Hacking on kinto-admin](#hacking-on-kinto-admin)
@@ -91,22 +90,6 @@ import KintoAdmin from "kinto-admin";
 
 ReactDOM.render(
   <KintoAdmin settings={{maxPerPage: 42}}/>,
-  document.getElementById("root")
-);
-```
-
-### Plugins
-
-**Note:** The plugin API is under heavy development and will remain undocumented until it stabilizes.
-
-To enable admin plugins, import and pass them as a `plugins` prop to the `KintoAdmin` component:
-
-```jsx
-import KintoAdmin from "kinto-admin";
-import * as signoffPlugin from "kinto-admin/lib/plugins/signoff";
-
-ReactDOM.render(
-  <KintoAdmin plugins={[signoffPlugin]}/>,
   document.getElementById("root")
 );
 ```

@@ -5,16 +5,16 @@ import type {
   ServerInfo,
   BucketResource,
   CollectionResource,
-} from "../../types";
-import type { ChangesList } from "./types";
+  ChangesList,
+} from "../types";
 
 import { call, put } from "redux-saga/effects";
-import { getClient } from "../../client";
-import { routeLoadSuccess } from "../../actions/route";
-import * as collectionActions from "../../actions/collection";
-import { notifySuccess, notifyError } from "../../actions/notifications";
+import { getClient } from "../client";
+import { routeLoadSuccess } from "../actions/route";
+import * as collectionActions from "../actions/collection";
+import { notifySuccess, notifyError } from "../actions/notifications";
 
-import * as SignoffActions from "./actions";
+import * as SignoffActions from "../actions/signoff";
 
 type CapabilityResource = {
   bucket: string;
@@ -49,8 +49,8 @@ export function* onCollectionRecordsRequest(
   const {
     session: { serverInfo },
   } = getState();
-  // See if currently viewed collection is among kinto-signer resources
-  // described in server info capabilities.
+  // See if currently viewed collection is among kinto-remote-settings signer
+  // resources described in server info capabilities.
   const resource = _pickSignoffResource(serverInfo, bid, cid);
 
   // Current collection is not configured, no need to proceed.
@@ -372,7 +372,7 @@ function _pickSignoffResource(
     capabilities: { signer },
   } = serverInfo;
   if (!signer) {
-    console.log("kinto-signer is not enabled.");
+    console.log("kinto-remote-settings signer is not enabled.");
     return null;
   }
   const resources: SignerResource[] = signer.resources;

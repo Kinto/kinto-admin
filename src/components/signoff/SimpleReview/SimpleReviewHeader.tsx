@@ -1,5 +1,5 @@
 import React from "react";
-import { SourceInfo } from "../types";
+import { SignoffSourceInfo } from "../../../types";
 
 export default function SimpleReviewHeader({
   status,
@@ -7,7 +7,7 @@ export default function SimpleReviewHeader({
   lastReviewRequestBy,
   lastReviewerComment,
   children,
-}: SourceInfo & { children?: React.ReactElement }) {
+}: SignoffSourceInfo & { children?: React.ReactElement }) {
   return (
     <div className="simple-review-header">
       <div className="card mb-4">

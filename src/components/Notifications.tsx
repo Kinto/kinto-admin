@@ -32,8 +32,6 @@ export type Props = StateProps & {
 };
 
 export default class Notifications_ extends PureComponent<Props> {
-  // This is useful to identify wrapped component for plugin hooks when code is
-  // minified; see https://github.com/facebook/react/issues/4915
   static displayName = "Notifications";
 
   render() {

@@ -1,5 +1,3 @@
-import { Reducer, Store } from "redux";
-
 export type ActionType<T extends (...args: any[]) => any> = ReturnType<T>;
 
 export type AppState = {
@@ -212,21 +210,6 @@ export type Permissions =
   | GroupPermissions
   | CollectionPermissions
   | RecordPermissions;
-
-export type Plugin = {
-  hooks?: any;
-  routes?: any[];
-  reducers?: {
-    [key: string]: Reducer<any, any>;
-  };
-  sagas: [][];
-  register: (store: Store<AppState, any>) => {
-    hooks?: any;
-    routes?: any[];
-  };
-};
-
-export type PluginSagas = Array<Array<any>>;
 
 export type RecordState = {
   busy: boolean;
@@ -508,4 +491,67 @@ export type PermissionsListEntry = {
   permissions: string[];
   resource_name: string;
   uri: string;
+};
+
+export type SignoffCollectionsInfo = {
+  source: SignoffSourceInfo;
+  destination: DestinationInfo;
+  preview: PreviewInfo | null | undefined;
+  // List of changes, present or absent depending on status.
+  // If work-in-progress, show changes since the last review request. It will be
+  // null if no changes were made.
+  changesOnSource?: ChangesList | null | undefined;
+  // If to-review, show changes since the last approval. It will be null if no
+  // changes were made.
+  changesOnPreview?: ChangesList | null | undefined;
+};
+
+export type SignoffState = {
+  collectionsInfo: SignoffCollectionsInfo | null | undefined;
+  pendingConfirmReviewRequest: boolean;
+  pendingConfirmDeclineChanges: boolean;
+  pendingConfirmRollbackChanges: boolean;
+};
+
+export type ChangesList = {
+  since: number;
+  deleted: number;
+  updated: number;
+};
+
+export type SignoffCollectionStatus =
+  | "signed"
+  | "to-review"
+  | "to-rollback"
+  | "to-sign"
+  | "work-in-progress";
+
+export type SignoffSourceInfo = {
+  // Basic Info (before loading from info server)
+  bid: string;
+  cid: string;
+  // Full info.
+  status?: SignoffCollectionStatus;
+  lastEditBy?: string;
+  lastEditDate?: number;
+  lastReviewRequestBy?: string;
+  lastReviewRequestDate?: number;
+  lastEditorComment?: string;
+  lastReviewBy?: string;
+  lastReviewDate?: number;
+  lastReviewerComment?: string;
+  lastSignatureBy?: string;
+  lastSignatureDate?: number;
+  editors_group?: string;
+  reviewers_group?: string;
+};
+
+export type PreviewInfo = {
+  bid: string;
+  cid: string;
+};
+
+export type DestinationInfo = {
+  bid: string;
+  cid: string;
 };

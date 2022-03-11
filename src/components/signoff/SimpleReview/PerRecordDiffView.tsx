@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { omit, diffJson } from "../../../utils";
-import type { ValidRecord } from "../../../types";
+import type { ValidRecord, SignoffSourceInfo } from "../../../types";
 import { diffArrays, diffJson as diff } from "diff";
-import { SourceInfo } from "../types";
 
 export enum ChangeType {
   ADD = "add",
@@ -16,7 +15,7 @@ export const EXTRA_FIELDS = ["last_modified", "schema"];
 export interface PerRecordDiffViewProps {
   oldRecords: ValidRecord[];
   newRecords: ValidRecord[];
-  collectionData: SourceInfo;
+  collectionData: SignoffSourceInfo;
 }
 
 export default function PerRecordDiffView({

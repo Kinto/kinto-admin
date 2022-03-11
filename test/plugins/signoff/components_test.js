@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import { createSandbox, createComponent } from "../../test_utils";
-import SignoffToolBar from "../../../src/plugins/signoff/components";
+import SignoffToolBar from "../../../src/components/signoff/SignoffToolBar";
 
 describe("SignoffToolBar component", () => {
   let sandbox;
