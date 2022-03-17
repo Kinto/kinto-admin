@@ -3,7 +3,7 @@
   "version": "1.31.1",
   "description": "Kinto Web Administration Console in React.js",
   "scripts": {
-    "build": "rimraf build && cross-env NODE_ENV=production webpack --progress --config webpack.prod.js && shx cp html/prod.html build/index.html",
+    "build": "rimraf build && cross-env NODE_ENV=production webpack --progress --config webpack.prod.js",
     "build:lib": "rimraf lib && cross-env NODE_ENV=production tsc -p .",
     "build:readme": "toctoc README.md -w",
     "cs-check": "prettier -l \"{src,test}/**/*.{js,ts,tsx}\"",
@@ -42,6 +42,7 @@
     "express": "^4.14.0",
     "filesize": "^8.0.2",
     "history": "^4.10.1",
+    "html-webpack-plugin": "^5.5.0",
     "kinto-admin-form": "0.0.0-experimental-8183a9c80",
     "kinto-http": "^5.1.1",
     "lodash": "^4.17.21",

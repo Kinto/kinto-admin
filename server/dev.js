@@ -1,4 +1,3 @@
-var path = require("path");
 var express = require("express");
 var webpack = require("webpack");
 var config = require("../webpack.dev");
@@ -13,14 +12,9 @@ app.use(
     headers: { "Access-Control-Allow-Origin": "*" },
   })
 );
-
 app.use(require("webpack-hot-middleware")(compiler));
 
-app.get("*", function(req, res) {
-  res.sendFile(path.join(__dirname, "..", "html", "dev.html"));
-});
-
-app.listen(PORT, "0.0.0.0", function(err) {
+app.listen(PORT, "0.0.0.0", function (err) {
   if (err) {
     console.log(err);
     return;

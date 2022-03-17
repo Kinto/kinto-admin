@@ -1,6 +1,7 @@
 var path = require("path");
 var webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 var version = require("./package.json").version;
 
 module.exports = {
@@ -23,6 +24,11 @@ module.exports = {
       "process.env": {
         KINTO_ADMIN_VERSION: JSON.stringify(version),
       },
+    }),
+    new HtmlWebpackPlugin({
+      template: __dirname + "/html/index.html",
+      filename: "index.html",
+      inject: "body",
     }),
   ],
   resolve: {
