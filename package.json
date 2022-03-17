@@ -9,7 +9,7 @@
     "cs-check": "prettier -l \"{src,test}/**/*.{js,ts,tsx}\"",
     "cs-format": "prettier \"{src,test}/**/*.{js,ts,tsx}\" --write",
     "lint": "eslint \"src/**/*.{js,ts,tsx}\" \"test/**/*.{js,ts,tsx}\"",
-    "publish-to-gh-pages": "npm run build && gh-pages --add --dist build/",
+    "publish-to-gh-pages": "cross-env ASSET_PATH=/kinto-admin/ npm run build && gh-pages --add --dist build/",
     "publish-to-npm": "npm run build:lib && npm publish",
     "start": "cross-env NODE_ENV=development node server/dev.js",
     "tdd": "npm run test -- --watch --bail",

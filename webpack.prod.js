@@ -4,6 +4,8 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 var version = require("./package.json").version;
 
+const ASSET_PATH = process.env.ASSET_PATH || "/";
+
 module.exports = {
   mode: "production",
   devServer: {
@@ -13,7 +15,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, "build"),
     filename: "bundle.js",
-    publicPath: "/kinto-admin/",
+    publicPath: ASSET_PATH,
   },
   plugins: [
     new webpack.IgnorePlugin({
@@ -21,9 +23,8 @@ module.exports = {
     }),
     new MiniCssExtractPlugin({ filename: "styles.css" }),
     new webpack.DefinePlugin({
-      "process.env": {
-        KINTO_ADMIN_VERSION: JSON.stringify(version),
-      },
+      "process.env.KINTO_ADMIN_VERSION": JSON.stringify(version),
+      "process.env.ASSET_PATH": JSON.stringify(ASSET_PATH),
     }),
     new HtmlWebpackPlugin({
       template: __dirname + "/html/index.html",
