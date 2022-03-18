@@ -29,6 +29,7 @@ module.exports = {
       template: __dirname + "/html/index.html",
       filename: "index.html",
       inject: "body",
+      favicon: "images/favicon.png"
     }),
   ],
   resolve: {
