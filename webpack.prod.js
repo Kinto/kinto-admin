@@ -4,6 +4,10 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 var version = require("./package.json").version;
 
+// used to set the relative path from which we expect to serve the admin's
+// static bundle on the server:
+// GH Pages:     /kinto-admin/
+// Kinto plugin: /v1/admin/
 const ASSET_PATH = process.env.ASSET_PATH || "/";
 
 module.exports = {
