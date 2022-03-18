@@ -21,7 +21,6 @@ describe("Sidebar component", () => {
         match: { params: {} },
         location: { pathname: "" },
         session: { authenticated: false },
-        settings: { sidebarMaxListedCollections: 2 },
         capabilities: { history: {} },
       });
 
@@ -52,14 +51,12 @@ describe("Sidebar component", () => {
     const params = { bid: "mybuck", cid: "mycoll" };
     const location = { pathname: "" };
     const capabilities = { history: {} };
-    const settings = { sidebarMaxListedCollections: 2 };
 
     beforeEach(() => {
       node = createComponent(Sidebar, {
         match: { params },
         location,
         session,
-        settings,
         capabilities,
       });
       bucketMenus = node.querySelectorAll(".bucket-menu");
@@ -85,9 +82,11 @@ describe("Sidebar component", () => {
         ".collections-menu-entry"
       );
 
-      // Note: collections are sliced to 2 items because of the
-      // sidebarMaxListedCollections setting
-      expect([].map.call(collMenus, x => x.textContent)).eql(["bar", "baz"]);
+      expect([].map.call(collMenus, x => x.textContent)).eql([
+        "bar",
+        "baz",
+        "foo",
+      ]);
     });
 
     it("should highlight the selected collection", () => {
@@ -104,7 +103,6 @@ describe("Sidebar component", () => {
           match: { params },
           location,
           session,
-          settings,
           capabilities,
         });
         expect(node.querySelector(".bucket-create")).to.exist;
@@ -118,7 +116,6 @@ describe("Sidebar component", () => {
           match: { params },
           location,
           session: notAllowed,
-          settings,
           capabilities,
         });
         expect(node.querySelector(".bucket-create")).to.not.exist;

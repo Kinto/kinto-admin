@@ -9,10 +9,6 @@ import * as saga from "../../src/sagas/record";
 import { setClient } from "../../src/client";
 
 describe("record sagas", () => {
-  const settings = {
-    maxPerPage: 42,
-  };
-
   describe("listHistory()", () => {
     describe("Success", () => {
       let client, listHistory;
@@ -29,13 +25,13 @@ describe("record sagas", () => {
           "collection",
           "record"
         );
-        listHistory = saga.listHistory(() => ({ settings }), action);
+        listHistory = saga.listHistory(() => ({}), action);
       });
 
       it("should fetch history on record", () => {
         expect(listHistory.next().value).eql(
           call([client, client.listHistory], {
-            limit: 42,
+            limit: 200,
             filters: {
               collection_id: "collection",
               record_id: "record",
@@ -62,7 +58,7 @@ describe("record sagas", () => {
           "collection",
           "record"
         );
-        listHistory = saga.listHistory(() => ({ settings }), action);
+        listHistory = saga.listHistory(() => ({}), action);
         listHistory.next();
         sandbox = createSandbox();
       });

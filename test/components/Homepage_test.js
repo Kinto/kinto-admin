@@ -44,9 +44,6 @@ describe("HomePage component", () => {
           serverChange,
           getServerInfo,
           servers: ["http://server.test/v1"],
-          settings: {
-            singleServer: null,
-          },
           navigateToExternalAuth,
           navigateToOpenID,
           session: {
@@ -71,31 +68,6 @@ describe("HomePage component", () => {
 
       it("should render a setup form", () => {
         expect(node.querySelector("form")).to.exist;
-      });
-
-      describe("Single server", () => {
-        const serverURL = "http://server.test/v1";
-
-        beforeEach(() => {
-          node = createComponent(HomePage, {
-            match: {},
-            setupSession,
-            serverChange,
-            getServerInfo,
-            servers: [],
-            settings: {
-              singleServer: serverURL,
-            },
-            navigateToExternalAuth,
-            session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
-          });
-        });
-
-        it("should set the server url value in hidden field", () => {
-          expect(node.querySelector("input[type='hidden']").value).eql(
-            serverURL
-          );
-        });
       });
 
       describe("Basic Auth", () => {
@@ -203,7 +175,6 @@ describe("HomePage component", () => {
           serverChange: sandbox.spy(),
           getServerInfo: sandbox.spy(),
           servers: [],
-          settings: {},
           session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
         });
 
@@ -218,7 +189,6 @@ describe("HomePage component", () => {
           serverChange: sandbox.spy(),
           getServerInfo: sandbox.spy(),
           servers: [{ server: "http://server.test/v1", authType: "anonymous" }],
-          settings: {},
           session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
         });
 
@@ -236,7 +206,6 @@ describe("HomePage component", () => {
             { server: "http://server.test/v1", authType: "basicauth" },
             { server: "http://test.server/v1", authType: "openid-google" },
           ],
-          settings: {},
           session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
         };
         const wrapper = mount(<HomePage {...props} />);
@@ -311,7 +280,6 @@ describe("HomePage component", () => {
           serverChange: sandbox.spy(),
           getServerInfo: sandbox.spy(),
           servers: [],
-          settings: {},
           session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
         });
       });
