@@ -1,6 +1,7 @@
 var path = require("path");
 var webpack = require("webpack");
 var version = require("./package.json").version;
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   mode: "development",
@@ -23,6 +24,12 @@ module.exports = {
       "process.env": {
         KINTO_ADMIN_VERSION: JSON.stringify(version),
       },
+    }),
+    new HtmlWebpackPlugin({
+      template: __dirname + "/html/index.html",
+      filename: "index.html",
+      inject: "body",
+      favicon: "images/favicon.png"
     }),
   ],
   resolve: {
