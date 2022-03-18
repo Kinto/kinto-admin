@@ -294,8 +294,8 @@ const authSchemas = authType => {
 /**
  * Use the servers history for the default server field value when available.
  */
-function extendSchemaWithHistory(schema, servers, authMethods, singleServer) {
-  const serverURL = getServerByPriority(singleServer, servers);
+function extendSchemaWithHistory(schema, servers, authMethods) {
+  const serverURL = getServerByPriority(servers);
   return {
     ...schema,
     properties: {
@@ -322,7 +322,6 @@ function extendUiSchemaWithHistory(
   clearServers,
   getServerInfo,
   serverChange,
-  singleServer,
   singleAuthMethod
 ) {
   const authType = {
@@ -332,7 +331,7 @@ function extendUiSchemaWithHistory(
     },
   };
 
-  if (singleServer) {
+  if (SINGLE_SERVER) {
     return {
       ...uiSchema,
       ...authType,
@@ -381,11 +380,7 @@ export default class AuthForm extends PureComponent<
     super(props);
     const { servers } = this.props;
 
-    // Initialize the server URL value, by priority:
-    // - single server mode
-    // - most recently used
-    // - default
-    const server = getServerByPriority(SINGLE_SERVER, servers);
+    const server = getServerByPriority(servers);
     const authType = (servers.length && servers[0].authType) || ANONYMOUS_AUTH;
     const { schema, uiSchema } = authSchemas(authType);
     this.state = {
@@ -519,19 +514,13 @@ export default class AuthForm extends PureComponent<
     const { schema, uiSchema, formData } = this.state;
     const authMethods = this.getSupportedAuthMethods();
     const singleAuthMethod = authMethods.length === 1;
-    const finalSchema = extendSchemaWithHistory(
-      schema,
-      servers,
-      authMethods,
-      SINGLE_SERVER
-    );
+    const finalSchema = extendSchemaWithHistory(schema, servers, authMethods);
     const finalUiSchema = extendUiSchemaWithHistory(
       uiSchema,
       servers,
       clearServers,
       getServerInfo,
       serverChange,
-      SINGLE_SERVER,
       singleAuthMethod
     );
     return (

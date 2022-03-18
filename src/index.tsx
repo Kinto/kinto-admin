@@ -12,7 +12,6 @@ import "bootstrap/dist/css/bootstrap.css";
 import "codemirror/lib/codemirror.css";
 import "../css/styles.css";
 import { Store } from "redux";
-import { SINGLE_SERVER } from "./constants";
 
 export default class KintoAdmin extends Component {
   store: Store;
@@ -30,7 +29,7 @@ export default class KintoAdmin extends Component {
       this.store.dispatch(
         sessionActions.getServerInfo({
           authType: "anonymous",
-          server: getServerByPriority(SINGLE_SERVER, servers),
+          server: getServerByPriority(servers),
         })
       );
     }
