@@ -296,11 +296,7 @@ export function getServerByPriority(servers: ServerEntry[] | null | undefined) {
   // - single server mode
   // - most recently used
   // - default
-  return (
-    SINGLE_SERVER ||
-    (servers && servers.length && servers[0].server) ||
-    DEFAULT_KINTO_SERVER
-  );
+  return SINGLE_SERVER || servers?.[0]?.server || DEFAULT_KINTO_SERVER;
 }
 
 export function isObjectEmpty(obj: Object) {

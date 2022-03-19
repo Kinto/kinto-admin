@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import { ANONYMOUS_AUTH, DEFAULT_KINTO_SERVER } from "../src/constants";
 
 import {
   capitalize,
@@ -12,6 +13,7 @@ import {
   timeago,
   sortHistoryEntryPermissions,
   breadcrumbifyPath,
+  getServerByPriority,
 } from "../src/utils";
 
 describe("cleanRecord", () => {
@@ -424,5 +426,37 @@ describe("breadcrumbify", () => {
       ["foo", "/foo"],
       ["bar", "/foo/bar"],
     ]);
+  });
+});
+
+describe("getServerByPriority", () => {
+  const servers = [
+    { server: "someServer", authType: ANONYMOUS_AUTH },
+    { server: "otherServer", authType: ANONYMOUS_AUTH },
+  ];
+  beforeEach(() => {
+    jest.resetModules();
+  });
+  it("should return SINGLE_SERVER", () => {
+    jest.doMock("../src/constants", () => {
+      const actual = jest.requireActual("../src/constants");
+      return {
+        __esModule: true,
+        ...actual,
+        SINGLE_SERVER: "http://www.example.com/",
+      };
+    });
+    const {
+      getServerByPriority: _getServerByPriority,
+    } = require("../src/utils");
+    expect(_getServerByPriority(servers)).eql("http://www.example.com/");
+  });
+  it("should return the first server from the array", () => {
+    const server = getServerByPriority(servers);
+    expect(server).eql("someServer");
+  });
+  it("should return the default server", () => {
+    const server = getServerByPriority([]);
+    expect(server).eql(DEFAULT_KINTO_SERVER);
   });
 });
