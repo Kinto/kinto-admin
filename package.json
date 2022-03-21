@@ -4,27 +4,18 @@
   "description": "Kinto Web Administration Console in React.js",
   "scripts": {
     "build": "rimraf build && cross-env NODE_ENV=production webpack --progress --config webpack.prod.js",
-    "build:lib": "rimraf lib && cross-env NODE_ENV=production tsc -p .",
     "build:readme": "toctoc README.md -w",
     "cs-check": "prettier -l \"{src,test}/**/*.{js,ts,tsx}\"",
     "cs-format": "prettier \"{src,test}/**/*.{js,ts,tsx}\" --write",
     "lint": "eslint \"src/**/*.{js,ts,tsx}\" \"test/**/*.{js,ts,tsx}\"",
     "publish-to-gh-pages": "cross-env ASSET_PATH=/kinto-admin/ npm run build && gh-pages --add --dist build/",
-    "publish-to-npm": "npm run build:lib && npm publish",
     "start": "cross-env NODE_ENV=development node server/dev.js",
     "tdd": "npm run test -- --watch --bail",
     "test": "cross-env NODE_ENV=test jest",
     "test:ci": "npm run test -- --maxWorkers=4",
-    "test-all": "npm run lint && npm run build:lib && npm run test",
-    "test-all:ci": "npm run lint && npm run build:lib && npm run test:ci"
+    "test-all": "npm run lint && npm run test",
+    "test-all:ci": "npm run lint && npm run test:ci"
   },
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
-  "files": [
-    "css",
-    "images",
-    "lib"
-  ],
   "engines": {
     "npm": ">=8",
     "node": ">=16"
