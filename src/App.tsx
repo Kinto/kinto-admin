@@ -11,7 +11,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "codemirror/lib/codemirror.css";
 import "../css/styles.css";
 import { Store } from "redux";
-import Layout from "./containers/Layout";
+import { Layout } from "./components/Layout";
 
 export default class App extends Component {
   store: Store;
