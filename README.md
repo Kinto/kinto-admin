@@ -1,16 +1,12 @@
 # Kinto Web Administration Console
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/Kinto/kinto-admin.svg)](https://greenkeeper.io/)
-
-[![Build Status](https://img.shields.io/github/workflow/status/Kinto/kinto-admin/test/master)](https://github.com/Kinto/kinto-admin/actions)
+[![Build Status](https://img.shields.io/github/workflow/status/Kinto/kinto-admin/CI/master)](https://github.com/Kinto/kinto-admin/actions)
 
 A Web admin UI to manage data from a [Kinto](https://kinto.readthedocs.io/) server. [Demo](http://kinto.github.io/kinto-admin/).
 
 `kinto-admin` wants to be the [pgAdmin](http://pgadmin.org/) for
 Kinto. You can also use it to build administration interfaces for
 Kinto-based systems.
-
-**Note:** This README is meant for developers. If you want to install kinto-admin on your server, head over to the [User Documentation](https://kinto.readthedocs.io/en/stable/kinto-admin.html).
 
 ## Table of Contents
 
@@ -40,65 +36,37 @@ pre-commit`` and ``pre-commit install``. (If you have a
 
 ## Installation
 
-The easiest way to get started is to install [create-react-app](https://github.com/facebookincubator/create-react-app) first:
+The easiest way to install and use Kinto Admin on your server is to:
+- download a [release](https://github.com/Kinto/kinto-admin/releases/) from Github.
 
+- Unzip the directory, then install dependencies:
 ```
-$ npm install -g create-react-app
-$ create-react-app test-kinto-admin && cd test-kinto-admin
-$ npm install kinto-admin --save-dev
-```
-
-Then, import and render the main `KintoAdmin` component in the generated `src/index.js` file:
-
-```diff
- import App from './App';
- import registerServiceWorker from './registerServiceWorker';
-
--ReactDOM.render(<App />, document.getElementById('root'));
-+import KintoAdmin from "kinto-admin";
-+
-+ReactDOM.render(<KintoAdmin />, document.getElementById('root'));
- registerServiceWorker();
+$ cd kinto-admin && npm install
 ```
 
-To run a local development server:
-
-```
-$ npm start
-```
-
-To build the admin as a collection of static assets, ready to be hosted on a static webserver:
-
+- Build the static bundle with:
 ```
 $ npm run build
 ```
 
-This will generate production-ready assets in the `build` folder.
+This will generate a production-ready assets in a `build` directory, ready to be served from your server of choice.
 
+## Build customization
+Use the following options to customize the Kinto Admin build.
 
-
-### Build customization
-
-#### Single Server
-By default, Kinto Admin gives you the option to connect to multiple Kinto Servers. If you only want Kinto Admin to connect to the server from which it's being served, you can set the `SINGLE_SERVER` flag as an environment variable when building from source:
+### Single Server
+By default, Kinto Admin gives you the option to connect to multiple Kinto Servers. If you only want Kinto Admin to connect to the server from which it's being served, you can set the `SINGLE_SERVER` flag as an environment variable:
 
 ```
 SINGLE_SERVER=1 npm run build
 ```
 
-#### Building for relative paths
+### Building for relative paths
+By default, Kinto Admin assumes assets will be served from the root path (`/`) of the server. If you'd like to serve assets from a different location, set that option with an `ASSET_PATH` environment variable:
 
-Quoting the ([create-react-app documentation](https://github.com/facebookincubator/create-react-app/blob/v0.4.1/template/README.md#building-for-relative-paths)):
-
-> By default, Create React App produces a build assuming your app is hosted at the server root.
->
-> To override this, specify the homepage in your `package.json`, for example:
->
-> ```
->   "homepage": "http://mywebsite.com/relativepath",
-> ```
->
-> This will let Create React App correctly infer the root path to use in the generated HTML file.
+```
+ASSET_PATH="/some/prefix/" npm run build
+```
 
 ## Hacking on kinto-admin
 
@@ -119,9 +87,9 @@ After installation of packages, run the development server.
 ## Development server
 
 The development server should only be used when working on the
-kinto-admin codebase itself. If you're evaluating kinto-admin, or
-building a system that relies on kinto-admin to administer, you should
-install kinto-admin using npm and use it as above.
+`kinto-admin` codebase itself. If you're evaluating Kinto Admin, or
+building a system that relies on Kinto Admin to administer, you should
+install Kinto Admin using the installation instructions above.
 
 To run in development mode:
 
@@ -132,23 +100,6 @@ $ npm start
 The application is served at [localhost:3000](http://localhost:3000/), and any
 React component update will trigger a hot reload.
 
-## Flow types
-
-To check that the flow types are correct, you first need to install
-[flow-typed](https://github.com/flow-typed/flow-typed), and all the type files
-for the local dependencies installed by npm:
-
-```
-$ npm install --global flow-typed
-$ flow-typed install
-```
-
-You can then check for type issues with:
-
-```
-$ npm run flow-check
-```
-
 ## Tests
 
 To run tests:
@@ -156,12 +107,6 @@ To run tests:
 ```
 $ npm run test-all
 ```
-
-> Note: The browser test suite is not included in this command as it takes a
-long time and may result in intermittent failures on Travis
-(see [#146](https://github.com/Kinto/kinto-admin/pull/146)).
-
-
 ## FAQ
 
 ### Browser support
