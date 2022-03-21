@@ -9,7 +9,6 @@ export type AppState = {
   record: RecordState;
   notifications: Notifications;
   servers: ServerEntry[];
-  settings: SettingsState;
 };
 
 export type Attachment = {
@@ -362,12 +361,6 @@ export type AuthMethod =
   | "basicauth"
   | "portier"
   | "openid";
-
-export type SettingsState = {
-  maxPerPage: number;
-  singleServer: string | null | undefined;
-  sidebarMaxListedCollections: number;
-};
 
 export type AuthData =
   | AnonymousAuth

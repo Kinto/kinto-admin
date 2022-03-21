@@ -20,10 +20,6 @@ const recordsWithAttachment = [
 ];
 
 describe("collection sagas", () => {
-  const settings = {
-    maxPerPage: 42,
-  };
-
   let sandbox;
 
   beforeAll(() => {
@@ -58,7 +54,6 @@ describe("collection sagas", () => {
         beforeAll(() => {
           const action = actions.listRecords("bucket", "collection");
           const getState = () => ({
-            settings,
             collection: { data: { sort: "-last_modified" } },
           });
           listRecords = saga.listRecords(getState, action);
@@ -68,7 +63,7 @@ describe("collection sagas", () => {
           expect(listRecords.next().value).eql(
             call([collection, collection.listRecords], {
               sort: "-last_modified",
-              limit: 42,
+              limit: 200,
             })
           );
         });
@@ -86,7 +81,6 @@ describe("collection sagas", () => {
         beforeAll(() => {
           const action = actions.listRecords("bucket", "collection");
           const getState = () => ({
-            settings,
             collection: { currentSort: "title", data: { sort: "nope" } },
           });
           listRecords = saga.listRecords(getState, action);
@@ -96,7 +90,7 @@ describe("collection sagas", () => {
           expect(listRecords.next().value).eql(
             call([collection, collection.listRecords], {
               sort: "title",
-              limit: 42,
+              limit: 200,
             })
           );
         });
@@ -114,7 +108,6 @@ describe("collection sagas", () => {
         beforeAll(() => {
           const action = actions.listRecords("bucket", "collection", "title");
           const getState = () => ({
-            settings,
             collection: { currentSort: "nope", data: { sort: "nope" } },
           });
           listRecords = saga.listRecords(getState, action);
@@ -124,7 +117,7 @@ describe("collection sagas", () => {
           expect(listRecords.next().value).eql(
             call([collection, collection.listRecords], {
               sort: "title",
-              limit: 42,
+              limit: 200,
             })
           );
         });
@@ -153,7 +146,6 @@ describe("collection sagas", () => {
           },
         });
         const getState = () => ({
-          settings,
           collection: { data: { sort: "nope" } },
         });
         const action = actions.listRecords("bucket", "collection");
@@ -176,7 +168,7 @@ describe("collection sagas", () => {
       beforeAll(() => {
         const action = actions.listNextRecords();
         collection = { listNextRecords() {} };
-        const getState = () => ({ settings, collection });
+        const getState = () => ({ collection });
         listNextRecords = saga.listNextRecords(getState, action);
       });
 
@@ -201,7 +193,7 @@ describe("collection sagas", () => {
       beforeAll(() => {
         const action = actions.listNextRecords();
         collection = { listNextRecords() {} };
-        const getState = () => ({ settings, collection });
+        const getState = () => ({ collection });
         listNextRecords = saga.listNextRecords(getState, action);
         listNextRecords.next();
       });
@@ -239,7 +231,6 @@ describe("collection sagas", () => {
 
       beforeAll(() => {
         const getState = () => ({
-          settings,
           session: {
             serverInfo: {
               capabilities: {},
@@ -287,7 +278,6 @@ describe("collection sagas", () => {
 
       beforeAll(() => {
         const getState = () => ({
-          settings,
           session: {
             serverInfo: {
               capabilities: { attachments: {} },
@@ -341,7 +331,6 @@ describe("collection sagas", () => {
 
       beforeAll(() => {
         const getState = () => ({
-          settings,
           session: { serverInfo: { capabilities: {} } },
         });
         const action = actions.createRecord("bucket", "collection", record);
@@ -843,7 +832,6 @@ describe("collection sagas", () => {
 
       beforeAll(() => {
         const getState = () => ({
-          settings,
           session: {
             serverInfo: {
               capabilities: {},
@@ -904,7 +892,6 @@ describe("collection sagas", () => {
 
       beforeAll(() => {
         const getState = () => ({
-          settings,
           session: {
             serverInfo: {
               capabilities: { attachments: {} },
@@ -975,7 +962,6 @@ describe("collection sagas", () => {
 
       beforeAll(() => {
         const getState = () => ({
-          settings,
           session: {
             serverInfo: {
               capabilities: {},
@@ -1025,14 +1011,14 @@ describe("collection sagas", () => {
           "collection",
           "record"
         );
-        const getState = () => ({ settings });
+        const getState = () => ({});
         listHistory = saga.listHistory(getState, action);
       });
 
       it("should fetch history on collection", () => {
         expect(listHistory.next().value).eql(
           call([client, client.listHistory], {
-            limit: 42,
+            limit: 200,
             filters: {
               resource_name: undefined,
               collection_id: "collection",
@@ -1047,7 +1033,7 @@ describe("collection sagas", () => {
         const action = actions.listCollectionHistory("bucket", "collection", {
           since: 42,
         });
-        const historySaga = saga.listHistory(() => ({ settings }), action);
+        const historySaga = saga.listHistory(() => ({}), action);
         expect(historySaga.next().value).eql(
           call([client, client.listHistory], {
             filters: {
@@ -1056,7 +1042,7 @@ describe("collection sagas", () => {
               exclude_user_id: undefined,
               "gt_target.data.last_modified": 42,
             },
-            limit: 42,
+            limit: 200,
           })
         );
       });
@@ -1066,7 +1052,7 @@ describe("collection sagas", () => {
           since: 42,
           exclude_user_id: "plugin:kinto-signer",
         });
-        const historySaga = saga.listHistory(() => ({ settings }), action);
+        const historySaga = saga.listHistory(() => ({}), action);
         expect(historySaga.next().value).eql(
           call([client, client.listHistory], {
             filters: {
@@ -1075,7 +1061,7 @@ describe("collection sagas", () => {
               exclude_user_id: "plugin:kinto-signer",
               "gt_target.data.last_modified": 42,
             },
-            limit: 42,
+            limit: 200,
           })
         );
       });
@@ -1098,7 +1084,7 @@ describe("collection sagas", () => {
           "collection",
           "record"
         );
-        const getState = () => ({ settings });
+        const getState = () => ({});
         listHistory = saga.listHistory(getState, action);
         listHistory.next();
       });

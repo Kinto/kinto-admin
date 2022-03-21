@@ -4,7 +4,6 @@ import type {
   PortierAuth,
   HomePageRouteMatch,
   SessionState,
-  SettingsState,
   ServerEntry,
 } from "../types";
 
@@ -69,7 +68,6 @@ export type OwnProps = {
 
 export type StateProps = {
   session: SessionState;
-  settings: SettingsState;
   servers: ServerEntry[];
 };
 
@@ -163,7 +161,6 @@ export default class HomePage extends PureComponent<Props> {
     const {
       session,
       servers,
-      settings,
       clearServers,
       setupSession,
       serverChange,
@@ -186,7 +183,6 @@ export default class HomePage extends PureComponent<Props> {
             serverChange={serverChange}
             getServerInfo={getServerInfo}
             session={session}
-            settings={settings}
             servers={servers}
             clearServers={clearServers}
             navigateToExternalAuth={navigateToExternalAuth}

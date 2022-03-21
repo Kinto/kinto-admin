@@ -10,7 +10,6 @@ import record from "./record";
 import group from "./group";
 import notifications from "./notifications";
 import servers from "./servers";
-import settings from "./settings";
 import signoff from "./signoff";
 
 export default function createRootReducer(history: History) {
@@ -23,7 +22,6 @@ export default function createRootReducer(history: History) {
     record,
     notifications,
     servers,
-    settings,
     signoff,
   });
 }

@@ -27,8 +27,11 @@ module.exports = {
     }),
     new MiniCssExtractPlugin({ filename: "styles.css" }),
     new webpack.DefinePlugin({
-      "process.env.KINTO_ADMIN_VERSION": JSON.stringify(version),
-      "process.env.ASSET_PATH": JSON.stringify(ASSET_PATH),
+      "process.env": {
+        ASSET_PATH: JSON.stringify(ASSET_PATH),
+        KINTO_ADMIN_VERSION: JSON.stringify(version),
+        SINGLE_SERVER: JSON.stringify(process.env.SINGLE_SERVER),
+      },
     }),
     new HtmlWebpackPlugin({
       template: __dirname + "/html/index.html",

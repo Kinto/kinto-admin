@@ -8,7 +8,7 @@ import type {
 import React from "react";
 import { format } from "timeago.js";
 import { diffJson as diff } from "diff";
-import { DEFAULT_KINTO_SERVER } from "./constants";
+import { DEFAULT_KINTO_SERVER, SINGLE_SERVER } from "./constants";
 import zip from "lodash/zip";
 
 export function clone(obj: any) {
@@ -291,19 +291,12 @@ export function debounce(fn: any, delay: number) {
   };
 }
 
-export function getServerByPriority(
-  singleServer: string | null | undefined,
-  servers: ServerEntry[] | null | undefined
-) {
+export function getServerByPriority(servers: ServerEntry[] | null | undefined) {
   // Return the server URL value, by priority:
   // - single server mode
   // - most recently used
   // - default
-  return (
-    singleServer ||
-    (servers && servers.length && servers[0].server) ||
-    DEFAULT_KINTO_SERVER
-  );
+  return SINGLE_SERVER || servers?.[0]?.server || DEFAULT_KINTO_SERVER;
 }
 
 export function isObjectEmpty(obj: Object) {

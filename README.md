@@ -16,9 +16,9 @@ Kinto-based systems.
 
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
-     - [Admin settings](#admin-settings)
-     - [Build customization](#build-customization)
-        - [Building for relative paths](#building-for-relative-paths)
+   - [Build customization](#build-customization)
+      - [Single Server](#single-server)
+      - [Building for relative paths](#building-for-relative-paths)
   - [Hacking on kinto-admin](#hacking-on-kinto-admin)
   - [Development server](#development-server)
   - [Tests](#tests)
@@ -75,26 +75,16 @@ $ npm run build
 
 This will generate production-ready assets in the `build` folder.
 
-### Admin settings
 
-The `KintoAdmin` component accepts a `settings` prop, where you can define the following options:
-
-- `maxPerPage`: The max number of results per page in lists (default: `200`).
-- `singleServer`: The server URL to be used (default: `null`). This removes the ability to connect to multiple servers.
-- `sidebarMaxListedCollections`: The maximum number of bucket collections entries to list in the sidebar.
-
-Example:
-
-```jsx
-import KintoAdmin from "kinto-admin";
-
-ReactDOM.render(
-  <KintoAdmin settings={{maxPerPage: 42}}/>,
-  document.getElementById("root")
-);
-```
 
 ### Build customization
+
+#### Single Server
+By default, Kinto Admin gives you the option to connect to multiple Kinto Servers. If you only want Kinto Admin to connect to the server from which it's being served, you can set the `SINGLE_SERVER` flag as an environment variable when building from source:
+
+```
+SINGLE_SERVER=1 npm run build
+```
 
 #### Building for relative paths
 

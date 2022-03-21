@@ -9,10 +9,6 @@ import * as saga from "../../src/sagas/group";
 import { setClient } from "../../src/client";
 
 describe("group sagas", () => {
-  const settings = {
-    maxPerPage: 42,
-  };
-
   let sandbox;
 
   beforeAll(() => {
@@ -35,7 +31,7 @@ describe("group sagas", () => {
           },
         });
         const action = actions.listGroupHistory("bucket", "group");
-        listHistory = saga.listHistory(() => ({ settings }), action);
+        listHistory = saga.listHistory(() => ({}), action);
       });
 
       it("should fetch history on group", () => {
@@ -44,7 +40,7 @@ describe("group sagas", () => {
             filters: {
               group_id: "group",
             },
-            limit: 42,
+            limit: 200,
           })
         );
       });
@@ -63,7 +59,7 @@ describe("group sagas", () => {
 
       beforeAll(() => {
         const action = actions.listGroupHistory("bucket", "group");
-        listHistory = saga.listHistory(() => ({ settings }), action);
+        listHistory = saga.listHistory(() => ({}), action);
         listHistory.next();
       });
 

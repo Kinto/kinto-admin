@@ -7,6 +7,7 @@ import { notifySuccess, notifyError } from "../actions/notifications";
 import { sessionBusy, listBuckets } from "../actions/session";
 import { redirectTo } from "../actions/route";
 import * as actions from "../actions/bucket";
+import { MAX_PER_PAGE } from "../constants";
 
 function getBucket(bid) {
   return getClient().bucket(bid);
@@ -179,16 +180,13 @@ export function* listBucketCollections(
   getState: GetStateFn,
   action: ActionType<typeof actions.listBucketCollections>
 ): SagaGen {
-  const {
-    settings: { maxPerPage },
-  } = getState();
   const { bid } = action;
   try {
     const bucket = getBucket(bid);
     const { data, hasNextPage, next } = yield call(
       [bucket, bucket.listCollections],
       {
-        limit: maxPerPage,
+        limit: MAX_PER_PAGE,
       }
     );
     yield put(actions.listBucketCollectionsSuccess(data, hasNextPage, next));
@@ -219,9 +217,6 @@ export function* listHistory(
   action: ActionType<typeof actions.listBucketHistory>
 ): SagaGen {
   const {
-    settings: { maxPerPage },
-  } = getState();
-  const {
     bid,
     filters: { resource_name },
   } = action;
@@ -230,7 +225,7 @@ export function* listHistory(
     const { data, hasNextPage, next } = yield call(
       [bucket, bucket.listHistory],
       {
-        limit: maxPerPage,
+        limit: MAX_PER_PAGE,
         filters: {
           resource_name,
           exclude_resource_name: "record",

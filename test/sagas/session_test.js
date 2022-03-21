@@ -327,7 +327,6 @@ describe("session sagas", () => {
   });
 
   describe("listBuckets()", () => {
-    const settingsState = { sidebarMaxListedCollections: 2 };
     let client, listBuckets;
 
     const serverInfo = {
@@ -351,7 +350,6 @@ describe("session sagas", () => {
       });
       const getState = () => ({
         session: sessionState,
-        settings: settingsState,
       });
       const action = actions.listBuckets();
       listBuckets = saga.listBuckets(getState, action);
@@ -465,7 +463,6 @@ describe("session sagas", () => {
           const action = actions.listBuckets();
           const getState = () => ({
             session: sessionState,
-            settings: settingsState,
           });
           listBuckets = saga.listBuckets(getState, action);
 
@@ -501,7 +498,6 @@ describe("session sagas", () => {
           session: {
             serverInfo: { capabilities: [] },
           },
-          settings: settingsState,
         });
 
         const listBuckets = saga.listBuckets(getState, action);

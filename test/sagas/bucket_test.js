@@ -25,10 +25,6 @@ const groupData = {
 };
 
 describe("bucket sagas", () => {
-  const settings = {
-    maxPerPage: 42,
-  };
-
   let sandbox;
 
   beforeAll(() => {
@@ -701,16 +697,13 @@ describe("bucket sagas", () => {
           },
         });
         const action = actions.listBucketCollections("bucket");
-        listBucketCollections = saga.listBucketCollections(
-          () => ({ settings }),
-          action
-        );
+        listBucketCollections = saga.listBucketCollections(() => ({}), action);
       });
 
       it("should list the collections", () => {
         expect(listBucketCollections.next().value).eql(
           call([bucket, bucket.listCollections], {
-            limit: 42,
+            limit: 200,
           })
         );
       });
@@ -728,10 +721,7 @@ describe("bucket sagas", () => {
 
       beforeAll(() => {
         const action = actions.listBucketCollections("bucket");
-        listBucketCollections = saga.listBucketCollections(
-          () => ({ settings }),
-          action
-        );
+        listBucketCollections = saga.listBucketCollections(() => ({}), action);
         listBucketCollections.next();
       });
 
@@ -759,7 +749,7 @@ describe("bucket sagas", () => {
           },
         });
         const action = actions.listBucketHistory("bucket");
-        const getState = () => ({ settings });
+        const getState = () => ({});
         listHistory = saga.listHistory(getState, action);
       });
 
@@ -770,7 +760,7 @@ describe("bucket sagas", () => {
               resource_name: undefined,
               exclude_resource_name: "record",
             },
-            limit: 42,
+            limit: 200,
           })
         );
       });
@@ -786,14 +776,14 @@ describe("bucket sagas", () => {
         const action = actions.listBucketHistory("bucket", {
           resource_name: "bucket",
         });
-        const historySaga = saga.listHistory(() => ({ settings }), action);
+        const historySaga = saga.listHistory(() => ({}), action);
         expect(historySaga.next().value).eql(
           call([bucket, bucket.listHistory], {
             filters: {
               resource_name: "bucket",
               exclude_resource_name: "record",
             },
-            limit: 42,
+            limit: 200,
           })
         );
       });
@@ -804,7 +794,7 @@ describe("bucket sagas", () => {
 
       beforeAll(() => {
         const action = actions.listBucketHistory("bucket");
-        listHistory = saga.listHistory(() => ({ settings }), action);
+        listHistory = saga.listHistory(() => ({}), action);
         listHistory.next();
       });
 

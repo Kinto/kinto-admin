@@ -2,12 +2,9 @@ import sinon from "sinon";
 
 import { createSandbox, createComponent } from "./test_utils";
 import * as sessionActions from "../src/actions/session";
-import { DEFAULT_KINTO_SERVER, SESSION_SETUP } from "../src/constants";
+import { SESSION_SETUP } from "../src/constants";
 import KintoAdmin from "../src/index";
 import * as localStore from "../src/store/localStore";
-import configureStore from "../src/store/configureStore";
-import * as configStore from "../src/store/configureStore";
-import { ANONYMOUS_AUTH } from "../src/components/AuthForm";
 
 describe("KintoAdmin", () => {
   let sandbox;
@@ -31,12 +28,9 @@ describe("KintoAdmin", () => {
       buckets: [{}],
       serverInfo: {},
     };
-    const createKintoAdmin = (settings = {}) =>
-      createComponent(KintoAdmin, {
-        settings,
-      });
+    const createKintoAdmin = () => createComponent(KintoAdmin, {});
 
-    it("should call setup with the info stored locally", () => {
+    it("should call setupSession if session available", () => {
       localStore.saveSession(session);
       const setup = sandbox
         .stub(sessionActions, "setupSession")
@@ -49,39 +43,13 @@ describe("KintoAdmin", () => {
       });
     });
 
-    it("should call getServerInfo on the server if no session was stored and no servers history", () => {
+    it("should call getServerInfo if no session", () => {
       const getServerInfo = sandbox.spy(sessionActions, "getServerInfo");
       createKintoAdmin();
 
       sinon.assert.calledWithExactly(getServerInfo, {
         authType: "anonymous",
-        server: DEFAULT_KINTO_SERVER,
-      });
-    });
-
-    it("should call getServerInfo on the singleServer if set in the settings", () => {
-      const getServerInfo = sandbox.spy(sessionActions, "getServerInfo");
-      createKintoAdmin({ singleServer: "http://foo.bar/v1" });
-
-      sinon.assert.calledWithExactly(getServerInfo, {
-        authType: "anonymous",
-        server: "http://foo.bar/v1",
-      });
-    });
-
-    it("should call getServerInfo on the server from the servers history if there is one", () => {
-      const getServerInfo = sandbox.spy(sessionActions, "getServerInfo");
-      const store = configureStore({
-        servers: [
-          { server: "http://server.history/v1", authType: ANONYMOUS_AUTH },
-        ],
-      });
-      sandbox.stub(configStore, "default").returns(store);
-      createKintoAdmin();
-
-      sinon.assert.calledWithExactly(getServerInfo, {
-        authType: "anonymous",
-        server: "http://server.history/v1",
+        server: sinon.match.string,
       });
     });
   });
