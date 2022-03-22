@@ -15,7 +15,7 @@ module.exports = {
   devServer: {
     stats: "errors-only",
   },
-  entry: ["@babel/polyfill", path.resolve(__dirname, "index.js")],
+  entry: ["@babel/polyfill", path.resolve(__dirname, "src/index")],
   output: {
     path: path.join(__dirname, "build"),
     filename: "bundle.js",
@@ -37,7 +37,7 @@ module.exports = {
       template: __dirname + "/html/index.html",
       filename: "index.html",
       inject: "body",
-      favicon: "images/favicon.png"
+      favicon: "images/favicon.png",
     }),
   ],
   resolve: {
@@ -55,17 +55,10 @@ module.exports = {
         test: /\.css$/,
         use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
-      { test: /\.png$/, loader: "url-loader", options: { limit: 10000 } },
-      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader" },
+      { test: /\.png$/, type: "asset/resource" },
       {
-        test: /\.(woff|woff2)$/,
-        loader: "url-loader",
-        options: { prefix: "font/", limit: 5000 },
-      },
-      {
-        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        loader: "url-loader",
-        options: { limit: 10000, mimetype: "application/octet-stream" },
+        test: /\.(woff|woff2|eot(\?v=\d+\.\d+\.\d+)?|ttf(\?v=\d+\.\d+\.\d+)?)$/,
+        type: "asset/resource",
       },
       {
         test: /\.svg$/,

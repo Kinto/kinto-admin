@@ -3,10 +3,10 @@ import sinon from "sinon";
 import { createSandbox, createComponent } from "./test_utils";
 import * as sessionActions from "../src/actions/session";
 import { SESSION_SETUP } from "../src/constants";
-import KintoAdmin from "../src/index";
+import App from "../src/App";
 import * as localStore from "../src/store/localStore";
 
-describe("KintoAdmin", () => {
+describe("App", () => {
   let sandbox;
 
   beforeEach(() => {
@@ -28,14 +28,14 @@ describe("KintoAdmin", () => {
       buckets: [{}],
       serverInfo: {},
     };
-    const createKintoAdmin = () => createComponent(KintoAdmin, {});
+    const createApp = () => createComponent(App, {});
 
     it("should call setupSession if session available", () => {
       localStore.saveSession(session);
       const setup = sandbox
         .stub(sessionActions, "setupSession")
         .returns({ type: SESSION_SETUP, auth });
-      createKintoAdmin();
+      createApp();
 
       sinon.assert.calledWithExactly(setup, {
         authType: "anonymous",
@@ -45,7 +45,7 @@ describe("KintoAdmin", () => {
 
     it("should call getServerInfo if no session", () => {
       const getServerInfo = sandbox.spy(sessionActions, "getServerInfo");
-      createKintoAdmin();
+      createApp();
 
       sinon.assert.calledWithExactly(getServerInfo, {
         authType: "anonymous",

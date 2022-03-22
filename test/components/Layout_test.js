@@ -8,7 +8,7 @@ import { mount } from "enzyme";
 import { ConnectedRouter } from "connected-react-router";
 import { Provider } from "react-redux";
 
-import App from "../../src/containers/App";
+import Layout from "../../src/containers/Layout";
 import Notifications from "../../src/containers/Notifications";
 import CollectionRecordsPage from "../../src/containers/collection/CollectionRecordsPage";
 import * as sessionActions from "../../src/actions/session";
@@ -24,7 +24,7 @@ describe("App component", () => {
     app = mount(
       <Provider store={store}>
         <ConnectedRouter history={hashHistory}>
-          <App
+          <Layout
             notifications={Notifications}
             collectionRecordsPage={CollectionRecordsPage}
           />

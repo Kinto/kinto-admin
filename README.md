@@ -12,15 +12,16 @@ Kinto-based systems.
 
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
-   - [Build customization](#build-customization)
-      - [Single Server](#single-server)
-      - [Building for relative paths](#building-for-relative-paths)
+  - [Build customization](#build-customization)
+     - [Single Server](#single-server)
+     - [Building for relative paths](#building-for-relative-paths)
   - [Hacking on kinto-admin](#hacking-on-kinto-admin)
   - [Development server](#development-server)
   - [Tests](#tests)
   - [FAQ](#faq)
      - [Browser support](#browser-support)
      - [How to display a nested field value using the collection displayFields property?](#how-to-display-a-nested-field-value-using-the-collection-displayfields-property)
+  - [Releasing](#releasing)
   - [License](#license)
 
 ---
@@ -163,9 +164,8 @@ If you use `target.merkle.tree.file.name` it will render the string
 4. Push the commit with `git push`
 5. Push the tag with `git push origin vX.Y.Z`
 6. Publish to GitHub Pages with `npm run publish-to-gh-pages`
-7. Publish the package to npm with `npm run publish-to-npm`
-8. Draft a new release with the changelog
-9. Done!
+7. Draft a new release with the changelog
+8. Done!
 
 ## License
 

@@ -1,14 +1,12 @@
 import * as React from "react";
 import { PureComponent } from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route } from "react-router-dom";
 import type { RouteComponentProps } from "react-router-dom";
 import type { Dispatch } from "redux";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
 import * as RouteActions from "./actions/route";
-
-import App from "./containers/App";
 
 type ComponentWrapperProps = RouteComponentProps & {
   component: React.ComponentType;
@@ -113,11 +111,3 @@ function mapDispatchToProps(dispatch: Dispatch): {
 }
 
 export const CreateRoute = connect(null, mapDispatchToProps)(routeCreator);
-
-export default function getRoutes(store: Object) {
-  return (
-    <Switch>
-      <Route path="/" component={App} />
-    </Switch>
-  );
-}

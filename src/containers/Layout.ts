@@ -1,11 +1,11 @@
 import type { AppState } from "../types";
 import type { Dispatch } from "redux";
-import type { StateProps } from "../components/App";
+import type { StateProps } from "../components/Layout";
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
-import App from "../components/App";
+import Layout from "../components/Layout";
 import * as SessionActions from "../actions/session";
 import * as RouteActions from "../actions/route";
 
@@ -28,4 +28,4 @@ function mapDispatchToProps(dispatch: Dispatch): DispatchProps {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(Layout);
