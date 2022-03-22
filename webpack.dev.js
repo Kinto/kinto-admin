@@ -6,7 +6,11 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 module.exports = {
   mode: "development",
   devtool: "inline-source-map",
-  entry: ["@babel/polyfill", "webpack-hot-middleware/client", "./index"],
+  entry: [
+    "@babel/polyfill",
+    "webpack-hot-middleware/client",
+    path.resolve(__dirname, "src/index"),
+  ],
   output: {
     path: path.join(__dirname, "build"),
     filename: "bundle.js",
@@ -30,7 +34,7 @@ module.exports = {
       template: __dirname + "/html/index.html",
       filename: "index.html",
       inject: "body",
-      favicon: "images/favicon.png"
+      favicon: "images/favicon.png",
     }),
   ],
   resolve: {

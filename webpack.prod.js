@@ -15,7 +15,7 @@ module.exports = {
   devServer: {
     stats: "errors-only",
   },
-  entry: ["@babel/polyfill", path.resolve(__dirname, "index.js")],
+  entry: ["@babel/polyfill", path.resolve(__dirname, "src/index")],
   output: {
     path: path.join(__dirname, "build"),
     filename: "bundle.js",
@@ -37,7 +37,7 @@ module.exports = {
       template: __dirname + "/html/index.html",
       filename: "index.html",
       inject: "body",
-      favicon: "images/favicon.png"
+      favicon: "images/favicon.png",
     }),
   ],
   resolve: {
