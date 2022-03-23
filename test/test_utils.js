@@ -8,8 +8,8 @@ import { Provider } from "react-redux";
 import configureStore, { hashHistory } from "../src/store/configureStore";
 import * as notificationsActions from "../src/actions/notifications";
 
-export function createComponent(Component, props) {
-  const store = configureStore();
+export function createComponent(Component, props, initialState = {}) {
+  const store = configureStore(initialState);
   const domContainer = document.createElement("div");
   ReactDOM.render(
     <Provider store={store}>

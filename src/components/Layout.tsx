@@ -26,7 +26,7 @@ import RecordAttributesPage from "../containers/record/RecordAttributesPage";
 import RecordPermissionsPage from "../containers/record/RecordPermissionsPage";
 import RecordHistoryPage from "../containers/record/RecordHistoryPage";
 import SimpleReviewPage from "../containers/signoff/SimpleReviewPage";
-import Sidebar from "../containers/Sidebar";
+import { Sidebar } from "../components/Sidebar";
 import Notifications from "../containers/Notifications";
 
 import { SessionInfoBar } from "./SessionInfoBar";

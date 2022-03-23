@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import { createSandbox, createComponent } from "../test_utils";
-import Sidebar from "../../src/components/Sidebar";
+import { Sidebar } from "../../src/components/Sidebar";
 import { clone } from "../../src/utils";
 
 describe("Sidebar component", () => {
@@ -17,12 +17,15 @@ describe("Sidebar component", () => {
 
   describe("Not authenticated", () => {
     it("should not render any bucket menus", () => {
-      const node = createComponent(Sidebar, {
-        match: { params: {} },
-        location: { pathname: "" },
-        session: { authenticated: false },
-        capabilities: { history: {} },
-      });
+      const node = createComponent(
+        Sidebar,
+        {
+          match: { params: {} },
+          location: { pathname: "" },
+          capabilities: { history: {} },
+        },
+        { session: { authenticated: false } }
+      );
 
       expect(node.querySelectorAll(".bucket-menu")).to.have.a.lengthOf(0);
     });
@@ -53,12 +56,15 @@ describe("Sidebar component", () => {
     const capabilities = { history: {} };
 
     beforeEach(() => {
-      node = createComponent(Sidebar, {
-        match: { params },
-        location,
-        session,
-        capabilities,
-      });
+      node = createComponent(
+        Sidebar,
+        {
+          match: { params },
+          location,
+          capabilities,
+        },
+        { session }
+      );
       bucketMenus = node.querySelectorAll(".bucket-menu");
     });
 
@@ -99,12 +105,15 @@ describe("Sidebar component", () => {
 
     describe("Create bucket", () => {
       it("should be shown by default", () => {
-        node = createComponent(Sidebar, {
-          match: { params },
-          location,
-          session,
-          capabilities,
-        });
+        node = createComponent(
+          Sidebar,
+          {
+            match: { params },
+            location,
+            capabilities,
+          },
+          { session }
+        );
         expect(node.querySelector(".bucket-create")).to.exist;
       });
 
@@ -112,12 +121,15 @@ describe("Sidebar component", () => {
         const notAllowed = clone(session);
         notAllowed.permissions = [{ resource_name: "root", permissions: [] }];
 
-        node = createComponent(Sidebar, {
-          match: { params },
-          location,
-          session: notAllowed,
-          capabilities,
-        });
+        node = createComponent(
+          Sidebar,
+          {
+            match: { params },
+            location,
+            capabilities,
+          },
+          { session: notAllowed }
+        );
         expect(node.querySelector(".bucket-create")).to.not.exist;
       });
     });
