@@ -1,15 +1,12 @@
 import { expect } from "chai";
+import * as React from "react";
 
 import testUtils from "react-dom/test-utils";
 
 import { createComponent } from "../../../test_utils";
-import SimpleReview, {
-  SimpleReviewProps,
-} from "../../../../src/components/signoff/SimpleReview";
+import SimpleReview from "../../../../src/components/signoff/SimpleReview";
 
-import { SessionState, SignoffState } from "../../../../src/types";
-
-function signoffFactory(): SignoffState {
+function signoffFactory() {
   return {
     collectionsInfo: {
       source: {
@@ -44,7 +41,7 @@ function signoffFactory(): SignoffState {
   };
 }
 
-function sessionFactory(props: Partial<SessionState> = null): SessionState {
+function sessionFactory(props) {
   return {
     busy: false,
     authenticating: false,
@@ -74,22 +71,23 @@ function sessionFactory(props: Partial<SessionState> = null): SessionState {
   };
 }
 
-async function renderSimpleReview(props: Partial<SimpleReviewProps> = null) {
-  let node: HTMLElement;
-  await testUtils.act(async () => {
-    node = createComponent(SimpleReview, {
-      match: {
-        params: {
-          bid: "main-workspace",
-          cid: "my-collection",
-        },
+async function renderSimpleReview(props = null) {
+  let node;
+  const mergedProps = {
+    match: {
+      params: {
+        bid: "main-workspace",
+        cid: "my-collection",
       },
-      listRecords() {},
-      session: sessionFactory(),
-      signoff: signoffFactory(),
-      async fetchRecords() {},
-      ...props,
-    });
+    },
+    listRecords() {},
+    session: sessionFactory(),
+    signoff: signoffFactory(),
+    async fetchRecords() {},
+    ...props,
+  };
+  await testUtils.act(async () => {
+    node = createComponent(<SimpleReview {...mergedProps} />);
   });
   return node;
 }

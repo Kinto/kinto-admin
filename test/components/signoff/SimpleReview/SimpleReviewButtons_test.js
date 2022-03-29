@@ -2,17 +2,16 @@ import { expect } from "chai";
 import { createComponent } from "../../../test_utils";
 import ReactDomTestUtils from "react-dom/test-utils";
 import sinon from "sinon";
+import * as React from "react";
 
-import SimpleReviewButtons, {
-  SimpleReviewButtonsProps,
-} from "../../../../src/components/signoff/SimpleReview/SimpleReviewButtons";
+import SimpleReviewButtons from "../../../../src/components/signoff/SimpleReview/SimpleReviewButtons";
 
-function renderButtons(props: Partial<SimpleReviewButtonsProps> = null) {
+function renderButtons(props = null) {
   const approveChanges = sinon.stub();
   const declineChanges = sinon.stub();
   const rollbackChanges = sinon.stub();
 
-  const mergedProps: SimpleReviewButtonsProps = {
+  const mergedProps = {
     status: "to-review",
     approveChanges,
     declineChanges,
@@ -20,7 +19,7 @@ function renderButtons(props: Partial<SimpleReviewButtonsProps> = null) {
     ...props,
   };
 
-  const node = createComponent(SimpleReviewButtons, mergedProps);
+  const node = createComponent(<SimpleReviewButtons {...mergedProps} />);
   return { approveChanges, declineChanges, rollbackChanges, node };
 }
 
