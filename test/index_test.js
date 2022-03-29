@@ -5,6 +5,7 @@ import * as sessionActions from "../src/actions/session";
 import { SESSION_SETUP } from "../src/constants";
 import App from "../src/App";
 import * as localStore from "../src/store/localStore";
+import * as React from "react";
 
 describe("App", () => {
   let sandbox;
@@ -28,14 +29,13 @@ describe("App", () => {
       buckets: [{}],
       serverInfo: {},
     };
-    const createApp = () => createComponent(App, {});
 
     it("should call setupSession if session available", () => {
       localStore.saveSession(session);
       const setup = sandbox
         .stub(sessionActions, "setupSession")
         .returns({ type: SESSION_SETUP, auth });
-      createApp();
+      createComponent(<App />);
 
       sinon.assert.calledWithExactly(setup, {
         authType: "anonymous",
@@ -45,7 +45,7 @@ describe("App", () => {
 
     it("should call getServerInfo if no session", () => {
       const getServerInfo = sandbox.spy(sessionActions, "getServerInfo");
-      createApp();
+      createComponent(<App />);
 
       sinon.assert.calledWithExactly(getServerInfo, {
         authType: "anonymous",

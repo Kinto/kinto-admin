@@ -3,6 +3,7 @@ import { expect } from "chai";
 import { createSandbox, createComponent } from "../test_utils";
 
 import CollectionRecords from "../../src/components/collection/CollectionRecords";
+import * as React from "react";
 
 describe("CollectionRecords component", () => {
   let sandbox;
@@ -53,14 +54,19 @@ describe("CollectionRecords component", () => {
     };
 
     beforeEach(() => {
-      node = createComponent(CollectionRecords, {
-        match: { params: { bid: "bucket", cid: "collection" } },
-        session: { authenticated: true, serverInfo: { user: { id: "plop" } } },
-        bucket,
-        collection,
-        capabilities,
-        listRecords: () => {},
-      });
+      node = createComponent(
+        <CollectionRecords
+          match={{ params: { bid: "bucket", cid: "collection" } }}
+          session={{
+            authenticated: true,
+            serverInfo: { user: { id: "plop" } },
+          }}
+          bucket={bucket}
+          collection={collection}
+          capabilities={capabilities}
+          listRecords={() => {}}
+        />
+      );
     });
 
     it("should render a table", () => {
@@ -98,14 +104,19 @@ describe("CollectionRecords component", () => {
     };
 
     beforeEach(() => {
-      node = createComponent(CollectionRecords, {
-        match: { params: { bid: "bucket", cid: "collection" } },
-        session: { authenticated: true, serverInfo: { user: { id: "plop" } } },
-        bucket,
-        collection,
-        capabilities,
-        listRecords: () => {},
-      });
+      node = createComponent(
+        <CollectionRecords
+          match={{ params: { bid: "bucket", cid: "collection" } }}
+          session={{
+            authenticated: true,
+            serverInfo: { user: { id: "plop" } },
+          }}
+          bucket={bucket}
+          collection={collection}
+          capabilities={capabilities}
+          listRecords={() => {}}
+        />
+      );
     });
 
     it("should render a table", () => {
@@ -140,14 +151,16 @@ describe("CollectionRecords component", () => {
     };
 
     beforeEach(() => {
-      node = createComponent(CollectionRecords, {
-        match: { params: { bid: "bucket", cid: "collection" } },
-        session: {},
-        bucket,
-        collection,
-        capabilities,
-        listRecords: () => {},
-      });
+      node = createComponent(
+        <CollectionRecords
+          match={{ params: { bid: "bucket", cid: "collection" } }}
+          session={{}}
+          bucket={bucket}
+          collection={collection}
+          capabilities={capabilities}
+          listRecords={() => {}}
+        />
+      );
     });
 
     it("should show the total number of records", () => {
@@ -180,14 +193,16 @@ describe("CollectionRecords component", () => {
       let node;
 
       beforeEach(() => {
-        node = createComponent(CollectionRecords, {
-          match: { params: { bid: "bucket", cid: "collection" } },
-          session: { permissions: null },
-          bucket,
-          collection,
-          capabilities,
-          listRecords: () => {},
-        });
+        node = createComponent(
+          <CollectionRecords
+            match={{ params: { bid: "bucket", cid: "collection" } }}
+            session={{ permissions: null }}
+            bucket={bucket}
+            collection={collection}
+            capabilities={capabilities}
+            listRecords={() => {}}
+          />
+        );
       });
 
       it("should render list actions", () => {
@@ -201,14 +216,16 @@ describe("CollectionRecords component", () => {
       let node;
 
       beforeEach(() => {
-        node = createComponent(CollectionRecords, {
-          match: { params: { bid: "bucket", cid: "collection" } },
-          session: { permissions: [] },
-          bucket,
-          collection,
-          capabilities,
-          listRecords: () => {},
-        });
+        node = createComponent(
+          <CollectionRecords
+            match={{ params: { bid: "bucket", cid: "collection" } }}
+            session={{ permissions: [] }}
+            bucket={bucket}
+            collection={collection}
+            capabilities={capabilities}
+            listRecords={() => {}}
+          />
+        );
       });
 
       it("should not render list actions", () => {
