@@ -1,7 +1,6 @@
-import type { SessionState, RouteParams, BucketEntry } from "../types";
+import type { RouteParams, BucketEntry } from "../types";
 import type { RouteComponentProps } from "react-router-dom";
 
-import { PureComponent } from "react";
 import * as React from "react";
 
 import { Plus } from "react-bootstrap-icons";
@@ -20,6 +19,8 @@ import AdminLink from "./AdminLink";
 import url from "../url";
 import { canCreateBucket } from "../permission";
 import { SIDEBAR_MAX_LISTED_COLLECTIONS } from "../constants";
+import { useAppSelector } from "../hooks";
+import { useDispatch } from "react-redux";
 
 type SideBarLinkProps = {
   currentPath: string;
@@ -47,19 +48,22 @@ function SideBarLink(props: SideBarLinkProps) {
   );
 }
 
-function HomeMenu(props) {
-  const { currentPath, onRefresh } = props;
+const HomeMenu = ({ currentPath }) => {
+  const dispatch = useDispatch();
   return (
     <div className="card home-menu">
       <div className="list-group list-group-flush">
         <SideBarLink name="home" currentPath={currentPath} params={{}}>
           Home
-          <ArrowRepeat onClick={onRefresh} className="icon" />
+          <ArrowRepeat
+            onClick={() => dispatch(SessionActions.listBuckets())}
+            className="icon"
+          />
         </SideBarLink>
       </div>
     </div>
   );
-}
+};
 
 function CollectionMenuEntry(props) {
   const {
@@ -146,10 +150,7 @@ function BucketCollectionsMenu(props) {
 }
 
 type BucketsMenuProps = {
-  canCreateBucket: boolean;
   currentPath: string;
-  busy: boolean;
-  buckets: BucketEntry[];
   bid: string | null | undefined;
   cid: string | null | undefined;
 };
@@ -189,175 +190,146 @@ function filterBuckets(buckets, filters): BucketEntry[] {
     .filter(Boolean);
 }
 
-type BucketsMenuState = {
-  showReadOnly: boolean;
-  search: string | null | undefined;
-};
+const BucketsMenu = (props: BucketsMenuProps) => {
+  const [showReadOnly, setShowReadOnly] = React.useState(false);
+  const [search, setSearch] = React.useState(null);
+  const session = useAppSelector(store => store.session);
+  const { busy, buckets = [] } = session;
+  const { currentPath, bid, cid } = props;
 
-class BucketsMenu extends PureComponent<BucketsMenuProps, BucketsMenuState> {
-  constructor(props: BucketsMenuProps) {
-    super(props);
-    this.state = { showReadOnly: false, search: null };
-  }
-
-  toggleReadOnly = () => {
-    this.setState({ showReadOnly: !this.state.showReadOnly });
+  const toggleReadOnly = () => {
+    setShowReadOnly(!showReadOnly);
   };
 
-  resetSearch = event => {
+  const resetSearch = event => {
     event.preventDefault();
-    this.setState({ search: null });
+    setSearch(null);
   };
 
-  updateSearch = event => {
-    this.setState({ search: event.target.value || null });
+  const updateSearch = event => {
+    setSearch(event.target.value || null);
   };
 
-  render() {
-    const { canCreateBucket, currentPath, busy, buckets, bid, cid } =
-      this.props;
-    const filteredBuckets = filterBuckets(buckets, this.state);
-    // Sort buckets by id.
-    const sortedBuckets = filteredBuckets.sort((a, b) =>
-      a.id > b.id ? 1 : -1
-    );
-    return (
-      <div>
-        {canCreateBucket && (
-          <div className="card bucket-create">
-            <div className="list-group list-group-flush">
-              <SideBarLink
-                name="bucket:create"
-                currentPath={currentPath}
-                params={{}}
-              >
-                <Plus className="icon" />
-                Create bucket
-              </SideBarLink>
-            </div>
+  const filteredBuckets = filterBuckets(buckets, { showReadOnly, search });
+  // Sort buckets by id.
+  const sortedBuckets = filteredBuckets.sort((a, b) => (a.id > b.id ? 1 : -1));
+  return (
+    <div>
+      {canCreateBucket(session) && (
+        <div className="card bucket-create">
+          <div className="list-group list-group-flush">
+            <SideBarLink
+              name="bucket:create"
+              currentPath={currentPath}
+              params={{}}
+            >
+              <Plus className="icon" />
+              Create bucket
+            </SideBarLink>
           </div>
-        )}
-        <div className="card sidebar-filters">
-          <div className="card-header">
-            <strong>Filters</strong>
-          </div>
-          <form className="form card-body">
-            <div className="form-group">
-              <div className="input-group">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Filter bucket/collection name"
-                  value={this.state.search || ""}
-                  onChange={this.updateSearch}
-                />
-                <div className="input-group-append">
-                  <button
-                    className="btn btn-outline-secondary"
-                    onClick={this.resetSearch}
-                  >
-                    <XCircleFill className="icon" />
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className="form-group form-check">
-              <input
-                className="form-check-input"
-                id="read-only-toggle"
-                type="checkbox"
-                checked={this.state.showReadOnly}
-                onChange={this.toggleReadOnly}
-              />
-              <label className="form-check-label" htmlFor="read-only-toggle">
-                Show readonly buckets/collections
-              </label>
-            </div>
-          </form>
         </div>
-        {busy ? (
-          <Spinner />
-        ) : (
-          sortedBuckets.map((bucket, i) => {
-            const { id, collections } = bucket;
-            const current = bid === id;
-            return (
-              <div
-                key={i}
-                className={`card panel-${
-                  current ? "info" : "default"
-                } bucket-menu`}
-              >
-                <div className="card-header">
-                  {bucket.readonly ? (
-                    <Lock className="icon" />
-                  ) : current ? (
-                    <Folder2Open className="icon" />
-                  ) : (
-                    <Folder2 className="icon" />
-                  )}
-                  <strong>{id}</strong> bucket
-                  <SideBarLink
-                    name="bucket:attributes"
-                    params={{ bid: id }}
-                    currentPath={currentPath}
-                    className="bucket-menu-entry-edit"
-                    title="Manage bucket"
-                  >
-                    <Gear className="icon" />
-                  </SideBarLink>
-                </div>
-                <BucketCollectionsMenu
-                  bucket={bucket}
-                  collections={collections}
-                  currentPath={currentPath}
-                  bid={bid}
-                  cid={cid}
-                  canCreateCollection={bucket.canCreateCollection}
-                />
+      )}
+      <div className="card sidebar-filters">
+        <div className="card-header">
+          <strong>Filters</strong>
+        </div>
+        <form className="form card-body">
+          <div className="form-group">
+            <div className="input-group">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Filter bucket/collection name"
+                value={search || ""}
+                onChange={updateSearch}
+              />
+              <div className="input-group-append">
+                <button
+                  className="btn btn-outline-secondary"
+                  onClick={resetSearch}
+                >
+                  <XCircleFill className="icon" />
+                </button>
               </div>
-            );
-          })
-        )}
+            </div>
+          </div>
+          <div className="form-group form-check">
+            <input
+              className="form-check-input"
+              id="read-only-toggle"
+              type="checkbox"
+              checked={showReadOnly}
+              onChange={toggleReadOnly}
+            />
+            <label className="form-check-label" htmlFor="read-only-toggle">
+              Show readonly buckets/collections
+            </label>
+          </div>
+        </form>
       </div>
-    );
-  }
-}
-
-export type OwnProps = RouteComponentProps<{ cid: string; bid: string }>;
-
-export type StateProps = {
-  session: SessionState;
+      {busy ? (
+        <Spinner />
+      ) : (
+        sortedBuckets.map((bucket, i) => {
+          const { id, collections } = bucket;
+          const current = bid === id;
+          return (
+            <div
+              key={i}
+              className={`card panel-${
+                current ? "info" : "default"
+              } bucket-menu`}
+            >
+              <div className="card-header">
+                {bucket.readonly ? (
+                  <Lock className="icon" />
+                ) : current ? (
+                  <Folder2Open className="icon" />
+                ) : (
+                  <Folder2 className="icon" />
+                )}
+                <strong>{id}</strong> bucket
+                <SideBarLink
+                  name="bucket:attributes"
+                  params={{ bid: id }}
+                  currentPath={currentPath}
+                  className="bucket-menu-entry-edit"
+                  title="Manage bucket"
+                >
+                  <Gear className="icon" />
+                </SideBarLink>
+              </div>
+              <BucketCollectionsMenu
+                bucket={bucket}
+                collections={collections}
+                currentPath={currentPath}
+                bid={bid}
+                cid={cid}
+                canCreateCollection={bucket.canCreateCollection}
+              />
+            </div>
+          );
+        })
+      )}
+    </div>
+  );
 };
 
-export type SidebarProps = OwnProps &
-  StateProps & {
-    listBuckets: typeof SessionActions.listBuckets;
-  };
+export type SidebarProps = RouteComponentProps<{ cid: string; bid: string }>;
 
-export default class Sidebar extends PureComponent<SidebarProps> {
-  static displayName = "Sidebar";
-
-  render() {
-    const { session, match, location, listBuckets } = this.props;
-    const { params } = match;
-    const { pathname: currentPath } = location;
-    const { bid, cid } = params;
-    const { busy, authenticated, buckets = [] } = session;
-    return (
-      <div>
-        <HomeMenu currentPath={currentPath} onRefresh={listBuckets} />
-        {authenticated && (
-          <BucketsMenu
-            canCreateBucket={canCreateBucket(session)}
-            busy={busy}
-            buckets={buckets}
-            currentPath={currentPath}
-            bid={bid}
-            cid={cid}
-          />
-        )}
-      </div>
-    );
-  }
-}
+export const Sidebar = (props: SidebarProps) => {
+  const session = useAppSelector(store => store.session);
+  const { match, location } = props;
+  const { params } = match;
+  const { pathname: currentPath } = location;
+  const { bid, cid } = params;
+  const { authenticated } = session;
+  return (
+    <div>
+      <HomeMenu currentPath={currentPath} />
+      {authenticated && (
+        <BucketsMenu currentPath={currentPath} bid={bid} cid={cid} />
+      )}
+    </div>
+  );
+};

@@ -2,30 +2,26 @@ import * as React from "react";
 import { BoxArrowRight } from "react-bootstrap-icons";
 import { QuestionCircleFill } from "react-bootstrap-icons";
 import { Clipboard } from "react-bootstrap-icons";
+import { useDispatch } from "react-redux";
+import { useAppSelector } from "../hooks";
+import * as SessionActions from "../actions/session";
 
-function UserInfo({ session }) {
-  const {
-    serverInfo: { user = {} },
-  } = session;
-  if (!user.id) {
-    return <strong>Anonymous</strong>;
-  }
-  return (
-    <span>
-      Connected as <strong>{user.id}</strong>
-    </span>
+export const SessionInfoBar = () => {
+  const { url, project_name, project_docs, user } = useAppSelector(
+    store => store.session.serverInfo
   );
-}
-
-export function SessionInfoBar({ session, logout, copyAuthenticationHeader }) {
-  const {
-    serverInfo: { url, project_name, project_docs },
-  } = session;
+  const dispatch = useDispatch();
   return (
     <div className="session-info-bar">
       <h1 className="kinto-admin-title">{project_name}</h1>
       <span className="user-info">
-        <UserInfo session={session} />
+        {!user?.id ? (
+          <strong>Anonymous</strong>
+        ) : (
+          <span>
+            Connected as <strong>{user.id}</strong>
+          </span>
+        )}
         {" on "}
         <strong>{url}</strong>{" "}
         <a
@@ -34,7 +30,7 @@ export function SessionInfoBar({ session, logout, copyAuthenticationHeader }) {
           title="Copy authentication header"
           onClick={event => {
             event.preventDefault();
-            copyAuthenticationHeader();
+            dispatch(SessionActions.copyAuthenticationHeader());
           }}
         >
           <Clipboard className="icon" />
@@ -51,7 +47,7 @@ export function SessionInfoBar({ session, logout, copyAuthenticationHeader }) {
           className="spaced btn btn-sm btn-success btn-logout"
           onClick={event => {
             event.preventDefault();
-            logout();
+            dispatch(SessionActions.logout());
           }}
         >
           <BoxArrowRight className="icon" /> Logout
@@ -59,4 +55,4 @@ export function SessionInfoBar({ session, logout, copyAuthenticationHeader }) {
       </span>
     </div>
   );
-}
+};
