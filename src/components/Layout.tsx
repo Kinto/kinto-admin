@@ -19,7 +19,7 @@ import HomePage from "../containers/HomePage";
 import GroupAttributesPage from "../containers/group/GroupAttributesPage";
 import GroupCreatePage from "../containers/group/GroupCreatePage";
 import GroupHistoryPage from "../containers/group/GroupHistoryPage";
-import GroupPermissionsPage from "../containers/group/GroupPermissionsPage";
+import { GroupPermissions } from "../components/group/GroupPermissions";
 import RecordCreatePage from "../containers/record/RecordCreatePage";
 import RecordBulkPage from "../containers/record/RecordBulkPage";
 import RecordAttributesPage from "../containers/record/RecordAttributesPage";
@@ -122,7 +122,7 @@ export const Layout = () => {
                                     exact
                                     title="permissions"
                                     path="/buckets/:bid/groups/:gid/permissions"
-                                    component={GroupPermissionsPage}
+                                    component={GroupPermissions}
                                   />
                                   <CreateRoute
                                     exact

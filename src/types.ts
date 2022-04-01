@@ -304,11 +304,13 @@ export type CollectionRoute = {
   params: CollectionRouteMatch;
 };
 
+export interface GroupPermissionsRouteMatchParams {
+  bid: string;
+  gid: string;
+}
+
 export type GroupRouteMatch = {
-  params: {
-    bid: string;
-    gid: string;
-  };
+  params: GroupPermissionsRouteMatchParams;
   isExact: boolean;
   path: string;
   url: string;
