@@ -3,7 +3,7 @@ import React from "react";
 import * as CollectionActions from "../../actions/collection";
 import Spinner from "../Spinner";
 import RecordTabs from "./RecordTabs";
-import PermissionsForm from "../PermissionsForm";
+import { PermissionsForm } from "../PermissionsForm";
 import { canEditRecord } from "../../permission";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router";
@@ -27,7 +27,6 @@ export const RecordPermissions = () => {
       CollectionActions.updateRecord(bid, cid, rid, { permissions: formData })
     );
   };
-  const { groups } = bucket;
   const { busy, permissions } = record;
   const acls = ["read", "write"];
   if (busy) {
@@ -50,8 +49,6 @@ export const RecordPermissions = () => {
         selected="permissions"
       >
         <PermissionsForm
-          bid={bid}
-          groups={groups}
           permissions={permissions}
           acls={acls}
           readonly={!canEditRecord(session, bucket, collection, record)}

@@ -8,7 +8,7 @@ import React from "react";
 import * as BucketActions from "../../actions/bucket";
 import Spinner from "../Spinner";
 import GroupTabs from "./GroupTabs";
-import PermissionsForm from "../PermissionsForm";
+import { PermissionsForm } from "../PermissionsForm";
 import { canEditGroup } from "../../permission";
 import { useAppSelector } from "../../hooks";
 import { useParams } from "react-router";
@@ -18,7 +18,6 @@ export const GroupPermissions = () => {
   const bucket = useAppSelector(state => state.bucket);
   const group = useAppSelector(state => state.group);
   const { busy, permissions } = group;
-  const { groups } = bucket;
   const session = useAppSelector(state => state.session);
   const { bid, gid } = useParams<GroupPermissionsRouteMatchParams>();
   const dispatch = useDispatch();
@@ -45,8 +44,6 @@ export const GroupPermissions = () => {
         selected="permissions"
       >
         <PermissionsForm
-          bid={bid}
-          groups={groups}
           permissions={permissions}
           acls={["read", "write"]}
           readonly={!canEditGroup(session, bucket, group)}

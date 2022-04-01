@@ -5,7 +5,7 @@ import React from "react";
 import * as BucketActions from "../../actions/bucket";
 import Spinner from "../Spinner";
 import CollectionTabs from "./CollectionTabs";
-import PermissionsForm from "../PermissionsForm";
+import { PermissionsForm } from "../PermissionsForm";
 import { canEditCollection } from "../../permission";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router";
@@ -20,7 +20,6 @@ export const CollectionPermissions = () => {
   const bucket = useAppSelector(state => state.bucket);
   const collection = useAppSelector(state => state.collection);
   const { busy, permissions } = collection;
-  const { groups } = bucket;
   const acls = ["read", "write", "record:create"];
   const dispatch = useDispatch();
 
@@ -49,8 +48,6 @@ export const CollectionPermissions = () => {
         selected="permissions"
       >
         <PermissionsForm
-          bid={bid}
-          groups={groups}
           permissions={permissions}
           acls={acls}
           readonly={!canEditCollection(session, bucket, collection)}

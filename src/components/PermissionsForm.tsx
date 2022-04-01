@@ -1,6 +1,6 @@
-import type { Permissions, GroupData } from "../types";
+import type { Permissions } from "../types";
 
-import React, { PureComponent } from "react";
+import React from "react";
 
 import BaseForm from "./BaseForm";
 import {
@@ -8,44 +8,44 @@ import {
   formDataToPermissions,
   preparePermissionsForm,
 } from "../permission";
+import { useParams } from "react-router";
+import { useAppSelector } from "../hooks";
 
 type Props = {
-  bid: string;
   readonly: boolean;
   permissions: Permissions;
-  groups: GroupData[];
   acls: string[];
   onSubmit: (data: { formData: Object }) => void;
 };
 
-export default class PermissionsForm extends PureComponent<Props> {
-  onSubmit = ({ formData }: { formData: Object }) => {
-    const { bid, onSubmit } = this.props;
-    onSubmit({ formData: formDataToPermissions(bid, formData) });
+export const PermissionsForm = ({
+  readonly,
+  permissions,
+  acls,
+  onSubmit: onSubmit_,
+}: Props) => {
+  const onSubmit = ({ formData }: { formData: Object }) => {
+    onSubmit_({ formData: formDataToPermissions(bid, formData) });
   };
-
-  render() {
-    const { bid, readonly } = this.props;
-    if (readonly) {
-      return (
-        <div className="alert alert-warning">
-          You don't have the required permission to edit the permissions for
-          this resource.
-        </div>
-      );
-    }
-
-    const { permissions, acls, groups } = this.props;
-    const formData = permissionsToFormData(bid, permissions);
-    const { schema, uiSchema } = preparePermissionsForm(acls, groups);
+  const { bid } = useParams<{ bid: string }>();
+  const groups = useAppSelector(store => store.bucket.groups);
+  if (readonly) {
     return (
-      <BaseForm
-        className="permissions-form"
-        schema={schema}
-        uiSchema={uiSchema}
-        formData={formData}
-        onSubmit={this.onSubmit}
-      />
+      <div className="alert alert-warning">
+        You don't have the required permission to edit the permissions for this
+        resource.
+      </div>
     );
   }
-}
+  const formData = permissionsToFormData(bid, permissions);
+  const { schema, uiSchema } = preparePermissionsForm(acls, groups);
+  return (
+    <BaseForm
+      className="permissions-form"
+      schema={schema}
+      uiSchema={uiSchema}
+      formData={formData}
+      onSubmit={onSubmit}
+    />
+  );
+};
