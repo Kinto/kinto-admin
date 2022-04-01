@@ -9,7 +9,7 @@ import BucketCollectionsPage from "../containers/bucket/BucketCollectionsPage";
 import BucketCreatePage from "../containers/bucket/BucketCreatePage";
 import BucketGroupsPage from "../containers/bucket/BucketGroupsPage";
 import BucketHistoryPage from "../containers/bucket/BucketHistoryPage";
-import BucketPermissionsPage from "../containers/bucket/BucketPermissionsPage";
+import { BucketPermissions } from "../components/bucket/BucketPermissions";
 import CollectionAttributesPage from "../containers/collection/CollectionAttributesPage";
 import CollectionCreatePage from "../containers/collection/CollectionCreatePage";
 import CollectionHistoryPage from "../containers/collection/CollectionHistoryPage";
@@ -144,7 +144,7 @@ export const Layout = () => {
                             exact
                             title="permissions"
                             path="/buckets/:bid/permissions"
-                            component={BucketPermissionsPage}
+                            component={BucketPermissions}
                           />
                           <CreateRoute
                             exact
