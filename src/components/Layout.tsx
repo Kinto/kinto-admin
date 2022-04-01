@@ -23,7 +23,7 @@ import { GroupPermissions } from "../components/group/GroupPermissions";
 import RecordCreatePage from "../containers/record/RecordCreatePage";
 import RecordBulkPage from "../containers/record/RecordBulkPage";
 import RecordAttributesPage from "../containers/record/RecordAttributesPage";
-import RecordPermissionsPage from "../containers/record/RecordPermissionsPage";
+import { RecordPermissions } from "../components/record/RecordPermissions";
 import RecordHistoryPage from "../containers/record/RecordHistoryPage";
 import SimpleReviewPage from "../containers/signoff/SimpleReviewPage";
 import { Sidebar } from "../components/Sidebar";
@@ -249,7 +249,7 @@ export const Layout = () => {
                                               "permissions",
                                               "/buckets/:bid/collections/:cid/records/:rid/permissions",
                                             ]}
-                                            component={RecordPermissionsPage}
+                                            component={RecordPermissions}
                                           />
                                           <CreateRoute
                                             exact
