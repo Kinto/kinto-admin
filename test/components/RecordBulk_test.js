@@ -5,6 +5,7 @@ import { Simulate } from "react-dom/test-utils";
 import { createSandbox, createComponent } from "../test_utils";
 
 import RecordBulk from "../../src/components/record/RecordBulk";
+import * as React from "react";
 
 describe("RecordBulk component", () => {
   let sandbox;
@@ -34,11 +35,13 @@ describe("RecordBulk component", () => {
 
     beforeEach(() => {
       bulkCreateRecords = sinon.spy();
-      node = createComponent(RecordBulk, {
-        match: { params: { bid: "bucket", cid: "collection" } },
-        collection,
-        bulkCreateRecords,
-      });
+      node = createComponent(
+        <RecordBulk
+          match={{ params: { bid: "bucket", cid: "collection" } }}
+          collection={collection}
+          bulkCreateRecords={bulkCreateRecords}
+        />
+      );
     });
 
     it("should render a form", () => {

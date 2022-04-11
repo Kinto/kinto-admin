@@ -38,7 +38,7 @@ describe("HomePage component", () => {
         getServerInfo = sandbox.spy();
         navigateToExternalAuth = sandbox.spy();
         navigateToOpenID = sandbox.spy();
-        node = createComponent(HomePage, {
+        const props = {
           match: {},
           setupSession,
           serverChange,
@@ -63,7 +63,8 @@ describe("HomePage component", () => {
               },
             },
           },
-        });
+        };
+        node = createComponent(<HomePage {...props} />);
       });
 
       it("should render a setup form", () => {
@@ -170,13 +171,14 @@ describe("HomePage component", () => {
 
     describe("Servers history support", () => {
       it("should set the server field value using a default value if there's no servers", () => {
-        const node = createComponent(HomePage, {
+        const props = {
           match: {},
           serverChange: sandbox.spy(),
           getServerInfo: sandbox.spy(),
           servers: [],
           session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
-        });
+        };
+        const node = createComponent(<HomePage {...props} />);
 
         expect(node.querySelector("#root_server").value).eql(
           "https://demo.kinto-storage.org/v1/"
@@ -184,13 +186,14 @@ describe("HomePage component", () => {
       });
 
       it("should set the server field value using latest entry from servers", () => {
-        const node = createComponent(HomePage, {
+        const props = {
           match: {},
           serverChange: sandbox.spy(),
           getServerInfo: sandbox.spy(),
           servers: [{ server: "http://server.test/v1", authType: "anonymous" }],
           session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
-        });
+        };
+        const node = createComponent(<HomePage {...props} />);
 
         expect(node.querySelector("#root_server").value).eql(
           "http://server.test/v1"
@@ -267,7 +270,7 @@ describe("HomePage component", () => {
 
       beforeEach(() => {
         setupSession = sinon.spy();
-        createComponent(HomePage, {
+        const props = {
           match: {
             params: {
               payload:
@@ -281,7 +284,8 @@ describe("HomePage component", () => {
           getServerInfo: sandbox.spy(),
           servers: [],
           session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
-        });
+        };
+        createComponent(<HomePage {...props} />);
       });
 
       it("should setup session when component is mounted", () => {
@@ -298,22 +302,23 @@ describe("HomePage component", () => {
 
   describe("Authenticated", () => {
     let node;
-
-    beforeEach(() => {
-      node = createComponent(HomePage, {
-        match: {},
-        session: {
-          authenticated: true,
-          server: "http://test.server/v1",
-          username: "user",
-          password: "pass",
-          serverInfo: {
-            foo: {
-              bar: "plop",
-            },
+    const props = {
+      match: {},
+      session: {
+        authenticated: true,
+        server: "http://test.server/v1",
+        username: "user",
+        password: "pass",
+        serverInfo: {
+          foo: {
+            bar: "plop",
           },
         },
-      });
+      },
+    };
+
+    beforeEach(() => {
+      node = createComponent(<HomePage {...props} />);
     });
 
     it("should render server information heading", () => {

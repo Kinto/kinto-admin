@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import sinon from "sinon";
 import { Simulate } from "react-dom/test-utils";
+import * as React from "react";
 
 import { createSandbox, createComponent } from "../test_utils";
 
@@ -56,10 +57,9 @@ describe("RecordCreate component", () => {
 
     beforeEach(() => {
       createRecord = sinon.spy();
-      node = createComponent(RecordCreate, {
-        ...props,
-        createRecord,
-      });
+      node = createComponent(
+        <RecordCreate {...props} createRecord={createRecord} />
+      );
     });
 
     it("should render a form", () => {
@@ -91,10 +91,9 @@ describe("RecordCreate component", () => {
 
         describe("ID not in UISchema", () => {
           beforeEach(() => {
-            const node = createComponent(RecordCreate, {
-              ...props,
-              collection: withID,
-            });
+            const node = createComponent(
+              <RecordCreate {...props} collection={withID} />
+            );
             field = node.querySelector("#root_id");
           });
 
@@ -116,10 +115,9 @@ describe("RecordCreate component", () => {
           };
 
           beforeEach(() => {
-            const node = createComponent(RecordCreate, {
-              ...props,
-              collection: withUISchema,
-            });
+            const node = createComponent(
+              <RecordCreate {...props} collection={withUISchema} />
+            );
             field = node.querySelector("#root_id");
           });
 
@@ -137,10 +135,9 @@ describe("RecordCreate component", () => {
         let node;
         describe("ID not in UISchema", () => {
           beforeEach(() => {
-            node = createComponent(RecordCreate, {
-              ...props,
-              collection,
-            });
+            node = createComponent(
+              <RecordCreate {...props} collection={collection} />
+            );
           });
 
           it("should not show the id field", () => {
@@ -159,10 +156,9 @@ describe("RecordCreate component", () => {
           };
 
           beforeEach(() => {
-            const node = createComponent(RecordCreate, {
-              ...props,
-              collection: withUISchema,
-            });
+            const node = createComponent(
+              <RecordCreate {...props} collection={withUISchema} />
+            );
             field = node.querySelector("#root_id");
           });
 

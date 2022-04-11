@@ -3,13 +3,10 @@ import { DEFAULT_SERVERINFO } from "../../src/reducers/session";
 import { createSandbox, createComponent } from "../test_utils";
 import { expect } from "chai";
 import { DEFAULT_KINTO_SERVER } from "../../src/constants";
+import * as React from "react";
 
 describe("AuthForm component", () => {
-  let sandbox,
-    setupSession,
-    getServerInfo,
-    navigateToExternalAuth,
-    serverChange;
+  let sandbox;
 
   beforeEach(() => {
     jest.resetModules();
@@ -20,15 +17,12 @@ describe("AuthForm component", () => {
     sandbox.restore();
   });
   it("should set the default server url in a visible field", () => {
-    const node = createComponent(AuthForm, {
-      match: {},
-      setupSession,
-      serverChange,
-      getServerInfo,
-      servers: [],
-      navigateToExternalAuth,
-      session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
-    });
+    const node = createComponent(
+      <AuthForm
+        session={{ authenticated: false, serverInfo: DEFAULT_SERVERINFO }}
+      />
+    );
+
     const element = node.querySelector("input[id='root_server']");
     expect(element.type).eql("text");
     expect(element.value).eql(DEFAULT_KINTO_SERVER);
@@ -44,15 +38,11 @@ describe("AuthForm component", () => {
       };
     });
     const AuthForm = require("../../src/components/AuthForm").default;
-    const node = createComponent(AuthForm, {
-      match: {},
-      setupSession,
-      serverChange,
-      getServerInfo,
-      servers: [],
-      navigateToExternalAuth,
-      session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
-    });
+    const node = createComponent(
+      <AuthForm
+        session={{ authenticated: false, serverInfo: DEFAULT_SERVERINFO }}
+      />
+    );
     const element = node.querySelector("input[id='root_server']");
     expect(element.type).eql("hidden");
     expect(element.value).eql("http://www.example.com/");

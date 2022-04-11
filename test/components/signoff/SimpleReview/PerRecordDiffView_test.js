@@ -2,15 +2,13 @@ import { expect } from "chai";
 import { createComponent } from "../../../test_utils";
 
 import PerRecordDiffView, {
-  PerRecordDiffViewProps,
   findChangeTypes,
   ChangeType,
 } from "../../../../src/components/signoff/SimpleReview/PerRecordDiffView";
+import * as React from "react";
 
-function defaultSimpleViewDiffsProps(
-  props: Partial<PerRecordDiffViewProps> = null
-): PerRecordDiffViewProps {
-  return {
+function renderSimpleReview(props = null) {
+  const mergedProps = {
     oldRecords: [],
     newRecords: [],
     collectionData: {
@@ -20,44 +18,36 @@ function defaultSimpleViewDiffsProps(
     },
     ...props,
   };
+  return createComponent(<PerRecordDiffView {...mergedProps} />);
 }
 
 describe("PerRecordDiffView component", () => {
   it("should render loading when authenticating", () => {
-    const node = createComponent(
-      PerRecordDiffView,
-      defaultSimpleViewDiffsProps({
-        collectionData: {
-          status: "signed",
-          bid: "a",
-          cid: "b",
-        },
-      })
-    );
+    const node = renderSimpleReview({
+      collectionData: {
+        status: "signed",
+        bid: "a",
+        cid: "b",
+      },
+    });
     expect(node.textContent).to.equal(
       "No changes to review, collection status is signed."
     );
   });
 
   it("should render diffs", () => {
-    const node = createComponent(
-      PerRecordDiffView,
-      defaultSimpleViewDiffsProps({
-        oldRecords: [{ id: "foo" }, { id: "bar" }],
-        newRecords: [{ id: "foo" }, { id: "baz" }],
-      })
-    );
+    const node = renderSimpleReview({
+      oldRecords: [{ id: "foo" }, { id: "bar" }],
+      newRecords: [{ id: "foo" }, { id: "baz" }],
+    });
     expect(node.querySelectorAll(".record-diff")).to.have.lengthOf(2);
   });
 
   it("should render per-record diffs", () => {
-    const node = createComponent(
-      PerRecordDiffView,
-      defaultSimpleViewDiffsProps({
-        oldRecords: [{ id: "foo" }],
-        newRecords: [{ id: "foo" }, { id: "bar" }],
-      })
-    );
+    const node = renderSimpleReview({
+      oldRecords: [{ id: "foo" }],
+      newRecords: [{ id: "foo" }, { id: "bar" }],
+    });
     expect(node.querySelectorAll(".record-diff")).to.have.lengthOf(1);
   });
 });

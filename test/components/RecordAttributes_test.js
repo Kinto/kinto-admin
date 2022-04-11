@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import sinon from "sinon";
 import { Simulate } from "react-dom/test-utils";
+import * as React from "react";
 
 import { createSandbox, createComponent } from "../test_utils";
 
@@ -68,10 +69,9 @@ describe("RecordAttributes component", () => {
 
     beforeEach(() => {
       updateRecord = sinon.spy();
-      node = createComponent(RecordAttributes, {
-        ...props,
-        updateRecord,
-      });
+      node = createComponent(
+        <RecordAttributes {...props} updateRecord={updateRecord} />
+      );
     });
 
     it("should render a form", () => {
@@ -113,11 +113,13 @@ describe("RecordAttributes component", () => {
     };
 
     beforeEach(() => {
-      node = createComponent(RecordAttributes, {
-        ...props,
-        capabilities: { attachments: { base_url: "" } },
-        record,
-      });
+      node = createComponent(
+        <RecordAttributes
+          {...props}
+          capabilities={{ attachments: { base_url: "" } }}
+          record={record}
+        />
+      );
     });
 
     it("should render the attachment info", () => {
@@ -136,11 +138,13 @@ describe("RecordAttributes component", () => {
       };
 
       beforeEach(() => {
-        node = createComponent(RecordAttributes, {
-          ...props,
-          capabilities: { attachments: { base_url: "" } },
-          record: gzipped,
-        });
+        node = createComponent(
+          <RecordAttributes
+            {...props}
+            capabilities={{ attachments: { base_url: "" } }}
+            record={gzipped}
+          />
+        );
       });
 
       it("should show original file attributes", () => {
@@ -162,10 +166,9 @@ describe("RecordAttributes component", () => {
 
       describe("ID not in UISchema", () => {
         beforeEach(() => {
-          const node = createComponent(RecordAttributes, {
-            ...props,
-            collection: withID,
-          });
+          const node = createComponent(
+            <RecordAttributes {...props} collection={withID} />
+          );
           field = node.querySelector("#root_id");
         });
 
@@ -191,10 +194,9 @@ describe("RecordAttributes component", () => {
         };
 
         beforeEach(() => {
-          const node = createComponent(RecordAttributes, {
-            ...props,
-            collection: withUISchema,
-          });
+          const node = createComponent(
+            <RecordAttributes {...props} collection={withUISchema} />
+          );
           field = node.querySelector("#root_id");
         });
 
@@ -216,10 +218,9 @@ describe("RecordAttributes component", () => {
       let node;
       describe("ID not in UISchema", () => {
         beforeEach(() => {
-          node = createComponent(RecordAttributes, {
-            ...props,
-            collection,
-          });
+          node = createComponent(
+            <RecordAttributes {...props} collection={collection} />
+          );
         });
 
         it("should not show the id field", () => {
@@ -238,10 +239,9 @@ describe("RecordAttributes component", () => {
         };
 
         beforeEach(() => {
-          const node = createComponent(RecordAttributes, {
-            ...props,
-            collection: withUISchema,
-          });
+          const node = createComponent(
+            <RecordAttributes {...props} collection={withUISchema} />
+          );
           field = node.querySelector("#root_id");
         });
 
@@ -267,11 +267,13 @@ describe("RecordAttributes component", () => {
 
       describe("Schema version not in UISchema", () => {
         beforeEach(() => {
-          const node = createComponent(RecordAttributes, {
-            ...props,
-            collection: withSchemaVersion,
-            record,
-          });
+          const node = createComponent(
+            <RecordAttributes
+              {...props}
+              collection={withSchemaVersion}
+              record={record}
+            />
+          );
           field = node.querySelector("#root_schema");
         });
 
@@ -296,11 +298,13 @@ describe("RecordAttributes component", () => {
         };
 
         beforeEach(() => {
-          const node = createComponent(RecordAttributes, {
-            ...props,
-            collection: withUISchema,
-            record,
-          });
+          const node = createComponent(
+            <RecordAttributes
+              {...props}
+              collection={withUISchema}
+              record={record}
+            />
+          );
           field = node.querySelector("#root_schema");
         });
 
@@ -322,11 +326,13 @@ describe("RecordAttributes component", () => {
       let node;
       describe("Schema version not in UISchema", () => {
         beforeEach(() => {
-          node = createComponent(RecordAttributes, {
-            ...props,
-            collection,
-            record,
-          });
+          node = createComponent(
+            <RecordAttributes
+              {...props}
+              collection={collection}
+              record={record}
+            />
+          );
         });
 
         it("should not show the schema field", () => {
@@ -346,10 +352,9 @@ describe("RecordAttributes component", () => {
         };
 
         beforeEach(() => {
-          createComponent(RecordAttributes, {
-            ...props,
-            collection: withUISchema,
-          });
+          createComponent(
+            <RecordAttributes {...props} collection={withUISchema} />
+          );
         });
 
         it("should not show the schema field", () => {
@@ -375,11 +380,13 @@ describe("RecordAttributes component", () => {
 
       describe("Last modified not in UISchema", () => {
         beforeEach(() => {
-          const node = createComponent(RecordAttributes, {
-            ...props,
-            collection: withLastmodified,
-            record,
-          });
+          const node = createComponent(
+            <RecordAttributes
+              {...props}
+              collection={withLastmodified}
+              record={record}
+            />
+          );
           field = node.querySelector("#root_last_modified");
         });
 
@@ -404,11 +411,13 @@ describe("RecordAttributes component", () => {
         };
 
         beforeEach(() => {
-          const node = createComponent(RecordAttributes, {
-            ...props,
-            collection: withUISchema,
-            record,
-          });
+          const node = createComponent(
+            <RecordAttributes
+              {...props}
+              collection={withUISchema}
+              record={record}
+            />
+          );
           field = node.querySelector("#root_last_modified");
         });
 
@@ -430,11 +439,13 @@ describe("RecordAttributes component", () => {
       let node;
       describe("Last modified not in UISchema", () => {
         beforeEach(() => {
-          node = createComponent(RecordAttributes, {
-            ...props,
-            collection,
-            record,
-          });
+          node = createComponent(
+            <RecordAttributes
+              {...props}
+              collection={collection}
+              record={record}
+            />
+          );
         });
 
         it("should not show the schema field", () => {
@@ -454,10 +465,9 @@ describe("RecordAttributes component", () => {
         };
 
         beforeEach(() => {
-          createComponent(RecordAttributes, {
-            ...props,
-            collection: withUISchema,
-          });
+          createComponent(
+            <RecordAttributes {...props} collection={withUISchema} />
+          );
         });
 
         it("should not show the schema field", () => {

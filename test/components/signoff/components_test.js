@@ -2,6 +2,7 @@ import { expect } from "chai";
 
 import { createSandbox, createComponent } from "../../test_utils";
 import SignoffToolBar from "../../../src/components/signoff/SignoffToolBar";
+import * as React from "react";
 
 describe("SignoffToolBar component", () => {
   let sandbox;
@@ -66,17 +67,14 @@ describe("SignoffToolBar component", () => {
   });
 
   it("should not be rendered if current collection is not listed in resources", () => {
-    const node = createComponent(SignoffToolBar, {
-      ...props,
-      signoff: {},
-    });
+    const node = createComponent(<SignoffToolBar {...props} signoff={{}} />);
     expect(node).eql(null);
   });
 
   it("should show the request review button if current user is editor", () => {
     // As the group is configured with a placeholder on the server, the group
     // name is resolved with the current collection.
-    const node = createComponent(SignoffToolBar, {
+    const propsOverride = {
       ...props,
       sessionState: {
         ...props.sessionState,
@@ -88,7 +86,8 @@ describe("SignoffToolBar component", () => {
           },
         },
       },
-    });
+    };
+    const node = createComponent(<SignoffToolBar {...propsOverride} />);
     expect(node.querySelectorAll("button.request-review")).to.have.a.lengthOf(
       1
     );
