@@ -9,21 +9,21 @@ import BucketCollectionsPage from "../containers/bucket/BucketCollectionsPage";
 import BucketCreatePage from "../containers/bucket/BucketCreatePage";
 import BucketGroupsPage from "../containers/bucket/BucketGroupsPage";
 import BucketHistoryPage from "../containers/bucket/BucketHistoryPage";
-import BucketPermissionsPage from "../containers/bucket/BucketPermissionsPage";
+import { BucketPermissions } from "../components/bucket/BucketPermissions";
 import CollectionAttributesPage from "../containers/collection/CollectionAttributesPage";
 import CollectionCreatePage from "../containers/collection/CollectionCreatePage";
 import CollectionHistoryPage from "../containers/collection/CollectionHistoryPage";
-import CollectionPermissionsPage from "../containers/collection/CollectionPermissionsPage";
+import { CollectionPermissions } from "../components/collection/CollectionPermissions";
 import CollectionRecordsPage from "../containers/collection/CollectionRecordsPage";
 import HomePage from "../containers/HomePage";
 import GroupAttributesPage from "../containers/group/GroupAttributesPage";
 import GroupCreatePage from "../containers/group/GroupCreatePage";
 import GroupHistoryPage from "../containers/group/GroupHistoryPage";
-import GroupPermissionsPage from "../containers/group/GroupPermissionsPage";
+import { GroupPermissions } from "../components/group/GroupPermissions";
 import RecordCreatePage from "../containers/record/RecordCreatePage";
 import RecordBulkPage from "../containers/record/RecordBulkPage";
 import RecordAttributesPage from "../containers/record/RecordAttributesPage";
-import RecordPermissionsPage from "../containers/record/RecordPermissionsPage";
+import { RecordPermissions } from "../components/record/RecordPermissions";
 import RecordHistoryPage from "../containers/record/RecordHistoryPage";
 import SimpleReviewPage from "../containers/signoff/SimpleReviewPage";
 import { Sidebar } from "../components/Sidebar";
@@ -122,7 +122,7 @@ export const Layout = () => {
                                     exact
                                     title="permissions"
                                     path="/buckets/:bid/groups/:gid/permissions"
-                                    component={GroupPermissionsPage}
+                                    component={GroupPermissions}
                                   />
                                   <CreateRoute
                                     exact
@@ -144,7 +144,7 @@ export const Layout = () => {
                             exact
                             title="permissions"
                             path="/buckets/:bid/permissions"
-                            component={BucketPermissionsPage}
+                            component={BucketPermissions}
                           />
                           <CreateRoute
                             exact
@@ -189,7 +189,7 @@ export const Layout = () => {
                                     exact
                                     title="permissions"
                                     path="/buckets/:bid/collections/:cid/permissions"
-                                    component={CollectionPermissionsPage}
+                                    component={CollectionPermissions}
                                   />
                                   <CreateRoute
                                     exact
@@ -249,7 +249,7 @@ export const Layout = () => {
                                               "permissions",
                                               "/buckets/:bid/collections/:cid/records/:rid/permissions",
                                             ]}
-                                            component={RecordPermissionsPage}
+                                            component={RecordPermissions}
                                           />
                                           <CreateRoute
                                             exact
