@@ -1,6 +1,6 @@
 import type { History } from "history";
 
-import { combineReducers } from "redux";
+import { combineReducers } from "@reduxjs/toolkit";
 import { connectRouter } from "connected-react-router";
 
 import session from "./session";
