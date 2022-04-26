@@ -2,15 +2,15 @@ import * as React from "react";
 import { BoxArrowRight } from "react-bootstrap-icons";
 import { QuestionCircleFill } from "react-bootstrap-icons";
 import { Clipboard } from "react-bootstrap-icons";
-import { useDispatch } from "react-redux";
-import { useAppSelector } from "../hooks";
+
+import { useAppSelector, useAppDispatch } from "../hooks";
 import * as SessionActions from "../actions/session";
 
 export const SessionInfoBar = () => {
   const { url, project_name, project_docs, user } = useAppSelector(
     store => store.session.serverInfo
   );
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   return (
     <div className="session-info-bar">
       <h1 className="kinto-admin-title">{project_name}</h1>

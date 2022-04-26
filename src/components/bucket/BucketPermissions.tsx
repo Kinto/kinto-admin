@@ -8,11 +8,11 @@ import BucketTabs from "./BucketTabs";
 import { PermissionsForm } from "../PermissionsForm";
 import { canEditBucket } from "../../permission";
 import { useParams } from "react-router";
-import { useDispatch } from "react-redux";
-import { useAppSelector } from "../../hooks";
+
+import { useAppSelector, useAppDispatch } from "../../hooks";
 
 export const BucketPermissions = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { bid } = useParams<{ bid: string }>();
   const session = useAppSelector(store => store.session);
   const bucket = useAppSelector(store => store.bucket);

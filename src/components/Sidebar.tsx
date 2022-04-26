@@ -19,8 +19,7 @@ import AdminLink from "./AdminLink";
 import url from "../url";
 import { canCreateBucket } from "../permission";
 import { SIDEBAR_MAX_LISTED_COLLECTIONS } from "../constants";
-import { useAppSelector } from "../hooks";
-import { useDispatch } from "react-redux";
+import { useAppSelector, useAppDispatch } from "../hooks";
 
 type SideBarLinkProps = {
   currentPath: string;
@@ -49,7 +48,7 @@ function SideBarLink(props: SideBarLinkProps) {
 }
 
 const HomeMenu = ({ currentPath }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   return (
     <div className="card home-menu">
       <div className="list-group list-group-flush">

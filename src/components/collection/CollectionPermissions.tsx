@@ -7,9 +7,8 @@ import Spinner from "../Spinner";
 import CollectionTabs from "./CollectionTabs";
 import { PermissionsForm } from "../PermissionsForm";
 import { canEditCollection } from "../../permission";
-import { useDispatch } from "react-redux";
 import { useParams } from "react-router";
-import { useAppSelector } from "../../hooks";
+import { useAppSelector, useAppDispatch } from "../../hooks";
 interface RouteParams {
   bid: string;
   cid: string;
@@ -21,7 +20,7 @@ export const CollectionPermissions = () => {
   const collection = useAppSelector(state => state.collection);
   const { busy, permissions } = collection;
   const acls = ["read", "write", "record:create"];
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const onSubmit = ({ formData }: { formData: CollectionPermissionsType }) => {
     dispatch(

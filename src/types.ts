@@ -1,15 +1,9 @@
+import { store } from "./store/configureStore";
+
 export type ActionType<T extends (...args: any[]) => any> = ReturnType<T>;
 
-export type AppState = {
-  router: any;
-  session: SessionState;
-  bucket: BucketState;
-  collection: CollectionState;
-  group: GroupState;
-  record: RecordState;
-  notifications: Notifications;
-  servers: ServerEntry[];
-};
+export type AppDispatch = typeof store.dispatch;
+export type AppState = ReturnType<typeof store.getState>;
 
 export type Attachment = {
   location: string;
@@ -150,7 +144,7 @@ export type CollectionUpdate =
       permissions: CollectionPermissions;
     };
 
-export type GetStateFn = () => AppState;
+export type GetStateFn = typeof store.getState;
 
 export type GroupState = {
   busy: boolean;
