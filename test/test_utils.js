@@ -5,17 +5,27 @@ import sinon from "sinon";
 import ReactDOM from "react-dom";
 import { ConnectedRouter } from "connected-react-router";
 import { Provider } from "react-redux";
-import configureStore, { hashHistory } from "../src/store/configureStore";
+import configureStore from "../src/store/configureStore";
 import * as notificationsActions from "../src/actions/notifications";
+import { createMemoryHistory } from "history";
+import { Route } from "react-router-dom";
 
 export function createComponent(
   ui,
-  { initialState, store = configureStore(initialState) } = {}
+  {
+    initialState,
+    route = "/",
+    path = "/",
+    history = createMemoryHistory({ initialEntries: [route] }),
+    store = configureStore(initialState, history),
+  } = {}
 ) {
   const domContainer = document.createElement("div");
   ReactDOM.render(
     <Provider store={store}>
-      <ConnectedRouter history={hashHistory}>{ui}</ConnectedRouter>
+      <ConnectedRouter history={history} noInitialPop>
+        <Route path={path}>{ui}</Route>
+      </ConnectedRouter>
     </Provider>,
     domContainer
   );
