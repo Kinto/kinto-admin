@@ -4,6 +4,7 @@ import sinon from "sinon";
 import { Simulate } from "react-dom/test-utils";
 import { mount } from "enzyme";
 
+import * as localStore from "../../src/store/localStore";
 import { createSandbox, createComponent } from "../test_utils";
 import HomePage from "../../src/components/HomePage";
 import AuthForm from "../../src/components/AuthForm";
@@ -15,6 +16,7 @@ describe("HomePage component", () => {
 
   beforeEach(() => {
     sandbox = createSandbox();
+    localStore.clearSession();
     clock = sinon.useFakeTimers();
   });
 
@@ -24,6 +26,71 @@ describe("HomePage component", () => {
   });
 
   describe("Not authenticated", () => {
+    describe("Session setup", () => {
+      let setupSession,
+        getServerInfo,
+        navigateToExternalAuth,
+        navigateToOpenID,
+        serverChange,
+        props;
+
+      const auth = {
+        authType: "anonymous",
+        server: "http://server.test/v1",
+      };
+      const session = {
+        auth,
+        buckets: [{}],
+        serverInfo: {
+          capabilities: {
+            basicauth: "some basic auth info",
+            ldap: "some ldap auth info",
+            fxa: "some fxa auth info",
+            openid: {
+              providers: [
+                {
+                  name: "google",
+                },
+              ],
+            },
+          },
+        },
+      };
+      beforeEach(() => {
+        setupSession = sandbox.spy();
+        serverChange = sandbox.spy();
+        getServerInfo = sandbox.spy();
+        navigateToExternalAuth = sandbox.spy();
+        navigateToOpenID = sandbox.spy();
+        props = {
+          match: {},
+          setupSession,
+          serverChange,
+          getServerInfo,
+          servers: ["http://server.test/v1"],
+          navigateToExternalAuth,
+          navigateToOpenID,
+          session,
+        };
+      });
+      it("should call setupSession if localStorage session available", () => {
+        localStore.saveSession(session);
+        createComponent(<HomePage {...props} />);
+        sinon.assert.calledWithExactly(setupSession, {
+          authType: "anonymous",
+          server: "http://server.test/v1",
+        });
+      });
+
+      it("should call getServerInfo if no localStorage session", () => {
+        createComponent(<HomePage {...props} />);
+        sinon.assert.calledWithExactly(getServerInfo, {
+          authType: "anonymous",
+          server: sinon.match.string,
+        });
+      });
+    });
+
     describe("Authentication types", () => {
       let node,
         setupSession,
@@ -301,23 +368,25 @@ describe("HomePage component", () => {
   });
 
   describe("Authenticated", () => {
-    let node;
-    const props = {
-      match: {},
-      session: {
-        authenticated: true,
-        server: "http://test.server/v1",
-        username: "user",
-        password: "pass",
-        serverInfo: {
-          foo: {
-            bar: "plop",
-          },
-        },
-      },
-    };
+    let node, getServerInfo;
 
     beforeEach(() => {
+      getServerInfo = sandbox.spy();
+      const props = {
+        match: {},
+        session: {
+          authenticated: true,
+          server: "http://test.server/v1",
+          username: "user",
+          password: "pass",
+          serverInfo: {
+            foo: {
+              bar: "plop",
+            },
+          },
+        },
+        getServerInfo,
+      };
       node = createComponent(<HomePage {...props} />);
     });
 
