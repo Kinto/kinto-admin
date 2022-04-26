@@ -5,7 +5,7 @@ import sinon from "sinon";
 import ReactDOM from "react-dom";
 import { ConnectedRouter } from "connected-react-router";
 import { Provider } from "react-redux";
-import configureStore from "../src/store/configureStore";
+import { configureAppStore } from "../src/store/configureStore";
 import * as notificationsActions from "../src/actions/notifications";
 import { createMemoryHistory } from "history";
 import { Route } from "react-router-dom";
@@ -17,7 +17,7 @@ export function createComponent(
     route = "/",
     path = "/",
     history = createMemoryHistory({ initialEntries: [route] }),
-    store = configureStore(initialState, history),
+    store = configureAppStore(initialState, history),
   } = {}
 ) {
   const domContainer = document.createElement("div");
