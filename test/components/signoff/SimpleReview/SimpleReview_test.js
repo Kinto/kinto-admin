@@ -3,7 +3,7 @@ import * as React from "react";
 
 import testUtils from "react-dom/test-utils";
 
-import { createComponent } from "../../../test_utils";
+import { createComponent, sessionFactory } from "../../../test_utils";
 import SimpleReview from "../../../../src/components/signoff/SimpleReview";
 
 function signoffFactory() {
@@ -38,36 +38,6 @@ function signoffFactory() {
     pendingConfirmReviewRequest: false,
     pendingConfirmDeclineChanges: false,
     pendingConfirmRollbackChanges: false,
-  };
-}
-
-function sessionFactory(props) {
-  return {
-    busy: false,
-    authenticating: false,
-    auth: {
-      authType: "basicauth",
-      server: "asdasd",
-      credentials: {
-        username: "user",
-        password: "123",
-      },
-    },
-    authenticated: true,
-    permissions: [],
-    buckets: [],
-    serverInfo: {
-      url: "",
-      project_name: "foo",
-      project_docs: "foo",
-      capabilities: {},
-      user: {
-        id: "user1",
-        principals: [`/buckets/main-workspace/groups/my-collection-reviewers`],
-      },
-    },
-    ...props,
-    redirectURL: "",
   };
 }
 

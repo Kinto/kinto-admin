@@ -12,11 +12,14 @@ const sagaMiddleware = createSagaMiddleware();
 
 export const hashHistory = createHashHistory();
 
-export default function configureStore(initialState: Object = {}) {
+export default function configureStore(
+  initialState: Object = {},
+  history = hashHistory
+) {
   const finalCreateStore = compose(
     applyMiddleware<AppState, any, any>(
       sagaMiddleware,
-      routerMiddleware(hashHistory)
+      routerMiddleware(history)
     ),
     // prettier-ignore
     (window as any).__REDUX_DEVTOOLS_EXTENSION__
@@ -25,7 +28,7 @@ export default function configureStore(initialState: Object = {}) {
   )(createStore);
 
   const store = finalCreateStore(
-    createRootReducer(hashHistory),
+    createRootReducer(history),
     initialState as any
   );
   // Every saga will receive the store getState() function as first argument

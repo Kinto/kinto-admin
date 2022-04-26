@@ -5,17 +5,27 @@ import sinon from "sinon";
 import ReactDOM from "react-dom";
 import { ConnectedRouter } from "connected-react-router";
 import { Provider } from "react-redux";
-import configureStore, { hashHistory } from "../src/store/configureStore";
+import configureStore from "../src/store/configureStore";
 import * as notificationsActions from "../src/actions/notifications";
+import { createMemoryHistory } from "history";
+import { Route } from "react-router-dom";
 
 export function createComponent(
   ui,
-  { initialState, store = configureStore(initialState) } = {}
+  {
+    initialState,
+    route = "/",
+    path = "/",
+    history = createMemoryHistory({ initialEntries: [route] }),
+    store = configureStore(initialState, history),
+  } = {}
 ) {
   const domContainer = document.createElement("div");
   ReactDOM.render(
     <Provider store={store}>
-      <ConnectedRouter history={hashHistory}>{ui}</ConnectedRouter>
+      <ConnectedRouter history={history} noInitialPop>
+        <Route path={path}>{ui}</Route>
+      </ConnectedRouter>
     </Provider>,
     domContainer
   );
@@ -37,4 +47,34 @@ export function mockNotifyError(sandbox) {
     .callsFake((...args) => {
       return args;
     });
+}
+
+export function sessionFactory(props) {
+  return {
+    busy: false,
+    authenticating: false,
+    auth: {
+      authType: "basicauth",
+      server: "asdasd",
+      credentials: {
+        username: "user",
+        password: "123",
+      },
+    },
+    authenticated: true,
+    permissions: [],
+    buckets: [],
+    serverInfo: {
+      url: "",
+      project_name: "foo",
+      project_docs: "foo",
+      capabilities: {},
+      user: {
+        id: "user1",
+        principals: [`/buckets/main-workspace/groups/my-collection-reviewers`],
+      },
+    },
+    ...props,
+    redirectURL: "",
+  };
 }
