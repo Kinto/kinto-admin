@@ -111,6 +111,7 @@ export default function HomePage(props: Props) {
         server: getServerByPriority(servers),
       });
     }
+    // dependency array left empty so this behaves like `componentDidMount`
   }, []);
 
   React.useEffect(() => {
@@ -180,6 +181,7 @@ export default function HomePage(props: Props) {
       const message = "Couldn't proceed with authentication.";
       notifyError(message, error);
     }
+    // dependency array left empty so this behaves like `componentDidMount`
   }, []);
 
   return (
