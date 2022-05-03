@@ -5,9 +5,8 @@ import Spinner from "../Spinner";
 import RecordTabs from "./RecordTabs";
 import { PermissionsForm } from "../PermissionsForm";
 import { canEditRecord } from "../../permission";
-import { useDispatch } from "react-redux";
 import { useParams } from "react-router";
-import { useAppSelector } from "../../hooks";
+import { useAppSelector, useAppDispatch } from "../../hooks";
 
 interface RouteParams {
   bid: string;
@@ -19,7 +18,7 @@ export const RecordPermissions = () => {
   const session = useAppSelector(state => state.session);
   const collection = useAppSelector(state => state.collection);
   const record = useAppSelector(state => state.record);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { bid, cid, rid } = useParams<RouteParams>();
 
   const onSubmit = ({ formData }: { formData: any }) => {

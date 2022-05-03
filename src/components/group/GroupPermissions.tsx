@@ -10,9 +10,8 @@ import Spinner from "../Spinner";
 import GroupTabs from "./GroupTabs";
 import { PermissionsForm } from "../PermissionsForm";
 import { canEditGroup } from "../../permission";
-import { useAppSelector } from "../../hooks";
+import { useAppSelector, useAppDispatch } from "../../hooks";
 import { useParams } from "react-router";
-import { useDispatch } from "react-redux";
 
 export const GroupPermissions = () => {
   const bucket = useAppSelector(state => state.bucket);
@@ -20,7 +19,7 @@ export const GroupPermissions = () => {
   const { busy, permissions } = group;
   const session = useAppSelector(state => state.session);
   const { bid, gid } = useParams<GroupPermissionsRouteMatchParams>();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const onSubmit = ({ formData }: { formData: GroupPermissionsType }) => {
     dispatch(BucketActions.updateGroup(bid, gid, { permissions: formData }));

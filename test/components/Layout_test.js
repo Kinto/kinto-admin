@@ -2,7 +2,7 @@ import React from "react";
 import { expect } from "chai";
 import sinon from "sinon";
 
-import configureStore, { hashHistory } from "../../src/store/configureStore";
+import { configureAppStore, hashHistory } from "../../src/store/configureStore";
 import { createSandbox } from "../test_utils";
 import { mount } from "enzyme";
 import { ConnectedRouter } from "connected-react-router";
@@ -17,7 +17,7 @@ describe("App component", () => {
   beforeEach(() => {
     sandbox = createSandbox();
     sandbox.spy(sessionActions, "logout");
-    store = configureStore();
+    store = configureAppStore();
     clock = sinon.useFakeTimers();
     app = mount(
       <Provider store={store}>

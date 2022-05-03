@@ -7,14 +7,15 @@ import type {
   ServerEntry,
 } from "../types";
 
-import React, { PureComponent } from "react";
+import * as React from "react";
 
 import * as ServersActions from "../actions/servers";
 import * as NotificationActions from "../actions/notifications";
 import * as SessionActions from "../actions/session";
 import Spinner from "./Spinner";
 import AuthForm from "./AuthForm";
-import { isObject } from "../utils";
+import { getServerByPriority, isObject } from "../utils";
+import { loadSession } from "../store/localStore";
 
 function ServerProps({ node }: { node: any }) {
   const nodes = Array.isArray(node)
@@ -82,15 +83,40 @@ export type Props = OwnProps &
     navigateToOpenID: typeof SessionActions.navigateToOpenID;
   };
 
-export default class HomePage extends PureComponent<Props> {
-  componentDidMount = () => {
+export default function HomePage(props: Props) {
+  const {
+    session,
+    servers,
+    clearServers,
+    setupSession,
+    serverChange,
+    getServerInfo,
+    navigateToExternalAuth,
+    navigateToOpenID,
+    notifyError,
+    match: { params = {} as { payload?: string; token?: string } },
+  } = props;
+
+  const { authenticated, authenticating, serverInfo } = session;
+  const { project_name } = serverInfo;
+
+  React.useEffect(() => {
+    const session = loadSession();
+    if (session && session.auth) {
+      setupSession(session.auth);
+    } else {
+      const servers = props.servers;
+      getServerInfo({
+        authType: "anonymous",
+        server: getServerByPriority(servers),
+      });
+    }
+    // dependency array left empty so this behaves like `componentDidMount`
+  }, []);
+
+  React.useEffect(() => {
     // Check if the home page URL contains some payload/token data
     // coming from an *OpenID Connect* redirection.
-    const {
-      match: { params = {} as { payload?: string; token?: string } },
-      setupSession,
-      notifyError,
-    } = this.props;
     const { payload } = params;
     let { token } = params;
 
@@ -155,41 +181,28 @@ export default class HomePage extends PureComponent<Props> {
       const message = "Couldn't proceed with authentication.";
       notifyError(message, error);
     }
-  };
+    // dependency array left empty so this behaves like `componentDidMount`
+  }, []);
 
-  render() {
-    const {
-      session,
-      servers,
-      clearServers,
-      setupSession,
-      serverChange,
-      getServerInfo,
-      navigateToExternalAuth,
-      navigateToOpenID,
-    } = this.props;
-    const { authenticated, authenticating, serverInfo } = session;
-    const { project_name } = serverInfo;
-    return (
-      <div>
-        <h1>{`${project_name} Administration`}</h1>
-        {authenticating ? (
-          <Spinner />
-        ) : authenticated ? (
-          <SessionInfo session={session} />
-        ) : (
-          <AuthForm
-            setupSession={setupSession}
-            serverChange={serverChange}
-            getServerInfo={getServerInfo}
-            session={session}
-            servers={servers}
-            clearServers={clearServers}
-            navigateToExternalAuth={navigateToExternalAuth}
-            navigateToOpenID={navigateToOpenID}
-          />
-        )}
-      </div>
-    );
-  }
+  return (
+    <div>
+      <h1>{`${project_name} Administration`}</h1>
+      {authenticating ? (
+        <Spinner />
+      ) : authenticated ? (
+        <SessionInfo session={session} />
+      ) : (
+        <AuthForm
+          setupSession={setupSession}
+          serverChange={serverChange}
+          getServerInfo={getServerInfo}
+          session={session}
+          servers={servers}
+          clearServers={clearServers}
+          navigateToExternalAuth={navigateToExternalAuth}
+          navigateToOpenID={navigateToOpenID}
+        />
+      )}
+    </div>
+  );
 }
