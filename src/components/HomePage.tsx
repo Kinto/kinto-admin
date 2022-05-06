@@ -83,7 +83,7 @@ export type Props = OwnProps &
     navigateToOpenID: typeof SessionActions.navigateToOpenID;
   };
 
-export default function HomePage(props: Props) {
+export function HomePage(props: Props) {
   const {
     session,
     servers,

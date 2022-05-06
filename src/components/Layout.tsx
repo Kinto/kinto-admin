@@ -15,7 +15,7 @@ import CollectionCreatePage from "../containers/collection/CollectionCreatePage"
 import CollectionHistoryPage from "../containers/collection/CollectionHistoryPage";
 import { CollectionPermissions } from "../components/collection/CollectionPermissions";
 import CollectionRecordsPage from "../containers/collection/CollectionRecordsPage";
-import HomePage from "../containers/HomePage";
+import { HomePage } from "../components/HomePage";
 import GroupAttributesPage from "../containers/group/GroupAttributesPage";
 import GroupCreatePage from "../containers/group/GroupCreatePage";
 import GroupHistoryPage from "../containers/group/GroupHistoryPage";
