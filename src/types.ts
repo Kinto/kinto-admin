@@ -264,13 +264,6 @@ export type ResourceHistoryEntry = {
 
 export type EmptyRouteParams = {};
 
-export type HomePageRouteMatch = {
-  params: { payload: string; token: string };
-  isExact: boolean;
-  path: string;
-  url: string;
-};
-
 export type BucketRouteMatch = {
   params: { bid: string };
   isExact: boolean;

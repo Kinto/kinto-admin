@@ -1,11 +1,4 @@
-import type {
-  OpenIDAuth,
-  TokenAuth,
-  PortierAuth,
-  HomePageRouteMatch,
-  SessionState,
-  ServerEntry,
-} from "../types";
+import type { OpenIDAuth, TokenAuth, PortierAuth } from "../types";
 
 import * as React from "react";
 
@@ -16,6 +9,8 @@ import Spinner from "./Spinner";
 import AuthForm from "./AuthForm";
 import { getServerByPriority, isObject } from "../utils";
 import { loadSession } from "../store/localStore";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import { useParams } from "react-router";
 
 function ServerProps({ node }: { node: any }) {
   const nodes = Array.isArray(node)
@@ -63,53 +58,25 @@ function SessionInfo({ session: { serverInfo } }) {
   );
 }
 
-export type OwnProps = {
-  match: HomePageRouteMatch;
-};
-
-export type StateProps = {
-  session: SessionState;
-  servers: ServerEntry[];
-};
-
-export type Props = OwnProps &
-  StateProps & {
-    clearServers: typeof ServersActions.clearServers;
-    setupSession: typeof SessionActions.setupSession;
-    notifyError: typeof NotificationActions.notifyError;
-    serverChange: typeof SessionActions.serverChange;
-    getServerInfo: typeof SessionActions.getServerInfo;
-    navigateToExternalAuth: typeof SessionActions.navigateToExternalAuth;
-    navigateToOpenID: typeof SessionActions.navigateToOpenID;
-  };
-
-export function HomePage(props: Props) {
-  const {
-    session,
-    servers,
-    clearServers,
-    setupSession,
-    serverChange,
-    getServerInfo,
-    navigateToExternalAuth,
-    navigateToOpenID,
-    notifyError,
-    match: { params = {} as { payload?: string; token?: string } },
-  } = props;
-
+export function HomePage() {
+  const dispatch = useAppDispatch();
+  const session = useAppSelector(state => state.session);
+  const servers = useAppSelector(state => state.servers);
   const { authenticated, authenticating, serverInfo } = session;
   const { project_name } = serverInfo;
+  const params = useParams<{ payload?: string; token?: string }>();
 
   React.useEffect(() => {
     const session = loadSession();
     if (session && session.auth) {
-      setupSession(session.auth);
+      dispatch(SessionActions.setupSession(session.auth));
     } else {
-      const servers = props.servers;
-      getServerInfo({
-        authType: "anonymous",
-        server: getServerByPriority(servers),
-      });
+      dispatch(
+        SessionActions.getServerInfo({
+          authType: "anonymous",
+          server: getServerByPriority(servers),
+        })
+      );
     }
     // dependency array left empty so this behaves like `componentDidMount`
   }, []);
@@ -176,10 +143,10 @@ export function HomePage(props: Props) {
       // This action is bound with the setupSession() saga, which will
       // eventually lead to a call to setupClient() that globally sets
       // the headers of the API client.
-      setupSession(authData);
+      dispatch(SessionActions.setupSession(authData));
     } catch (error) {
       const message = "Couldn't proceed with authentication.";
-      notifyError(message, error);
+      dispatch(NotificationActions.notifyError(message, error));
     }
     // dependency array left empty so this behaves like `componentDidMount`
   }, []);
@@ -193,14 +160,18 @@ export function HomePage(props: Props) {
         <SessionInfo session={session} />
       ) : (
         <AuthForm
-          setupSession={setupSession}
-          serverChange={serverChange}
-          getServerInfo={getServerInfo}
+          setupSession={auth => dispatch(SessionActions.setupSession(auth))}
+          serverChange={() => dispatch(SessionActions.serverChange())}
+          getServerInfo={auth => dispatch(SessionActions.getServerInfo(auth))}
           session={session}
           servers={servers}
-          clearServers={clearServers}
-          navigateToExternalAuth={navigateToExternalAuth}
-          navigateToOpenID={navigateToOpenID}
+          clearServers={() => dispatch(ServersActions.clearServers())}
+          navigateToExternalAuth={authFormData =>
+            dispatch(SessionActions.navigateToExternalAuth(authFormData))
+          }
+          navigateToOpenID={(authFormData, provider) =>
+            dispatch(SessionActions.navigateToOpenID(authFormData, provider))
+          }
         />
       )}
     </div>
