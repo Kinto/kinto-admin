@@ -20,6 +20,17 @@ describe("HomePage component", () => {
     localStore.clearSession();
   });
 
+  describe("Authenticating", () => {
+    it("loads a spinner when authenticating", () => {
+      const node = createComponent(<HomePage />, {
+        initialState: {
+          session: sessionFactory({ authenticating: true }),
+        },
+      });
+      expect(node.querySelector(".spinner")).to.be.ok;
+    });
+  });
+
   describe("Not authenticated", () => {
     describe("Session setup", () => {
       it("should call setupSession if localStorage session available", () => {
