@@ -32,7 +32,7 @@
     "connected-react-router": "^6.9.2",
     "diff": "^5.0.0",
     "express": "^4.14.0",
-    "filesize": "^8.0.2",
+    "filesize": "^9.0.0",
     "history": "^4.10.1",
     "html-webpack-plugin": "^5.5.0",
     "kinto-admin-form": "0.0.0-experimental-8183a9c80",
