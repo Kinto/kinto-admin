@@ -2,28 +2,28 @@ import React from "react";
 import { expect } from "chai";
 import sinon from "sinon";
 
-import { configureAppStore, hashHistory } from "../../src/store/configureStore";
+import { configureAppStore } from "../../src/store/configureStore";
 import { createSandbox } from "../test_utils";
 import { mount } from "enzyme";
-import { ConnectedRouter } from "connected-react-router";
+import { Router } from "react-router";
 import { Provider } from "react-redux";
 
 import { Layout } from "../../src/components/Layout";
 import * as sessionActions from "../../src/actions/session";
 
 describe("App component", () => {
-  let app, clock, sandbox, store;
+  let app, clock, sandbox, store, history;
 
   beforeEach(() => {
     sandbox = createSandbox();
     sandbox.spy(sessionActions, "logout");
-    store = configureAppStore();
+    ({ store, history } = configureAppStore());
     clock = sinon.useFakeTimers();
     app = mount(
       <Provider store={store}>
-        <ConnectedRouter history={hashHistory}>
+        <Router history={history}>
           <Layout />
-        </ConnectedRouter>
+        </Router>
       </Provider>
     );
   });

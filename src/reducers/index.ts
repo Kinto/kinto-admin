@@ -1,7 +1,6 @@
-import type { History } from "history";
-
+import { Reducer } from "redux";
 import { combineReducers } from "@reduxjs/toolkit";
-import { connectRouter } from "connected-react-router";
+import { RouterState } from "redux-first-history";
 
 import session from "./session";
 import bucket from "./bucket";
@@ -12,9 +11,9 @@ import notifications from "./notifications";
 import servers from "./servers";
 import signoff from "./signoff";
 
-export default function createRootReducer(history: History) {
+export default function createRootReducer(routerReducer: Reducer<RouterState>) {
   return combineReducers({
-    router: connectRouter(history),
+    router: routerReducer,
     session,
     bucket,
     collection,

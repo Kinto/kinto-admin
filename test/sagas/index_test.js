@@ -14,7 +14,8 @@ import * as collectionActions from "../../src/actions/collection";
 
 function expectSagaCalled(saga, action) {
   // Note: the rootSaga function is called by configureStore
-  configureAppStore().dispatch(action);
+  const { store } = configureAppStore();
+  store.dispatch(action);
 
   expect(saga.firstCall.args[0].name).eql("bound getState");
   expect(saga.firstCall.args[1]).eql(action);
