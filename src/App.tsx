@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ConnectedRouter } from "connected-react-router";
+import { Router } from "react-router";
 import { Provider } from "react-redux";
 
 import { hashHistory, store } from "./store/configureStore";
@@ -11,9 +11,9 @@ import { Layout } from "./components/Layout";
 export const App = () => {
   return (
     <Provider store={store}>
-      <ConnectedRouter history={hashHistory}>
+      <Router history={hashHistory}>
         <Layout />
-      </ConnectedRouter>
+      </Router>
     </Provider>
   );
 };
