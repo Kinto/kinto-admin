@@ -4,7 +4,7 @@ import type { StateProps } from "../../components/collection/CollectionRecords";
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { push as updatePath } from "connected-react-router";
+import { push as updatePath } from "redux-first-history";
 
 import CollectionRecords from "../../components/collection/CollectionRecords";
 import * as CollectionActions from "../../actions/collection";

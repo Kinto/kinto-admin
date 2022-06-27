@@ -9,7 +9,7 @@ import type {
   SagaGen,
 } from "../types";
 
-import { push as updatePath } from "connected-react-router";
+import { push as updatePath } from "redux-first-history";
 import { call, put } from "redux-saga/effects";
 
 import { saveSession, clearSession } from "../store/localStore";

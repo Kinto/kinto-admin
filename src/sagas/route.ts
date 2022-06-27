@@ -4,7 +4,7 @@ import { call, put, take } from "redux-saga/effects";
 import {
   push as updatePath,
   replace as replacePath,
-} from "connected-react-router";
+} from "redux-first-history";
 
 import { getClient } from "../client";
 import { storeRedirectURL } from "../actions/session";
