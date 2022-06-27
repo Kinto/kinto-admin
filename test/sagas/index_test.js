@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import { createSandbox } from "../test_utils";
 
-import { configureAppStore } from "../../src/store/configureStore";
+import { configureAppStoreAndHistory } from "../../src/store/configureStore";
 import * as routeSagas from "../../src/sagas/route";
 import * as sessionSagas from "../../src/sagas/session";
 import * as bucketSagas from "../../src/sagas/bucket";
@@ -14,7 +14,7 @@ import * as collectionActions from "../../src/actions/collection";
 
 function expectSagaCalled(saga, action) {
   // Note: the rootSaga function is called by configureStore
-  const { store } = configureAppStore();
+  const { store } = configureAppStoreAndHistory();
   store.dispatch(action);
 
   expect(saga.firstCall.args[0].name).eql("bound getState");

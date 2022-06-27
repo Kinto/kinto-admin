@@ -5,7 +5,7 @@ import sinon from "sinon";
 import ReactDOM from "react-dom";
 import { Router } from "react-router";
 import { Provider } from "react-redux";
-import { configureAppStore } from "../src/store/configureStore";
+import { configureAppStoreAndHistory } from "../src/store/configureStore";
 import * as notificationsActions from "../src/actions/notifications";
 import { createMemoryHistory } from "history";
 import { Route } from "react-router-dom";
@@ -19,7 +19,10 @@ export function createComponent(
     initialHistory = createMemoryHistory({ initialEntries: [route] }),
   } = {}
 ) {
-  const { store, history } = configureAppStore(initialState, initialHistory);
+  const { store, history } = configureAppStoreAndHistory(
+    initialState,
+    initialHistory
+  );
   const domContainer = document.createElement("div");
   ReactDOM.render(
     <Provider store={store}>
