@@ -2,9 +2,9 @@
 
 [![Build Status](https://img.shields.io/github/workflow/status/Kinto/kinto-admin/CI/master)](https://github.com/Kinto/kinto-admin/actions)
 
-A Web admin UI to manage data from a [Kinto](https://kinto.readthedocs.io/) server. [Demo](http://kinto.github.io/kinto-admin/).
+A Web admin UI to manage data from a [Kinto](https://kinto.readthedocs.io/) server. [Demo](https://kinto.github.io/kinto-admin/).
 
-`kinto-admin` wants to be the [pgAdmin](http://pgadmin.org/) for
+`kinto-admin` wants to be the [pgAdmin](https://www.pgadmin.org/) for
 Kinto. You can also use it to build administration interfaces for
 Kinto-based systems.
 
