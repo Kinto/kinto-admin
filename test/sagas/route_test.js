@@ -1,6 +1,6 @@
 import sinon from "sinon";
 import { expect } from "chai";
-import { push as updatePath } from "connected-react-router";
+import { push as updatePath } from "redux-first-history";
 import { call, put, take } from "redux-saga/effects";
 
 import { createSandbox, mockNotifyError } from "../test_utils";

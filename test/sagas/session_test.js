@@ -1,7 +1,7 @@
 import sinon from "sinon";
 import { expect } from "chai";
 import { createSandbox, mockNotifyError } from "../test_utils";
-import { push as updatePath } from "connected-react-router";
+import { push as updatePath } from "redux-first-history";
 import { put, call } from "redux-saga/effects";
 
 import { saveSession, clearSession } from "../../src/store/localStore";

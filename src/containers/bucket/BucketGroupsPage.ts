@@ -4,7 +4,7 @@ import type { StateProps } from "../../components/bucket/BucketGroups";
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { push as updatePath } from "connected-react-router";
+import { push as updatePath } from "redux-first-history";
 
 import BucketGroups from "../../components/bucket/BucketGroups";
 import * as BucketActions from "../../actions/bucket";

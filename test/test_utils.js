@@ -3,9 +3,9 @@
 import React from "react";
 import sinon from "sinon";
 import ReactDOM from "react-dom";
-import { ConnectedRouter } from "connected-react-router";
+import { Router } from "react-router";
 import { Provider } from "react-redux";
-import { configureAppStore } from "../src/store/configureStore";
+import { configureAppStoreAndHistory } from "../src/store/configureStore";
 import * as notificationsActions from "../src/actions/notifications";
 import { createMemoryHistory } from "history";
 import { Route } from "react-router-dom";
@@ -16,16 +16,19 @@ export function createComponent(
     initialState,
     route = "/",
     path = "/",
-    history = createMemoryHistory({ initialEntries: [route] }),
-    store = configureAppStore(initialState, history),
+    initialHistory = createMemoryHistory({ initialEntries: [route] }),
   } = {}
 ) {
+  const { store, history } = configureAppStoreAndHistory(
+    initialState,
+    initialHistory
+  );
   const domContainer = document.createElement("div");
   ReactDOM.render(
     <Provider store={store}>
-      <ConnectedRouter history={history} noInitialPop>
+      <Router history={history}>
         <Route path={path}>{ui}</Route>
-      </ConnectedRouter>
+      </Router>
     </Provider>,
     domContainer
   );
