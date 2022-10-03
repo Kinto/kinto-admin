@@ -75,7 +75,7 @@
     "gh-pages": "^4.0.0",
     "html": "1.0.0",
     "jest": "^28.1.2",
-    "jest-environment-jsdom": "^28.0.1",
+    "jest-environment-jsdom": "^29.1.2",
     "mini-css-extract-plugin": "^2.1.0",
     "prettier": "^2.1.2",
     "shx": "^0.3.2",
