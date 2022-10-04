@@ -185,12 +185,12 @@ describe("validateUiSchema()", () => {
 
 describe("humanDate", () => {
   it("should format a string with zero to an English date string", () => {
-    expect(humanDate("0")).eql("Thursday, January 1, 1970, 12:00:00 AM UTC");
+    expect(humanDate("0")).eql("Thursday, January 1, 1970 at 12:00:00 AM UTC");
   });
 
   it("should format a last_modified string to an English date string", () => {
     expect(humanDate("1475851921581")).eql(
-      "Friday, October 7, 2016, 2:52:01 PM UTC"
+      "Friday, October 7, 2016 at 2:52:01 PM UTC"
     );
   });
 });
