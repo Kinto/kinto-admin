@@ -1,0 +1,7 @@
+npm-debug.log
+node_modules
+/lib
+/build
+/dist
+/flow-typed
+.vscode

@@ -1,0 +1,20 @@
+var _path;
+
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
+import * as React from "react";
+
+var SvgInfoCircleFill = function SvgInfoCircleFill(props) {
+  return /*#__PURE__*/React.createElement("svg", _extends({
+    xmlns: "http://www.w3.org/2000/svg",
+    width: 16,
+    height: 16,
+    fill: "currentColor",
+    className: "info-circle-fill_svg__bi info-circle-fill_svg__bi-info-circle-fill"
+  }, props), _path || (_path = /*#__PURE__*/React.createElement("path", {
+    d: "M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
+  })));
+};
+
+export { SvgInfoCircleFill as ReactComponent };
+export default "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iY3VycmVudENvbG9yIiBjbGFzcz0iYmkgYmktaW5mby1jaXJjbGUtZmlsbCIgdmlld0JveD0iMCAwIDE2IDE2Ij4KICA8cGF0aCBkPSJNOCAxNkE4IDggMCAxIDAgOCAwYTggOCAwIDAgMCAwIDE2em0uOTMtOS40MTItMSA0LjcwNWMtLjA3LjM0LjAyOS41MzMuMzA0LjUzMy4xOTQgMCAuNDg3LS4wNy42ODYtLjI0NmwtLjA4OC40MTZjLS4yODcuMzQ2LS45Mi41OTgtMS40NjUuNTk4LS43MDMgMC0xLjAwMi0uNDIyLS44MDgtMS4zMTlsLjczOC0zLjQ2OGMuMDY0LS4yOTMuMDA2LS4zOTktLjI4Ny0uNDdsLS40NTEtLjA4MS4wODItLjM4MSAyLjI5LS4yODd6TTggNS41YTEgMSAwIDEgMSAwLTIgMSAxIDAgMCAxIDAgMnoiLz4KPC9zdmc+";

@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "outDir": "./lib/",
+    "module": "esnext",
+    "target": "es2018",
+    "allowJs": false,
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "declaration": true,
+    "jsx": "react"
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs",
+      "sourceMap": true
+    }
+  },
+  "include": ["./src/"]
+}
