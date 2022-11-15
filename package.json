@@ -44,7 +44,7 @@
     "react-codemirror2": "^7.0.0",
     "react-dom": "^17.0.2",
     "react-redux": "^8.0.2",
-    "react-router": "^5.2.1",
+    "react-router": "^6.4.3",
     "react-router-dom": "^5.3.0",
     "redux-first-history": "^5.0.12",
     "redux-saga": "^1.1.3",
