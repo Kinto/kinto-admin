@@ -31,7 +31,7 @@
     "codemirror": "^5.39.2",
     "diff": "^5.0.0",
     "express": "^4.14.0",
-    "filesize": "^9.0.11",
+    "filesize": "^10.0.6",
     "history": "^5.3.0",
     "html-webpack-plugin": "^5.5.0",
     "kinto-admin-form": "0.0.0-experimental-8183a9c80",
