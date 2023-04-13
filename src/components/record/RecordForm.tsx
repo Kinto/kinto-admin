@@ -8,7 +8,7 @@ import type {
 } from "../../types";
 
 import React, { PureComponent } from "react";
-import filesize from "filesize";
+import { filesize } from "filesize";
 
 import { Check2 } from "react-bootstrap-icons";
 import { Trash } from "react-bootstrap-icons";
