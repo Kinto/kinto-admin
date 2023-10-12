@@ -75,3 +75,13 @@ jobs:
       - name: Build
         run: |
           npm run build
+  
+  review-dependabot-pr:
+    permissions:
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+      - name: Enable Dependabot automation
+        uses: mozilla/syseng-pod/actions/dependabot-automerge@main
