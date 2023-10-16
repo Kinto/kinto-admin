@@ -9,10 +9,10 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version-file: 'package.json'
           cache: 'npm'
 
       - name: Print environment
@@ -35,10 +35,10 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version-file: 'package.json'
           cache: 'npm'
 
       - name: Print environment
@@ -58,10 +58,10 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version-file: 'package.json'
           cache: 'npm'
 
       - name: Print environment
@@ -75,3 +75,13 @@ jobs:
       - name: Build
         run: |
           npm run build
+  
+  review-dependabot-pr:
+    permissions:
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+      - name: Enable Dependabot automation
+        uses: mozilla/syseng-pod/actions/dependabot-automerge@main
