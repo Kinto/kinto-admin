@@ -241,24 +241,24 @@ describe("AuthForm component", () => {
         ],
         session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
       };
-      const wrapper = render(<AuthForm {...props} />);
-      expect(wrapper.container.querySelector("input#root_server").value).eql(
+      const wrapper = render(<AuthForm {...props} />).container;
+      expect(wrapper.querySelector("input#root_server").value).eql(
         "http://server.test/v1"
       );
-      expect(wrapper.container.querySelector("input#root_authType").value).eql(
+      expect(wrapper.querySelector("input#root_authType").value).eql(
         "basicauth"
       );
 
       // Changing the server to another element from the servers history.
-      fireEvent.change(wrapper.container.querySelector("input#root_server"), {
+      fireEvent.change(wrapper.querySelector("input#root_server"), {
         target: { value: "http://test.server/v1" },
       });
-      expect(wrapper.container.querySelector("input#root_server").value).eql(
+      expect(wrapper.querySelector("input#root_server").value).eql(
         "http://test.server/v1"
       );
       // authType is reset to "anonymous" while we wait for the server info
       // (capabilities)
-      expect(wrapper.container.querySelector("input#root_authType").value).eql(
+      expect(wrapper.querySelector("input#root_authType").value).eql(
         "anonymous"
       );
 
