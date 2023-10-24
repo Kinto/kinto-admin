@@ -1,3 +1,5 @@
+import React from "react";
+
 export function FormInstructions({ onSchemalessLinkClick }) {
   return (
     <div className="alert alert-info">

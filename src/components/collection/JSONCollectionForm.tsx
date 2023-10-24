@@ -1,15 +1,14 @@
-import type { CollectionData } from "../../types";
-import { PureComponent } from "react";
-import * as React from "react";
+import React from "react";
 import { withTheme } from "@rjsf/core";
 import { RJSFSchema } from "@rjsf/utils";
 import { Theme as Bootstrap4Theme } from "@rjsf/bootstrap-4";
 import validator from "@rjsf/validator-ajv8";
 
-const FormWithTheme = withTheme(Bootstrap4Theme);
-
 import JSONEditor from "../JSONEditor";
 import { omit } from "../../utils";
+import type { CollectionData } from "../../types";
+
+const FormWithTheme = withTheme(Bootstrap4Theme);
 
 const schema: RJSFSchema = {
   type: "object",
@@ -42,50 +41,51 @@ type Props = {
   onSubmit: (data: { formData: CollectionData }) => void;
 };
 
-export default class JSONCollectionForm extends PureComponent<Props> {
-  onSubmit = ({
-    formData,
+export default function JSONCollectionForm({
+  children,
+  cid,
+  formData,
+  onSubmit,
+}: Props) {
+  const handleSubmit = ({
+    formData: formInput,
   }: {
     formData: { id: string; data: string };
-  }): void => {
-    console.log(formData);
-    const collectionData = { ...JSON.parse(formData.data), id: formData.id };
-    this.props.onSubmit({ formData: collectionData });
+  }) => {
+    console.log(formInput);
+    const collectionData = { ...JSON.parse(formInput.data), id: formInput.id };
+    onSubmit({ formData: collectionData });
   };
 
-  render() {
-    const { children, cid, formData } = this.props;
-    const creation = !cid;
+  const creation = !cid;
+  const attributes = omit(formData, ["id", "last_modified"]);
+  // Stringify JSON fields so they're editable in a text field
+  const data = JSON.stringify(attributes, null, 2);
+  const formDataSerialized = {
+    id: cid,
+    data,
+  };
 
-    const attributes = omit(formData, ["id", "last_modified"]);
-    // Stringify JSON fields so they're editable in a text field
-    const data = JSON.stringify(attributes, null, 2);
-    const formDataSerialized = {
-      id: cid,
-      data,
-    };
+  // Disable edition of the collection id
+  const _uiSchema = creation
+    ? uiSchema
+    : {
+        ...uiSchema,
+        id: {
+          "ui:readonly": true,
+        },
+      };
 
-    // Disable edition of the collection id
-    const _uiSchema = creation
-      ? uiSchema
-      : {
-          ...uiSchema,
-          id: {
-            "ui:readonly": true,
-          },
-        };
-
-    return (
-      <FormWithTheme
-        schema={schema}
-        uiSchema={_uiSchema}
-        formData={formDataSerialized}
-        validator={validator}
-        // @ts-ignore
-        onSubmit={this.onSubmit}
-      >
-        {children}
-      </FormWithTheme>
-    );
-  }
+  return (
+    <FormWithTheme
+      schema={schema}
+      uiSchema={_uiSchema}
+      formData={formDataSerialized}
+      validator={validator}
+      // @ts-ignore
+      onSubmit={handleSubmit}
+    >
+      {children}
+    </FormWithTheme>
+  );
 }
