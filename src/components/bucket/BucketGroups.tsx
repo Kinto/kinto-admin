@@ -21,12 +21,12 @@ type StateProps = {
 
 type Props = OwnProps & StateProps;
 
-const BucketCollections: React.FC<Props> = ({
+export default function BucketCollections({
   match,
   session,
   bucket,
   capabilities,
-}) => {
+}: Props) {
   const {
     params: { bid },
   } = match;
@@ -54,6 +54,4 @@ const BucketCollections: React.FC<Props> = ({
       </BucketTabs>
     </div>
   );
-};
-
-export default BucketCollections;
+}

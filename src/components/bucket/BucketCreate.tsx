@@ -14,7 +14,7 @@ export type Props = StateProps & {
   createBucket: typeof BucketActions.createBucket;
 };
 
-const BucketCreate: React.FC<Props> = ({ session, bucket, createBucket }) => {
+export default function BucketCreate({ session, bucket, createBucket }) {
   const { busy } = session;
 
   if (busy) {
@@ -35,6 +35,4 @@ const BucketCreate: React.FC<Props> = ({ session, bucket, createBucket }) => {
       </div>
     </div>
   );
-};
-
-export default BucketCreate;
+}

@@ -44,14 +44,14 @@ type Props = {
   onSubmit: (data: any) => any;
 };
 
-const BucketForm: React.FC<Props> = ({
+export default function BucketForm({
   bid,
   session,
   bucket,
   formData = {},
   deleteBucket,
   onSubmit,
-}) => {
+}) {
   const creation = !formData.id;
   const hasWriteAccess = canEditBucket(session, bucket);
   const formIsEditable = creation || hasWriteAccess;
@@ -122,6 +122,4 @@ const BucketForm: React.FC<Props> = ({
       {showDeleteForm && <DeleteForm bid={bid} onSubmit={deleteBucket} />}
     </div>
   );
-};
-
-export default BucketForm;
+}

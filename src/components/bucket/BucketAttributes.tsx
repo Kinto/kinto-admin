@@ -28,14 +28,14 @@ export type Props = OwnProps &
     deleteBucket: typeof BucketActions.deleteBucket;
   };
 
-const BucketAttributes: React.FC<Props> = ({
+export default function BucketAttributes({
   match,
   session,
   bucket,
   capabilities,
   updateBucket,
   deleteBucket,
-}) => {
+}) {
   const {
     params: { bid },
   } = match;
@@ -82,6 +82,4 @@ const BucketAttributes: React.FC<Props> = ({
       </BucketTabs>
     </div>
   );
-};
-
-export default BucketAttributes;
+}

@@ -28,7 +28,7 @@ export type Props = OwnProps &
     listBucketNextCollections: typeof BucketActions.listBucketNextCollections;
   };
 
-const BucketCollections: React.FC<Props> = ({
+export default function BucketCollections({
   match,
   location,
   session,
@@ -36,7 +36,7 @@ const BucketCollections: React.FC<Props> = ({
   capabilities,
   listBucketCollections,
   listBucketNextCollections,
-}) => {
+}) {
   useEffect(() => {
     const onBucketPageEnter = () => {
       const { params } = match;
@@ -83,6 +83,4 @@ const BucketCollections: React.FC<Props> = ({
       </BucketTabs>
     </div>
   );
-};
-
-export default BucketCollections;
+}

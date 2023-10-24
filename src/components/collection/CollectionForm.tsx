@@ -5,17 +5,19 @@ import type {
   CollectionData,
 } from "../../types";
 
-import React, { PureComponent } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { Check2 } from "react-bootstrap-icons";
-import { Trash } from "react-bootstrap-icons";
 
 import BaseForm from "../BaseForm";
+import { RJSFSchema } from "@rjsf/utils";
 import JSONCollectionForm from "./JSONCollectionForm";
 import JSONEditor from "../JSONEditor";
 import { canCreateCollection, canEditCollection } from "../../permission";
 import { validateSchema, validateUiSchema } from "../../utils";
+import DeleteForm from "./DeleteForm";
+import { FormInstructions } from "./FormInstructions";
 
 const defaultSchema = JSON.stringify(
   {
@@ -44,46 +46,7 @@ const defaultUiSchema = JSON.stringify(
   2
 );
 
-const deleteSchema = {
-  type: "string",
-  title: "Please enter the collection name to delete as a confirmation",
-};
-
-function DeleteForm({ cid, onSubmit }) {
-  const validate = (formData, errors) => {
-    if (formData !== cid) {
-      errors.addError("The collection name does not match.");
-    }
-    return errors;
-  };
-  return (
-    <div className="card border-danger">
-      <div className="alert-danger card-header">
-        <strong>Danger Zone</strong>
-      </div>
-      <div className="card-body">
-        <p>
-          Delete the <b>{cid}</b> collection and all the records it contains.
-        </p>
-        <BaseForm
-          schema={deleteSchema}
-          validate={validate}
-          onSubmit={({ formData }) => {
-            if (typeof onSubmit === "function") {
-              onSubmit(formData);
-            }
-          }}
-        >
-          <button type="submit" className="btn btn-danger">
-            <Trash className="icon" /> Delete collection
-          </button>
-        </BaseForm>
-      </div>
-    </div>
-  );
-}
-
-const schema = {
+const schema: RJSFSchema = {
   type: "object",
   required: ["id"],
   properties: {
@@ -263,39 +226,8 @@ function validate({ schema, uiSchema, displayFields }, errors) {
   return errors;
 }
 
-function FormInstructions({ onSchemalessLinkClick }) {
-  return (
-    <div className="alert alert-info">
-      <ol>
-        <li>First find a good name for your collection.</li>
-        <li>
-          Create a <em>JSON schema</em> describing the fields the collection
-          records should have.
-        </li>
-        <li>
-          Define a <em>uiSchema</em> to customize the way forms for creating and
-          editing records are rendered.
-        </li>
-        <li>
-          List the record fields you want to display in the columns of the
-          collection records list.
-        </li>
-        <li>Decide if you want to enable attaching a file to records.</li>
-      </ol>
-      <p>
-        Alternatively, you can create a{" "}
-        <a href="" onClick={onSchemalessLinkClick}>
-          schemaless collection
-        </a>
-        .
-      </p>
-    </div>
-  );
-}
-
 type Props = {
   cid?: string;
-  bid?: string;
   session: SessionState;
   bucket: BucketState;
   collection: CollectionState;
@@ -304,142 +236,123 @@ type Props = {
   formData?: CollectionData;
 };
 
-type State = {
-  asJSON: boolean;
-};
+export default function CollectionForm({
+  cid,
+  session,
+  bucket,
+  collection,
+  deleteCollection,
+  onSubmit,
+  formData: propFormData = {},
+}: Props) {
+  const [asJSON, setAsJSON] = useState(false);
 
-export default class CollectionForm extends PureComponent<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = { asJSON: false };
-  }
-
-  onSubmit = ({ formData }: { formData: any }): void => {
-    const collectionData = this.state.asJSON
-      ? formData
-      : {
-          ...formData,
-          // Parse JSON fields so they can be sent to the server
-          schema: JSON.parse(formData.schema),
-          uiSchema: JSON.parse(formData.uiSchema),
-        };
-    this.props.onSubmit(collectionData);
-  };
-
-  get allowEditing(): boolean {
-    const { formData, session, bucket, collection } = this.props;
-    const creation = !formData;
+  const allowEditing = React.useMemo(() => {
+    const creation = !propFormData;
     if (creation) {
       return canCreateCollection(session, bucket);
     } else {
       return canEditCollection(session, bucket, collection);
     }
-  }
+  }, [propFormData, session, bucket, collection]);
 
-  toggleJSON = (
-    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-  ): void => {
+  const toggleJSON = event => {
     event.preventDefault();
-    this.setState({ asJSON: !this.state.asJSON });
+    setAsJSON(prevAsJSON => !prevAsJSON);
     window.scrollTo(0, 0);
   };
 
-  onSchemalessLinkClick = (event: Event): void => {
+  const onSchemalessLinkClick = event => {
     event.preventDefault();
-    this.setState({ asJSON: true });
+    setAsJSON(true);
   };
 
-  render() {
-    const {
-      cid,
-      bucket,
-      collection,
-      formData = {},
-      deleteCollection,
-    } = this.props;
-    const creation = !formData.id;
-    const showDeleteForm = !creation && this.allowEditing;
-    const { asJSON } = this.state;
-
-    // Disable edition of the collection id
-    const _uiSchema = creation
-      ? uiSchema
-      : {
-          ...uiSchema,
-          id: {
-            "ui:readonly": true,
-          },
-        };
-
-    const formDataSerialized = creation
+  const handleOnSubmit = ({ formData }) => {
+    const collectionData = asJSON
       ? formData
       : {
-          displayFields: formData.displayFields || [],
           ...formData,
-          // Stringify JSON fields so they're editable in a text field
-          schema: JSON.stringify(formData.schema || {}, null, 2),
-          uiSchema: JSON.stringify(formData.uiSchema || {}, null, 2),
+          schema: JSON.parse(formData.schema),
+          uiSchema: JSON.parse(formData.uiSchema),
         };
+    onSubmit(collectionData);
+  };
 
-    const alert =
-      this.allowEditing || bucket.busy || collection.busy ? null : (
-        <div className="alert alert-warning">
-          You don't have the required permission to edit this collection.
-        </div>
-      );
+  const creation = !propFormData.id;
+  const showDeleteForm = !creation && allowEditing;
+  const formDataSerialized = creation
+    ? propFormData
+    : {
+        displayFields: propFormData.displayFields || [],
+        ...propFormData,
+        schema: JSON.stringify(propFormData.schema || {}, null, 2),
+        uiSchema: JSON.stringify(propFormData.uiSchema || {}, null, 2),
+      };
 
-    const buttons = (
-      <div>
-        <button
-          type="submit"
-          disabled={!this.allowEditing}
-          className="btn btn-primary"
-        >
-          <Check2 className="icon" />
-          {` ${creation ? "Create" : "Update"} collection`}
-        </button>
-        {" or "}
-        <Link to="/">Cancel</Link>
-        {" | "}
-        <a href="#" onClick={this.toggleJSON}>
-          {asJSON ? "Edit form" : "Edit raw JSON"}
-        </a>
+  const _uiSchema = creation
+    ? uiSchema
+    : {
+        ...uiSchema,
+        id: {
+          "ui:readonly": true,
+        },
+      };
+
+  const alert =
+    allowEditing || bucket.busy || collection.busy ? null : (
+      <div className="alert alert-warning">
+        You don't have the required permission to edit this collection.
       </div>
     );
 
-    return (
-      <div>
-        {alert}
-        {asJSON ? (
-          <JSONCollectionForm
-            cid={cid}
-            formData={collection.data}
-            onSubmit={this.onSubmit}
+  const buttons = (
+    <div>
+      <button
+        type="submit"
+        disabled={!allowEditing}
+        className="btn btn-primary"
+      >
+        <Check2 className="icon" />
+        {` ${creation ? "Create" : "Update"} collection`}
+      </button>
+      {" or "}
+      <Link to="/">Cancel</Link>
+      {" | "}
+      <a href="#" onClick={toggleJSON}>
+        {asJSON ? "Edit form" : "Edit raw JSON"}
+      </a>
+    </div>
+  );
+
+  return (
+    <div>
+      {alert}
+      {asJSON ? (
+        <JSONCollectionForm
+          cid={cid}
+          formData={collection.data}
+          onSubmit={handleOnSubmit}
+        >
+          {buttons}
+        </JSONCollectionForm>
+      ) : (
+        <div>
+          <FormInstructions onSchemalessLinkClick={onSchemalessLinkClick} />
+          <BaseForm
+            schema={schema}
+            formData={formDataSerialized}
+            uiSchema={
+              allowEditing ? _uiSchema : { ..._uiSchema, "ui:disabled": true }
+            }
+            customValidate={validate}
+            // @ts-ignore
+            onSubmit={handleOnSubmit}
           >
             {buttons}
-          </JSONCollectionForm>
-        ) : (
-          <div>
-            <FormInstructions
-              onSchemalessLinkClick={this.onSchemalessLinkClick}
-            />
-            <BaseForm
-              schema={schema}
-              formData={formDataSerialized}
-              uiSchema={
-                this.allowEditing
-                  ? _uiSchema
-                  : { ..._uiSchema, "ui:disabled": true }
-              }
-              validate={validate}
-              onSubmit={this.onSubmit}
-            >
-              {buttons}
-            </BaseForm>
-          </div>
-        )}
-        {showDeleteForm && <DeleteForm cid={cid} onSubmit={deleteCollection} />}
-      </div>
-    );
-  }
+          </BaseForm>
+        </div>
+      )}
+      {showDeleteForm && <DeleteForm cid={cid} onSubmit={deleteCollection} />}
+    </div>
+  );
 }
