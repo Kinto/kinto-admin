@@ -1,17 +1,17 @@
 import type { CollectionData } from "../../types";
 import { PureComponent } from "react";
 import * as React from "react";
-import { withTheme, FormProps, IChangeEvent } from '@rjsf/core';
-import { RJSFSchema } from '@rjsf/utils';
-import { Theme as Bootstrap4Theme } from '@rjsf/bootstrap-4';
-import validator from '@rjsf/validator-ajv8';
+import { withTheme, FormProps, IChangeEvent } from "@rjsf/core";
+import { RJSFSchema } from "@rjsf/utils";
+import { Theme as Bootstrap4Theme } from "@rjsf/bootstrap-4";
+import validator from "@rjsf/validator-ajv8";
 
 const FormWithTheme = withTheme(Bootstrap4Theme);
 
 import JSONEditor from "../JSONEditor";
 import { omit } from "../../utils";
 
-const schema:RJSFSchema = {
+const schema: RJSFSchema = {
   type: "object",
   required: ["id"],
   properties: {
