@@ -8,7 +8,25 @@ import { timeago } from "../../utils";
 import AdminLink from "../AdminLink";
 import PaginatedTable from "../PaginatedTable";
 
-export default function DataList(props) {
+export function ListActions(props) {
+  const { bid, session, bucket } = props;
+  if (session.busy || bucket.busy) {
+    return null;
+  }
+  return (
+    <div className="list-actions">
+      <AdminLink
+        name="collection:create"
+        params={{ bid }}
+        className="btn btn-info btn-collection-add"
+      >
+        Create collection
+      </AdminLink>
+    </div>
+  );
+}
+
+export function DataList(props) {
   const { bid, collections, capabilities, listBucketNextCollections } = props;
   const { loaded, entries, hasNextPage } = collections;
   const thead = (

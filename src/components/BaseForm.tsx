@@ -9,7 +9,9 @@ const adminFields = { tags: TagsField };
 
 const FormWithTheme = withTheme(Bootstrap4Theme);
 
-const BaseForm = (props: FormProps) => {
+export type BaseFormProps = Omit<FormProps, "validator">;
+
+const BaseForm = (props: BaseFormProps) => {
   const { className, ...restProps } = props;
 
   return (

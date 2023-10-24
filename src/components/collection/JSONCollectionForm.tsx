@@ -1,7 +1,7 @@
 import type { CollectionData } from "../../types";
 import { PureComponent } from "react";
 import * as React from "react";
-import { withTheme, FormProps, IChangeEvent } from "@rjsf/core";
+import { withTheme } from "@rjsf/core";
 import { RJSFSchema } from "@rjsf/utils";
 import { Theme as Bootstrap4Theme } from "@rjsf/bootstrap-4";
 import validator from "@rjsf/validator-ajv8";

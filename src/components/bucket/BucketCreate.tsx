@@ -16,11 +16,11 @@ export type Props = StateProps & {
 
 const BucketCreate: React.FC<Props> = ({ session, bucket, createBucket }) => {
   const { busy } = session;
-  
+
   if (busy) {
     return <Spinner />;
   }
-  
+
   return (
     <div>
       <h1>Create a new bucket</h1>

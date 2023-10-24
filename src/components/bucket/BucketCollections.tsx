@@ -9,8 +9,7 @@ import type { Location } from "history";
 
 import * as BucketActions from "../../actions/bucket";
 import BucketTabs from "./BucketTabs";
-import DataList from "./DataList";
-import ListActions from "./ListActions";
+import { DataList, ListActions } from "./CollectionDataList";
 
 export type OwnProps = {
   match: BucketRouteMatch;
