@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { useState, useEffect } from "react";
 
 const DEFAULT_SEPARATOR = ",";
 
@@ -24,81 +24,65 @@ type Props = {
   name: string;
   formData: string[];
   onChange: (tags: string[]) => void;
-  required: boolean;
-  readonly: boolean;
+  required?: boolean;
+  readonly?: boolean;
 };
 
-type State = {
-  tagsString: string;
-};
+const TagsField: React.FC<Props> = ({
+  schema,
+  uiSchema = {},
+  name,
+  formData = [],
+  onChange,
+  required = false,
+  readonly = false,
+}) => {
+  const separator = uiSchema["ui:options"]?.separator || DEFAULT_SEPARATOR;
 
-export default class TagsField extends PureComponent<Props, State> {
-  static defaultProps = {
-    formData: [],
-    uiSchema: {},
-    required: false,
-    readonly: false,
+  const [tagsString, setTagsString] = useState(
+    toTagsString(formData, separator)
+  );
+
+  useEffect(() => {
+    setTagsString(toTagsString(formData, separator));
+  }, [formData, separator]);
+
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const tagsStr = e.target.value;
+    const uniqueItems = schema.uniqueItems || false;
+    const tags = toTagList(tagsStr, separator, uniqueItems);
+    setTagsString(tagsStr);
+    onChange(tags);
   };
 
-  get separator(): string {
-    const { uiSchema } = this.props;
-    const { separator = DEFAULT_SEPARATOR } = uiSchema["ui:options"] || {};
-    return separator === "" ? DEFAULT_SEPARATOR : separator;
-  }
-
-  constructor(props: Props) {
-    super(props);
-    this.state = { tagsString: toTagsString(props.formData, this.separator) };
-  }
-
-  onChange = ({
-    target: { value: tagsString },
-  }: {
-    target: { value: string };
-  }) => {
-    const {
-      schema: { uniqueItems = false },
-      onChange,
-    } = this.props;
-    const tags = toTagList(tagsString, this.separator, uniqueItems);
-    this.setState({ tagsString }, () => onChange(tags));
-  };
-
-  render() {
-    const { uiSchema, required, readonly } = this.props;
-    const { tagsString } = this.state;
-    return (
-      <div className="form-group field field-string">
-        <label className="control-label">
-          {this.props.schema.title || this.props.name}
-          {required ? "*" : ""}
-        </label>
-        <input
-          type="text"
-          className="form-control"
-          value={tagsString}
-          placeholder={
-            uiSchema["ui:placeholder"] ||
-            toTagsString(["tag1", "tag2", "tag3"], this.separator)
-          }
-          onChange={this.onChange}
-          required={required}
-          readOnly={readonly}
-        />
-        <div className="help-block">
-          {uiSchema["ui:help"] || (
-            <span>
-              Entries must be separated with
-              {this.separator === " " ? (
-                "spaces"
-              ) : (
-                <code>{this.separator}</code>
-              )}
-              .
-            </span>
-          )}
-        </div>
+  return (
+    <div className="form-group field field-string">
+      <label className="control-label">
+        {schema.title || name}
+        {required ? "*" : ""}
+      </label>
+      <input
+        type="text"
+        className="form-control"
+        value={tagsString}
+        placeholder={
+          uiSchema["ui:placeholder"] ||
+          toTagsString(["tag1", "tag2", "tag3"], separator)
+        }
+        onChange={handleOnChange}
+        required={required}
+        readOnly={readonly}
+      />
+      <div className="help-block">
+        {uiSchema["ui:help"] || (
+          <span>
+            Entries must be separated with{" "}
+            {separator === " " ? "spaces" : <code>{separator}</code>}.
+          </span>
+        )}
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
+
+export default TagsField;

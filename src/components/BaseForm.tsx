@@ -1,19 +1,26 @@
-import React, { PureComponent } from "react";
-import type { FormProps } from "kinto-admin-form";
-import Form from "kinto-admin-form";
+import React from "react";
+import { withTheme, FormProps } from '@rjsf/core';
+import { Theme as Bootstrap4Theme } from '@rjsf/bootstrap-4';
+import validator from '@rjsf/validator-ajv8';
 
 import TagsField from "./TagsField";
 
 const adminFields = { tags: TagsField };
 
-export default class BaseForm extends PureComponent<FormProps> {
-  render() {
-    return (
-      <Form
-        {...this.props}
-        className={`rjsf ${this.props.className ? this.props.className : ""}`}
-        fields={adminFields}
-      />
-    );
-  }
+const FormWithTheme = withTheme(Bootstrap4Theme);
+
+const BaseForm = (props:FormProps) => {
+  const { className, ...restProps } = props;
+
+  return (
+    <FormWithTheme
+      {...restProps}
+      className={`rjsf ${className ? className : ""}`}
+      validator={validator}
+      // @ts-ignore
+      fields={adminFields}
+    />
+  );
 }
+
+export default BaseForm;

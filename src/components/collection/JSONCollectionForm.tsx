@@ -1,14 +1,17 @@
 import type { CollectionData } from "../../types";
-
 import { PureComponent } from "react";
 import * as React from "react";
+import { withTheme, FormProps, IChangeEvent } from '@rjsf/core';
+import { RJSFSchema } from '@rjsf/utils';
+import { Theme as Bootstrap4Theme } from '@rjsf/bootstrap-4';
+import validator from '@rjsf/validator-ajv8';
 
-import Form from "kinto-admin-form";
+const FormWithTheme = withTheme(Bootstrap4Theme);
 
 import JSONEditor from "../JSONEditor";
-import { validJSON, omit } from "../../utils";
+import { omit } from "../../utils";
 
-const schema = {
+const schema:RJSFSchema = {
   type: "object",
   required: ["id"],
   properties: {
@@ -32,13 +35,6 @@ const uiSchema = {
   },
 };
 
-function validate({ data }, errors) {
-  if (!validJSON(data)) {
-    errors.data.addError("Invalid JSON.");
-  }
-  return errors;
-}
-
 type Props = {
   children?: React.ReactNode;
   cid?: string | null;
@@ -52,6 +48,7 @@ export default class JSONCollectionForm extends PureComponent<Props> {
   }: {
     formData: { id: string; data: string };
   }): void => {
+    console.log(formData);
     const collectionData = { ...JSON.parse(formData.data), id: formData.id };
     this.props.onSubmit({ formData: collectionData });
   };
@@ -79,15 +76,16 @@ export default class JSONCollectionForm extends PureComponent<Props> {
         };
 
     return (
-      <Form
+      <FormWithTheme
         schema={schema}
         uiSchema={_uiSchema}
         formData={formDataSerialized}
-        validate={validate}
+        validator={validator}
+        // @ts-ignore
         onSubmit={this.onSubmit}
       >
         {children}
-      </Form>
+      </FormWithTheme>
     );
   }
 }
