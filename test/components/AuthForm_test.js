@@ -263,7 +263,7 @@ describe("AuthForm component", () => {
       );
 
       // TODO: Simulate a `getServerInfo` response that updated the `capabilities`.
-      // The enzyme test has been removed as part of the upgrade to testing-library, 
+      // The enzyme test has been removed as part of the upgrade to testing-library,
       // but not replaced because it interracted with properties and state directly.
       // This needs to be rewritten to mock user input and server response instead.
     });
