@@ -1,22 +1,11 @@
-import type { Capabilities, RecordData } from "../../types";
-
 import React from "react";
 
-import { Paperclip, Pencil, Lock, Trash } from "react-bootstrap-icons";
+import type { RecordData } from "../../types";
 
-import * as CollectionActions from "../../actions/collection";
-import * as RouteActions from "../../actions/route";
+import { Paperclip, Pencil, Lock, Trash } from "react-bootstrap-icons";
 import { renderDisplayField, timeago, buildAttachmentUrl } from "../../utils";
 import AdminLink from "../AdminLink";
-
-type CommonStateProps = {
-  capabilities: Capabilities;
-};
-
-type CommonProps = CommonStateProps & {
-  deleteRecord: typeof CollectionActions.deleteRecord;
-  redirectTo: typeof RouteActions.redirectTo;
-};
+import { CommonProps } from "./commonPropTypes";
 
 type RecordsViewProps = CommonProps & {
   bid: string;

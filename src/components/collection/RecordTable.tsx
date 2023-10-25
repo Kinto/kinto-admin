@@ -1,4 +1,4 @@
-import type { Capabilities, RecordData } from "../../types";
+import type { RecordData } from "../../types";
 
 import React from "react";
 
@@ -6,7 +6,6 @@ import { SortUp } from "react-bootstrap-icons";
 import { SortDown } from "react-bootstrap-icons";
 
 import * as CollectionActions from "../../actions/collection";
-import * as RouteActions from "../../actions/route";
 import { canCreateRecord } from "../../permission";
 import { capitalize } from "../../utils";
 
@@ -15,14 +14,7 @@ import RecordRow from "./RecordRow";
 import AdminLink from "../AdminLink";
 import SignoffContainer from "../../containers/signoff/SignoffToolBar";
 
-type CommonStateProps = {
-  capabilities: Capabilities;
-};
-
-type CommonProps = CommonStateProps & {
-  deleteRecord: typeof CollectionActions.deleteRecord;
-  redirectTo: typeof RouteActions.redirectTo;
-};
+import { CommonProps } from "./commonPropTypes";
 
 export function ListActions(props) {
   const { bid, cid, session, bucket, collection } = props;

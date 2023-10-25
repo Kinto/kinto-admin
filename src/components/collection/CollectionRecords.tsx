@@ -5,38 +5,29 @@ import type {
   SessionState,
   BucketState,
   CollectionState,
-  Capabilities,
 } from "../../types";
-import type { Location } from "history";
 
-import * as CollectionActions from "../../actions/collection";
-import * as RouteActions from "../../actions/route";
 import CollectionTabs from "./CollectionTabs";
 import Spinner from "../Spinner";
 import RecordTable from "./RecordTable";
 import { ListActions } from "./RecordTable";
+import { CommonProps, CommonStateProps } from "./commonPropTypes";
 
-type CommonStateProps = {
-  capabilities: Capabilities;
-};
+import * as CollectionActions from "../../actions/collection";
+import * as RouteActions from "../../actions/route";
 
-type CommonProps = CommonStateProps & {
-  deleteRecord: typeof CollectionActions.deleteRecord;
-  redirectTo: typeof RouteActions.redirectTo;
-};
-
-export type OwnProps = {
+type OwnProps = {
   match: CollectionRouteMatch;
   location: Location;
 };
 
-export type StateProps = CommonStateProps & {
+type StateProps = CommonStateProps & {
   session: SessionState;
   bucket: BucketState;
   collection: CollectionState;
 };
 
-export type Props = CommonProps &
+type Props = CommonProps &
   OwnProps &
   StateProps & {
     deleteRecord: typeof CollectionActions.deleteRecord;
@@ -55,7 +46,6 @@ export default function CollectionRecords(props: Props) {
     listNextRecords,
     redirectTo,
     capabilities,
-    location,
     listRecords,
   } = props;
 
