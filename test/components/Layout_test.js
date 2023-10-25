@@ -4,7 +4,7 @@ import sinon from "sinon";
 
 import { configureAppStoreAndHistory } from "../../src/store/configureStore";
 import { createSandbox } from "../test_utils";
-import { mount } from "enzyme";
+import { render } from "@testing-library/react";
 import { Router } from "react-router";
 import { Provider } from "react-redux";
 
@@ -19,13 +19,13 @@ describe("App component", () => {
     sandbox.spy(sessionActions, "logout");
     ({ store, history } = configureAppStoreAndHistory());
     clock = sinon.useFakeTimers();
-    app = mount(
+    app = render(
       <Provider store={store}>
         <Router history={history}>
           <Layout />
         </Router>
       </Provider>
-    );
+    ).container;
   });
 
   afterEach(() => {
@@ -36,7 +36,7 @@ describe("App component", () => {
 
   describe("Session top bar", () => {
     it("should not render a session top bar when not authenticated", () => {
-      expect(app.find(".session-info-bar")).to.have.a.lengthOf(0);
+      expect(app.querySelectorAll(".session-info-bar")).to.have.a.lengthOf(0);
     });
 
     it("should render a session top bar when anonymous", () => {
@@ -46,7 +46,7 @@ describe("App component", () => {
       };
       store.dispatch(sessionActions.serverInfoSuccess(serverInfo));
       store.dispatch(sessionActions.setAuthenticated());
-      const content = app.text();
+      const content = app.textContent;
 
       expect(content).to.contain("Anonymous");
       expect(content).to.contain(serverInfo.url);
@@ -63,8 +63,7 @@ describe("App component", () => {
         sessionActions.setAuthenticated({ user: { id: "fxa:abc" } })
       );
 
-      app.update();
-      const infoBar = app.find(".session-info-bar a.project-docs").getDOMNode();
+      const infoBar = app.querySelector(".session-info-bar a.project-docs");
       expect(infoBar.href).to.eql(serverInfo.project_docs);
     });
 
@@ -84,16 +83,15 @@ describe("App component", () => {
       store.dispatch(sessionActions.setupComplete());
       store.dispatch(sessionActions.setAuthenticated(credentials));
 
-      app.update();
-      const infoBar = app.find(".session-info-bar");
+      const infoBar = app.querySelectorAll(".session-info-bar");
       expect(infoBar.length).to.equal(1);
 
-      const content = infoBar.text();
+      const content = infoBar[0].textContent;
       expect(content).to.contain(serverInfo.url);
       expect(content).to.contain(serverInfo.user.id);
       expect(content).to.not.contain(credentials.password);
 
-      app.find(".btn-logout").simulate("click");
+      app.querySelector(".btn-logout").click();
       clock.tick();
       sinon.assert.called(sessionActions.logout);
     });
