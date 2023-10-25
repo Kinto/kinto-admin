@@ -2,13 +2,7 @@ import { createSandbox, createComponent } from "../test_utils";
 import { DEFAULT_KINTO_SERVER } from "../../src/constants";
 import { DEFAULT_SERVERINFO } from "../../src/reducers/session";
 import { expect } from "chai";
-import {
-  render,
-  fireEvent,
-  screen,
-  waitFor,
-  act,
-} from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import { Simulate } from "react-dom/test-utils";
 import * as React from "react";
 import AuthForm from "../../src/components/AuthForm";
