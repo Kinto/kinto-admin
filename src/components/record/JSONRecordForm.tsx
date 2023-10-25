@@ -1,27 +1,20 @@
-import { PureComponent } from "react";
-import * as React from "react";
-
+import React from "react";
 import BaseForm from "../BaseForm";
 import JSONEditor from "../JSONEditor";
-import { validJSON } from "../../utils";
+import { RJSFSchema } from "@rjsf/utils";
 
-const schema = {
+const schema: RJSFSchema = {
   type: "string",
   title: "JSON record",
   default: "{}",
 };
 
 const uiSchema = {
-  "ui:widget": JSONEditor,
-  "ui:help": "This must be valid JSON.",
+  data: {
+    "ui:widget": JSONEditor,
+    "ui:help": "This must be valid JSON.",
+  },
 };
-
-function validate(json, errors) {
-  if (!validJSON(json)) {
-    errors.addError("Invalid JSON.");
-  }
-  return errors;
-}
 
 type Props = {
   disabled: boolean;
@@ -30,25 +23,26 @@ type Props = {
   children?: React.ReactNode;
 };
 
-export default class JSONRecordForm extends PureComponent<Props> {
-  onSubmit = (data: { formData: string }) => {
-    this.props.onSubmit({ ...data, formData: JSON.parse(data.formData) });
+export default function JSONRecordForm({
+  disabled,
+  record,
+  onSubmit,
+  children,
+}: Props) {
+  const handleOnSubmit = data => {
+    onSubmit({ ...data, formData: JSON.parse(data.formData) });
   };
 
-  render() {
-    const { record, disabled, children } = this.props;
-    return (
-      <div>
-        <BaseForm
-          schema={schema}
-          formData={record}
-          uiSchema={disabled ? { ...uiSchema, "ui:disabled": true } : uiSchema}
-          validate={validate}
-          onSubmit={this.onSubmit}
-        >
-          {children}
-        </BaseForm>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <BaseForm
+        schema={schema}
+        formData={record}
+        uiSchema={disabled ? { ...uiSchema, "ui:readonly": true } : uiSchema}
+        onSubmit={handleOnSubmit}
+      >
+        {children}
+      </BaseForm>
+    </div>
+  );
 }
