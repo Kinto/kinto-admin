@@ -199,6 +199,7 @@ describe("AuthForm component", () => {
       });
     });
   });
+
   describe("Servers history support", () => {
     it("should set the server field value using a default value if there's no servers", () => {
       const props = {
@@ -230,7 +231,7 @@ describe("AuthForm component", () => {
       );
     });
 
-    it("should set the authType field value using latest entry from servers history for that server", () => {
+    it("should set the authType field value using latest entry from servers history for that server", async () => {
       const props = {
         match: {},
         serverChange: sandbox.spy(),
@@ -241,31 +242,48 @@ describe("AuthForm component", () => {
         ],
         session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
       };
-      const wrapper = render(<AuthForm {...props} />).container;
-      expect(wrapper.querySelector("input#root_server").value).eql(
-        "http://server.test/v1"
-      );
-      expect(wrapper.querySelector("input#root_authType").value).eql(
-        "basicauth"
-      );
 
-      // Changing the server to another element from the servers history.
-      fireEvent.change(wrapper.querySelector("input#root_server"), {
+      const form = render(<AuthForm {...props} />);
+      const serverField = form.container.querySelector("#root_server");
+      const authTypeField = form.container.querySelector("#root_authType");
+
+      expect(serverField.value).eql("http://server.test/v1");
+      expect(authTypeField.value).eql("basicauth");
+
+      fireEvent.change(serverField, {
         target: { value: "http://test.server/v1" },
       });
-      expect(wrapper.querySelector("input#root_server").value).eql(
-        "http://test.server/v1"
-      );
-      // authType is reset to "anonymous" while we wait for the server info
-      // (capabilities)
-      expect(wrapper.querySelector("input#root_authType").value).eql(
-        "anonymous"
-      );
+      expect(serverField.value).eql("http://test.server/v1");
+      expect(authTypeField.value).eql("anonymous");
 
-      // TODO: Simulate a `getServerInfo` response that updated the `capabilities`.
-      // The enzyme test has been removed as part of the upgrade to testing-library,
-      // but not replaced because it interracted with properties and state directly.
-      // This needs to be rewritten to mock user input and server response instead.
+      const updatedProps = {
+        ...props,
+        session: {
+          ...props.session,
+          serverInfo: {
+            ...props.session.serverInfo,
+            capabilities: {
+              ...props.session.serverInfo.capabilities,
+              basicauth: "some basic auth info",
+              ldap: "some ldap auth info",
+              fxa: "some fxa auth info",
+              openid: {
+                providers: [
+                  {
+                    name: "google",
+                  },
+                ],
+              },
+            },
+          },
+        },
+      };
+
+      form.rerender(<AuthForm {...updatedProps} />);
+      const googleAuthButton = await form.findByText(
+        "Sign in using OpenID Connect (Google)"
+      );
+      expect(googleAuthButton).to.exist;
     });
   });
 });
