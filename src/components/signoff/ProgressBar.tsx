@@ -1,25 +1,22 @@
-import React, { Component } from "react";
+import React from "react";
 
 type Props = {
-  children?: any;
+  children?: React.ReactNode;
 };
 
-export class ProgressBar extends Component<Props> {
-  render() {
-    const { children } = this.props;
-    return (
-      <div className="progress-steps container">
-        <div className="row bs-wizard">{children}</div>
-      </div>
-    );
-  }
+export function ProgressBar({ children }: Props) {
+  return (
+    <div className="progress-steps container">
+      <div className="row bs-wizard">{children}</div>
+    </div>
+  );
 }
 
 type ProgressStepProps = {
   label: string;
   currentStep: number;
   step: number;
-  children?: any;
+  children?: React.ReactNode;
 };
 
 export function ProgressStep({
@@ -29,7 +26,7 @@ export function ProgressStep({
   children,
 }: ProgressStepProps) {
   const status =
-    currentStep == step
+    currentStep === step
       ? "active"
       : step < currentStep
       ? "complete"
