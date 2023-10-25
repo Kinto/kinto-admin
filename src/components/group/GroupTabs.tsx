@@ -1,6 +1,6 @@
 import type { Capabilities } from "../../types";
 
-import React, { PureComponent } from "react";
+import React from "react";
 
 import { Gear } from "react-bootstrap-icons";
 import { Lock } from "react-bootstrap-icons";
