@@ -11,7 +11,7 @@ import JSONEditor from "../JSONEditor";
 import {
   extendSchemaWithAttachment,
   extendUiSchemaWithAttachment,
-} from "./RecordForm";
+} from "./AttachmentInfo";
 
 export type OwnProps = {
   match: CollectionRouteMatch;

@@ -1,67 +1,26 @@
+import React, { useState } from "react";
 import type {
   SessionState,
   BucketState,
   CollectionState,
   RecordState,
-  RecordData,
   Capabilities,
 } from "../../types";
-
-import React, { PureComponent } from "react";
-import { filesize } from "filesize";
-
 import { Check2 } from "react-bootstrap-icons";
 import { Trash } from "react-bootstrap-icons";
-import { Paperclip } from "react-bootstrap-icons";
-
 import * as CollectionActions from "../../actions/collection";
 import BaseForm from "../BaseForm";
 import AdminLink from "../AdminLink";
 import Spinner from "../Spinner";
 import JSONRecordForm from "./JSONRecordForm";
 import { canCreateRecord, canEditRecord } from "../../permission";
-import { buildAttachmentUrl, omit } from "../../utils";
+import {
+  AttachmentInfo,
+  extendSchemaWithAttachment,
+  extendUiSchemaWithAttachment,
+} from "./AttachmentInfo";
 
-export function extendSchemaWithAttachment(
-  schema: any,
-  attachmentConfig: { enabled: boolean; required: boolean } | null | undefined,
-  record: RecordData
-): any {
-  if (!attachmentConfig || !attachmentConfig.enabled) {
-    return schema;
-  }
-  const isCreate = !record.id;
-  const attachmentMissing = record.attachment && record.attachment.location;
-
-  // We add a fake schema field ``__attachment__`` for the file input.
-  // It will be required if the
-  // Attachment form field is only required to receive a file
-  // required, when creating a record, or updating it if it does not have any.
-  // (required setting changed in the mean time).
-  const schemaRequired = schema.required || [];
-  const required =
-    attachmentConfig.required && (isCreate || attachmentMissing)
-      ? schemaRequired.concat("__attachment__")
-      : schemaRequired;
-
-  // On forms, there is no need to have the "attachment" attribute fields. They
-  // are shown in the attachment infos, and all assigned by the server automatically
-  // on file upload.
-  let schemaProperties = omit(schema.properties, ["attachment"]);
-
-  return {
-    ...schema,
-    required,
-    properties: {
-      ...schemaProperties,
-      __attachment__: {
-        type: "string",
-        format: "data-url",
-        title: "File attachment",
-      },
-    },
-  };
-}
+import { RJSFSchema } from "@rjsf/utils";
 
 export function extendUIWithKintoFields(uiSchema: any, isCreate: boolean): any {
   return {
@@ -84,163 +43,8 @@ export function extendUIWithKintoFields(uiSchema: any, isCreate: boolean): any {
   };
 }
 
-export function extendUiSchemaWithAttachment(
-  uiSchema: any,
-  attachmentConfig: { enabled: boolean; required: boolean } | null | undefined
-): any {
-  if (
-    !attachmentConfig ||
-    !attachmentConfig.enabled ||
-    !Object.prototype.hasOwnProperty.call(uiSchema, "ui:order")
-  ) {
-    return uiSchema;
-  }
-  return {
-    ...uiSchema,
-    "ui:order": [...uiSchema["ui:order"], "__attachment__"],
-  };
-}
-
 export function extendUiSchemaWhenDisabled(uiSchema: any, disabled: boolean) {
   return { ...uiSchema, "ui:disabled": disabled };
-}
-
-function AttachmentPreview({ mimetype, location }) {
-  if (!mimetype.startsWith("image/")) {
-    return null;
-  } else {
-    return (
-      <div className="attachment-img">
-        <a href={location} target="_blank">
-          <img src={location} />
-        </a>
-      </div>
-    );
-  }
-}
-
-type AttachmentInfoProps = {
-  record?: RecordState;
-  allowEditing: boolean;
-  attachmentRequired: boolean | null | undefined;
-  deleteAttachment: () => void;
-  capabilities: Capabilities;
-};
-
-function AttachmentInfo(props: AttachmentInfoProps) {
-  const {
-    allowEditing,
-    record: recordState,
-    attachmentRequired,
-    deleteAttachment,
-    capabilities,
-  } = props;
-  if (recordState == null) {
-    return null;
-  }
-  const { data: record } = recordState;
-  const { attachment } = record;
-  if (!attachment) {
-    return null;
-  }
-
-  const attachmentURL = buildAttachmentUrl(record, capabilities);
-
-  const FileSize: React.FC<{ bytes: number }> = ({ bytes }) => {
-    return <>{filesize(bytes)}</>;
-  };
-
-  return (
-    <div className="card attachment-info">
-      <div className="card-header">
-        <Paperclip className="icon" />
-        <b>Attachment information</b>
-      </div>
-      <div className="card-body">
-        {allowEditing && attachmentRequired && (
-          <div className="alert alert-warning">
-            <p>
-              An attachment is required for records in this collection. To
-              replace current attachment, use the <i>File attachment</i> field
-              below.
-            </p>
-          </div>
-        )}
-        <div className="attachment-attributes">
-          <table className="table table-condensed">
-            <tbody>
-              <tr>
-                <th>Location</th>
-                <td>
-                  <a href={attachmentURL} target="_blank">
-                    {attachment.location}
-                  </a>
-                </td>
-              </tr>
-              <tr>
-                <th>Filename</th>
-                <td>{attachment.filename}</td>
-              </tr>
-              <tr>
-                <th>Size</th>
-                <td>
-                  <FileSize bytes={attachment.size} />
-                </td>
-              </tr>
-              <tr>
-                <th>Hash</th>
-                <td>{attachment.hash}</td>
-              </tr>
-              <tr>
-                <th>Mime-Type</th>
-                <td>{attachment.mimetype}</td>
-              </tr>
-            </tbody>
-          </table>
-          {attachment.original && (
-            <table className="table table-condensed">
-              <tbody>
-                <tr>
-                  <th>Pre-gzipped file</th>
-                  <td />
-                </tr>
-                <tr>
-                  <td>{attachment.original.filename}</td>
-                </tr>
-                <tr>
-                  <td>
-                    <FileSize bytes={attachment.original.size} />
-                  </td>
-                </tr>
-                <tr>
-                  <td>{attachment.original.hash}</td>
-                </tr>
-                <tr>
-                  <td>{attachment.original.mimetype}</td>
-                </tr>
-              </tbody>
-            </table>
-          )}
-          <div>
-            <AttachmentPreview
-              mimetype={attachment.mimetype}
-              location={attachmentURL}
-            />
-            {!attachmentRequired && (
-              <p className="text-right attachment-action">
-                <input
-                  type="button"
-                  onClick={deleteAttachment}
-                  className="btn btn-danger"
-                  value="Delete this attachment"
-                />
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 }
 
 type Props = {
@@ -253,48 +57,60 @@ type Props = {
   record?: RecordState;
   deleteRecord?: typeof CollectionActions.deleteRecord;
   deleteAttachment?: typeof CollectionActions.deleteAttachment;
-  onSubmit: (data: RecordData) => void;
+  onSubmit: (data) => void;
   capabilities: Capabilities;
 };
 
-type State = {
-  asJSON: boolean;
-};
+export default function RecordForm(props: Props) {
+  const [asJSON, setAsJSON] = useState(false);
 
-export default class RecordForm extends PureComponent<Props, State> {
-  constructor(props: any) {
-    super(props);
-    this.state = { asJSON: false };
-  }
+  const {
+    bid,
+    cid,
+    session,
+    bucket,
+    collection,
+    record,
+    deleteRecord,
+    onSubmit,
+    capabilities,
+  } = props;
 
-  onSubmit = ({ formData }: { formData: any }) => {
-    this.props.onSubmit(formData);
-  };
+  const allowEditing = record
+    ? canEditRecord(session, bucket, collection, record)
+    : canCreateRecord(session, bucket, collection);
 
-  get allowEditing(): boolean {
-    const { session, bucket, collection, record } = this.props;
-    if (record) {
-      return canEditRecord(session, bucket, collection, record);
-    } else {
-      return canCreateRecord(session, bucket, collection);
-    }
-  }
-
-  deleteRecord = () => {
-    const { deleteRecord, bid, cid, rid } = this.props;
+  const handleDeleteRecord = () => {
+    const { rid } = props;
     if (rid && deleteRecord && confirm("Are you sure?")) {
       deleteRecord(bid, cid, rid);
     }
   };
 
-  getForm() {
-    const { asJSON } = this.state;
-    const { bid, cid, collection, record } = this.props;
+  const handleDeleteAttachment = () => {
+    const { rid, deleteAttachment } = props;
+    if (rid && deleteAttachment) {
+      deleteAttachment(bid, cid, rid);
+    }
+  };
+
+  const handleToggleJSON = (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    event.preventDefault();
+    setAsJSON(!asJSON);
+  };
+
+  const handleOnSubmit = ({ formData }: RJSFSchema) => {
+    onSubmit(formData);
+  };
+
+  const getForm = () => {
+    const { collection, record } = props;
     const {
       data: { schema = {}, uiSchema = {}, attachment },
     } = collection;
     const emptySchema = Object.keys(schema).length === 0;
-
     const recordData = record ? record.data : {};
 
     // Show a spinner if the collection metadata is being loaded, or the record
@@ -309,7 +125,7 @@ export default class RecordForm extends PureComponent<Props, State> {
           <button
             type="submit"
             className="btn btn-primary"
-            disabled={!this.allowEditing}
+            disabled={!allowEditing}
           >
             <Check2 className="icon" />
             {` ${record ? "Update" : "Create"} record`}
@@ -321,18 +137,18 @@ export default class RecordForm extends PureComponent<Props, State> {
           {emptySchema ? null : (
             <span>
               {" | "}
-              <a href="#" onClick={this.toggleJSON}>
+              <a href="#" onClick={handleToggleJSON}>
                 {asJSON ? "Edit form" : "Edit raw JSON"}
               </a>
             </span>
           )}
         </div>
         <div className="col-sm-6 text-right">
-          {this.allowEditing && record && (
+          {allowEditing && record && (
             <button
               type="button"
               className="btn btn-danger delete"
-              onClick={this.deleteRecord}
+              onClick={handleDeleteRecord}
             >
               <Trash className="icon" /> Delete record
             </button>
@@ -351,9 +167,9 @@ export default class RecordForm extends PureComponent<Props, State> {
             </div>
           )}
           <JSONRecordForm
-            disabled={!this.allowEditing}
+            disabled={!allowEditing}
             record={JSON.stringify(recordData, null, 2)}
-            onSubmit={this.onSubmit}
+            onSubmit={handleOnSubmit}
           >
             {buttons}
           </JSONRecordForm>
@@ -364,62 +180,47 @@ export default class RecordForm extends PureComponent<Props, State> {
     const _schema = extendSchemaWithAttachment(schema, attachment, recordData);
     let _uiSchema = extendUIWithKintoFields(uiSchema, !record);
     _uiSchema = extendUiSchemaWithAttachment(_uiSchema, attachment);
-    _uiSchema = extendUiSchemaWhenDisabled(_uiSchema, !this.allowEditing);
+    _uiSchema = extendUiSchemaWhenDisabled(_uiSchema, !allowEditing);
 
     return (
       <BaseForm
         schema={_schema}
         uiSchema={_uiSchema}
         formData={recordData}
-        onSubmit={this.onSubmit}
+        onSubmit={handleOnSubmit}
       >
         {buttons}
       </BaseForm>
     );
-  }
-
-  deleteAttachment = () => {
-    const { bid, cid, rid, deleteAttachment } = this.props;
-    if (rid && deleteAttachment) {
-      deleteAttachment(bid, cid, rid);
-    }
   };
 
-  toggleJSON = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    event.preventDefault();
-    this.setState({ asJSON: !this.state.asJSON });
-  };
+  const {
+    data: { attachment: attachmentConfig },
+  } = collection;
+  const attachmentRequired = attachmentConfig && attachmentConfig.required;
+  const isUpdate = !!record;
 
-  render() {
-    const { collection, record, capabilities } = this.props;
-    const {
-      data: { attachment: attachmentConfig },
-    } = collection;
-    const attachmentRequired = attachmentConfig && attachmentConfig.required;
-    const isUpdate = !!record;
-
-    const alert =
-      this.allowEditing || collection.busy ? null : (
-        <div className="alert alert-warning">
-          You don't have the required permission to
-          {isUpdate ? " edit this" : " create a"} record.
-        </div>
-      );
-
-    return (
-      <div>
-        {alert}
-        {isUpdate && (
-          <AttachmentInfo
-            allowEditing={this.allowEditing}
-            capabilities={capabilities}
-            record={record}
-            attachmentRequired={attachmentRequired}
-            deleteAttachment={this.deleteAttachment}
-          />
-        )}
-        {this.getForm()}
+  const alert =
+    allowEditing || collection.busy ? null : (
+      <div className="alert alert-warning">
+        You don't have the required permission to
+        {isUpdate ? " edit this" : " create a"} record.
       </div>
     );
-  }
+
+  return (
+    <div>
+      {alert}
+      {isUpdate && (
+        <AttachmentInfo
+          allowEditing={allowEditing}
+          capabilities={capabilities}
+          record={record}
+          attachmentRequired={attachmentRequired}
+          deleteAttachment={handleDeleteAttachment}
+        />
+      )}
+      {getForm()}
+    </div>
+  );
 }
