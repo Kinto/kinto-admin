@@ -539,6 +539,15 @@ i.fa:before {
   font-weight: 700;
 }
 
+/* we have some very tall rows, aligning center makes the buttons hard to locate */
+.rjsf .row { 
+  align-items: flex-start !important;
+}
+
+.rjsf .row button.btn {
+  font-size: 14pt;
+}
+
 .modal {
   background-color: rgba(0, 0, 0, 0.3);
 }
