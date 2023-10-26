@@ -80,12 +80,8 @@ export default function SignoffToolBar({
   confirmDeclineChanges,
   cancelPendingConfirm,
   declineChanges,
-}:SignoffToolBarProps) {
-  const canEdit = canEditCollection(
-    sessionState,
-    bucketState,
-    collectionState
-  );
+}: SignoffToolBarProps) {
+  const canEdit = canEditCollection(sessionState, bucketState, collectionState);
 
   const {
     data: { id: bid },
