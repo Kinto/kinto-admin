@@ -7,7 +7,7 @@ import type {
 } from "../../types";
 
 import { Check2 } from "react-bootstrap-icons";
-import { RJSFSchema } from "@rjsf/utils";
+import { RJSFSchema, UiSchema } from "@rjsf/utils";
 import BaseForm from "../BaseForm";
 import AdminLink from "../AdminLink";
 import JSONEditor from "../JSONEditor";
@@ -39,7 +39,7 @@ const schema: RJSFSchema = {
   },
 };
 
-const uiSchema = {
+const uiSchema:UiSchema = {
   data: {
     "ui:widget": JSONEditor,
   },

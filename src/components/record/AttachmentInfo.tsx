@@ -8,6 +8,8 @@ import { Paperclip } from "react-bootstrap-icons";
 
 import { buildAttachmentUrl, omit } from "../../utils";
 
+import { UiSchema } from '@rjsf/utils';
+
 export function extendSchemaWithAttachment(
   schema: any,
   attachmentConfig: { enabled: boolean; required: boolean } | null | undefined,
@@ -50,9 +52,9 @@ export function extendSchemaWithAttachment(
 }
 
 export function extendUiSchemaWithAttachment(
-  uiSchema: any,
+  uiSchema: UiSchema,
   attachmentConfig: { enabled: boolean; required: boolean } | null | undefined
-): any {
+): UiSchema {
   if (
     !attachmentConfig ||
     !attachmentConfig.enabled ||

@@ -1,4 +1,4 @@
-import React, { PureComponent, useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import type { RecordData, ResourceHistoryEntry, RouteLocation } from "../types";
 import type { Location } from "history";

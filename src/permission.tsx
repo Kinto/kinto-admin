@@ -13,7 +13,7 @@ import React from "react"; /* import to enable JSX transpilation */
 export const EVERYONE = "system.Everyone";
 export const AUTHENTICATED = "system.Authenticated";
 
-import { RJSFSchema } from "@rjsf/utils";
+import { RJSFSchema, UiSchema } from "@rjsf/utils";
 
 function can(
   session: SessionState,
@@ -308,6 +308,7 @@ export function preparePermissionsForm(
       },
       principals: {
         title: "Principals",
+        // @ts-ignore seems fine?
         description: (
           <p>
             A principal{" "}
@@ -340,7 +341,7 @@ export function preparePermissionsForm(
     groupSchema[group.id] = { "ui:widget": "checkboxes" };
   }
 
-  const uiSchema: RJSFSchema = {
+  const uiSchema: UiSchema = {
     anonymous: {
       "ui:widget": "checkboxes",
       classNames: "field-anonymous",

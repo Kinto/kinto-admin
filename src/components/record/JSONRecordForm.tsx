@@ -1,7 +1,7 @@
 import React from "react";
 import BaseForm from "../BaseForm";
 import JSONEditor from "../JSONEditor";
-import { RJSFSchema } from "@rjsf/utils";
+import { RJSFSchema, UiSchema } from "@rjsf/utils";
 
 const schema: RJSFSchema = {
   type: "string",
@@ -9,7 +9,7 @@ const schema: RJSFSchema = {
   default: "{}",
 };
 
-const uiSchema = {
+const uiSchema:UiSchema = {
   data: {
     "ui:widget": JSONEditor,
     "ui:help": "This must be valid JSON.",
