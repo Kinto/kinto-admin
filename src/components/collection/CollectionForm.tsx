@@ -179,6 +179,7 @@ const uiSchema = {
   displayFields: {
     items: {
       "ui:placeholder": "Enter a field name. i.e: name, attachment.filename",
+      "ui:title": "Field name"
     },
     "ui:description": (
       <p>

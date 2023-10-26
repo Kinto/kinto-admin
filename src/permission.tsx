@@ -275,6 +275,7 @@ export function preparePermissionsForm(
         items: {
           type: "string",
           enum: permissions,
+          title: "",
         },
         uniqueItems: true,
       },
@@ -321,6 +322,7 @@ export function preparePermissionsForm(
         ),
         type: "array",
         items: {
+          title: "",
           type: "object",
           properties: {
             principal: { type: "string", title: " " },

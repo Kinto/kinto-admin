@@ -540,8 +540,10 @@ i.fa:before {
 }
 
 /* we have some very tall rows, aligning center makes the buttons hard to locate */
-.rjsf .row { 
+.rjsf .row .align-items-center { 
   align-items: flex-start !important;
+  margin-top: .4em;
+  border-bottom: 1px solid #eee;
 }
 
 .rjsf .row button.btn {
