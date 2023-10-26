@@ -8,7 +8,7 @@ import { Paperclip } from "react-bootstrap-icons";
 
 import { buildAttachmentUrl, omit } from "../../utils";
 
-import { UiSchema } from '@rjsf/utils';
+import { UiSchema } from "@rjsf/utils";
 
 export function extendSchemaWithAttachment(
   schema: any,

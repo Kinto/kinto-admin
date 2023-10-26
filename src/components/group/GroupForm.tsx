@@ -39,7 +39,7 @@ const schema: RJSFSchema = {
   },
 };
 
-const uiSchema:UiSchema = {
+const uiSchema: UiSchema = {
   data: {
     "ui:widget": JSONEditor,
   },

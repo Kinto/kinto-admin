@@ -27,7 +27,7 @@ const schema: RJSFSchema = {
   },
 };
 
-const uiSchema:UiSchema = {
+const uiSchema: UiSchema = {
   data: {
     "ui:widget": JSONEditor,
     "ui:help": "This must be valid JSON.",
