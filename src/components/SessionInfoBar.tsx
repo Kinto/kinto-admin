@@ -6,7 +6,7 @@ import { Clipboard } from "react-bootstrap-icons";
 import { useAppSelector, useAppDispatch } from "../hooks";
 import * as SessionActions from "../actions/session";
 
-export const SessionInfoBar = () => {
+export function SessionInfoBar() {
   const { url, project_name, project_docs, user } = useAppSelector(
     store => store.session.serverInfo
   );
@@ -55,4 +55,4 @@ export const SessionInfoBar = () => {
       </span>
     </div>
   );
-};
+}

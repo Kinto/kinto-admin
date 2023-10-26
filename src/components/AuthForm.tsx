@@ -1,19 +1,14 @@
-import React, { useState, useEffect, useCallback, PureComponent } from 'react';
+import React, { useState } from "react";
 
 import type { SessionState, ServerEntry } from "../types";
 
 import * as ServersActions from "../actions/servers";
 import * as SessionActions from "../actions/session";
 import BaseForm from "./BaseForm";
-import {
-  getAuthLabel,
-  getServerByPriority,
-  isObjectEmpty,
-  omit,
-} from "../utils";
+import { getAuthLabel, getServerByPriority, omit } from "../utils";
 import { ANONYMOUS_AUTH, SINGLE_SERVER } from "../constants";
 
-import ServerHistory from './ServerHistory';
+import ServerHistory from "./ServerHistory";
 
 import { RJSFSchema } from "@rjsf/utils";
 
@@ -273,17 +268,18 @@ export default function AuthForm({
   getServerInfo,
   navigateToExternalAuth,
   navigateToOpenID,
-  clearServers
-}:AuthFormProps) {
+  clearServers,
+}: AuthFormProps) {
   const authType = (servers.length && servers[0].authType) || ANONYMOUS_AUTH;
   const server = getServerByPriority(servers);
-  const { schema: currentSchema, uiSchema: curentUiSchema } = authSchemas(authType);
+  const { schema: currentSchema, uiSchema: curentUiSchema } =
+    authSchemas(authType);
 
-  const [ schema, setSchema ] = useState(currentSchema);
-  const [ uiSchema, setUiSchema ] = useState(curentUiSchema);
-  const [ formData, setFormData ] = useState({ authType, server });
+  const [schema, setSchema] = useState(currentSchema);
+  const [uiSchema, setUiSchema] = useState(curentUiSchema);
+  const [formData, setFormData] = useState({ authType, server });
 
-  const getSupportedAuthMethods = ():string[] => {
+  const getSupportedAuthMethods = (): string[] => {
     const {
       serverInfo: { capabilities },
     } = session;
@@ -307,7 +303,7 @@ export default function AuthForm({
     const specificFormData = omitCredentials
       ? omit(formData, ["credentials"])
       : { credentials: {}, ...formData };
-    
+
     setSchema(schema);
     setUiSchema(uiSchema);
     setFormData(specificFormData);
@@ -345,7 +341,7 @@ export default function AuthForm({
       }
     }
   };
-  
+
   const authMethods = getSupportedAuthMethods();
   const singleAuthMethod = authMethods.length === 1;
   const finalSchema = extendSchemaWithHistory(schema, servers, authMethods);

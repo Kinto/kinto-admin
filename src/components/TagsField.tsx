@@ -28,7 +28,7 @@ type Props = {
   readonly?: boolean;
 };
 
-const TagsField: React.FC<Props> = ({
+export default function TagsField({
   schema,
   uiSchema = {},
   name,
@@ -36,7 +36,7 @@ const TagsField: React.FC<Props> = ({
   onChange,
   required = false,
   readonly = false,
-}) => {
+}: Props) {
   const separator = uiSchema["ui:options"]?.separator || DEFAULT_SEPARATOR;
 
   const [tagsString, setTagsString] = useState(
@@ -83,6 +83,4 @@ const TagsField: React.FC<Props> = ({
       </div>
     </div>
   );
-};
-
-export default TagsField;
+}

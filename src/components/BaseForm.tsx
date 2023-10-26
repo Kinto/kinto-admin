@@ -11,7 +11,7 @@ const FormWithTheme = withTheme(Bootstrap4Theme);
 
 export type BaseFormProps = Omit<FormProps, "validator">;
 
-const BaseForm = (props: BaseFormProps) => {
+export default function BaseForm(props: BaseFormProps) {
   const { className, ...restProps } = props;
 
   return (
@@ -23,6 +23,4 @@ const BaseForm = (props: BaseFormProps) => {
       fields={adminFields}
     />
   );
-};
-
-export default BaseForm;
+}

@@ -13,6 +13,8 @@ import React from "react"; /* import to enable JSX transpilation */
 export const EVERYONE = "system.Everyone";
 export const AUTHENTICATED = "system.Authenticated";
 
+import { RJSFSchema } from "@rjsf/utils";
+
 function can(
   session: SessionState,
   filter: (perm: PermissionsListEntry) => boolean
@@ -266,7 +268,7 @@ export function preparePermissionsForm(
 ) {
   const apiDocURI =
     "https://kinto.readthedocs.io/en/stable/api/1.x/permissions.html#api-principals";
-  const schema = {
+  const schema: RJSFSchema = {
     definitions: {
       permissions: {
         type: "array",
@@ -338,7 +340,7 @@ export function preparePermissionsForm(
     groupSchema[group.id] = { "ui:widget": "checkboxes" };
   }
 
-  const uiSchema = {
+  const uiSchema: RJSFSchema = {
     anonymous: {
       "ui:widget": "checkboxes",
       classNames: "field-anonymous",
