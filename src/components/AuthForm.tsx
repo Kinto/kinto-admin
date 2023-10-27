@@ -1,27 +1,17 @@
-import type { SessionState, ServerEntry } from "../types";
+import React, { useState } from "react";
 
-import React, { PureComponent } from "react";
-import InputGroup from "react-bootstrap/InputGroup";
-import FormControl from "react-bootstrap/FormControl";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
+import type { SessionState, ServerEntry } from "../types";
 
 import * as ServersActions from "../actions/servers";
 import * as SessionActions from "../actions/session";
 import BaseForm from "./BaseForm";
-import {
-  debounce,
-  getAuthLabel,
-  getServerByPriority,
-  isObjectEmpty,
-  omit,
-} from "../utils";
+import { getAuthLabel, getServerByPriority, omit } from "../utils";
 import { ANONYMOUS_AUTH, SINGLE_SERVER } from "../constants";
 
-const anonymousAuthData = server => ({
-  authType: ANONYMOUS_AUTH,
-  server: server,
-});
+import ServerHistory from "./ServerHistory";
+
+import { RJSFSchema } from "@rjsf/utils";
+
 const KNOWN_AUTH_METHODS = [
   "basicauth",
   "accounts",
@@ -30,98 +20,6 @@ const KNOWN_AUTH_METHODS = [
   "portier",
   // "openid", // Special cased as we need one auth method per openid provider.
 ];
-
-type ServerHistoryProps = {
-  id: string;
-  value: string;
-  placeholder: string;
-  options: any;
-  onChange: (s: string) => void;
-};
-
-type ServerHistoryState = {};
-
-class ServerHistory extends PureComponent<
-  ServerHistoryProps,
-  ServerHistoryState
-> {
-  constructor(props) {
-    super(props);
-  }
-
-  select = server => {
-    return event => {
-      event.preventDefault();
-      this.props.onChange(server);
-      this.debouncedFetchServerInfo(server);
-    };
-  };
-
-  clear = event => {
-    event.preventDefault();
-    const { clearServers } = this.props.options;
-    clearServers();
-  };
-
-  onServerChange = event => {
-    const server = event.target.value;
-    this.props.onChange(server);
-    // Do not try to fetch server infos if the field value is invalid.
-    if (server && event.target.validity && event.target.validity.valid) {
-      this.debouncedFetchServerInfo(server);
-    }
-  };
-
-  fetchServerInfo = server => {
-    // Server changed, request its capabilities to check what auth methods it
-    // supports.
-    const { getServerInfo, serverChange } = this.props.options;
-    serverChange();
-    getServerInfo(anonymousAuthData(server));
-  };
-
-  debouncedFetchServerInfo = debounce(this.fetchServerInfo, 500);
-
-  render() {
-    const { id, value, placeholder, options } = this.props;
-    const { servers, pattern } = options;
-    return (
-      <InputGroup>
-        <FormControl
-          type="text"
-          id={id}
-          placeholder={placeholder}
-          pattern={pattern}
-          value={value}
-          onChange={this.onServerChange}
-        />
-        <DropdownButton
-          as={InputGroup.Append}
-          variant="outline-secondary"
-          title="Servers"
-        >
-          {servers.length === 0 ? (
-            <Dropdown.Item>
-              <em>No server history</em>
-            </Dropdown.Item>
-          ) : (
-            servers.map(({ server }, key) => (
-              <Dropdown.Item key={key}>
-                <a href="#" onClick={this.select(server)}>
-                  {server}
-                </a>
-              </Dropdown.Item>
-            ))
-          )}
-          <Dropdown.Divider />
-          <Dropdown.Item href="#" onClick={this.clear}>
-            Clear
-          </Dropdown.Item>
-        </DropdownButton>
-      </InputGroup>
-    );
-  }
-}
 
 const baseAuthSchema = {
   type: "object",
@@ -136,7 +34,13 @@ const baseAuthSchema = {
     authType: {
       type: "string",
       title: "Authentication method",
-      enum: [ANONYMOUS_AUTH],
+      oneOf: [
+        {
+          type: "string",
+          const: ANONYMOUS_AUTH,
+          title: getAuthLabel(ANONYMOUS_AUTH),
+        },
+      ],
     },
   },
 };
@@ -296,14 +200,15 @@ const authSchemas = authType => {
  */
 function extendSchemaWithHistory(schema, servers, authMethods) {
   const serverURL = getServerByPriority(servers);
-  return {
+  const foo: RJSFSchema = {
     ...schema,
     properties: {
       ...schema.properties,
       authType: {
         ...schema.properties.authType,
-        enum: authMethods,
-        enumNames: authMethods.map(getAuthLabel),
+        oneOf: authMethods.map(x => {
+          return { type: "string", const: x, title: getAuthLabel(x) };
+        }),
       },
       server: {
         ...schema.properties.server,
@@ -311,6 +216,7 @@ function extendSchemaWithHistory(schema, servers, authMethods) {
       },
     },
   };
+  return foo;
 }
 
 /**
@@ -362,36 +268,28 @@ type AuthFormProps = {
   clearServers: typeof ServersActions.clearServers;
 };
 
-type AuthFormState = {
-  schema: any;
-  uiSchema: any;
-  formData: any;
-};
+export default function AuthForm({
+  session,
+  servers = [],
+  setupSession,
+  serverChange,
+  getServerInfo,
+  navigateToExternalAuth,
+  navigateToOpenID,
+  clearServers,
+}: AuthFormProps) {
+  const authType = (servers.length && servers[0].authType) || ANONYMOUS_AUTH;
+  const { schema: currentSchema, uiSchema: curentUiSchema } =
+    authSchemas(authType);
 
-export default class AuthForm extends PureComponent<
-  AuthFormProps,
-  AuthFormState
-> {
-  static defaultProps = {
-    servers: [],
-  };
+  const [schema, setSchema] = useState(currentSchema);
+  const [uiSchema, setUiSchema] = useState(curentUiSchema);
+  const [formData, setFormData] = useState({
+    authType,
+    server: getServerByPriority(servers),
+  });
 
-  constructor(props: AuthFormProps) {
-    super(props);
-    const { servers } = this.props;
-
-    const server = getServerByPriority(servers);
-    const authType = (servers.length && servers[0].authType) || ANONYMOUS_AUTH;
-    const { schema, uiSchema } = authSchemas(authType);
-    this.state = {
-      schema,
-      uiSchema,
-      formData: { authType, server },
-    };
-  }
-
-  getSupportedAuthMethods = (): string[] => {
-    const { session } = this.props;
+  const getSupportedAuthMethods = (): string[] => {
     const {
       serverInfo: { capabilities },
     } = session;
@@ -405,26 +303,27 @@ export default class AuthForm extends PureComponent<
     return [ANONYMOUS_AUTH].concat(supportedAuthMethods).concat(openIdMethods);
   };
 
-  onChange = ({ formData }: { formData: any }) => {
-    const { authType } = formData;
+  const onChange = ({ formData: updatedData }: RJSFSchema) => {
+    if (formData.server !== updatedData.server) {
+      const newServer = servers.find(x => x.server === updatedData.server);
+      updatedData.authType = newServer?.authType || ANONYMOUS_AUTH;
+    }
+    const { authType } = updatedData;
     const { uiSchema } = authSchemas(authType);
     const { schema } = authSchemas(authType);
     const omitCredentials =
-      authType in [ANONYMOUS_AUTH, "fxa", "portier"] ||
+      [ANONYMOUS_AUTH, "fxa", "portier"].includes(authType) ||
       authType.startsWith("openid-");
     const specificFormData = omitCredentials
-      ? omit(formData, ["credentials"])
-      : { credentials: {}, ...formData };
-    return this.setState({
-      schema,
-      uiSchema,
-      formData: specificFormData,
-    });
+      ? omit(updatedData, ["credentials"])
+      : { credentials: {}, ...updatedData, authType };
+
+    setSchema(schema);
+    setUiSchema(uiSchema);
+    setFormData(specificFormData);
   };
 
-  onSubmit = ({ formData }: { formData: any }) => {
-    const { session, setupSession, navigateToExternalAuth, navigateToOpenID } =
-      this.props;
+  const onSubmit = ({ formData }: RJSFSchema) => {
     let { authType } = formData;
     let openidProvider = null;
     if (authType.startsWith("openid-")) {
@@ -440,7 +339,6 @@ export default class AuthForm extends PureComponent<
         return navigateToExternalAuth(extendedFormData);
       }
       case "openid": {
-        const { session } = this.props;
         const {
           serverInfo: {
             capabilities: { openid: { providers } = { providers: [] } },
@@ -452,94 +350,39 @@ export default class AuthForm extends PureComponent<
         }
         return navigateToOpenID(extendedFormData, providerData);
       }
-      // case "anonymous":
-      // case "ldap":
-      // case "basicauth":
-      // case "accounts":
       default: {
         return setupSession(extendedFormData);
       }
     }
   };
 
-  componentDidUpdate(prevProps: AuthFormProps, prevState: AuthFormState) {
-    const {
-      formData: { server: prevServer },
-    } = prevState;
-    const {
-      formData: { server: newServer },
-    } = this.state;
-
-    if (prevServer !== newServer) {
-      // Server changed, set the authType back to "anonymous", until we get the
-      // `capabilities` back from the call to `getServerInfo`. This is what
-      // we're doing below.
-      return this.onChange({
-        ...this.state,
-        formData: { ...this.state.formData, authType: ANONYMOUS_AUTH },
-      });
-    }
-
-    const {
-      session: {
-        serverInfo: { capabilities: prevCapabilities },
-      },
-    } = prevProps;
-    const {
-      session: {
-        serverInfo: { capabilities: newCapabilities },
-      },
-    } = this.props;
-    if (isObjectEmpty(prevCapabilities) && !isObjectEmpty(newCapabilities)) {
-      // The `capabilities` (and thus the auth methods) have changed following
-      // a successful `getServerInfo`, update the default auth method with the
-      // one from the servers, if we have one for this server.
-      const serverHistoryEntry = this.props.servers.find(
-        ({ server }) => server === newServer
-      );
-      if (serverHistoryEntry) {
-        return this.onChange({
-          ...this.state,
-          formData: {
-            ...this.state.formData,
-            authType: serverHistoryEntry.authType,
-          },
-        });
-      }
-    }
-  }
-
-  render() {
-    const { servers, clearServers, getServerInfo, serverChange } = this.props;
-    const { schema, uiSchema, formData } = this.state;
-    const authMethods = this.getSupportedAuthMethods();
-    const singleAuthMethod = authMethods.length === 1;
-    const finalSchema = extendSchemaWithHistory(schema, servers, authMethods);
-    const finalUiSchema = extendUiSchemaWithHistory(
-      uiSchema,
-      servers,
-      clearServers,
-      getServerInfo,
-      serverChange,
-      singleAuthMethod
-    );
-    return (
-      <div className="card">
-        <div className="card-body">
-          <BaseForm
-            schema={finalSchema}
-            uiSchema={finalUiSchema}
-            formData={formData}
-            onChange={this.onChange}
-            onSubmit={this.onSubmit}
-          >
-            <button type="submit" className="btn btn-info">
-              {"Sign in using "}
-              {getAuthLabel(formData.authType)}
-            </button>
-          </BaseForm>
-        </div>
+  const authMethods = getSupportedAuthMethods();
+  const singleAuthMethod = authMethods.length === 1;
+  const finalSchema = extendSchemaWithHistory(schema, servers, authMethods);
+  const finalUiSchema = extendUiSchemaWithHistory(
+    uiSchema,
+    servers,
+    clearServers,
+    getServerInfo,
+    serverChange,
+    singleAuthMethod
+  );
+  return (
+    <div className="card">
+      <div className="card-body">
+        <BaseForm
+          schema={finalSchema}
+          uiSchema={finalUiSchema}
+          formData={formData}
+          onChange={onChange}
+          onSubmit={onSubmit}
+        >
+          <button type="submit" className="btn btn-info">
+            {"Sign in using "}
+            {getAuthLabel(formData.authType)}
+          </button>
+        </BaseForm>
       </div>
-    );
-  }
+    </div>
+  );
 }

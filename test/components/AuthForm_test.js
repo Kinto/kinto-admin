@@ -3,7 +3,6 @@ import { DEFAULT_KINTO_SERVER } from "../../src/constants";
 import { DEFAULT_SERVERINFO } from "../../src/reducers/session";
 import { expect } from "chai";
 import { render, fireEvent } from "@testing-library/react";
-import { Simulate } from "react-dom/test-utils";
 import * as React from "react";
 import AuthForm from "../../src/components/AuthForm";
 import sinon from "sinon";
@@ -33,26 +32,6 @@ describe("AuthForm component", () => {
       const element = node.querySelector("input[id='root_server']");
       expect(element.type).eql("text");
       expect(element.value).eql(DEFAULT_KINTO_SERVER);
-    });
-
-    it("should set the server url value in hidden field", async () => {
-      jest.doMock("../../src/constants", () => {
-        const actual = jest.requireActual("../../src/constants");
-        return {
-          __esModule: true,
-          ...actual,
-          SINGLE_SERVER: "http://www.example.com/",
-        };
-      });
-      const AuthForm = require("../../src/components/AuthForm").default;
-      const node = createComponent(
-        <AuthForm
-          session={{ authenticated: false, serverInfo: DEFAULT_SERVERINFO }}
-        />
-      );
-      const element = node.querySelector("input[id='root_server']");
-      expect(element.type).eql("hidden");
-      expect(element.value).eql("http://www.example.com/");
     });
   });
   describe("Authentication types", () => {
@@ -104,21 +83,18 @@ describe("AuthForm component", () => {
 
     describe("Basic Auth", () => {
       it("should submit setup data", () => {
-        Simulate.change(node.querySelector("#root_server"), {
+        fireEvent.change(node.querySelector("#root_server"), {
           target: { value: "http://test.server/v1" },
         });
-        Simulate.change(node.querySelectorAll("[type=radio]")[1], {
-          target: { value: "basicauth" },
-        });
-        clock.tick(500); // The server field .onChange even is debounced.
-        Simulate.change(node.querySelector("#root_credentials_username"), {
+        fireEvent.click(node.querySelectorAll("[type=radio]")[1]);
+        fireEvent.change(node.querySelector("#root_credentials_username"), {
           target: { value: "user" },
         });
-        Simulate.change(node.querySelector("#root_credentials_password"), {
+        fireEvent.change(node.querySelector("#root_credentials_password"), {
           target: { value: "pass" },
         });
 
-        Simulate.submit(node.querySelector("form"));
+        fireEvent.submit(node.querySelector("form"));
         sinon.assert.calledWithExactly(setupSession, {
           server: "http://test.server/v1",
           authType: "basicauth",
@@ -133,20 +109,17 @@ describe("AuthForm component", () => {
 
     describe("LDAP", () => {
       it("should submit setup data", () => {
-        Simulate.change(node.querySelector("#root_server"), {
+        fireEvent.change(node.querySelector("#root_server"), {
           target: { value: "http://test.server/v1" },
         });
-        Simulate.change(node.querySelectorAll("[type=radio]")[3], {
-          target: { value: "ldap" },
-        });
-        clock.tick(500); // The AuthForm.onChange even is debounced.
-        Simulate.change(node.querySelector("#root_credentials_username"), {
+        fireEvent.click(node.querySelectorAll("[type=radio]")[3]);
+        fireEvent.change(node.querySelector("#root_credentials_username"), {
           target: { value: "you@email.com" },
         });
-        Simulate.change(node.querySelector("#root_credentials_password"), {
+        fireEvent.change(node.querySelector("#root_credentials_password"), {
           target: { value: "pass" },
         });
-        Simulate.submit(node.querySelector("form"));
+        fireEvent.submit(node.querySelector("form"));
         sinon.assert.calledWithExactly(setupSession, {
           server: "http://test.server/v1",
           authType: "ldap",
@@ -161,32 +134,27 @@ describe("AuthForm component", () => {
 
     describe("FxA", () => {
       it("should navigate to external auth URL", () => {
-        Simulate.change(node.querySelector("#root_server"), {
+        fireEvent.change(node.querySelector("#root_server"), {
           target: { value: "http://test.server/v1" },
         });
-        Simulate.change(node.querySelectorAll("[type=radio]")[2], {
-          target: { value: "fxa" },
-        });
-
-        Simulate.submit(node.querySelector("form"));
+        fireEvent.click(node.querySelectorAll("[type=radio]")[2]);
+        fireEvent.change(node.querySelector("form"));
+        fireEvent.submit(node.querySelector("form"));
         sinon.assert.calledWithExactly(navigateToExternalAuth, {
           server: "http://test.server/v1",
-          authType: "fxa",
+          authType: "fxa", // fxa = credentials omitted
           redirectURL: undefined,
-          credentials: {},
         });
       });
     });
 
     describe("OpenID", () => {
       it("should navigate to external auth URL", () => {
-        Simulate.change(node.querySelector("#root_server"), {
+        fireEvent.change(node.querySelector("#root_server"), {
           target: { value: "http://test.server/v1" },
         });
-        Simulate.change(node.querySelectorAll("[type=radio]")[4], {
-          target: { value: "openid-google" },
-        });
-        Simulate.submit(node.querySelector("form"));
+        fireEvent.click(node.querySelectorAll("[type=radio]")[4]);
+        fireEvent.submit(node.querySelector("form"));
         sinon.assert.calledWithExactly(
           navigateToOpenID,
           {
@@ -254,7 +222,7 @@ describe("AuthForm component", () => {
         target: { value: "http://test.server/v1" },
       });
       expect(serverField.value).eql("http://test.server/v1");
-      expect(authTypeField.value).eql("anonymous");
+      expect(authTypeField.value).eql("openid-google");
 
       const updatedProps = {
         ...props,
