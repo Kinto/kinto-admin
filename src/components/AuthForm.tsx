@@ -34,7 +34,13 @@ const baseAuthSchema = {
     authType: {
       type: "string",
       title: "Authentication method",
-      oneOf: [{ type: "string", const: ANONYMOUS_AUTH, title: getAuthLabel(ANONYMOUS_AUTH) }]
+      oneOf: [
+        {
+          type: "string",
+          const: ANONYMOUS_AUTH,
+          title: getAuthLabel(ANONYMOUS_AUTH),
+        },
+      ],
     },
   },
 };
@@ -194,15 +200,15 @@ const authSchemas = authType => {
  */
 function extendSchemaWithHistory(schema, servers, authMethods) {
   const serverURL = getServerByPriority(servers);
-  const foo:RJSFSchema = {
+  const foo: RJSFSchema = {
     ...schema,
     properties: {
       ...schema.properties,
       authType: {
         ...schema.properties.authType,
-        oneOf: authMethods.map((x) => {
+        oneOf: authMethods.map(x => {
           return { type: "string", const: x, title: getAuthLabel(x) };
-        })
+        }),
       },
       server: {
         ...schema.properties.server,
@@ -264,7 +270,7 @@ type AuthFormProps = {
 
 export default function AuthForm({
   session,
-  servers,
+  servers = [],
   setupSession,
   serverChange,
   getServerInfo,
@@ -273,13 +279,15 @@ export default function AuthForm({
   clearServers,
 }: AuthFormProps) {
   const authType = (servers.length && servers[0].authType) || ANONYMOUS_AUTH;
-  const server = getServerByPriority(servers);
   const { schema: currentSchema, uiSchema: curentUiSchema } =
     authSchemas(authType);
 
   const [schema, setSchema] = useState(currentSchema);
   const [uiSchema, setUiSchema] = useState(curentUiSchema);
-  const [formData, setFormData] = useState({ authType, server });
+  const [formData, setFormData] = useState({
+    authType,
+    server: getServerByPriority(servers),
+  });
 
   const getSupportedAuthMethods = (): string[] => {
     const {
@@ -295,16 +303,20 @@ export default function AuthForm({
     return [ANONYMOUS_AUTH].concat(supportedAuthMethods).concat(openIdMethods);
   };
 
-  const onChange = ({ formData }: RJSFSchema) => {
-    const { authType } = formData;
+  const onChange = ({ formData: updatedData }: RJSFSchema) => {
+    if (formData.server !== updatedData.server) {
+      const newServer = servers.find(x => x.server === updatedData.server);
+      updatedData.authType = newServer?.authType || ANONYMOUS_AUTH;
+    }
+    const { authType } = updatedData;
     const { uiSchema } = authSchemas(authType);
     const { schema } = authSchemas(authType);
     const omitCredentials =
-      authType in [ANONYMOUS_AUTH, "fxa", "portier"] ||
+      [ANONYMOUS_AUTH, "fxa", "portier"].includes(authType) ||
       authType.startsWith("openid-");
     const specificFormData = omitCredentials
-      ? omit(formData, ["credentials"])
-      : { credentials: {}, ...formData };
+      ? omit(updatedData, ["credentials"])
+      : { credentials: {}, ...updatedData, authType };
 
     setSchema(schema);
     setUiSchema(uiSchema);

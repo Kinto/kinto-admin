@@ -26,9 +26,11 @@ export default function ServerHistory(props: ServerHistoryProps) {
 
   const select = useCallback(
     server => event => {
+      console.log("server select");
       event.preventDefault();
       props.onChange(server);
       debouncedFetchServerInfo(server);
+      setValue(server);
     },
     [props]
   );
@@ -44,6 +46,7 @@ export default function ServerHistory(props: ServerHistoryProps) {
 
   const onServerChange = useCallback(
     event => {
+      console.log("onServerChange");
       const server = event.target.value;
       props.onChange(server);
       // Do not try to fetch server info if the field value is invalid.
@@ -93,10 +96,8 @@ export default function ServerHistory(props: ServerHistoryProps) {
           </Dropdown.Item>
         ) : (
           servers.map(({ server }, key) => (
-            <Dropdown.Item key={key}>
-              <a href="#" onClick={select(server)}>
-                {server}
-              </a>
+            <Dropdown.Item key={key} onClick={select(server)}>
+              {server}
             </Dropdown.Item>
           ))
         )}
