@@ -1,14 +1,14 @@
 import type { Capabilities } from "../../types";
 
-import { PureComponent } from "react";
-import * as React from "react";
+import React from "react";
 
-import { Gear } from "react-bootstrap-icons";
-import { Lock } from "react-bootstrap-icons";
-import { Justify } from "react-bootstrap-icons";
-import { PersonFill } from "react-bootstrap-icons";
-import { ClockHistory } from "react-bootstrap-icons";
-
+import {
+  Gear,
+  Lock,
+  Justify,
+  PersonFill,
+  ClockHistory,
+} from "react-bootstrap-icons";
 import AdminLink from "../AdminLink";
 
 type Props = {
@@ -18,80 +18,70 @@ type Props = {
   children?: React.ReactNode;
 };
 
-export default class BucketTabs extends PureComponent<Props> {
-  render() {
-    const { bid, selected, capabilities, children } = this.props;
-
-    return (
-      <div className="card">
-        <div className="card-header">
-          <ul className="nav nav-tabs card-header-tabs">
-            <li className="nav-item" role="presentation">
+export default function BucketTabs({
+  bid,
+  selected,
+  capabilities,
+  children,
+}: Props) {
+  return (
+    <div className="card">
+      <div className="card-header">
+        <ul className="nav nav-tabs card-header-tabs">
+          {[
+            {
+              name: "bucket:collections",
+              icon: Justify,
+              label: "Collections",
+              key: "collections",
+            },
+            {
+              name: "bucket:groups",
+              icon: PersonFill,
+              label: "Groups",
+              key: "groups",
+            },
+            {
+              name: "bucket:attributes",
+              icon: Gear,
+              label: "Attributes",
+              key: "attributes",
+            },
+            {
+              name: "bucket:permissions",
+              icon: Lock,
+              label: "Permissions",
+              key: "permissions",
+            },
+          ].map(({ name, icon: Icon, label, key }) => (
+            <li className="nav-item" role="presentation" key={key}>
               <AdminLink
-                name="bucket:collections"
+                name={name}
                 params={{ bid }}
-                className={
-                  selected === "collections" ? "nav-link active" : "nav-link"
-                }
+                className={selected === key ? "nav-link active" : "nav-link"}
               >
-                <Justify className="icon" />
-                Collections
+                <Icon className="icon" />
+                {label}
               </AdminLink>
             </li>
+          ))}
+          {"history" in capabilities && (
             <li className="nav-item" role="presentation">
               <AdminLink
-                name="bucket:groups"
+                name="bucket:history"
                 params={{ bid }}
                 className={
-                  selected === "groups" ? "nav-link active" : "nav-link"
+                  selected === "history" ? "nav-link active" : "nav-link"
                 }
               >
-                <PersonFill className="icon" />
-                Groups
+                <ClockHistory className="icon" />
+                History
               </AdminLink>
             </li>
-            <li className="nav-item" role="presentation">
-              <AdminLink
-                name="bucket:attributes"
-                params={{ bid }}
-                className={
-                  selected === "attributes" ? "nav-link active" : "nav-link"
-                }
-              >
-                <Gear className="icon" />
-                Attributes
-              </AdminLink>
-            </li>
-            <li className="nav-item" role="presentation">
-              <AdminLink
-                name="bucket:permissions"
-                params={{ bid }}
-                className={
-                  selected === "permissions" ? "nav-link active" : "nav-link"
-                }
-              >
-                <Lock className="icon" />
-                Permissions
-              </AdminLink>
-            </li>
-            {"history" in capabilities && (
-              <li className="nav-item" role="presentation">
-                <AdminLink
-                  name="bucket:history"
-                  params={{ bid }}
-                  className={
-                    selected === "history" ? "nav-link active" : "nav-link"
-                  }
-                >
-                  <ClockHistory className="icon" />
-                  History
-                </AdminLink>
-              </li>
-            )}
-          </ul>
-        </div>
-        <div className="card-body">{children}</div>
+          )}
+        </ul>
       </div>
-    );
-  }
+      <div className="card-body">{children}</div>
+    </div>
+  );
 }
