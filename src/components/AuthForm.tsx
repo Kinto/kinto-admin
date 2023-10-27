@@ -34,7 +34,7 @@ const baseAuthSchema = {
     authType: {
       type: "string",
       title: "Authentication method",
-      enum: [ANONYMOUS_AUTH],
+      oneOf: [{ type: "string", const: ANONYMOUS_AUTH, title: getAuthLabel(ANONYMOUS_AUTH) }]
     },
   },
 };
@@ -194,15 +194,14 @@ const authSchemas = authType => {
  */
 function extendSchemaWithHistory(schema, servers, authMethods) {
   const serverURL = getServerByPriority(servers);
-  return {
+  const foo:RJSFSchema = {
     ...schema,
     properties: {
       ...schema.properties,
       authType: {
         ...schema.properties.authType,
-        enum: authMethods,
         oneOf: authMethods.map((x) => {
-          return { const: x, title: getAuthLabel(x) };
+          return { type: "string", const: x, title: getAuthLabel(x) };
         })
       },
       server: {
@@ -211,6 +210,7 @@ function extendSchemaWithHistory(schema, servers, authMethods) {
       },
     },
   };
+  return foo;
 }
 
 /**
