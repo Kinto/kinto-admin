@@ -27,9 +27,9 @@ const schema: RJSFSchema = {
     },
     members: {
       type: "array",
-      items: { 
+      items: {
         type: "string",
-        title: "Member name", 
+        title: "Member name",
       },
       uniqueItems: true,
       default: [],
