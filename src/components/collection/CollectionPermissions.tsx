@@ -13,7 +13,8 @@ interface RouteParams {
   bid: string;
   cid: string;
 }
-export const CollectionPermissions = () => {
+
+export function CollectionPermissions() {
   const { bid, cid } = useParams<RouteParams>();
   const session = useAppSelector(state => state.session);
   const bucket = useAppSelector(state => state.bucket);
@@ -55,4 +56,4 @@ export const CollectionPermissions = () => {
       </CollectionTabs>
     </div>
   );
-};
+}
