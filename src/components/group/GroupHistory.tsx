@@ -6,7 +6,7 @@ import type {
 } from "../../types";
 import type { Location } from "history";
 
-import React, { PureComponent } from "react";
+import React, { useEffect } from "react";
 
 import * as GroupActions from "../../actions/group";
 import * as NotificationActions from "../../actions/notifications";
@@ -37,62 +37,57 @@ export const onGroupHistoryEnter = (props: Props) => {
     params: { bid, gid },
   } = match;
   if (!session.authenticated) {
-    // We're not authenticated, skip requesting the list of records. This likely
-    // occurs when users refresh the page and lose their session.
     return;
   }
   listGroupHistory && listGroupHistory(bid, gid);
 };
 
-export default class GroupHistory extends PureComponent<Props> {
-  componentDidMount = () => onGroupHistoryEnter(this.props);
-  componentDidUpdate = (prevProps: Props) => {
-    if (prevProps.location !== this.props.location) {
-      onGroupHistoryEnter(this.props);
-    }
-  };
+export default function GroupHistory(props: Props) {
+  const {
+    match,
+    group,
+    capabilities,
+    location,
+    listGroupNextHistory,
+    notifyError,
+  } = props;
 
-  render() {
-    const {
-      match,
-      group,
-      capabilities,
-      location,
-      listGroupNextHistory,
-      notifyError,
-    } = this.props;
-    const {
-      params: { bid, gid },
-    } = match;
-    const {
-      history: { entries, loaded, hasNextPage },
-    } = group;
+  useEffect(() => {
+    onGroupHistoryEnter(props);
+  }, []);
 
-    return (
-      <div>
-        <h1>
-          History for{" "}
-          <b>
-            {bid}/{gid}
-          </b>
-        </h1>
-        <CollectionTabs
+  const {
+    params: { bid, gid },
+  } = match;
+
+  const {
+    history: { entries, loaded, hasNextPage },
+  } = group;
+
+  return (
+    <div>
+      <h1>
+        History for{" "}
+        <b>
+          {bid}/{gid}
+        </b>
+      </h1>
+      <CollectionTabs
+        bid={bid}
+        gid={gid}
+        selected="history"
+        capabilities={capabilities}
+      >
+        <HistoryTable
           bid={bid}
-          gid={gid}
-          selected="history"
-          capabilities={capabilities}
-        >
-          <HistoryTable
-            bid={bid}
-            historyLoaded={loaded}
-            history={entries}
-            hasNextHistory={hasNextPage}
-            listNextHistory={listGroupNextHistory}
-            location={location}
-            notifyError={notifyError}
-          />
-        </CollectionTabs>
-      </div>
-    );
-  }
+          historyLoaded={loaded}
+          history={entries}
+          hasNextHistory={hasNextPage}
+          listNextHistory={listGroupNextHistory}
+          location={location}
+          notifyError={notifyError}
+        />
+      </CollectionTabs>
+    </div>
+  );
 }
