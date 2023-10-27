@@ -201,7 +201,9 @@ function extendSchemaWithHistory(schema, servers, authMethods) {
       authType: {
         ...schema.properties.authType,
         enum: authMethods,
-        enumNames: authMethods.map(getAuthLabel),
+        oneOf: authMethods.map((x) => {
+          return { const: x, title: getAuthLabel(x) };
+        })
       },
       server: {
         ...schema.properties.server,
