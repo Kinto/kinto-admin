@@ -8,10 +8,10 @@ import type {
   PermissionsListEntry,
 } from "./types";
 
-import React from "react"; /* import to enable JSX transpilation */
-
 export const EVERYONE = "system.Everyone";
 export const AUTHENTICATED = "system.Authenticated";
+
+import { RJSFSchema, UiSchema } from "@rjsf/utils";
 
 function can(
   session: SessionState,
@@ -264,15 +264,14 @@ export function preparePermissionsForm(
   permissions: string[],
   groups: GroupData[]
 ) {
-  const apiDocURI =
-    "https://kinto.readthedocs.io/en/stable/api/1.x/permissions.html#api-principals";
-  const schema = {
+  const schema: RJSFSchema = {
     definitions: {
       permissions: {
         type: "array",
         items: {
           type: "string",
           enum: permissions,
+          title: "",
         },
         uniqueItems: true,
       },
@@ -306,18 +305,11 @@ export function preparePermissionsForm(
       },
       principals: {
         title: "Principals",
-        description: (
-          <p>
-            A principal{" "}
-            <a href={apiDocURI} target="_blank">
-              can be a user ID or a group URI
-            </a>
-            . The write permissions is always granted to the user that edited
-            the object.
-          </p>
-        ),
+        description:
+          "A principal can be a user ID or a group URI. The write permissions is always granted to the user that edited the object.",
         type: "array",
         items: {
+          title: "",
           type: "object",
           properties: {
             principal: { type: "string", title: " " },
@@ -332,32 +324,32 @@ export function preparePermissionsForm(
   };
 
   const groupSchema = {
-    classNames: "field-groups",
+    "ui:classNames": "field-groups",
   };
   for (let group of groups) {
     groupSchema[group.id] = { "ui:widget": "checkboxes" };
   }
 
-  const uiSchema = {
+  const uiSchema: UiSchema = {
     anonymous: {
       "ui:widget": "checkboxes",
-      classNames: "field-anonymous",
+      "ui:classNames": "field-anonymous",
     },
     authenticated: {
       "ui:widget": "checkboxes",
-      classNames: "field-authenticated",
+      "ui:classNames": "field-authenticated",
     },
     principals: {
-      classNames: "field-principals",
+      "ui:classNames": "field-principals",
       items: {
         principal: {
-          classNames: "field-principal",
+          "ui:classNames": "field-principal",
           "ui:placeholder":
             "Principal, eg. basicauth:alice, /buckets/x/groups/y",
         },
         permissions: {
           "ui:widget": "checkboxes",
-          classNames: "field-permissions",
+          "ui:classNames": "field-permissions",
         },
       },
     },

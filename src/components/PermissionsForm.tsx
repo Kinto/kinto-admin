@@ -11,20 +11,23 @@ import {
 import { useParams } from "react-router";
 import { useAppSelector } from "../hooks";
 
+import { RJSFSchema } from "@rjsf/utils";
+
 type Props = {
   readonly: boolean;
   permissions: Permissions;
   acls: string[];
-  onSubmit: (data: { formData: Object }) => void;
+  onSubmit: (data: RJSFSchema) => void;
 };
 
-export const PermissionsForm = ({
+export function PermissionsForm({
   readonly,
   permissions,
   acls,
   onSubmit: onSubmit_,
-}: Props) => {
-  const onSubmit = ({ formData }: { formData: Object }) => {
+}: Props) {
+  const onSubmit = ({ formData }: RJSFSchema) => {
+    console.log("submit foo");
     onSubmit_({ formData: formDataToPermissions(bid, formData) });
   };
   const { bid } = useParams<{ bid: string }>();
@@ -46,6 +49,10 @@ export const PermissionsForm = ({
       uiSchema={uiSchema}
       formData={formData}
       onSubmit={onSubmit}
+      customValidate={(a, b, c) => {
+        console.log("custom validate");
+        return b;
+      }}
     />
   );
-};
+}

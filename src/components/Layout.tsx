@@ -32,7 +32,7 @@ import Notifications from "../containers/Notifications";
 import { SessionInfoBar } from "./SessionInfoBar";
 import { useAppSelector } from "../hooks";
 
-export const Layout = () => {
+export function Layout() {
   const authenticated = useAppSelector(store => store.session.authenticated);
   const contentClasses = `col-sm-9 content`;
   const version = process.env.KINTO_ADMIN_VERSION;
@@ -301,4 +301,4 @@ export const Layout = () => {
       </div>
     </div>
   );
-};
+}

@@ -1,5 +1,4 @@
-import * as React from "react";
-import { PureComponent } from "react";
+import React, { useEffect } from "react";
 import { Route } from "react-router-dom";
 import type { RouteComponentProps } from "react-router-dom";
 import type { Dispatch } from "redux";
@@ -13,59 +12,52 @@ type ComponentWrapperProps = RouteComponentProps & {
   routeUpdated: typeof RouteActions.routeUpdated;
 };
 
-class ComponentWrapper extends PureComponent<ComponentWrapperProps> {
-  updateRoute() {
-    const { match, location, routeUpdated } = this.props;
-    routeUpdated(match.params, location);
-  }
+function ComponentWrapper(props: ComponentWrapperProps) {
+  const { routeUpdated, match, location, component: Component } = props;
 
-  componentDidMount = this.updateRoute;
-  componentDidUpdate = (prevProps: ComponentWrapperProps) => {
-    if (prevProps.location !== this.props.location) {
-      this.updateRoute();
-    }
+  const updateRoute = () => {
+    routeUpdated(match.params, location);
   };
 
-  render() {
-    const {
-      component: Component,
-      routeUpdated: _routeUpdated,
-      ...props
-    } = this.props;
-    // Each component takes a different set of OwnProps, which leads
-    // to two problems with just calling the component with the props
-    // here.
-    //
-    // - OwnProps is an exact object, so we can't call a component
-    //   with "extra" props. We get all of the ContextRouter props and
-    //   there's no way to distinguish which of those is needed for
-    //   the component, so we have to pass all of them. It's true that
-    //   every OwnProps is essentially derived from the ContextRouter
-    //   type, so we *could* conceptually always use that, but that
-    //   means we don't get a clear understanding of which Route prop
-    //   each component uses. Besides, even if we do that...
-    //
-    // - We also customize the `match` type to better reflect the
-    //   params we expect to get from react-router based on the path.
-    //   react-router just gives us a string map, which isn't super
-    //   helpful. Collection components replace that with
-    //   CollectionRouteMatch etc. to assert that there should always
-    //   be e.g. a bid and a cid. Fixing the types here would require
-    //   adding some extra logic to ensure that the match we get is
-    //   what we expect (and if not.. throw?).
-    //
-    // But if we didn't wrap react-router, everything would be
-    // fine. Why is that? Of course, it's because react-router is
-    // written in JS and the typings in flow-typed aren't
-    // exact. `Route` is specified to take a component of any type,
-    // which gets unified with the OwnProps we actually take, even
-    // though `Route` always passes the complete set of router
-    // props. We can't reproduce this behavior in correctly-typed
-    // code, so let's not even try.
+  useEffect(() => {
+    updateRoute();
+  }, [location]);
 
-    // $FlowFixMe: maybe wait until we get better types for react-router
-    return <Component {...props} />;
-  }
+  // Each component takes a different set of OwnProps, which leads
+  // to two problems with just calling the component with the props
+  // here.
+  //
+  // - OwnProps is an exact object, so we can't call a component
+  //   with "extra" props. We get all of the ContextRouter props and
+  //   there's no way to distinguish which of those is needed for
+  //   the component, so we have to pass all of them. It's true that
+  //   every OwnProps is essentially derived from the ContextRouter
+  //   type, so we *could* conceptually always use that, but that
+  //   means we don't get a clear understanding of which Route prop
+  //   each component uses. Besides, even if we do that...
+  //
+  // - We also customize the `match` type to better reflect the
+  //   params we expect to get from react-router based on the path.
+  //   react-router just gives us a string map, which isn't super
+  //   helpful. Collection components replace that with
+  //   CollectionRouteMatch etc. to assert that there should always
+  //   be e.g. a bid and a cid. Fixing the types here would require
+  //   adding some extra logic to ensure that the match we get is
+  //   what we expect (and if not.. throw?).
+  //
+  // But if we didn't wrap react-router, everything would be
+  // fine. Why is that? Of course, it's because react-router is
+  // written in JS and the typings in flow-typed aren't
+  // exact. `Route` is specified to take a component of any type,
+  // which gets unified with the OwnProps we actually take, even
+  // though `Route` always passes the complete set of router
+  // props. We can't reproduce this behavior in correctly-typed
+  // code, so let's not even try.
+
+  // $FlowFixMe: maybe wait until we get better types for react-router
+
+  // @ts-ignore
+  return <Component {...props} />;
 }
 
 type RouteCreatorProps = React.ComponentProps<typeof Route> & {
@@ -73,14 +65,14 @@ type RouteCreatorProps = React.ComponentProps<typeof Route> & {
   routeUpdated?: typeof RouteActions.routeUpdated;
 };
 
-const routeCreator = ({
+function routeCreator({
   component: Component,
   render,
   routeUpdated,
   children,
   title,
   ...props
-}: RouteCreatorProps) => {
+}: RouteCreatorProps) {
   return (
     <Route
       {...props}
@@ -99,7 +91,7 @@ const routeCreator = ({
       }}
     />
   );
-};
+}
 
 function mapDispatchToProps(dispatch: Dispatch): {
   routeUpdated: typeof RouteActions.routeUpdated;
