@@ -52,7 +52,6 @@ export default function JSONCollectionForm({
   }: {
     formData: { id: string; data: string };
   }) => {
-    console.log(formInput);
     const collectionData = { ...JSON.parse(formInput.data), id: formInput.id };
     onSubmit({ formData: collectionData });
   };

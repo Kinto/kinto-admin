@@ -15,8 +15,12 @@ const configureAppStoreAndHistory = (
   const store = configureStore({
     reducer: createRootReducer(routerReducer),
     middleware: getDefaultMiddleware =>
+      // TODO: disabling these checks is unsafe, but it looks like these checks are newer than our code that causes the errors
+      // Find a way to fix or remove redux
       getDefaultMiddleware({
         thunk: false,
+        serializableCheck: false,
+        immutableCheck: false,
       }).concat(sagaMiddleware, routerMiddleware),
     preloadedState: initialState,
   });

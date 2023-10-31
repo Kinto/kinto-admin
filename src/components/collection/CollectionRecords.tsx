@@ -21,7 +21,7 @@ type OwnProps = {
   location: Location;
 };
 
-type StateProps = CommonStateProps & {
+export type StateProps = CommonStateProps & {
   session: SessionState;
   bucket: BucketState;
   collection: CollectionState;

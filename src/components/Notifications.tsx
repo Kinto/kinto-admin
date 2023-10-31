@@ -9,7 +9,7 @@ function NotificationDetails({ details }: { details: Array<string> }) {
     return null;
   }
   if (details.length === 1) {
-    return <span>details[0]</span>;
+    return <span>{details[0]}</span>;
   }
   return (
     <ul>

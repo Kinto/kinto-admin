@@ -63,7 +63,6 @@ export default function CollectionHistory(props: Props) {
   } = collection;
 
   useEffect(() => {
-    console.log(`collectionHistory useEffect: ${props.location}`);
     onCollectionHistoryEnter(props);
   }, [props.location]);
 

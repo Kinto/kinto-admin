@@ -198,9 +198,9 @@ const authSchemas = authType => {
 /**
  * Use the servers history for the default server field value when available.
  */
-function extendSchemaWithHistory(schema, servers, authMethods) {
+function extendSchemaWithHistory(schema, servers, authMethods): RJSFSchema {
   const serverURL = getServerByPriority(servers);
-  const foo: RJSFSchema = {
+  return {
     ...schema,
     properties: {
       ...schema.properties,
@@ -216,7 +216,6 @@ function extendSchemaWithHistory(schema, servers, authMethods) {
       },
     },
   };
-  return foo;
 }
 
 /**

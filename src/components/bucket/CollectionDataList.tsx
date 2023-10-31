@@ -1,8 +1,6 @@
 import React from "react";
 
-import { Gear } from "react-bootstrap-icons";
-import { Justify } from "react-bootstrap-icons";
-import { ClockHistory } from "react-bootstrap-icons";
+import { Gear, Justify, ClockHistory } from "react-bootstrap-icons";
 
 import { timeago } from "../../utils";
 import AdminLink from "../AdminLink";

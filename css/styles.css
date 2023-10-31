@@ -531,23 +531,32 @@ i.fa:before {
   margin-right: 10px;
 }
 
-.rjsf legend {
-  border-bottom: 1px solid #e5e5e5;
+.rjsf .form-label {
+  font-weight: 700;
 }
 
-.rjsf .control-label {
-  font-weight: 700;
+.rjsf h5 {
+  font-size: 18pt;
+  margin: 0 0 0 1pt;
+}
+
+.rjsf hr {
+  margin: 1px 0 .5em 0;
+  background-color: #ccc !important;
 }
 
 /* we have some very tall rows, aligning center makes the buttons hard to locate */
 .rjsf .row .align-items-center { 
   align-items: flex-start !important;
-  margin-top: .4em;
   border-bottom: 1px solid #eee;
 }
 
-.rjsf .row button.btn {
+.rjsf .align-items-center button.btn {
   font-size: 14pt;
+}
+
+.rjsf .input-group-append button.dropdown-toggle {
+  font-size: 12pt;
 }
 
 .modal {

@@ -244,18 +244,12 @@ export default function CollectionForm({
   collection,
   deleteCollection,
   onSubmit,
-  formData: propFormData = {},
+  formData: propFormData = undefined,
 }: Props) {
   const [asJSON, setAsJSON] = useState(false);
-
-  const allowEditing = React.useMemo(() => {
-    const creation = !propFormData;
-    if (creation) {
-      return canCreateCollection(session, bucket);
-    } else {
-      return canEditCollection(session, bucket, collection);
-    }
-  }, [propFormData, session, bucket, collection]);
+  const allowEditing = propFormData
+    ? canCreateCollection(session, bucket)
+    : canEditCollection(session, bucket, collection);
 
   const toggleJSON = event => {
     event.preventDefault();
@@ -279,7 +273,7 @@ export default function CollectionForm({
     onSubmit(collectionData);
   };
 
-  const creation = !propFormData.id;
+  const creation = !propFormData?.id;
   const showDeleteForm = !creation && allowEditing;
   const formDataSerialized = creation
     ? propFormData

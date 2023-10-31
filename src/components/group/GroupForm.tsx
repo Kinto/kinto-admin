@@ -75,6 +75,8 @@ export default function GroupForm(props: Props) {
       const { data } = formData;
       const attributes = JSON.parse(data);
       propOnSubmit({
+        // #273: Ensure omitting "members" value from entered JSON data so we
+        // don't override the ones entered in the dedicated field
         ...omit(formData, ["data"]),
         ...omit(attributes, ["members"]),
       } as any);

@@ -27,7 +27,6 @@ export function PermissionsForm({
   onSubmit: onSubmit_,
 }: Props) {
   const onSubmit = ({ formData }: RJSFSchema) => {
-    console.log("submit foo");
     onSubmit_({ formData: formDataToPermissions(bid, formData) });
   };
   const { bid } = useParams<{ bid: string }>();
@@ -49,10 +48,6 @@ export function PermissionsForm({
       uiSchema={uiSchema}
       formData={formData}
       onSubmit={onSubmit}
-      customValidate={(a, b, c) => {
-        console.log("custom validate");
-        return b;
-      }}
     />
   );
 }
