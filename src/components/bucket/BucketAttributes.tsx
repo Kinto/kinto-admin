@@ -35,7 +35,7 @@ export default function BucketAttributes({
   capabilities,
   updateBucket,
   deleteBucket,
-}) {
+}: Props) {
   const {
     params: { bid },
   } = match;
