@@ -2,24 +2,21 @@ import { createSandbox, createComponent } from "../test_utils";
 import { DEFAULT_KINTO_SERVER } from "../../src/constants";
 import { DEFAULT_SERVERINFO } from "../../src/reducers/session";
 import { expect } from "chai";
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, waitFor } from "@testing-library/react";
 import * as React from "react";
 import AuthForm from "../../src/components/AuthForm";
 import sinon from "sinon";
 
 describe("AuthForm component", () => {
   let sandbox;
-  let clock;
 
   beforeEach(() => {
     jest.resetModules();
     sandbox = createSandbox();
-    clock = sinon.useFakeTimers();
   });
 
   afterEach(() => {
     sandbox.restore();
-    clock.restore();
   });
   describe("Single server config option", () => {
     it("should set the default server url in a visible field", () => {
@@ -82,10 +79,12 @@ describe("AuthForm component", () => {
     });
 
     describe("Basic Auth", () => {
-      it("should submit setup data", () => {
+      it("should submit setup data", async () => {
         fireEvent.change(node.querySelector("#root_server"), {
           target: { value: "http://test.server/v1" },
         });
+        await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
+
         fireEvent.click(node.querySelectorAll("[type=radio]")[1]);
         fireEvent.change(node.querySelector("#root_credentials_username"), {
           target: { value: "user" },
@@ -108,10 +107,11 @@ describe("AuthForm component", () => {
     });
 
     describe("LDAP", () => {
-      it("should submit setup data", () => {
+      it("should submit setup data", async () => {
         fireEvent.change(node.querySelector("#root_server"), {
           target: { value: "http://test.server/v1" },
         });
+        await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
         fireEvent.click(node.querySelectorAll("[type=radio]")[3]);
         fireEvent.change(node.querySelector("#root_credentials_username"), {
           target: { value: "you@email.com" },
@@ -133,10 +133,11 @@ describe("AuthForm component", () => {
     });
 
     describe("FxA", () => {
-      it("should navigate to external auth URL", () => {
+      it("should navigate to external auth URL", async () => {
         fireEvent.change(node.querySelector("#root_server"), {
           target: { value: "http://test.server/v1" },
         });
+        await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
         fireEvent.click(node.querySelectorAll("[type=radio]")[2]);
         fireEvent.change(node.querySelector("form"));
         fireEvent.submit(node.querySelector("form"));
@@ -149,10 +150,11 @@ describe("AuthForm component", () => {
     });
 
     describe("OpenID", () => {
-      it("should navigate to external auth URL", () => {
+      it("should navigate to external auth URL", async () => {
         fireEvent.change(node.querySelector("#root_server"), {
           target: { value: "http://test.server/v1" },
         });
+        await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
         fireEvent.click(node.querySelectorAll("[type=radio]")[4]);
         fireEvent.submit(node.querySelector("form"));
         sinon.assert.calledWithExactly(
@@ -221,6 +223,7 @@ describe("AuthForm component", () => {
       fireEvent.change(serverField, {
         target: { value: "http://test.server/v1" },
       });
+      await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
       expect(serverField.value).eql("http://test.server/v1");
       expect(authTypeField.value).eql("openid-google");
 
