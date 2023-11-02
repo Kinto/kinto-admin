@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Spinner from "../Spinner";
 
 export function Comment({ text }: { text: string }) {
   return (
@@ -27,12 +28,16 @@ export function CommentDialog({
   onCancel,
 }: CommentDialogProps) {
   const [comment, setComment] = useState<string>("");
+  const [showSpinner, setShowSpinner] = useState(false);
 
   const onCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComment(e.target.value);
   };
 
-  const onClickConfirm = () => onConfirm(comment);
+  const onClickConfirm = () => {
+    setShowSpinner(true);
+    onConfirm(comment);
+  };
 
   return (
     <div
@@ -81,6 +86,7 @@ export function CommentDialog({
             </button>
           </div>
         </div>
+        {showSpinner && <Spinner />}
       </div>
     </div>
   );
