@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { Trash } from "react-bootstrap-icons";
 
@@ -11,6 +11,8 @@ const deleteSchema: RJSFSchema = {
 };
 
 export default function DeleteForm({ cid, onSubmit }) {
+  const [showSpinner, setShowSpinner] = useState(false);
+
   const validate = (formData, errors) => {
     if (formData !== cid) {
       errors.addError("The collection name does not match.");
@@ -29,7 +31,9 @@ export default function DeleteForm({ cid, onSubmit }) {
         <BaseForm
           schema={deleteSchema}
           customValidate={validate}
+          showSpinner={showSpinner}
           onSubmit={({ formData }) => {
+            setShowSpinner(true);
             if (typeof onSubmit === "function") {
               onSubmit(formData);
             }
