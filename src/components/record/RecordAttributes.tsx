@@ -1,3 +1,5 @@
+import React from "react";
+
 import type {
   Capabilities,
   SessionState,
@@ -6,8 +8,6 @@ import type {
   RecordState,
   RecordRouteMatch,
 } from "../../types";
-
-import React, { PureComponent } from "react";
 
 import * as CollectionActions from "../../actions/collection";
 import RecordForm from "./RecordForm";
@@ -32,61 +32,55 @@ export type Props = OwnProps &
     updateRecord: typeof CollectionActions.updateRecord;
   };
 
-export default class RecordAttributes extends PureComponent<Props> {
-  onSubmit = ({ __attachment__: attachment, ...record }: any) => {
-    const { match, updateRecord } = this.props;
-    const {
-      params: { bid, cid, rid },
-    } = match;
-    updateRecord(bid, cid, rid, { data: record }, attachment);
+export default function RecordAttributes({
+  match,
+  session,
+  capabilities,
+  bucket,
+  collection,
+  record,
+  deleteRecord,
+  deleteAttachment,
+  updateRecord,
+}: Props) {
+  const {
+    params: { bid, cid, rid },
+  } = match;
+
+  const onSubmit = ({ __attachment__: attachment, ...recordData }: any) => {
+    updateRecord(bid, cid, rid, { data: recordData }, attachment);
   };
 
-  render() {
-    const {
-      match,
-      session,
-      capabilities,
-      bucket,
-      collection,
-      record,
-      deleteRecord,
-      deleteAttachment,
-    } = this.props;
-    const {
-      params: { bid, cid, rid },
-    } = match;
-
-    return (
-      <div>
-        <h1>
-          Edit{" "}
-          <b>
-            {bid}/{cid}/{rid}
-          </b>{" "}
-          record attributes
-        </h1>
-        <RecordTabs
+  return (
+    <div>
+      <h1>
+        Edit{" "}
+        <b>
+          {bid}/{cid}/{rid}
+        </b>{" "}
+        record attributes
+      </h1>
+      <RecordTabs
+        bid={bid}
+        cid={cid}
+        rid={rid}
+        selected="attributes"
+        capabilities={capabilities}
+      >
+        <RecordForm
           bid={bid}
           cid={cid}
           rid={rid}
-          selected="attributes"
+          session={session}
+          bucket={bucket}
+          collection={collection}
+          record={record}
+          deleteRecord={deleteRecord}
+          deleteAttachment={deleteAttachment}
+          onSubmit={onSubmit}
           capabilities={capabilities}
-        >
-          <RecordForm
-            bid={bid}
-            cid={cid}
-            rid={rid}
-            session={session}
-            bucket={bucket}
-            collection={collection}
-            record={record}
-            deleteRecord={deleteRecord}
-            deleteAttachment={deleteAttachment}
-            onSubmit={this.onSubmit}
-            capabilities={capabilities}
-          />
-        </RecordTabs>
-      </div>
-    );
-  }
+        />
+      </RecordTabs>
+    </div>
+  );
 }

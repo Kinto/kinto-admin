@@ -6,7 +6,7 @@ import type {
 } from "../../types";
 import type { Location } from "history";
 
-import React, { PureComponent } from "react";
+import React, { useEffect } from "react";
 
 import * as CollectionActions from "../../actions/collection";
 import * as NotificationActions from "../../actions/notifications";
@@ -46,57 +46,52 @@ export const onCollectionHistoryEnter = (props: Props) => {
   listCollectionHistory(bid, cid, filters);
 };
 
-export default class CollectionHistory extends PureComponent<Props> {
-  componentDidMount = () => onCollectionHistoryEnter(this.props);
-  componentDidUpdate = (prevProps: Props) => {
-    if (prevProps.location !== this.props.location) {
-      onCollectionHistoryEnter(this.props);
-    }
-  };
+export default function CollectionHistory(props: Props) {
+  const {
+    match,
+    collection,
+    capabilities,
+    location,
+    listCollectionNextHistory,
+    notifyError,
+  } = props;
+  const {
+    params: { bid, cid },
+  } = match;
+  const {
+    history: { entries, loaded, hasNextPage },
+  } = collection;
 
-  render() {
-    const {
-      match,
-      collection,
-      capabilities,
-      location,
-      listCollectionNextHistory,
-      notifyError,
-    } = this.props;
-    const {
-      params: { bid, cid },
-    } = match;
-    const {
-      history: { entries, loaded, hasNextPage },
-    } = collection;
+  useEffect(() => {
+    onCollectionHistoryEnter(props);
+  }, [props.location]);
 
-    return (
-      <div>
-        <h1>
-          History for{" "}
-          <b>
-            {bid}/{cid}
-          </b>
-        </h1>
-        <CollectionTabs
+  return (
+    <div>
+      <h1>
+        History for{" "}
+        <b>
+          {bid}/{cid}
+        </b>
+      </h1>
+      <CollectionTabs
+        bid={bid}
+        cid={cid}
+        selected="history"
+        capabilities={capabilities}
+      >
+        <HistoryTable
+          enableDiffOverview
           bid={bid}
           cid={cid}
-          selected="history"
-          capabilities={capabilities}
-        >
-          <HistoryTable
-            enableDiffOverview
-            bid={bid}
-            cid={cid}
-            historyLoaded={loaded}
-            history={entries}
-            hasNextHistory={hasNextPage}
-            listNextHistory={listCollectionNextHistory}
-            location={location}
-            notifyError={notifyError}
-          />
-        </CollectionTabs>
-      </div>
-    );
-  }
+          historyLoaded={loaded}
+          history={entries}
+          hasNextHistory={hasNextPage}
+          listNextHistory={listCollectionNextHistory}
+          location={location}
+          notifyError={notifyError}
+        />
+      </CollectionTabs>
+    </div>
+  );
 }

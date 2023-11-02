@@ -13,7 +13,7 @@ import { canEditGroup } from "../../permission";
 import { useAppSelector, useAppDispatch } from "../../hooks";
 import { useParams } from "react-router";
 
-export const GroupPermissions = () => {
+export function GroupPermissions() {
   const bucket = useAppSelector(state => state.bucket);
   const group = useAppSelector(state => state.group);
   const { busy, permissions } = group;
@@ -51,4 +51,4 @@ export const GroupPermissions = () => {
       </GroupTabs>
     </div>
   );
-};
+}

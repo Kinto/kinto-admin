@@ -8,7 +8,7 @@ interface BreadcrumbsProps {
   separator: string;
 }
 
-export const Breadcrumbs = ({ separator }: BreadcrumbsProps) => {
+export default function Breadcrumbs({ separator }: BreadcrumbsProps) {
   const { pathname } = useLocation();
   const crumbs = breadcrumbifyPath(pathname);
   return (
@@ -30,4 +30,4 @@ export const Breadcrumbs = ({ separator }: BreadcrumbsProps) => {
       </div>
     </nav>
   );
-};
+}

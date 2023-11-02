@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React from "react";
 import { UnControlled as CodeMirror } from "react-codemirror2";
 import "codemirror/mode/javascript/javascript";
 
@@ -24,22 +24,24 @@ type Props = {
   onChange: (code: string) => void;
 };
 
-export default class JSONEditor extends PureComponent<Props> {
-  onCodeChange = (editor: Object, metadata: any, code: string) => {
-    this.props.onChange(code);
+export default function JSONEditor({
+  readonly,
+  disabled,
+  value,
+  onChange,
+}: Props) {
+  const onCodeChange = (editor: Object, metadata: any, code: string) => {
+    onChange(code);
   };
 
-  render() {
-    const { readonly, disabled, value } = this.props;
-    return readonly || disabled ? (
-      <pre>{value}</pre>
-    ) : (
-      <CodeMirror
-        value={value}
-        autoCursor={false}
-        onChange={this.onCodeChange}
-        options={cmOptions}
-      />
-    );
-  }
+  return readonly || disabled ? (
+    <pre>{value}</pre>
+  ) : (
+    <CodeMirror
+      value={value}
+      autoCursor={false}
+      onChange={onCodeChange}
+      options={cmOptions}
+    />
+  );
 }

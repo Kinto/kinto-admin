@@ -13,7 +13,7 @@ interface RouteParams {
   cid: string;
   rid: string;
 }
-export const RecordPermissions = () => {
+export function RecordPermissions() {
   const bucket = useAppSelector(state => state.bucket);
   const session = useAppSelector(state => state.session);
   const collection = useAppSelector(state => state.collection);
@@ -56,4 +56,4 @@ export const RecordPermissions = () => {
       </RecordTabs>
     </div>
   );
-};
+}

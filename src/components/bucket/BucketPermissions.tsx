@@ -11,7 +11,7 @@ import { useParams } from "react-router";
 
 import { useAppSelector, useAppDispatch } from "../../hooks";
 
-export const BucketPermissions = () => {
+export function BucketPermissions() {
   const dispatch = useAppDispatch();
   const { bid } = useParams<{ bid: string }>();
   const session = useAppSelector(store => store.session);
@@ -44,4 +44,4 @@ export const BucketPermissions = () => {
       </BucketTabs>
     </div>
   );
-};
+}

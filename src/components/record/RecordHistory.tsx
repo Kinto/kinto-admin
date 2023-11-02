@@ -6,7 +6,7 @@ import type {
 } from "../../types";
 import type { Location } from "history";
 
-import React, { PureComponent } from "react";
+import React, { useEffect } from "react";
 
 import * as RecordActions from "../../actions/record";
 import * as NotificationActions from "../../actions/notifications";
@@ -42,56 +42,52 @@ export const onRecordHistoryEnter = (props: Props) => {
   listRecordHistory(bid, cid, rid);
 };
 
-export default class RecordHistory extends PureComponent<Props> {
-  componentDidMount = () => onRecordHistoryEnter(this.props);
-  componentDidUpdate = (prevProps: Props) => {
-    if (prevProps.location !== this.props.location) {
-      onRecordHistoryEnter(this.props);
-    }
-  };
+export default function RecordHistory(props: Props) {
+  const {
+    match,
+    location,
+    record,
+    capabilities,
+    listRecordNextHistory,
+    notifyError,
+  } = props;
 
-  render() {
-    const {
-      match,
-      record,
-      capabilities,
-      location,
-      listRecordNextHistory,
-      notifyError,
-    } = this.props;
-    const {
-      params: { bid, cid, rid },
-    } = match;
-    const {
-      history: { entries, loaded, hasNextPage },
-    } = record;
+  useEffect(() => {
+    onRecordHistoryEnter(props);
+  }, []);
 
-    return (
-      <div>
-        <h1>
-          History for{" "}
-          <b>
-            {bid}/{cid}/{rid}
-          </b>
-        </h1>
-        <RecordTabs
+  const {
+    params: { bid, cid, rid },
+  } = match;
+  const {
+    history: { entries, loaded, hasNextPage },
+  } = record;
+
+  return (
+    <div>
+      <h1>
+        History for{" "}
+        <b>
+          {bid}/{cid}/{rid}
+        </b>
+      </h1>
+      <RecordTabs
+        bid={bid}
+        cid={cid}
+        rid={rid}
+        selected="history"
+        capabilities={capabilities}
+      >
+        <HistoryTable
           bid={bid}
-          cid={cid}
-          rid={rid}
-          selected="history"
-          capabilities={capabilities}
-        >
-          <HistoryTable
-            bid={bid}
-            historyLoaded={loaded}
-            history={entries}
-            hasNextHistory={hasNextPage}
-            listNextHistory={listRecordNextHistory}
-            location={location}
-            notifyError={notifyError}
-          />
-        </RecordTabs>
-      </div>
-    );
-  }
+          historyLoaded={loaded}
+          history={entries}
+          hasNextHistory={hasNextPage}
+          listNextHistory={listRecordNextHistory}
+          location={location}
+          notifyError={notifyError}
+        />
+      </RecordTabs>
+    </div>
+  );
 }

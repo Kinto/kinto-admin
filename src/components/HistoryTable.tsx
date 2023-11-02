@@ -1,7 +1,7 @@
+import React, { useState } from "react";
+
 import type { RecordData, ResourceHistoryEntry, RouteLocation } from "../types";
 import type { Location } from "history";
-
-import React, { PureComponent } from "react";
 
 import { Eye } from "react-bootstrap-icons";
 import { EyeSlash } from "react-bootstrap-icons";
@@ -71,143 +71,127 @@ type HistoryRowProps = {
   enableDiffOverview: boolean;
 };
 
-type HistoryRowState = {
-  open: boolean;
-  busy: boolean;
-  previous: ResourceHistoryEntry | null | undefined;
-  error: Error | null | undefined;
-};
+function HistoryRow({
+  bid,
+  entry,
+  pos,
+  enableDiffOverview = false,
+}: HistoryRowProps) {
+  const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [previous, setPrevious] = useState(null);
+  const [error, setError] = useState(null);
 
-class HistoryRow extends PureComponent<HistoryRowProps, HistoryRowState> {
-  static defaultProps = {
-    enableDiffOverview: false,
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = { open: false, busy: false, previous: null, error: null };
-  }
-
-  toggle = event => {
-    const { bid, entry } = this.props;
+  const toggle = async event => {
     event.preventDefault();
     if (entry.action !== "update") {
-      return this.setState({ open: !this.state.open });
+      return setOpen(!open);
     }
-    if (this.state.open) {
-      return this.setState({ open: false });
+    if (open) {
+      return setOpen(false);
     }
-    if (this.state.previous) {
-      return this.setState({ open: true });
+    if (previous) {
+      return setOpen(true);
     }
-    this.setState({ busy: true });
-    // We don't leverage redux store and dedicated action as this behavior is
-    // contextually specific to this local component.
-    fetchPreviousVersion(bid, entry)
-      .then(previous => {
-        if (previous == null) {
-          this.setState({
-            open: false,
-            busy: false,
-            previous: null,
-            error: new Error("Couldn't fetch previous history entry."),
-          });
-        } else {
-          this.setState({
-            open: true,
-            busy: false,
-            previous: sortHistoryEntryPermissions(previous),
-            error: null,
-          });
-        }
-      })
-      .catch(error => {
-        this.setState({ open: true, busy: false, previous: null, error });
-      });
+
+    setBusy(true);
+    try {
+      const fetchedPrevious = await fetchPreviousVersion(bid, entry);
+      if (fetchedPrevious === null) {
+        setOpen(false);
+        setBusy(false);
+        setPrevious(null);
+        setError(new Error("Couldn't fetch previous history entry."));
+      } else {
+        setOpen(true);
+        setBusy(false);
+        setPrevious(sortHistoryEntryPermissions(fetchedPrevious));
+        setError(null);
+      }
+    } catch (e) {
+      setOpen(true);
+      setBusy(false);
+      setPrevious(null);
+      setError(e);
+    }
   };
 
-  render() {
-    const { open, busy, previous, error } = this.state;
-    const { entry, bid, enableDiffOverview, pos } = this.props;
-    const {
-      last_modified,
-      action,
-      resource_name,
-      target,
-      user_id,
-      collection_id: cid,
-      group_id: gid,
-      record_id: rid,
-    } = sortHistoryEntryPermissions(entry);
+  const {
+    last_modified,
+    action,
+    resource_name,
+    target,
+    user_id,
+    collection_id: cid,
+    group_id: gid,
+    record_id: rid,
+  } = sortHistoryEntryPermissions(entry);
 
-    const {
-      data: { id: objectId },
-    } = target;
+  const {
+    data: { id: objectId },
+  } = target;
 
-    return (
-      <React.Fragment>
-        <tr>
-          <td>
-            <span title={humanDate(last_modified)}>
-              {timeago(last_modified)}
+  return (
+    <React.Fragment>
+      <tr>
+        <td>
+          <span title={humanDate(last_modified)}>{timeago(last_modified)}</span>
+        </td>
+        <td>{action}</td>
+        <td>{resource_name}</td>
+        <td>
+          <AdminLink
+            name={`${resource_name}:attributes`}
+            params={{ bid, cid, gid, rid }}
+          >
+            {objectId}
+          </AdminLink>
+        </td>
+        <td>{user_id}</td>
+        <td className="text-center">
+          {resource_name === "record" && enableDiffOverview && pos !== 0 && (
+            <span>
+              <AdminLink
+                className="btn btn-sm btn-secondary"
+                title="Start history log from this point"
+                name="collection:history"
+                params={{ bid, cid }}
+                query={{ since: last_modified, resource_name: "record" }}
+              >
+                <SkipStart className="icon" />
+              </AdminLink>{" "}
             </span>
-          </td>
-          <td>{action}</td>
-          <td>{resource_name}</td>
-          <td>
-            <AdminLink
-              name={`${resource_name}:attributes`}
-              params={{ bid, cid, gid, rid }}
-            >
-              {objectId}
-            </AdminLink>
-          </td>
-          <td>{user_id}</td>
-          <td className="text-center">
-            {resource_name === "record" && enableDiffOverview && pos !== 0 && (
-              <span>
-                <AdminLink
-                  className="btn btn-sm btn-secondary"
-                  title="Start history log from this point"
-                  name="collection:history"
-                  params={{ bid, cid }}
-                  query={{ since: last_modified, resource_name: "record" }}
-                >
-                  <SkipStart className="icon" />
-                </AdminLink>{" "}
-              </span>
+          )}
+          <a
+            href="."
+            className="btn btn-sm btn-secondary"
+            onClick={toggle}
+            title="View entry details"
+          >
+            {open ? <EyeSlash className="icon" /> : <Eye className="icon" />}
+          </a>
+        </td>
+      </tr>
+      {open ? (
+        <tr
+          className="history-row-details"
+          style={{ display: busy || open ? "table-row" : "none" }}
+        >
+          <td colSpan={6}>
+            {busy ? (
+              <Spinner />
+            ) : previous ? (
+              <Diff source={previous.target} target={entry.target} />
+            ) : error ? (
+              <p className="alert alert-danger">{error.toString()}</p>
+            ) : (
+              <pre>{JSON.stringify(entry.target, null, 2)}</pre>
             )}
-            <a
-              href="."
-              className="btn btn-sm btn-secondary"
-              onClick={this.toggle}
-              title="View entry details"
-            >
-              {open ? <EyeSlash className="icon" /> : <Eye className="icon" />}
-            </a>
           </td>
         </tr>
-        {open ? (
-          <tr
-            className="history-row-details"
-            style={{ display: busy || open ? "table-row" : "none" }}
-          >
-            <td colSpan={6}>
-              {busy ? (
-                <Spinner />
-              ) : previous ? (
-                <Diff source={previous.target} target={entry.target} />
-              ) : error ? (
-                <p className="alert alert-danger">{error.toString()}</p>
-              ) : (
-                <pre>{JSON.stringify(entry.target, null, 2)}</pre>
-              )}
-            </td>
-          </tr>
-        ) : null}
-      </React.Fragment>
-    );
-  }
+      ) : null}
+    </React.Fragment>
+  );
 }
 
 type FilterInfoProps = {
@@ -306,139 +290,115 @@ type HistoryTableProps = {
   notifyError: typeof NotificationActions.notifyError;
 };
 
-type HistoryTableState = {
-  diffOverview: boolean;
-  busy: boolean;
-  current?: RecordData[];
-  previous?: RecordData[];
-};
+export default function HistoryTable({
+  bid,
+  cid,
+  location,
+  history,
+  historyLoaded,
+  hasNextHistory,
+  listNextHistory,
+  enableDiffOverview = false,
+  notifyError,
+}: HistoryTableProps) {
+  const [diffOverview, setDiffOverview] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [current, setCurrent] = useState(null);
+  const [previous, setPrevious] = useState(null);
 
-export default class HistoryTable extends PureComponent<
-  HistoryTableProps,
-  HistoryTableState
-> {
-  static defaultProps = {
-    enableDiffOverview: false,
-  };
-
-  constructor(props: HistoryTableProps) {
-    super(props);
-    this.state = {
-      diffOverview: false,
-      busy: false,
-      current: null,
-      previous: null,
-    };
-  }
-
-  onDiffOverviewClick = (since: string): void => {
-    const { enableDiffOverview, bid, cid, notifyError } = this.props;
+  const onDiffOverviewClick = async since => {
     if (!enableDiffOverview || cid == null) {
       return;
     }
-    this.setState({ busy: true, diffOverview: true });
-    fetchCollectionStateAt(bid, cid)
-      .then(current => {
-        this.setState({ current });
-        return fetchCollectionStateAt(bid, cid, since);
-      })
-      .then(previous => {
-        this.setState({ previous, busy: false });
-      })
-      .catch(err => {
-        notifyError("Couldn't compute records list diff overview", err);
-        this.setState({
-          diffOverview: false,
-          busy: false,
-          previous: null,
-          current: null,
-        });
-      });
+    setBusy(true);
+    setDiffOverview(true);
+    try {
+      const fetchedCurrent = await fetchCollectionStateAt(bid, cid);
+      setCurrent(fetchedCurrent);
+      const fetchedPrevious = await fetchCollectionStateAt(bid, cid, since);
+      setPrevious(fetchedPrevious);
+      setBusy(false);
+    } catch (err) {
+      notifyError("Couldn't compute records list diff overview", err);
+      setDiffOverview(false);
+      setBusy(false);
+      setCurrent(null);
+      setPrevious(null);
+    }
   };
 
-  onViewJournalClick = (): void => {
-    this.setState({ diffOverview: false, current: null, previous: null });
+  const onViewJournalClick = () => {
+    setDiffOverview(false);
+    setCurrent(null);
+    setPrevious(null);
   };
 
-  render() {
-    const {
-      enableDiffOverview,
-      history,
-      historyLoaded,
-      hasNextHistory,
-      listNextHistory,
-      bid,
-      location,
-    } = this.props;
-    const { busy } = this.state;
-    const { current, previous, diffOverview } = this.state;
-    const query = parseHistoryFilters(location.search);
-    const routeLocation = { pathname: location.pathname, query };
-    const { since } = query;
-    const isFiltered = !!since;
+  const query = parseHistoryFilters(location.search);
+  const routeLocation = { pathname: location.pathname, query };
+  const { since } = query;
+  const isFiltered = !!since;
 
-    const thead = (
-      <thead>
+  const thead = (
+    <thead>
+      <tr>
+        <th>When</th>
+        <th>Action</th>
+        <th>Resource</th>
+        <th>Id</th>
+        <th>Author</th>
+        <th />
+      </tr>
+    </thead>
+  );
+
+  const tbody = (
+    <tbody className={!historyLoaded ? "loading" : ""}>
+      {history.length === 0 ? (
         <tr>
-          <th>When</th>
-          <th>Action</th>
-          <th>Resource</th>
-          <th>Id</th>
-          <th>Author</th>
-          <th />
+          <td colSpan={6}>
+            {historyLoaded ? "No history entry found." : <Spinner />}
+          </td>
         </tr>
-      </thead>
-    );
+      ) : (
+        history.map((entry, index) => {
+          return (
+            <HistoryRow
+              key={index}
+              pos={index}
+              enableDiffOverview={enableDiffOverview}
+              bid={bid}
+              entry={entry}
+            />
+          );
+        })
+      )}
+    </tbody>
+  );
 
-    const tbody = (
-      <tbody className={!historyLoaded ? "loading" : ""}>
-        {history.length === 0 ? (
-          <tr>
-            <td colSpan={6}>
-              {historyLoaded ? "No history entry found." : <Spinner />}
-            </td>
-          </tr>
-        ) : (
-          history.map((entry, index) => {
-            return (
-              <HistoryRow
-                key={index}
-                pos={index}
-                enableDiffOverview={enableDiffOverview}
-                bid={bid}
-                entry={entry}
-              />
-            );
-          })
-        )}
-      </tbody>
-    );
-
-    return (
-      <div>
-        {isFiltered && (
-          <FilterInfo
-            location={routeLocation}
-            enableDiffOverview={enableDiffOverview}
-            onDiffOverviewClick={this.onDiffOverviewClick}
-            onViewJournalClick={this.onViewJournalClick}
-          />
-        )}
-        {busy ? (
-          <Spinner />
-        ) : diffOverview ? (
-          <DiffOverview since={since} source={previous} target={current} />
-        ) : (
-          <PaginatedTable
-            colSpan={6}
-            thead={thead}
-            tbody={tbody}
-            dataLoaded={historyLoaded}
-            hasNextPage={hasNextHistory}
-            listNextPage={listNextHistory}
-          />
-        )}
-      </div>
-    );
-  }
+  return (
+    <div>
+      {isFiltered && (
+        <FilterInfo
+          location={routeLocation}
+          enableDiffOverview={enableDiffOverview}
+          onDiffOverviewClick={onDiffOverviewClick}
+          onViewJournalClick={onViewJournalClick}
+        />
+      )}
+      {busy ? (
+        <Spinner />
+      ) : diffOverview ? (
+        <DiffOverview since={since} source={previous} target={current} />
+      ) : (
+        <PaginatedTable
+          colSpan={6}
+          thead={thead}
+          tbody={tbody}
+          dataLoaded={historyLoaded}
+          hasNextPage={hasNextHistory}
+          listNextPage={listNextHistory}
+        />
+      )}
+    </div>
+  );
 }
