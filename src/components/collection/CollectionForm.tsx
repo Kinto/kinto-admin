@@ -6,7 +6,6 @@ import type {
 } from "../../types";
 
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 
 import { Check2 } from "react-bootstrap-icons";
 
@@ -250,8 +249,8 @@ export default function CollectionForm({
   const [showSpinner, setShowSpinner] = useState(false);
 
   const allowEditing = propFormData
-    ? canCreateCollection(session, bucket)
-    : canEditCollection(session, bucket, collection);
+    ? canEditCollection(session, bucket, collection)
+    : canCreateCollection(session, bucket);
 
   const toggleJSON = event => {
     event.preventDefault();
@@ -314,7 +313,7 @@ export default function CollectionForm({
         {` ${creation ? "Create" : "Update"} collection`}
       </button>
       {" or "}
-      <Link to="/">Cancel</Link>
+      <a href="/#/">Cancel</a>
       {" | "}
       <a href="#" onClick={toggleJSON}>
         {asJSON ? "Edit form" : "Edit raw JSON"}
