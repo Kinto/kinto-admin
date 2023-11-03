@@ -13,14 +13,14 @@ const FormWithTheme = withTheme(Bootstrap4Theme);
 
 export type BaseFormProps = Omit<FormProps, "validator"> & {
   showSpinner?: boolean;
-  onSubmit:(data: RJSFSchema) => void;
+  onSubmit: (data: RJSFSchema) => void;
 };
 
 export default function BaseForm(props: BaseFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { className, disabled, showSpinner, onSubmit, ...restProps } = props;
-  
-  const handleOnSubmit = (form) => {
+
+  const handleOnSubmit = form => {
     setIsSubmitting(true);
     onSubmit(form);
   };
