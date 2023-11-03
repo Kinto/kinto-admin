@@ -1,7 +1,7 @@
 import type { BucketState, SessionState, CollectionState } from "../../types";
 import type { SignoffState, SignoffSourceInfo, ChangesList } from "../../types";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { CommentDialog, Comment } from "./Comment";
 
 import { ChatLeft } from "react-bootstrap-icons";
@@ -14,6 +14,7 @@ import { ProgressBar, ProgressStep } from "./ProgressBar";
 import HumanDate from "./HumanDate";
 import { Signed } from "./Signed";
 import { Review, DiffInfo } from "./Review";
+import Spinner from "../Spinner";
 
 function isMember(groupKey, source, sessionState) {
   const {
@@ -81,6 +82,19 @@ export default function SignoffToolBar({
   cancelPendingConfirm,
   declineChanges,
 }: SignoffToolBarProps) {
+  const [showSpinner, setShowSpinner] = useState(false);
+
+  const handleApproveChanges = () => {
+    setShowSpinner(true);
+    approveChanges();
+  };
+
+  useEffect(() => {
+    if (showSpinner) {
+      setShowSpinner(false);
+    }
+  }, [collectionState.data]);
+
   const canEdit = canEditCollection(sessionState, bucketState, collectionState);
 
   const {
@@ -150,7 +164,7 @@ export default function SignoffToolBar({
           isCurrentUrl={!!preview && preview.bid == bid && preview.cid == cid}
           canEdit={canReview}
           hasHistory={hasHistory}
-          approveChanges={approveChanges}
+          approveChanges={handleApproveChanges}
           confirmDeclineChanges={confirmDeclineChanges}
           source={source}
           preview={preview}
@@ -194,6 +208,7 @@ export default function SignoffToolBar({
           onCancel={cancelPendingConfirm}
         />
       )}
+      {showSpinner && <Spinner />}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { withTheme } from "@rjsf/core";
 import { RJSFSchema, UiSchema } from "@rjsf/utils";
 import { Theme as Bootstrap4Theme } from "@rjsf/bootstrap-4";
@@ -7,6 +7,7 @@ import validator from "@rjsf/validator-ajv8";
 import JSONEditor from "../JSONEditor";
 import { omit } from "../../utils";
 import type { CollectionData } from "../../types";
+import Spinner from "../Spinner";
 
 const FormWithTheme = withTheme(Bootstrap4Theme);
 
@@ -37,6 +38,7 @@ const uiSchema: UiSchema = {
 type Props = {
   children?: React.ReactNode;
   cid?: string | null;
+  disabled?: boolean;
   formData: CollectionData;
   onSubmit: (data: { formData: CollectionData }) => void;
 };
@@ -46,12 +48,16 @@ export default function JSONCollectionForm({
   cid,
   formData,
   onSubmit,
+  disabled,
 }: Props) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSubmit = ({
     formData: formInput,
   }: {
     formData: { id: string; data: string };
   }) => {
+    setIsSubmitting(true);
     const collectionData = { ...JSON.parse(formInput.data), id: formInput.id };
     onSubmit({ formData: collectionData });
   };
@@ -76,15 +82,19 @@ export default function JSONCollectionForm({
       };
 
   return (
-    <FormWithTheme
-      schema={schema}
-      uiSchema={_uiSchema}
-      formData={formDataSerialized}
-      validator={validator}
-      // @ts-ignore
-      onSubmit={handleSubmit}
-    >
-      {children}
-    </FormWithTheme>
+    <div className="formWrapper">
+      <FormWithTheme
+        schema={schema}
+        uiSchema={_uiSchema}
+        formData={formDataSerialized}
+        validator={validator}
+        // @ts-ignore
+        onSubmit={handleSubmit}
+        disabled={disabled || isSubmitting}
+      >
+        {children}
+      </FormWithTheme>
+      {isSubmitting && <Spinner />}
+    </div>
   );
 }

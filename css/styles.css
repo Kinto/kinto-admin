@@ -559,12 +559,68 @@ i.fa:before {
   font-size: 12pt;
 }
 
+.formWrapper {
+  position: relative;
+}
+
+.formWrapper > .spinner {
+  position: absolute;
+  left: -1.25em;
+  right: -1.25em;
+  top: -1.5em;
+  bottom: -2.5em;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+  margin: 0;
+  border-radius: 3px;
+}
+
+.interactive > .spinner {
+  position: absolute;
+  left: -1.25em;
+  right: -1.25em;
+  top: -.5em;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+  margin: 0;
+  border-radius: 3px;
+}
+
 .modal {
   background-color: rgba(0, 0, 0, 0.3);
 }
 
+.modal-dialog > .spinner {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+  margin: 0;
+  border-radius: 3px;
+}
+
 .informative {
   filter: grayscale(0.8);
+}
+
+.interactive {
+  position: relative;
 }
 
 /*Form Wizard*/

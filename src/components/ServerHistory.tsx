@@ -14,12 +14,15 @@ const anonymousAuthData = server => ({
 });
 
 type ServerHistoryProps = {
+  disabled?: boolean;
   id: string;
   value: string;
   placeholder: string;
   options: any;
   onChange: (s: string) => void;
 };
+
+const debounceMillis = 400;
 
 export default function ServerHistory(props: ServerHistoryProps) {
   const [value, setValue] = useState(props.value);
@@ -46,12 +49,12 @@ export default function ServerHistory(props: ServerHistoryProps) {
   const onServerChange = useCallback(
     event => {
       const server = event.target.value;
-      props.onChange(server);
+      setValue(server);
+
       // Do not try to fetch server info if the field value is invalid.
       if (server && event.target.validity && event.target.validity.valid) {
         debouncedFetchServerInfo(server);
       }
-      setValue(server);
     },
     [props]
   );
@@ -60,17 +63,19 @@ export default function ServerHistory(props: ServerHistoryProps) {
     server => {
       // Server changed, request its capabilities to check what auth methods it supports.
       const { getServerInfo, serverChange } = props.options;
+      props.onChange(server);
       serverChange();
       getServerInfo(anonymousAuthData(server));
     },
     [props]
   );
 
-  const debouncedFetchServerInfo = useCallback(debounce(fetchServerInfo, 500), [
-    fetchServerInfo,
-  ]);
+  const debouncedFetchServerInfo = useCallback(
+    debounce(fetchServerInfo, debounceMillis),
+    [fetchServerInfo]
+  );
 
-  const { id, placeholder, options } = props;
+  const { id, placeholder, options, disabled = false } = props;
   const { servers, pattern } = options;
 
   return (
@@ -82,11 +87,13 @@ export default function ServerHistory(props: ServerHistoryProps) {
         pattern={pattern}
         value={value}
         onChange={onServerChange}
+        disabled={disabled}
       />
       <DropdownButton
         as={InputGroup.Append}
         variant="outline-secondary"
         title="Servers"
+        disabled={disabled}
       >
         {servers.length === 0 ? (
           <Dropdown.Item>

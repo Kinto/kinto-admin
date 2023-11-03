@@ -256,6 +256,20 @@ function extendUiSchemaWithHistory(
   };
 }
 
+function getSupportedAuthMethods(session: SessionState): string[] {
+  const {
+    serverInfo: { capabilities },
+  } = session;
+  const { openid: { providers } = { providers: [] } } = capabilities;
+  // Check which of our known auth implementations are supported by the server.
+  const supportedAuthMethods = KNOWN_AUTH_METHODS.filter(
+    a => a in capabilities
+  );
+  // Add an auth method for each single openid provider supported by the server.
+  const openIdMethods = providers.map(provider => `openid-${provider.name}`);
+  return [ANONYMOUS_AUTH].concat(supportedAuthMethods).concat(openIdMethods);
+}
+
 type AuthFormProps = {
   session: SessionState;
   servers: ServerEntry[];
@@ -281,6 +295,7 @@ export default function AuthForm({
   const { schema: currentSchema, uiSchema: curentUiSchema } =
     authSchemas(authType);
 
+  const [showSpinner, setshowSpinner] = useState(false);
   const [schema, setSchema] = useState(currentSchema);
   const [uiSchema, setUiSchema] = useState(curentUiSchema);
   const [formData, setFormData] = useState({
@@ -288,28 +303,35 @@ export default function AuthForm({
     server: getServerByPriority(servers),
   });
 
-  const getSupportedAuthMethods = (): string[] => {
-    const {
-      serverInfo: { capabilities },
-    } = session;
-    const { openid: { providers } = { providers: [] } } = capabilities;
-    // Check which of our known auth implementations are supported by the server.
-    const supportedAuthMethods = KNOWN_AUTH_METHODS.filter(
-      a => a in capabilities
-    );
-    // Add an auth method for each single openid provider supported by the server.
-    const openIdMethods = providers.map(provider => `openid-${provider.name}`);
-    return [ANONYMOUS_AUTH].concat(supportedAuthMethods).concat(openIdMethods);
+  const serverChangeCallback = () => {
+    serverChange();
   };
+
+  const serverInfoCallback = auth => {
+    getServerInfo(auth);
+    setshowSpinner(false);
+  };
+
+  const authMethods = getSupportedAuthMethods(session);
+  const singleAuthMethod = authMethods.length === 1;
+  const finalSchema = extendSchemaWithHistory(schema, servers, authMethods);
+  const finalUiSchema = extendUiSchemaWithHistory(
+    uiSchema,
+    servers,
+    clearServers,
+    serverInfoCallback,
+    serverChangeCallback,
+    singleAuthMethod
+  );
 
   const onChange = ({ formData: updatedData }: RJSFSchema) => {
     if (formData.server !== updatedData.server) {
+      setshowSpinner(true);
       const newServer = servers.find(x => x.server === updatedData.server);
       updatedData.authType = newServer?.authType || ANONYMOUS_AUTH;
     }
     const { authType } = updatedData;
-    const { uiSchema } = authSchemas(authType);
-    const { schema } = authSchemas(authType);
+    const { schema, uiSchema } = authSchemas(authType);
     const omitCredentials =
       [ANONYMOUS_AUTH, "fxa", "portier"].includes(authType) ||
       authType.startsWith("openid-");
@@ -355,17 +377,6 @@ export default function AuthForm({
     }
   };
 
-  const authMethods = getSupportedAuthMethods();
-  const singleAuthMethod = authMethods.length === 1;
-  const finalSchema = extendSchemaWithHistory(schema, servers, authMethods);
-  const finalUiSchema = extendUiSchemaWithHistory(
-    uiSchema,
-    servers,
-    clearServers,
-    getServerInfo,
-    serverChange,
-    singleAuthMethod
-  );
   return (
     <div className="card">
       <div className="card-body">
@@ -375,6 +386,7 @@ export default function AuthForm({
           formData={formData}
           onChange={onChange}
           onSubmit={onSubmit}
+          showSpinner={showSpinner}
         >
           <button type="submit" className="btn btn-info">
             {"Sign in using "}

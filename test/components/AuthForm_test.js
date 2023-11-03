@@ -1,25 +1,21 @@
 import { createSandbox, createComponent } from "../test_utils";
 import { DEFAULT_KINTO_SERVER } from "../../src/constants";
 import { DEFAULT_SERVERINFO } from "../../src/reducers/session";
-import { expect } from "chai";
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, waitFor } from "@testing-library/react";
 import * as React from "react";
 import AuthForm from "../../src/components/AuthForm";
 import sinon from "sinon";
 
 describe("AuthForm component", () => {
   let sandbox;
-  let clock;
 
   beforeEach(() => {
     jest.resetModules();
     sandbox = createSandbox();
-    clock = sinon.useFakeTimers();
   });
 
   afterEach(() => {
     sandbox.restore();
-    clock.restore();
   });
   describe("Single server config option", () => {
     it("should set the default server url in a visible field", () => {
@@ -30,8 +26,8 @@ describe("AuthForm component", () => {
       );
 
       const element = node.querySelector("input[id='root_server']");
-      expect(element.type).eql("text");
-      expect(element.value).eql(DEFAULT_KINTO_SERVER);
+      expect(element.type).toBe("text");
+      expect(element.value).toBe(DEFAULT_KINTO_SERVER);
     });
   });
   describe("Authentication types", () => {
@@ -78,14 +74,18 @@ describe("AuthForm component", () => {
     });
 
     it("should render a setup form", () => {
-      expect(node.querySelector("form")).to.exist;
+      expect(node.querySelector("form")).toBeDefined();
     });
 
     describe("Basic Auth", () => {
-      it("should submit setup data", () => {
+      it("should submit setup data", async () => {
         fireEvent.change(node.querySelector("#root_server"), {
           target: { value: "http://test.server/v1" },
         });
+        expect(node.querySelector(".spinner")).toBeDefined();
+        await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
+        expect(node.querySelector(".spinner")).toBeNull();
+
         fireEvent.click(node.querySelectorAll("[type=radio]")[1]);
         fireEvent.change(node.querySelector("#root_credentials_username"), {
           target: { value: "user" },
@@ -108,10 +108,11 @@ describe("AuthForm component", () => {
     });
 
     describe("LDAP", () => {
-      it("should submit setup data", () => {
+      it("should submit setup data", async () => {
         fireEvent.change(node.querySelector("#root_server"), {
           target: { value: "http://test.server/v1" },
         });
+        await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
         fireEvent.click(node.querySelectorAll("[type=radio]")[3]);
         fireEvent.change(node.querySelector("#root_credentials_username"), {
           target: { value: "you@email.com" },
@@ -133,10 +134,11 @@ describe("AuthForm component", () => {
     });
 
     describe("FxA", () => {
-      it("should navigate to external auth URL", () => {
+      it("should navigate to external auth URL", async () => {
         fireEvent.change(node.querySelector("#root_server"), {
           target: { value: "http://test.server/v1" },
         });
+        await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
         fireEvent.click(node.querySelectorAll("[type=radio]")[2]);
         fireEvent.change(node.querySelector("form"));
         fireEvent.submit(node.querySelector("form"));
@@ -149,10 +151,11 @@ describe("AuthForm component", () => {
     });
 
     describe("OpenID", () => {
-      it("should navigate to external auth URL", () => {
+      it("should navigate to external auth URL", async () => {
         fireEvent.change(node.querySelector("#root_server"), {
           target: { value: "http://test.server/v1" },
         });
+        await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
         fireEvent.click(node.querySelectorAll("[type=radio]")[4]);
         fireEvent.submit(node.querySelector("form"));
         sinon.assert.calledWithExactly(
@@ -179,7 +182,7 @@ describe("AuthForm component", () => {
       };
       const node = createComponent(<AuthForm {...props} />);
 
-      expect(node.querySelector("#root_server").value).eql(
+      expect(node.querySelector("#root_server").value).toBe(
         "https://demo.kinto-storage.org/v1/"
       );
     });
@@ -194,7 +197,7 @@ describe("AuthForm component", () => {
       };
       const node = createComponent(<AuthForm {...props} />);
 
-      expect(node.querySelector("#root_server").value).eql(
+      expect(node.querySelector("#root_server").value).toBe(
         "http://server.test/v1"
       );
     });
@@ -215,14 +218,15 @@ describe("AuthForm component", () => {
       const serverField = form.container.querySelector("#root_server");
       const authTypeField = form.container.querySelector("#root_authType");
 
-      expect(serverField.value).eql("http://server.test/v1");
-      expect(authTypeField.value).eql("basicauth");
+      expect(serverField.value).toBe("http://server.test/v1");
+      expect(authTypeField.value).toBe("basicauth");
 
       fireEvent.change(serverField, {
         target: { value: "http://test.server/v1" },
       });
-      expect(serverField.value).eql("http://test.server/v1");
-      expect(authTypeField.value).eql("openid-google");
+      await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
+      expect(serverField.value).toBe("http://test.server/v1");
+      expect(authTypeField.value).toBe("openid-google");
 
       const updatedProps = {
         ...props,
@@ -251,7 +255,7 @@ describe("AuthForm component", () => {
       const googleAuthButton = await form.findByText(
         "Sign in using OpenID Connect (Google)"
       );
-      expect(googleAuthButton).to.exist;
+      expect(googleAuthButton).toBeDefined();
     });
   });
 });
