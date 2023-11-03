@@ -345,7 +345,6 @@ export default function AuthForm({
   };
 
   const onSubmit = ({ formData }: RJSFSchema) => {
-    setshowSpinner(true);
     let { authType } = formData;
     let openidProvider = null;
     if (authType.startsWith("openid-")) {

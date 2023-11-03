@@ -1,6 +1,6 @@
 import type { Permissions } from "../types";
 
-import React, { useState } from "react";
+import React from "react";
 
 import BaseForm from "./BaseForm";
 import {
@@ -26,10 +26,7 @@ export function PermissionsForm({
   acls,
   onSubmit: onSubmit_,
 }: Props) {
-  const [showSpinner, setShowSpinner] = useState(false);
-
   const onSubmit = ({ formData }: RJSFSchema) => {
-    setShowSpinner(true);
     onSubmit_({ formData: formDataToPermissions(bid, formData) });
   };
   const { bid } = useParams<{ bid: string }>();
@@ -51,7 +48,6 @@ export function PermissionsForm({
       uiSchema={uiSchema}
       formData={formData}
       onSubmit={onSubmit}
-      showSpinner={showSpinner}
     />
   );
 }

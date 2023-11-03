@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { withTheme } from "@rjsf/core";
 import { RJSFSchema, UiSchema } from "@rjsf/utils";
 import { Theme as Bootstrap4Theme } from "@rjsf/bootstrap-4";
@@ -41,7 +41,6 @@ type Props = {
   disabled?: boolean;
   formData: CollectionData;
   onSubmit: (data: { formData: CollectionData }) => void;
-  showSpinner?: boolean;
 };
 
 export default function JSONCollectionForm({
@@ -50,13 +49,15 @@ export default function JSONCollectionForm({
   formData,
   onSubmit,
   disabled,
-  showSpinner,
 }: Props) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSubmit = ({
     formData: formInput,
   }: {
     formData: { id: string; data: string };
   }) => {
+    setIsSubmitting(true);
     const collectionData = { ...JSON.parse(formInput.data), id: formInput.id };
     onSubmit({ formData: collectionData });
   };
@@ -89,11 +90,11 @@ export default function JSONCollectionForm({
         validator={validator}
         // @ts-ignore
         onSubmit={handleSubmit}
-        disabled={disabled || showSpinner}
+        disabled={disabled || isSubmitting}
       >
         {children}
       </FormWithTheme>
-      {showSpinner && <Spinner />}
+      {isSubmitting && <Spinner />}
     </div>
   );
 }

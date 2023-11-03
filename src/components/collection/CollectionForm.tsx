@@ -246,8 +246,6 @@ export default function CollectionForm({
   formData: propFormData = undefined,
 }: Props) {
   const [asJSON, setAsJSON] = useState(false);
-  const [showSpinner, setShowSpinner] = useState(false);
-
   const allowEditing = propFormData
     ? canEditCollection(session, bucket, collection)
     : canCreateCollection(session, bucket);
@@ -264,7 +262,6 @@ export default function CollectionForm({
   };
 
   const handleOnSubmit = ({ formData }) => {
-    setShowSpinner(true);
     const collectionData = asJSON
       ? formData
       : {
@@ -329,7 +326,6 @@ export default function CollectionForm({
           cid={cid}
           formData={collection.data}
           onSubmit={handleOnSubmit}
-          showSpinner={showSpinner}
         >
           {buttons}
         </JSONCollectionForm>
@@ -345,7 +341,6 @@ export default function CollectionForm({
             customValidate={validate}
             // @ts-ignore
             onSubmit={handleOnSubmit}
-            showSpinner={showSpinner}
           >
             {buttons}
           </BaseForm>

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import type {
   SessionState,
   BucketState,
@@ -60,8 +60,6 @@ type Props = {
 };
 
 export default function GroupForm(props: Props) {
-  const [showSpinner, setShowSpinner] = useState(false);
-
   const {
     gid,
     session,
@@ -74,7 +72,6 @@ export default function GroupForm(props: Props) {
 
   const onSubmit = useCallback(
     ({ formData }) => {
-      setShowSpinner(true);
       const { data } = formData;
       const attributes = JSON.parse(data);
       propOnSubmit({
@@ -146,7 +143,6 @@ export default function GroupForm(props: Props) {
             formIsEditable ? _uiSchema : { ..._uiSchema, "ui:readonly": true }
           }
           formData={formDataSerialized}
-          showSpinner={showSpinner}
           onSubmit={onSubmit}
         >
           {buttons}

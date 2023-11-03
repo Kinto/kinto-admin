@@ -11,6 +11,7 @@ import { Trash } from "react-bootstrap-icons";
 import * as CollectionActions from "../../actions/collection";
 import BaseForm from "../BaseForm";
 import AdminLink from "../AdminLink";
+import Spinner from "../Spinner";
 import JSONRecordForm from "./JSONRecordForm";
 import { canCreateRecord, canEditRecord } from "../../permission";
 import {
@@ -62,7 +63,6 @@ type Props = {
 
 export default function RecordForm(props: Props) {
   const [asJSON, setAsJSON] = useState(false);
-  const [showSpinner, setShowSpinner] = useState(false);
 
   const {
     bid,
@@ -102,7 +102,6 @@ export default function RecordForm(props: Props) {
   };
 
   const handleOnSubmit = ({ formData }: RJSFSchema) => {
-    setShowSpinner(true);
     onSubmit(formData);
   };
 
@@ -113,6 +112,12 @@ export default function RecordForm(props: Props) {
     } = collection;
     const emptySchema = Object.keys(schema).length === 0;
     const recordData = record ? record.data : {};
+
+    // Show a spinner if the collection metadata is being loaded, or the record
+    // itself on edition.
+    if (collection.busy || (record && record.busy)) {
+      return <Spinner />;
+    }
 
     const buttons = (
       <div className="row record-form-buttons">
@@ -183,7 +188,6 @@ export default function RecordForm(props: Props) {
         uiSchema={_uiSchema}
         formData={recordData}
         onSubmit={handleOnSubmit}
-        showSpinner={showSpinner || collection.busy || (record && record.busy)}
       >
         {buttons}
       </BaseForm>
