@@ -3,6 +3,7 @@
 import React from "react";
 import sinon from "sinon";
 import ReactDOM from "react-dom";
+import { render } from "@testing-library/react";
 import { Router } from "react-router";
 import { Provider } from "react-redux";
 import { configureAppStoreAndHistory } from "../src/store/configureStore";
@@ -80,4 +81,51 @@ export function sessionFactory(props) {
     ...props,
     redirectURL: "",
   };
+}
+
+// temporary solution until we rewrite AdminLink to not require router around it
+export function renderComponent(
+  ui,
+  {
+    initialState,
+    route = "/",
+    path = "/",
+    initialHistory = createMemoryHistory({ initialEntries: [route] }),
+  } = {}
+) {
+  const { store, history } = configureAppStoreAndHistory(
+    initialState,
+    initialHistory
+  );
+  return render(
+    <Provider store={store}>
+      <Router history={history}>
+        <Route path={path}>{ui}</Route>
+      </Router>
+    </Provider>
+  );
+}
+
+// temporary solution until we rewrite AdminLink to not require router around it
+export function rerenderComponent(
+  component,
+  ui,
+  {
+    initialState,
+    route = "/",
+    path = "/",
+    initialHistory = createMemoryHistory({ initialEntries: [route] }),
+  } = {}
+) {
+  const { store, history } = configureAppStoreAndHistory(
+    initialState,
+    initialHistory
+  );
+  return component.rerender(
+    <Provider store={store}>
+      <Router history={history}>
+        <Route path={path}>{ui}</Route>
+      </Router>
+    </Provider>
+  );
 }
