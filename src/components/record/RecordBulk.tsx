@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 
 import type { CollectionState, CollectionRouteMatch } from "../../types";
 
@@ -6,6 +6,7 @@ import * as CollectionActions from "../../actions/collection";
 import * as NotificationActions from "../../actions/notifications";
 import BaseForm from "../BaseForm";
 import AdminLink from "../AdminLink";
+import Spinner from "../Spinner";
 import JSONEditor from "../JSONEditor";
 import {
   extendSchemaWithAttachment,
@@ -32,8 +33,6 @@ export default function RecordBulk({
   notifyError,
   bulkCreateRecords,
 }: Props) {
-  const [showSpinner, setShowSpinner] = useState(false);
-
   const onSubmit = useCallback(
     ({ formData }) => {
       const {
@@ -46,8 +45,6 @@ export default function RecordBulk({
       if (formData.length === 0) {
         return notifyError("The form is empty.");
       }
-
-      setShowSpinner(true);
 
       if (Object.keys(schema).length === 0) {
         return bulkCreateRecords(
@@ -112,27 +109,30 @@ export default function RecordBulk({
         </b>{" "}
         creation
       </h1>
-      <div className="card">
-        <div className="card-body">
-          <BaseForm
-            schema={bulkSchema}
-            uiSchema={bulkUiSchema}
-            formData={bulkFormData}
-            onSubmit={onSubmit}
-            showSpinner={showSpinner || busy}
-          >
-            <input
-              type="submit"
-              className="btn btn-primary"
-              value="Bulk create"
-            />
-            {" or "}
-            <AdminLink name="collection:records" params={{ bid, cid }}>
-              Cancel
-            </AdminLink>
-          </BaseForm>
+      {busy ? (
+        <Spinner />
+      ) : (
+        <div className="card">
+          <div className="card-body">
+            <BaseForm
+              schema={bulkSchema}
+              uiSchema={bulkUiSchema}
+              formData={bulkFormData}
+              onSubmit={onSubmit}
+            >
+              <input
+                type="submit"
+                className="btn btn-primary"
+                value="Bulk create"
+              />
+              {" or "}
+              <AdminLink name="collection:records" params={{ bid, cid }}>
+                Cancel
+              </AdminLink>
+            </BaseForm>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import BaseForm from "../BaseForm";
 import JSONEditor from "../JSONEditor";
 import { RJSFSchema, UiSchema } from "@rjsf/utils";
@@ -29,10 +29,7 @@ export default function JSONRecordForm({
   onSubmit,
   children,
 }: Props) {
-  const [showSpinner, setShowSpinner] = useState(false);
-
   const handleOnSubmit = data => {
-    setShowSpinner(true);
     onSubmit({ ...data, formData: JSON.parse(data.formData) });
   };
 
@@ -43,7 +40,6 @@ export default function JSONRecordForm({
         formData={record}
         uiSchema={disabled ? { ...uiSchema, "ui:readonly": true } : uiSchema}
         onSubmit={handleOnSubmit}
-        showSpinner={showSpinner}
       >
         {children}
       </BaseForm>

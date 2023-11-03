@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { Trash } from "react-bootstrap-icons";
 
@@ -12,8 +12,6 @@ const deleteSchema: RJSFSchema = {
 };
 
 export default function DeleteForm({ gid, onSubmit }) {
-  const [showSpinner, setShowSpinner] = useState(false);
-
   const validate = (formData, errors) => {
     if (formData !== gid) {
       errors.addError("The group id does not match.");
@@ -32,9 +30,7 @@ export default function DeleteForm({ gid, onSubmit }) {
         <BaseForm
           schema={deleteSchema}
           customValidate={validate}
-          showSpinner={showSpinner}
           onSubmit={({ formData }) => {
-            setShowSpinner(true);
             if (typeof onSubmit === "function") {
               onSubmit(formData);
             }

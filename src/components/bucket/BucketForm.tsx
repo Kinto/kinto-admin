@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
 import { Check2 } from "react-bootstrap-icons";
 
 import BaseForm from "../BaseForm";
 import JSONEditor from "../JSONEditor";
+import Spinner from "../Spinner";
 import { RJSFSchema } from "@rjsf/utils";
 import { canEditBucket } from "../../permission";
 import { omit } from "../../utils";
@@ -51,8 +52,6 @@ export default function BucketForm({
   deleteBucket,
   onSubmit,
 }: Props) {
-  const [showSpinner, setShowSpinner] = useState(false);
-
   const creation = !formData.id;
   const hasWriteAccess = canEditBucket(session, bucket);
   const formIsEditable = creation || hasWriteAccess;
@@ -101,25 +100,25 @@ export default function BucketForm({
   return (
     <div>
       {alert}
-
-      <BaseForm
-        schema={schema}
-        uiSchema={
-          formIsEditable ? _uiSchema : { ..._uiSchema, "ui:readonly": true }
-        }
-        formData={formDataSerialized}
-        showSpinner={showSpinner || bucket.busy}
-        onSubmit={({ formData }) => {
-          setShowSpinner(true);
-          const { id, data } = formData;
-          // Parse JSON fields so they can be sent to the server
-          const attributes = JSON.parse(data);
-          onSubmit({ id, ...attributes });
-        }}
-      >
-        {buttons}
-      </BaseForm>
-
+      {bucket.busy ? (
+        <Spinner />
+      ) : (
+        <BaseForm
+          schema={schema}
+          uiSchema={
+            formIsEditable ? _uiSchema : { ..._uiSchema, "ui:readonly": true }
+          }
+          formData={formDataSerialized}
+          onSubmit={({ formData }) => {
+            const { id, data } = formData;
+            // Parse JSON fields so they can be sent to the server
+            const attributes = JSON.parse(data);
+            onSubmit({ id, ...attributes });
+          }}
+        >
+          {buttons}
+        </BaseForm>
+      )}
       {showDeleteForm && <DeleteForm bid={bid} onSubmit={deleteBucket} />}
     </div>
   );
