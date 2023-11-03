@@ -34,7 +34,7 @@ export default function BaseForm(props: BaseFormProps) {
         onSubmit={handleOnSubmit}
         // @ts-ignore
         fields={adminFields}
-        disabled={disabled || showSpinner}
+        disabled={disabled || showSpinner || isSubmitting}
       />
       {(isSubmitting || showSpinner) && <Spinner />}
     </div>
