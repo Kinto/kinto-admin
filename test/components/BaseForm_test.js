@@ -43,7 +43,7 @@ describe("BaseForm component", () => {
 
   afterEach(() => {});
 
-  it("Should render a jrsf form as expected", async () => {
+  it("Should render a rjsf form as expected", async () => {
     const result = render(
       <BaseForm
         className="testClass"
