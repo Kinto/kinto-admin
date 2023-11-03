@@ -44,10 +44,11 @@ describe("CollectionRecords component", () => {
         records: [],
       },
       capabilities,
-      listRecords: listRecordsMock
+      listRecords: listRecordsMock,
     };
     const result = renderComponent(
-      <CollectionRecords {...props}
+      <CollectionRecords
+        {...props}
         match={{ params: { bid: "bucket1", cid: "collection1" } }}
       />
     );
@@ -56,7 +57,8 @@ describe("CollectionRecords component", () => {
 
     rerenderComponent(
       result,
-      <CollectionRecords {...props}
+      <CollectionRecords
+        {...props}
         match={{ params: { bid: "bucket1", cid: "collection2" } }}
       />
     );
@@ -65,7 +67,8 @@ describe("CollectionRecords component", () => {
 
     rerenderComponent(
       result,
-      <CollectionRecords {...props}
+      <CollectionRecords
+        {...props}
         match={{ params: { bid: "bucket2", cid: "collection2" } }}
       />
     );
@@ -74,7 +77,8 @@ describe("CollectionRecords component", () => {
 
     rerenderComponent(
       result,
-      <CollectionRecords {...props}
+      <CollectionRecords
+        {...props}
         match={{ params: { bid: "bucket2", cid: "collection1" } }}
       />
     );
