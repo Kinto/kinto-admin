@@ -83,8 +83,7 @@ export function sessionFactory(props) {
   };
 }
 
-// temporary solution until we rewrite AdminLink to not require router around it
-export function renderComponent(
+export function renderWithProvider(
   ui,
   {
     initialState,
@@ -97,35 +96,17 @@ export function renderComponent(
     initialState,
     initialHistory
   );
-  return render(
+  const Wrapper = ({ children }) => (
     <Provider store={store}>
       <Router history={history}>
-        <Route path={path}>{ui}</Route>
+        <Route path={path}>{children}</Route>
       </Router>
     </Provider>
   );
-}
-
-// temporary solution until we rewrite AdminLink to not require router around it
-export function rerenderComponent(
-  component,
-  ui,
-  {
-    initialState,
-    route = "/",
-    path = "/",
-    initialHistory = createMemoryHistory({ initialEntries: [route] }),
-  } = {}
-) {
-  const { store, history } = configureAppStoreAndHistory(
-    initialState,
-    initialHistory
-  );
-  return component.rerender(
-    <Provider store={store}>
-      <Router history={history}>
-        <Route path={path}>{ui}</Route>
-      </Router>
-    </Provider>
-  );
+  return {
+    ...render(ui, { wrapper: Wrapper }),
+    store,
+    rerender: updatedComponent =>
+      render(updatedComponent, { container: document.body, wrapper: Wrapper }),
+  };
 }

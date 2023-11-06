@@ -1,8 +1,4 @@
-import {
-  createComponent,
-  renderComponent,
-  rerenderComponent,
-} from "../test_utils";
+import { createComponent, renderWithProvider } from "../test_utils";
 import CollectionRecords from "../../src/components/collection/CollectionRecords";
 import * as React from "react";
 
@@ -46,7 +42,7 @@ describe("CollectionRecords component", () => {
       capabilities,
       listRecords: listRecordsMock,
     };
-    const result = renderComponent(
+    const result = renderWithProvider(
       <CollectionRecords
         {...props}
         match={{ params: { bid: "bucket1", cid: "collection1" } }}
@@ -55,8 +51,7 @@ describe("CollectionRecords component", () => {
 
     expect(listRecordsMock).toHaveBeenCalledTimes(1);
 
-    rerenderComponent(
-      result,
+    result.rerender(
       <CollectionRecords
         {...props}
         match={{ params: { bid: "bucket1", cid: "collection2" } }}
@@ -65,8 +60,7 @@ describe("CollectionRecords component", () => {
 
     expect(listRecordsMock).toHaveBeenCalledTimes(2);
 
-    rerenderComponent(
-      result,
+    result.rerender(
       <CollectionRecords
         {...props}
         match={{ params: { bid: "bucket2", cid: "collection2" } }}
@@ -75,8 +69,7 @@ describe("CollectionRecords component", () => {
 
     expect(listRecordsMock).toHaveBeenCalledTimes(3);
 
-    rerenderComponent(
-      result,
+    result.rerender(
       <CollectionRecords
         {...props}
         match={{ params: { bid: "bucket2", cid: "collection1" } }}

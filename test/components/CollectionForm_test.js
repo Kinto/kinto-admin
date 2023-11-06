@@ -9,18 +9,7 @@ const testProps = {
   cid: null,
   bid: "default",
   session: {
-    permissions: [
-      {
-        resource_name: "bucket",
-        permissions: [
-          "group:create",
-          "read",
-          "read:attributes",
-          "collection:create",
-        ],
-        bucket_id: "default",
-      },
-    ],
+    permissions: [],
     buckets: [
       {
         id: "default",
@@ -46,6 +35,16 @@ const testProps = {
   formData: undefined,
 };
 
+// to avoid rendering a router around everything, allows for easier testing
+jest.mock("react-router-dom", () => {
+  const originalModule = jest.requireActual("react-router-dom");
+  return {
+    __esModule: true,
+    ...originalModule,
+    Link: "a",
+  };
+});
+
 describe("CollectionForm component", () => {
   beforeAll(() => {
     // preventing code mirror errors
@@ -64,8 +63,19 @@ describe("CollectionForm component", () => {
     });
   });
 
-  it("Should render an eitable form for a user with permissions creating a new collection", async () => {
-    const result = render(<CollectionForm {...testProps} />);
+  it("Should render an editable form for a user with permissions creating a new collection", async () => {
+    const localTestProps = JSON.parse(JSON.stringify(testProps));
+    localTestProps.session.permissions.push({
+      resource_name: "bucket",
+      permissions: [
+        "group:create",
+        "read",
+        "read:attributes",
+        "collection:create",
+      ],
+      bucket_id: "default",
+    });
+    const result = render(<CollectionForm {...localTestProps} />);
 
     const warning = result.queryByText(warningText);
     expect(warning).toBeNull();

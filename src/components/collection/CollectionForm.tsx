@@ -17,6 +17,7 @@ import { canCreateCollection, canEditCollection } from "../../permission";
 import { validateSchema, validateUiSchema } from "../../utils";
 import DeleteForm from "./DeleteForm";
 import { FormInstructions } from "./FormInstructions";
+import { Link } from "react-router-dom";
 
 const defaultSchema = JSON.stringify(
   {
@@ -310,7 +311,7 @@ export default function CollectionForm({
         {` ${creation ? "Create" : "Update"} collection`}
       </button>
       {" or "}
-      <a href="/#/">Cancel</a>
+      <Link to="/">Cancel</Link>
       {" | "}
       <a href="#" onClick={toggleJSON}>
         {asJSON ? "Edit form" : "Edit raw JSON"}
