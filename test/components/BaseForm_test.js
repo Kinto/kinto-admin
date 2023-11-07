@@ -39,10 +39,6 @@ const testUiSchema = {
 };
 
 describe("BaseForm component", () => {
-  beforeEach(() => {});
-
-  afterEach(() => {});
-
   it("Should render a rjsf form as expected", async () => {
     const result = render(
       <BaseForm

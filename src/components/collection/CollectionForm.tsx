@@ -6,7 +6,6 @@ import type {
 } from "../../types";
 
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 
 import { Check2 } from "react-bootstrap-icons";
 
@@ -18,6 +17,7 @@ import { canCreateCollection, canEditCollection } from "../../permission";
 import { validateSchema, validateUiSchema } from "../../utils";
 import DeleteForm from "./DeleteForm";
 import { FormInstructions } from "./FormInstructions";
+import { Link } from "react-router-dom";
 
 const defaultSchema = JSON.stringify(
   {
@@ -248,8 +248,8 @@ export default function CollectionForm({
 }: Props) {
   const [asJSON, setAsJSON] = useState(false);
   const allowEditing = propFormData
-    ? canCreateCollection(session, bucket)
-    : canEditCollection(session, bucket, collection);
+    ? canEditCollection(session, bucket, collection)
+    : canCreateCollection(session, bucket);
 
   const toggleJSON = event => {
     event.preventDefault();

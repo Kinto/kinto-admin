@@ -3,6 +3,7 @@
 import React from "react";
 import sinon from "sinon";
 import ReactDOM from "react-dom";
+import { render } from "@testing-library/react";
 import { Router } from "react-router";
 import { Provider } from "react-redux";
 import { configureAppStoreAndHistory } from "../src/store/configureStore";
@@ -79,5 +80,33 @@ export function sessionFactory(props) {
     },
     ...props,
     redirectURL: "",
+  };
+}
+
+export function renderWithProvider(
+  ui,
+  {
+    initialState,
+    route = "/",
+    path = "/",
+    initialHistory = createMemoryHistory({ initialEntries: [route] }),
+  } = {}
+) {
+  const { store, history } = configureAppStoreAndHistory(
+    initialState,
+    initialHistory
+  );
+  const Wrapper = ({ children }) => (
+    <Provider store={store}>
+      <Router history={history}>
+        <Route path={path}>{children}</Route>
+      </Router>
+    </Provider>
+  );
+  return {
+    ...render(ui, { wrapper: Wrapper }),
+    store,
+    rerender: updatedComponent =>
+      render(updatedComponent, { container: document.body, wrapper: Wrapper }),
   };
 }

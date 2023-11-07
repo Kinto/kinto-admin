@@ -60,17 +60,13 @@ export default function CollectionRecords(props: Props) {
     [bid, cid, listRecords]
   );
 
-  const onCollectionRecordsEnter = useCallback(() => {
+  useEffect(() => {
     if (!session.authenticated) {
       return;
     }
     const { currentSort } = collection;
     listRecords(bid, cid, currentSort);
-  }, [bid, cid, collection, listRecords, session]);
-
-  useEffect(() => {
-    onCollectionRecordsEnter();
-  }, []);
+  }, [bid, cid]);
 
   const {
     busy,

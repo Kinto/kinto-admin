@@ -1,21 +1,8 @@
-import { expect } from "chai";
-
-import { createSandbox, createComponent } from "../test_utils";
-
+import { createComponent, renderWithProvider } from "../test_utils";
 import CollectionRecords from "../../src/components/collection/CollectionRecords";
 import * as React from "react";
 
 describe("CollectionRecords component", () => {
-  let sandbox;
-
-  beforeEach(() => {
-    sandbox = createSandbox();
-  });
-
-  afterEach(() => {
-    sandbox.restore();
-  });
-
   const capabilities = {
     history: {},
   };
@@ -28,6 +15,69 @@ describe("CollectionRecords component", () => {
       write: [],
     },
   };
+
+  it("Calls listRecords every time bid or cid changes", async () => {
+    const listRecordsMock = jest.fn();
+
+    const props = {
+      session: { authenticated: true, permissions: ["foo"] },
+      bucket,
+      collection: {
+        busy: false,
+        data: {
+          schema: {
+            type: "object",
+            properties: {
+              foo: { type: "string" },
+            },
+          },
+          displayFields: ["foo"],
+        },
+        permissions: {
+          write: ["basicauth:plop"],
+        },
+        recordsLoaded: true,
+        records: [],
+      },
+      capabilities,
+      listRecords: listRecordsMock,
+    };
+    const result = renderWithProvider(
+      <CollectionRecords
+        {...props}
+        match={{ params: { bid: "bucket1", cid: "collection1" } }}
+      />
+    );
+
+    expect(listRecordsMock).toHaveBeenCalledTimes(1);
+
+    result.rerender(
+      <CollectionRecords
+        {...props}
+        match={{ params: { bid: "bucket1", cid: "collection2" } }}
+      />
+    );
+
+    expect(listRecordsMock).toHaveBeenCalledTimes(2);
+
+    result.rerender(
+      <CollectionRecords
+        {...props}
+        match={{ params: { bid: "bucket2", cid: "collection2" } }}
+      />
+    );
+
+    expect(listRecordsMock).toHaveBeenCalledTimes(3);
+
+    result.rerender(
+      <CollectionRecords
+        {...props}
+        match={{ params: { bid: "bucket2", cid: "collection1" } }}
+      />
+    );
+
+    expect(listRecordsMock).toHaveBeenCalledTimes(4);
+  });
 
   describe("Schema defined", () => {
     let node;
@@ -70,15 +120,15 @@ describe("CollectionRecords component", () => {
     });
 
     it("should render a table", () => {
-      expect(node.querySelector("table")).to.exist;
+      expect(node.querySelector("table")).toBeDefined();
     });
 
     it("should render record rows", () => {
       const rows = node.querySelectorAll("tbody tr");
 
-      expect(rows).to.have.a.lengthOf(2);
-      expect(rows[0].querySelectorAll("td")[0].textContent).eql("bar");
-      expect(rows[1].querySelectorAll("td")[0].textContent).eql("baz");
+      expect(rows).toHaveLength(2);
+      expect(rows[0].querySelectorAll("td")[0].textContent).toBe("bar");
+      expect(rows[1].querySelectorAll("td")[0].textContent).toBe("baz");
     });
   });
 
@@ -120,19 +170,19 @@ describe("CollectionRecords component", () => {
     });
 
     it("should render a table", () => {
-      expect(node.querySelector("table")).to.exist;
+      expect(node.querySelector("table")).toBeDefined();
     });
 
     it("should render record rows", () => {
       const rows = node.querySelectorAll("tbody tr");
 
-      expect(rows).to.have.a.lengthOf(2);
-      expect(rows[0].querySelectorAll("td")[0].textContent).eql("id1");
-      expect(rows[0].querySelectorAll("td")[1].textContent).eql(
+      expect(rows).toHaveLength(2);
+      expect(rows[0].querySelectorAll("td")[0].textContent).toBe("id1");
+      expect(rows[0].querySelectorAll("td")[1].textContent).toBe(
         JSON.stringify({ foo: "bar" })
       );
-      expect(rows[1].querySelectorAll("td")[0].textContent).eql("id2");
-      expect(rows[1].querySelectorAll("td")[1].textContent).eql(
+      expect(rows[1].querySelectorAll("td")[0].textContent).toBe("id2");
+      expect(rows[1].querySelectorAll("td")[1].textContent).toBe(
         JSON.stringify({ foo: "baz" })
       );
     });
@@ -166,7 +216,7 @@ describe("CollectionRecords component", () => {
     it("should show the total number of records", () => {
       expect(
         node.querySelector(".card-header-tabs .nav-link.active").textContent
-      ).to.eql("Records (18)");
+      ).toBe("Records (18)");
     });
   });
 
@@ -206,9 +256,12 @@ describe("CollectionRecords component", () => {
       });
 
       it("should render list actions", () => {
-        expect(node.querySelector(".list-actions .btn-record-add")).to.exist;
-        expect(node.querySelector(".list-actions .btn-record-bulk-add")).to
-          .exist;
+        expect(
+          node.querySelector(".list-actions .btn-record-add")
+        ).toBeDefined();
+        expect(
+          node.querySelector(".list-actions .btn-record-bulk-add")
+        ).toBeDefined();
       });
     });
 
@@ -229,8 +282,9 @@ describe("CollectionRecords component", () => {
       });
 
       it("should not render list actions", () => {
-        expect(node.querySelector(".list-actions .btn-record-bulk-add")).to.not
-          .exist;
+        expect(
+          node.querySelector(".list-actions .btn-record-bulk-add")
+        ).toBeNull();
       });
     });
   });
