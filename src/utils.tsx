@@ -9,7 +9,6 @@ import React from "react";
 import { format } from "timeago.js";
 import { diffJson as diff } from "diff";
 import { DEFAULT_KINTO_SERVER, SINGLE_SERVER } from "./constants";
-import zip from "lodash/zip";
 
 export function clone(obj: any) {
   return JSON.parse(JSON.stringify(obj));
@@ -402,21 +401,4 @@ export function diffJson(
       .join("\n");
     return prefixedChunk;
   });
-}
-/**
- * Given a pathname, return a 2d array where each inner array is the path
- * part's name and location
- *
- * "/"        => [["home", "/"]]
- * "/foo"     => [["home", "/"], ["foo", "/foo"]]
- * "/foo/bar" => [["home", "/"], ["foo", "/foo"], ["bar", "/foo/bar"]]
- */
-export function breadcrumbifyPath(path: string) {
-  const crumbNames = path.split("/").filter(Boolean);
-  const pathParts = [""];
-  const crumbPaths = crumbNames.map(name => {
-    pathParts.push(name);
-    return pathParts.join("/");
-  });
-  return [["home", "/"]].concat(zip(crumbNames, crumbPaths));
 }
