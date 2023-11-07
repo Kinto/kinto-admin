@@ -2,6 +2,9 @@ import CommentDialog from "../../CommentDialog";
 import React, { useState } from "react";
 import { SignoffCollectionStatus } from "../../../types";
 
+import { useLocation } from "react-router";
+import { parseSearchString } from "../../../locationUtils";
+
 export interface SimpleReviewButtonsProps {
   status: SignoffCollectionStatus;
   approveChanges(): void;
@@ -16,6 +19,8 @@ export default function SimpleReviewButtons({
   rollbackChanges,
 }: SimpleReviewButtonsProps) {
   const [dialog, setDialog] = useState<"reject" | "rollback" | "">("");
+  const searchParams = parseSearchString(useLocation().search);
+
   return (
     <>
       <div className="simple-review-buttons">
@@ -35,7 +40,7 @@ export default function SimpleReviewButtons({
             </button>
           </>
         )}
-        {status === "work-in-progress" && (
+        {status === "work-in-progress" && !searchParams.hideRollback && (
           <button
             className="btn btn-danger"
             onClick={() => setDialog("rollback")}

@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { breadcrumbifyPath } from "../../utils";
+import { breadcrumbifyPath } from "../../locationUtils";
 
 import "./style.css";
 

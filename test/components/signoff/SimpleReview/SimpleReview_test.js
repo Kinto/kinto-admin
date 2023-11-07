@@ -1,9 +1,5 @@
-import { expect } from "chai";
 import * as React from "react";
-
-import testUtils from "react-dom/test-utils";
-
-import { createComponent, sessionFactory } from "../../../test_utils";
+import { renderWithProvider, sessionFactory } from "../../../test_utils";
 import SimpleReview from "../../../../src/components/signoff/SimpleReview";
 
 function signoffFactory() {
@@ -41,8 +37,7 @@ function signoffFactory() {
   };
 }
 
-async function renderSimpleReview(props = null) {
-  let node;
+function renderSimpleReview(props = null) {
   const mergedProps = {
     match: {
       params: {
@@ -56,37 +51,51 @@ async function renderSimpleReview(props = null) {
     async fetchRecords() {},
     ...props,
   };
-  await testUtils.act(async () => {
-    node = createComponent(<SimpleReview {...mergedProps} />);
-  });
-  return node;
+  return renderWithProvider(<SimpleReview {...mergedProps} />);
 }
+
+const fakeLocation = {
+  pathname: "/buckets/main-workspace/collections/test/simple-review",
+  search: "",
+  hash: "",
+};
+
+jest.mock("react-router", () => {
+  const originalModule = jest.requireActual("react-router");
+  return {
+    __esModule: true,
+    ...originalModule,
+    useLocation: () => {
+      return fakeLocation;
+    },
+  };
+});
 
 describe("SimpleTest component", () => {
   it("should render spinner when authenticating", async () => {
-    const node = await renderSimpleReview({
+    const node = renderSimpleReview({
       session: sessionFactory({ authenticated: false, authenticating: true }),
     });
-    expect(node.querySelector(".spinner")).to.be.ok;
+    expect(node.queryByTestId("spinner")).toBeDefined();
   });
 
   it("should render not authenticated", async () => {
-    const node = await renderSimpleReview({
+    const node = renderSimpleReview({
       session: sessionFactory({ authenticated: false, authenticating: false }),
     });
-    expect(node.textContent).to.equal("Not authenticated");
+    expect(node.container.textContent).toBe("Not authenticated");
   });
 
   it("should render not authenticated", async () => {
-    const node = await renderSimpleReview({
+    const node = renderSimpleReview({
       session: sessionFactory({ authenticated: false, authenticating: false }),
     });
-    expect(node.textContent).to.equal("Not authenticated");
+    expect(node.container.textContent).toBe("Not authenticated");
   });
 
   it("should render not reviewable", async () => {
-    const node = await renderSimpleReview({ signoff: undefined });
-    expect(node.textContent).to.equal(
+    const node = renderSimpleReview({ signoff: undefined });
+    expect(node.container.textContent).toBe(
       "This is not a collection that supports reviews."
     );
   });
@@ -94,19 +103,34 @@ describe("SimpleTest component", () => {
   it("should render not a reviewer", async () => {
     const session = sessionFactory();
     session.serverInfo.user.principals = [];
-    const node = await renderSimpleReview({
+    const node = renderSimpleReview({
       session,
     });
-    expect(node.textContent).to.match(/You do not have review permissions/);
+    expect(node.container.textContent).toMatch(
+      /You do not have review permissions/
+    );
   });
 
   it("should render a review component after records are fetched", async () => {
-    let node = await renderSimpleReview({
+    let node = renderSimpleReview({
       async fetchRecords() {
         return [];
       },
     });
 
-    expect(node.querySelector(".simple-review-header")).to.be.ok;
+    expect(node.queryByText("Rollback")).toBeDefined();
+    expect(node.container.querySelector(".simple-review-header")).toBeDefined();
+  });
+
+  it("should hide the rollback button if the hideRollback query parameter is provided", async () => {
+    fakeLocation.search = "?hideRollback";
+    let node = renderSimpleReview({
+      async fetchRecords() {
+        return [];
+      },
+    });
+
+    expect(node.queryByText("Rollback")).toBeNull();
+    fakeLocation.search = "";
   });
 });

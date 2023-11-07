@@ -1,11 +1,15 @@
-import type { BucketState, SessionState, CollectionState } from "../../types";
-import type { SignoffState, SignoffSourceInfo, ChangesList } from "../../types";
-
+import type {
+  BucketState,
+  SessionState,
+  CollectionState,
+  SignoffState,
+  SignoffSourceInfo,
+  ChangesList,
+} from "../../types";
 import React, { useState, useEffect } from "react";
 import { CommentDialog, Comment } from "./Comment";
 
-import { ChatLeft } from "react-bootstrap-icons";
-import { XCircleFill } from "react-bootstrap-icons";
+import { ChatLeft, XCircleFill } from "react-bootstrap-icons";
 
 import { canEditCollection } from "../../permission";
 
