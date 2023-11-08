@@ -82,10 +82,10 @@ export function collection(
       return { ...state, recordsLoaded: false };
     }
     case COLLECTION_RECORDS_SUCCESS: {
-      const { records, hasNextRecords, listNextRecords } = action;
+      const { records, hasNextRecords, listNextRecords, isNextPage } = action;
       return {
         ...state,
-        records: [...state.records, ...records],
+        records: isNextPage ? [...state.records, ...records] : records,
         recordsLoaded: true,
         hasNextRecords,
         listNextRecords,

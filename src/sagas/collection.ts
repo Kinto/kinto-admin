@@ -53,7 +53,7 @@ export function* listRecords(
       limit: MAX_PER_PAGE,
     });
     // Show list of records.
-    yield put(actions.listRecordsSuccess(data, hasNextPage, next));
+    yield put(actions.listRecordsSuccess(data, hasNextPage, next, false));
     // Request number of total records.
     const totalRecords = yield call([coll, coll.getTotalRecords]);
     yield put(actions.collectionTotalRecords(totalRecords));
@@ -71,7 +71,7 @@ export function* listNextRecords(getState: GetStateFn): SagaGen {
   }
   try {
     const { data, hasNextPage, next } = yield call(listNextRecords);
-    yield put(actions.listRecordsSuccess(data, hasNextPage, next));
+    yield put(actions.listRecordsSuccess(data, hasNextPage, next, true));
   } catch (error) {
     yield put(notifyError("Couldn't process next page.", error));
   }

@@ -57,18 +57,21 @@ export function listNextRecords(): {
 export function listRecordsSuccess(
   records: RecordData[],
   hasNextRecords: boolean,
-  listNextRecords: Function | null | undefined
+  listNextRecords: Function | null | undefined,
+  isNextPage: boolean = false
 ): {
   type: "COLLECTION_RECORDS_SUCCESS";
   records: RecordData[];
   hasNextRecords: boolean;
   listNextRecords: Function | null | undefined;
+  isNextPage: boolean;
 } {
   return {
     type: COLLECTION_RECORDS_SUCCESS,
     records,
     hasNextRecords,
     listNextRecords,
+    isNextPage,
   };
 }
 
