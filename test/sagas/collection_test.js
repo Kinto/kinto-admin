@@ -182,7 +182,7 @@ describe("collection sagas", () => {
         const fakeNext = () => {};
         const result = { data: records, hasNextPage: false, next: fakeNext };
         expect(listNextRecords.next(result).value).eql(
-          put(actions.listRecordsSuccess(records, false, fakeNext))
+          put(actions.listRecordsSuccess(records, false, fakeNext, true))
         );
       });
     });

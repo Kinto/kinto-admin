@@ -157,9 +157,20 @@ describe("collection reducer", () => {
       const state2 = collection(state, {
         type: COLLECTION_RECORDS_SUCCESS,
         records: [4, 5],
+        isNextPage: true,
       });
 
       expect(state2.records).eql([1, 2, 3, 4, 5]);
+    });
+
+    it("should pull fresh records when isNextPage is false", () => {
+      const state2 = collection(state, {
+        type: COLLECTION_RECORDS_SUCCESS,
+        records: [4, 5],
+        isNextPage: false,
+      });
+
+      expect(state2.records).eql([4, 5]);
     });
   });
 

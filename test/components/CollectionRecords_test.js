@@ -32,6 +32,7 @@ describe("CollectionRecords component", () => {
             },
           },
           displayFields: ["foo"],
+          last_modified: 123,
         },
         permissions: {
           write: ["basicauth:plop"],

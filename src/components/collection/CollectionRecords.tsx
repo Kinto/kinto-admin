@@ -60,14 +60,6 @@ export default function CollectionRecords(props: Props) {
     [bid, cid, listRecords]
   );
 
-  useEffect(() => {
-    if (!session.authenticated) {
-      return;
-    }
-    const { currentSort } = collection;
-    listRecords(bid, cid, currentSort);
-  }, [bid, cid]);
-
   const {
     busy,
     data,
@@ -78,6 +70,14 @@ export default function CollectionRecords(props: Props) {
     totalRecords,
   } = collection;
   const { schema, displayFields } = data;
+
+  useEffect(() => {
+    if (!session.authenticated || !data?.last_modified) {
+      return;
+    }
+    const { currentSort } = collection;
+    listRecords(bid, cid, currentSort);
+  }, [bid, cid, data.last_modified || 0]);
 
   const listActions = (
     <ListActions
