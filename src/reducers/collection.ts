@@ -85,6 +85,7 @@ export function collection(
       const { records, hasNextRecords, listNextRecords, isNextPage } = action;
       return {
         ...state,
+        // if isNextPage is true, we're fetching the next page of data so don't wipe state
         records: isNextPage ? [...state.records, ...records] : records,
         recordsLoaded: true,
         hasNextRecords,
