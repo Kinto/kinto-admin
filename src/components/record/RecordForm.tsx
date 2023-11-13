@@ -170,6 +170,9 @@ export default function RecordForm(props: Props) {
             disabled={!allowEditing}
             record={JSON.stringify(recordData, null, 2)}
             onSubmit={handleOnSubmit}
+            attachmentEnabled={attachment?.enabled}
+            // require an attachment on initial insert if attachments are required
+            attachmentRequired={attachment?.required && !record}
           >
             {buttons}
           </JSONRecordForm>
