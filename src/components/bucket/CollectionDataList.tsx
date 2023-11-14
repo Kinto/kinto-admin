@@ -5,10 +5,11 @@ import { Gear, Justify, ClockHistory } from "react-bootstrap-icons";
 import { timeago } from "../../utils";
 import AdminLink from "../AdminLink";
 import PaginatedTable from "../PaginatedTable";
+import { canCreateCollection } from "../../permission";
 
 export function ListActions(props) {
   const { bid, session, bucket } = props;
-  if (session.busy || bucket.busy) {
+  if (session.busy || bucket.busy || !canCreateCollection(session, bucket)) {
     return null;
   }
   return (
