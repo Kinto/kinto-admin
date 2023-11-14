@@ -296,7 +296,7 @@ export default function CollectionForm({
   const alert =
     allowEditing || bucket.busy || collection.busy ? null : (
       <div className="alert alert-warning">
-        You don't have the required permission to edit this collection.
+        You don't have the required permission to { collection.data?.id ? "edit this collection" : "create a collection in this bucket" }.
       </div>
     );
 
