@@ -2,6 +2,7 @@ import React from "react";
 import BaseForm from "../BaseForm";
 import JSONEditor from "../JSONEditor";
 import { RJSFSchema, UiSchema } from "@rjsf/utils";
+import { omit } from "../../utils";
 
 const schema: RJSFSchema = {
   type: "string",
@@ -51,11 +52,9 @@ type Props = {
 };
 
 function splitAttachment(record: string) {
-  const jsRecord = JSON.parse(record);
+  let jsRecord = JSON.parse(record);
   const attachment = jsRecord.attachment || {};
-  if (jsRecord.attachment) {
-    delete jsRecord.attachment;
-  }
+  jsRecord = omit(jsRecord, ["attachment"]);
   return {
     attachment: attachment,
     jsonContent: JSON.stringify(jsRecord),

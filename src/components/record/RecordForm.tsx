@@ -171,7 +171,7 @@ export default function RecordForm(props: Props) {
             record={JSON.stringify(recordData, null, 2)}
             onSubmit={handleOnSubmit}
             attachmentEnabled={attachment?.enabled}
-            // require an attachment on initial insert if attachments are required
+            // require an attachment on insert if attachments are required, don't need to re-upload on every edit
             attachmentRequired={attachment?.required && !record}
           >
             {buttons}
