@@ -127,4 +127,48 @@ describe("BaseForm component", () => {
     expect(submit.disabled).toBe(true);
     expect(result.queryByTestId("spinner")).toBeDefined();
   });
+
+  it("Should scroll to the first property that fails validation", async () => {
+    const result = render(
+      <BaseForm
+        className="testClass"
+        schema={testSchema}
+        uiSchema={testUiSchema}
+        onSubmit={jest.fn()}
+        customValidate={(data, errors) => {
+          errors.title.addError("test error");
+          return errors;
+        }}
+      />
+    );
+    const testFn = jest.fn();
+
+    const submit = await result.findByText("Submit");
+    const titleLabel = await result.findByText("Title");
+    titleLabel.scrollIntoView = testFn;
+    fireEvent.click(submit);
+    expect(testFn).toHaveBeenCalledTimes(1);
+  });
+
+  it("Should scroll to the top of the form if validation failed without a specific property", async () => {
+    const result = render(
+      <BaseForm
+        className="testClass"
+        schema={testSchema}
+        uiSchema={testUiSchema}
+        onSubmit={jest.fn()}
+        customValidate={(data, errors) => {
+          errors.addError("test error");
+          return errors;
+        }}
+      />
+    );
+    const testFn = jest.fn();
+
+    const submit = await result.findByText("Submit");
+    const formWrapper = await result.findByTestId("formWrapper");
+    formWrapper.scrollIntoView = testFn;
+    fireEvent.click(submit);
+    expect(testFn).toHaveBeenCalledTimes(1);
+  });
 });
