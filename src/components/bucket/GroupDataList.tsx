@@ -5,6 +5,7 @@ import { ClockHistory } from "react-bootstrap-icons";
 
 import { timeago } from "../../utils";
 import AdminLink from "../AdminLink";
+import { canCreateGroup } from "../../permission";
 
 export function DataList(props) {
   const { bid, groups, capabilities } = props;
@@ -66,7 +67,7 @@ export function DataList(props) {
 }
 
 export function ListActions({ bid, session, bucket }) {
-  if (session.busy || bucket.busy) {
+  if (session.busy || bucket.busy || !canCreateGroup(session, bucket)) {
     return null;
   }
   return (
