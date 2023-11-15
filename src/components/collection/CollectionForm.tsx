@@ -81,7 +81,7 @@ const schema: RJSFSchema = {
       title: "Records list columns",
       description: "fields to list in the record list table",
       default: ["title"],
-      minItems: 1,
+      minItems: 0,
       items: {
         type: "string",
         minLength: 1,
@@ -194,8 +194,7 @@ const uiSchema = {
     "ui:help": (
       <p>
         This field allows defining the record object properties to display as
-        columns in the main records list table. You must define at least one
-        display field.
+        columns in the main records list table.
       </p>
     ),
   },
