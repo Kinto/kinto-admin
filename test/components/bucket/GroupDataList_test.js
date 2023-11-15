@@ -4,12 +4,12 @@ import {
   DataList,
   ListActions,
 } from "../../../src/components/bucket/GroupDataList";
-import { canEditBucket } from "../../../src/permission";
+import { canCreateGroup } from "../../../src/permission";
 
 jest.mock("../../../src/permission", () => {
   return {
     __esModule: true,
-    canEditBucket: jest.fn(),
+    canCreateGroup: jest.fn(),
   };
 });
 
@@ -62,13 +62,13 @@ describe("Bucket GroupListActions", () => {
   };
 
   it("Should render a Create Group button when the user has permission", () => {
-    canEditBucket.mockReturnValue(true);
+    canCreateGroup.mockReturnValue(true);
     const result = render(<ListActions {...props} />);
     expect(result.queryByText("Create group")).toBeDefined();
   });
 
   it("Should render no Create Group button when the user lacks permission", () => {
-    canEditBucket.mockReturnValue(false);
+    canCreateGroup.mockReturnValue(false);
     const result = render(<ListActions {...props} />);
     expect(result.queryByText("Create group")).toBeNull();
   });
