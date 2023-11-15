@@ -1,4 +1,4 @@
-import { createComponent, renderWithProvider } from "../test_utils";
+import { renderWithProvider } from "../test_utils";
 import CollectionRecords from "../../src/components/collection/CollectionRecords";
 import * as React from "react";
 
@@ -105,7 +105,7 @@ describe("CollectionRecords component", () => {
     };
 
     beforeEach(() => {
-      node = createComponent(
+      node = renderWithProvider(
         <CollectionRecords
           match={{ params: { bid: "bucket", cid: "collection" } }}
           session={{
@@ -117,7 +117,7 @@ describe("CollectionRecords component", () => {
           capabilities={capabilities}
           listRecords={() => {}}
         />
-      );
+      ).container;
     });
 
     it("should render a table", () => {
@@ -138,7 +138,9 @@ describe("CollectionRecords component", () => {
 
     const collection = {
       busy: false,
-      data: {},
+      data: {
+        displayFields: [],
+      },
       permissions: {
         write: [],
       },
@@ -155,7 +157,7 @@ describe("CollectionRecords component", () => {
     };
 
     beforeEach(() => {
-      node = createComponent(
+      node = renderWithProvider(
         <CollectionRecords
           match={{ params: { bid: "bucket", cid: "collection" } }}
           session={{
@@ -167,7 +169,7 @@ describe("CollectionRecords component", () => {
           capabilities={capabilities}
           listRecords={() => {}}
         />
-      );
+      ).container;
     });
 
     it("should render a table", () => {
@@ -202,7 +204,7 @@ describe("CollectionRecords component", () => {
     };
 
     beforeEach(() => {
-      node = createComponent(
+      node = renderWithProvider(
         <CollectionRecords
           match={{ params: { bid: "bucket", cid: "collection" } }}
           session={{}}
@@ -211,7 +213,7 @@ describe("CollectionRecords component", () => {
           capabilities={capabilities}
           listRecords={() => {}}
         />
-      );
+      ).container;
     });
 
     it("should show the total number of records", () => {
@@ -244,7 +246,7 @@ describe("CollectionRecords component", () => {
       let node;
 
       beforeEach(() => {
-        node = createComponent(
+        node = renderWithProvider(
           <CollectionRecords
             match={{ params: { bid: "bucket", cid: "collection" } }}
             session={{ permissions: null }}
@@ -253,7 +255,7 @@ describe("CollectionRecords component", () => {
             capabilities={capabilities}
             listRecords={() => {}}
           />
-        );
+        ).container;
       });
 
       it("should render list actions", () => {
@@ -270,7 +272,7 @@ describe("CollectionRecords component", () => {
       let node;
 
       beforeEach(() => {
-        node = createComponent(
+        node = renderWithProvider(
           <CollectionRecords
             match={{ params: { bid: "bucket", cid: "collection" } }}
             session={{ permissions: [] }}
@@ -279,7 +281,7 @@ describe("CollectionRecords component", () => {
             capabilities={capabilities}
             listRecords={() => {}}
           />
-        );
+        ).container;
       });
 
       it("should not render list actions", () => {

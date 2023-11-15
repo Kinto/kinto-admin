@@ -117,7 +117,9 @@ export default function CollectionRecords(props: Props) {
             listNextRecords={listNextRecords}
             currentSort={currentSort}
             schema={schema || {}}
-            displayFields={displayFields || ["id", "__json"]}
+            displayFields={
+              displayFields?.length ? displayFields : ["id", "__json"]
+            }
             deleteRecord={deleteRecord}
             updateSort={updateSort}
             redirectTo={redirectTo}
