@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import type {
   SessionState,
-  BucketState,
   CollectionState,
   RecordState,
   Capabilities,
@@ -52,7 +51,6 @@ type Props = {
   cid: string;
   rid?: string;
   session: SessionState;
-  bucket: BucketState;
   collection: CollectionState;
   record?: RecordState;
   deleteRecord?: typeof CollectionActions.deleteRecord;
@@ -68,7 +66,6 @@ export default function RecordForm(props: Props) {
     bid,
     cid,
     session,
-    bucket,
     collection,
     record,
     deleteRecord,
@@ -77,8 +74,8 @@ export default function RecordForm(props: Props) {
   } = props;
 
   const allowEditing = record
-    ? canEditRecord(session, bucket, collection, record)
-    : canCreateRecord(session, bucket, collection);
+    ? canEditRecord(session, bid, collection, record)
+    : canCreateRecord(session, bid, collection);
 
   const handleDeleteRecord = () => {
     const { rid } = props;

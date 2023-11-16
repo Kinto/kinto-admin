@@ -30,6 +30,8 @@ const URLS = {
     `/buckets/${bid}/collections/${cid}/history`,
   "collection:permissions": ({ bid, cid }) =>
     `/buckets/${bid}/collections/${cid}/permissions`,
+  "collection:simple-review": ({ bid, cid }) =>
+    `/buckets/${bid}/collections/${cid}/simple-review`,
   "collection:records": ({ bid, cid }) =>
     `/buckets/${bid}/collections/${cid}/records`,
 

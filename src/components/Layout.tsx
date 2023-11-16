@@ -30,7 +30,7 @@ import { Sidebar } from "../components/Sidebar";
 import Notifications from "../containers/Notifications";
 
 import { SessionInfoBar } from "./SessionInfoBar";
-import { useAppSelector } from "../hooks";
+import { useAppSelector } from "../hooks/app";
 
 export function Layout() {
   const authenticated = useAppSelector(store => store.session.authenticated);

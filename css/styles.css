@@ -197,6 +197,22 @@ table.record-list td.load-more {
   text-decoration: none;
 }
 
+.card-body > .spinner {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+  margin: 0;
+  border-radius: 3px;
+}
+
 .load-more .spinner {
   margin-top: 0.25em;
 }

@@ -44,14 +44,12 @@ describe("canCreateBucket", () => {
 describe("canEditBucket", () => {
   it("should always return true if no permissions list", () => {
     const session = { permissions: null };
-    const bucket = {};
-    expect(canEditBucket(session, bucket)).eql(true);
+    expect(canEditBucket(session, "")).eql(true);
   });
 
   it("should return false if object is not listed", () => {
     const session = { permissions: [{ bucket_id: "xyz" }] };
-    const bucket = { data: { id: "abc" } };
-    expect(canEditBucket(session, bucket)).eql(false);
+    expect(canEditBucket(session, "abc")).eql(false);
   });
 
   it("should return false if permission is not listed", () => {
@@ -64,8 +62,7 @@ describe("canEditBucket", () => {
         },
       ],
     };
-    const bucket = { data: { id: "xyz" } };
-    expect(canEditBucket(session, bucket)).eql(false);
+    expect(canEditBucket(session, "xyz")).eql(false);
   });
 
   it("should return true if permission is listed", () => {
@@ -78,22 +75,19 @@ describe("canEditBucket", () => {
         },
       ],
     };
-    const bucket = { data: { id: "xyz" } };
-    expect(canEditBucket(session, bucket)).eql(true);
+    expect(canEditBucket(session, "xyz")).eql(true);
   });
 });
 
 describe("canCreateCollection", () => {
   it("should always return true if no permisssions list", () => {
     const session = { permissions: null };
-    const bucket = {};
-    expect(canCreateCollection(session, bucket)).eql(true);
+    expect(canCreateCollection(session, "")).eql(true);
   });
 
   it("should return false if object is not listed", () => {
     const session = { permissions: [{ bucket_id: "xyz" }] };
-    const bucket = { data: { id: "abc" } };
-    expect(canCreateCollection(session, bucket)).eql(false);
+    expect(canCreateCollection(session, "abc")).eql(false);
   });
 
   it("should return false if permission is not listed", () => {
@@ -106,8 +100,7 @@ describe("canCreateCollection", () => {
         },
       ],
     };
-    const bucket = { data: { id: "xyz" } };
-    expect(canCreateCollection(session, bucket)).eql(false);
+    expect(canCreateCollection(session, "xyz")).eql(false);
   });
 
   it("should return true if permission is listed", () => {
@@ -120,22 +113,19 @@ describe("canCreateCollection", () => {
         },
       ],
     };
-    const bucket = { data: { id: "xyz" } };
-    expect(canCreateCollection(session, bucket)).eql(true);
+    expect(canCreateCollection(session, "xyz")).eql(true);
   });
 });
 
 describe("canCreateGroup", () => {
   it("should always return true if no permisssions list", () => {
     const session = { permissions: null };
-    const bucket = {};
-    expect(canCreateGroup(session, bucket)).eql(true);
+    expect(canCreateGroup(session, "")).eql(true);
   });
 
   it("should return false if object is not listed", () => {
     const session = { permissions: [{ bucket_id: "xyz" }] };
-    const bucket = { data: { id: "abc" } };
-    expect(canCreateGroup(session, bucket)).eql(false);
+    expect(canCreateGroup(session, "abc")).eql(false);
   });
 
   it("should return false if permission is not listed", () => {
@@ -148,8 +138,7 @@ describe("canCreateGroup", () => {
         },
       ],
     };
-    const bucket = { data: { id: "xyz" } };
-    expect(canCreateGroup(session, bucket)).eql(false);
+    expect(canCreateGroup(session, "xyz")).eql(false);
   });
 
   it("should return true if permission is listed", () => {
@@ -162,26 +151,23 @@ describe("canCreateGroup", () => {
         },
       ],
     };
-    const bucket = { data: { id: "xyz" } };
-    expect(canCreateGroup(session, bucket)).eql(true);
+    expect(canCreateGroup(session, "xyz")).eql(true);
   });
 });
 
 describe("canEditCollection", () => {
   it("should always return true if no permisssions list", () => {
     const session = { permissions: null };
-    const bucket = {};
     const collection = {};
-    expect(canEditCollection(session, bucket, collection)).eql(true);
+    expect(canEditCollection(session, "", collection)).eql(true);
   });
 
   it("should return false if object is not listed", () => {
     const session = {
       permissions: [{ bucket_id: "abc", collection_id: "foo" }],
     };
-    const bucket = { data: { id: "abc" } };
     const collection = { data: { id: "bar" } };
-    expect(canEditCollection(session, bucket, collection)).eql(false);
+    expect(canEditCollection(session, "abc", collection)).eql(false);
   });
 
   it("should return false if permission is not listed", () => {
@@ -195,9 +181,8 @@ describe("canEditCollection", () => {
         },
       ],
     };
-    const bucket = { data: { id: "xyz" } };
     const collection = { data: { id: "foo" } };
-    expect(canEditCollection(session, bucket, collection)).eql(false);
+    expect(canEditCollection(session, "xyz", collection)).eql(false);
   });
 
   it("should return true if permission is listed", () => {
@@ -211,9 +196,8 @@ describe("canEditCollection", () => {
         },
       ],
     };
-    const bucket = { data: { id: "xyz" } };
     const collection = { data: { id: "foo" } };
-    expect(canEditCollection(session, bucket, collection)).eql(true);
+    expect(canEditCollection(session, "xyz", collection)).eql(true);
   });
 
   it("should return true if permission on bucket is listed", () => {
@@ -226,25 +210,22 @@ describe("canEditCollection", () => {
         },
       ],
     };
-    const bucket = { data: { id: "xyz" } };
     const collection = { data: { id: "foo" } };
-    expect(canEditCollection(session, bucket, collection)).eql(true);
+    expect(canEditCollection(session, "xyz", collection)).eql(true);
   });
 });
 
 describe("canEditGroup", () => {
   it("should always return true if no permisssions list", () => {
     const session = { permissions: null };
-    const bucket = {};
     const group = {};
-    expect(canEditGroup(session, bucket, group)).eql(true);
+    expect(canEditGroup(session, "", group)).eql(true);
   });
 
   it("should return false if object is not listed", () => {
     const session = { permissions: [{ bucket_id: "abc", group_id: "foo" }] };
-    const bucket = { data: { id: "abc" } };
     const group = { data: { id: "bar" } };
-    expect(canEditGroup(session, bucket, group)).eql(false);
+    expect(canEditGroup(session, "abc", group)).eql(false);
   });
 
   it("should return false if permission is not listed", () => {
@@ -258,9 +239,8 @@ describe("canEditGroup", () => {
         },
       ],
     };
-    const bucket = { data: { id: "xyz" } };
     const group = { data: { id: "foo" } };
-    expect(canEditGroup(session, bucket, group)).eql(false);
+    expect(canEditGroup(session, "xyz", group)).eql(false);
   });
 
   it("should return true if permission is listed", () => {
@@ -274,9 +254,8 @@ describe("canEditGroup", () => {
         },
       ],
     };
-    const bucket = { data: { id: "xyz" } };
     const group = { data: { id: "foo" } };
-    expect(canEditGroup(session, bucket, group)).eql(true);
+    expect(canEditGroup(session, "xyz", group)).eql(true);
   });
 
   it("should return true if permission on bucket is listed", () => {
@@ -289,27 +268,24 @@ describe("canEditGroup", () => {
         },
       ],
     };
-    const bucket = { data: { id: "xyz" } };
     const group = { data: { id: "foo" } };
-    expect(canEditGroup(session, bucket, group)).eql(true);
+    expect(canEditGroup(session, "xyz", group)).eql(true);
   });
 });
 
 describe("canCreateRecord", () => {
   it("should always return true if no permisssions list", () => {
     const session = { permissions: null };
-    const bucket = {};
     const collection = {};
-    expect(canCreateRecord(session, bucket, collection)).eql(true);
+    expect(canCreateRecord(session, "", collection)).eql(true);
   });
 
   it("should return false if object is not listed", () => {
     const session = {
       permissions: [{ bucket_id: "abc", collection_id: "foo" }],
     };
-    const bucket = { data: { id: "abc" } };
     const collection = { data: { id: "bar" } };
-    expect(canCreateRecord(session, bucket, collection)).eql(false);
+    expect(canCreateRecord(session, "abc", collection)).eql(false);
   });
 
   it("should return false if permission is not listed", () => {
@@ -323,9 +299,8 @@ describe("canCreateRecord", () => {
         },
       ],
     };
-    const bucket = { data: { id: "xyz" } };
     const collection = { data: { id: "foo" } };
-    expect(canCreateRecord(session, bucket, collection)).eql(false);
+    expect(canCreateRecord(session, "xyz", collection)).eql(false);
   });
 
   it("should return true if permission is listed", () => {
@@ -339,9 +314,8 @@ describe("canCreateRecord", () => {
         },
       ],
     };
-    const bucket = { data: { id: "xyz" } };
     const collection = { data: { id: "foo" } };
-    expect(canCreateRecord(session, bucket, collection)).eql(true);
+    expect(canCreateRecord(session, "xyz", collection)).eql(true);
   });
 
   it("should return true if permission on bucket is listed", () => {
@@ -354,19 +328,17 @@ describe("canCreateRecord", () => {
         },
       ],
     };
-    const bucket = { data: { id: "xyz" } };
     const collection = { data: { id: "foo" } };
-    expect(canCreateRecord(session, bucket, collection)).eql(true);
+    expect(canCreateRecord(session, "xyz", collection)).eql(true);
   });
 });
 
 describe("canEditRecord", () => {
   it("should always return true if no permisssions list", () => {
     const session = { permissions: null };
-    const bucket = {};
     const collection = {};
     const record = {};
-    expect(canEditRecord(session, bucket, collection, record)).eql(true);
+    expect(canEditRecord(session, "", collection, record)).eql(true);
   });
 
   it("should return false if object is not listed", () => {
@@ -379,10 +351,9 @@ describe("canEditRecord", () => {
         },
       ],
     };
-    const bucket = { data: { id: "abc" } };
     const collection = { data: { id: "bar" } };
     const record = { data: { id: "blah" } };
-    expect(canEditRecord(session, bucket, collection, record)).eql(false);
+    expect(canEditRecord(session, "abc", collection, record)).eql(false);
   });
 
   it("should return false if permission is not listed", () => {
@@ -397,10 +368,9 @@ describe("canEditRecord", () => {
         },
       ],
     };
-    const bucket = { data: { id: "xyz" } };
     const collection = { data: { id: "foo" } };
     const record = { data: { id: "blah" } };
-    expect(canEditRecord(session, bucket, collection, record)).eql(false);
+    expect(canEditRecord(session, "xyz", collection, record)).eql(false);
   });
 
   it("should return true if permission is listed", () => {
@@ -415,10 +385,9 @@ describe("canEditRecord", () => {
         },
       ],
     };
-    const bucket = { data: { id: "xyz" } };
     const collection = { data: { id: "foo" } };
     const record = { data: { id: "blah" } };
-    expect(canEditRecord(session, bucket, collection, record)).eql(true);
+    expect(canEditRecord(session, "xyz", collection, record)).eql(true);
   });
 
   it("should return true if permission on bucket is listed", () => {
@@ -431,10 +400,9 @@ describe("canEditRecord", () => {
         },
       ],
     };
-    const bucket = { data: { id: "xyz" } };
     const collection = { data: { id: "foo" } };
     const record = { data: { id: "blah" } };
-    expect(canEditRecord(session, bucket, collection, record)).eql(true);
+    expect(canEditRecord(session, "xyz", collection, record)).eql(true);
   });
 
   it("should return true if permission on collection is listed", () => {
@@ -448,10 +416,9 @@ describe("canEditRecord", () => {
         },
       ],
     };
-    const bucket = { data: { id: "xyz" } };
     const collection = { data: { id: "foo" } };
     const record = { data: { id: "blah" } };
-    expect(canEditRecord(session, bucket, collection, record)).eql(true);
+    expect(canEditRecord(session, "xyz", collection, record)).eql(true);
   });
 });
 

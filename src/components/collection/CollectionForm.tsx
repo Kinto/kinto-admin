@@ -247,8 +247,8 @@ export default function CollectionForm({
 }: Props) {
   const [asJSON, setAsJSON] = useState(false);
   const allowEditing = propFormData
-    ? canEditCollection(session, bucket, collection)
-    : canCreateCollection(session, bucket);
+    ? canEditCollection(session, bucket?.data?.id, collection)
+    : canCreateCollection(session, bucket?.data?.id);
 
   const toggleJSON = event => {
     event.preventDefault();

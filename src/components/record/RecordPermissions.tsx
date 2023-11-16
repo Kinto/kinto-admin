@@ -6,7 +6,7 @@ import RecordTabs from "./RecordTabs";
 import { PermissionsForm } from "../PermissionsForm";
 import { canEditRecord } from "../../permission";
 import { useParams } from "react-router";
-import { useAppSelector, useAppDispatch } from "../../hooks";
+import { useAppSelector, useAppDispatch } from "../../hooks/app";
 
 interface RouteParams {
   bid: string;
@@ -14,7 +14,6 @@ interface RouteParams {
   rid: string;
 }
 export function RecordPermissions() {
-  const bucket = useAppSelector(state => state.bucket);
   const session = useAppSelector(state => state.session);
   const collection = useAppSelector(state => state.collection);
   const record = useAppSelector(state => state.record);
@@ -50,7 +49,7 @@ export function RecordPermissions() {
         <PermissionsForm
           permissions={permissions}
           acls={acls}
-          readonly={!canEditRecord(session, bucket, collection, record)}
+          readonly={!canEditRecord(session, bid, collection, record)}
           onSubmit={onSubmit}
         />
       </RecordTabs>

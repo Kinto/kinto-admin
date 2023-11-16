@@ -17,13 +17,13 @@ import SignoffContainer from "../../containers/signoff/SignoffToolBar";
 import { CommonProps } from "./commonPropTypes";
 
 export function ListActions(props) {
-  const { bid, cid, session, bucket, collection } = props;
+  const { bid, cid, session, collection } = props;
   if (session.busy || collection.busy) {
     return null;
   }
   return (
     <div className="list-actions">
-      {canCreateRecord(session, bucket, collection) && (
+      {canCreateRecord(session, bid, collection) && (
         <>
           <AdminLink
             key="__1"

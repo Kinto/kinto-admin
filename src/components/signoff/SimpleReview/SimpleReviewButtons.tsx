@@ -4,22 +4,33 @@ import { SignoffCollectionStatus } from "../../../types";
 
 import { useLocation } from "react-router";
 import { parseSearchString } from "../../../locationUtils";
+import { ChatLeft, Check2, XCircleFill } from "react-bootstrap-icons";
+import Spinner from "../../Spinner";
 
 export interface SimpleReviewButtonsProps {
   status: SignoffCollectionStatus;
+  canRequestReview: boolean;
+  canReview: boolean;
   approveChanges(): void;
   declineChanges(text: string): void;
+  requestReview(text: string): void;
   rollbackChanges(text: string): void;
 }
 
 export default function SimpleReviewButtons({
   status,
+  canRequestReview,
+  canReview,
   approveChanges,
   declineChanges,
+  requestReview,
   rollbackChanges,
 }: SimpleReviewButtonsProps) {
-  const [dialog, setDialog] = useState<"reject" | "rollback" | "">("");
+  const [dialog, setDialog] = useState<"reject" | "rollback" | "review" | "">(
+    ""
+  );
   const searchParams = parseSearchString(useLocation().search);
+  const [showSpinner, setShowSpinner] = useState(false);
 
   return (
     <>
@@ -30,30 +41,45 @@ export default function SimpleReviewButtons({
               className="btn btn-success"
               onClick={() => approveChanges()}
             >
-              Approve
+              <Check2 className="icon" /> Approve...
             </button>{" "}
             <button
               className="btn btn-danger"
               onClick={() => setDialog("reject")}
             >
-              Reject
+              <ChatLeft className="icon" /> Decline...
             </button>
           </>
         )}
-        {status === "work-in-progress" && !searchParams.hideRollback && (
+        {status === "work-in-progress" && canRequestReview && (
           <button
-            className="btn btn-danger"
-            onClick={() => setDialog("rollback")}
+            className="btn btn-info request-review"
+            onClick={() => {
+              setDialog("review");
+            }}
           >
-            Rollback
+            <ChatLeft className="icon" /> Request review...
           </button>
-        )}
+        )}{" "}
+        {canReview &&
+          ["work-in-progress", "to-review"].includes(status) &&
+          !searchParams.hideRollback && (
+            <button
+              className="btn btn-danger"
+              onClick={() => setDialog("rollback")}
+            >
+              <XCircleFill className="icon" /> Rollback changes...
+            </button>
+          )}
       </div>
       {dialog === "reject" && (
         <CommentDialog
           description="Leave a comment for the editor. Note that these changes will not be undone (you can use the 'Rollback' button for that):"
           confirmLabel="Reject changes"
-          onConfirm={declineChanges}
+          onConfirm={val => {
+            setShowSpinner(true);
+            declineChanges(val);
+          }}
           onClose={() => setDialog("")}
         />
       )}
@@ -61,10 +87,25 @@ export default function SimpleReviewButtons({
         <CommentDialog
           description="Rolling back will discard all changes. Leave a comment:"
           confirmLabel="Rollback"
-          onConfirm={rollbackChanges}
+          onConfirm={val => {
+            setShowSpinner(true);
+            rollbackChanges(val);
+          }}
           onClose={() => setDialog("")}
         />
       )}
+      {dialog === "review" && (
+        <CommentDialog
+          description="Leave some notes for the reviewer:"
+          confirmLabel="Request review"
+          onConfirm={val => {
+            setShowSpinner(true);
+            requestReview(val);
+          }}
+          onClose={() => setDialog("")}
+        />
+      )}
+      {showSpinner && <Spinner />}
     </>
   );
 }

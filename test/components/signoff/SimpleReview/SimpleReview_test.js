@@ -1,6 +1,18 @@
 import * as React from "react";
+import { waitForElementToBeRemoved } from "@testing-library/react";
 import { renderWithProvider, sessionFactory } from "../../../test_utils";
 import SimpleReview from "../../../../src/components/signoff/SimpleReview";
+import { useLocalStorage } from "../../../../src/hooks/storage";
+import { Redirect } from "react-router-dom";
+
+jest.mock("../../../../src/hooks/storage", () => {
+  const originalModule = jest.requireActual("../../../../src/hooks/storage");
+  return {
+    __esModule: true,
+    ...originalModule,
+    useLocalStorage: jest.fn().mockReturnValue([true, jest.fn()]),
+  };
+});
 
 function signoffFactory() {
   return {
@@ -34,6 +46,10 @@ function signoffFactory() {
     pendingConfirmReviewRequest: false,
     pendingConfirmDeclineChanges: false,
     pendingConfirmRollbackChanges: false,
+    capabilities: {},
+    collection: {
+      totalRecords: 3,
+    },
   };
 }
 
@@ -48,7 +64,9 @@ function renderSimpleReview(props = null) {
     listRecords() {},
     session: sessionFactory(),
     signoff: signoffFactory(),
-    async fetchRecords() {},
+    async fetchRecords() {
+      return [];
+    },
     ...props,
   };
   return renderWithProvider(<SimpleReview {...mergedProps} />);
@@ -68,6 +86,7 @@ jest.mock("react-router", () => {
     useLocation: () => {
       return fakeLocation;
     },
+    Redirect: jest.fn().mockReturnValue(<div>foo</div>),
   };
 });
 
@@ -86,13 +105,6 @@ describe("SimpleTest component", () => {
     expect(node.container.textContent).toBe("Not authenticated");
   });
 
-  it("should render not authenticated", async () => {
-    const node = renderSimpleReview({
-      session: sessionFactory({ authenticated: false, authenticating: false }),
-    });
-    expect(node.container.textContent).toBe("Not authenticated");
-  });
-
   it("should render not reviewable", async () => {
     const node = renderSimpleReview({ signoff: undefined });
     expect(node.container.textContent).toBe(
@@ -100,15 +112,18 @@ describe("SimpleTest component", () => {
     );
   });
 
-  it("should render not a reviewer", async () => {
+  it("should render a diff form for not a reviewer", async () => {
     const session = sessionFactory();
     session.serverInfo.user.principals = [];
     const node = renderSimpleReview({
       session,
     });
-    expect(node.container.textContent).toMatch(
-      /You do not have review permissions/
+    await waitForElementToBeRemoved(() => node.queryByTestId("spinner"));
+    expect(node.getByText(/Status is/).textContent).toBe(
+      "Status is work-in-progress. "
     );
+    expect(node.getByText("(No comment was left by a reviewer)")).toBeDefined();
+    expect(node.getByText("Show all lines")).toBeDefined();
   });
 
   it("should render a review component after records are fetched", async () => {
@@ -132,5 +147,16 @@ describe("SimpleTest component", () => {
 
     expect(node.queryByText("Rollback")).toBeNull();
     fakeLocation.search = "";
+  });
+
+  it("should redirect the user if the legacy review process is enabled", async () => {
+    useLocalStorage.mockReturnValue([false, jest.fn()]);
+    const session = sessionFactory();
+    session.serverInfo.user.principals = [];
+    const node = renderSimpleReview({
+      session,
+    });
+    console.log(node.container.innerHTML);
+    expect(Redirect).toHaveBeenCalled();
   });
 });

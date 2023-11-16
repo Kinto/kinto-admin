@@ -10,11 +10,10 @@ import Spinner from "../Spinner";
 import GroupTabs from "./GroupTabs";
 import { PermissionsForm } from "../PermissionsForm";
 import { canEditGroup } from "../../permission";
-import { useAppSelector, useAppDispatch } from "../../hooks";
+import { useAppSelector, useAppDispatch } from "../../hooks/app";
 import { useParams } from "react-router";
 
 export function GroupPermissions() {
-  const bucket = useAppSelector(state => state.bucket);
   const group = useAppSelector(state => state.group);
   const { busy, permissions } = group;
   const session = useAppSelector(state => state.session);
@@ -45,7 +44,7 @@ export function GroupPermissions() {
         <PermissionsForm
           permissions={permissions}
           acls={["read", "write"]}
-          readonly={!canEditGroup(session, bucket, group)}
+          readonly={!canEditGroup(session, bid, group)}
           onSubmit={onSubmit}
         />
       </GroupTabs>

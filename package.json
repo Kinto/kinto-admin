@@ -27,6 +27,7 @@
     "@rjsf/bootstrap-4": "^5.13.2",
     "@rjsf/core": "^5.13.2",
     "@rjsf/validator-ajv8": "^5.13.2",
+    "@testing-library/react-hooks": "^8.0.1",
     "atob": "^2.0.3",
     "bootstrap": "^4.6.2",
     "bootstrap-icons": "^1.11.1",

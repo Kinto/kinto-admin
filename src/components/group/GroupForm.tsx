@@ -86,8 +86,8 @@ export default function GroupForm(props: Props) {
 
   const creation = !formData.id;
   const hasWriteAccess = creation
-    ? canCreateGroup(session, bucket)
-    : canEditGroup(session, bucket, group);
+    ? canCreateGroup(session, bucket.data.id)
+    : canEditGroup(session, bucket.data.id, group);
   const formIsEditable = creation || hasWriteAccess;
   const showDeleteForm = !creation && hasWriteAccess;
 

@@ -19,7 +19,7 @@ import AdminLink from "./AdminLink";
 import url from "../url";
 import { canCreateBucket } from "../permission";
 import { SIDEBAR_MAX_LISTED_COLLECTIONS } from "../constants";
-import { useAppSelector, useAppDispatch } from "../hooks";
+import { useAppSelector, useAppDispatch } from "../hooks/app";
 
 type SideBarLinkProps = {
   currentPath: string;

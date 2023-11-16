@@ -19,24 +19,7 @@ import HumanDate from "./HumanDate";
 import { Signed } from "./Signed";
 import { Review, DiffInfo } from "./Review";
 import Spinner from "../Spinner";
-
-function isMember(groupKey, source, sessionState) {
-  const {
-    serverInfo: { user = {}, capabilities },
-  } = sessionState;
-  if (!source || !user.principals) {
-    return false;
-  }
-  const { principals } = user;
-  const { bid, cid } = source;
-  const { signer = {} } = capabilities;
-  const { [groupKey]: defaultGroupName } = signer;
-  const { [groupKey]: groupName = defaultGroupName } = source;
-  const expectedGroup = groupName.replace("{collection_id}", cid);
-  const expectedPrincipal = `/buckets/${bid}/groups/${expectedGroup}`;
-
-  return principals.includes(expectedPrincipal);
-}
+import { isMember } from "./utils";
 
 function isEditor(source, sessionState) {
   return isMember("editors_group", source, sessionState);
@@ -99,11 +82,11 @@ export default function SignoffToolBar({
     }
   }, [collectionState.data]);
 
-  const canEdit = canEditCollection(sessionState, bucketState, collectionState);
-
   const {
     data: { id: bid },
   } = bucketState;
+
+  const canEdit = canEditCollection(sessionState, bid, collectionState);
 
   const {
     data: { id: cid },
@@ -187,7 +170,6 @@ export default function SignoffToolBar({
       {canRollback && status != "signed" && (
         <RollbackChangesButton onClick={confirmRollbackChanges} />
       )}
-
       {pendingConfirmReviewRequest && (
         <CommentDialog
           description="Leave some notes for the reviewer:"
@@ -327,7 +309,7 @@ function RequestReviewButton(props: { onClick: () => void }) {
 function RollbackChangesButton(props: { onClick: () => void }) {
   const { onClick } = props;
   return (
-    <button className="btn btn-info rollback-changes" onClick={onClick}>
+    <button className="btn btn-danger rollback-changes" onClick={onClick}>
       <XCircleFill className="icon" /> Rollback changes...
     </button>
   );

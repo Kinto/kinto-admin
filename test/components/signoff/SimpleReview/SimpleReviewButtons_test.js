@@ -48,6 +48,7 @@ describe("SimpleReviewHeader component", () => {
   it("should display rollback button when status is wip and call rollbackChanges from modal", async () => {
     const { rollbackChanges, node } = renderButtons({
       status: "work-in-progress",
+      canReview: true,
     });
     ReactDomTestUtils.act(() => {
       ReactDomTestUtils.Simulate.click(node.querySelector(".btn-danger"));
