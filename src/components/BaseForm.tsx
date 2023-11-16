@@ -41,7 +41,6 @@ export default function BaseForm(props: BaseFormProps) {
       <FormWithTheme
         {...restProps}
         focusOnFirstError={errorFocus}
-        error
         className={`rjsf ${className ? className : ""}`}
         validator={validator}
         onSubmit={handleOnSubmit}

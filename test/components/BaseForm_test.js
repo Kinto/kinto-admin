@@ -148,6 +148,7 @@ describe("BaseForm component", () => {
     titleLabel.scrollIntoView = testFn;
     fireEvent.click(submit);
     expect(testFn).toHaveBeenCalledTimes(1);
+    expect(result.container.querySelector(`[for="root_title"]`)).not.toBeNull();
   });
 
   it("Should scroll to the top of the form if validation failed without a specific property", async () => {
