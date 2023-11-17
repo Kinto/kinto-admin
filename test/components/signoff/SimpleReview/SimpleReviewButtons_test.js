@@ -22,18 +22,26 @@ function renderButtons(props = null) {
 }
 
 describe("SimpleReviewHeader component", () => {
-  it("should call approveChanges when approve button is clicked", () => {
-    const { approveChanges, node } = renderButtons({ status: "to-review" });
+  it("should call approveChanges when approve button is clicked", async () => {
+    const { approveChanges, node } = renderButtons({
+      status: "to-review",
+      canReview: true,
+    });
 
     fireEvent.click(node.getByText(/Approve/));
     expect(approveChanges).toHaveBeenCalled();
+    expect(await node.findByTestId("spinner")).toBeDefined();
   });
 
   it("should open CommentDialog when reject is clicked call declineChanges from modal", async () => {
-    const { declineChanges, node } = renderButtons({ status: "to-review" });
+    const { declineChanges, node } = renderButtons({
+      status: "to-review",
+      canReview: true,
+    });
     fireEvent.click(node.getByText(/Decline/));
     fireEvent.click(await node.findByText("Reject changes"));
     expect(declineChanges).toHaveBeenCalled();
+    expect(await node.findByTestId("spinner")).toBeDefined();
   });
 
   it("should open CommentDialog when request review is clicked and call requestReview from modal", async () => {
@@ -43,10 +51,11 @@ describe("SimpleReviewHeader component", () => {
   it("should display rollback button when status is wip and call rollbackChanges from modal", async () => {
     const { rollbackChanges, node } = renderButtons({
       status: "work-in-progress",
-      canReview: true,
+      canRequestReview: true,
     });
     fireEvent.click(node.getByText(/Rollback changes/));
     fireEvent.click(await node.findByText("Rollback"));
     expect(rollbackChanges).toHaveBeenCalled();
+    expect(await node.findByTestId("spinner")).toBeDefined();
   });
 });

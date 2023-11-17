@@ -17,7 +17,7 @@ import { isReviewer } from "../SignoffToolBar";
 import Spinner from "../../Spinner";
 import CollectionTabs from "../../collection/CollectionTabs";
 import { storageKeys, useLocalStorage } from "../../../hooks/storage";
-import { Redirect } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import { Shuffle } from "react-bootstrap-icons";
 import { canEditCollection } from "../../../permission";
 import { isMember } from "../utils";
@@ -57,6 +57,7 @@ export default function SimpleReview({
     storageKeys.useSimpleReview,
     true
   );
+  const history = useHistory();
   const signoffSource = signoff?.collectionsInfo?.source;
   const sourceBid = signoffSource?.bid;
   const sourceCid = signoffSource?.cid;
@@ -65,7 +66,10 @@ export default function SimpleReview({
   const destBid = signoffDest?.bid;
   const destCid = signoffDest?.cid;
 
-  const canReview = signoffSource ? isReviewer(signoffSource, session) : false;
+  const canReview = signoffSource
+    ? isReviewer(signoffSource, session) &&
+      session.serverInfo?.user?.id !== signoffSource.lastReviewRequestBy
+    : false;
 
   const [records, setRecords] = useState<{
     loading: boolean;
@@ -117,22 +121,31 @@ export default function SimpleReview({
   }
 
   let message = "";
-  if (session.authenticating) {
-    return <Spinner />;
-  } else if (!session.authenticated) {
+  if (!session.authenticated) {
     message = "Not authenticated";
+  } else if (
+    session.authenticating ||
+    session.busy ||
+    (records.loading && signoffSource && signoffDest)
+  ) {
+    return <Spinner />;
   } else if (!signoffSource || !signoffSource?.status) {
-    // TODO: use this to show/hide
-    // also: {["to-review", "work-in-progress"].includes(signoffSource.status) && (
     message = "This is not a collection that supports reviews.";
   }
 
   if (message) {
-    return <div className="simple-review-blocked-message p-4">{message}</div>;
+    return (
+      <div className="simple-review-blocked-message list-page">{message}</div>
+    );
   }
 
+  const handleRollback = (text: string) => {
+    rollbackChanges(text);
+    history.push(`/buckets/${bid}/collections/${cid}/records`);
+  };
+
   return (
-    <div className="p-4">
+    <div className="list-page">
       <h1>
         Review{" "}
         <b>
@@ -154,24 +167,25 @@ export default function SimpleReview({
               approveChanges={approveChanges}
               declineChanges={declineChanges}
               requestReview={requestReview}
-              rollbackChanges={rollbackChanges}
+              rollbackChanges={handleRollback}
               canReview={canReview}
               canRequestReview={canRequestReview}
             />
           </SimpleReviewHeader>
         )}
-        {(records.loading && <Spinner />) || (
-          <PerRecordDiffView
-            oldRecords={records.oldRecords}
-            newRecords={records.newRecords}
-            collectionData={signoffSource}
-          />
-        )}
+        <PerRecordDiffView
+          oldRecords={records.oldRecords}
+          newRecords={records.newRecords}
+          collectionData={signoffSource}
+        />
         <button
           type="button"
           className="btn btn-secondary"
           onClick={() => {
             setUseSimpleReview(false);
+          }}
+          style={{
+            float: "right",
           }}
         >
           <Shuffle className="icon" /> Switch to Legacy Review UI

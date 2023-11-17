@@ -1,9 +1,9 @@
 import * as React from "react";
-import { waitForElementToBeRemoved } from "@testing-library/react";
+import { fireEvent, waitForElementToBeRemoved } from "@testing-library/react";
 import { renderWithProvider, sessionFactory } from "../../../test_utils";
 import SimpleReview from "../../../../src/components/signoff/SimpleReview";
 import { useLocalStorage } from "../../../../src/hooks/storage";
-import { Redirect } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 
 jest.mock("../../../../src/hooks/storage", () => {
   const originalModule = jest.requireActual("../../../../src/hooks/storage");
@@ -11,6 +11,38 @@ jest.mock("../../../../src/hooks/storage", () => {
     __esModule: true,
     ...originalModule,
     useLocalStorage: jest.fn().mockReturnValue([true, jest.fn()]),
+  };
+});
+
+jest.mock("react-router-dom", () => {
+  const originalModule = jest.requireActual("react-router-dom");
+  const pushMock = jest.fn();
+  const useHistory = () => {
+    return {
+      push: pushMock,
+    };
+  };
+  return {
+    __esModule: true,
+    ...originalModule,
+    useHistory,
+    Redirect: jest.fn().mockReturnValue(<div>foo</div>),
+  };
+});
+
+jest.mock("../../../../src/permission", () => {
+  return {
+    canEditCollection: () => {
+      return true;
+    },
+  };
+});
+
+jest.mock("../../../../src/components/signoff/utils", () => {
+  return {
+    isMember: () => {
+      return true;
+    },
   };
 });
 
@@ -26,7 +58,7 @@ function signoffFactory() {
         lastEditDate: 1622816256864,
         lastEditorComment: undefined,
         lastReviewBy: undefined,
-        lastReviewDate: NaN,
+        lastReviewDate: 1622816256865,
         lastReviewRequestBy: undefined,
         lastReviewRequestDate: NaN,
         lastReviewerComment: undefined,
@@ -68,6 +100,7 @@ function renderSimpleReview(props = null) {
       return [];
     },
     ...props,
+    rollbackChanges: jest.fn(),
   };
   return renderWithProvider(<SimpleReview {...mergedProps} />);
 }
@@ -77,18 +110,6 @@ const fakeLocation = {
   search: "",
   hash: "",
 };
-
-jest.mock("react-router", () => {
-  const originalModule = jest.requireActual("react-router");
-  return {
-    __esModule: true,
-    ...originalModule,
-    useLocation: () => {
-      return fakeLocation;
-    },
-    Redirect: jest.fn().mockReturnValue(<div>foo</div>),
-  };
-});
 
 describe("SimpleTest component", () => {
   it("should render spinner when authenticating", async () => {
@@ -126,15 +147,21 @@ describe("SimpleTest component", () => {
     expect(node.getByText("Show all lines")).toBeDefined();
   });
 
-  it("should render a review component after records are fetched", async () => {
+  it("should render a review component after records are fetched and allow for a rollback", async () => {
     let node = renderSimpleReview({
       async fetchRecords() {
         return [];
       },
     });
+    await waitForElementToBeRemoved(() => node.queryByTestId("spinner"));
 
     expect(node.queryByText("Rollback")).toBeDefined();
     expect(node.container.querySelector(".simple-review-header")).toBeDefined();
+
+    // also check rollback calls history.push while we're here
+    fireEvent.click(node.queryByText(/Rollback changes/));
+    fireEvent.click(node.queryByText("Rollback"));
+    expect(useHistory().push).toHaveBeenCalled();
   });
 
   it("should hide the rollback button if the hideRollback query parameter is provided", async () => {
@@ -144,6 +171,7 @@ describe("SimpleTest component", () => {
         return [];
       },
     });
+    await waitForElementToBeRemoved(() => node.queryByTestId("spinner"));
 
     expect(node.queryByText("Rollback")).toBeNull();
     fakeLocation.search = "";
@@ -153,10 +181,9 @@ describe("SimpleTest component", () => {
     useLocalStorage.mockReturnValue([false, jest.fn()]);
     const session = sessionFactory();
     session.serverInfo.user.principals = [];
-    const node = renderSimpleReview({
+    renderSimpleReview({
       session,
     });
-    console.log(node.container.innerHTML);
     expect(Redirect).toHaveBeenCalled();
   });
 });

@@ -142,6 +142,10 @@ export default function CollectionRecords(props: Props) {
             onClick={() => {
               setUseSimpleReview(true);
             }}
+            style={{
+              float: "right",
+              marginTop: "1.5em",
+            }}
           >
             <Shuffle className="icon" /> Switch to Default Review UI
           </AdminLink>

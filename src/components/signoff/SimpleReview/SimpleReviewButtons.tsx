@@ -35,11 +35,14 @@ export default function SimpleReviewButtons({
   return (
     <>
       <div className="simple-review-buttons">
-        {status === "to-review" && (
+        {status === "to-review" && canReview && (
           <>
             <button
               className="btn btn-success"
-              onClick={() => approveChanges()}
+              onClick={() => {
+                setShowSpinner(true);
+                approveChanges();
+              }}
             >
               <Check2 className="icon" /> Approve...
             </button>{" "}
@@ -61,7 +64,7 @@ export default function SimpleReviewButtons({
             <ChatLeft className="icon" /> Request review...
           </button>
         )}{" "}
-        {canReview &&
+        {canRequestReview &&
           ["work-in-progress", "to-review"].includes(status) &&
           !searchParams.hideRollback && (
             <button
