@@ -9,7 +9,7 @@ import Spinner from "./Spinner";
 import AuthForm from "./AuthForm";
 import { getServerByPriority, isObject } from "../utils";
 import { loadSession } from "../store/localStore";
-import { useAppDispatch, useAppSelector } from "../hooks";
+import { useAppDispatch, useAppSelector } from "../hooks/app";
 import { useParams } from "react-router";
 
 function ServerProps({ node }: { node: any }) {

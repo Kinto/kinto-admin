@@ -1,13 +1,25 @@
 import React from "react";
-import { Gear, Lock, Justify, ClockHistory } from "react-bootstrap-icons";
+import {
+  Gear,
+  Lock,
+  Justify,
+  ClockHistory,
+  Braces,
+} from "react-bootstrap-icons";
 
 import AdminLink from "../AdminLink";
 import type { Capabilities } from "../../types";
+import { storageKeys, useLocalStorage } from "../../hooks/storage";
 
 type Props = {
   bid: string;
   cid: string;
-  selected: "records" | "attributes" | "permissions" | "history";
+  selected:
+    | "records"
+    | "attributes"
+    | "permissions"
+    | "history"
+    | "simple-review";
   capabilities: Capabilities;
   children?: React.ReactNode;
   totalRecords?: number | null;
@@ -21,6 +33,8 @@ export default function CollectionTabs({
   children,
   totalRecords,
 }: Props) {
+  const [useSimpleReview] = useLocalStorage(storageKeys.useSimpleReview, true);
+
   return (
     <div className="card">
       <div className="card-header">
@@ -37,6 +51,20 @@ export default function CollectionTabs({
               Records {totalRecords ? `(${totalRecords})` : null}
             </AdminLink>
           </li>
+          {capabilities.signer && useSimpleReview && (
+            <li className="nav-item" role="presentation">
+              <AdminLink
+                name="collection:simple-review"
+                params={{ bid, cid }}
+                className={
+                  selected === "simple-review" ? "nav-link active" : "nav-link"
+                }
+              >
+                <Braces className="icon" />
+                Review
+              </AdminLink>
+            </li>
+          )}
           <li className="nav-item" role="presentation">
             <AdminLink
               name="collection:attributes"

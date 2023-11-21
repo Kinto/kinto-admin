@@ -1,15 +1,13 @@
-import { expect } from "chai";
-import { createComponent } from "../../../test_utils";
-import ReactDomTestUtils from "react-dom/test-utils";
-import sinon from "sinon";
+import { renderWithProvider } from "../../../test_utils";
+import { fireEvent } from "@testing-library/react";
 import * as React from "react";
 
 import SimpleReviewButtons from "../../../../src/components/signoff/SimpleReview/SimpleReviewButtons";
 
 function renderButtons(props = null) {
-  const approveChanges = sinon.stub();
-  const declineChanges = sinon.stub();
-  const rollbackChanges = sinon.stub();
+  const approveChanges = jest.fn();
+  const declineChanges = jest.fn();
+  const rollbackChanges = jest.fn();
 
   const mergedProps = {
     status: "to-review",
@@ -19,45 +17,45 @@ function renderButtons(props = null) {
     ...props,
   };
 
-  const node = createComponent(<SimpleReviewButtons {...mergedProps} />);
+  const node = renderWithProvider(<SimpleReviewButtons {...mergedProps} />);
   return { approveChanges, declineChanges, rollbackChanges, node };
 }
 
 describe("SimpleReviewHeader component", () => {
-  it("should call approveChanges when approve button is clicked", () => {
-    const { approveChanges, node } = renderButtons({ status: "to-review" });
+  it("should call approveChanges when approve button is clicked", async () => {
+    const { approveChanges, node } = renderButtons({
+      status: "to-review",
+      canReview: true,
+    });
 
-    ReactDomTestUtils.Simulate.click(node.querySelector(".btn-success"));
-    expect(approveChanges.firstCall).to.be.ok;
+    fireEvent.click(node.getByText(/Approve/));
+    expect(approveChanges).toHaveBeenCalled();
+    expect(await node.findByTestId("spinner")).toBeDefined();
   });
 
   it("should open CommentDialog when reject is clicked call declineChanges from modal", async () => {
-    const { declineChanges, node } = renderButtons({ status: "to-review" });
-    ReactDomTestUtils.act(() => {
-      ReactDomTestUtils.Simulate.click(node.querySelector(".btn-danger"));
+    const { declineChanges, node } = renderButtons({
+      status: "to-review",
+      canReview: true,
     });
-    expect(node.querySelector(".modal")).to.be.ok;
-    ReactDomTestUtils.act(() => {
-      ReactDomTestUtils.Simulate.click(
-        node.querySelector(".modal .btn-primary")
-      );
-    });
-    expect(declineChanges.firstCall).to.be.ok;
+    fireEvent.click(node.getByText(/Decline/));
+    fireEvent.click(await node.findByText("Reject changes"));
+    expect(declineChanges).toHaveBeenCalled();
+    expect(await node.findByTestId("spinner")).toBeDefined();
+  });
+
+  it("should open CommentDialog when request review is clicked and call requestReview from modal", async () => {
+    const {} = renderButtons({ status: "work-in-progress" });
   });
 
   it("should display rollback button when status is wip and call rollbackChanges from modal", async () => {
     const { rollbackChanges, node } = renderButtons({
       status: "work-in-progress",
+      canRequestReview: true,
     });
-    ReactDomTestUtils.act(() => {
-      ReactDomTestUtils.Simulate.click(node.querySelector(".btn-danger"));
-    });
-    expect(node.querySelector(".modal")).to.be.ok;
-    ReactDomTestUtils.act(() => {
-      ReactDomTestUtils.Simulate.click(
-        node.querySelector(".modal .btn-primary")
-      );
-    });
-    expect(rollbackChanges.firstCall).to.be.ok;
+    fireEvent.click(node.getByText(/Rollback changes/));
+    fireEvent.click(await node.findByText("Rollback"));
+    expect(rollbackChanges).toHaveBeenCalled();
+    expect(await node.findByTestId("spinner")).toBeDefined();
   });
 });

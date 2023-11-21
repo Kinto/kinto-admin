@@ -1,6 +1,6 @@
 {
   "name": "kinto-admin",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Kinto Web Administration Console in React.js",
   "scripts": {
     "build": "rimraf build && cross-env NODE_ENV=production webpack --progress --config webpack.prod.js",
@@ -27,6 +27,7 @@
     "@rjsf/bootstrap-4": "^5.13.2",
     "@rjsf/core": "^5.13.2",
     "@rjsf/validator-ajv8": "^5.13.2",
+    "@testing-library/react-hooks": "^8.0.1",
     "atob": "^2.0.3",
     "bootstrap": "^4.6.2",
     "bootstrap-icons": "^1.11.1",

@@ -25,6 +25,8 @@ function mapStateToProps(
   return {
     session: state.session,
     signoff: state.signoff,
+    collection: state.collection,
+    capabilities: state.session.serverInfo.capabilities,
     fetchRecords,
   };
 }

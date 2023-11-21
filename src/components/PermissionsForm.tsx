@@ -9,7 +9,7 @@ import {
   preparePermissionsForm,
 } from "../permission";
 import { useParams } from "react-router";
-import { useAppSelector } from "../hooks";
+import { useAppSelector } from "../hooks/app";
 
 import { RJSFSchema } from "@rjsf/utils";
 

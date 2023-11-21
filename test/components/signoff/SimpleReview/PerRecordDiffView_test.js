@@ -65,6 +65,19 @@ describe("findChangeTypes", () => {
     ]);
   });
 
+  it("should find multiple removed items", () => {
+    expect(
+      findChangeTypes(
+        [{ id: "a" }, { id: "b" }, { id: "c" }, { id: "d" }],
+        [{ id: "a" }]
+      )
+    ).eql([
+      { id: "b", changeType: ChangeType.REMOVE, source: { id: "b" } },
+      { id: "c", changeType: ChangeType.REMOVE, source: { id: "c" } },
+      { id: "d", changeType: ChangeType.REMOVE, source: { id: "d" } },
+    ]);
+  });
+
   it("should find updated items", () => {
     expect(
       findChangeTypes(

@@ -9,7 +9,7 @@ import { PermissionsForm } from "../PermissionsForm";
 import { canEditBucket } from "../../permission";
 import { useParams } from "react-router";
 
-import { useAppSelector, useAppDispatch } from "../../hooks";
+import { useAppSelector, useAppDispatch } from "../../hooks/app";
 
 export function BucketPermissions() {
   const dispatch = useAppDispatch();
@@ -38,7 +38,7 @@ export function BucketPermissions() {
         <PermissionsForm
           permissions={permissions}
           acls={acls}
-          readonly={!canEditBucket(session, bucket)}
+          readonly={!canEditBucket(session, bid)}
           onSubmit={onSubmit}
         />
       </BucketTabs>

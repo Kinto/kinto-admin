@@ -15,6 +15,9 @@ import { CommonProps, CommonStateProps } from "./commonPropTypes";
 
 import * as CollectionActions from "../../actions/collection";
 import * as RouteActions from "../../actions/route";
+import AdminLink from "../AdminLink";
+import { storageKeys, useLocalStorage } from "../../hooks/storage";
+import { Shuffle } from "react-bootstrap-icons";
 
 type OwnProps = {
   match: CollectionRouteMatch;
@@ -71,6 +74,10 @@ export default function CollectionRecords(props: Props) {
   } = collection;
   const { schema, displayFields } = data;
 
+  const [useSimpleReview, setUseSimpleReview] = useLocalStorage(
+    storageKeys.useSimpleReview,
+    true
+  );
   useEffect(() => {
     if (!session.authenticated || !data?.last_modified) {
       return;
@@ -127,6 +134,22 @@ export default function CollectionRecords(props: Props) {
           />
         )}
         {listActions}
+        {capabilities.signer && !useSimpleReview && (
+          <AdminLink
+            className="btn btn-secondary"
+            params={{ bid, cid }}
+            name="collection:simple-review"
+            onClick={() => {
+              setUseSimpleReview(true);
+            }}
+            style={{
+              float: "right",
+              marginTop: "1.5em",
+            }}
+          >
+            <Shuffle className="icon" /> Switch to Default Review UI
+          </AdminLink>
+        )}
       </CollectionTabs>
     </div>
   );

@@ -2,6 +2,25 @@ import SignoffToolBar from "../../../src/components/signoff/SignoffToolBar";
 import * as React from "react";
 import { render, fireEvent } from "@testing-library/react";
 
+// to avoid rendering a router around everything, allows for more focused testing
+jest.mock("react-router-dom", () => {
+  const originalModule = jest.requireActual("react-router-dom");
+  return {
+    __esModule: true,
+    ...originalModule,
+    Link: "a",
+  };
+});
+
+jest.mock("../../../src/hooks/storage", () => {
+  const originalModule = jest.requireActual("../../../src/hooks/storage");
+  return {
+    __esModule: true,
+    ...originalModule,
+    useLocalStorage: jest.fn().mockReturnValue([false, jest.fn()]),
+  };
+});
+
 describe("SignoffToolBar component", () => {
   const props = {
     sessionState: {
@@ -121,7 +140,7 @@ describe("SignoffToolBar component", () => {
     expect(node.queryByTestId("spinner")).toBeNull();
     expect(propsOverride.approveChanges).toHaveBeenCalledTimes(0);
     fireEvent.click(await node.findByText("Approve"));
-    expect(node.queryByTestId("spinner")).toBeDefined();
+    expect(await node.findByTestId("spinner")).toBeDefined();
     expect(propsOverride.approveChanges).toHaveBeenCalledTimes(1);
   });
 });

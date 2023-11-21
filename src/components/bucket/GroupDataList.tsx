@@ -67,7 +67,7 @@ export function DataList(props) {
 }
 
 export function ListActions({ bid, session, bucket }) {
-  if (session.busy || bucket.busy || !canCreateGroup(session, bucket)) {
+  if (session.busy || bucket.busy || !canCreateGroup(session, bid)) {
     return null;
   }
   return (

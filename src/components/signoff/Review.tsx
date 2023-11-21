@@ -3,12 +3,12 @@ import type { SignoffSourceInfo, PreviewInfo, ChangesList } from "../../types";
 import React from "react";
 import { Comment } from "./Comment";
 
-import { ChatLeft } from "react-bootstrap-icons";
-import { Check2 } from "react-bootstrap-icons";
+import { Braces, ChatLeft, Check2 } from "react-bootstrap-icons";
 
 import AdminLink from "../AdminLink";
 import { ProgressStep } from "./ProgressBar";
 import HumanDate from "./HumanDate";
+import { storageKeys, useLocalStorage } from "../../hooks/storage";
 
 type ReviewProps = {
   label: string;
@@ -24,20 +24,20 @@ type ReviewProps = {
   changes: ChangesList | null;
 };
 
-export function Review(props: ReviewProps) {
-  const {
-    label,
-    canEdit,
-    hasHistory,
-    currentStep,
-    step,
-    isCurrentUrl,
-    approveChanges,
-    confirmDeclineChanges,
-    source,
-    preview,
-    changes,
-  } = props;
+export function Review({
+  label,
+  canEdit,
+  hasHistory,
+  currentStep,
+  step,
+  isCurrentUrl,
+  approveChanges,
+  confirmDeclineChanges,
+  source,
+  preview,
+  changes,
+}: ReviewProps) {
+  const [useSimpleReview] = useLocalStorage(storageKeys.useSimpleReview, true);
   const isCurrentStep = step == currentStep;
 
   // If preview disabled, the preview object is empty.
@@ -63,11 +63,20 @@ export function Review(props: ReviewProps) {
           changes={changes}
         />
       )}
-      {isCurrentStep && canEdit && (
+      {isCurrentStep && canEdit && !useSimpleReview && (
         <ReviewButtons
           onApprove={approveChanges}
           onDecline={confirmDeclineChanges}
         />
+      )}
+      {isCurrentStep && canEdit && useSimpleReview && (
+        <AdminLink
+          className="btn btn-info"
+          params={{ bid: source.bid, cid: source.cid }}
+          name="collection:simple-review"
+        >
+          <Braces className="icon" /> Review Changes
+        </AdminLink>
       )}
     </ProgressStep>
   );

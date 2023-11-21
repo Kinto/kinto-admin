@@ -3,7 +3,7 @@ import { BoxArrowRight } from "react-bootstrap-icons";
 import { QuestionCircleFill } from "react-bootstrap-icons";
 import { Clipboard } from "react-bootstrap-icons";
 
-import { useAppSelector, useAppDispatch } from "../hooks";
+import { useAppSelector, useAppDispatch } from "../hooks/app";
 import * as SessionActions from "../actions/session";
 
 export function SessionInfoBar() {

@@ -76,10 +76,10 @@ export default function PerRecordDiffView({
       );
     default:
       return (
-        <>
+        <div>
           No changes to review, collection status is{" "}
           <code>{collectionData.status}</code>.
-        </>
+        </div>
       );
   }
 }
@@ -179,25 +179,30 @@ export function findChangeTypes(
 
   let result: Array<RecordChange> = [];
 
-  diffArrays(
+  const differences = diffArrays(
     oldItems.map(r => r.id).sort(),
     newItems.map(r => r.id).sort()
-  ).forEach(part => {
-    const id = part.value[0];
-    if (part.added) {
-      result.push({
-        id,
-        target: newItems.find(r => r.id === id),
-        changeType: ChangeType.ADD,
-      });
-    } else if (part.removed) {
-      result.push({
-        id,
-        source: oldItems.find(r => r.id === id),
-        changeType: ChangeType.REMOVE,
-      });
+  );
+
+  for (let d of differences) {
+    if (d.added) {
+      for (let id of d.value) {
+        result.push({
+          id,
+          target: newItems.find(r => r.id === id),
+          changeType: ChangeType.ADD,
+        });
+      }
+    } else if (d.removed) {
+      for (let id of d.value) {
+        result.push({
+          id,
+          source: oldItems.find(r => r.id === id),
+          changeType: ChangeType.REMOVE,
+        });
+      }
     }
-  });
+  }
 
   newItems.forEach(item => {
     const matchingOldItem = oldItems.find(r => r.id === item.id);
