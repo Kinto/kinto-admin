@@ -1,0 +1,16 @@
+var _path;
+function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+import * as React from "react";
+var SvgExclamationCircleFill = function SvgExclamationCircleFill(props) {
+  return /*#__PURE__*/React.createElement("svg", _extends({
+    xmlns: "http://www.w3.org/2000/svg",
+    width: 16,
+    height: 16,
+    fill: "currentColor",
+    className: "exclamation-circle-fill_svg__bi exclamation-circle-fill_svg__bi-exclamation-circle-fill"
+  }, props), _path || (_path = /*#__PURE__*/React.createElement("path", {
+    d: "M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"
+  })));
+};
+export { SvgExclamationCircleFill as ReactComponent };
+export default "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iY3VycmVudENvbG9yIiBjbGFzcz0iYmkgYmktZXhjbGFtYXRpb24tY2lyY2xlLWZpbGwiIHZpZXdCb3g9IjAgMCAxNiAxNiI+CiAgPHBhdGggZD0iTTE2IDhBOCA4IDAgMSAxIDAgOGE4IDggMCAwIDEgMTYgMHpNOCA0YS45MDUuOTA1IDAgMCAwLS45Ljk5NWwuMzUgMy41MDdhLjU1Mi41NTIgMCAwIDAgMS4xIDBsLjM1LTMuNTA3QS45MDUuOTA1IDAgMCAwIDggNHptLjAwMiA2YTEgMSAwIDEgMCAwIDIgMSAxIDAgMCAwIDAtMnoiLz4KPC9zdmc+";
