@@ -114,7 +114,10 @@ function Diff({
   }
 
   return (
-    <div className={`record-diff card mb-4 ${className}`}>
+    <div
+      className={`record-diff card mb-4 ${className}`}
+      data-testid="record-diff"
+    >
       <div className="card-header">
         <DiffLabel changeType={changeType} /> {id}
       </div>

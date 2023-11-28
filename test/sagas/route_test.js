@@ -1,9 +1,7 @@
-import sinon from "sinon";
-import { expect } from "chai";
 import { push as updatePath } from "redux-first-history";
 import { call, put, take } from "redux-saga/effects";
 
-import { createSandbox, mockNotifyError } from "../test_utils";
+import { mockNotifyError } from "../test_utils";
 
 import { setClient } from "../../src/client";
 import * as actions from "../../src/actions/route";
@@ -14,14 +12,8 @@ import { scrollToTop } from "../../src/utils";
 import { SESSION_AUTHENTICATED } from "../../src/constants";
 
 describe("route sagas", () => {
-  let sandbox;
-
-  beforeAll(() => {
-    sandbox = createSandbox();
-  });
-
   afterEach(() => {
-    sandbox.restore();
+    jest.resetAllMocks();
   });
 
   describe("loadRoute()", () => {
@@ -29,7 +21,7 @@ describe("route sagas", () => {
       it("should do nothing", () => {
         const loadRoute = saga.loadRoute({});
 
-        expect(loadRoute.next().done).eql(true);
+        expect(loadRoute.next().done).toBe(true);
       });
     });
 
@@ -44,16 +36,15 @@ describe("route sagas", () => {
       });
 
       it("should dispatch the routeLoadFailure action", () => {
-        expect(loadRoute.throw("error").value).eql(
+        expect(loadRoute.throw("error").value).toStrictEqual(
           put(actions.routeLoadFailure())
         );
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError(sandbox);
+        const mocked = mockNotifyError();
         loadRoute.next();
-        sinon.assert.calledWith(
-          mocked,
+        expect(mocked).toBeCalledWith(
           "Couldn't retrieve route resources.",
           "error"
         );
@@ -99,17 +90,16 @@ describe("route sagas", () => {
         });
 
         it("should dispatch the routeLoadRequest action", () => {
-          expect(loadRoute.next().value).eql(
+          expect(loadRoute.next().value).toStrictEqual(
             put(actions.routeLoadRequest(params))
           );
         });
 
         it("should batch fetch resources data", () => {
-          expect(loadRoute.next().value)
-            .to.have.property("payload")
-            .to.have.property("context")
-            .to.have.property("batch")
-            .eql(batch);
+          expect(loadRoute.next().value).toHaveProperty(
+            "payload.context.batch",
+            batch
+          );
         });
 
         it("should update bucket state from response data", () => {
@@ -118,7 +108,7 @@ describe("route sagas", () => {
             { status: 200, body: groups },
           ];
 
-          expect(loadRoute.next(responses).value).eql(
+          expect(loadRoute.next(responses).value).toStrictEqual(
             put(
               actions.routeLoadSuccess({
                 bucket,
@@ -145,17 +135,16 @@ describe("route sagas", () => {
         });
 
         it("should dispatch the routeLoadRequest action", () => {
-          expect(loadRoute.next().value).eql(
+          expect(loadRoute.next().value).toStrictEqual(
             put(actions.routeLoadRequest(params))
           );
         });
 
         it("should batch fetch resources data", () => {
-          expect(loadRoute.next().value)
-            .to.have.property("payload")
-            .to.have.property("context")
-            .to.have.property("batch")
-            .eql(batch);
+          expect(loadRoute.next().value).toHaveProperty(
+            "payload.context.batch",
+            batch
+          );
         });
 
         it("should update bucket state from response data", () => {
@@ -165,7 +154,7 @@ describe("route sagas", () => {
             { status: 200, body: collection },
           ];
 
-          expect(loadRoute.next(responses).value).eql(
+          expect(loadRoute.next(responses).value).toStrictEqual(
             put(
               actions.routeLoadSuccess({
                 bucket,
@@ -192,17 +181,16 @@ describe("route sagas", () => {
         });
 
         it("should dispatch the routeLoadRequest action", () => {
-          expect(loadRoute.next().value).eql(
+          expect(loadRoute.next().value).toStrictEqual(
             put(actions.routeLoadRequest(params))
           );
         });
 
         it("should batch fetch resources data", () => {
-          expect(loadRoute.next().value)
-            .to.have.property("payload")
-            .to.have.property("context")
-            .to.have.property("batch")
-            .eql(batch);
+          expect(loadRoute.next().value).toHaveProperty(
+            "payload.context.batch",
+            batch
+          );
         });
 
         it("should update bucket state from response data", () => {
@@ -212,7 +200,7 @@ describe("route sagas", () => {
             { status: 200, body: group },
           ];
 
-          expect(loadRoute.next(responses).value).eql(
+          expect(loadRoute.next(responses).value).toStrictEqual(
             put(
               actions.routeLoadSuccess({
                 bucket,
@@ -240,17 +228,16 @@ describe("route sagas", () => {
         });
 
         it("should dispatch the routeLoadRequest action", () => {
-          expect(loadRoute.next().value).eql(
+          expect(loadRoute.next().value).toStrictEqual(
             put(actions.routeLoadRequest(params))
           );
         });
 
         it("should batch fetch resources data", () => {
-          expect(loadRoute.next().value)
-            .to.have.property("payload")
-            .to.have.property("context")
-            .to.have.property("batch")
-            .eql(batch);
+          expect(loadRoute.next().value).toHaveProperty(
+            "payload.context.batch",
+            batch
+          );
         });
 
         it("should update bucket state from response data", () => {
@@ -261,7 +248,7 @@ describe("route sagas", () => {
             { status: 200, body: record },
           ];
 
-          expect(loadRoute.next(responses).value).eql(
+          expect(loadRoute.next(responses).value).toStrictEqual(
             put(
               actions.routeLoadSuccess({
                 bucket,
@@ -290,17 +277,16 @@ describe("route sagas", () => {
       });
 
       it("should dispatch the routeLoadRequest action", () => {
-        expect(loadRoute.next().value).eql(
+        expect(loadRoute.next().value).toStrictEqual(
           put(actions.routeLoadRequest(params))
         );
       });
 
       it("should batch fetch resources data", () => {
-        expect(loadRoute.next().value)
-          .to.have.property("payload")
-          .to.have.property("context")
-          .to.have.property("batch")
-          .eql(batch);
+        expect(loadRoute.next().value).toHaveProperty(
+          "payload.context.batch",
+          batch
+        );
       });
 
       it("should update bucket state from response data", () => {
@@ -308,7 +294,7 @@ describe("route sagas", () => {
           { status: 403, body: {} },
           { status: 403, body: {} },
         ];
-        expect(loadRoute.next(responses).value).eql(
+        expect(loadRoute.next(responses).value).toStrictEqual(
           put(
             actions.routeLoadSuccess({
               bucket: {
@@ -339,17 +325,16 @@ describe("route sagas", () => {
       });
 
       it("should dispatch the routeLoadRequest action", () => {
-        expect(loadRoute.next().value).eql(
+        expect(loadRoute.next().value).toStrictEqual(
           put(actions.routeLoadRequest(params))
         );
       });
 
       it("should batch fetch resources data", () => {
-        expect(loadRoute.next().value)
-          .to.have.property("payload")
-          .to.have.property("context")
-          .to.have.property("batch")
-          .eql(batch);
+        expect(loadRoute.next().value).toHaveProperty(
+          "payload.context.batch",
+          batch
+        );
       });
 
       it("should dispatch the failure action", () => {
@@ -357,15 +342,23 @@ describe("route sagas", () => {
           { status: 404, body: {} },
           { status: 404, body: {} },
         ];
-        expect(loadRoute.next(responses).value).eql(
+        expect(loadRoute.next(responses).value).toStrictEqual(
           put(actions.routeLoadFailure())
         );
       });
 
       it("should dispatch a notification", () => {
-        const mocked = mockNotifyError(sandbox);
+        const mocked = mockNotifyError();
         loadRoute.next();
-        sinon.assert.calledWith(mocked, "Couldn't retrieve route resources.");
+        expect(mocked).toHaveBeenCalledWith(
+          "Couldn't retrieve route resources.",
+          expect.objectContaining({
+            message: "Bucket bucket does not exist.",
+            stack: expect.stringContaining(
+              "Error: Bucket bucket does not exist"
+            ),
+          })
+        );
       });
     });
   });
@@ -381,33 +374,37 @@ describe("route sagas", () => {
       });
 
       it("should store the post-auth redirect URL", () => {
-        expect(routeUpdated.next().value).eql(
+        expect(routeUpdated.next().value).toStrictEqual(
           put(sessionActions.storeRedirectURL("/blah"))
         );
       });
 
       it("should redirect to the homepage", () => {
-        expect(routeUpdated.next().value).eql(
+        expect(routeUpdated.next().value).toStrictEqual(
           put(actions.redirectTo("home", {}))
         );
       });
 
       it("should dispatch a notification", () => {
-        expect(routeUpdated.next().value).eql(
+        expect(routeUpdated.next().value).toStrictEqual(
           put(notificationActions.notifyInfo("Authentication required."))
         );
       });
 
       it("should wait for the SESSION_AUTHENTICATED event", () => {
-        expect(routeUpdated.next().value).eql(take(SESSION_AUTHENTICATED));
+        expect(routeUpdated.next().value).toStrictEqual(
+          take(SESSION_AUTHENTICATED)
+        );
       });
 
       it("should redirect the user to the initially requested URL", () => {
-        expect(routeUpdated.next().value).eql(put(updatePath("/blah")));
+        expect(routeUpdated.next().value).toStrictEqual(
+          put(updatePath("/blah"))
+        );
       });
 
       it("should remove previously stored redirect URL", () => {
-        expect(routeUpdated.next().value).eql(
+        expect(routeUpdated.next().value).toStrictEqual(
           put(sessionActions.storeRedirectURL(null))
         );
       });
@@ -429,11 +426,15 @@ describe("route sagas", () => {
       });
 
       it("should wait for the SESSION_AUTHENTICATED event", () => {
-        expect(routeUpdated.next().value).eql(take(SESSION_AUTHENTICATED));
+        expect(routeUpdated.next().value).toStrictEqual(
+          take(SESSION_AUTHENTICATED)
+        );
       });
 
       it("should redirect to the initially requested URL", () => {
-        expect(routeUpdated.next().value).eql(put(updatePath("/blah")));
+        expect(routeUpdated.next().value).toStrictEqual(
+          put(updatePath("/blah"))
+        );
       });
     });
 
@@ -448,11 +449,13 @@ describe("route sagas", () => {
       });
 
       it("should load route resources", () => {
-        expect(routeUpdated.next().value).eql(call(saga.loadRoute, params));
+        expect(routeUpdated.next().value).toStrictEqual(
+          call(saga.loadRoute, params)
+        );
       });
 
       it("should scroll window to top", () => {
-        expect(routeUpdated.next().value).eql(call(scrollToTop));
+        expect(routeUpdated.next().value).toStrictEqual(call(scrollToTop));
       });
     });
   });

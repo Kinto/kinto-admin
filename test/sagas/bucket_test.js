@@ -1,8 +1,6 @@
-import sinon from "sinon";
-import { expect } from "chai";
 import { put, call } from "redux-saga/effects";
 
-import { createSandbox, mockNotifyError } from "../test_utils";
+import { mockNotifyError } from "../test_utils";
 
 import { notifySuccess } from "../../src/actions/notifications";
 import * as sessionActions from "../../src/actions/session";
@@ -25,14 +23,8 @@ const groupData = {
 };
 
 describe("bucket sagas", () => {
-  let sandbox;
-
-  beforeAll(() => {
-    sandbox = createSandbox();
-  });
-
   afterEach(() => {
-    sandbox.restore();
+    jest.resetAllMocks();
   });
 
   describe("createBucket()", () => {
@@ -46,13 +38,13 @@ describe("bucket sagas", () => {
       });
 
       it("should mark the current session as busy", () => {
-        expect(createBucket.next().value).eql(
+        expect(createBucket.next().value).toStrictEqual(
           put(sessionActions.sessionBusy(true))
         );
       });
 
       it("should fetch collection attributes", () => {
-        expect(createBucket.next().value).eql(
+        expect(createBucket.next().value).toStrictEqual(
           call([client, client.createBucket], "bucket", {
             data: { a: 1 },
             safe: true,
@@ -61,25 +53,25 @@ describe("bucket sagas", () => {
       });
 
       it("should reload the list of buckets/collections", () => {
-        expect(createBucket.next().value).eql(
+        expect(createBucket.next().value).toStrictEqual(
           put(sessionActions.listBuckets())
         );
       });
 
       it("should update the route path", () => {
-        expect(createBucket.next().value).eql(
+        expect(createBucket.next().value).toStrictEqual(
           put(redirectTo("bucket:attributes", { bid: "bucket" }))
         );
       });
 
       it("should dispatch a notification", () => {
-        expect(createBucket.next().value).eql(
+        expect(createBucket.next().value).toStrictEqual(
           put(notifySuccess("Bucket created."))
         );
       });
 
       it("should unmark the current session as busy", () => {
-        expect(createBucket.next().value).eql(
+        expect(createBucket.next().value).toStrictEqual(
           put(sessionActions.sessionBusy(false))
         );
       });
@@ -96,13 +88,13 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError(sandbox);
+        const mocked = mockNotifyError();
         createBucket.throw("error");
-        sinon.assert.calledWith(mocked, "Couldn't create bucket.", "error");
+        expect(mocked).toHaveBeenCalledWith("Couldn't create bucket.", "error");
       });
 
       it("should unmark the current session as busy", () => {
-        expect(createBucket.next().value).eql(
+        expect(createBucket.next().value).toStrictEqual(
           put(sessionActions.sessionBusy(false))
         );
       });
@@ -131,13 +123,13 @@ describe("bucket sagas", () => {
         });
 
         it("should mark the current session as busy", () => {
-          expect(updateBucket.next().value).eql(
+          expect(updateBucket.next().value).toStrictEqual(
             put(sessionActions.sessionBusy(true))
           );
         });
 
         it("should post new bucket data", () => {
-          expect(updateBucket.next().value).eql(
+          expect(updateBucket.next().value).toStrictEqual(
             call(
               [bucket, bucket.setData],
               { a: 1, last_modified: 42 },
@@ -149,19 +141,19 @@ describe("bucket sagas", () => {
         });
 
         it("should update the route path", () => {
-          expect(updateBucket.next().value).eql(
+          expect(updateBucket.next().value).toStrictEqual(
             put(redirectTo("bucket:attributes", { bid: "bucket" }))
           );
         });
 
         it("should dispatch a notification", () => {
-          expect(updateBucket.next().value).eql(
+          expect(updateBucket.next().value).toStrictEqual(
             put(notifySuccess("Bucket attributes updated."))
           );
         });
 
         it("should unmark the current session as busy", () => {
-          expect(updateBucket.next().value).eql(
+          expect(updateBucket.next().value).toStrictEqual(
             put(sessionActions.sessionBusy(false))
           );
         });
@@ -183,13 +175,16 @@ describe("bucket sagas", () => {
         });
 
         it("should dispatch an error notification action", () => {
-          const mocked = mockNotifyError(sandbox);
+          const mocked = mockNotifyError();
           updateBucket.throw("error");
-          sinon.assert.calledWith(mocked, "Couldn't update bucket.", "error");
+          expect(mocked).toHaveBeenCalledWith(
+            "Couldn't update bucket.",
+            "error"
+          );
         });
 
         it("should unmark the current session as busy", () => {
-          expect(updateBucket.next().value).eql(
+          expect(updateBucket.next().value).toStrictEqual(
             put(sessionActions.sessionBusy(false))
           );
         });
@@ -219,13 +214,13 @@ describe("bucket sagas", () => {
         });
 
         it("should mark the current session as busy", () => {
-          expect(updateBucket.next().value).eql(
+          expect(updateBucket.next().value).toStrictEqual(
             put(sessionActions.sessionBusy(true))
           );
         });
 
         it("should post new bucket permissions", () => {
-          expect(updateBucket.next().value).eql(
+          expect(updateBucket.next().value).toStrictEqual(
             call(
               [bucket, bucket.setPermissions],
               { a: 1 },
@@ -238,19 +233,19 @@ describe("bucket sagas", () => {
         });
 
         it("should update the route path", () => {
-          expect(updateBucket.next().value).eql(
+          expect(updateBucket.next().value).toStrictEqual(
             put(redirectTo("bucket:permissions", { bid: "bucket" }))
           );
         });
 
         it("should dispatch a notification", () => {
-          expect(updateBucket.next().value).eql(
+          expect(updateBucket.next().value).toStrictEqual(
             put(notifySuccess("Bucket permissions updated."))
           );
         });
 
         it("should unmark the current session as busy", () => {
-          expect(updateBucket.next().value).eql(
+          expect(updateBucket.next().value).toStrictEqual(
             put(sessionActions.sessionBusy(false))
           );
         });
@@ -272,13 +267,16 @@ describe("bucket sagas", () => {
         });
 
         it("should dispatch an error notification action", () => {
-          const mocked = mockNotifyError(sandbox);
+          const mocked = mockNotifyError();
           updateBucket.throw("error");
-          sinon.assert.calledWith(mocked, "Couldn't update bucket.", "error");
+          expect(mocked).toHaveBeenCalledWith(
+            "Couldn't update bucket.",
+            "error"
+          );
         });
 
         it("should unmark the current session as busy", () => {
-          expect(updateBucket.next().value).eql(
+          expect(updateBucket.next().value).toStrictEqual(
             put(sessionActions.sessionBusy(false))
           );
         });
@@ -302,13 +300,13 @@ describe("bucket sagas", () => {
       });
 
       it("should mark the current session as busy", () => {
-        expect(deleteBucket.next().value).eql(
+        expect(deleteBucket.next().value).toStrictEqual(
           put(sessionActions.sessionBusy(true))
         );
       });
 
       it("should fetch perform a deleteBucket", () => {
-        expect(deleteBucket.next().value).eql(
+        expect(deleteBucket.next().value).toStrictEqual(
           call([client, client.deleteBucket], "bucket", {
             safe: true,
             last_modified: 42,
@@ -317,23 +315,25 @@ describe("bucket sagas", () => {
       });
 
       it("should reload the list of buckets/collections", () => {
-        expect(deleteBucket.next().value).eql(
+        expect(deleteBucket.next().value).toStrictEqual(
           put(sessionActions.listBuckets())
         );
       });
 
       it("should update the route path", () => {
-        expect(deleteBucket.next().value).eql(put(redirectTo("home", {})));
+        expect(deleteBucket.next().value).toStrictEqual(
+          put(redirectTo("home", {}))
+        );
       });
 
       it("should dispatch a notification", () => {
-        expect(deleteBucket.next().value).eql(
+        expect(deleteBucket.next().value).toStrictEqual(
           put(notifySuccess("Bucket deleted."))
         );
       });
 
       it("should unmark the current collection as busy", () => {
-        expect(deleteBucket.next().value).eql(
+        expect(deleteBucket.next().value).toStrictEqual(
           put(sessionActions.sessionBusy(false))
         );
       });
@@ -354,13 +354,13 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError(sandbox);
+        const mocked = mockNotifyError();
         deleteBucket.throw("error");
-        sinon.assert.calledWith(mocked, "Couldn't delete bucket.", "error");
+        expect(mocked).toHaveBeenCalledWith("Couldn't delete bucket.", "error");
       });
 
       it("should unmark the current collection as busy", () => {
-        expect(deleteBucket.next().value).eql(
+        expect(deleteBucket.next().value).toStrictEqual(
           put(sessionActions.sessionBusy(false))
         );
       });
@@ -386,7 +386,7 @@ describe("bucket sagas", () => {
       });
 
       it("should post the collection data", () => {
-        expect(createCollection.next().value).eql(
+        expect(createCollection.next().value).toStrictEqual(
           call([bucket, bucket.createCollection], "collection", {
             data: collectionData,
             safe: true,
@@ -395,7 +395,7 @@ describe("bucket sagas", () => {
       });
 
       it("should update the route path", () => {
-        expect(createCollection.next().value).eql(
+        expect(createCollection.next().value).toStrictEqual(
           put(
             redirectTo("collection:records", {
               bid: "bucket",
@@ -406,13 +406,13 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch a notification", () => {
-        expect(createCollection.next().value).eql(
+        expect(createCollection.next().value).toStrictEqual(
           put(notifySuccess("Collection created."))
         );
       });
 
       it("should reload the list of buckets/collections", () => {
-        expect(createCollection.next().value).eql(
+        expect(createCollection.next().value).toStrictEqual(
           put(sessionActions.listBuckets())
         );
       });
@@ -437,9 +437,12 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError(sandbox);
+        const mocked = mockNotifyError();
         createCollection.throw("error");
-        sinon.assert.calledWith(mocked, "Couldn't create collection.", "error");
+        expect(mocked).toHaveBeenCalledWith(
+          "Couldn't create collection.",
+          "error"
+        );
       });
     });
   });
@@ -473,7 +476,7 @@ describe("bucket sagas", () => {
         });
 
         it("should post the collection data", () => {
-          expect(updateCollection.next().value).eql(
+          expect(updateCollection.next().value).toStrictEqual(
             call(
               [collection, collection.setData],
               {
@@ -486,7 +489,7 @@ describe("bucket sagas", () => {
         });
 
         it("should update the route path", () => {
-          expect(updateCollection.next().value).eql(
+          expect(updateCollection.next().value).toStrictEqual(
             put(
               redirectTo("collection:records", {
                 bid: "bucket",
@@ -497,7 +500,7 @@ describe("bucket sagas", () => {
         });
 
         it("should dispatch a notification", () => {
-          expect(updateCollection.next().value).eql(
+          expect(updateCollection.next().value).toStrictEqual(
             put(notifySuccess("Collection attributes updated."))
           );
         });
@@ -516,10 +519,9 @@ describe("bucket sagas", () => {
           );
           updateCollection.next();
 
-          const mocked = mockNotifyError(sandbox);
+          const mocked = mockNotifyError();
           updateCollection.throw("error");
-          sinon.assert.calledWith(
-            mocked,
+          expect(mocked).toHaveBeenCalledWith(
             "Couldn't update collection.",
             "error"
           );
@@ -555,7 +557,7 @@ describe("bucket sagas", () => {
         });
 
         it("should post new collection permissions", () => {
-          expect(updateCollection.next().value).eql(
+          expect(updateCollection.next().value).toStrictEqual(
             call(
               [collection, collection.setPermissions],
               { a: 1 },
@@ -568,7 +570,7 @@ describe("bucket sagas", () => {
         });
 
         it("should update the route path", () => {
-          expect(updateCollection.next().value).eql(
+          expect(updateCollection.next().value).toStrictEqual(
             put(
               redirectTo("collection:permissions", {
                 bid: "bucket",
@@ -579,7 +581,7 @@ describe("bucket sagas", () => {
         });
 
         it("should dispatch a notification", () => {
-          expect(updateCollection.next().value).eql(
+          expect(updateCollection.next().value).toStrictEqual(
             put(notifySuccess("Collection permissions updated."))
           );
         });
@@ -603,10 +605,9 @@ describe("bucket sagas", () => {
         });
 
         it("should dispatch an error notification action", () => {
-          const mocked = mockNotifyError(sandbox);
+          const mocked = mockNotifyError();
           updateCollection.throw("error");
-          sinon.assert.calledWith(
-            mocked,
+          expect(mocked).toHaveBeenCalledWith(
             "Couldn't update collection.",
             "error"
           );
@@ -636,7 +637,7 @@ describe("bucket sagas", () => {
       });
 
       it("should delete the collection", () => {
-        expect(deleteCollection.next().value).eql(
+        expect(deleteCollection.next().value).toStrictEqual(
           call([bucket, bucket.deleteCollection], "collection", {
             safe: true,
             last_modified: 42,
@@ -645,19 +646,19 @@ describe("bucket sagas", () => {
       });
 
       it("should update the route path", () => {
-        expect(deleteCollection.next().value).eql(
+        expect(deleteCollection.next().value).toStrictEqual(
           put(redirectTo("bucket:collections", { bid: "bucket" }))
         );
       });
 
       it("should dispatch a notification", () => {
-        expect(deleteCollection.next().value).eql(
+        expect(deleteCollection.next().value).toStrictEqual(
           put(notifySuccess("Collection deleted."))
         );
       });
 
       it("should reload the list of buckets/collections", () => {
-        expect(deleteCollection.next().value).eql(
+        expect(deleteCollection.next().value).toStrictEqual(
           put(sessionActions.listBuckets())
         );
       });
@@ -678,9 +679,12 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError(sandbox);
+        const mocked = mockNotifyError();
         deleteCollection.throw("error");
-        sinon.assert.calledWith(mocked, "Couldn't delete collection.", "error");
+        expect(mocked).toHaveBeenCalledWith(
+          "Couldn't delete collection.",
+          "error"
+        );
       });
     });
   });
@@ -701,7 +705,7 @@ describe("bucket sagas", () => {
       });
 
       it("should list the collections", () => {
-        expect(listBucketCollections.next().value).eql(
+        expect(listBucketCollections.next().value).toStrictEqual(
           call([bucket, bucket.listCollections], {
             limit: 200,
           })
@@ -710,9 +714,9 @@ describe("bucket sagas", () => {
 
       it("should dispatch the listBucketCollectionsSuccess action", () => {
         const results = [];
-        expect(listBucketCollections.next({ data: results }).value).eql(
-          put(actions.listBucketCollectionsSuccess(results))
-        );
+        expect(
+          listBucketCollections.next({ data: results }).value
+        ).toStrictEqual(put(actions.listBucketCollectionsSuccess(results)));
       });
     });
 
@@ -726,10 +730,9 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError(sandbox);
+        const mocked = mockNotifyError();
         listBucketCollections.throw("error");
-        sinon.assert.calledWith(
-          mocked,
+        expect(mocked).toHaveBeenCalledWith(
           "Couldn't list bucket collections.",
           "error"
         );
@@ -754,7 +757,7 @@ describe("bucket sagas", () => {
       });
 
       it("should list the history", () => {
-        expect(listHistory.next().value).eql(
+        expect(listHistory.next().value).toStrictEqual(
           call([bucket, bucket.listHistory], {
             filters: {
               resource_name: undefined,
@@ -767,7 +770,7 @@ describe("bucket sagas", () => {
 
       it("should dispatch the listBucketHistorySuccess action", () => {
         const results = [];
-        expect(listHistory.next({ data: results }).value).eql(
+        expect(listHistory.next({ data: results }).value).toStrictEqual(
           put(actions.listBucketHistorySuccess(results))
         );
       });
@@ -777,7 +780,7 @@ describe("bucket sagas", () => {
           resource_name: "bucket",
         });
         const historySaga = saga.listHistory(() => ({}), action);
-        expect(historySaga.next().value).eql(
+        expect(historySaga.next().value).toStrictEqual(
           call([bucket, bucket.listHistory], {
             filters: {
               resource_name: "bucket",
@@ -799,10 +802,9 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError(sandbox);
+        const mocked = mockNotifyError();
         listHistory.throw("error");
-        sinon.assert.calledWith(
-          mocked,
+        expect(mocked).toHaveBeenCalledWith(
           "Couldn't list bucket history.",
           "error"
         );
@@ -822,7 +824,7 @@ describe("bucket sagas", () => {
     });
 
     it("should fetch the next history page", () => {
-      expect(listNextHistory.next().value).eql(call(fakeNext));
+      expect(listNextHistory.next().value).toStrictEqual(call(fakeNext));
     });
 
     it("should dispatch the listBucketHistorySuccess action", () => {
@@ -832,7 +834,9 @@ describe("bucket sagas", () => {
           hasNextPage: true,
           next: fakeNext,
         }).value
-      ).eql(put(actions.listBucketHistorySuccess([], true, fakeNext)));
+      ).toStrictEqual(
+        put(actions.listBucketHistorySuccess([], true, fakeNext))
+      );
     });
   });
 
@@ -852,7 +856,7 @@ describe("bucket sagas", () => {
       });
 
       it("should post the collection data", () => {
-        expect(createGroup.next().value).eql(
+        expect(createGroup.next().value).toStrictEqual(
           call([bucket, bucket.createGroup], "group", groupData.members, {
             data: groupData,
             safe: true,
@@ -861,7 +865,7 @@ describe("bucket sagas", () => {
       });
 
       it("should update the route path", () => {
-        expect(createGroup.next().value).eql(
+        expect(createGroup.next().value).toStrictEqual(
           put(
             redirectTo("bucket:groups", {
               bid: "bucket",
@@ -871,7 +875,7 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch a notification", () => {
-        expect(createGroup.next().value).eql(
+        expect(createGroup.next().value).toStrictEqual(
           put(notifySuccess("Group created."))
         );
       });
@@ -896,9 +900,9 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError(sandbox);
+        const mocked = mockNotifyError();
         createGroup.throw("error");
-        sinon.assert.calledWith(mocked, "Couldn't create group.", "error");
+        expect(mocked).toHaveBeenCalledWith("Couldn't create group.", "error");
       });
     });
   });
@@ -927,7 +931,7 @@ describe("bucket sagas", () => {
         });
 
         it("should post the group data", () => {
-          expect(updateGroup.next().value).eql(
+          expect(updateGroup.next().value).toStrictEqual(
             call(
               [bucket, bucket.updateGroup],
               {
@@ -940,7 +944,7 @@ describe("bucket sagas", () => {
         });
 
         it("should update the route path", () => {
-          expect(updateGroup.next().value).eql(
+          expect(updateGroup.next().value).toStrictEqual(
             put(
               redirectTo("bucket:groups", {
                 bid: "bucket",
@@ -950,7 +954,7 @@ describe("bucket sagas", () => {
         });
 
         it("should dispatch a notification", () => {
-          expect(updateGroup.next().value).eql(
+          expect(updateGroup.next().value).toStrictEqual(
             put(notifySuccess("Group attributes updated."))
           );
         });
@@ -969,9 +973,12 @@ describe("bucket sagas", () => {
           );
           updateGroup.next();
 
-          const mocked = mockNotifyError(sandbox);
+          const mocked = mockNotifyError();
           updateGroup.throw("error");
-          sinon.assert.calledWith(mocked, "Couldn't update group.", "error");
+          expect(mocked).toHaveBeenCalledWith(
+            "Couldn't update group.",
+            "error"
+          );
         });
       });
     });
@@ -1000,7 +1007,7 @@ describe("bucket sagas", () => {
         });
 
         it("should post new group permissions", () => {
-          expect(updateGroup.next().value).eql(
+          expect(updateGroup.next().value).toStrictEqual(
             call([bucket, bucket.updateGroup], loadedGroup, {
               permissions: { a: 1 },
               safe: true,
@@ -1010,7 +1017,7 @@ describe("bucket sagas", () => {
         });
 
         it("should update the route path", () => {
-          expect(updateGroup.next().value).eql(
+          expect(updateGroup.next().value).toStrictEqual(
             put(
               redirectTo("group:permissions", {
                 bid: "bucket",
@@ -1021,7 +1028,7 @@ describe("bucket sagas", () => {
         });
 
         it("should dispatch a notification", () => {
-          expect(updateGroup.next().value).eql(
+          expect(updateGroup.next().value).toStrictEqual(
             put(notifySuccess("Group permissions updated."))
           );
         });
@@ -1045,9 +1052,12 @@ describe("bucket sagas", () => {
         });
 
         it("should dispatch an error notification action", () => {
-          const mocked = mockNotifyError(sandbox);
+          const mocked = mockNotifyError();
           updateGroup.throw("error");
-          sinon.assert.calledWith(mocked, "Couldn't update group.", "error");
+          expect(mocked).toHaveBeenCalledWith(
+            "Couldn't update group.",
+            "error"
+          );
         });
       });
     });
@@ -1074,7 +1084,7 @@ describe("bucket sagas", () => {
       });
 
       it("should delete the group", () => {
-        expect(deleteGroup.next().value).eql(
+        expect(deleteGroup.next().value).toStrictEqual(
           call([bucket, bucket.deleteGroup], "group", {
             safe: true,
             last_modified: 42,
@@ -1083,13 +1093,13 @@ describe("bucket sagas", () => {
       });
 
       it("should update the route path", () => {
-        expect(deleteGroup.next().value).eql(
+        expect(deleteGroup.next().value).toStrictEqual(
           put(redirectTo("bucket:groups", { bid: "bucket" }))
         );
       });
 
       it("should dispatch a notification", () => {
-        expect(deleteGroup.next().value).eql(
+        expect(deleteGroup.next().value).toStrictEqual(
           put(notifySuccess("Group deleted."))
         );
       });
@@ -1110,9 +1120,9 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError(sandbox);
+        const mocked = mockNotifyError();
         deleteGroup.throw("error");
-        sinon.assert.calledWith(mocked, "Couldn't delete group.", "error");
+        expect(mocked).toHaveBeenCalledWith("Couldn't delete group.", "error");
       });
     });
   });

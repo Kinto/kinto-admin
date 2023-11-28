@@ -1,5 +1,3 @@
-import { expect } from "chai";
-
 import group from "../../src/reducers/group";
 import {
   GROUP_BUSY,
@@ -13,9 +11,10 @@ import {
 describe("group reducer", () => {
   describe("GROUP_BUSY", () => {
     it("should update the busy flag", () => {
-      expect(group(undefined, { type: GROUP_BUSY, busy: true }))
-        .to.have.property("busy")
-        .eql(true);
+      expect(group(undefined, { type: GROUP_BUSY, busy: true })).toHaveProperty(
+        "busy",
+        true
+      );
     });
   });
 
@@ -23,15 +22,15 @@ describe("group reducer", () => {
     it("should reset group state", () => {
       const initial = group(undefined, { type: null });
       const altered = group(initial, { type: GROUP_BUSY, busy: true });
-      expect(group(altered, { type: GROUP_RESET })).eql(initial);
+      expect(group(altered, { type: GROUP_RESET })).toStrictEqual(initial);
     });
   });
 
   describe("ROUTE_LOAD_REQUEST", () => {
     it("should set the busy flag", () => {
-      expect(group({ busy: false }, { type: ROUTE_LOAD_REQUEST }))
-        .to.have.property("busy")
-        .eql(true);
+      expect(
+        group({ busy: false }, { type: ROUTE_LOAD_REQUEST })
+      ).toHaveProperty("busy", true);
     });
   });
 
@@ -39,7 +38,9 @@ describe("group reducer", () => {
     it("should preserve state when no group is passed", () => {
       const initial = group(undefined, { type: null });
 
-      expect(group(undefined, { type: ROUTE_LOAD_SUCCESS })).eql(initial);
+      expect(group(undefined, { type: ROUTE_LOAD_SUCCESS })).toStrictEqual(
+        initial
+      );
     });
 
     it("should update state when a group is passed", () => {
@@ -51,16 +52,20 @@ describe("group reducer", () => {
         },
       });
 
-      expect(state.data).eql({ id: "grp", foo: "bar", last_modified: 42 });
-      expect(state.permissions).eql({ read: ["a"], write: ["b"] });
+      expect(state.data).toStrictEqual({
+        id: "grp",
+        foo: "bar",
+        last_modified: 42,
+      });
+      expect(state.permissions).toStrictEqual({ read: ["a"], write: ["b"] });
     });
   });
 
   describe("ROUTE_LOAD_FAILURE", () => {
     it("should clear the busy flag", () => {
-      expect(group({ busy: true }, { type: ROUTE_LOAD_FAILURE }))
-        .to.have.property("busy")
-        .eql(false);
+      expect(
+        group({ busy: true }, { type: ROUTE_LOAD_FAILURE })
+      ).toHaveProperty("busy", false);
     });
   });
 
@@ -84,10 +89,10 @@ describe("group reducer", () => {
 
       const state = group(initial, action);
 
-      expect(state.history.entries).eql([1, 2, 3]);
-      expect(state.history.loaded).eql(true);
-      expect(state.history.hasNextPage).eql(true);
-      expect(state.history.next).eql(fakeNext);
+      expect(state.history.entries).toStrictEqual([1, 2, 3]);
+      expect(state.history.loaded).toBe(true);
+      expect(state.history.hasNextPage).toBe(true);
+      expect(state.history.next).toBe(fakeNext);
     });
   });
 });

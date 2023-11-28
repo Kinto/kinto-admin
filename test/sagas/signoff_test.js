@@ -1,6 +1,4 @@
-import { expect } from "chai";
 import { call, put } from "redux-saga/effects";
-
 import { notifySuccess } from "../../src/actions/notifications";
 import { routeLoadSuccess } from "../../src/actions/route";
 import { setClient } from "../../src/client";
@@ -59,7 +57,9 @@ describe("Signoff sagas", () => {
       it("should do nothing if current collection is not configured", () => {
         const action = collection_actions.listRecords("bid", "cid", "");
         const result = saga.onCollectionRecordsRequest(getState, action);
-        expect(result.next().value).eql(put(actions.workflowInfo(null)));
+        expect(result.next().value).toStrictEqual(
+          put(actions.workflowInfo(null))
+        );
       });
 
       it("should pick resource for current collection if source matches", () => {
@@ -69,7 +69,7 @@ describe("Signoff sagas", () => {
           ""
         );
         const result = saga.onCollectionRecordsRequest(getState, action);
-        expect(result.next().value).eql(
+        expect(result.next().value).toStrictEqual(
           put(
             actions.workflowInfo({
               source: {
@@ -112,7 +112,7 @@ describe("Signoff sagas", () => {
 
         const result = saga.onCollectionRecordsRequest(getState, action);
         result.next().value; // put(), tested above
-        expect(result.next().value).eql(
+        expect(result.next().value).toStrictEqual(
           call(saga.fetchSourceAttributes, {
             bucket: "stage",
             collection: "source-plugins",
@@ -146,7 +146,7 @@ describe("Signoff sagas", () => {
             cid: "dest-plugins",
           },
         };
-        expect(result.next(fetchSourceAttributesResult).value).eql(
+        expect(result.next(fetchSourceAttributesResult).value).toStrictEqual(
           put(actions.workflowInfo(workflowInfo))
         );
 
@@ -156,7 +156,7 @@ describe("Signoff sagas", () => {
           updated: 2,
           deleted: 0,
         };
-        expect(result.next().value).eql(
+        expect(result.next().value).toStrictEqual(
           call(
             saga.fetchChangesInfo,
             {
@@ -174,7 +174,7 @@ describe("Signoff sagas", () => {
           changesOnPreview: changesListResult,
           changesOnSource: null,
         };
-        expect(result.next(changesListResult).value).eql(
+        expect(result.next(changesListResult).value).toStrictEqual(
           put(actions.workflowInfo(workflowInfoWithChanges))
         );
       });
@@ -182,7 +182,7 @@ describe("Signoff sagas", () => {
       it("should pick resource for current collection if bucket matches", () => {
         const action = collection_actions.listRecords("stage", "cid", "");
         const result = saga.onCollectionRecordsRequest(getState, action);
-        expect(result.next().value).eql(
+        expect(result.next().value).toStrictEqual(
           put(
             actions.workflowInfo({
               source: {
@@ -238,10 +238,12 @@ describe("Signoff sagas", () => {
       });
 
       it("should update the collection status as 'to-review'", () => {
-        expect(handleRequestReview.next({ id: "coll" }).value)
-          .to.have.property("payload")
-          .to.have.property("args")
-          .to.deep.include({ status: "to-review", last_editor_comment: ":)" });
+        expect(handleRequestReview.next({ id: "coll" }).value).toHaveProperty(
+          "payload.args",
+          expect.arrayContaining([
+            { status: "to-review", last_editor_comment: ":)" },
+          ])
+        );
       });
 
       it("should refresh signoff resources status", () => {
@@ -249,10 +251,12 @@ describe("Signoff sagas", () => {
           handleRequestReview.next({
             data: { id: "coll", status: "to-review" },
           }).value
-        )
-          .to.have.property("payload")
-          .to.have.property("args")
-          .to.deep.include(collection_actions.listRecords("buck", "coll"));
+        ).toHaveProperty(
+          "payload.args",
+          expect.arrayContaining([
+            collection_actions.listRecords("buck", "coll"),
+          ])
+        );
       });
 
       it("should dispatch the routeLoadSuccess action", () => {
@@ -260,7 +264,7 @@ describe("Signoff sagas", () => {
           handleRequestReview.next({
             data: { id: "coll", status: "to-review" },
           }).value
-        ).eql(
+        ).toStrictEqual(
           put(
             routeLoadSuccess({
               bucket: { data: { id: "buck" } },
@@ -274,7 +278,7 @@ describe("Signoff sagas", () => {
       });
 
       it("should dispatch a success notification", () => {
-        expect(handleRequestReview.next().value).eql(
+        expect(handleRequestReview.next().value).toStrictEqual(
           put(notifySuccess("Review requested."))
         );
       });
@@ -289,13 +293,15 @@ describe("Signoff sagas", () => {
       });
 
       it("should update the collection status as 'work-in-progress'", () => {
-        expect(handleDeclineChanges.next({ id: "coll" }).value)
-          .to.have.property("payload")
-          .to.have.property("args")
-          .to.deep.include({
-            status: "work-in-progress",
-            last_reviewer_comment: ":(",
-          });
+        expect(handleDeclineChanges.next({ id: "coll" }).value).toHaveProperty(
+          "payload.args",
+          expect.arrayContaining([
+            {
+              status: "work-in-progress",
+              last_reviewer_comment: ":(",
+            },
+          ])
+        );
       });
 
       it("should refresh signoff resources status", () => {
@@ -303,10 +309,12 @@ describe("Signoff sagas", () => {
           handleDeclineChanges.next({
             data: { id: "coll", status: "work-in-progress" },
           }).value
-        )
-          .to.have.property("payload")
-          .to.have.property("args")
-          .to.deep.include(collection_actions.listRecords("buck", "coll"));
+        ).toHaveProperty(
+          "payload.args",
+          expect.arrayContaining([
+            collection_actions.listRecords("buck", "coll"),
+          ])
+        );
       });
 
       it("should dispatch the routeLoadSuccess action", () => {
@@ -314,7 +322,7 @@ describe("Signoff sagas", () => {
           handleDeclineChanges.next({
             data: { id: "coll", status: "work-in-progress" },
           }).value
-        ).eql(
+        ).toStrictEqual(
           put(
             routeLoadSuccess({
               bucket: { data: { id: "buck" } },
@@ -328,7 +336,7 @@ describe("Signoff sagas", () => {
       });
 
       it("should dispatch a success notification", () => {
-        expect(handleDeclineChanges.next().value).eql(
+        expect(handleDeclineChanges.next().value).toStrictEqual(
           put(notifySuccess("Changes declined."))
         );
       });
@@ -343,10 +351,12 @@ describe("Signoff sagas", () => {
       });
 
       it("should update the collection status as 'to-sign'", () => {
-        expect(handleApproveChanges.next({ id: "coll" }).value)
-          .to.have.property("payload")
-          .to.have.property("args")
-          .to.deep.include({ status: "to-sign", last_reviewer_comment: "" });
+        expect(handleApproveChanges.next({ id: "coll" }).value).toHaveProperty(
+          "payload.args",
+          expect.arrayContaining([
+            { status: "to-sign", last_reviewer_comment: "" },
+          ])
+        );
       });
 
       it("should refresh signoff resources status", () => {
@@ -354,10 +364,12 @@ describe("Signoff sagas", () => {
           handleApproveChanges.next({
             data: { id: "coll", status: "to-sign" },
           }).value
-        )
-          .to.have.property("payload")
-          .to.have.property("args")
-          .to.deep.include(collection_actions.listRecords("buck", "coll"));
+        ).toHaveProperty(
+          "payload.args",
+          expect.arrayContaining([
+            collection_actions.listRecords("buck", "coll"),
+          ])
+        );
       });
 
       it("should dispatch the routeLoadSuccess action", () => {
@@ -365,7 +377,7 @@ describe("Signoff sagas", () => {
           handleApproveChanges.next({
             data: { id: "coll", status: "to-sign" },
           }).value
-        ).eql(
+        ).toStrictEqual(
           put(
             routeLoadSuccess({
               bucket: { data: { id: "buck" } },
@@ -379,7 +391,7 @@ describe("Signoff sagas", () => {
       });
 
       it("should dispatch a success notification", () => {
-        expect(handleApproveChanges.next().value).eql(
+        expect(handleApproveChanges.next().value).toStrictEqual(
           put(notifySuccess("Signature requested."))
         );
       });
@@ -394,13 +406,15 @@ describe("Signoff sagas", () => {
       });
 
       it("should update the collection status as 'to-rollback'", () => {
-        expect(handleRollbackChanges.next({ id: "coll" }).value)
-          .to.have.property("payload")
-          .to.have.property("args")
-          .to.deep.include({
-            status: "to-rollback",
-            last_editor_comment: "start over",
-          });
+        expect(handleRollbackChanges.next({ id: "coll" }).value).toHaveProperty(
+          "payload.args",
+          expect.arrayContaining([
+            {
+              status: "to-rollback",
+              last_editor_comment: "start over",
+            },
+          ])
+        );
       });
 
       it("should refresh signoff resources status", () => {
@@ -408,10 +422,12 @@ describe("Signoff sagas", () => {
           handleRollbackChanges.next({
             data: { id: "coll", status: "to-rollback" },
           }).value
-        )
-          .to.have.property("payload")
-          .to.have.property("args")
-          .to.deep.include(collection_actions.listRecords("buck", "coll"));
+        ).toHaveProperty(
+          "payload.args",
+          expect.arrayContaining([
+            collection_actions.listRecords("buck", "coll"),
+          ])
+        );
       });
 
       it("should dispatch the routeLoadSuccess action", () => {
@@ -419,7 +435,7 @@ describe("Signoff sagas", () => {
           handleRollbackChanges.next({
             data: { id: "coll", status: "to-rollback" },
           }).value
-        ).eql(
+        ).toStrictEqual(
           put(
             routeLoadSuccess({
               bucket: { data: { id: "buck" } },
@@ -433,7 +449,7 @@ describe("Signoff sagas", () => {
       });
 
       it("should dispatch a success notification", () => {
-        expect(handleRollbackChanges.next().value).eql(
+        expect(handleRollbackChanges.next().value).toStrictEqual(
           put(notifySuccess("Changes were rolled back."))
         );
       });

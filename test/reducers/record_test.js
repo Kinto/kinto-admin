@@ -1,5 +1,3 @@
-import { expect } from "chai";
-
 import record from "../../src/reducers/record";
 import {
   RECORD_BUSY,
@@ -17,33 +15,33 @@ import {
 describe("record reducer", () => {
   describe("busy flag", () => {
     it("RECORD_BUSY", () => {
-      expect(record({ busy: false }, { type: RECORD_BUSY, busy: true }))
-        .to.have.property("busy")
-        .eql(true);
+      expect(
+        record({ busy: false }, { type: RECORD_BUSY, busy: true })
+      ).toHaveProperty("busy", true);
     });
 
     it("ROUTE_LOAD_REQUEST", () => {
-      expect(record({ busy: false }, { type: ROUTE_LOAD_REQUEST }))
-        .to.have.property("busy")
-        .eql(true);
+      expect(
+        record({ busy: false }, { type: ROUTE_LOAD_REQUEST })
+      ).toHaveProperty("busy", true);
     });
 
     it("RECORD_CREATE_REQUEST", () => {
-      expect(record({ busy: false }, { type: RECORD_CREATE_REQUEST }))
-        .to.have.property("busy")
-        .eql(true);
+      expect(
+        record({ busy: false }, { type: RECORD_CREATE_REQUEST })
+      ).toHaveProperty("busy", true);
     });
 
     it("RECORD_UPDATE_REQUEST", () => {
-      expect(record({ busy: false }, { type: RECORD_UPDATE_REQUEST }))
-        .to.have.property("busy")
-        .eql(true);
+      expect(
+        record({ busy: false }, { type: RECORD_UPDATE_REQUEST })
+      ).toHaveProperty("busy", true);
     });
 
     it("RECORD_DELETE_REQUEST", () => {
-      expect(record({ busy: false }, { type: RECORD_DELETE_REQUEST }))
-        .to.have.property("busy")
-        .eql(true);
+      expect(
+        record({ busy: false }, { type: RECORD_DELETE_REQUEST })
+      ).toHaveProperty("busy", true);
     });
   });
 
@@ -51,7 +49,9 @@ describe("record reducer", () => {
     it("should preserve state when no record is passed", () => {
       const initial = record(undefined, { type: null });
 
-      expect(record(undefined, { type: ROUTE_LOAD_SUCCESS })).eql(initial);
+      expect(record(undefined, { type: ROUTE_LOAD_SUCCESS })).toStrictEqual(
+        initial
+      );
     });
 
     it("should update state when a record is passed", () => {
@@ -63,16 +63,20 @@ describe("record reducer", () => {
         },
       });
 
-      expect(state.data).eql({ id: "uuid", foo: "bar", last_modified: 42 });
-      expect(state.permissions).eql({ read: ["a"], write: ["b"] });
+      expect(state.data).toStrictEqual({
+        id: "uuid",
+        foo: "bar",
+        last_modified: 42,
+      });
+      expect(state.permissions).toStrictEqual({ read: ["a"], write: ["b"] });
     });
   });
 
   describe("ROUTE_LOAD_FAILURE", () => {
     it("should clear the busy flag", () => {
-      expect(record({ busy: true }, { type: ROUTE_LOAD_FAILURE }))
-        .to.have.property("busy")
-        .eql(false);
+      expect(
+        record({ busy: true }, { type: ROUTE_LOAD_FAILURE })
+      ).toHaveProperty("busy", false);
     });
   });
 
@@ -93,7 +97,7 @@ describe("record reducer", () => {
           },
           { type: RECORD_RESET }
         )
-      ).eql(initial);
+      ).toStrictEqual(initial);
     });
   });
 
@@ -102,7 +106,7 @@ describe("record reducer", () => {
       const state = record(undefined, {
         type: RECORD_HISTORY_REQUEST,
       });
-      expect(state.history.loaded).eql(false);
+      expect(state.history.loaded).toBe(false);
     });
   });
 
@@ -126,10 +130,10 @@ describe("record reducer", () => {
 
       const state = record(initial, action);
 
-      expect(state.history.entries).eql([1, 2, 3]);
-      expect(state.history.loaded).eql(true);
-      expect(state.history.hasNextPage).eql(true);
-      expect(state.history.next).eql(fakeNext);
+      expect(state.history.entries).toStrictEqual([1, 2, 3]);
+      expect(state.history.loaded).toBe(true);
+      expect(state.history.hasNextPage).toBe(true);
+      expect(state.history.next).toBe(fakeNext);
     });
   });
 });

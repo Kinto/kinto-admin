@@ -1,7 +1,3 @@
-import { expect } from "chai";
-
-import { createSandbox } from "../test_utils";
-
 import { configureAppStoreAndHistory } from "../../src/store/configureStore";
 import * as routeSagas from "../../src/sagas/route";
 import * as sessionSagas from "../../src/sagas/session";
@@ -16,28 +12,24 @@ function expectSagaCalled(saga, action) {
   // Note: the rootSaga function is called by configureStore
   const { store } = configureAppStoreAndHistory();
   store.dispatch(action);
-
-  expect(saga.firstCall.args[0].name).eql("bound getState");
-  expect(saga.firstCall.args[1]).eql(action);
+  expect(saga.mock.calls[0][0].name).toBe("bound getState");
+  expect(saga.mock.calls[0][1]).toStrictEqual(action);
 }
 
 describe("root saga", () => {
-  let sandbox;
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
 
   beforeEach(() => {
-    sandbox = createSandbox();
     // To match the behavior of older versions of redux-saga, we're ignoring
     // calls to console.error from these tests.
     jest.spyOn(console, "error").mockImplementation(() => {});
   });
 
-  afterEach(() => {
-    sandbox.restore();
-  });
-
   describe("Route watchers registration", () => {
     it("should watch for the setup action", () => {
-      const saga = sandbox.stub(routeSagas, "routeUpdated");
+      const saga = jest.spyOn(routeSagas, "routeUpdated");
       const action = routeActions.routeUpdated();
 
       expectSagaCalled(saga, action);
@@ -46,14 +38,14 @@ describe("root saga", () => {
 
   describe("Session watchers registration", () => {
     it("should watch for the setup action", () => {
-      const saga = sandbox.stub(sessionSagas, "setupSession");
+      const saga = jest.spyOn(sessionSagas, "setupSession");
       const action = sessionActions.setupSession();
 
       expectSagaCalled(saga, action);
     });
 
     it("should watch for the listBuckets action", () => {
-      const saga = sandbox.stub(sessionSagas, "listBuckets");
+      const saga = jest.spyOn(sessionSagas, "listBuckets");
       const action = sessionActions.listBuckets();
 
       expectSagaCalled(saga, action);
@@ -62,63 +54,63 @@ describe("root saga", () => {
 
   describe("Bucket watchers registration", () => {
     it("should watch for the createBucket action", () => {
-      const saga = sandbox.stub(bucketSagas, "createBucket");
+      const saga = jest.spyOn(bucketSagas, "createBucket");
       const action = bucketActions.createBucket();
 
       expectSagaCalled(saga, action);
     });
 
     it("should watch for the updateBucket action", () => {
-      const saga = sandbox.stub(bucketSagas, "updateBucket");
+      const saga = jest.spyOn(bucketSagas, "updateBucket");
       const action = bucketActions.updateBucket();
 
       expectSagaCalled(saga, action);
     });
 
     it("should watch for the deleteBucket action", () => {
-      const saga = sandbox.stub(bucketSagas, "deleteBucket");
+      const saga = jest.spyOn(bucketSagas, "deleteBucket");
       const action = bucketActions.deleteBucket();
 
       expectSagaCalled(saga, action);
     });
 
     it("should watch for the createCollection action", () => {
-      const saga = sandbox.stub(bucketSagas, "createCollection");
+      const saga = jest.spyOn(bucketSagas, "createCollection");
       const action = bucketActions.createCollection();
 
       expectSagaCalled(saga, action);
     });
 
     it("should watch for the updateCollection action", () => {
-      const saga = sandbox.stub(bucketSagas, "updateCollection");
+      const saga = jest.spyOn(bucketSagas, "updateCollection");
       const action = bucketActions.updateCollection();
 
       expectSagaCalled(saga, action);
     });
 
     it("should watch for the deleteCollection action", () => {
-      const saga = sandbox.stub(bucketSagas, "deleteCollection");
+      const saga = jest.spyOn(bucketSagas, "deleteCollection");
       const action = bucketActions.deleteCollection();
 
       expectSagaCalled(saga, action);
     });
 
     it("should watch for the listBucketCollections action", () => {
-      const saga = sandbox.stub(bucketSagas, "listBucketCollections");
+      const saga = jest.spyOn(bucketSagas, "listBucketCollections");
       const action = bucketActions.listBucketCollections();
 
       expectSagaCalled(saga, action);
     });
 
     it("should watch for the listHistory action", () => {
-      const saga = sandbox.stub(bucketSagas, "listHistory");
+      const saga = jest.spyOn(bucketSagas, "listHistory");
       const action = bucketActions.listBucketHistory();
 
       expectSagaCalled(saga, action);
     });
 
     it("should watch for the listNextHistory action", () => {
-      const saga = sandbox.stub(bucketSagas, "listNextHistory");
+      const saga = jest.spyOn(bucketSagas, "listNextHistory");
       const action = bucketActions.listBucketNextHistory();
 
       expectSagaCalled(saga, action);
@@ -127,56 +119,56 @@ describe("root saga", () => {
 
   describe("Collection watchers registration", () => {
     it("should watch for the listRecords action", () => {
-      const saga = sandbox.stub(collectionSagas, "listRecords");
+      const saga = jest.spyOn(collectionSagas, "listRecords");
       const action = collectionActions.listRecords();
 
       expectSagaCalled(saga, action);
     });
 
     it("should watch for the createRecord action", () => {
-      const saga = sandbox.stub(collectionSagas, "createRecord");
+      const saga = jest.spyOn(collectionSagas, "createRecord");
       const action = collectionActions.createRecord();
 
       expectSagaCalled(saga, action);
     });
 
     it("should watch for the updateRecord action", () => {
-      const saga = sandbox.stub(collectionSagas, "updateRecord");
+      const saga = jest.spyOn(collectionSagas, "updateRecord");
       const action = collectionActions.updateRecord();
 
       expectSagaCalled(saga, action);
     });
 
     it("should watch for the deleteRecord action", () => {
-      const saga = sandbox.stub(collectionSagas, "deleteRecord");
+      const saga = jest.spyOn(collectionSagas, "deleteRecord");
       const action = collectionActions.deleteRecord();
 
       expectSagaCalled(saga, action);
     });
 
     it("should watch for the deleteAttachment action", () => {
-      const saga = sandbox.stub(collectionSagas, "deleteAttachment");
+      const saga = jest.spyOn(collectionSagas, "deleteAttachment");
       const action = collectionActions.deleteAttachment();
 
       expectSagaCalled(saga, action);
     });
 
     it("should watch for the bulkCreateRecords action", () => {
-      const saga = sandbox.stub(collectionSagas, "bulkCreateRecords");
+      const saga = jest.spyOn(collectionSagas, "bulkCreateRecords");
       const action = collectionActions.bulkCreateRecords();
 
       expectSagaCalled(saga, action);
     });
 
     it("should watch for the listHistory action", () => {
-      const saga = sandbox.stub(collectionSagas, "listHistory");
+      const saga = jest.spyOn(collectionSagas, "listHistory");
       const action = collectionActions.listCollectionHistory();
 
       expectSagaCalled(saga, action);
     });
 
     it("should watch for the listNextHistory action", () => {
-      const saga = sandbox.stub(collectionSagas, "listNextHistory");
+      const saga = jest.spyOn(collectionSagas, "listNextHistory");
       const action = collectionActions.listCollectionNextHistory();
 
       expectSagaCalled(saga, action);

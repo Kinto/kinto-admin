@@ -1,5 +1,3 @@
-import { expect } from "chai";
-
 import url from "../src/url";
 
 describe("url", () => {
@@ -10,10 +8,10 @@ describe("url", () => {
         cid: "collection",
         rid: "record",
       })
-    ).eql("/buckets/bucket/collections/collection/records/record/permissions");
+    ).toBe("/buckets/bucket/collections/collection/records/record/permissions");
   });
 
   it("should raise an error if the route name does not exist", () => {
-    expect(() => url("nope")).to.Throw(Error, /Unknown URL/);
+    expect(() => url("nope")).toThrow(Error, /Unknown URL/);
   });
 });

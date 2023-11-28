@@ -1,7 +1,3 @@
-import sinon from "sinon";
-
-import { createSandbox } from "./test_utils";
-
 import { onBucketHistoryEnter } from "../src/components/bucket/BucketHistory";
 import { onCollectionHistoryEnter } from "../src/components/collection/CollectionHistory";
 import { onGroupHistoryEnter } from "../src/components/group/GroupHistory";
@@ -20,52 +16,52 @@ describe("Routes onEnter", () => {
     getState() {},
   };
 
-  let sandbox;
-
   beforeEach(() => {
-    sandbox = createSandbox();
-    sandbox.stub(store, "dispatch");
+    jest.spyOn(store, "dispatch");
   });
 
   afterEach(() => {
-    sandbox.restore();
+    jest.resetAllMocks();
   });
 
   describe("Buckets history", () => {
     it("should dispatch load history", () => {
-      const listBucketHistory = sandbox.spy();
+      const listBucketHistory = jest.fn();
       onBucketHistoryEnter({
         ...props,
         listBucketHistory: listBucketHistory,
       });
-      sinon.assert.calledWith(listBucketHistory, "bid");
+      expect(listBucketHistory).toHaveBeenCalledWith(
+        "bid",
+        expect.objectContaining({ since: expect.stringMatching(/./) })
+      );
     });
   });
 
   describe("Collections history", () => {
     it("should dispatch load history", () => {
-      const listCollectionHistory = sandbox.spy();
+      const listCollectionHistory = jest.fn();
       onCollectionHistoryEnter({
         ...props,
         listCollectionHistory: listCollectionHistory,
       });
-      sinon.assert.calledWith(listCollectionHistory, "bid", "cid", filters);
+      expect(listCollectionHistory).toHaveBeenCalledWith("bid", "cid", filters);
     });
   });
 
   describe("Groups history", () => {
     it("should dispatch load history", () => {
-      const listGroupHistory = sandbox.spy();
+      const listGroupHistory = jest.fn();
       onGroupHistoryEnter({ ...props, listGroupHistory: listGroupHistory });
-      sinon.assert.calledWith(listGroupHistory, "bid", "gid");
+      expect(listGroupHistory).toHaveBeenCalledWith("bid", "gid");
     });
   });
 
   describe("Records history", () => {
     it("should dispatch load history", () => {
-      const listRecordHistory = sandbox.spy();
+      const listRecordHistory = jest.fn();
       onRecordHistoryEnter({ ...props, listRecordHistory: listRecordHistory });
-      sinon.assert.calledWith(listRecordHistory, "bid", "cid", "rid");
+      expect(listRecordHistory).toHaveBeenCalledWith("bid", "cid", "rid");
     });
   });
 });

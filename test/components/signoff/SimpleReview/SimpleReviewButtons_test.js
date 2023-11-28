@@ -1,7 +1,6 @@
-import { renderWithProvider } from "../../../test_utils";
+import React from "react";
 import { fireEvent } from "@testing-library/react";
-import * as React from "react";
-
+import { renderWithProvider } from "../../../test_utils";
 import SimpleReviewButtons from "../../../../src/components/signoff/SimpleReview/SimpleReviewButtons";
 
 function renderButtons(props = null) {

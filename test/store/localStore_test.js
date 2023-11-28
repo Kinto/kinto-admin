@@ -1,5 +1,3 @@
-import { expect } from "chai";
-
 import * as localStore from "../../src/store/localStore";
 import { ANONYMOUS_AUTH } from "../../src/constants";
 
@@ -10,7 +8,7 @@ describe("localStore", () => {
     });
 
     it("should load initial servers", () => {
-      expect(localStore.loadServers()).eql([]);
+      expect(localStore.loadServers()).toStrictEqual([]);
     });
 
     it("should load legacy servers", () => {
@@ -19,7 +17,7 @@ describe("localStore", () => {
         HISTORY_KEY,
         JSON.stringify(["someServer", "otherServer"])
       );
-      expect(localStore.loadServers()).eql([
+      expect(localStore.loadServers()).toStrictEqual([
         { server: "someServer", authType: ANONYMOUS_AUTH },
         { server: "otherServer", authType: ANONYMOUS_AUTH },
       ]);
@@ -31,7 +29,7 @@ describe("localStore", () => {
         { server: "bar", authType: ANONYMOUS_AUTH },
       ]);
 
-      expect(localStore.loadServers()).eql([
+      expect(localStore.loadServers()).toStrictEqual([
         { server: "foo", authType: ANONYMOUS_AUTH },
         { server: "bar", authType: ANONYMOUS_AUTH },
       ]);
@@ -40,7 +38,7 @@ describe("localStore", () => {
     it("should clear servers", () => {
       localStore.clearServers();
 
-      expect(localStore.loadServers()).eql([]);
+      expect(localStore.loadServers()).toStrictEqual([]);
     });
   });
 
@@ -59,19 +57,22 @@ describe("localStore", () => {
     });
 
     it("should load initial session", () => {
-      expect(localStore.loadSession()).eql(null);
+      expect(localStore.loadSession()).toBeNull();
     });
 
     it("should save and load session with the buckets emptied", () => {
       localStore.saveSession(session);
 
-      expect(localStore.loadSession()).eql({ ...session, buckets: [] });
+      expect(localStore.loadSession()).toStrictEqual({
+        ...session,
+        buckets: [],
+      });
     });
 
     it("should clear session", () => {
       localStore.clearSession();
 
-      expect(localStore.loadSession()).eql(null);
+      expect(localStore.loadSession()).toBeNull();
     });
   });
 });

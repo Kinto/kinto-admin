@@ -1,5 +1,3 @@
-import { expect } from "chai";
-
 import notifications from "../../src/reducers/notifications";
 import { NOTIFICATION_ADDED, NOTIFICATION_REMOVED } from "../../src/constants";
 
@@ -10,7 +8,7 @@ describe("notifications reducer", () => {
         type: NOTIFICATION_ADDED,
         notification: 3,
       })
-    ).eql([1, 2, 3]);
+    ).toStrictEqual([1, 2, 3]);
   });
 
   it("NOTIFICATION_REMOVED", () => {
@@ -19,6 +17,6 @@ describe("notifications reducer", () => {
         type: NOTIFICATION_REMOVED,
         index: 1,
       })
-    ).eql([1, 3]);
+    ).toStrictEqual([1, 3]);
   });
 });

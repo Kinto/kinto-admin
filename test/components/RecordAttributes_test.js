@@ -1,24 +1,19 @@
-import { expect } from "chai";
-import sinon from "sinon";
-import { Simulate } from "react-dom/test-utils";
-import * as React from "react";
-
-import { createSandbox, createComponent } from "../test_utils";
-
+import React from "react";
+import { render, fireEvent } from "@testing-library/react";
 import RecordAttributes from "../../src/components/record/RecordAttributes";
 import { clone } from "../../src/utils";
 
+// to avoid rendering a router around everything, allows for more focused testing
+jest.mock("react-router-dom", () => {
+  const originalModule = jest.requireActual("react-router-dom");
+  return {
+    __esModule: true,
+    ...originalModule,
+    Link: "a",
+  };
+});
+
 describe("RecordAttributes component", () => {
-  let sandbox;
-
-  beforeEach(() => {
-    sandbox = createSandbox();
-  });
-
-  afterEach(() => {
-    sandbox.restore();
-  });
-
   const bucket = {
     id: "bucket",
     data: {},
@@ -68,25 +63,24 @@ describe("RecordAttributes component", () => {
     let node, updateRecord;
 
     beforeEach(() => {
-      updateRecord = sinon.spy();
-      node = createComponent(
+      updateRecord = jest.fn();
+      node = render(
         <RecordAttributes {...props} updateRecord={updateRecord} />
-      );
+      ).container;
     });
 
     it("should render a form", () => {
-      expect(node.querySelector("form")).to.exist;
+      expect(node.querySelector("form")).toBeDefined();
     });
 
     it("should submitted entered data", () => {
       const field = node.querySelector("#root_foo");
 
-      expect(field.value).to.eql("bar");
-      Simulate.change(field, { target: { value: "baz" } });
-      Simulate.submit(node.querySelector("form"));
+      expect(field.value).toBe("bar");
+      fireEvent.change(field, { target: { value: "baz" } });
+      fireEvent.submit(node.querySelector("form"));
 
-      sinon.assert.calledWithExactly(
-        updateRecord,
+      expect(updateRecord).toHaveBeenCalledWith(
         "bucket",
         "collection",
         undefined,
@@ -113,21 +107,23 @@ describe("RecordAttributes component", () => {
     };
 
     beforeEach(() => {
-      node = createComponent(
+      node = render(
         <RecordAttributes
           {...props}
           capabilities={{ attachments: { base_url: "" } }}
           record={record}
         />
-      );
+      ).container;
     });
 
     it("should render the attachment info", () => {
-      expect(node.querySelector(".attachment-info")).to.exist;
+      expect(node.querySelector(".attachment-info")).toBeDefined();
     });
 
     it("should show a delete attachment button", () => {
-      expect(node.querySelector(".attachment-action .btn.btn-danger")).to.exist;
+      expect(
+        node.querySelector(".attachment-action .btn.btn-danger")
+      ).toBeDefined();
     });
 
     describe("With Gzipped attachment", () => {
@@ -138,13 +134,13 @@ describe("RecordAttributes component", () => {
       };
 
       beforeEach(() => {
-        node = createComponent(
+        node = render(
           <RecordAttributes
             {...props}
             capabilities={{ attachments: { base_url: "" } }}
             record={gzipped}
           />
-        );
+        ).container;
       });
 
       it("should show original file attributes", () => {
@@ -152,7 +148,7 @@ describe("RecordAttributes component", () => {
           node.querySelector(
             ".attachment-info table:nth-child(2) tr:nth-child(3) td"
           ).textContent
-        ).to.eql("100 kB");
+        ).toBe("100 kB");
       });
     });
   });
@@ -166,22 +162,22 @@ describe("RecordAttributes component", () => {
 
       describe("ID not in UISchema", () => {
         beforeEach(() => {
-          const node = createComponent(
+          const node = render(
             <RecordAttributes {...props} collection={withID} />
-          );
+          ).container;
           field = node.querySelector("#root_id");
         });
 
         it("should load the id value", () => {
-          expect(field.value).to.eql("abc");
+          expect(field.value).toBe("abc");
         });
 
         it("should show a text field", () => {
-          expect(field.getAttribute("type")).to.eql("text");
+          expect(field.getAttribute("type")).toBe("text");
         });
 
         it("should show the id as disabled", () => {
-          expect(field.hasAttribute("disabled")).to.be.true;
+          expect(field.hasAttribute("disabled")).toBe(true);
         });
       });
 
@@ -194,22 +190,22 @@ describe("RecordAttributes component", () => {
         };
 
         beforeEach(() => {
-          const node = createComponent(
+          const node = render(
             <RecordAttributes {...props} collection={withUISchema} />
-          );
+          ).container;
           field = node.querySelector("#root_id");
         });
 
         it("should load the id value", () => {
-          expect(field.value).to.eql("abc");
+          expect(field.value).toBe("abc");
         });
 
         it("should show a custom field", () => {
-          expect(field.tagName.toLowerCase()).to.eql("textarea");
+          expect(field.tagName.toLowerCase()).toBe("textarea");
         });
 
         it("should show the custom widget as disabled", () => {
-          expect(field.hasAttribute("disabled")).to.be.true;
+          expect(field.hasAttribute("disabled")).toBe(true);
         });
       });
     });
@@ -218,13 +214,13 @@ describe("RecordAttributes component", () => {
       let node;
       describe("ID not in UISchema", () => {
         beforeEach(() => {
-          node = createComponent(
+          node = render(
             <RecordAttributes {...props} collection={collection} />
-          );
+          ).container;
         });
 
         it("should not show the id field", () => {
-          expect(node.querySelector("#root_id")).to.not.exist;
+          expect(node.querySelector("#root_id")).toBeNull();
         });
       });
 
@@ -239,14 +235,14 @@ describe("RecordAttributes component", () => {
         };
 
         beforeEach(() => {
-          const node = createComponent(
+          const node = render(
             <RecordAttributes {...props} collection={withUISchema} />
-          );
+          ).container;
           field = node.querySelector("#root_id");
         });
 
         it("should not show the id field", () => {
-          expect(node.querySelector("#root_id")).to.not.exist;
+          expect(node.querySelector("#root_id")).toBeNull();
         });
       });
     });
@@ -267,22 +263,22 @@ describe("RecordAttributes component", () => {
 
       describe("Schema version not in UISchema", () => {
         beforeEach(() => {
-          const node = createComponent(
+          const node = render(
             <RecordAttributes
               {...props}
               collection={withSchemaVersion}
               record={record}
             />
-          );
+          ).container;
           field = node.querySelector("#root_schema");
         });
 
         it("should load the schema value", () => {
-          expect(field.value).to.eql("567890");
+          expect(field.value).toBe("567890");
         });
 
         it("should be a hidden field", () => {
-          expect(field.getAttribute("type")).to.eql("hidden");
+          expect(field.getAttribute("type")).toBe("hidden");
         });
       });
 
@@ -298,26 +294,26 @@ describe("RecordAttributes component", () => {
         };
 
         beforeEach(() => {
-          const node = createComponent(
+          const node = render(
             <RecordAttributes
               {...props}
               collection={withUISchema}
               record={record}
             />
-          );
+          ).container;
           field = node.querySelector("#root_schema");
         });
 
         it("should load the schema value", () => {
-          expect(field.value).to.eql("567890");
+          expect(field.value).toBe("567890");
         });
 
         it("should show a custom field", () => {
-          expect(field.getAttribute("type")).to.eql("text");
+          expect(field.getAttribute("type")).toBe("text");
         });
 
         it("should show the custom widget as disabled", () => {
-          expect(field.hasAttribute("disabled")).to.be.true;
+          expect(field.hasAttribute("disabled")).toBe(true);
         });
       });
     });
@@ -326,17 +322,17 @@ describe("RecordAttributes component", () => {
       let node;
       describe("Schema version not in UISchema", () => {
         beforeEach(() => {
-          node = createComponent(
+          node = render(
             <RecordAttributes
               {...props}
               collection={collection}
               record={record}
             />
-          );
+          ).container;
         });
 
         it("should not show the schema field", () => {
-          expect(node.querySelector("#root_schema")).to.not.exist;
+          expect(node.querySelector("#root_schema")).toBeNull();
         });
       });
 
@@ -352,13 +348,12 @@ describe("RecordAttributes component", () => {
         };
 
         beforeEach(() => {
-          createComponent(
-            <RecordAttributes {...props} collection={withUISchema} />
-          );
+          render(<RecordAttributes {...props} collection={withUISchema} />)
+            .container;
         });
 
         it("should not show the schema field", () => {
-          expect(node.querySelector("#root_schema")).to.not.exist;
+          expect(node.querySelector("#root_schema")).toBeNull();
         });
       });
     });
@@ -380,22 +375,22 @@ describe("RecordAttributes component", () => {
 
       describe("Last modified not in UISchema", () => {
         beforeEach(() => {
-          const node = createComponent(
+          const node = render(
             <RecordAttributes
               {...props}
               collection={withLastmodified}
               record={record}
             />
-          );
+          ).container;
           field = node.querySelector("#root_last_modified");
         });
 
         it("should load the schema value", () => {
-          expect(field.value).to.eql("123");
+          expect(field.value).toBe("123");
         });
 
         it("should be a hidden field", () => {
-          expect(field.getAttribute("type")).to.eql("hidden");
+          expect(field.getAttribute("type")).toBe("hidden");
         });
       });
 
@@ -411,26 +406,26 @@ describe("RecordAttributes component", () => {
         };
 
         beforeEach(() => {
-          const node = createComponent(
+          const node = render(
             <RecordAttributes
               {...props}
               collection={withUISchema}
               record={record}
             />
-          );
+          ).container;
           field = node.querySelector("#root_last_modified");
         });
 
         it("should load the schema value", () => {
-          expect(field.value).to.eql("123");
+          expect(field.value).toBe("123");
         });
 
         it("should show a custom field", () => {
-          expect(field.getAttribute("type")).to.eql("text");
+          expect(field.getAttribute("type")).toBe("text");
         });
 
         it("should show the custom widget as disabled", () => {
-          expect(field.hasAttribute("disabled")).to.be.true;
+          expect(field.hasAttribute("disabled")).toBe(true);
         });
       });
     });
@@ -439,17 +434,17 @@ describe("RecordAttributes component", () => {
       let node;
       describe("Last modified not in UISchema", () => {
         beforeEach(() => {
-          node = createComponent(
+          node = render(
             <RecordAttributes
               {...props}
               collection={collection}
               record={record}
             />
-          );
+          ).container;
         });
 
         it("should not show the schema field", () => {
-          expect(node.querySelector("#root_last_modified")).to.not.exist;
+          expect(node.querySelector("#root_last_modified")).toBeNull();
         });
       });
 
@@ -465,13 +460,12 @@ describe("RecordAttributes component", () => {
         };
 
         beforeEach(() => {
-          createComponent(
-            <RecordAttributes {...props} collection={withUISchema} />
-          );
+          render(<RecordAttributes {...props} collection={withUISchema} />)
+            .container;
         });
 
         it("should not show the schema field", () => {
-          expect(node.querySelector("#root_last_modified")).to.not.exist;
+          expect(node.querySelector("#root_last_modified")).toBeNull();
         });
       });
     });

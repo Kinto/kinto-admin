@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { fireEvent, waitForElementToBeRemoved } from "@testing-library/react";
 import { renderWithProvider, sessionFactory } from "../../../test_utils";
 import SimpleReview from "../../../../src/components/signoff/SimpleReview";

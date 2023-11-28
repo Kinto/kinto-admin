@@ -1,5 +1,3 @@
-import { expect } from "chai";
-
 import bucket from "../../src/reducers/bucket";
 import {
   BUCKET_BUSY,
@@ -17,9 +15,9 @@ import {
 describe("bucket reducer", () => {
   describe("BUCKET_BUSY", () => {
     it("should set the busy flag", () => {
-      expect(bucket(undefined, { type: BUCKET_BUSY, busy: true }))
-        .to.have.property("busy")
-        .eql(true);
+      expect(
+        bucket(undefined, { type: BUCKET_BUSY, busy: true })
+      ).toHaveProperty("busy", true);
     });
   });
 
@@ -27,15 +25,15 @@ describe("bucket reducer", () => {
     it("should reset the state to its initial value", () => {
       const initial = bucket(undefined, { type: null });
       const altered = bucket(initial, { type: BUCKET_BUSY, busy: true });
-      expect(bucket(altered, { type: BUCKET_RESET })).eql(initial);
+      expect(bucket(altered, { type: BUCKET_RESET })).toBe(initial);
     });
   });
 
   describe("ROUTE_LOAD_REQUEST", () => {
     it("should set the busy flag", () => {
-      expect(bucket({ busy: false }, { type: ROUTE_LOAD_REQUEST }))
-        .to.have.property("busy")
-        .eql(true);
+      expect(
+        bucket({ busy: false }, { type: ROUTE_LOAD_REQUEST })
+      ).toHaveProperty("busy", true);
     });
   });
 
@@ -43,7 +41,9 @@ describe("bucket reducer", () => {
     it("should preserve state when no bucket is passed", () => {
       const initial = bucket(undefined, { type: null });
 
-      expect(bucket(undefined, { type: ROUTE_LOAD_SUCCESS })).eql(initial);
+      expect(bucket(undefined, { type: ROUTE_LOAD_SUCCESS })).toStrictEqual(
+        initial
+      );
     });
 
     it("should preserve state when no groups are passed", () => {
@@ -52,9 +52,7 @@ describe("bucket reducer", () => {
           { groups: [{ id: "g1" }] },
           { type: ROUTE_LOAD_SUCCESS, bucket: {} }
         )
-      )
-        .to.have.property("groups")
-        .eql([{ id: "g1" }]);
+      ).toHaveProperty("groups", [{ id: "g1" }]);
     });
 
     it("should update state when a bucket is passed", () => {
@@ -66,16 +64,20 @@ describe("bucket reducer", () => {
         },
       });
 
-      expect(state.data).eql({ id: "buck", foo: "bar", last_modified: 42 });
-      expect(state.permissions).eql({ read: ["a"], write: ["b"] });
+      expect(state.data).toStrictEqual({
+        id: "buck",
+        foo: "bar",
+        last_modified: 42,
+      });
+      expect(state.permissions).toStrictEqual({ read: ["a"], write: ["b"] });
     });
   });
 
   describe("ROUTE_LOAD_FAILURE", () => {
     it("should clear the busy flag", () => {
-      expect(bucket({ busy: true }, { type: ROUTE_LOAD_FAILURE }))
-        .to.have.property("busy")
-        .eql(false);
+      expect(
+        bucket({ busy: true }, { type: ROUTE_LOAD_FAILURE })
+      ).toHaveProperty("busy", false);
     });
   });
 
@@ -84,10 +86,9 @@ describe("bucket reducer", () => {
       const state = { collections: { loaded: true } };
       const action = { type: BUCKET_COLLECTIONS_REQUEST };
 
-      expect(bucket(state, action))
-        .to.have.property("collections")
-        .to.have.property("loaded")
-        .eql(false);
+      const result = bucket(state, action);
+      expect(result).toHaveProperty("collections");
+      expect(result.collections).toHaveProperty("loaded", false);
     });
   });
 
@@ -104,17 +105,13 @@ describe("bucket reducer", () => {
     };
 
     it("should update the list of bucket collections", () => {
-      expect(bucket(state, action))
-        .to.have.property("collections")
-        .to.have.property("entries")
-        .eql(action.entries);
+      const result = bucket(state, action);
+      expect(result).toHaveProperty("collections");
+      expect(result.collections).toHaveProperty("entries", action.entries);
     });
 
     it("should update the collectionsLoaded flag", () => {
-      expect(bucket(state, action))
-        .to.have.property("collections")
-        .to.have.property("loaded")
-        .eql(true);
+      expect(bucket(state, action).collections).toHaveProperty("loaded", true);
     });
   });
 
@@ -122,11 +119,10 @@ describe("bucket reducer", () => {
     it("should update the history loaded flag", () => {
       const state = { historyLoaded: true };
       const action = { type: BUCKET_HISTORY_REQUEST };
+      const result = bucket(state, action);
 
-      expect(bucket(state, action))
-        .to.have.property("history")
-        .to.have.property("loaded")
-        .eql(false);
+      expect(result).toHaveProperty("history");
+      expect(result.history).toHaveProperty("loaded", false);
     });
   });
 
@@ -134,11 +130,10 @@ describe("bucket reducer", () => {
     it("should update the history loaded flag", () => {
       const state = { historyLoaded: true };
       const action = { type: BUCKET_HISTORY_NEXT_REQUEST };
+      const result = bucket(state, action);
 
-      expect(bucket(state, action))
-        .to.have.property("history")
-        .to.have.property("loaded")
-        .eql(false);
+      expect(result).toHaveProperty("history");
+      expect(result.history).toHaveProperty("loaded", false);
     });
   });
 
@@ -158,33 +153,24 @@ describe("bucket reducer", () => {
       hasNextPage: true,
       next: fakeNext,
     };
+    const result = bucket(state, action);
 
     it("should update the list of history", () => {
-      expect(bucket(state, action))
-        .to.have.property("history")
-        .to.have.property("entries")
-        .eql(action.entries);
+      const result = bucket(state, action);
+      expect(result).toHaveProperty("history");
+      expect(result.history).toHaveProperty("entries", action.entries);
     });
 
     it("should update the historyLoaded flag", () => {
-      expect(bucket(state, action))
-        .to.have.property("history")
-        .to.have.property("loaded")
-        .eql(true);
+      expect(result.history).toHaveProperty("loaded", true);
     });
 
     it("should update the hasNextHistory flag", () => {
-      expect(bucket(state, action))
-        .to.have.property("history")
-        .to.have.property("hasNextPage")
-        .eql(true);
+      expect(result.history).toHaveProperty("hasNextPage", true);
     });
 
     it("should update the listNextHistory flag", () => {
-      expect(bucket(state, action))
-        .to.have.property("history")
-        .to.have.property("next")
-        .eql(fakeNext);
+      expect(result.history).toHaveProperty("next", fakeNext);
     });
   });
 });
