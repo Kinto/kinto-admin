@@ -1,5 +1,3 @@
-import { expect } from "chai";
-
 import servers from "../../src/reducers/servers";
 import { SERVERS_ADD, SERVERS_CLEAR } from "../../src/constants";
 import { ANONYMOUS_AUTH } from "../../src/constants";
@@ -13,7 +11,7 @@ describe("server reducer", () => {
           server: "second",
           authType: ANONYMOUS_AUTH,
         })
-      ).eql([
+      ).toStrictEqual([
         { server: "second", authType: ANONYMOUS_AUTH },
         { server: "first", authType: ANONYMOUS_AUTH },
       ]);
@@ -26,7 +24,7 @@ describe("server reducer", () => {
           server: "first",
           authType: ANONYMOUS_AUTH,
         })
-      ).eql([{ server: "first", authType: ANONYMOUS_AUTH }]);
+      ).toStrictEqual([{ server: "first", authType: ANONYMOUS_AUTH }]);
     });
   });
 
@@ -40,7 +38,7 @@ describe("server reducer", () => {
           ],
           { type: SERVERS_CLEAR }
         )
-      ).eql([]);
+      ).toStrictEqual([]);
     });
   });
 });

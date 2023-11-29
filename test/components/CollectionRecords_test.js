@@ -1,6 +1,6 @@
 import { renderWithProvider } from "../test_utils";
 import CollectionRecords from "../../src/components/collection/CollectionRecords";
-import * as React from "react";
+import React from "react";
 
 describe("CollectionRecords component", () => {
   const capabilities = {

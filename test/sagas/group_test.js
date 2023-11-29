@@ -1,24 +1,10 @@
-import sinon from "sinon";
-import { expect } from "chai";
 import { put, call } from "redux-saga/effects";
-
-import { createSandbox, mockNotifyError } from "../test_utils";
-
+import { mockNotifyError } from "../test_utils";
 import * as actions from "../../src/actions/group";
 import * as saga from "../../src/sagas/group";
 import { setClient } from "../../src/client";
 
 describe("group sagas", () => {
-  let sandbox;
-
-  beforeAll(() => {
-    sandbox = createSandbox();
-  });
-
-  afterEach(() => {
-    sandbox.restore();
-  });
-
   describe("listHistory()", () => {
     describe("Success", () => {
       let client, listHistory;
@@ -35,7 +21,7 @@ describe("group sagas", () => {
       });
 
       it("should fetch history on group", () => {
-        expect(listHistory.next().value).eql(
+        expect(listHistory.next().value).toStrictEqual(
           call([client, client.listHistory], {
             filters: {
               group_id: "group",
@@ -48,7 +34,7 @@ describe("group sagas", () => {
       it("should dispatch the listGroupHistorySuccess action", () => {
         const history = [];
         const result = { data: history };
-        expect(listHistory.next(result).value).eql(
+        expect(listHistory.next(result).value).toStrictEqual(
           put(actions.listGroupHistorySuccess(history))
         );
       });
@@ -64,10 +50,9 @@ describe("group sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError(sandbox);
+        const mocked = mockNotifyError();
         listHistory.throw("error");
-        sinon.assert.calledWith(
-          mocked,
+        expect(mocked).toHaveBeenCalledWith(
           "Couldn't list group history.",
           "error"
         );
@@ -87,7 +72,7 @@ describe("group sagas", () => {
     });
 
     it("should fetch the next history page", () => {
-      expect(listNextHistory.next().value).eql(call(fakeNext));
+      expect(listNextHistory.next().value).toStrictEqual(call(fakeNext));
     });
 
     it("should dispatch the listBucketHistorySuccess action", () => {
@@ -97,7 +82,7 @@ describe("group sagas", () => {
           hasNextPage: true,
           next: fakeNext,
         }).value
-      ).eql(put(actions.listGroupHistorySuccess([], true, fakeNext)));
+      ).toStrictEqual(put(actions.listGroupHistorySuccess([], true, fakeNext)));
     });
   });
 });

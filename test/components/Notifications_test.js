@@ -1,36 +1,31 @@
-import { expect } from "chai";
-import sinon from "sinon";
-import { Simulate } from "react-dom/test-utils";
-
-import { createSandbox, createComponent } from "../test_utils";
 import Notifications from "../../src/components/Notifications";
-import * as React from "react";
+import React from "react";
+import { fireEvent, render } from "@testing-library/react";
 
 describe("Notifications component", () => {
-  let sandbox, removeNotification;
+  let removeNotificationParam;
+
+  const removeNotification = idx => {
+    removeNotificationParam = idx;
+  };
 
   beforeEach(() => {
-    sandbox = createSandbox();
-    removeNotification = sandbox.spy();
-  });
-
-  afterEach(() => {
-    sandbox.restore();
+    removeNotificationParam = null;
   });
 
   it("should render an error", () => {
-    const node = createComponent(
+    const node = render(
       <Notifications
         removeNotification={removeNotification}
         notifications={[{ type: "danger", message: "fail" }]}
       />
     );
 
-    expect(node.querySelectorAll(".alert")).to.have.a.lengthOf(1);
+    expect(node.container.querySelectorAll(".alert")).toHaveLength(1);
   });
 
   it("should render multiple notifications", () => {
-    const node = createComponent(
+    const node = render(
       <Notifications
         removeNotification={removeNotification}
         notifications={[
@@ -41,25 +36,27 @@ describe("Notifications component", () => {
     );
 
     expect(
-      [].map.call(node.querySelectorAll(".alert h4"), n => n.textContent)
-    ).eql(["info", "fail"]);
+      [].map.call(
+        node.container.querySelectorAll(".alert h4"),
+        n => n.textContent
+      )
+    ).toStrictEqual(["info", "fail"]);
   });
 
   it("should remove a single notif when the list has one", () => {
-    const node = createComponent(
+    const node = render(
       <Notifications
         removeNotification={removeNotification}
         notifications={[{ type: "info", message: "plop" }]}
       />
     );
 
-    Simulate.click(node.querySelector(".close"));
-
-    sinon.assert.calledWith(removeNotification, 0);
+    fireEvent.click(node.getByTitle("Dismiss"));
+    expect(removeNotificationParam).toBe(0);
   });
 
   it("should remove a single notif when the list has two", () => {
-    const node = createComponent(
+    const node = render(
       <Notifications
         removeNotification={removeNotification}
         notifications={[
@@ -69,8 +66,7 @@ describe("Notifications component", () => {
       />
     );
     // second notification close button clicked
-    Simulate.click(node.querySelectorAll(".close")[1]);
-
-    sinon.assert.calledWith(removeNotification, 1);
+    fireEvent.click(node.getAllByTitle("Dismiss")[1]);
+    expect(removeNotificationParam).toBe(1);
   });
 });

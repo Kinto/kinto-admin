@@ -1,11 +1,9 @@
-import { expect } from "chai";
-import { createComponent } from "../../../test_utils";
-
 import PerRecordDiffView, {
   findChangeTypes,
   ChangeType,
 } from "../../../../src/components/signoff/SimpleReview/PerRecordDiffView";
-import * as React from "react";
+import React from "react";
+import { render } from "@testing-library/react";
 
 function renderSimpleReview(props = null) {
   const mergedProps = {
@@ -18,7 +16,7 @@ function renderSimpleReview(props = null) {
     },
     ...props,
   };
-  return createComponent(<PerRecordDiffView {...mergedProps} />);
+  return render(<PerRecordDiffView {...mergedProps} />);
 }
 
 describe("PerRecordDiffView component", () => {
@@ -30,7 +28,7 @@ describe("PerRecordDiffView component", () => {
         cid: "b",
       },
     });
-    expect(node.textContent).to.equal(
+    expect(node.container.textContent).toBe(
       "No changes to review, collection status is signed."
     );
   });
@@ -40,7 +38,7 @@ describe("PerRecordDiffView component", () => {
       oldRecords: [{ id: "foo" }, { id: "bar" }],
       newRecords: [{ id: "foo" }, { id: "baz" }],
     });
-    expect(node.querySelectorAll(".record-diff")).to.have.lengthOf(2);
+    expect(node.queryAllByTestId("record-diff")).toHaveLength(2);
   });
 
   it("should render per-record diffs", () => {
@@ -48,19 +46,23 @@ describe("PerRecordDiffView component", () => {
       oldRecords: [{ id: "foo" }],
       newRecords: [{ id: "foo" }, { id: "bar" }],
     });
-    expect(node.querySelectorAll(".record-diff")).to.have.lengthOf(1);
+    expect(node.queryAllByTestId("record-diff")).toHaveLength(1);
   });
 });
 
 describe("findChangeTypes", () => {
   it("should find added items", () => {
-    expect(findChangeTypes([{ id: "a" }], [{ id: "a" }, { id: "b" }])).eql([
+    expect(
+      findChangeTypes([{ id: "a" }], [{ id: "a" }, { id: "b" }])
+    ).toStrictEqual([
       { id: "b", changeType: ChangeType.ADD, target: { id: "b" } },
     ]);
   });
 
   it("should find removed items", () => {
-    expect(findChangeTypes([{ id: "a" }, { id: "b" }], [{ id: "a" }])).eql([
+    expect(
+      findChangeTypes([{ id: "a" }, { id: "b" }], [{ id: "a" }])
+    ).toStrictEqual([
       { id: "b", changeType: ChangeType.REMOVE, source: { id: "b" } },
     ]);
   });
@@ -71,7 +73,7 @@ describe("findChangeTypes", () => {
         [{ id: "a" }, { id: "b" }, { id: "c" }, { id: "d" }],
         [{ id: "a" }]
       )
-    ).eql([
+    ).toStrictEqual([
       { id: "b", changeType: ChangeType.REMOVE, source: { id: "b" } },
       { id: "c", changeType: ChangeType.REMOVE, source: { id: "c" } },
       { id: "d", changeType: ChangeType.REMOVE, source: { id: "d" } },
@@ -84,7 +86,7 @@ describe("findChangeTypes", () => {
         [{ id: "a", text: "hello", last_modified: 123 }],
         [{ id: "a", text: "world", last_modified: 456 }]
       )
-    ).eql([
+    ).toStrictEqual([
       {
         id: "a",
         changeType: ChangeType.UPDATE,
@@ -100,7 +102,7 @@ describe("findChangeTypes", () => {
         [{ id: "a", last_modified: 123 }],
         [{ id: "a", last_modified: 456 }]
       )
-    ).eql([
+    ).toStrictEqual([
       {
         id: "a",
         changeType: ChangeType.EMPTY_UPDATE,
@@ -125,7 +127,7 @@ describe("findChangeTypes", () => {
       { id: "e", last_modified: 456 },
     ];
     const [c2, b, , e2] = targets;
-    expect(findChangeTypes(sources, targets)).eql([
+    expect(findChangeTypes(sources, targets)).toStrictEqual([
       { id: "b", changeType: ChangeType.ADD, target: b },
       { id: "c", changeType: ChangeType.UPDATE, source: c, target: c2 },
       { id: "d", changeType: ChangeType.REMOVE, source: d },

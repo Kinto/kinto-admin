@@ -1,33 +1,23 @@
 import React from "react";
-import { expect } from "chai";
-import sinon from "sinon";
-
 import * as localStore from "../../src/store/localStore";
-import { createSandbox, createComponent } from "../test_utils";
+import { renderWithProvider } from "../test_utils";
 import { HomePage } from "../../src/components/HomePage";
 import * as SessionActions from "../../src/actions/session";
 import { sessionFactory } from "../test_utils";
 
 describe("HomePage component", () => {
-  let sandbox;
-
-  beforeEach(() => {
-    sandbox = createSandbox();
-  });
-
   afterEach(() => {
-    sandbox.restore();
     localStore.clearSession();
   });
 
   describe("Authenticating", () => {
-    it("loads a spinner when authenticating", () => {
-      const node = createComponent(<HomePage />, {
+    it("loads a spinner when authenticating", async () => {
+      const node = renderWithProvider(<HomePage />, {
         initialState: {
           session: sessionFactory({ authenticating: true }),
         },
       });
-      expect(node.querySelector(".spinner")).to.be.ok;
+      expect(await node.findByTestId("spinner")).toBeDefined();
     });
   });
 
@@ -38,30 +28,30 @@ describe("HomePage component", () => {
           authType: "anonymous",
           server: "http://server.test/v1",
         };
-        const setupSession = sandbox.spy(SessionActions, "setupSession");
+        const setupSession = jest.spyOn(SessionActions, "setupSession");
         localStore.saveSession({ auth });
-        createComponent(<HomePage />);
-        sinon.assert.calledWithExactly(setupSession, auth);
+        renderWithProvider(<HomePage />);
+        expect(setupSession).toHaveBeenCalledWith(auth);
       });
 
       it("should call getServerInfo if no localStorage session", () => {
-        const getServerInfo = sandbox.spy(SessionActions, "getServerInfo");
-        createComponent(<HomePage />);
-        sinon.assert.calledWithExactly(getServerInfo, {
+        const getServerInfo = jest.spyOn(SessionActions, "getServerInfo");
+        renderWithProvider(<HomePage />);
+        expect(getServerInfo).toHaveBeenCalledWith({
           authType: "anonymous",
-          server: sinon.match.string,
+          server: expect.stringMatching(/./),
         });
       });
     });
 
     describe("After OpenID redirection", () => {
       it("should setup session when component is mounted", () => {
-        const setupSession = sandbox.spy(SessionActions, "setupSession");
+        const setupSession = jest.spyOn(SessionActions, "setupSession");
         const payload =
           "eyJzZXJ2ZXIiOiJodHRwczovL2RlbW8ua2ludG8tc3RvcmFnZS5vcmcvdjEvIiwiYXV0aFR5cGUiOiJvcGVuaWQtYXV0aDAiLCJyZWRpcmVjdFVSTCI6bnVsbH0";
         const token =
           "%7B%22access_token%22%3A%22oXJNgbNayWPKF%22%2C%22id_token%22%3A%22eyJ0eXAd%22%2C%22expires_in%22%3A86400%2C%22token_type%22%3A%22Bearer%22%7D";
-        createComponent(<HomePage />, {
+        renderWithProvider(<HomePage />, {
           initialState: {
             servers: [],
           },
@@ -69,7 +59,7 @@ describe("HomePage component", () => {
           path: "/auth/:payload/:token",
         });
 
-        sinon.assert.calledWithExactly(setupSession, {
+        expect(setupSession).toHaveBeenCalledWith({
           authType: "openid",
           provider: "auth0",
           tokenType: "Bearer",
@@ -81,27 +71,23 @@ describe("HomePage component", () => {
   });
 
   describe("Authenticated", () => {
-    let node;
-
-    beforeAll(() => {
-      node = createComponent(<HomePage />, {
+    it("should render server information heading with default info if it cannot be fetched", () => {
+      const node = renderWithProvider(<HomePage />, {
         initialState: {
-          session: sessionFactory({ serverInfo: { foo: { bar: "baz" } } }),
+          session: sessionFactory({
+            serverInfo: { foo: { bar: "baz" } },
+            auth: { server: "foo", authType: "anonymous" },
+          }),
         },
-      });
-    });
+      }).container;
 
-    it("should render server information heading", () => {
-      expect(node.querySelector(".card-header").textContent).eql(
+      expect(node.querySelector(".card-header").textContent).toBe(
         "Server information"
       );
-    });
 
-    it("should render server information table", () => {
-      expect([].map.call(node.querySelectorAll("th"), x => x.textContent)).eql([
-        "foo",
-        "bar",
-      ]);
+      expect(
+        [].map.call(node.querySelectorAll("th"), x => x.textContent)
+      ).toStrictEqual(["url", "capabilities", "project_name", "project_docs"]);
     });
   });
 });

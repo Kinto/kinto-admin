@@ -1,8 +1,6 @@
-import sinon from "sinon";
-import { expect } from "chai";
 import { put, call } from "redux-saga/effects";
 
-import { createSandbox, mockNotifyError } from "../test_utils";
+import { mockNotifyError } from "../test_utils";
 
 import { notifySuccess } from "../../src/actions/notifications";
 import * as actions from "../../src/actions/collection";
@@ -20,14 +18,8 @@ const recordsWithAttachment = [
 ];
 
 describe("collection sagas", () => {
-  let sandbox;
-
-  beforeAll(() => {
-    sandbox = createSandbox();
-  });
-
   afterEach(() => {
-    sandbox.restore();
+    jest.resetAllMocks();
   });
 
   describe("listRecords()", () => {
@@ -60,7 +52,7 @@ describe("collection sagas", () => {
         });
 
         it("should list collection records", () => {
-          expect(listRecords.next().value).eql(
+          expect(listRecords.next().value).toStrictEqual(
             call([collection, collection.listRecords], {
               sort: "-last_modified",
               limit: 200,
@@ -69,7 +61,7 @@ describe("collection sagas", () => {
         });
 
         it("should dispatch the listRecordsSuccess action", () => {
-          expect(listRecords.next({ data: records }).value).eql(
+          expect(listRecords.next({ data: records }).value).toStrictEqual(
             put(actions.listRecordsSuccess(records))
           );
         });
@@ -87,7 +79,7 @@ describe("collection sagas", () => {
         });
 
         it("should list collection records", () => {
-          expect(listRecords.next().value).eql(
+          expect(listRecords.next().value).toStrictEqual(
             call([collection, collection.listRecords], {
               sort: "title",
               limit: 200,
@@ -96,7 +88,7 @@ describe("collection sagas", () => {
         });
 
         it("should dispatch the listRecordsSuccess action", () => {
-          expect(listRecords.next({ data: records }).value).eql(
+          expect(listRecords.next({ data: records }).value).toStrictEqual(
             put(actions.listRecordsSuccess(records))
           );
         });
@@ -114,7 +106,7 @@ describe("collection sagas", () => {
         });
 
         it("should list collection records", () => {
-          expect(listRecords.next().value).eql(
+          expect(listRecords.next().value).toStrictEqual(
             call([collection, collection.listRecords], {
               sort: "title",
               limit: 200,
@@ -123,7 +115,7 @@ describe("collection sagas", () => {
         });
 
         it("should dispatch the listRecordsSuccess action", () => {
-          expect(listRecords.next({ data: records }).value).eql(
+          expect(listRecords.next({ data: records }).value).toStrictEqual(
             put(actions.listRecordsSuccess(records))
           );
         });
@@ -154,9 +146,9 @@ describe("collection sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError(sandbox);
+        const mocked = mockNotifyError();
         listRecords.throw("error");
-        sinon.assert.calledWith(mocked, "Couldn't list records.", "error");
+        expect(mocked).toHaveBeenCalledWith("Couldn't list records.", "error");
       });
     });
   });
@@ -173,7 +165,7 @@ describe("collection sagas", () => {
       });
 
       it("should list collection records", () => {
-        expect(listNextRecords.next().value).eql(
+        expect(listNextRecords.next().value).toStrictEqual(
           call(collection.listNextRecords)
         );
       });
@@ -181,7 +173,7 @@ describe("collection sagas", () => {
       it("should dispatch the listNextRecordsSuccess action", () => {
         const fakeNext = () => {};
         const result = { data: records, hasNextPage: false, next: fakeNext };
-        expect(listNextRecords.next(result).value).eql(
+        expect(listNextRecords.next(result).value).toStrictEqual(
           put(actions.listRecordsSuccess(records, false, fakeNext, true))
         );
       });
@@ -199,9 +191,12 @@ describe("collection sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError(sandbox);
+        const mocked = mockNotifyError();
         listNextRecords.throw("error");
-        sinon.assert.calledWith(mocked, "Couldn't process next page.", "error");
+        expect(mocked).toHaveBeenCalledWith(
+          "Couldn't process next page.",
+          "error"
+        );
       });
     });
   });
@@ -242,13 +237,13 @@ describe("collection sagas", () => {
       });
 
       it("should create the record", () => {
-        expect(createRecord.next().value).eql(
+        expect(createRecord.next().value).toStrictEqual(
           call([collection, collection.createRecord], record, { safe: true })
         );
       });
 
       it("should update the route path", () => {
-        expect(createRecord.next().value).eql(
+        expect(createRecord.next().value).toStrictEqual(
           put(
             redirectTo("collection:records", {
               bid: "bucket",
@@ -259,13 +254,13 @@ describe("collection sagas", () => {
       });
 
       it("should dispatch a notification", () => {
-        expect(createRecord.next().value).eql(
+        expect(createRecord.next().value).toStrictEqual(
           put(notifySuccess("Record created."))
         );
       });
 
       it("should unmark the current record as busy", () => {
-        expect(createRecord.next().value).eql(
+        expect(createRecord.next().value).toStrictEqual(
           put(recordActions.recordBusy(false))
         );
       });
@@ -295,7 +290,7 @@ describe("collection sagas", () => {
       });
 
       it("should post the attachment", () => {
-        expect(createRecord.next().value).eql(
+        expect(createRecord.next().value).toStrictEqual(
           call([collection, collection.addAttachment], attachment, record, {
             safe: true,
           })
@@ -303,7 +298,7 @@ describe("collection sagas", () => {
       });
 
       it("should update the route path", () => {
-        expect(createRecord.next().value).eql(
+        expect(createRecord.next().value).toStrictEqual(
           put(
             redirectTo("collection:records", {
               bid: "bucket",
@@ -314,13 +309,13 @@ describe("collection sagas", () => {
       });
 
       it("should dispatch a notification", () => {
-        expect(createRecord.next().value).eql(
+        expect(createRecord.next().value).toStrictEqual(
           put(notifySuccess("Record created."))
         );
       });
 
       it("should unmark the current record as busy", () => {
-        expect(createRecord.next().value).eql(
+        expect(createRecord.next().value).toStrictEqual(
           put(recordActions.recordBusy(false))
         );
       });
@@ -339,13 +334,13 @@ describe("collection sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError(sandbox);
+        const mocked = mockNotifyError();
         createRecord.throw("error");
-        sinon.assert.calledWith(mocked, "Couldn't create record.", "error");
+        expect(mocked).toHaveBeenCalledWith("Couldn't create record.", "error");
       });
 
       it("should unmark the current record as busy", () => {
-        expect(createRecord.next().value).eql(
+        expect(createRecord.next().value).toStrictEqual(
           put(recordActions.recordBusy(false))
         );
       });
@@ -397,7 +392,7 @@ describe("collection sagas", () => {
         });
 
         it("should update the record", () => {
-          expect(updateRecord.next().value).eql(
+          expect(updateRecord.next().value).toStrictEqual(
             call(
               [collection, collection.updateRecord],
               {
@@ -412,13 +407,13 @@ describe("collection sagas", () => {
         });
 
         it("should dispatch the resetRecord action", () => {
-          expect(updateRecord.next({ data: record }).value).eql(
+          expect(updateRecord.next({ data: record }).value).toStrictEqual(
             put(recordActions.resetRecord())
           );
         });
 
         it("should update the route path", () => {
-          expect(updateRecord.next().value).eql(
+          expect(updateRecord.next().value).toStrictEqual(
             put(
               redirectTo("collection:records", {
                 bid: "bucket",
@@ -429,13 +424,13 @@ describe("collection sagas", () => {
         });
 
         it("should dispatch a notification", () => {
-          expect(updateRecord.next().value).eql(
+          expect(updateRecord.next().value).toStrictEqual(
             put(notifySuccess("Record attributes updated."))
           );
         });
 
         it("should unmark the current record as busy", () => {
-          expect(updateRecord.next().value).eql(
+          expect(updateRecord.next().value).toStrictEqual(
             put(recordActions.recordBusy(false))
           );
         });
@@ -466,7 +461,7 @@ describe("collection sagas", () => {
         });
 
         it("should update the record", () => {
-          expect(updateRecord.next().value).eql(
+          expect(updateRecord.next().value).toStrictEqual(
             call(
               [collection, collection.updateRecord],
               {
@@ -483,7 +478,7 @@ describe("collection sagas", () => {
         });
 
         it("should update the route path", () => {
-          expect(updateRecord.next().value).eql(
+          expect(updateRecord.next().value).toStrictEqual(
             put(
               redirectTo("record:permissions", {
                 bid: "bucket",
@@ -495,13 +490,13 @@ describe("collection sagas", () => {
         });
 
         it("should dispatch a notification", () => {
-          expect(updateRecord.next().value).eql(
+          expect(updateRecord.next().value).toStrictEqual(
             put(notifySuccess("Record permissions updated."))
           );
         });
 
         it("should unmark the current record as busy", () => {
-          expect(updateRecord.next().value).eql(
+          expect(updateRecord.next().value).toStrictEqual(
             put(recordActions.recordBusy(false))
           );
         });
@@ -523,13 +518,16 @@ describe("collection sagas", () => {
         });
 
         it("should dispatch an error notification action", () => {
-          const mocked = mockNotifyError(sandbox);
+          const mocked = mockNotifyError();
           updateRecord.throw("error");
-          sinon.assert.calledWith(mocked, "Couldn't update record.", "error");
+          expect(mocked).toHaveBeenCalledWith(
+            "Couldn't update record.",
+            "error"
+          );
         });
 
         it("should unmark the current record as busy", () => {
-          expect(updateRecord.next().value).eql(
+          expect(updateRecord.next().value).toStrictEqual(
             put(recordActions.recordBusy(false))
           );
         });
@@ -591,7 +589,7 @@ describe("collection sagas", () => {
         });
 
         it("should update the record with its attachment", () => {
-          expect(updateRecord.next().value).eql(
+          expect(updateRecord.next().value).toStrictEqual(
             call(
               [collection, collection.addAttachment],
               attachment,
@@ -605,13 +603,13 @@ describe("collection sagas", () => {
         });
 
         it("should dispatch the resetRecord action", () => {
-          expect(updateRecord.next({ data: record }).value).eql(
+          expect(updateRecord.next({ data: record }).value).toStrictEqual(
             put(recordActions.resetRecord())
           );
         });
 
         it("should update the route path", () => {
-          expect(updateRecord.next().value).eql(
+          expect(updateRecord.next().value).toStrictEqual(
             put(
               redirectTo("collection:records", {
                 bid: "bucket",
@@ -622,13 +620,13 @@ describe("collection sagas", () => {
         });
 
         it("should dispatch a notification", () => {
-          expect(updateRecord.next().value).eql(
+          expect(updateRecord.next().value).toStrictEqual(
             put(notifySuccess("Record attributes updated."))
           );
         });
 
         it("should unmark the current record as busy", () => {
-          expect(updateRecord.next().value).eql(
+          expect(updateRecord.next().value).toStrictEqual(
             put(recordActions.recordBusy(false))
           );
         });
@@ -643,13 +641,16 @@ describe("collection sagas", () => {
         });
 
         it("should dispatch an error notification action", () => {
-          const mocked = mockNotifyError(sandbox);
+          const mocked = mockNotifyError();
           updateRecord.throw("error");
-          sinon.assert.calledWith(mocked, "Couldn't update record.", "error");
+          expect(mocked).toHaveBeenCalledWith(
+            "Couldn't update record.",
+            "error"
+          );
         });
 
         it("should unmark the current record as busy", () => {
-          expect(updateRecord.next().value).eql(
+          expect(updateRecord.next().value).toStrictEqual(
             put(recordActions.recordBusy(false))
           );
         });
@@ -685,7 +686,7 @@ describe("collection sagas", () => {
       });
 
       it("should delete the record", () => {
-        expect(deleteRecord.next().value).eql(
+        expect(deleteRecord.next().value).toStrictEqual(
           call([collection, collection.deleteRecord], 1, {
             safe: true,
             last_modified: 42,
@@ -696,7 +697,7 @@ describe("collection sagas", () => {
       it("should accept it from the action too", () => {
         const action = actions.deleteRecord("bucket", "collection", 1, 43);
         const deleteSaga = saga.deleteRecord(() => ({}), action);
-        expect(deleteSaga.next().value).eql(
+        expect(deleteSaga.next().value).toStrictEqual(
           call([collection, collection.deleteRecord], 1, {
             safe: true,
             last_modified: 43,
@@ -705,7 +706,7 @@ describe("collection sagas", () => {
       });
 
       it("should update the route path", () => {
-        expect(deleteRecord.next().value).eql(
+        expect(deleteRecord.next().value).toStrictEqual(
           put(
             redirectTo("collection:records", {
               bid: "bucket",
@@ -716,13 +717,13 @@ describe("collection sagas", () => {
       });
 
       it("should dispatch a notification", () => {
-        expect(deleteRecord.next().value).eql(
+        expect(deleteRecord.next().value).toStrictEqual(
           put(notifySuccess("Record deleted."))
         );
       });
 
       it("should unmark the current record as busy", () => {
-        expect(deleteRecord.next().value).eql(
+        expect(deleteRecord.next().value).toStrictEqual(
           put(recordActions.recordBusy(false))
         );
       });
@@ -743,13 +744,13 @@ describe("collection sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError(sandbox);
+        const mocked = mockNotifyError();
         deleteRecord.throw("error");
-        sinon.assert.calledWith(mocked, "Couldn't delete record.", "error");
+        expect(mocked).toHaveBeenCalledWith("Couldn't delete record.", "error");
       });
 
       it("should unmark the current record as busy", () => {
-        expect(deleteRecord.next().value).eql(
+        expect(deleteRecord.next().value).toStrictEqual(
           put(recordActions.recordBusy(false))
         );
       });
@@ -776,19 +777,19 @@ describe("collection sagas", () => {
     });
 
     it("should mark the current collection as busy", () => {
-      expect(deleteAttachment.next().value).eql(
+      expect(deleteAttachment.next().value).toStrictEqual(
         put(actions.collectionBusy(true))
       );
     });
 
     it("should send a request for deleting the record attachment", () => {
-      expect(deleteAttachment.next().value).eql(
+      expect(deleteAttachment.next().value).toStrictEqual(
         call([collection, collection.removeAttachment], "record")
       );
     });
 
     it("should update the route path", () => {
-      expect(deleteAttachment.next().value).eql(
+      expect(deleteAttachment.next().value).toStrictEqual(
         put(
           redirectTo("record:attributes", {
             bid: "bucket",
@@ -800,7 +801,7 @@ describe("collection sagas", () => {
     });
 
     it("should dispatch a notification", () => {
-      expect(deleteAttachment.next().value).eql(
+      expect(deleteAttachment.next().value).toStrictEqual(
         put(notifySuccess("Attachment deleted."))
       );
     });
@@ -847,7 +848,7 @@ describe("collection sagas", () => {
       });
 
       it("should mark the current collection as busy", () => {
-        expect(bulkCreateRecords.next().value).eql(
+        expect(bulkCreateRecords.next().value).toStrictEqual(
           put(actions.collectionBusy(true))
         );
       });
@@ -857,14 +858,14 @@ describe("collection sagas", () => {
 
         // We can't simply test for the passed batch function, so we're testing
         // the provided argument type here.
-        expect(v.payload.args[0]).to.be.a("function");
-        expect(v.payload.args[1]).eql({ aggregate: true });
+        expect(typeof v.payload.args[0]).toBe("function");
+        expect(v.payload.args[1]).toStrictEqual({ aggregate: true });
       });
 
       it("should update the route path", () => {
         expect(
           bulkCreateRecords.next({ published: records, errors: [] }).value
-        ).eql(
+        ).toStrictEqual(
           put(
             redirectTo("collection:records", {
               bid: "bucket",
@@ -875,13 +876,13 @@ describe("collection sagas", () => {
       });
 
       it("should dispatch a notification", () => {
-        expect(bulkCreateRecords.next().value).eql(
+        expect(bulkCreateRecords.next().value).toStrictEqual(
           put(notifySuccess("2 records created."))
         );
       });
 
       it("should unmark the current collection as busy", () => {
-        expect(bulkCreateRecords.next().value).eql(
+        expect(bulkCreateRecords.next().value).toStrictEqual(
           put(actions.collectionBusy(false))
         );
       });
@@ -907,13 +908,13 @@ describe("collection sagas", () => {
       });
 
       it("should mark the current collection as busy", () => {
-        expect(bulkCreateRecords.next().value).eql(
+        expect(bulkCreateRecords.next().value).toStrictEqual(
           put(actions.collectionBusy(true))
         );
       });
 
       it("should send the first attachment", () => {
-        expect(bulkCreateRecords.next().value).eql(
+        expect(bulkCreateRecords.next().value).toStrictEqual(
           call(
             [collection, collection.addAttachment],
             recordsWithAttachment[0].__attachment__,
@@ -923,7 +924,7 @@ describe("collection sagas", () => {
       });
 
       it("should send the second record with no attachment", () => {
-        expect(bulkCreateRecords.next().value).eql(
+        expect(bulkCreateRecords.next().value).toStrictEqual(
           call([collection, collection.createRecord], record2)
         );
       });
@@ -934,7 +935,7 @@ describe("collection sagas", () => {
             published: recordsWithAttachment,
             errors: [],
           }).value
-        ).eql(
+        ).toStrictEqual(
           put(
             redirectTo("collection:records", {
               bid: "bucket",
@@ -945,13 +946,13 @@ describe("collection sagas", () => {
       });
 
       it("should dispatch a notification", () => {
-        expect(bulkCreateRecords.next().value).eql(
+        expect(bulkCreateRecords.next().value).toStrictEqual(
           put(notifySuccess("2 records created."))
         );
       });
 
       it("should unmark the current collection as busy", () => {
-        expect(bulkCreateRecords.next().value).eql(
+        expect(bulkCreateRecords.next().value).toStrictEqual(
           put(actions.collectionBusy(false))
         );
       });
@@ -978,17 +979,17 @@ describe("collection sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError(sandbox);
+        const mocked = mockNotifyError();
         bulkCreateRecords.throw("error");
-        sinon.assert.calledWith(
-          mocked,
+        expect(mocked).toHaveBeenCalledWith(
           "Couldn't create some records.",
-          "error"
+          "error",
+          { details: [] }
         );
       });
 
       it("should unmark the current collection as busy", () => {
-        expect(bulkCreateRecords.next().value).eql(
+        expect(bulkCreateRecords.next().value).toStrictEqual(
           put(actions.collectionBusy(false))
         );
       });
@@ -1016,7 +1017,7 @@ describe("collection sagas", () => {
       });
 
       it("should fetch history on collection", () => {
-        expect(listHistory.next().value).eql(
+        expect(listHistory.next().value).toStrictEqual(
           call([client, client.listHistory], {
             limit: 200,
             filters: {
@@ -1034,7 +1035,7 @@ describe("collection sagas", () => {
           since: 42,
         });
         const historySaga = saga.listHistory(() => ({}), action);
-        expect(historySaga.next().value).eql(
+        expect(historySaga.next().value).toStrictEqual(
           call([client, client.listHistory], {
             filters: {
               resource_name: undefined,
@@ -1053,7 +1054,7 @@ describe("collection sagas", () => {
           exclude_user_id: "plugin:kinto-signer",
         });
         const historySaga = saga.listHistory(() => ({}), action);
-        expect(historySaga.next().value).eql(
+        expect(historySaga.next().value).toStrictEqual(
           call([client, client.listHistory], {
             filters: {
               resource_name: undefined,
@@ -1069,7 +1070,7 @@ describe("collection sagas", () => {
       it("should dispatch the listCollectionHistorySuccess action", () => {
         const history = [];
         const result = { data: history };
-        expect(listHistory.next(result).value).eql(
+        expect(listHistory.next(result).value).toStrictEqual(
           put(actions.listCollectionHistorySuccess(history))
         );
       });
@@ -1090,10 +1091,9 @@ describe("collection sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError(sandbox);
+        const mocked = mockNotifyError();
         listHistory.throw("error");
-        sinon.assert.calledWith(
-          mocked,
+        expect(mocked).toHaveBeenCalledWith(
           "Couldn't list collection history.",
           "error"
         );
@@ -1113,7 +1113,7 @@ describe("collection sagas", () => {
     });
 
     it("should fetch the next history page", () => {
-      expect(listNextHistory.next().value).eql(call(fakeNext));
+      expect(listNextHistory.next().value).toStrictEqual(call(fakeNext));
     });
 
     it("should dispatch the listBucketHistorySuccess action", () => {
@@ -1123,7 +1123,9 @@ describe("collection sagas", () => {
           hasNextPage: true,
           next: fakeNext,
         }).value
-      ).eql(put(actions.listCollectionHistorySuccess([], true, fakeNext)));
+      ).toStrictEqual(
+        put(actions.listCollectionHistorySuccess([], true, fakeNext))
+      );
     });
   });
 });

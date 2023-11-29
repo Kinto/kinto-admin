@@ -1,7 +1,6 @@
 /* Utils for tests. */
 
 import React from "react";
-import sinon from "sinon";
 import ReactDOM from "react-dom";
 import { render } from "@testing-library/react";
 import { Router } from "react-router";
@@ -36,19 +35,10 @@ export function createComponent(
   return domContainer.children.length == 0 ? null : domContainer;
 }
 
-export function createSandbox() {
-  const sandbox = sinon.createSandbox();
-  // Ensure we catch any React warning and mark them as test failures.
-  sandbox.stub(console, "error").callsFake((...args) => {
-    throw new Error(args);
-  });
-  return sandbox;
-}
-
-export function mockNotifyError(sandbox) {
-  return sandbox
-    .stub(notificationsActions, "notifyError")
-    .callsFake((...args) => {
+export function mockNotifyError() {
+  return jest
+    .spyOn(notificationsActions, "notifyError")
+    .mockImplementation((...args) => {
       return args;
     });
 }

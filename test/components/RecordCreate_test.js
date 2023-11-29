@@ -1,24 +1,19 @@
-import { expect } from "chai";
-import sinon from "sinon";
-import { Simulate } from "react-dom/test-utils";
-import * as React from "react";
-
-import { createSandbox, createComponent } from "../test_utils";
-
+import React from "react";
+import { render, fireEvent } from "@testing-library/react";
 import RecordCreate from "../../src/components/record/RecordCreate";
 import { clone } from "../../src/utils";
 
+// to avoid rendering a router around everything, allows for more focused testing
+jest.mock("react-router-dom", () => {
+  const originalModule = jest.requireActual("react-router-dom");
+  return {
+    __esModule: true,
+    ...originalModule,
+    Link: "a",
+  };
+});
+
 describe("RecordCreate component", () => {
-  let sandbox;
-
-  beforeEach(() => {
-    sandbox = createSandbox();
-  });
-
-  afterEach(() => {
-    sandbox.restore();
-  });
-
   const bucket = {
     id: "bucket",
     data: {},
@@ -56,25 +51,24 @@ describe("RecordCreate component", () => {
     };
 
     beforeEach(() => {
-      createRecord = sinon.spy();
-      node = createComponent(
+      createRecord = jest.fn();
+      node = render(
         <RecordCreate {...props} createRecord={createRecord} />
-      );
+      ).container;
     });
 
     it("should render a form", () => {
-      expect(node.querySelector("form")).to.exist;
+      expect(node.querySelector("form")).toBeDefined();
     });
 
     it("should submitted entered data", () => {
-      Simulate.change(node.querySelector("#root_foo"), {
+      fireEvent.change(node.querySelector("#root_foo"), {
         target: { value: "bar" },
       });
 
-      Simulate.submit(node.querySelector("form"));
+      fireEvent.submit(node.querySelector("form"));
 
-      sinon.assert.calledWithExactly(
-        createRecord,
+      expect(createRecord).toHaveBeenCalledWith(
         "bucket",
         "collection",
         { foo: "bar" },
@@ -91,18 +85,18 @@ describe("RecordCreate component", () => {
 
         describe("ID not in UISchema", () => {
           beforeEach(() => {
-            const node = createComponent(
+            const node = render(
               <RecordCreate {...props} collection={withID} />
-            );
+            ).container;
             field = node.querySelector("#root_id");
           });
 
           it("should show a text field", () => {
-            expect(field.getAttribute("type")).to.eql("text");
+            expect(field.getAttribute("type")).toBe("text");
           });
 
           it("should be editable", () => {
-            expect(field.hasAttribute("disabled")).to.be.false;
+            expect(field.hasAttribute("disabled")).toBe(false);
           });
         });
 
@@ -115,18 +109,18 @@ describe("RecordCreate component", () => {
           };
 
           beforeEach(() => {
-            const node = createComponent(
+            const node = render(
               <RecordCreate {...props} collection={withUISchema} />
-            );
+            ).container;
             field = node.querySelector("#root_id");
           });
 
           it("should show a custom field", () => {
-            expect(field.tagName.toLowerCase()).to.eql("textarea");
+            expect(field.tagName.toLowerCase()).toBe("textarea");
           });
 
           it("should be editable", () => {
-            expect(field.hasAttribute("disabled")).to.be.false;
+            expect(field.hasAttribute("disabled")).toBe(false);
           });
         });
       });
@@ -135,13 +129,13 @@ describe("RecordCreate component", () => {
         let node;
         describe("ID not in UISchema", () => {
           beforeEach(() => {
-            node = createComponent(
+            node = render(
               <RecordCreate {...props} collection={collection} />
-            );
+            ).container;
           });
 
           it("should not show the id field", () => {
-            expect(node.querySelector("#root_id")).to.not.exist;
+            expect(node.querySelector("#root_id")).toBeNull();
           });
         });
 
@@ -156,14 +150,14 @@ describe("RecordCreate component", () => {
           };
 
           beforeEach(() => {
-            const node = createComponent(
+            const node = render(
               <RecordCreate {...props} collection={withUISchema} />
-            );
+            ).container;
             field = node.querySelector("#root_id");
           });
 
           it("should not show the id field", () => {
-            expect(node.querySelector("#root_id")).to.not.exist;
+            expect(node.querySelector("#root_id")).toBeNull();
           });
         });
       });

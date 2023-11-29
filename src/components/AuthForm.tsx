@@ -307,8 +307,8 @@ export default function AuthForm({
     serverChange();
   };
 
-  const serverInfoCallback = auth => {
-    getServerInfo(auth);
+  const serverInfoCallback = async auth => {
+    await getServerInfo(auth);
     setshowSpinner(false);
   };
 

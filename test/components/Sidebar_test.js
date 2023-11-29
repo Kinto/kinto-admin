@@ -1,24 +1,12 @@
-import { expect } from "chai";
-
-import { createSandbox, createComponent } from "../test_utils";
+import { renderWithProvider } from "../test_utils";
 import { Sidebar } from "../../src/components/Sidebar";
 import { clone } from "../../src/utils";
-import * as React from "react";
+import React from "react";
 
 describe("Sidebar component", () => {
-  let sandbox;
-
-  beforeEach(() => {
-    sandbox = createSandbox();
-  });
-
-  afterEach(() => {
-    sandbox.restore();
-  });
-
   describe("Not authenticated", () => {
     it("should not render any bucket menus", () => {
-      const node = createComponent(
+      const node = renderWithProvider(
         <Sidebar
           match={{ params: {} }}
           location={{ pathname: "" }}
@@ -27,7 +15,7 @@ describe("Sidebar component", () => {
         { initialState: { session: { authenticated: false } } }
       );
 
-      expect(node.querySelectorAll(".bucket-menu")).to.have.a.lengthOf(0);
+      expect(node.container.querySelectorAll(".bucket-menu")).toHaveLength(0);
     });
   });
 
@@ -56,7 +44,7 @@ describe("Sidebar component", () => {
     const capabilities = { history: {} };
 
     beforeEach(() => {
-      node = createComponent(
+      node = renderWithProvider(
         <Sidebar
           match={{ params }}
           location={location}
@@ -64,11 +52,11 @@ describe("Sidebar component", () => {
         />,
         { initialState: { session } }
       );
-      bucketMenus = node.querySelectorAll(".bucket-menu");
+      bucketMenus = node.container.querySelectorAll(".bucket-menu");
     });
 
     it("should list the user buckets", () => {
-      expect(bucketMenus).to.have.a.lengthOf(2);
+      expect(bucketMenus).toHaveLength(2);
     });
 
     it("should list collections for the first bucket", () => {
@@ -76,7 +64,7 @@ describe("Sidebar component", () => {
         ".collections-menu-entry"
       );
       // Sorted alphabetically.
-      expect([].map.call(collMenus, x => x.textContent)).eql([
+      expect([].map.call(collMenus, x => x.textContent)).toStrictEqual([
         "mycoll",
         "othercoll",
       ]);
@@ -87,7 +75,7 @@ describe("Sidebar component", () => {
         ".collections-menu-entry"
       );
 
-      expect([].map.call(collMenus, x => x.textContent)).eql([
+      expect([].map.call(collMenus, x => x.textContent)).toStrictEqual([
         "bar",
         "baz",
         "foo",
@@ -99,12 +87,12 @@ describe("Sidebar component", () => {
         ".collections-menu-entry"
       )[0];
 
-      expect(targetEntry.classList.contains("active")).eql(true);
+      expect(targetEntry.classList.contains("active")).toBe(true);
     });
 
     describe("Create bucket", () => {
       it("should be shown by default", () => {
-        node = createComponent(
+        node = renderWithProvider(
           <Sidebar
             match={{ params }}
             location={location}
@@ -112,14 +100,14 @@ describe("Sidebar component", () => {
           />,
           { initialState: { session } }
         );
-        expect(node.querySelector(".bucket-create")).to.exist;
+        expect(node.container.querySelector(".bucket-create")).toBeDefined();
       });
 
       it("should be hidden if not allowed", () => {
         const notAllowed = clone(session);
         notAllowed.permissions = [{ resource_name: "root", permissions: [] }];
 
-        node = createComponent(
+        node = renderWithProvider(
           <Sidebar
             match={{ params }}
             location={location}
@@ -127,7 +115,7 @@ describe("Sidebar component", () => {
           />,
           { initialState: { session: notAllowed } }
         );
-        expect(node.querySelector(".bucket-create")).to.not.exist;
+        expect(node.container.querySelector(".bucket-create")).toBeNull();
       });
     });
   });

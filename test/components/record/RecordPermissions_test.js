@@ -1,7 +1,6 @@
-import * as React from "react";
-import { expect } from "chai";
+import React from "react";
 import { RecordPermissions } from "../../../src/components/record/RecordPermissions";
-import { createComponent, sessionFactory } from "../../test_utils";
+import { renderWithProvider, sessionFactory } from "../../test_utils";
 
 describe("RecordPermissions component", () => {
   const route =
@@ -12,25 +11,25 @@ describe("RecordPermissions component", () => {
       session: sessionFactory(),
       record: { busy: false },
     };
-    const node = createComponent(<RecordPermissions />, {
+    const node = renderWithProvider(<RecordPermissions />, {
       initialState,
       route: route,
       path: path,
     });
-    expect(node.querySelector("h1").textContent).to.equal(
+    expect(node.getByText(/Edit.*record permissions/).textContent).toBe(
       "Edit test-bucket/test-collection/test-record record permissions"
     );
   });
-  it("renders a loading spinner when record is busy", () => {
+  it("renders a loading spinner when record is busy", async () => {
     const initialState = {
       session: sessionFactory(),
       record: { busy: true },
     };
-    const node = createComponent(<RecordPermissions />, {
+    const node = renderWithProvider(<RecordPermissions />, {
       initialState,
       route: route,
       path: path,
     });
-    expect(node.querySelector(".spinner")).to.be.ok;
+    expect(await node.findByTestId("spinner")).toBeDefined();
   });
 });

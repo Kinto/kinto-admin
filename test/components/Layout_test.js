@@ -1,42 +1,23 @@
 import React from "react";
-import { expect } from "chai";
-import sinon from "sinon";
-
-import { configureAppStoreAndHistory } from "../../src/store/configureStore";
-import { createSandbox } from "../test_utils";
-import { render } from "@testing-library/react";
-import { Router } from "react-router";
-import { Provider } from "react-redux";
 
 import { Layout } from "../../src/components/Layout";
 import * as sessionActions from "../../src/actions/session";
+import { renderWithProvider } from "../test_utils";
 
 describe("App component", () => {
-  let app, clock, sandbox, store, history;
-
+  let app, store, container;
   beforeEach(() => {
-    sandbox = createSandbox();
-    sandbox.spy(sessionActions, "logout");
-    ({ store, history } = configureAppStoreAndHistory());
-    clock = sinon.useFakeTimers();
-    app = render(
-      <Provider store={store}>
-        <Router history={history}>
-          <Layout />
-        </Router>
-      </Provider>
-    ).container;
+    jest.spyOn(sessionActions, "logout");
+    app, ({ store, container } = renderWithProvider(<Layout />));
   });
 
   afterEach(() => {
-    sessionActions.logout.restore();
-    sandbox.restore();
-    clock.restore();
+    jest.restoreAllMocks();
   });
 
   describe("Session top bar", () => {
     it("should not render a session top bar when not authenticated", () => {
-      expect(app.querySelectorAll(".session-info-bar")).to.have.a.lengthOf(0);
+      expect(container.querySelectorAll(".session-info-bar")).toHaveLength(0);
     });
 
     it("should render a session top bar when anonymous", () => {
@@ -46,10 +27,10 @@ describe("App component", () => {
       };
       store.dispatch(sessionActions.serverInfoSuccess(serverInfo));
       store.dispatch(sessionActions.setAuthenticated());
-      const content = app.textContent;
+      const content = container.textContent;
 
-      expect(content).to.contain("Anonymous");
-      expect(content).to.contain(serverInfo.url);
+      expect(content).toContain("Anonymous");
+      expect(content).toContain(serverInfo.url);
     });
 
     it("should display a link to the server docs", () => {
@@ -63,8 +44,10 @@ describe("App component", () => {
         sessionActions.setAuthenticated({ user: { id: "fxa:abc" } })
       );
 
-      const infoBar = app.querySelector(".session-info-bar a.project-docs");
-      expect(infoBar.href).to.eql(serverInfo.project_docs);
+      const infoBar = container.querySelector(
+        ".session-info-bar a.project-docs"
+      );
+      expect(infoBar.href).toBe(serverInfo.project_docs);
     });
 
     it("should render a session top bar when authenticated", () => {
@@ -83,17 +66,16 @@ describe("App component", () => {
       store.dispatch(sessionActions.setupComplete());
       store.dispatch(sessionActions.setAuthenticated(credentials));
 
-      const infoBar = app.querySelectorAll(".session-info-bar");
-      expect(infoBar.length).to.equal(1);
+      const infoBar = container.querySelectorAll(".session-info-bar");
+      expect(infoBar).toHaveLength(1);
 
       const content = infoBar[0].textContent;
-      expect(content).to.contain(serverInfo.url);
-      expect(content).to.contain(serverInfo.user.id);
-      expect(content).to.not.contain(credentials.password);
+      expect(content).toContain(serverInfo.url);
+      expect(content).toContain(serverInfo.user.id);
+      expect(content).not.toContain(credentials.password);
 
-      app.querySelector(".btn-logout").click();
-      clock.tick();
-      sinon.assert.called(sessionActions.logout);
+      container.querySelector(".btn-logout").click();
+      expect(sessionActions.logout).toHaveBeenCalled();
     });
   });
 });

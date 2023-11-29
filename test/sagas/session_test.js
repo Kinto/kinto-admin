@@ -1,9 +1,6 @@
-import sinon from "sinon";
-import { expect } from "chai";
-import { createSandbox, mockNotifyError } from "../test_utils";
+import { mockNotifyError } from "../test_utils";
 import { push as updatePath } from "redux-first-history";
 import { put, call } from "redux-saga/effects";
-
 import { saveSession, clearSession } from "../../src/store/localStore";
 import * as actions from "../../src/actions/session";
 import * as serversActions from "../../src/actions/servers";
@@ -23,16 +20,6 @@ const authData = {
 };
 
 describe("session sagas", () => {
-  let sandbox;
-
-  beforeAll(() => {
-    sandbox = createSandbox();
-  });
-
-  afterEach(() => {
-    sandbox.restore();
-  });
-
   describe("serverChange()", () => {
     let serverChange, getState;
 
@@ -54,13 +41,13 @@ describe("session sagas", () => {
     });
 
     it("should reset the server info in the state", () => {
-      expect(serverChange.next().value).eql(
+      expect(serverChange.next().value).toStrictEqual(
         put(actions.serverInfoSuccess(DEFAULT_SERVERINFO))
       );
     });
 
     it("should clear the notifications", () => {
-      expect(serverChange.next().value).eql(
+      expect(serverChange.next().value).toStrictEqual(
         put(notificationsActions.clearNotifications({ force: true }))
       );
     });
@@ -92,21 +79,23 @@ describe("session sagas", () => {
       it("should call client.fetchServerInfo", () => {
         const fetchServerInfoCall = getServerInfo.next().value;
         client = getClient();
-        expect(fetchServerInfoCall).eql(call([client, client.fetchServerInfo]));
+        expect(fetchServerInfoCall).toStrictEqual(
+          call([client, client.fetchServerInfo])
+        );
       });
 
       it("should have configured the client", () => {
-        expect(getClient().remote).eql(authData.server);
+        expect(getClient().remote).toBe(authData.server);
       });
 
       it("should send a serverInfoSuccess", () => {
-        expect(getServerInfo.next(serverInfo).value).eql(
+        expect(getServerInfo.next(serverInfo).value).toMatchObject(
           put(actions.serverInfoSuccess(serverInfo))
         );
       });
 
       it("should split the auth if it's openID", () => {
-        const setupClient = sandbox.spy(clientUtils, "setupClient");
+        const setupClient = jest.spyOn(clientUtils, "setupClient");
         const authData = {
           server: "http://server.test/v1",
           authType: "openid-google",
@@ -116,7 +105,7 @@ describe("session sagas", () => {
         action = actions.getServerInfo(authData);
         getServerInfo = saga.getServerInfo(getState, action);
         getServerInfo.next();
-        sinon.assert.calledWithExactly(setupClient, {
+        expect(setupClient).toHaveBeenCalledWith({
           authType: "openid",
           provider: "google",
           tokenType: "Bearer",
@@ -132,17 +121,17 @@ describe("session sagas", () => {
         // the new server fails.
         getServerInfo = saga.getServerInfo(getState, action);
         getServerInfo.next();
-        expect(getServerInfo.throw().value).eql(
+        expect(getServerInfo.throw().value).toStrictEqual(
           put(actions.serverInfoSuccess(DEFAULT_SERVERINFO))
         );
       });
 
       it("should notify the error", () => {
-        const mocked = mockNotifyError(sandbox);
+        const mocked = mockNotifyError();
         getServerInfo.next();
-        sinon.assert.calledWith(
-          mocked,
-          "Could not reach server http://server.test/v1"
+        expect(mocked).toHaveBeenCalledWith(
+          "Could not reach server http://server.test/v1",
+          undefined
         );
       });
     });
@@ -167,22 +156,22 @@ describe("session sagas", () => {
         getServerInfo1.next();
         getServerInfo2.next();
         // Latest to have started is getServerInfo2, it's taken into account.
-        expect(getServerInfo2.next(serverInfo).value).eql(
+        expect(getServerInfo2.next(serverInfo).value).toStrictEqual(
           put(actions.serverInfoSuccess(serverInfo))
         );
         // getServerInfo1 took longer, it's ignored.
-        expect(getServerInfo1.next(serverInfo).value).to.not.exist;
+        expect(getServerInfo1.next(serverInfo).value).not.toBeDefined();
       });
 
       it("should ignore the error of the oldest", () => {
         getServerInfo1.next();
         getServerInfo2.next();
         // Latest to have started is getServerInfo2, it's taken into account.
-        expect(getServerInfo2.next(serverInfo).value).eql(
+        expect(getServerInfo2.next(serverInfo).value).toStrictEqual(
           put(actions.serverInfoSuccess(serverInfo))
         );
         // getServerInfo1 took longer, it's ignored.
-        expect(getServerInfo1.throw().value).to.not.exist;
+        expect(getServerInfo1.throw().value).not.toBeDefined();
       });
     });
   });
@@ -211,35 +200,37 @@ describe("session sagas", () => {
 
     describe("Success", () => {
       it("should call getServerInfo", () => {
-        expect(setupSession.next().value).eql(
+        expect(setupSession.next().value).toStrictEqual(
           call(saga.getServerInfo, getState, actions.getServerInfo(authData))
         );
       });
 
       it("should mark the user as authenticated", () => {
-        expect(setupSession.next(serverInfo).value).eql(
+        expect(setupSession.next(serverInfo).value).toStrictEqual(
           put(actions.setAuthenticated())
         );
       });
 
       it("should add server to recent history", () => {
-        expect(setupSession.next().value).eql(
+        expect(setupSession.next().value).toStrictEqual(
           put(serversActions.addServer("http://server.test/v1", "basicauth"))
         );
       });
 
       it("should retrieve buckets hierarchy", () => {
-        expect(setupSession.next().value).eql(put(actions.listBuckets()));
+        expect(setupSession.next().value).toStrictEqual(
+          put(actions.listBuckets())
+        );
       });
 
       it("should mark the session setup as completed", () => {
-        expect(setupSession.next().value).eql(
+        expect(setupSession.next().value).toStrictEqual(
           put(actions.setupComplete(authData))
         );
       });
 
       it("should notify the success", () => {
-        expect(setupSession.next().value).eql(
+        expect(setupSession.next().value).toStrictEqual(
           put(
             notificationsActions.notifySuccess("Authenticated.", {
               details: ["Basic Auth"],
@@ -268,7 +259,7 @@ describe("session sagas", () => {
         const setupSession = saga.setupSession(getStateOpenID, action);
         setupSession.next();
 
-        expect(setupSession.next(serverInfo).value).eql(
+        expect(setupSession.next(serverInfo).value).toStrictEqual(
           put(actions.setAuthenticated())
         );
       });
@@ -287,14 +278,14 @@ describe("session sagas", () => {
         jest.spyOn(console, "error").mockImplementation(() => {});
         setupSession = saga.setupSession(getState, action);
         setupSession.next(); // call getServerInfo.
-        expect(setupSession.next().value).eql(
+        expect(setupSession.next().value).toStrictEqual(
           put(
             notificationsActions.notifyError("Authentication failed.", {
               message: "Could not authenticate with Basic Auth",
             })
           )
         );
-        expect(setupSession.next().value).eql(
+        expect(setupSession.next().value).toStrictEqual(
           put(actions.authenticationFailed())
         );
       });
@@ -317,11 +308,14 @@ describe("session sagas", () => {
         const action = actions.setupSession(authData);
         const setupSession = saga.setupSession(getState, action);
         setupSession.next(); // call getServerInfo.
-        const mocked = mockNotifyError(sandbox);
+        const mocked = mockNotifyError();
         setupSession.next();
-        sinon.assert.calledWith(mocked, "Authentication failed.", {
-          message: "Could not authenticate with Kinto Account Auth",
-        });
+        expect(mocked).toHaveBeenCalledWith(
+          "Authentication failed.",
+          expect.objectContaining({
+            message: "Could not authenticate with Kinto Account Auth",
+          })
+        );
       });
     });
   });
@@ -357,7 +351,7 @@ describe("session sagas", () => {
 
     describe("Success", () => {
       it("should fetch the list of buckets", () => {
-        expect(listBuckets.next().value).eql(
+        expect(listBuckets.next().value).toStrictEqual(
           call([client, client.listBuckets])
         );
       });
@@ -365,10 +359,10 @@ describe("session sagas", () => {
       it("should batch fetch bucket collections list", () => {
         const buckets = { data: [{ id: "b1" }, { id: "b2" }] };
 
-        expect(listBuckets.next(buckets).value)
-          .to.have.property("payload")
-          .to.have.property("fn")
-          .eql(client.batch);
+        expect(listBuckets.next(buckets).value).toHaveProperty(
+          "payload.fn",
+          client.batch
+        );
       });
 
       it("should fetch the list of permissions", () => {
@@ -377,7 +371,7 @@ describe("session sagas", () => {
           { body: { data: [{ id: "b2c1" }] } },
         ];
 
-        expect(listBuckets.next(responses).value).eql(
+        expect(listBuckets.next(responses).value).toStrictEqual(
           call([client, client.listPermissions], {
             pages: Infinity,
             filters: { exclude_resource_name: "record" },
@@ -396,13 +390,13 @@ describe("session sagas", () => {
             },
           ],
         };
-        expect(listBuckets.next(permissions).value).eql(
+        expect(listBuckets.next(permissions).value).toStrictEqual(
           put(actions.permissionsListSuccess(permissions.data))
         );
       });
 
       it("should dispatch the list of buckets", () => {
-        expect(listBuckets.next().value).eql(
+        expect(listBuckets.next().value).toStrictEqual(
           put(
             actions.bucketsSuccess([
               {
@@ -455,7 +449,9 @@ describe("session sagas", () => {
       });
 
       it("should save the session", () => {
-        expect(listBuckets.next().value).eql(call(saveSession, sessionState));
+        expect(listBuckets.next().value).toStrictEqual(
+          call(saveSession, sessionState)
+        );
       });
 
       describe("Forbidden list of buckets", () => {
@@ -473,20 +469,20 @@ describe("session sagas", () => {
           // listBucket fails with unauthorized error.
           listBuckets.throw(new Error("HTTP 403"));
           // Saga continues without failing.
-          expect(listBuckets.next().value)
-            .to.have.property("payload")
-            .to.have.property("fn")
-            .eql(client.listPermissions);
+          expect(listBuckets.next().value).toHaveProperty(
+            "payload.fn",
+            client.listPermissions
+          );
         });
 
         it("should support 401 errors when fetching list of buckets", () => {
           // listBucket fails with unauthorized error.
           listBuckets.throw(new Error("HTTP 401"));
           // Saga continues without failing.
-          expect(listBuckets.next().value)
-            .to.have.property("payload")
-            .to.have.property("fn")
-            .eql(client.listPermissions);
+          expect(listBuckets.next().value).toHaveProperty(
+            "payload.fn",
+            client.listPermissions
+          );
         });
       });
     });
@@ -502,9 +498,9 @@ describe("session sagas", () => {
 
         const listBuckets = saga.listBuckets(getState, action);
         listBuckets.next();
-        const mocked = mockNotifyError(sandbox);
+        const mocked = mockNotifyError();
         listBuckets.throw("error");
-        sinon.assert.calledWith(mocked, "Couldn't list buckets.", "error");
+        expect(mocked).toHaveBeenCalledWith("Couldn't list buckets.", "error");
       });
     });
   });
@@ -522,21 +518,21 @@ describe("session sagas", () => {
     });
 
     it("should redirect to the homepage", () => {
-      expect(sessionLogout.next().value).eql(put(updatePath("/")));
+      expect(sessionLogout.next().value).toStrictEqual(put(updatePath("/")));
     });
 
     it("should notify users they're logged out", () => {
-      expect(sessionLogout.next().value).eql(
+      expect(sessionLogout.next().value).toStrictEqual(
         put(notificationsActions.notifySuccess("Logged out."))
       );
     });
 
     it("should clear the saved session", () => {
-      expect(sessionLogout.next().value).eql(call(clearSession));
+      expect(sessionLogout.next().value).toStrictEqual(call(clearSession));
     });
 
     it("should reset the client", () => {
-      expect(() => getClient()).to.throw(Error, /not configured/);
+      expect(() => getClient()).toThrow(Error, /not configured/);
     });
   });
 });
@@ -575,34 +571,34 @@ describe("expandBucketsCollections()", () => {
   const tree = saga.expandBucketsCollections(buckets, permissions, 2);
 
   it("should denote a bucket as writable", () => {
-    expect(tree.find(b => b.id === "b4").readonly).to.be.false;
+    expect(tree.find(b => b.id === "b4").readonly).toBe(false);
   });
 
   it("should denote a bucket as readonly", () => {
-    expect(tree.find(b => b.id === "b2").readonly).to.be.true;
+    expect(tree.find(b => b.id === "b2").readonly).toBe(true);
   });
 
   it("should denote a collection as writable", () => {
     const b1c1 = tree
       .find(b => b.id === "b1")
       .collections.find(c => c.id === "b1c1");
-    expect(b1c1.readonly).to.be.false;
+    expect(b1c1.readonly).toBe(false);
   });
 
   it("should denote a collection as readonly", () => {
     const b2c1 = tree
       .find(b => b.id === "b2")
       .collections.find(c => c.id === "b2c1");
-    expect(b2c1.readonly).to.be.true;
+    expect(b2c1.readonly).toBe(true);
   });
 
   it("should infer an implicit bucket", () => {
-    expect(tree.find(b => b.id === "b3").readonly).to.be.true;
+    expect(tree.find(b => b.id === "b3").readonly).toBe(true);
   });
 
   it("should distinguish resource ids", () => {
     const fooBucket = tree.find(b => b.id === "foo");
-    expect(fooBucket).to.exist;
-    expect(fooBucket.collections.find(c => c.id === "foo")).to.exist;
+    expect(fooBucket).toBeDefined();
+    expect(fooBucket.collections.find(c => c.id === "foo")).toBeDefined();
   });
 });

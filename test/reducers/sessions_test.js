@@ -1,5 +1,3 @@
-import { expect } from "chai";
-
 import session from "../../src/reducers/session";
 import {
   SESSION_BUSY,
@@ -29,9 +27,7 @@ describe("session reducer", () => {
         type: SESSION_BUSY,
         busy: true,
       })
-    )
-      .to.have.property("busy")
-      .eql(true);
+    ).toHaveProperty("busy", true);
   });
 
   it("SESSION_SETUP", () => {
@@ -40,9 +36,7 @@ describe("session reducer", () => {
         type: SESSION_SETUP,
         auth,
       })
-    )
-      .to.have.property("authenticating")
-      .eql(true);
+    ).toHaveProperty("authenticating", true);
   });
 
   it("SESSION_SETUP_COMPLETE", () => {
@@ -51,7 +45,7 @@ describe("session reducer", () => {
         type: SESSION_SETUP_COMPLETE,
         auth,
       })
-    ).eql({
+    ).toStrictEqual({
       busy: false,
       authenticating: false,
       authenticated: false,
@@ -84,7 +78,7 @@ describe("session reducer", () => {
       serverInfo,
     });
 
-    expect(state).to.have.property("serverInfo").eql(serverInfo);
+    expect(state).toHaveProperty("serverInfo", serverInfo);
   });
 
   it("SESSION_PERMISSIONS_SUCCESS", () => {
@@ -99,7 +93,7 @@ describe("session reducer", () => {
       permissions,
     });
 
-    expect(state).to.have.property("permissions").eql(permissions);
+    expect(state).toHaveProperty("permissions", permissions);
   });
 
   it("SESSION_BUCKETS_REQUEST", () => {
@@ -107,7 +101,7 @@ describe("session reducer", () => {
       type: SESSION_BUCKETS_REQUEST,
     });
 
-    expect(state).to.have.property("busy").eql(true);
+    expect(state).toHaveProperty("busy", true);
   });
 
   it("SESSION_BUCKETS_SUCCESS", () => {
@@ -118,8 +112,8 @@ describe("session reducer", () => {
       buckets,
     });
 
-    expect(state).to.have.property("buckets").eql(buckets);
-    expect(state).to.have.property("busy").eql(false);
+    expect(state).toHaveProperty("buckets", buckets);
+    expect(state).toHaveProperty("busy", false);
   });
 
   it("SESSION_AUTHENTICATED", () => {
@@ -130,7 +124,7 @@ describe("session reducer", () => {
       }
     );
 
-    expect(state).to.have.property("authenticated").eql(true);
+    expect(state).toHaveProperty("authenticated", true);
   });
 
   it("SESSION_LOGOUT", () => {
@@ -140,8 +134,6 @@ describe("session reducer", () => {
       session(state, {
         type: SESSION_LOGOUT,
       })
-    )
-      .to.have.property("authenticated")
-      .eql(false);
+    ).toHaveProperty("authenticated", false);
   });
 });

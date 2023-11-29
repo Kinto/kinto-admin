@@ -1,5 +1,3 @@
-import { expect } from "chai";
-
 import collection from "../../src/reducers/collection";
 import {
   COLLECTION_BUSY,
@@ -14,15 +12,17 @@ import {
 
 describe("collection reducer", () => {
   it("COLLECTION_BUSY", () => {
-    expect(collection(undefined, { type: COLLECTION_BUSY, busy: true }))
-      .to.have.property("busy")
-      .eql(true);
+    expect(
+      collection(undefined, { type: COLLECTION_BUSY, busy: true })
+    ).toHaveProperty("busy", true);
   });
 
   it("COLLECTION_RESET", () => {
     const initial = collection(undefined, { type: null });
     const altered = collection(initial, { type: COLLECTION_BUSY, busy: true });
-    expect(collection(altered, { type: COLLECTION_RESET })).eql(initial);
+    expect(collection(altered, { type: COLLECTION_RESET })).toStrictEqual(
+      initial
+    );
   });
 
   describe("COLLECTION_RECORDS_REQUEST", () => {
@@ -34,9 +34,7 @@ describe("collection reducer", () => {
             type: COLLECTION_RECORDS_REQUEST,
           }
         )
-      )
-        .to.have.property("recordsLoaded")
-        .eql(false);
+      ).toHaveProperty("recordsLoaded", false);
     });
 
     it("should update the currentSort parameter", () => {
@@ -45,9 +43,7 @@ describe("collection reducer", () => {
           type: COLLECTION_RECORDS_REQUEST,
           sort: "title",
         })
-      )
-        .to.have.property("currentSort")
-        .eql("title");
+      ).toHaveProperty("currentSort", "title");
     });
 
     it("should use default prefered sort when none is provided", () => {
@@ -58,9 +54,7 @@ describe("collection reducer", () => {
             type: COLLECTION_RECORDS_REQUEST,
           }
         )
-      )
-        .to.have.property("currentSort")
-        .eql("plop");
+      ).toHaveProperty("currentSort", "plop");
     });
 
     it("should use default sort when none is provided", () => {
@@ -71,9 +65,7 @@ describe("collection reducer", () => {
             type: COLLECTION_RECORDS_REQUEST,
           }
         )
-      )
-        .to.have.property("currentSort")
-        .eql("-last_modified");
+      ).toHaveProperty("currentSort", "-last_modified");
     });
 
     it("should reset records list when the sort param changes", () => {
@@ -88,17 +80,15 @@ describe("collection reducer", () => {
             sort: "title",
           }
         )
-      )
-        .to.have.property("records")
-        .eql([]);
+      ).toHaveProperty("records", []);
     });
   });
 
   describe("ROUTE_LOAD_REQUEST", () => {
     it("should set the busy flag", () => {
-      expect(collection({ busy: false }, { type: ROUTE_LOAD_REQUEST }))
-        .to.have.property("busy")
-        .eql(true);
+      expect(
+        collection({ busy: false }, { type: ROUTE_LOAD_REQUEST })
+      ).toHaveProperty("busy", true);
     });
   });
 
@@ -106,7 +96,9 @@ describe("collection reducer", () => {
     it("should preserve state when no collection is passed", () => {
       const initial = collection(undefined, { type: null });
 
-      expect(collection(undefined, { type: ROUTE_LOAD_SUCCESS })).eql(initial);
+      expect(collection(undefined, { type: ROUTE_LOAD_SUCCESS })).toStrictEqual(
+        initial
+      );
     });
 
     it("should update state when a collection is passed", () => {
@@ -118,18 +110,18 @@ describe("collection reducer", () => {
         },
       });
 
-      expect(state.data).to.have.property("id").eql("coll");
-      expect(state.data).to.have.property("last_modified").eql(42);
-      expect(state.data).to.have.property("foo").eql("bar");
-      expect(state.permissions).eql({ read: ["a"], write: ["b"] });
+      expect(state.data).toHaveProperty("id", "coll");
+      expect(state.data).toHaveProperty("last_modified", 42);
+      expect(state.data).toHaveProperty("foo", "bar");
+      expect(state.permissions).toStrictEqual({ read: ["a"], write: ["b"] });
     });
   });
 
   describe("ROUTE_LOAD_FAILURE", () => {
     it("should clear the busy flag", () => {
-      expect(collection({ busy: true }, { type: ROUTE_LOAD_FAILURE }))
-        .to.have.property("busy")
-        .eql(false);
+      expect(
+        collection({ busy: true }, { type: ROUTE_LOAD_FAILURE })
+      ).toHaveProperty("busy", false);
     });
   });
 
@@ -146,11 +138,11 @@ describe("collection reducer", () => {
     });
 
     it("should assign received records to state", () => {
-      expect(state.records).eql(records);
+      expect(state.records).toStrictEqual(records);
     });
 
     it("should mark records as loaded", () => {
-      expect(state.recordsLoaded).eql(true);
+      expect(state.recordsLoaded).toBe(true);
     });
 
     it("should append new records received to existing list", () => {
@@ -160,7 +152,7 @@ describe("collection reducer", () => {
         isNextPage: true,
       });
 
-      expect(state2.records).eql([1, 2, 3, 4, 5]);
+      expect(state2.records).toStrictEqual([1, 2, 3, 4, 5]);
     });
 
     it("should pull fresh records when isNextPage is false", () => {
@@ -170,7 +162,7 @@ describe("collection reducer", () => {
         isNextPage: false,
       });
 
-      expect(state2.records).eql([4, 5]);
+      expect(state2.records).toStrictEqual([4, 5]);
     });
   });
 
@@ -194,10 +186,10 @@ describe("collection reducer", () => {
 
       const state = collection(initial, action);
 
-      expect(state.history.entries).eql([1, 2, 3]);
-      expect(state.history.loaded).eql(true);
-      expect(state.history.hasNextPage).eql(true);
-      expect(state.history.next).eql(fakeNext);
+      expect(state.history.entries).toStrictEqual([1, 2, 3]);
+      expect(state.history.loaded).toBe(true);
+      expect(state.history.hasNextPage).toBe(true);
+      expect(state.history.next).toBe(fakeNext);
     });
   });
 });

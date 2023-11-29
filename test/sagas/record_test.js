@@ -1,9 +1,5 @@
-import sinon from "sinon";
-import { expect } from "chai";
 import { put, call } from "redux-saga/effects";
-
-import { createSandbox, mockNotifyError } from "../test_utils";
-
+import { mockNotifyError } from "../test_utils";
 import * as actions from "../../src/actions/record";
 import * as saga from "../../src/sagas/record";
 import { setClient } from "../../src/client";
@@ -29,7 +25,7 @@ describe("record sagas", () => {
       });
 
       it("should fetch history on record", () => {
-        expect(listHistory.next().value).eql(
+        expect(listHistory.next().value).toStrictEqual(
           call([client, client.listHistory], {
             limit: 200,
             filters: {
@@ -43,14 +39,14 @@ describe("record sagas", () => {
       it("should dispatch the listRecordHistorySuccess action", () => {
         const history = [];
         const result = { data: history };
-        expect(listHistory.next(result).value).eql(
+        expect(listHistory.next(result).value).toStrictEqual(
           put(actions.listRecordHistorySuccess(history))
         );
       });
     });
 
     describe("Failure", () => {
-      let listHistory, sandbox;
+      let listHistory;
 
       beforeAll(() => {
         const action = actions.listRecordHistory(
@@ -60,18 +56,13 @@ describe("record sagas", () => {
         );
         listHistory = saga.listHistory(() => ({}), action);
         listHistory.next();
-        sandbox = createSandbox();
-      });
-
-      afterEach(() => {
-        sandbox.restore();
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError(sandbox);
+        const mocked = mockNotifyError();
         listHistory.throw("error");
-        sinon.assert.calledWith(
-          mocked,
+
+        expect(mocked).toHaveBeenCalledWith(
           "Couldn't list record history.",
           "error"
         );
@@ -91,7 +82,7 @@ describe("record sagas", () => {
     });
 
     it("should fetch the next history page", () => {
-      expect(listNextHistory.next().value).eql(call(fakeNext));
+      expect(listNextHistory.next().value).toStrictEqual(call(fakeNext));
     });
 
     it("should dispatch the listBucketHistorySuccess action", () => {
@@ -101,7 +92,9 @@ describe("record sagas", () => {
           hasNextPage: true,
           next: fakeNext,
         }).value
-      ).eql(put(actions.listRecordHistorySuccess([], true, fakeNext)));
+      ).toStrictEqual(
+        put(actions.listRecordHistorySuccess([], true, fakeNext))
+      );
     });
   });
 });

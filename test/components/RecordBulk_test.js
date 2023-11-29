@@ -1,23 +1,18 @@
-import { expect } from "chai";
-import sinon from "sinon";
-import { Simulate } from "react-dom/test-utils";
-
-import { createSandbox, createComponent } from "../test_utils";
-
+import { render, fireEvent } from "@testing-library/react";
 import RecordBulk from "../../src/components/record/RecordBulk";
-import * as React from "react";
+import React from "react";
+
+// to avoid rendering a router around everything, allows for more focused testing
+jest.mock("react-router-dom", () => {
+  const originalModule = jest.requireActual("react-router-dom");
+  return {
+    __esModule: true,
+    ...originalModule,
+    Link: "a",
+  };
+});
 
 describe("RecordBulk component", () => {
-  let sandbox;
-
-  beforeEach(() => {
-    sandbox = createSandbox();
-  });
-
-  afterEach(() => {
-    sandbox.restore();
-  });
-
   describe("Schema defined", () => {
     let node, bulkCreateRecords;
     const collection = {
@@ -34,34 +29,32 @@ describe("RecordBulk component", () => {
     };
 
     beforeEach(() => {
-      bulkCreateRecords = sinon.spy();
-      node = createComponent(
+      bulkCreateRecords = jest.fn();
+      node = render(
         <RecordBulk
           match={{ params: { bid: "bucket", cid: "collection" } }}
           collection={collection}
           bulkCreateRecords={bulkCreateRecords}
         />
-      );
+      ).container;
     });
 
     it("should render a form", () => {
-      expect(node.querySelector("form")).to.exist;
+      expect(node.querySelector("form")).toBeDefined();
     });
 
     it("should submitted entered data", () => {
-      Simulate.change(node.querySelector("#root_0_foo"), {
+      fireEvent.change(node.querySelector("#root_0_foo"), {
         target: { value: "bar1" },
       });
-      Simulate.change(node.querySelector("#root_1_foo"), {
+      fireEvent.change(node.querySelector("#root_1_foo"), {
         target: { value: "bar2" },
       });
-      Simulate.submit(node.querySelector("form"));
-      sinon.assert.calledWithExactly(
-        bulkCreateRecords,
-        "bucket",
-        "collection",
-        [{ foo: "bar1" }, { foo: "bar2" }]
-      );
+      fireEvent.submit(node.querySelector("form"));
+      expect(bulkCreateRecords).toHaveBeenCalledWith("bucket", "collection", [
+        { foo: "bar1" },
+        { foo: "bar2" },
+      ]);
     });
   });
 
