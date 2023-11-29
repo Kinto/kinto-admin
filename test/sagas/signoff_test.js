@@ -54,6 +54,10 @@ describe("Signoff sagas", () => {
         });
       });
 
+      beforeEach(() => {
+        jest.restoreAllMocks();
+      });
+
       it("should do nothing if current collection is not configured", () => {
         const action = collection_actions.listRecords("bid", "cid", "");
         const result = saga.onCollectionRecordsRequest(getState, action);
@@ -200,6 +204,48 @@ describe("Signoff sagas", () => {
             })
           )
         );
+      });
+
+      it("Should catch and log a warning if a 401 response is received", () => {
+        jest.spyOn(actions, "workflowInfo").mockImplementation(() => {
+          const err = new Error("Test error");
+          err.data = {
+            code: 401,
+          };
+          throw err;
+        });
+        jest.spyOn(console, "warn");
+        jest.spyOn(console, "error");
+        const action = collection_actions.listRecords(
+          "stage",
+          "source-plugins",
+          ""
+        );
+        const result = saga.onCollectionRecordsRequest(getState, action);
+        expect(result.next().value).toBeUndefined();
+        expect(console.warn).toHaveBeenCalledTimes(1);
+        expect(console.error).toHaveBeenCalledTimes(0);
+      });
+
+      it("Should catch and log an error if an error (not 401) response is received", () => {
+        jest.spyOn(actions, "workflowInfo").mockImplementation(() => {
+          const err = new Error("Test error");
+          err.data = {
+            code: 500,
+          };
+          throw err;
+        });
+        jest.spyOn(console, "warn");
+        jest.spyOn(console, "error");
+        const action = collection_actions.listRecords(
+          "stage",
+          "source-plugins",
+          ""
+        );
+        const result = saga.onCollectionRecordsRequest(getState, action);
+        expect(result.next().value).toBeUndefined();
+        expect(console.warn).toHaveBeenCalledTimes(0);
+        expect(console.error).toHaveBeenCalledTimes(1);
       });
     });
   });

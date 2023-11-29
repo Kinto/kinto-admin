@@ -102,9 +102,20 @@ export default function SimpleReview({
     // get collection data
     async function getRecords() {
       if (destCid && destBid && sourceBid && sourceCid) {
-        const newRecords = await fetchRecords(sourceBid, sourceCid);
-        const oldRecords = await fetchRecords(destBid, destCid);
-        setRecords({ oldRecords, newRecords, loading: false });
+        try {
+          const newRecords = await fetchRecords(sourceBid, sourceCid);
+          const oldRecords = await fetchRecords(destBid, destCid);
+          setRecords({ oldRecords, newRecords, loading: false });
+        } catch (ex) {
+          if (ex.data?.code === 401) {
+            setRecords({
+              ...records,
+              loading: false,
+            });
+          } else {
+            console.error(ex);
+          }
+        }
       }
     }
     getRecords();
@@ -120,46 +131,35 @@ export default function SimpleReview({
     );
   }
 
-  let message = "";
   if (!session.authenticated) {
-    message = "Not authenticated";
+    return (
+      <div className="simple-review-blocked-message list-page">
+        Not authenticated
+      </div>
+    );
   } else if (
     session.authenticating ||
     session.busy ||
     (records.loading && signoffSource && signoffDest)
   ) {
     return <Spinner />;
-  } else if (!signoffSource || !signoffSource?.status) {
-    message = "This is not a collection that supports reviews.";
   }
-
-  if (message) {
-    return (
-      <div className="simple-review-blocked-message list-page">{message}</div>
-    );
-  }
-
   const handleRollback = (text: string) => {
     rollbackChanges(text);
     history.push(`/buckets/${bid}/collections/${cid}/records`);
   };
 
-  return (
-    <div className="list-page">
-      <h1>
-        Review{" "}
-        <b>
-          {bid}/{cid}
-        </b>{" "}
-        Changes
-      </h1>
-      <CollectionTabs
-        bid={bid}
-        cid={cid}
-        selected="simple-review"
-        capabilities={capabilities || {}}
-        totalRecords={collection?.totalRecords || 0}
-      >
+  const SignoffContent = () => {
+    if (!signoffSource || !signoffSource?.status) {
+      return (
+        <div className="alert alert-warning">
+          This collection does not support reviews, or you do not have
+          permission to review.
+        </div>
+      );
+    }
+    return (
+      <>
         {signoffSource.status !== "signed" && (
           <SimpleReviewHeader {...signoffSource}>
             <SimpleReviewButtons
@@ -190,6 +190,27 @@ export default function SimpleReview({
         >
           <Shuffle className="icon" /> Switch to Legacy Review UI
         </button>
+      </>
+    );
+  };
+
+  return (
+    <div className="list-page">
+      <h1>
+        Review{" "}
+        <b>
+          {bid}/{cid}
+        </b>{" "}
+        Changes
+      </h1>
+      <CollectionTabs
+        bid={bid}
+        cid={cid}
+        selected="simple-review"
+        capabilities={capabilities || {}}
+        totalRecords={collection?.totalRecords || 0}
+      >
+        <SignoffContent />
       </CollectionTabs>
     </div>
   );

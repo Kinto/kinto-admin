@@ -128,8 +128,8 @@ describe("SimpleTest component", () => {
 
   it("should render not reviewable", async () => {
     const node = renderSimpleReview({ signoff: undefined });
-    expect(node.container.textContent).toBe(
-      "This is not a collection that supports reviews."
+    expect(node.getByText(/This collection does not support/).textContent).toBe(
+      "This collection does not support reviews, or you do not have permission to review."
     );
   });
 
@@ -175,6 +175,16 @@ describe("SimpleTest component", () => {
 
     expect(node.queryByText("Rollback")).toBeNull();
     fakeLocation.search = "";
+  });
+
+  it("Should not get stuck showing a spinner if signoff source fails to load", async () => {
+    let node = renderSimpleReview({
+      async fetchRecords() {
+        return [];
+      },
+      signoff: {},
+    });
+    await waitForElementToBeRemoved(() => node.queryByTestId("spinner"));
   });
 
   it("should redirect the user if the legacy review process is enabled", async () => {

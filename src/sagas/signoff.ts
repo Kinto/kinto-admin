@@ -45,106 +45,116 @@ export function* onCollectionRecordsRequest(
   getState: GetStateFn,
   action: ActionType<typeof collectionActions.listRecords>
 ): SagaGen {
-  const { bid, cid } = action;
-  const {
-    session: { serverInfo },
-  } = getState();
-  // See if currently viewed collection is among kinto-remote-settings signer
-  // resources described in server info capabilities.
-  const resource = _pickSignoffResource(serverInfo, bid, cid);
+  try {
+    const { bid, cid } = action;
+    const {
+      session: { serverInfo },
+    } = getState();
+    // See if currently viewed collection is among kinto-remote-settings signer
+    // resources described in server info capabilities.
+    const resource = _pickSignoffResource(serverInfo, bid, cid);
 
-  // Current collection is not configured, no need to proceed.
-  if (!resource) {
-    yield put(SignoffActions.workflowInfo(null));
-    return;
+    // Current collection is not configured, no need to proceed.
+    if (!resource) {
+      yield put(SignoffActions.workflowInfo(null));
+      return;
+    }
+
+    const { source, preview, destination, editors_group, reviewers_group } =
+      resource;
+
+    // Show basic infos for this collection while fetching more details.
+    const basicInfos = {
+      source: { bid: source.bucket, cid: source.collection },
+      destination: { bid: destination.bucket, cid: destination.collection },
+      preview: preview
+        ? { bid: preview.bucket, cid: preview.collection }
+        : null,
+    };
+    yield put(SignoffActions.workflowInfo(basicInfos));
+
+    // Obtain information for workflow (last update, authors, etc).
+    const sourceAttributes = yield call(fetchSourceAttributes, source);
+
+    // Workflow component state.
+
+    const {
+      status,
+      last_edit_by: lastEditBy,
+      last_edit_date: nLastEditDate,
+      last_review_request_by: lastReviewRequestBy,
+      last_review_request_date: nLastReviewRequestDate,
+      last_editor_comment: lastEditorComment,
+      last_review_by: lastReviewBy,
+      last_review_date: nLastReviewDate,
+      last_reviewer_comment: lastReviewerComment,
+      last_signature_by: lastSignatureBy,
+      last_signature_date: nLastSignatureDate,
+    } = sourceAttributes;
+    const lastEditDate = Date.parse(nLastEditDate);
+    const lastReviewRequestDate = Date.parse(nLastReviewRequestDate);
+    const lastReviewDate = Date.parse(nLastReviewDate);
+    const lastSignatureDate = Date.parse(nLastSignatureDate);
+
+    const sourceInfo = {
+      bid: source.bucket,
+      cid: source.collection,
+      lastEditBy,
+      lastEditDate,
+      lastEditorComment,
+      lastReviewRequestBy,
+      lastReviewRequestDate,
+      lastReviewBy,
+      lastReviewDate,
+      lastReviewerComment,
+      lastSignatureBy,
+      lastSignatureDate,
+      status,
+      editors_group,
+      reviewers_group,
+    };
+    const collectionsInfo = {
+      ...basicInfos,
+      source: sourceInfo,
+    };
+    yield put(SignoffActions.workflowInfo(collectionsInfo));
+
+    // If no preview collection / no review enabled: do not fetch changes.
+    if (!preview) {
+      // Note that we don't really have to support collections with preview disabled UI.
+      // The collections with review disabled are very likely to be manipulated by scripts anyway.
+      return;
+    }
+
+    let changesOnSource = null;
+    let changesOnPreview = null;
+
+    // Figure out what was changed on the source collection since review request.
+    // There can be changes on source only if status is work-in-progress.
+    if (sourceAttributes.status == "work-in-progress") {
+      changesOnSource = yield call(fetchChangesInfo, source, preview);
+      // Figure out what was changed on the preview collection since last approval.
+      // Don't bother fetching changes if current collection is signed (no pending changes).
+    } else if (status != "signed") {
+      changesOnPreview = yield call(fetchChangesInfo, source, destination);
+    } else {
+      // Status is signed. No changes to show.
+      return;
+    }
+
+    const collectionsInfoWithChanges = {
+      ...collectionsInfo,
+      changesOnSource,
+      changesOnPreview,
+    };
+    yield put(SignoffActions.workflowInfo(collectionsInfoWithChanges));
+  } catch (ex) {
+    if (ex.data?.code === 401) {
+      console.warn(ex);
+    } else {
+      console.error(ex);
+    }
   }
-
-  const { source, preview, destination, editors_group, reviewers_group } =
-    resource;
-
-  // Show basic infos for this collection while fetching more details.
-  const basicInfos = {
-    source: { bid: source.bucket, cid: source.collection },
-    destination: { bid: destination.bucket, cid: destination.collection },
-    preview: preview ? { bid: preview.bucket, cid: preview.collection } : null,
-  };
-  yield put(SignoffActions.workflowInfo(basicInfos));
-
-  // Obtain information for workflow (last update, authors, etc).
-  const sourceAttributes = yield call(fetchSourceAttributes, source);
-
-  // Workflow component state.
-
-  const {
-    status,
-    last_edit_by: lastEditBy,
-    last_edit_date: nLastEditDate,
-    last_review_request_by: lastReviewRequestBy,
-    last_review_request_date: nLastReviewRequestDate,
-    last_editor_comment: lastEditorComment,
-    last_review_by: lastReviewBy,
-    last_review_date: nLastReviewDate,
-    last_reviewer_comment: lastReviewerComment,
-    last_signature_by: lastSignatureBy,
-    last_signature_date: nLastSignatureDate,
-  } = sourceAttributes;
-  const lastEditDate = Date.parse(nLastEditDate);
-  const lastReviewRequestDate = Date.parse(nLastReviewRequestDate);
-  const lastReviewDate = Date.parse(nLastReviewDate);
-  const lastSignatureDate = Date.parse(nLastSignatureDate);
-
-  const sourceInfo = {
-    bid: source.bucket,
-    cid: source.collection,
-    lastEditBy,
-    lastEditDate,
-    lastEditorComment,
-    lastReviewRequestBy,
-    lastReviewRequestDate,
-    lastReviewBy,
-    lastReviewDate,
-    lastReviewerComment,
-    lastSignatureBy,
-    lastSignatureDate,
-    status,
-    editors_group,
-    reviewers_group,
-  };
-  const collectionsInfo = {
-    ...basicInfos,
-    source: sourceInfo,
-  };
-  yield put(SignoffActions.workflowInfo(collectionsInfo));
-
-  // If no preview collection / no review enabled: do not fetch changes.
-  if (!preview) {
-    // Note that we don't really have to support collections with preview disabled UI.
-    // The collections with review disabled are very likely to be manipulated by scripts anyway.
-    return;
-  }
-
-  let changesOnSource = null;
-  let changesOnPreview = null;
-
-  // Figure out what was changed on the source collection since review request.
-  // There can be changes on source only if status is work-in-progress.
-  if (sourceAttributes.status == "work-in-progress") {
-    changesOnSource = yield call(fetchChangesInfo, source, preview);
-    // Figure out what was changed on the preview collection since last approval.
-    // Don't bother fetching changes if current collection is signed (no pending changes).
-  } else if (status != "signed") {
-    changesOnPreview = yield call(fetchChangesInfo, source, destination);
-  } else {
-    // Status is signed. No changes to show.
-    return;
-  }
-
-  const collectionsInfoWithChanges = {
-    ...collectionsInfo,
-    changesOnSource,
-    changesOnPreview,
-  };
-  yield put(SignoffActions.workflowInfo(collectionsInfoWithChanges));
 }
 
 export async function fetchSourceAttributes(
