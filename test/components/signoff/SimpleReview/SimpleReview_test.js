@@ -198,6 +198,19 @@ describe("SimpleTest component", () => {
     await waitForElementToBeRemoved(() => node.queryByTestId("spinner"));
   });
 
+  it("Should not get stuck showing a spinner fetchRecords throws an error", async () => {
+    let node = renderSimpleReview({
+      async fetchRecords() {
+        const err = new Error("Test error");
+        err.data = {
+          code: 401,
+        };
+        throw err;
+      },
+    });
+    await waitForElementToBeRemoved(() => node.queryByTestId("spinner"));
+  });
+
   it("should redirect the user if the legacy review process is enabled", async () => {
     useLocalStorage.mockReturnValue([false, jest.fn()]);
     const session = sessionFactory();
