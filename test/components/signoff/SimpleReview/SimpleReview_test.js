@@ -186,13 +186,13 @@ describe("SimpleTest component", () => {
         collectionsInfo: {
           source: {
             bid: "test",
-            cid: "test"
+            cid: "test",
           },
           destination: {
             bid: "test",
-            cid: "test"
-          }
-        }
+            cid: "test",
+          },
+        },
       },
     });
     await waitForElementToBeRemoved(() => node.queryByTestId("spinner"));
