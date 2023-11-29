@@ -1,21 +1,6 @@
 import React from "react";
-import { UnControlled as CodeMirror } from "react-codemirror2";
-import "codemirror/mode/javascript/javascript";
-
-const cmOptions = {
-  theme: "default",
-  height: "auto",
-  viewportMargin: Infinity,
-  mode: {
-    name: "javascript",
-    json: true,
-    statementIndent: 2,
-  },
-  lineNumbers: true,
-  lineWrapping: true,
-  indentWithTabs: false,
-  tabSize: 2,
-};
+import CodeMirror, { ViewUpdate } from "@uiw/react-codemirror";
+import { langs } from "@uiw/codemirror-extensions-langs";
 
 type Props = {
   readonly: boolean;
@@ -30,7 +15,7 @@ export default function JSONEditor({
   value,
   onChange,
 }: Props) {
-  const onCodeChange = (editor: Object, metadata: any, code: string) => {
+  const onCodeChange = (code: string, viewUpdate: ViewUpdate) => {
     onChange(code);
   };
 
@@ -39,9 +24,11 @@ export default function JSONEditor({
   ) : (
     <CodeMirror
       value={value}
-      autoCursor={false}
       onChange={onCodeChange}
-      options={cmOptions}
+      height="auto"
+      style={{}}
+      extensions={[langs.json()]}
+      indentWithTab={true}
     />
   );
 }
