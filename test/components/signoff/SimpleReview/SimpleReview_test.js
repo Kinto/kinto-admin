@@ -182,7 +182,18 @@ describe("SimpleTest component", () => {
       async fetchRecords() {
         return [];
       },
-      signoff: {},
+      signoff: {
+        collectionsInfo: {
+          source: {
+            bid: "test",
+            cid: "test"
+          },
+          destination: {
+            bid: "test",
+            cid: "test"
+          }
+        }
+      },
     });
     await waitForElementToBeRemoved(() => node.queryByTestId("spinner"));
   });
