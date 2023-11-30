@@ -153,6 +153,7 @@ export function* onCollectionRecordsRequest(
       console.warn(ex);
     } else {
       console.error(ex);
+      notifyError("Error received when requesting signoff info from server.");
     }
   }
 }
