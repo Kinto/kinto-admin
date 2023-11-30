@@ -1,10 +1,18 @@
 import { call, put } from "redux-saga/effects";
-import { notifySuccess } from "../../src/actions/notifications";
+import { notifySuccess, notifyError } from "../../src/actions/notifications";
 import { routeLoadSuccess } from "../../src/actions/route";
 import { setClient } from "../../src/client";
 import * as actions from "../../src/actions/signoff";
 import * as collection_actions from "../../src/actions/collection";
 import * as saga from "../../src/sagas/signoff";
+
+jest.mock("../../src/actions/notifications", () => {
+  const original = jest.requireActual("../../src/actions/notifications");
+  return {
+    ...original,
+    notifyError: jest.fn(),
+  };
+});
 
 describe("Signoff sagas", () => {
   describe("list hook", () => {
@@ -52,6 +60,10 @@ describe("Signoff sagas", () => {
             },
           },
         });
+      });
+
+      beforeEach(() => {
+        jest.restoreAllMocks();
       });
 
       it("should do nothing if current collection is not configured", () => {
@@ -200,6 +212,50 @@ describe("Signoff sagas", () => {
             })
           )
         );
+      });
+
+      it("Should catch and log a warning if a 401 response is received", () => {
+        jest.spyOn(actions, "workflowInfo").mockImplementation(() => {
+          const err = new Error("Test error");
+          err.data = {
+            code: 401,
+          };
+          throw err;
+        });
+        jest.spyOn(console, "warn");
+        jest.spyOn(console, "error");
+        const action = collection_actions.listRecords(
+          "stage",
+          "source-plugins",
+          ""
+        );
+        const result = saga.onCollectionRecordsRequest(getState, action);
+        expect(result.next().value).toBeUndefined();
+        expect(console.warn).toHaveBeenCalledTimes(1);
+        expect(console.error).toHaveBeenCalledTimes(0);
+        expect(notifyError).toHaveBeenCalledTimes(0);
+      });
+
+      it("Should catch and log an error if an error (not 401) response is received", () => {
+        jest.spyOn(actions, "workflowInfo").mockImplementation(() => {
+          const err = new Error("Test error");
+          err.data = {
+            code: 500,
+          };
+          throw err;
+        });
+        jest.spyOn(console, "warn");
+        jest.spyOn(console, "error");
+        const action = collection_actions.listRecords(
+          "stage",
+          "source-plugins",
+          ""
+        );
+        const result = saga.onCollectionRecordsRequest(getState, action);
+        expect(result.next().value).toBeUndefined();
+        expect(console.warn).toHaveBeenCalledTimes(0);
+        expect(console.error).toHaveBeenCalledTimes(1);
+        expect(notifyError).toHaveBeenCalledTimes(1);
       });
     });
   });
