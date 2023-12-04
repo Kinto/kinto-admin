@@ -143,7 +143,7 @@ export function* setupSession(
     // Note, that "authenticated" can also mean "anonymous" if picked in the auth form.
     yield put(actions.setAuthenticated());
     // Store this valid server url in the history
-    yield put(serversActions.addServer(serverInfo.url, authType));
+    yield put(serversActions.addServer(serverInfo.url, fullAuthType));
 
     yield put(actions.listBuckets());
     yield put(actions.setupComplete(auth));
