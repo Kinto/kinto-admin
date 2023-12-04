@@ -83,8 +83,8 @@ describe("Bucket CollectionListActions", () => {
     bucket: {
       busy: false,
       data: {
-        id: "test"
-      }
+        id: "test",
+      },
     },
   };
 

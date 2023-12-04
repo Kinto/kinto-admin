@@ -59,8 +59,8 @@ describe("Bucket GroupListActions", () => {
     bucket: {
       busy: false,
       data: {
-        id: "test-bucket"
-      }
+        id: "test-bucket",
+      },
     },
   };
 
