@@ -239,7 +239,8 @@ describe("session sagas", () => {
         );
       });
 
-      it("should correctly authenticate the user when using openID", () => {
+      it.only("should correctly authenticate the user when using openID", () => {
+        jest.spyOn(serversActions, "addServer");
         const authData = {
           server: "http://server.test/v1",
           authType: "openid-google",
@@ -248,6 +249,7 @@ describe("session sagas", () => {
         const serverInfo = {
           ...serverInfo,
           user: { id: "google:token" },
+          url: "test-url",
         };
 
         const getStateOpenID = () => ({
@@ -258,10 +260,15 @@ describe("session sagas", () => {
         const action = actions.setupSession(authData);
         const setupSession = saga.setupSession(getStateOpenID, action);
         setupSession.next();
-
         expect(setupSession.next(serverInfo).value).toStrictEqual(
           put(actions.setAuthenticated())
         );
+        setupSession.next();
+        expect(serversActions.addServer).toHaveBeenCalledWith(
+          serverInfo.url,
+          authData.authType
+        );
+        jest.restoreAllMocks();
       });
     });
 

@@ -39,14 +39,14 @@ export function clearServers(): ServerEntry[] {
 
 export function loadSession(): SessionState | null {
   try {
-    return JSON.parse(sessionStorage.getItem(SESSION_KEY) || "null");
+    return JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
   } catch (err) {
     return null;
   }
 }
 
 export function saveSession(sessionState: SessionState): Promise<any> {
-  sessionStorage.setItem(
+  localStorage.setItem(
     SESSION_KEY,
     JSON.stringify({
       ...sessionState,
@@ -57,6 +57,6 @@ export function saveSession(sessionState: SessionState): Promise<any> {
 }
 
 export function clearSession(): Promise<any> {
-  sessionStorage.removeItem(SESSION_KEY);
+  localStorage.removeItem(SESSION_KEY);
   return Promise.resolve();
 }
