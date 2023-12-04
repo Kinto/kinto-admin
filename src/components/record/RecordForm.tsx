@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import type {
+  BucketState,
   SessionState,
   CollectionState,
   RecordState,
@@ -48,6 +49,7 @@ export function extendUiSchemaWhenDisabled(uiSchema: any, disabled: boolean) {
 
 type Props = {
   bid: string;
+  bucket: BucketState;
   cid: string;
   rid?: string;
   session: SessionState;
@@ -71,11 +73,12 @@ export default function RecordForm(props: Props) {
     deleteRecord,
     onSubmit,
     capabilities,
+    bucket,
   } = props;
 
   const allowEditing = record
-    ? canEditRecord(session, bid, collection, record)
-    : canCreateRecord(session, bid, collection);
+    ? canEditRecord(session, bucket.data.id, collection, record)
+    : canCreateRecord(session, bucket.data.id, collection);
 
   const handleDeleteRecord = () => {
     const { rid } = props;

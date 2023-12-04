@@ -9,7 +9,7 @@ import { canCreateCollection } from "../../permission";
 
 export function ListActions(props) {
   const { bid, session, bucket } = props;
-  if (session.busy || bucket.busy || !canCreateCollection(session, bid)) {
+  if (session.busy || bucket.busy || !canCreateCollection(session, bucket.data.id)) {
     return null;
   }
   return (

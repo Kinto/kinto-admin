@@ -85,7 +85,7 @@ export default function SimpleReview({
     params: { bid, cid },
   } = match;
   const canRequestReview =
-    canEditCollection(session, bid, collection) &&
+    canEditCollection(session, destBid, collection) &&
     isMember("editors_group", signoffSource, session);
 
   useEffect(() => {

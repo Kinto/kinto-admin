@@ -53,7 +53,7 @@ export default function BucketForm({
   onSubmit,
 }: Props) {
   const creation = !formData.id;
-  const hasWriteAccess = canEditBucket(session, bid);
+  const hasWriteAccess = canEditBucket(session, bucket.data.id);
   const formIsEditable = creation || hasWriteAccess;
   const showDeleteForm = !creation && hasWriteAccess;
 
