@@ -38,7 +38,7 @@ export function BucketPermissions() {
         <PermissionsForm
           permissions={permissions}
           acls={acls}
-          readonly={!canEditBucket(session, bid)}
+          readonly={!canEditBucket(session, bucket.data.id)}
           onSubmit={onSubmit}
         />
       </BucketTabs>

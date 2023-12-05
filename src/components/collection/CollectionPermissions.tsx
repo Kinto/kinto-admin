@@ -17,6 +17,7 @@ interface RouteParams {
 export function CollectionPermissions() {
   const { bid, cid } = useParams<RouteParams>();
   const session = useAppSelector(state => state.session);
+  const bucket = useAppSelector(state => state.bucket);
   const collection = useAppSelector(state => state.collection);
   const { busy, permissions } = collection;
   const acls = ["read", "write", "record:create"];
@@ -49,7 +50,7 @@ export function CollectionPermissions() {
         <PermissionsForm
           permissions={permissions}
           acls={acls}
-          readonly={!canEditCollection(session, bid, collection)}
+          readonly={!canEditCollection(session, bucket.data.id, collection)}
           onSubmit={onSubmit}
         />
       </CollectionTabs>
