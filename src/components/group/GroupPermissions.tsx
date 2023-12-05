@@ -15,6 +15,7 @@ import { useParams } from "react-router";
 
 export function GroupPermissions() {
   const group = useAppSelector(state => state.group);
+  const bucket = useAppSelector(state => state.bucket);
   const { busy, permissions } = group;
   const session = useAppSelector(state => state.session);
   const { bid, gid } = useParams<GroupPermissionsRouteMatchParams>();
@@ -44,7 +45,7 @@ export function GroupPermissions() {
         <PermissionsForm
           permissions={permissions}
           acls={["read", "write"]}
-          readonly={!canEditGroup(session, bid, group)}
+          readonly={!canEditGroup(session, bucket.data.id, group)}
           onSubmit={onSubmit}
         />
       </GroupTabs>
