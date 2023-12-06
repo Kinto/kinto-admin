@@ -491,7 +491,7 @@ describe("bucket sagas", () => {
         it("should update the route path", () => {
           expect(updateCollection.next().value).toStrictEqual(
             put(
-              redirectTo("collection:records", {
+              redirectTo("collection:attributes", {
                 bid: "bucket",
                 cid: "collection",
               })

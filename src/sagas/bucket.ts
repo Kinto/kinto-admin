@@ -137,7 +137,7 @@ export function* updateCollection(
     if (data) {
       const updatedCollection = { ...data, last_modified };
       yield call([coll, coll.setData], updatedCollection, { safe: true });
-      yield put(redirectTo("collection:records", { bid, cid }));
+      yield put(redirectTo("collection:attributes", { bid, cid }));
       yield put(notifySuccess("Collection attributes updated."));
     } else if (permissions) {
       yield call([coll, coll.setPermissions], permissions, {
