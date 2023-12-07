@@ -77,63 +77,68 @@ export default function RecordRow({
       ))}
       <td className="lastmod">{lastModified()}</td>
       <td className="actions text-right">
-        <div className="btn-group">
-          <AdminLink
-            name="record:attributes"
-            params={{ bid, cid, rid }}
-            className="btn btn-sm btn-info"
-            title="Edit record"
-          >
-            <Pencil className="icon" />
-          </AdminLink>
-          <button
-            type="button"
-            className="btn btn-sm btn-danger"
-            onClick={onDeleteClick}
-            title="Delete record"
-          >
-            <Trash className="icon" />
-          </button>
-
-          <Dropdown>
-            <Dropdown.Toggle
-              variant="secondary"
-              style={{
-                borderTopLeftRadius: 0,
-                borderBottomLeftRadius: 0,
-              }}
-            />
-            <Dropdown.Menu>
-              {attachmentUrl && (
-                <a
-                  href={attachmentUrl}
-                  className="dropdown-item"
-                  title="The record has an attachment"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Paperclip className="icon" /> View Attachment
-                </a>
-              )}
-              <AdminLink
-                name="record:permissions"
-                params={{ bid, cid, rid }}
+        <AdminLink
+          name="record:attributes"
+          params={{ bid, cid, rid }}
+          className="btn btn-sm btn-info"
+          style={{
+            margin: "1pt"
+          }}
+          title="Edit record"
+        >
+          <Pencil className="icon" />
+        </AdminLink>
+        <button
+          type="button"
+          className="btn btn-sm btn-danger"
+          style={{
+            margin: "1pt"
+          }}
+          onClick={onDeleteClick}
+          title="Delete record"
+        >
+          <Trash className="icon" />
+        </button>
+        <Dropdown style={{
+          display: "inline"
+        }}>
+          <Dropdown.Toggle
+            variant="secondary"
+            className="btn-sm"
+            style={{
+              margin: "1pt"
+            }}
+          />
+          <Dropdown.Menu>
+            {attachmentUrl && (
+              <a
+                href={attachmentUrl}
                 className="dropdown-item"
+                title="The record has an attachment"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                <Lock className="icon" /> Record Permissions
-              </AdminLink>
-              <Dropdown.Item
-                onClick={() => {
-                  navigator.clipboard.writeText(
-                    `${session.auth.server}buckets/${bid}/collections/${cid}/records/${record.id}`
-                  );
-                }}
-              >
-                <ClipboardCheck className="icon" /> Copy link to clipboard
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </div>
+                <Paperclip className="icon" /> View Attachment
+              </a>
+            )}
+            <AdminLink
+              name="record:permissions"
+              params={{ bid, cid, rid }}
+              className="dropdown-item"
+            >
+              <Lock className="icon" /> Edit Permissions
+            </AdminLink>
+            <Dropdown.Item
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  `${session.auth.server}buckets/${bid}/collections/${cid}/records/${record.id}`
+                );
+              }}
+            >
+              <ClipboardCheck className="icon" /> Copy Link to Clipboard
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
       </td>
     </tr>
   );
