@@ -2,10 +2,19 @@ import React from "react";
 
 import type { RecordData } from "../../types";
 
-import { Paperclip, Pencil, Lock, Trash } from "react-bootstrap-icons";
+import { Dropdown } from "react-bootstrap";
+
+import {
+  ClipboardCheck,
+  Paperclip,
+  Pencil,
+  Lock,
+  Trash,
+} from "react-bootstrap-icons";
 import { renderDisplayField, timeago, buildAttachmentUrl } from "../../utils";
 import AdminLink from "../AdminLink";
 import { CommonProps } from "./commonPropTypes";
+import { useAppSelector } from "../../hooks/app";
 
 type RecordsViewProps = CommonProps & {
   bid: string;
@@ -28,6 +37,8 @@ export default function RecordRow({
   deleteRecord,
   schema = {},
 }: RowProps) {
+  const session = useAppSelector(state => state.session);
+
   const lastModified = () => {
     const lastModified = record.last_modified;
     if (!lastModified) {
@@ -67,17 +78,6 @@ export default function RecordRow({
       <td className="lastmod">{lastModified()}</td>
       <td className="actions text-right">
         <div className="btn-group">
-          {attachmentUrl && (
-            <a
-              href={attachmentUrl}
-              className="btn btn-sm btn-secondary"
-              title="The record has an attachment"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Paperclip className="icon" />
-            </a>
-          )}
           <AdminLink
             name="record:attributes"
             params={{ bid, cid, rid }}
@@ -85,14 +85,6 @@ export default function RecordRow({
             title="Edit record"
           >
             <Pencil className="icon" />
-          </AdminLink>
-          <AdminLink
-            name="record:permissions"
-            params={{ bid, cid, rid }}
-            className="btn btn-sm btn-warning"
-            title="Record permissions"
-          >
-            <Lock className="icon" />
           </AdminLink>
           <button
             type="button"
@@ -102,6 +94,45 @@ export default function RecordRow({
           >
             <Trash className="icon" />
           </button>
+
+          <Dropdown>
+            <Dropdown.Toggle
+              variant="secondary"
+              style={{
+                borderTopLeftRadius: 0,
+                borderBottomLeftRadius: 0,
+              }}
+            />
+            <Dropdown.Menu>
+              {attachmentUrl && (
+                <a
+                  href={attachmentUrl}
+                  className="dropdown-item"
+                  title="The record has an attachment"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Paperclip className="icon" /> View Attachment
+                </a>
+              )}
+              <AdminLink
+                name="record:permissions"
+                params={{ bid, cid, rid }}
+                className="dropdown-item"
+              >
+                <Lock className="icon" /> Record Permissions
+              </AdminLink>
+              <Dropdown.Item
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    `${session.auth.server}buckets/${bid}/collections/${cid}/records/${record.id}`
+                  );
+                }}
+              >
+                <ClipboardCheck className="icon" /> Copy link to clipboard
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         </div>
       </td>
     </tr>
