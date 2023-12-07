@@ -2,10 +2,19 @@ import React from "react";
 
 import type { RecordData } from "../../types";
 
-import { Paperclip, Pencil, Lock, Trash } from "react-bootstrap-icons";
+import { Dropdown } from "react-bootstrap";
+
+import {
+  ClipboardCheck,
+  Paperclip,
+  Pencil,
+  Lock,
+  Trash,
+} from "react-bootstrap-icons";
 import { renderDisplayField, timeago, buildAttachmentUrl } from "../../utils";
 import AdminLink from "../AdminLink";
 import { CommonProps } from "./commonPropTypes";
+import { useAppSelector } from "../../hooks/app";
 
 type RecordsViewProps = CommonProps & {
   bid: string;
@@ -28,6 +37,8 @@ export default function RecordRow({
   deleteRecord,
   schema = {},
 }: RowProps) {
+  const session = useAppSelector(state => state.session);
+
   const lastModified = () => {
     const lastModified = record.last_modified;
     if (!lastModified) {
@@ -66,43 +77,70 @@ export default function RecordRow({
       ))}
       <td className="lastmod">{lastModified()}</td>
       <td className="actions text-right">
-        <div className="btn-group">
-          {attachmentUrl && (
-            <a
-              href={attachmentUrl}
-              className="btn btn-sm btn-secondary"
-              title="The record has an attachment"
-              target="_blank"
-              rel="noopener noreferrer"
+        <AdminLink
+          name="record:attributes"
+          params={{ bid, cid, rid }}
+          className="btn btn-sm btn-info"
+          style={{
+            margin: "1pt",
+          }}
+          title="Edit record"
+        >
+          <Pencil className="icon" />
+        </AdminLink>
+        <button
+          type="button"
+          className="btn btn-sm btn-danger"
+          style={{
+            margin: "1pt",
+          }}
+          onClick={onDeleteClick}
+          title="Delete record"
+        >
+          <Trash className="icon" />
+        </button>
+        <Dropdown
+          style={{
+            display: "inline",
+          }}
+        >
+          <Dropdown.Toggle
+            variant="secondary"
+            className="btn-sm"
+            style={{
+              margin: "1pt",
+            }}
+          />
+          <Dropdown.Menu>
+            {attachmentUrl && (
+              <a
+                href={attachmentUrl}
+                className="dropdown-item"
+                title="The record has an attachment"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Paperclip className="icon" /> View Attachment
+              </a>
+            )}
+            <AdminLink
+              name="record:permissions"
+              params={{ bid, cid, rid }}
+              className="dropdown-item"
             >
-              <Paperclip className="icon" />
-            </a>
-          )}
-          <AdminLink
-            name="record:attributes"
-            params={{ bid, cid, rid }}
-            className="btn btn-sm btn-info"
-            title="Edit record"
-          >
-            <Pencil className="icon" />
-          </AdminLink>
-          <AdminLink
-            name="record:permissions"
-            params={{ bid, cid, rid }}
-            className="btn btn-sm btn-warning"
-            title="Record permissions"
-          >
-            <Lock className="icon" />
-          </AdminLink>
-          <button
-            type="button"
-            className="btn btn-sm btn-danger"
-            onClick={onDeleteClick}
-            title="Delete record"
-          >
-            <Trash className="icon" />
-          </button>
-        </div>
+              <Lock className="icon" /> Edit Permissions
+            </AdminLink>
+            <Dropdown.Item
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  `${session.auth.server}buckets/${bid}/collections/${cid}/records/${record.id}`
+                );
+              }}
+            >
+              <ClipboardCheck className="icon" /> Copy Link to Clipboard
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
       </td>
     </tr>
   );
