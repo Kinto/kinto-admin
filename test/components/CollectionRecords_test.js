@@ -117,19 +117,18 @@ describe("CollectionRecords component", () => {
           capabilities={capabilities}
           listRecords={() => {}}
         />
-      ).container;
+      );
     });
 
     it("should render a table", () => {
-      expect(node.querySelector("table")).toBeDefined();
+      expect(node.getByTestId("paginatedTable")).toBeDefined();
     });
 
     it("should render record rows", () => {
-      const rows = node.querySelectorAll("tbody tr");
-
-      expect(rows).toHaveLength(2);
-      expect(rows[0].querySelectorAll("td")[0].textContent).toBe("bar");
-      expect(rows[1].querySelectorAll("td")[0].textContent).toBe("baz");
+      expect(node.getByTestId("id1-row")).toBeDefined();
+      expect(node.getByTestId("id2-row")).toBeDefined();
+      expect(node.getByTestId("id1-foo").textContent).toBe("bar");
+      expect(node.getByTestId("id2-foo").textContent).toBe("baz");
     });
   });
 
@@ -169,23 +168,20 @@ describe("CollectionRecords component", () => {
           capabilities={capabilities}
           listRecords={() => {}}
         />
-      ).container;
+      );
     });
 
     it("should render a table", () => {
-      expect(node.querySelector("table")).toBeDefined();
+      expect(node.getByTestId("paginatedTable")).toBeDefined();
     });
 
     it("should render record rows", () => {
-      const rows = node.querySelectorAll("tbody tr");
-
-      expect(rows).toHaveLength(2);
-      expect(rows[0].querySelectorAll("td")[0].textContent).toBe("id1");
-      expect(rows[0].querySelectorAll("td")[1].textContent).toBe(
+      expect(node.getByTestId("id1-id").textContent).toBe("id1");
+      expect(node.getByTestId("id1-__json").textContent).toBe(
         JSON.stringify({ foo: "bar" })
       );
-      expect(rows[1].querySelectorAll("td")[0].textContent).toBe("id2");
-      expect(rows[1].querySelectorAll("td")[1].textContent).toBe(
+      expect(node.getByTestId("id2-id").textContent).toBe("id2");
+      expect(node.getByTestId("id2-__json").textContent).toBe(
         JSON.stringify({ foo: "baz" })
       );
     });
@@ -213,13 +209,11 @@ describe("CollectionRecords component", () => {
           capabilities={capabilities}
           listRecords={() => {}}
         />
-      ).container;
+      );
     });
 
     it("should show the total number of records", () => {
-      expect(
-        node.querySelector(".card-header-tabs .nav-link.active").textContent
-      ).toBe("Records (18)");
+      expect(node.getByTestId("nav-records").textContent).toBe("Records (18)");
     });
   });
 
@@ -255,16 +249,12 @@ describe("CollectionRecords component", () => {
             capabilities={capabilities}
             listRecords={() => {}}
           />
-        ).container;
+        );
       });
 
       it("should render list actions", () => {
-        expect(
-          node.querySelector(".list-actions .btn-record-add")
-        ).toBeDefined();
-        expect(
-          node.querySelector(".list-actions .btn-record-bulk-add")
-        ).toBeDefined();
+        expect(node.getAllByText("Create record").length).toBe(2);
+        expect(node.getAllByText("Bulk create").length).toBe(2);
       });
     });
 
@@ -281,13 +271,11 @@ describe("CollectionRecords component", () => {
             capabilities={capabilities}
             listRecords={() => {}}
           />
-        ).container;
+        );
       });
 
       it("should not render list actions", () => {
-        expect(
-          node.querySelector(".list-actions .btn-record-bulk-add")
-        ).toBeNull();
+        expect(node.queryByText("Bulk create")).toBeNull();
       });
     });
   });

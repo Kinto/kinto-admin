@@ -47,7 +47,6 @@ export default function BaseForm(props: BaseFormProps) {
         // @ts-ignore
         fields={adminFields}
         disabled={disabled || showSpinner || isSubmitting}
-        data-testid="rjsf"
       />
       {(isSubmitting || showSpinner) && <Spinner />}
     </div>

@@ -41,7 +41,11 @@ export default function Notifications({
   const onDismiss = ({ id: index }) => removeNotification(index);
   return (
     <div className="notifications">
-      <AlertList alerts={alerts} onDismiss={onDismiss} />
+      <AlertList
+        alerts={alerts}
+        onDismiss={onDismiss}
+        data-testid="notifications"
+      />
     </div>
   );
 }

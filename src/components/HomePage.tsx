@@ -22,7 +22,7 @@ function ServerProps({ node }: { node: any }) {
         {nodes.map(([key, childNode], i) => {
           return (
             <tr key={i}>
-              <th>{key}</th>
+              <th data-testid="home-th">{key}</th>
               <td style={{ width: "100%" }}>
                 {isObject(childNode) || Array.isArray(childNode) ? (
                   <ServerProps node={childNode} />
@@ -47,7 +47,7 @@ function SessionInfo({ session: { serverInfo } }) {
   return (
     <div>
       <div className="card server-info-panel">
-        <div className="card-header">
+        <div className="card-header" data-testid="home-header">
           <b>Server information</b>
         </div>
         <div className="card-body">

@@ -79,14 +79,14 @@ describe("HomePage component", () => {
             auth: { server: "foo", authType: "anonymous" },
           }),
         },
-      }).container;
+      });
 
-      expect(node.querySelector(".card-header").textContent).toBe(
+      expect(node.getByTestId("home-header").textContent).toBe(
         "Server information"
       );
 
       expect(
-        [].map.call(node.querySelectorAll("th"), x => x.textContent)
+        [].map.call(node.getAllByTestId("home-th"), x => x.textContent)
       ).toStrictEqual(["url", "capabilities", "project_name", "project_docs"]);
     });
   });
