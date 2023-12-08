@@ -11,7 +11,7 @@ export default function SimpleReviewHeader({
   lastReviewDate,
 }: SignoffSourceInfo & { children?: React.ReactElement }) {
   return (
-    <div className="simple-review-header">
+    <div className="simple-review-header" data-testid="simple-review-header">
       <div className="card mb-4">
         {status === "to-review" && (
           <div className="card-header">
