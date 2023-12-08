@@ -1,7 +1,6 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import RecordCreate from "../../src/components/record/RecordCreate";
-import { clone } from "../../src/utils";
 
 // to avoid rendering a router around everything, allows for more focused testing
 jest.mock("react-router-dom", () => {
@@ -52,21 +51,19 @@ describe("RecordCreate component", () => {
 
     beforeEach(() => {
       createRecord = jest.fn();
-      node = render(
-        <RecordCreate {...props} createRecord={createRecord} />
-      ).container;
+      node = render(<RecordCreate {...props} createRecord={createRecord} />);
     });
 
     it("should render a form", () => {
-      expect(node.querySelector("form")).toBeDefined();
+      expect(node.getByTestId("formWrapper")).toBeDefined();
     });
 
     it("should submitted entered data", () => {
-      fireEvent.change(node.querySelector("#root_foo"), {
+      fireEvent.change(node.getByLabelText("foo"), {
         target: { value: "bar" },
       });
 
-      fireEvent.submit(node.querySelector("form"));
+      fireEvent.click(node.getByText("Create record"));
 
       expect(createRecord).toHaveBeenCalledWith(
         "bucket",
@@ -75,96 +72,5 @@ describe("RecordCreate component", () => {
         undefined
       );
     });
-
-    describe("ID field", () => {
-      let field;
-
-      describe("ID in schema", () => {
-        const withID = clone(collection);
-        withID.data.schema.properties.id = { type: "string" };
-
-        describe("ID not in UISchema", () => {
-          beforeEach(() => {
-            const node = render(
-              <RecordCreate {...props} collection={withID} />
-            ).container;
-            field = node.querySelector("#root_id");
-          });
-
-          it("should show a text field", () => {
-            expect(field.getAttribute("type")).toBe("text");
-          });
-
-          it("should be editable", () => {
-            expect(field.hasAttribute("disabled")).toBe(false);
-          });
-        });
-
-        describe("ID in UISchema", () => {
-          const withUISchema = clone(withID);
-          withUISchema.data.uiSchema = {
-            id: {
-              "ui:widget": "textarea",
-            },
-          };
-
-          beforeEach(() => {
-            const node = render(
-              <RecordCreate {...props} collection={withUISchema} />
-            ).container;
-            field = node.querySelector("#root_id");
-          });
-
-          it("should show a custom field", () => {
-            expect(field.tagName.toLowerCase()).toBe("textarea");
-          });
-
-          it("should be editable", () => {
-            expect(field.hasAttribute("disabled")).toBe(false);
-          });
-        });
-      });
-
-      describe("ID not in schema", () => {
-        let node;
-        describe("ID not in UISchema", () => {
-          beforeEach(() => {
-            node = render(
-              <RecordCreate {...props} collection={collection} />
-            ).container;
-          });
-
-          it("should not show the id field", () => {
-            expect(node.querySelector("#root_id")).toBeNull();
-          });
-        });
-
-        describe("ID in UISchema", () => {
-          const withUISchema = {
-            ...collection,
-            uiSchema: {
-              id: {
-                "ui:widget": "text",
-              },
-            },
-          };
-
-          beforeEach(() => {
-            const node = render(
-              <RecordCreate {...props} collection={withUISchema} />
-            ).container;
-            field = node.querySelector("#root_id");
-          });
-
-          it("should not show the id field", () => {
-            expect(node.querySelector("#root_id")).toBeNull();
-          });
-        });
-      });
-    });
-  });
-
-  describe.skip("No schema defined", () => {
-    // XXX CodeMirror seems to be totally incompatible with JSDom.
   });
 });

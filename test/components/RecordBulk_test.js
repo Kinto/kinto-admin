@@ -36,29 +36,25 @@ describe("RecordBulk component", () => {
           collection={collection}
           bulkCreateRecords={bulkCreateRecords}
         />
-      ).container;
+      );
     });
 
     it("should render a form", () => {
-      expect(node.querySelector("form")).toBeDefined();
+      expect(node.getByTestId("formWrapper")).toBeDefined();
     });
 
     it("should submitted entered data", () => {
-      fireEvent.change(node.querySelector("#root_0_foo"), {
+      fireEvent.change(node.getAllByLabelText("foo")[0], {
         target: { value: "bar1" },
       });
-      fireEvent.change(node.querySelector("#root_1_foo"), {
+      fireEvent.change(node.getAllByLabelText("foo")[1], {
         target: { value: "bar2" },
       });
-      fireEvent.submit(node.querySelector("form"));
+      fireEvent.click(node.getByText("Bulk create"));
       expect(bulkCreateRecords).toHaveBeenCalledWith("bucket", "collection", [
         { foo: "bar1" },
         { foo: "bar2" },
       ]);
     });
-  });
-
-  describe.skip("No schema defined", () => {
-    // XXX CodeMirror seems to be totally incompatible with JSDom.
   });
 });

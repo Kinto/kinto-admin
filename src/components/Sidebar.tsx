@@ -78,7 +78,7 @@ function CollectionMenuEntry(props) {
     active ? "active" : "",
   ].join(" ");
   return (
-    <div className={classes}>
+    <div className={classes} data-testid="sidebar-menuEntry">
       <SideBarLink
         name="collection:records"
         params={{ bid, cid }}
@@ -275,6 +275,7 @@ const BucketsMenu = (props: BucketsMenuProps) => {
           return (
             <div
               key={i}
+              data-testid="sidebar-bucketMenu"
               className={`card panel-${
                 current ? "info" : "default"
               } bucket-menu`}
