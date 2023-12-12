@@ -81,9 +81,7 @@ describe("HomePage component", () => {
         },
       });
 
-      expect(node.getByTestId("home-header").textContent).toBe(
-        "Server information"
-      );
+      expect(node.getByText("Server information").textContent).toBeDefined();
 
       expect(
         [].map.call(node.getAllByTestId("home-th"), x => x.textContent)

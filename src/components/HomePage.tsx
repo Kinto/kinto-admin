@@ -47,7 +47,7 @@ function SessionInfo({ session: { serverInfo } }) {
   return (
     <div>
       <div className="card server-info-panel">
-        <div className="card-header" data-testid="home-header">
+        <div className="card-header">
           <b>Server information</b>
         </div>
         <div className="card-body">
