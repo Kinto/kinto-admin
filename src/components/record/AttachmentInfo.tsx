@@ -146,7 +146,7 @@ export function AttachmentInfo(props: AttachmentInfoProps) {
               </tr>
               <tr>
                 <th>Size</th>
-                <td>
+                <td data-testid="attachmentInfo-newSize">
                   <FileSize bytes={attachment.size} />
                 </td>
               </tr>
@@ -171,7 +171,7 @@ export function AttachmentInfo(props: AttachmentInfoProps) {
                   <td>{attachment.original.filename}</td>
                 </tr>
                 <tr>
-                  <td>
+                  <td data-testid="attachmentInfo-currentSize">
                     <FileSize bytes={attachment.original.size} />
                   </td>
                 </tr>

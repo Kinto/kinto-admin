@@ -71,12 +71,14 @@ export default function RecordRow({
   const { id: rid } = record;
 
   return (
-    <tr onDoubleClick={onDoubleClick}>
+    <tr onDoubleClick={onDoubleClick} data-testid={`${rid}-row`}>
       {displayFields.map((displayField, index) => (
-        <td key={index}>{renderDisplayField(record, displayField)}</td>
+        <td key={index} data-testid={`${rid}-${displayField}`}>
+          {renderDisplayField(record, displayField)}
+        </td>
       ))}
       <td className="lastmod">{lastModified()}</td>
-      <td className="actions text-right">
+      <td className="actions text-right" data-testid={`${rid}-actions`}>
         <AdminLink
           name="record:attributes"
           params={{ bid, cid, rid }}

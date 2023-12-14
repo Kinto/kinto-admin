@@ -155,8 +155,7 @@ describe("SimpleTest component", () => {
     });
     await waitForElementToBeRemoved(() => node.queryByTestId("spinner"));
 
-    expect(node.queryByText("Rollback")).toBeDefined();
-    expect(node.container.querySelector(".simple-review-header")).toBeDefined();
+    expect(node.findByTestId(".simple-review-header")).toBeDefined();
 
     // also check rollback calls history.push while we're here
     fireEvent.click(node.queryByText(/Rollback changes/));

@@ -21,7 +21,7 @@ describe("Notifications component", () => {
       />
     );
 
-    expect(node.container.querySelectorAll(".alert")).toHaveLength(1);
+    expect(node.getAllByTitle("Dismiss")).toHaveLength(1);
   });
 
   it("should render multiple notifications", () => {
@@ -35,12 +35,8 @@ describe("Notifications component", () => {
       />
     );
 
-    expect(
-      [].map.call(
-        node.container.querySelectorAll(".alert h4"),
-        n => n.textContent
-      )
-    ).toStrictEqual(["info", "fail"]);
+    expect(node.getByText("info")).toBeDefined();
+    expect(node.getByText("fail")).toBeDefined();
   });
 
   it("should remove a single notif when the list has one", () => {

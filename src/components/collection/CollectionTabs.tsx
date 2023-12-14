@@ -39,7 +39,11 @@ export default function CollectionTabs({
     <div className="card">
       <div className="card-header">
         <ul className="nav nav-tabs card-header-tabs">
-          <li className="nav-item" role="presentation">
+          <li
+            className="nav-item"
+            role="presentation"
+            data-testid="nav-records"
+          >
             <AdminLink
               name="collection:records"
               params={{ bid, cid }}
@@ -52,7 +56,11 @@ export default function CollectionTabs({
             </AdminLink>
           </li>
           {capabilities.signer && useSimpleReview && (
-            <li className="nav-item" role="presentation">
+            <li
+              className="nav-item"
+              role="presentation"
+              data-testid="nav-review"
+            >
               <AdminLink
                 name="collection:simple-review"
                 params={{ bid, cid }}
@@ -65,7 +73,11 @@ export default function CollectionTabs({
               </AdminLink>
             </li>
           )}
-          <li className="nav-item" role="presentation">
+          <li
+            className="nav-item"
+            role="presentation"
+            data-testid="nav-attributes"
+          >
             <AdminLink
               name="collection:attributes"
               params={{ bid, cid }}
@@ -77,7 +89,11 @@ export default function CollectionTabs({
               Attributes
             </AdminLink>
           </li>
-          <li className="nav-item" role="presentation">
+          <li
+            className="nav-item"
+            role="presentation"
+            data-testid="nav-permissions"
+          >
             <AdminLink
               name="collection:permissions"
               params={{ bid, cid }}
@@ -90,7 +106,11 @@ export default function CollectionTabs({
             </AdminLink>
           </li>
           {"history" in capabilities && (
-            <li className="nav-item" role="presentation">
+            <li
+              className="nav-item"
+              role="presentation"
+              data-testid="nav-history"
+            >
               <AdminLink
                 name="collection:history"
                 params={{ bid, cid }}

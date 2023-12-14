@@ -4,6 +4,26 @@ import { clone } from "../../src/utils";
 import React from "react";
 
 describe("Sidebar component", () => {
+  const params = { bid: "mybuck", cid: "mycoll" };
+  const location = { pathname: "" };
+  const capabilities = { history: {} };
+  const session = {
+    authenticated: true,
+    serverInfo: {
+      user: { bucket: "defaultBucket" },
+    },
+    buckets: [
+      {
+        id: "mybuck",
+        collections: [{ id: "othercoll" }, { id: "mycoll" }],
+      },
+      {
+        id: "otherbuck",
+        collections: [{ id: "foo" }, { id: "bar" }, { id: "baz" }],
+      },
+    ],
+  };
+
   describe("Not authenticated", () => {
     it("should not render any bucket menus", () => {
       const node = renderWithProvider(
@@ -15,33 +35,12 @@ describe("Sidebar component", () => {
         { initialState: { session: { authenticated: false } } }
       );
 
-      expect(node.container.querySelectorAll(".bucket-menu")).toHaveLength(0);
+      expect(node.queryByTestId("sidebar-bucketMenu")).toBeNull();
     });
   });
 
   describe("Authenticated", () => {
     let node, bucketMenus;
-
-    const session = {
-      authenticated: true,
-      serverInfo: {
-        user: { bucket: "defaultBucket" },
-      },
-      buckets: [
-        {
-          id: "mybuck",
-          collections: [{ id: "othercoll" }, { id: "mycoll" }],
-        },
-        {
-          id: "otherbuck",
-          collections: [{ id: "foo" }, { id: "bar" }, { id: "baz" }],
-        },
-      ],
-    };
-
-    const params = { bid: "mybuck", cid: "mycoll" };
-    const location = { pathname: "" };
-    const capabilities = { history: {} };
 
     beforeEach(() => {
       node = renderWithProvider(
@@ -52,7 +51,7 @@ describe("Sidebar component", () => {
         />,
         { initialState: { session } }
       );
-      bucketMenus = node.container.querySelectorAll(".bucket-menu");
+      bucketMenus = node.getAllByTestId("sidebar-bucketMenu");
     });
 
     it("should list the user buckets", () => {
@@ -89,34 +88,34 @@ describe("Sidebar component", () => {
 
       expect(targetEntry.classList.contains("active")).toBe(true);
     });
+  });
 
-    describe("Create bucket", () => {
-      it("should be shown by default", () => {
-        node = renderWithProvider(
-          <Sidebar
-            match={{ params }}
-            location={location}
-            capabilities={capabilities}
-          />,
-          { initialState: { session } }
-        );
-        expect(node.container.querySelector(".bucket-create")).toBeDefined();
-      });
+  describe("Create bucket", () => {
+    it("should be shown by default", () => {
+      const node = renderWithProvider(
+        <Sidebar
+          match={{ params }}
+          location={location}
+          capabilities={capabilities}
+        />,
+        { initialState: { session } }
+      );
+      expect(node.queryAllByText("Create bucket")).toHaveLength(1);
+    });
 
-      it("should be hidden if not allowed", () => {
-        const notAllowed = clone(session);
-        notAllowed.permissions = [{ resource_name: "root", permissions: [] }];
+    it("should be hidden if not allowed", () => {
+      const notAllowed = clone(session);
+      notAllowed.permissions = [{ resource_name: "root", permissions: [] }];
 
-        node = renderWithProvider(
-          <Sidebar
-            match={{ params }}
-            location={location}
-            capabilities={capabilities}
-          />,
-          { initialState: { session: notAllowed } }
-        );
-        expect(node.container.querySelector(".bucket-create")).toBeNull();
-      });
+      const node = renderWithProvider(
+        <Sidebar
+          match={{ params }}
+          location={location}
+          capabilities={capabilities}
+        />,
+        { initialState: { session: notAllowed } }
+      );
+      expect(node.queryAllByText("Create bucket")).toHaveLength(0);
     });
   });
 });

@@ -239,7 +239,7 @@ describe("session sagas", () => {
         );
       });
 
-      it.only("should correctly authenticate the user when using openID", () => {
+      it("should correctly authenticate the user when using openID", () => {
         jest.spyOn(serversActions, "addServer");
         const authData = {
           server: "http://server.test/v1",

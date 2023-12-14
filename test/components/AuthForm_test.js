@@ -81,21 +81,15 @@ describe("AuthForm component", () => {
         await waitFor(() => new Promise(resolve => setTimeout(resolve, 400))); // debounce wait
         expect(node.queryByTestId("spinner")).toBeNull(); // spinner should be gone by now
 
-        fireEvent.click(node.container.querySelectorAll("[type=radio]")[1]);
-        fireEvent.change(
-          node.container.querySelector("#root_credentials_username"),
-          {
-            target: { value: "user" },
-          }
-        );
-        fireEvent.change(
-          node.container.querySelector("#root_credentials_password"),
-          {
-            target: { value: "pass" },
-          }
-        );
+        fireEvent.click(node.getByLabelText("Basic Auth"));
+        fireEvent.change(node.getByLabelText("Username*"), {
+          target: { value: "user" },
+        });
+        fireEvent.change(node.getByLabelText("Password*"), {
+          target: { value: "pass" },
+        });
 
-        fireEvent.submit(node.container.querySelector("form"));
+        fireEvent.click(node.getByText(/Sign in using/));
         expect(setupSession).toHaveBeenCalledWith({
           server: "http://test.server/v1",
           authType: "basicauth",
@@ -114,20 +108,14 @@ describe("AuthForm component", () => {
           target: { value: "http://test.server/v1" },
         });
         await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
-        fireEvent.click(node.container.querySelectorAll("[type=radio]")[3]);
-        fireEvent.change(
-          node.container.querySelector("#root_credentials_username"),
-          {
-            target: { value: "you@email.com" },
-          }
-        );
-        fireEvent.change(
-          node.container.querySelector("#root_credentials_password"),
-          {
-            target: { value: "pass" },
-          }
-        );
-        fireEvent.submit(node.container.querySelector("form"));
+        fireEvent.click(node.getByLabelText("LDAP"));
+        fireEvent.change(node.getByLabelText("Email*"), {
+          target: { value: "you@email.com" },
+        });
+        fireEvent.change(node.getByLabelText("Password*"), {
+          target: { value: "pass" },
+        });
+        fireEvent.click(node.getByText(/Sign in using/));
         expect(setupSession).toHaveBeenCalledWith({
           server: "http://test.server/v1",
           authType: "ldap",
@@ -146,9 +134,8 @@ describe("AuthForm component", () => {
           target: { value: "http://test.server/v1" },
         });
         await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
-        fireEvent.click(node.container.querySelectorAll("[type=radio]")[2]);
-        fireEvent.change(node.container.querySelector("form"));
-        fireEvent.submit(node.container.querySelector("form"));
+        fireEvent.click(node.getByLabelText("Firefox Account"));
+        fireEvent.click(node.getByText(/Sign in using/));
         expect(navigateToExternalAuth).toHaveBeenCalledWith({
           server: "http://test.server/v1",
           authType: "fxa", // fxa = credentials omitted
@@ -163,8 +150,8 @@ describe("AuthForm component", () => {
           target: { value: "http://test.server/v1" },
         });
         await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
-        fireEvent.click(node.container.querySelectorAll("[type=radio]")[4]);
-        fireEvent.submit(node.container.querySelector("form"));
+        fireEvent.click(node.getByLabelText("OpenID Connect (Google)"));
+        fireEvent.click(node.getByText(/Sign in using/));
         expect(navigateToOpenID).toHaveBeenCalledWith(
           {
             server: "http://test.server/v1",
@@ -221,18 +208,19 @@ describe("AuthForm component", () => {
       };
 
       const form = render(<AuthForm {...props} />);
-      const serverField = form.container.querySelector("#root_server");
-      const authTypeField = form.container.querySelector("#root_authType");
+      const serverField = form.getByLabelText("Server*");
 
       expect(serverField.value).toBe("http://server.test/v1");
-      expect(authTypeField.value).toBe("basicauth");
+      expect(form.getByText("BasicAuth credentials")).toBeDefined();
 
       fireEvent.change(serverField, {
         target: { value: "http://test.server/v1" },
       });
       await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
       expect(serverField.value).toBe("http://test.server/v1");
-      expect(authTypeField.value).toBe("openid-google");
+      expect(
+        form.getByText("Sign in using OpenID Connect (Google)")
+      ).toBeDefined();
 
       const updatedProps = {
         ...props,

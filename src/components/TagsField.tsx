@@ -57,7 +57,7 @@ export default function TagsField({
 
   return (
     <div className="form-group field field-string">
-      <label className="control-label">
+      <label className="control-label" htmlFor="txtTags">
         {schema.title || name}
         {required ? "*" : ""}
       </label>
@@ -72,6 +72,7 @@ export default function TagsField({
         onChange={handleOnChange}
         required={required}
         readOnly={readonly}
+        id="txtTags"
       />
       <div className="help-block">
         {uiSchema["ui:help"] || (

@@ -20,7 +20,10 @@ export default function PaginatedTable({
   listNextPage,
 }: Props) {
   return (
-    <table className="table table-striped table-bordered record-list">
+    <table
+      className="table table-striped table-bordered record-list"
+      data-testid="paginatedTable"
+    >
       {thead}
       {tbody}
       {hasNextPage && (

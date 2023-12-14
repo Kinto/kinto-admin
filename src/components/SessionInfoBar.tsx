@@ -12,7 +12,7 @@ export function SessionInfoBar() {
   );
   const dispatch = useAppDispatch();
   return (
-    <div className="session-info-bar">
+    <div className="session-info-bar" data-testid="sessionInfo-bar">
       <h1 className="kinto-admin-title">{project_name}</h1>
       <span className="user-info">
         {!user?.id ? (
