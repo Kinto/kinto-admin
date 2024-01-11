@@ -1,3 +1,5 @@
+/// <reference types="vitest" />
+
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 /**
@@ -18,5 +20,11 @@ export default defineConfig({
   base: ASSET_PATH,  
   define: {
     KINTO_ADMIN_VERSION: JSON.stringify(process.env.npm_package_version),
+  },
+  test: {
+    globals: true,
+    environment: "jsdom",
+    include: ["**/*_{test,spec}.?(c|m)[jt]s?(x)"],
+    setupFiles: ["test/setupTests.js"]
   }
 })
