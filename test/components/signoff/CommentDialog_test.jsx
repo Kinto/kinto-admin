@@ -7,8 +7,8 @@ describe("Signoff CommentDialog component", () => {
     const testProps = {
       description: "test description",
       confirmLabel: "cOnFiRm",
-      onConfirm: jest.fn(),
-      onCancel: jest.fn(),
+      onConfirm: vi.fn(),
+      onCancel: vi.fn(),
     };
 
     // should be rendered correctly

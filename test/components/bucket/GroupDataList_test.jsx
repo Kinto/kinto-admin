@@ -6,10 +6,10 @@ import {
 } from "../../../src/components/bucket/GroupDataList";
 import { canCreateGroup } from "../../../src/permission";
 
-jest.mock("../../../src/permission", () => {
+vi.mock("../../../src/permission", () => {
   return {
     __esModule: true,
-    canCreateGroup: jest.fn(),
+    canCreateGroup: vi.fn(),
   };
 });
 

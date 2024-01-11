@@ -17,16 +17,16 @@ describe("Routes onEnter", () => {
   };
 
   beforeEach(() => {
-    jest.spyOn(store, "dispatch");
+    vi.spyOn(store, "dispatch");
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   describe("Buckets history", () => {
     it("should dispatch load history", () => {
-      const listBucketHistory = jest.fn();
+      const listBucketHistory = vi.fn();
       onBucketHistoryEnter({
         ...props,
         listBucketHistory: listBucketHistory,
@@ -40,7 +40,7 @@ describe("Routes onEnter", () => {
 
   describe("Collections history", () => {
     it("should dispatch load history", () => {
-      const listCollectionHistory = jest.fn();
+      const listCollectionHistory = vi.fn();
       onCollectionHistoryEnter({
         ...props,
         listCollectionHistory: listCollectionHistory,
@@ -51,7 +51,7 @@ describe("Routes onEnter", () => {
 
   describe("Groups history", () => {
     it("should dispatch load history", () => {
-      const listGroupHistory = jest.fn();
+      const listGroupHistory = vi.fn();
       onGroupHistoryEnter({ ...props, listGroupHistory: listGroupHistory });
       expect(listGroupHistory).toHaveBeenCalledWith("bid", "gid");
     });
@@ -59,7 +59,7 @@ describe("Routes onEnter", () => {
 
   describe("Records history", () => {
     it("should dispatch load history", () => {
-      const listRecordHistory = jest.fn();
+      const listRecordHistory = vi.fn();
       onRecordHistoryEnter({ ...props, listRecordHistory: listRecordHistory });
       expect(listRecordHistory).toHaveBeenCalledWith("bid", "cid", "rid");
     });

@@ -5,18 +5,18 @@ import SimpleReview from "../../../../src/components/signoff/SimpleReview";
 import { useLocalStorage } from "../../../../src/hooks/storage";
 import { Redirect, useHistory } from "react-router-dom";
 
-jest.mock("../../../../src/hooks/storage", () => {
-  const originalModule = jest.requireActual("../../../../src/hooks/storage");
+vi.mock("../../../../src/hooks/storage", () => {
+  const originalModule = vi.importActual("../../../../src/hooks/storage");
   return {
     __esModule: true,
     ...originalModule,
-    useLocalStorage: jest.fn().mockReturnValue([true, jest.fn()]),
+    useLocalStorage: vi.fn().mockReturnValue([true, vi.fn()]),
   };
 });
 
-jest.mock("react-router-dom", () => {
-  const originalModule = jest.requireActual("react-router-dom");
-  const pushMock = jest.fn();
+vi.mock("react-router-dom", () => {
+  const originalModule = vi.importActual("react-router-dom");
+  const pushMock = vi.fn();
   const useHistory = () => {
     return {
       push: pushMock,
@@ -26,11 +26,11 @@ jest.mock("react-router-dom", () => {
     __esModule: true,
     ...originalModule,
     useHistory,
-    Redirect: jest.fn().mockReturnValue(<div>foo</div>),
+    Redirect: vi.fn().mockReturnValue(<div>foo</div>),
   };
 });
 
-jest.mock("../../../../src/permission", () => {
+vi.mock("../../../../src/permission", () => {
   return {
     canEditCollection: () => {
       return true;
@@ -38,7 +38,7 @@ jest.mock("../../../../src/permission", () => {
   };
 });
 
-jest.mock("../../../../src/components/signoff/utils", () => {
+vi.mock("../../../../src/components/signoff/utils", () => {
   return {
     isMember: () => {
       return true;
@@ -100,7 +100,7 @@ function renderSimpleReview(props = null) {
       return [];
     },
     ...props,
-    rollbackChanges: jest.fn(),
+    rollbackChanges: vi.fn(),
   };
   return renderWithProvider(<SimpleReview {...mergedProps} />);
 }
@@ -211,7 +211,7 @@ describe("SimpleTest component", () => {
   });
 
   it("should redirect the user if the legacy review process is enabled", async () => {
-    useLocalStorage.mockReturnValue([false, jest.fn()]);
+    useLocalStorage.mockReturnValue([false, vi.fn()]);
     const session = sessionFactory();
     session.serverInfo.user.principals = [];
     renderSimpleReview({

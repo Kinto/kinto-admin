@@ -20,7 +20,7 @@ describe("RecordBulk component", () => {
     };
 
     beforeEach(() => {
-      bulkCreateRecords = jest.fn();
+      bulkCreateRecords = vi.fn();
       node = renderWithProvider(
         <RecordBulk
           match={{ params: { bid: "bucket", cid: "collection" } }}

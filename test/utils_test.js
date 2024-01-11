@@ -416,11 +416,11 @@ describe("getServerByPriority", () => {
     { server: "otherServer", authType: ANONYMOUS_AUTH },
   ];
   beforeEach(() => {
-    jest.resetModules();
+    vi.resetModules();
   });
   it("should return SINGLE_SERVER", () => {
-    jest.doMock("../src/constants", () => {
-      const actual = jest.requireActual("../src/constants");
+    vi.doMock("../src/constants", () => {
+      const actual = vi.importActual("../src/constants");
       return {
         __esModule: true,
         ...actual,

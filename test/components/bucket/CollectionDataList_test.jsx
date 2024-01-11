@@ -6,10 +6,10 @@ import {
 } from "../../../src/components/bucket/CollectionDataList";
 import { canCreateCollection } from "../../../src/permission";
 
-jest.mock("../../../src/permission", () => {
+vi.mock("../../../src/permission", () => {
   return {
     __esModule: true,
-    canCreateCollection: jest.fn(),
+    canCreateCollection: vi.fn(),
   };
 });
 
@@ -17,7 +17,7 @@ describe("Bucket CollectionDataList", () => {
   const props = {
     bid: "test",
     capabilities: {},
-    listBucketNextCollections: jest.fn(),
+    listBucketNextCollections: vi.fn(),
     collections: {
       entries: [
         {

@@ -17,7 +17,7 @@ describe("CollectionRecords component", () => {
   };
 
   it("Calls listRecords every time bid or cid changes", async () => {
-    const listRecordsMock = jest.fn();
+    const listRecordsMock = vi.fn();
 
     const props = {
       session: { authenticated: true, permissions: ["foo"] },

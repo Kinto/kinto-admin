@@ -41,7 +41,7 @@ describe("RecordCreate component", () => {
     };
 
     beforeEach(() => {
-      createRecord = jest.fn();
+      createRecord = vi.fn();
       node = renderWithProvider(<RecordCreate {...props} createRecord={createRecord} />);
     });
 

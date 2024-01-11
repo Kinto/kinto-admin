@@ -7,7 +7,7 @@ import AuthForm from "../../src/components/AuthForm";
 
 describe("AuthForm component", () => {
   beforeEach(() => {
-    jest.resetModules();
+    vi.resetModules();
   });
 
   describe("Single server config option", () => {
@@ -32,13 +32,13 @@ describe("AuthForm component", () => {
       serverChange;
 
     beforeEach(() => {
-      setupSession = jest.fn();
-      serverChange = jest.fn();
+      setupSession = vi.fn();
+      serverChange = vi.fn();
       (getServerInfo = async () => {
         new Promise(resolve => setTimeout(resolve, 1000)); // simulate server response taking a second
       }),
-        (navigateToExternalAuth = jest.fn());
-      navigateToOpenID = jest.fn();
+        (navigateToExternalAuth = vi.fn());
+      navigateToOpenID = vi.fn();
       const props = {
         match: {},
         setupSession,
@@ -168,8 +168,8 @@ describe("AuthForm component", () => {
     it("should set the server field value using a default value if there's no servers", () => {
       const props = {
         match: {},
-        serverChange: jest.fn(),
-        getServerInfo: jest.fn(),
+        serverChange: vi.fn(),
+        getServerInfo: vi.fn(),
         servers: [],
         session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
       };
@@ -183,8 +183,8 @@ describe("AuthForm component", () => {
     it("should set the server field value using latest entry from servers", () => {
       const props = {
         match: {},
-        serverChange: jest.fn(),
-        getServerInfo: jest.fn(),
+        serverChange: vi.fn(),
+        getServerInfo: vi.fn(),
         servers: [{ server: "http://server.test/v1", authType: "anonymous" }],
         session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
       };
@@ -198,8 +198,8 @@ describe("AuthForm component", () => {
     it("should set the authType field value using latest entry from servers history for that server", async () => {
       const props = {
         match: {},
-        serverChange: jest.fn(),
-        getServerInfo: jest.fn(),
+        serverChange: vi.fn(),
+        getServerInfo: vi.fn(),
         servers: [
           { server: "http://server.test/v1", authType: "basicauth" },
           { server: "http://test.server/v1", authType: "openid-google" },

@@ -19,7 +19,7 @@ const recordsWithAttachment = [
 
 describe("collection sagas", () => {
   afterEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   describe("listRecords()", () => {

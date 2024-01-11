@@ -28,14 +28,14 @@ describe("HomePage component", () => {
           authType: "anonymous",
           server: "http://server.test/v1",
         };
-        const setupSession = jest.spyOn(SessionActions, "setupSession");
+        const setupSession = vi.spyOn(SessionActions, "setupSession");
         localStore.saveSession({ auth });
         renderWithProvider(<HomePage />);
         expect(setupSession).toHaveBeenCalledWith(auth);
       });
 
       it("should call getServerInfo if no localStorage session", () => {
-        const getServerInfo = jest.spyOn(SessionActions, "getServerInfo");
+        const getServerInfo = vi.spyOn(SessionActions, "getServerInfo");
         renderWithProvider(<HomePage />);
         expect(getServerInfo).toHaveBeenCalledWith({
           authType: "anonymous",
@@ -46,7 +46,7 @@ describe("HomePage component", () => {
 
     describe("After OpenID redirection", () => {
       it("should setup session when component is mounted", () => {
-        const setupSession = jest.spyOn(SessionActions, "setupSession");
+        const setupSession = vi.spyOn(SessionActions, "setupSession");
         const payload =
           "eyJzZXJ2ZXIiOiJodHRwczovL2RlbW8ua2ludG8tc3RvcmFnZS5vcmcvdjEvIiwiYXV0aFR5cGUiOiJvcGVuaWQtYXV0aDAiLCJyZWRpcmVjdFVSTCI6bnVsbH0";
         const token =

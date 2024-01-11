@@ -31,8 +31,8 @@ const testProps = {
     permissions: {},
     records: [],
   },
-  deleteCollection: jest.fn(),
-  onSubmit: jest.fn(),
+  deleteCollection: vi.fn(),
+  onSubmit: vi.fn(),
   formData: undefined,
 };
 
@@ -50,7 +50,7 @@ describe("CollectionForm component", () => {
     Range.prototype.getClientRects = () => ({
       item: () => null,
       length: 0,
-      [Symbol.iterator]: jest.fn(),
+      [Symbol.iterator]: vi.fn(),
     });
   });
 

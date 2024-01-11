@@ -95,7 +95,7 @@ describe("session sagas", () => {
       });
 
       it("should split the auth if it's openID", () => {
-        const setupClient = jest.spyOn(clientUtils, "setupClient");
+        const setupClient = vi.spyOn(clientUtils, "setupClient");
         const authData = {
           server: "http://server.test/v1",
           authType: "openid-google",
@@ -240,7 +240,7 @@ describe("session sagas", () => {
       });
 
       it("should correctly authenticate the user when using openID", () => {
-        jest.spyOn(serversActions, "addServer");
+        vi.spyOn(serversActions, "addServer");
         const authData = {
           server: "http://server.test/v1",
           authType: "openid-google",
@@ -268,7 +268,7 @@ describe("session sagas", () => {
           serverInfo.url,
           authData.authType
         );
-        jest.restoreAllMocks();
+        vi.restoreAllMocks();
       });
     });
 
@@ -282,7 +282,7 @@ describe("session sagas", () => {
             },
           },
         });
-        jest.spyOn(console, "error").mockImplementation(() => {});
+        vi.spyOn(console, "error").mockImplementation(() => {});
         setupSession = saga.setupSession(getState, action);
         setupSession.next(); // call getServerInfo.
         expect(setupSession.next().value).toStrictEqual(

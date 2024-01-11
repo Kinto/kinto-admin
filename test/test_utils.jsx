@@ -36,7 +36,7 @@ export function createComponent(
 }
 
 export function mockNotifyError() {
-  return jest
+  return vi
     .spyOn(notificationsActions, "notifyError")
     .mockImplementation((...args) => {
       return args;

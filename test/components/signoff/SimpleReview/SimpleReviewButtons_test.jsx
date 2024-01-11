@@ -4,9 +4,9 @@ import { renderWithProvider } from "../../../test_utils";
 import SimpleReviewButtons from "../../../../src/components/signoff/SimpleReview/SimpleReviewButtons";
 
 function renderButtons(props = null) {
-  const approveChanges = jest.fn();
-  const declineChanges = jest.fn();
-  const rollbackChanges = jest.fn();
+  const approveChanges = vi.fn();
+  const declineChanges = vi.fn();
+  const rollbackChanges = vi.fn();
 
   const mergedProps = {
     status: "to-review",

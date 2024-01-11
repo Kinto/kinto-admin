@@ -54,7 +54,7 @@ describe("RecordAttributes component", () => {
     let node, updateRecord;
 
     beforeEach(() => {
-      updateRecord = jest.fn();
+      updateRecord = vi.fn();
       node = renderWithProvider(
         <RecordAttributes {...props} updateRecord={updateRecord} />
       );

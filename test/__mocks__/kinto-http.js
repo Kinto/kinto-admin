@@ -1,9 +1,7 @@
 import { DEFAULT_SERVERINFO } from "../../src/reducers/session";
 
-export const mockFetchServerInfo = jest
-  .fn()
-  .mockReturnValue(DEFAULT_SERVERINFO);
-const mock = jest.fn().mockImplementation(server => {
+export const mockFetchServerInfo = vi.fn().mockReturnValue(DEFAULT_SERVERINFO);
+const mock = vi.fn().mockImplementation(server => {
   return {
     fetchServerInfo: mockFetchServerInfo,
     remote: server,

@@ -3,12 +3,12 @@ import React from "react";
 import { fireEvent } from "@testing-library/react";
 import { renderWithProvider } from "../../test_utils";
 
-jest.mock("../../../src/hooks/storage", () => {
-  const originalModule = jest.requireActual("../../../src/hooks/storage");
+vi.mock("../../../src/hooks/storage", () => {
+  const originalModule = vi.importActual("../../../src/hooks/storage");
   return {
     __esModule: true,
     ...originalModule,
-    useLocalStorage: jest.fn().mockReturnValue([false, jest.fn()]),
+    useLocalStorage: vi.fn().mockReturnValue([false, vi.fn()]),
   };
 });
 
@@ -54,14 +54,14 @@ describe("SignoffToolBar component", () => {
         },
       },
     },
-    requestReview: jest.fn(),
-    confirmRequestReview: jest.fn(),
-    approveChanges: jest.fn(),
-    confirmRollbackChanges: jest.fn(),
-    rollbackChanges: jest.fn(),
-    declineChanges: jest.fn(),
-    confirmDeclineChanges: jest.fn(),
-    cancelPendingConfirm: jest.fn(),
+    requestReview: vi.fn(),
+    confirmRequestReview: vi.fn(),
+    approveChanges: vi.fn(),
+    confirmRollbackChanges: vi.fn(),
+    rollbackChanges: vi.fn(),
+    declineChanges: vi.fn(),
+    confirmDeclineChanges: vi.fn(),
+    cancelPendingConfirm: vi.fn(),
   };
 
   it("should not be rendered if current collection is not listed in resources", () => {
@@ -125,7 +125,7 @@ describe("SignoffToolBar component", () => {
           },
         },
       },
-      approveChanges: jest.fn(),
+      approveChanges: vi.fn(),
     };
     const node = renderWithProvider(<SignoffToolBar {...propsOverride} />);
     expect(node.queryByTestId("spinner")).toBeNull();

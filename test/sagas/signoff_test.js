@@ -6,11 +6,11 @@ import * as actions from "../../src/actions/signoff";
 import * as collection_actions from "../../src/actions/collection";
 import * as saga from "../../src/sagas/signoff";
 
-jest.mock("../../src/actions/notifications", () => {
-  const original = jest.requireActual("../../src/actions/notifications");
+vi.mock("../../src/actions/notifications", () => {
+  const original = vi.importActual("../../src/actions/notifications");
   return {
     ...original,
-    notifyError: jest.fn(),
+    notifyError: vi.fn(),
   };
 });
 
@@ -63,7 +63,7 @@ describe("Signoff sagas", () => {
       });
 
       beforeEach(() => {
-        jest.restoreAllMocks();
+        vi.restoreAllMocks();
       });
 
       it("should do nothing if current collection is not configured", () => {
@@ -215,15 +215,15 @@ describe("Signoff sagas", () => {
       });
 
       it("Should catch and log a warning if a 401 response is received", () => {
-        jest.spyOn(actions, "workflowInfo").mockImplementation(() => {
+        vi.spyOn(actions, "workflowInfo").mockImplementation(() => {
           const err = new Error("Test error");
           err.data = {
             code: 401,
           };
           throw err;
         });
-        jest.spyOn(console, "warn");
-        jest.spyOn(console, "error");
+        vi.spyOn(console, "warn");
+        vi.spyOn(console, "error");
         const action = collection_actions.listRecords(
           "stage",
           "source-plugins",
@@ -237,15 +237,15 @@ describe("Signoff sagas", () => {
       });
 
       it("Should catch and log an error if an error (not 401) response is received", () => {
-        jest.spyOn(actions, "workflowInfo").mockImplementation(() => {
+        vi.spyOn(actions, "workflowInfo").mockImplementation(() => {
           const err = new Error("Test error");
           err.data = {
             code: 500,
           };
           throw err;
         });
-        jest.spyOn(console, "warn");
-        jest.spyOn(console, "error");
+        vi.spyOn(console, "warn");
+        vi.spyOn(console, "error");
         const action = collection_actions.listRecords(
           "stage",
           "source-plugins",
