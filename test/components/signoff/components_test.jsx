@@ -1,16 +1,7 @@
 import SignoffToolBar from "../../../src/components/signoff/SignoffToolBar";
 import React from "react";
-import { render, fireEvent } from "@testing-library/react";
-
-// to avoid rendering a router around everything, allows for more focused testing
-jest.mock("react-router-dom", () => {
-  const originalModule = jest.requireActual("react-router-dom");
-  return {
-    __esModule: true,
-    ...originalModule,
-    Link: "a",
-  };
-});
+import { fireEvent } from "@testing-library/react";
+import { renderWithProvider } from "../../test_utils";
 
 jest.mock("../../../src/hooks/storage", () => {
   const originalModule = jest.requireActual("../../../src/hooks/storage");
@@ -74,7 +65,7 @@ describe("SignoffToolBar component", () => {
   };
 
   it("should not be rendered if current collection is not listed in resources", () => {
-    const node = render(<SignoffToolBar {...props} signoff={{}} />);
+    const node = renderWithProvider(<SignoffToolBar {...props} signoff={{}} />);
     expect(node.container.innerHTML).toBe("");
   });
 
@@ -94,7 +85,7 @@ describe("SignoffToolBar component", () => {
         },
       },
     };
-    const node = render(<SignoffToolBar {...propsOverride} />);
+    const node = renderWithProvider(<SignoffToolBar {...propsOverride} />);
     expect(node.queryAllByText("Request review...")).toHaveLength(1);
   });
 
@@ -136,7 +127,7 @@ describe("SignoffToolBar component", () => {
       },
       approveChanges: jest.fn(),
     };
-    const node = render(<SignoffToolBar {...propsOverride} />);
+    const node = renderWithProvider(<SignoffToolBar {...propsOverride} />);
     expect(node.queryByTestId("spinner")).toBeNull();
     expect(propsOverride.approveChanges).toHaveBeenCalledTimes(0);
     fireEvent.click(await node.findByText("Approve"));

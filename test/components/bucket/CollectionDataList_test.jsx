@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "@testing-library/react";
+import { renderWithProvider } from "../../test_utils";
 import {
   DataList,
   ListActions,
@@ -10,16 +10,6 @@ jest.mock("../../../src/permission", () => {
   return {
     __esModule: true,
     canCreateCollection: jest.fn(),
-  };
-});
-
-// to avoid rendering a router around everything, allows for more focused testing
-jest.mock("react-router-dom", () => {
-  const originalModule = jest.requireActual("react-router-dom");
-  return {
-    __esModule: true,
-    ...originalModule,
-    Link: "a",
   };
 });
 
@@ -68,7 +58,7 @@ describe("Bucket CollectionDataList", () => {
     },
   };
   it("Should render a list of collections as expected", () => {
-    const result = render(<DataList {...props} />);
+    const result = renderWithProvider(<DataList {...props} />);
     expect(result.queryByText("test-collection-id")).toBeDefined();
     expect(result.queryByTitle("Browse collection")).toBeDefined();
     expect(result.queryByTitle("Edit collection attributes")).toBeDefined();
@@ -90,13 +80,13 @@ describe("Bucket CollectionListActions", () => {
 
   it("Should render a Create Collection button when the user has permission to create one", () => {
     canCreateCollection.mockReturnValue(true);
-    const result = render(<ListActions {...props} />);
+    const result = renderWithProvider(<ListActions {...props} />);
     expect(result.queryByText("Create collection")).toBeDefined();
   });
 
   it("Should render no Create Collection button when the user lacks permission", () => {
     canCreateCollection.mockReturnValue(false);
-    const result = render(<ListActions {...props} />);
+    const result = renderWithProvider(<ListActions {...props} />);
     expect(result.queryByText("Create collection")).toBeNull();
   });
 });
