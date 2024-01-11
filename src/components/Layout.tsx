@@ -35,7 +35,7 @@ import { useAppSelector } from "../hooks/app";
 export function Layout() {
   const authenticated = useAppSelector(store => store.session.authenticated);
   const contentClasses = `col-sm-9 content`;
-  const version = process.env.KINTO_ADMIN_VERSION;
+  const version = KINTO_ADMIN_VERSION;
   return (
     <div>
       {authenticated && <SessionInfoBar />}

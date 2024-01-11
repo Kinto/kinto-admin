@@ -56,10 +56,10 @@ This will generate a production-ready assets in a `build` directory, ready to be
 Use the following options to customize the Kinto Admin build.
 
 ### Single Server
-By default, Kinto Admin gives you the option to connect to multiple Kinto Servers. If you only want Kinto Admin to connect to the server from which it's being served, you can set the `SINGLE_SERVER` flag as an environment variable:
+By default, Kinto Admin gives you the option to connect to multiple Kinto Servers. If you only want Kinto Admin to connect to the server from which it's being served, you can set the `KINTO_ADMIN_SINGLE_SERVER` flag as an environment variable:
 
 ```
-SINGLE_SERVER=1 npm run build
+KINTO_ADMIN_SINGLE_SERVER=1 npm run build
 ```
 
 ### Building for relative paths
