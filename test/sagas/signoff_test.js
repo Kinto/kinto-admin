@@ -229,7 +229,7 @@ describe("Signoff sagas", () => {
         expect(notifyErrorSpy).toHaveBeenCalledTimes(0);
       });
 
-      it.only("Should catch and log an error if an error (not 401) response is received", () => {
+      it("Should catch and log an error if an error (not 401) response is received", () => {
         vi.spyOn(actions, "workflowInfo").mockImplementation(() => {
           const err = new Error("Test error");
           err.data = {
