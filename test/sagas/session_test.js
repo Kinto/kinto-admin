@@ -179,7 +179,7 @@ describe("session sagas", () => {
   describe("setupSession()", () => {
     let setupSession, getState, action;
 
-    const serverInfo = {
+    let serverInfo = {
       ...DEFAULT_SERVERINFO,
       url: "http://server.test/v1",
       user: {
@@ -187,7 +187,7 @@ describe("session sagas", () => {
       },
     };
 
-    const sessionState = { serverInfo };
+    let sessionState = { serverInfo };
 
     beforeAll(() => {
       resetClient();
@@ -238,7 +238,6 @@ describe("session sagas", () => {
           )
         );
       });
-
       it("should correctly authenticate the user when using openID", () => {
         vi.spyOn(serversActions, "addServer");
         const authData = {
@@ -246,19 +245,18 @@ describe("session sagas", () => {
           authType: "openid-google",
           credentials: { token: "the token" },
         };
-        const serverInfo = {
+        serverInfo = {
           ...serverInfo,
           user: { id: "google:token" },
           url: "test-url",
         };
-
-        const getStateOpenID = () => ({
-          session: {
-            serverInfo,
-          },
+        const sessionState = { serverInfo };
+        getState = () => ({
+          session: sessionState,
         });
+
         const action = actions.setupSession(authData);
-        const setupSession = saga.setupSession(getStateOpenID, action);
+        const setupSession = saga.setupSession(getState, action);
         setupSession.next();
         expect(setupSession.next(serverInfo).value).toStrictEqual(
           put(actions.setAuthenticated())

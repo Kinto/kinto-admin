@@ -1,30 +1,6 @@
 import { renderHook, act } from "@testing-library/react-hooks";
 import { useLocalStorage } from "../../src/hooks/storage";
 
-class localStorageClass {
-  isConstructor() {
-    this.store = {};
-  }
-
-  clear() {
-    this.store = {};
-  }
-
-  getItem(key) {
-    return this.store[key];
-  }
-
-  setItem(key, value) {
-    this.store[key] = String(value);
-  }
-
-  removeItem(key) {
-    delete this.store[key];
-  }
-}
-
-global.localStorage = new localStorageClass();
-
 describe("useLocalStorage", () => {
   it("should return default value if a value isn't set yet", () => {
     const { result } = renderHook(() =>

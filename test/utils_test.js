@@ -411,28 +411,26 @@ describe("diffJson", function () {
 });
 
 describe("getServerByPriority", () => {
-  const servers = [
-    { server: "someServer", authType: ANONYMOUS_AUTH },
-    { server: "otherServer", authType: ANONYMOUS_AUTH },
-  ];
   beforeEach(() => {
     vi.resetModules();
   });
-  it("should return SINGLE_SERVER", () => {
-    vi.doMock("../src/constants", () => {
-      const actual = vi.importActual("../src/constants");
-      return {
-        __esModule: true,
-        ...actual,
-        SINGLE_SERVER: "http://www.example.com/",
-      };
-    });
-    const {
-      getServerByPriority: _getServerByPriority,
-    } = require("../src/utils");
-    expect(_getServerByPriority(servers)).toBe("http://www.example.com/");
+
+  it("should return SINGLE_SERVER", async () => {
+    vi.doMock("../src/constants", () => ({
+      get SINGLE_SERVER() {
+        return "http://www.example.com/";
+      },
+    }));
+    const { getServerByPriority: _getServerByPriority } = await import(
+      "../src/utils"
+    );
+    expect(_getServerByPriority([])).toBe("http://www.example.com/");
   });
   it("should return the first server from the array", () => {
+    const servers = [
+      { server: "someServer", authType: ANONYMOUS_AUTH },
+      { server: "otherServer", authType: ANONYMOUS_AUTH },
+    ];
     const server = getServerByPriority(servers);
     expect(server).toBe("someServer");
   });

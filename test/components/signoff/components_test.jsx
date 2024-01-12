@@ -3,15 +3,6 @@ import React from "react";
 import { fireEvent } from "@testing-library/react";
 import { renderWithProvider } from "../../test_utils";
 
-vi.mock("../../../src/hooks/storage", () => {
-  const originalModule = vi.importActual("../../../src/hooks/storage");
-  return {
-    __esModule: true,
-    ...originalModule,
-    useLocalStorage: vi.fn().mockReturnValue([false, vi.fn()]),
-  };
-});
-
 describe("SignoffToolBar component", () => {
   const props = {
     sessionState: {
@@ -127,10 +118,14 @@ describe("SignoffToolBar component", () => {
       },
       approveChanges: vi.fn(),
     };
+
+    localStorage.setItem("useSimpleReview", false);
+
     const node = renderWithProvider(<SignoffToolBar {...propsOverride} />);
     expect(node.queryByTestId("spinner")).toBeNull();
     expect(propsOverride.approveChanges).toHaveBeenCalledTimes(0);
-    fireEvent.click(await node.findByText("Approve"));
+    const approveButton = (await node.findByText("Approve"))
+    fireEvent.click(approveButton);
     expect(await node.findByTestId("spinner")).toBeDefined();
     expect(propsOverride.approveChanges).toHaveBeenCalledTimes(1);
   });
