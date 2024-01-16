@@ -68,7 +68,12 @@ export function HomePage() {
 
   React.useEffect(() => {
     const session = loadSession();
-    if (session && session.auth) {
+
+    if (
+      session &&
+      session.auth &&
+      !(new Date().getTime() >= session.auth.expiresAt)
+    ) {
       dispatch(SessionActions.setupSession(session.auth));
     } else {
       dispatch(
@@ -103,27 +108,32 @@ export function HomePage() {
         authType = "openid";
         let tokenType;
         let parsedToken;
+        let expiresAt;
         try {
           // Token is encoded in base64 for a safe path parsing.
           parsedToken = JSON.parse(atob(token));
-          token = parsedToken.access_token;
-          tokenType = parsedToken.token_type;
         } catch (e) {
           // Previous version of Kinto exposed the JSON directly in the URL.
           try {
             parsedToken = JSON.parse(token);
-            token = parsedToken.access_token;
-            tokenType = parsedToken.token_type;
           } catch (e) {
             throw new Error(`Token doesn't seems to be a valid JSON: {token}`);
           }
         }
+
+        token = parsedToken.access_token;
+        tokenType = parsedToken.token_type;
+        if (parsedToken.expires_in) {
+          expiresAt = new Date().getTime() + parsedToken.expires_in * 1000;
+        }
+
         authData = {
           authType,
           server,
           provider,
           tokenType,
           credentials: { token },
+          expiresAt,
         };
       } else if (authType == "fxa") {
         authData = {

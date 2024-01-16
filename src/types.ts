@@ -351,72 +351,63 @@ export type AuthMethod =
   | "portier"
   | "openid";
 
-export type AuthData =
-  | AnonymousAuth
-  | LDAPAuth
-  | AccountAuth
-  | BasicAuth
-  | PortierAuth
-  | TokenAuth
-  | OpenIDAuth;
+export type AuthData = {
+  authType: AuthMethod;
+  server: string;
+  expiresAt?: number;
+};
 
 export type AnonymousAuth = {
   authType: "anonymous";
-  server: string;
-};
+} & AuthData;
 
 export type LDAPAuth = {
   authType: "ldap";
-  server: string;
   credentials: {
     username: string;
     password: string;
   };
-};
+} & AuthData;
 
 export type AccountAuth = {
   authType: "account";
-  server: string;
   credentials: {
     username: string;
     password: string;
   };
-};
+} & AuthData;
 
 export type BasicAuth = {
   authType: "basicauth";
-  server: string;
   credentials: {
     username: string;
     password: string;
   };
-};
+} & AuthData;
 
 export type PortierAuth = {
   authType: "portier";
-  server: string;
   credentials: {
     token: string;
   };
-};
+} & AuthData;
 
 export type TokenAuth = {
   authType: "fxa";
-  server: string;
   credentials: {
     token: string;
   };
-};
+} & AuthData;
 
 export type OpenIDAuth = {
   authType: "openid";
-  server: string;
   provider: string;
   tokenType: string;
   credentials: {
     token: string;
+    expiresAt?: number;
   };
-};
+} & AuthData;
 
 export type SagaGen = Generator<any, void, any>;
 
