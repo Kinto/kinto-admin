@@ -379,7 +379,7 @@ describe("session sagas", () => {
         expect(listBuckets.next(responses).value).toStrictEqual(
           call([client, client.listPermissions], {
             pages: Infinity,
-            filters: { exclude_resource_name: "record" },
+            filters: { exclude_resource_name: "record,group" },
           })
         );
       });
