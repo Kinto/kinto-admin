@@ -10,7 +10,7 @@
     "cs-format": "prettier \"{src,test}/**/*.{js,ts,tsx}\" --write",
     "lint": "eslint \"src/**/*.{js,ts,tsx}\" \"test/**/*.{js,ts,tsx}\"",
     "preview": "vite preview",
-    "publish-to-gh-pages": "cross-env ASSET_PATH=/kinto-admin/ npm run build && gh-pages --add --dist dist/",
+    "publish-to-gh-pages": "cross-env ASSET_PATH=/kinto-admin/ npm run build && gh-pages --add --dist build/",
     "start": "vite",
     "tdd": "vitest",
     "test": "vitest --watch=false",
