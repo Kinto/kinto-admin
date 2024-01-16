@@ -10,9 +10,9 @@ const props = {
   historyLoaded: true,
   history: [],
   hasNextHistory: false,
-  listNextHistory: jest.fn(),
+  listNextHistory: vi.fn(),
   location: "/",
-  notifyError: jest.fn(),
+  notifyError: vi.fn(),
 };
 
 describe("HistoryTable component", () => {

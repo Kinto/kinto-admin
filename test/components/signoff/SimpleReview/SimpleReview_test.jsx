@@ -2,35 +2,10 @@ import React from "react";
 import { fireEvent, waitForElementToBeRemoved } from "@testing-library/react";
 import { renderWithProvider, sessionFactory } from "../../../test_utils";
 import SimpleReview from "../../../../src/components/signoff/SimpleReview";
-import { useLocalStorage } from "../../../../src/hooks/storage";
-import { Redirect, useHistory } from "react-router-dom";
+import { createMemoryHistory } from "history/";
 
-jest.mock("../../../../src/hooks/storage", () => {
-  const originalModule = jest.requireActual("../../../../src/hooks/storage");
-  return {
-    __esModule: true,
-    ...originalModule,
-    useLocalStorage: jest.fn().mockReturnValue([true, jest.fn()]),
-  };
-});
 
-jest.mock("react-router-dom", () => {
-  const originalModule = jest.requireActual("react-router-dom");
-  const pushMock = jest.fn();
-  const useHistory = () => {
-    return {
-      push: pushMock,
-    };
-  };
-  return {
-    __esModule: true,
-    ...originalModule,
-    useHistory,
-    Redirect: jest.fn().mockReturnValue(<div>foo</div>),
-  };
-});
-
-jest.mock("../../../../src/permission", () => {
+vi.mock("../../../../src/permission", () => {
   return {
     canEditCollection: () => {
       return true;
@@ -38,7 +13,9 @@ jest.mock("../../../../src/permission", () => {
   };
 });
 
-jest.mock("../../../../src/components/signoff/utils", () => {
+const rollbackChangesMock = vi.fn()
+
+vi.mock("../../../../src/components/signoff/utils", () => {
   return {
     isMember: () => {
       return true;
@@ -85,7 +62,7 @@ function signoffFactory() {
   };
 }
 
-function renderSimpleReview(props = null) {
+function renderSimpleReview(props = null, renderProps = {}) {
   const mergedProps = {
     match: {
       params: {
@@ -93,16 +70,17 @@ function renderSimpleReview(props = null) {
         cid: "my-collection",
       },
     },
-    listRecords() {},
+    listRecords() { },
     session: sessionFactory(),
     signoff: signoffFactory(),
     async fetchRecords() {
       return [];
     },
     ...props,
-    rollbackChanges: jest.fn(),
+    rollbackChanges: rollbackChangesMock,
+
   };
-  return renderWithProvider(<SimpleReview {...mergedProps} />);
+  return renderWithProvider(<SimpleReview {...mergedProps} />, { ...renderProps });
 }
 
 const fakeLocation = {
@@ -112,6 +90,10 @@ const fakeLocation = {
 };
 
 describe("SimpleTest component", () => {
+  beforeEach(async () => {
+    localStorage.setItem("useSimpleReview", true)
+  })
+
   it("should render spinner when authenticating", async () => {
     const node = renderSimpleReview({
       session: sessionFactory({ authenticated: false, authenticating: true }),
@@ -148,19 +130,18 @@ describe("SimpleTest component", () => {
   });
 
   it("should render a review component after records are fetched and allow for a rollback", async () => {
-    let node = renderSimpleReview({
-      async fetchRecords() {
-        return [];
-      },
-    });
-    await waitForElementToBeRemoved(() => node.queryByTestId("spinner"));
+    const history = createMemoryHistory({ initialEntries: ["/"] })
+    let node = renderSimpleReview(null, { initialHistory: history });
+    const historyPushSpy = vi.spyOn(history, "push")
 
-    expect(node.findByTestId(".simple-review-header")).toBeDefined();
+    await waitForElementToBeRemoved(() => node.queryByTestId("spinner"));
+    expect(await node.findByTestId("simple-review-header")).toBeDefined();
 
     // also check rollback calls history.push while we're here
     fireEvent.click(node.queryByText(/Rollback changes/));
     fireEvent.click(node.queryByText("Rollback"));
-    expect(useHistory().push).toHaveBeenCalled();
+    expect(rollbackChangesMock).toHaveBeenCalled()
+    expect(historyPushSpy).toHaveBeenCalled()
   });
 
   it("should hide the rollback button if the hideRollback query parameter is provided", async () => {
@@ -211,12 +192,12 @@ describe("SimpleTest component", () => {
   });
 
   it("should redirect the user if the legacy review process is enabled", async () => {
-    useLocalStorage.mockReturnValue([false, jest.fn()]);
+    localStorage.setItem("useSimpleReview", false)
     const session = sessionFactory();
     session.serverInfo.user.principals = [];
-    renderSimpleReview({
-      session,
-    });
-    expect(Redirect).toHaveBeenCalled();
+    let node = renderSimpleReview({ session });
+
+    // Since Simple Review is the default, this means we're in the legacy UI
+    expect(node.queryByText("Switch to Default Review UI")).toBeDefined()
   });
 });

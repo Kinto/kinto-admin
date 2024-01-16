@@ -1,16 +1,7 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react";
+import { fireEvent } from "@testing-library/react";
+import { renderWithProvider } from "../test_utils";
 import RecordCreate from "../../src/components/record/RecordCreate";
-
-// to avoid rendering a router around everything, allows for more focused testing
-jest.mock("react-router-dom", () => {
-  const originalModule = jest.requireActual("react-router-dom");
-  return {
-    __esModule: true,
-    ...originalModule,
-    Link: "a",
-  };
-});
 
 describe("RecordCreate component", () => {
   const bucket = {
@@ -50,8 +41,8 @@ describe("RecordCreate component", () => {
     };
 
     beforeEach(() => {
-      createRecord = jest.fn();
-      node = render(<RecordCreate {...props} createRecord={createRecord} />);
+      createRecord = vi.fn();
+      node = renderWithProvider(<RecordCreate {...props} createRecord={createRecord} />);
     });
 
     it("should render a form", () => {

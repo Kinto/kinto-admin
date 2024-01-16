@@ -1,25 +1,7 @@
 import SignoffToolBar from "../../../src/components/signoff/SignoffToolBar";
 import React from "react";
-import { render, fireEvent } from "@testing-library/react";
-
-// to avoid rendering a router around everything, allows for more focused testing
-jest.mock("react-router-dom", () => {
-  const originalModule = jest.requireActual("react-router-dom");
-  return {
-    __esModule: true,
-    ...originalModule,
-    Link: "a",
-  };
-});
-
-jest.mock("../../../src/hooks/storage", () => {
-  const originalModule = jest.requireActual("../../../src/hooks/storage");
-  return {
-    __esModule: true,
-    ...originalModule,
-    useLocalStorage: jest.fn().mockReturnValue([false, jest.fn()]),
-  };
-});
+import { fireEvent } from "@testing-library/react";
+import { renderWithProvider } from "../../test_utils";
 
 describe("SignoffToolBar component", () => {
   const props = {
@@ -63,18 +45,18 @@ describe("SignoffToolBar component", () => {
         },
       },
     },
-    requestReview: jest.fn(),
-    confirmRequestReview: jest.fn(),
-    approveChanges: jest.fn(),
-    confirmRollbackChanges: jest.fn(),
-    rollbackChanges: jest.fn(),
-    declineChanges: jest.fn(),
-    confirmDeclineChanges: jest.fn(),
-    cancelPendingConfirm: jest.fn(),
+    requestReview: vi.fn(),
+    confirmRequestReview: vi.fn(),
+    approveChanges: vi.fn(),
+    confirmRollbackChanges: vi.fn(),
+    rollbackChanges: vi.fn(),
+    declineChanges: vi.fn(),
+    confirmDeclineChanges: vi.fn(),
+    cancelPendingConfirm: vi.fn(),
   };
 
   it("should not be rendered if current collection is not listed in resources", () => {
-    const node = render(<SignoffToolBar {...props} signoff={{}} />);
+    const node = renderWithProvider(<SignoffToolBar {...props} signoff={{}} />);
     expect(node.container.innerHTML).toBe("");
   });
 
@@ -94,7 +76,7 @@ describe("SignoffToolBar component", () => {
         },
       },
     };
-    const node = render(<SignoffToolBar {...propsOverride} />);
+    const node = renderWithProvider(<SignoffToolBar {...propsOverride} />);
     expect(node.queryAllByText("Request review...")).toHaveLength(1);
   });
 
@@ -134,12 +116,16 @@ describe("SignoffToolBar component", () => {
           },
         },
       },
-      approveChanges: jest.fn(),
+      approveChanges: vi.fn(),
     };
-    const node = render(<SignoffToolBar {...propsOverride} />);
+
+    localStorage.setItem("useSimpleReview", false);
+
+    const node = renderWithProvider(<SignoffToolBar {...propsOverride} />);
     expect(node.queryByTestId("spinner")).toBeNull();
     expect(propsOverride.approveChanges).toHaveBeenCalledTimes(0);
-    fireEvent.click(await node.findByText("Approve"));
+    const approveButton = (await node.findByText("Approve"))
+    fireEvent.click(approveButton);
     expect(await node.findByTestId("spinner")).toBeDefined();
     expect(propsOverride.approveChanges).toHaveBeenCalledTimes(1);
   });

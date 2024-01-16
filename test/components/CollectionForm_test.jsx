@@ -1,5 +1,6 @@
 import React from "react";
-import { render } from "@testing-library/react";
+import { renderWithProvider } from "../test_utils";
+
 import CollectionForm from "../../src/components/collection/CollectionForm";
 
 const warningText =
@@ -30,20 +31,10 @@ const testProps = {
     permissions: {},
     records: [],
   },
-  deleteCollection: jest.fn(),
-  onSubmit: jest.fn(),
+  deleteCollection: vi.fn(),
+  onSubmit: vi.fn(),
   formData: undefined,
 };
-
-// to avoid rendering a router around everything, allows for easier testing
-jest.mock("react-router-dom", () => {
-  const originalModule = jest.requireActual("react-router-dom");
-  return {
-    __esModule: true,
-    ...originalModule,
-    Link: "a",
-  };
-});
 
 describe("CollectionForm component", () => {
   beforeAll(() => {
@@ -59,7 +50,7 @@ describe("CollectionForm component", () => {
     Range.prototype.getClientRects = () => ({
       item: () => null,
       length: 0,
-      [Symbol.iterator]: jest.fn(),
+      [Symbol.iterator]: vi.fn(),
     });
   });
 
@@ -75,7 +66,7 @@ describe("CollectionForm component", () => {
       ],
       bucket_id: "default",
     });
-    const result = render(<CollectionForm {...localTestProps} />);
+    const result = renderWithProvider(<CollectionForm {...localTestProps} />);
 
     const warning = result.queryByText(warningText);
     expect(warning).toBeNull();
@@ -98,7 +89,7 @@ describe("CollectionForm component", () => {
     localTestProps.collection.data.id = "test";
     localTestProps.formData = {};
 
-    const result = render(<CollectionForm {...localTestProps} />);
+    const result = renderWithProvider(<CollectionForm {...localTestProps} />);
 
     const warning = result.queryByText(warningText);
     expect(warning).toBeNull();
@@ -117,7 +108,7 @@ describe("CollectionForm component", () => {
         bucket_id: "default",
       },
     ];
-    const result = render(<CollectionForm {...localTestProps} />);
+    const result = renderWithProvider(<CollectionForm {...localTestProps} />);
 
     const warning = await result.queryByText(warningText);
     expect(warning).toBeDefined();
@@ -142,7 +133,7 @@ describe("CollectionForm component", () => {
     localTestProps.bid = "default";
     localTestProps.formData = {};
 
-    const result = render(<CollectionForm {...localTestProps} />);
+    const result = renderWithProvider(<CollectionForm {...localTestProps} />);
 
     const warning = await result.queryByText(warningText);
     expect(warning).toBeDefined();

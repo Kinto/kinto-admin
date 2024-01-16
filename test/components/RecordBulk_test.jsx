@@ -1,16 +1,7 @@
-import { render, fireEvent } from "@testing-library/react";
+import { fireEvent } from "@testing-library/react";
+import { renderWithProvider } from "../test_utils";
 import RecordBulk from "../../src/components/record/RecordBulk";
 import React from "react";
-
-// to avoid rendering a router around everything, allows for more focused testing
-jest.mock("react-router-dom", () => {
-  const originalModule = jest.requireActual("react-router-dom");
-  return {
-    __esModule: true,
-    ...originalModule,
-    Link: "a",
-  };
-});
 
 describe("RecordBulk component", () => {
   describe("Schema defined", () => {
@@ -29,8 +20,8 @@ describe("RecordBulk component", () => {
     };
 
     beforeEach(() => {
-      bulkCreateRecords = jest.fn();
-      node = render(
+      bulkCreateRecords = vi.fn();
+      node = renderWithProvider(
         <RecordBulk
           match={{ params: { bid: "bucket", cid: "collection" } }}
           collection={collection}

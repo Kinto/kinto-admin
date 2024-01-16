@@ -24,7 +24,7 @@ const groupData = {
 
 describe("bucket sagas", () => {
   afterEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   describe("createBucket()", () => {

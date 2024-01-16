@@ -13,7 +13,7 @@ import { SESSION_AUTHENTICATED } from "../../src/constants";
 
 describe("route sagas", () => {
   afterEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   describe("loadRoute()", () => {

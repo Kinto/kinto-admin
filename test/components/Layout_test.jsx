@@ -8,13 +8,13 @@ import { fireEvent } from "@testing-library/react";
 describe("App component", () => {
   let app, store;
   beforeEach(() => {
-    jest.spyOn(sessionActions, "logout");
+    vi.spyOn(sessionActions, "logout");
     app = renderWithProvider(<Layout />);
     store = app.store;
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe("Session top bar", () => {

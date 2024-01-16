@@ -138,6 +138,7 @@ describe("bucket reducer", () => {
   });
 
   describe("BUCKET_HISTORY_SUCCESS", () => {
+    const fakeNext = () => {};
     const state = {
       history: {
         entries: [],
@@ -146,7 +147,6 @@ describe("bucket reducer", () => {
         next: fakeNext,
       },
     };
-    const fakeNext = () => {};
     const action = {
       type: BUCKET_HISTORY_SUCCESS,
       entries: [1, 2, 3],

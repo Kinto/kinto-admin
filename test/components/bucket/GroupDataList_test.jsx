@@ -1,25 +1,15 @@
 import React from "react";
-import { render } from "@testing-library/react";
+import { renderWithProvider } from "../../test_utils";
 import {
   DataList,
   ListActions,
 } from "../../../src/components/bucket/GroupDataList";
 import { canCreateGroup } from "../../../src/permission";
 
-jest.mock("../../../src/permission", () => {
+vi.mock("../../../src/permission", () => {
   return {
     __esModule: true,
-    canCreateGroup: jest.fn(),
-  };
-});
-
-// to avoid rendering a router around everything, allows for more focused testing
-jest.mock("react-router-dom", () => {
-  const originalModule = jest.requireActual("react-router-dom");
-  return {
-    __esModule: true,
-    ...originalModule,
-    Link: "a",
+    canCreateGroup: vi.fn(),
   };
 });
 
@@ -42,7 +32,7 @@ describe("Bucket GroupDataList", () => {
   };
 
   it("Should render a list of groups as expected", () => {
-    const result = render(<DataList {...props} />);
+    const result = renderWithProvider(<DataList {...props} />);
     expect(result.queryByText("groupA")).toBeDefined();
     expect(result.queryByText("groupB")).toBeDefined();
     expect(result.queryByText("memberA-1, memberA-2")).toBeDefined();
@@ -66,13 +56,13 @@ describe("Bucket GroupListActions", () => {
 
   it("Should render a Create Group button when the user has permission", () => {
     canCreateGroup.mockReturnValue(true);
-    const result = render(<ListActions {...props} />);
+    const result = renderWithProvider(<ListActions {...props} />);
     expect(result.queryByText("Create group")).toBeDefined();
   });
 
   it("Should render no Create Group button when the user lacks permission", () => {
     canCreateGroup.mockReturnValue(false);
-    const result = render(<ListActions {...props} />);
+    const result = renderWithProvider(<ListActions {...props} />);
     expect(result.queryByText("Create group")).toBeNull();
   });
 });

@@ -107,7 +107,7 @@ describe("BaseForm component", () => {
         className="testClass"
         schema={testSchema}
         uiSchema={testUiSchema}
-        onSubmit={jest.fn()}
+        onSubmit={vi.fn()}
       />
     );
 
@@ -134,14 +134,14 @@ describe("BaseForm component", () => {
         className="testClass"
         schema={testSchema}
         uiSchema={testUiSchema}
-        onSubmit={jest.fn()}
+        onSubmit={vi.fn()}
         customValidate={(data, errors) => {
           errors.title.addError("test error");
           return errors;
         }}
       />
     );
-    const testFn = jest.fn();
+    const testFn = vi.fn();
 
     const submit = await result.findByText("Submit");
     const titleLabel = await result.findByText("Title");
@@ -157,14 +157,14 @@ describe("BaseForm component", () => {
         className="testClass"
         schema={testSchema}
         uiSchema={testUiSchema}
-        onSubmit={jest.fn()}
+        onSubmit={vi.fn()}
         customValidate={(data, errors) => {
           errors.addError("test error");
           return errors;
         }}
       />
     );
-    const testFn = jest.fn();
+    const testFn = vi.fn();
 
     const submit = await result.findByText("Submit");
     const formWrapper = await result.findByTestId("formWrapper");

@@ -15,7 +15,7 @@ describe("TagsField component", () => {
     });
 
     it("should drop duplicates with an uniqueItems enabled schema", () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const props = {
         schema: { uniqueItems: true, title: "test-label" },
         formData: ["a", "b"],

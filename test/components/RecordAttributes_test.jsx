@@ -1,17 +1,8 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react";
+import { fireEvent } from "@testing-library/react";
+import { renderWithProvider } from "../test_utils";
 import RecordAttributes from "../../src/components/record/RecordAttributes";
 import { clone } from "../../src/utils";
-
-// to avoid rendering a router around everything, allows for more focused testing
-jest.mock("react-router-dom", () => {
-  const originalModule = jest.requireActual("react-router-dom");
-  return {
-    __esModule: true,
-    ...originalModule,
-    Link: "a",
-  };
-});
 
 describe("RecordAttributes component", () => {
   const bucket = {
@@ -54,17 +45,17 @@ describe("RecordAttributes component", () => {
     bucket,
     collection,
     record,
-    updateRecord: () => {},
-    deleteRecord: () => {},
-    deleteAttachment: () => {},
+    updateRecord: () => { },
+    deleteRecord: () => { },
+    deleteAttachment: () => { },
   };
 
   describe("Simple schema", () => {
     let node, updateRecord;
 
     beforeEach(() => {
-      updateRecord = jest.fn();
-      node = render(
+      updateRecord = vi.fn();
+      node = renderWithProvider(
         <RecordAttributes {...props} updateRecord={updateRecord} />
       );
     });
@@ -107,7 +98,7 @@ describe("RecordAttributes component", () => {
     };
 
     beforeEach(() => {
-      node = render(
+      node = renderWithProvider(
         <RecordAttributes
           {...props}
           capabilities={{ attachments: { base_url: "" } }}
@@ -132,7 +123,7 @@ describe("RecordAttributes component", () => {
       };
 
       beforeEach(() => {
-        node = render(
+        node = renderWithProvider(
           <RecordAttributes
             {...props}
             capabilities={{ attachments: { base_url: "" } }}
@@ -165,7 +156,7 @@ describe("RecordAttributes component", () => {
         };
 
         beforeEach(() => {
-          const node = render(
+          const node = renderWithProvider(
             <RecordAttributes {...props} collection={withUISchema} />
           );
           field = node.getByLabelText("id");
