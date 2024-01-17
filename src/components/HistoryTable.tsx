@@ -23,8 +23,8 @@ function Diff({ source, target }: { source: any; target: any }) {
         const className = chunk.startsWith("+")
           ? "added"
           : chunk.startsWith("-")
-          ? "removed"
-          : "";
+            ? "removed"
+            : "";
         return (
           <div key={i} className={className}>
             <code>{chunk}</code>
