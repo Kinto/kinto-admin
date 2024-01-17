@@ -42,6 +42,25 @@ describe("HomePage component", () => {
           server: expect.stringMatching(/./),
         });
       });
+
+      it("should call getServerInfo if expiresAt is in the past", () => {
+        vi.useFakeTimers();
+        let fakeDate = new Date(2024, 1, 2, 3, 4, 5, 6);
+        vi.setSystemTime(fakeDate);
+        
+        const auth = {
+          authType: "anonymous",
+          server: "http://server.test/v1",
+          expiresAt: new Date(2024, 1, 2, 3, 4, 5, 0).getTime(),
+        };
+        const getServerInfo = vi.spyOn(SessionActions, "getServerInfo");
+        localStore.saveSession({ auth });
+        renderWithProvider(<HomePage />);
+
+        expect(getServerInfo).toHaveBeenCalled();
+
+        vi.useRealTimers();
+      });
     });
 
     describe("After OpenID redirection", () => {
