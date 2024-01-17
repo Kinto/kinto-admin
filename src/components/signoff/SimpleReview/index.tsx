@@ -178,7 +178,7 @@ export default function SimpleReview({
           oldRecords={records.oldRecords}
           newRecords={records.newRecords}
           collectionData={signoffSource}
-          displayFields={collection.data?.displayFields}
+          displayFields={collection?.data?.displayFields}
         />
         <button
           type="button"
