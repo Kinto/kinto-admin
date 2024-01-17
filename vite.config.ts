@@ -21,6 +21,9 @@ export default defineConfig({
   define: {
     KINTO_ADMIN_VERSION: JSON.stringify(process.env.npm_package_version),
   },
+  build: {
+    outDir: "build"
+  },
   test: {
     globals: true,
     environment: "jsdom",
