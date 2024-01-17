@@ -139,15 +139,22 @@ describe("findChangeTypes", () => {
 
 describe("formatDiffHeader", () => {
   it("returns expected header based on provided records and displayFields", () => {
-    expect(formatDiffHeader({
+
+    let getTextContent = (props) => {
+      return render(
+        formatDiffHeader(props)
+      ).container.textContent;
+    };
+    
+    expect(getTextContent({
       target: { id: "foo"}
-    })).toStrictEqual("foo");
-
-    expect(formatDiffHeader({
+    })).toBe("id: foo");
+    
+    expect(getTextContent({
       source: { id: "foo"}
-    })).toStrictEqual("foo");
+    })).toBe("id: foo");
 
-    expect(formatDiffHeader({
+    expect(getTextContent({
       source: { 
         id: "foo",
         prop1: "val1",
@@ -158,9 +165,9 @@ describe("formatDiffHeader", () => {
         prop1: "val3",
         prop2: "val4",
       }
-    })).toStrictEqual("foo");
+    })).toBe("id: foo");
 
-    expect(formatDiffHeader({
+    expect(getTextContent({
       source: { 
         id: "foo",
         prop1: "val1",
@@ -174,6 +181,6 @@ describe("formatDiffHeader", () => {
         // prop3 intentionally undefined
       },
       displayFields: [ "prop1", "prop2", "prop3"]
-    })).toStrictEqual("prop1: val3 | prop2: val4 | prop3: undefined | foo");
+    })).toBe("prop1: val3prop2: val4prop3: undefinedid: foo");
   });
 });

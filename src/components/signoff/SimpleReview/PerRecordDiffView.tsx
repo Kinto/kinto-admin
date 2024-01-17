@@ -178,12 +178,20 @@ export function formatDiffHeader({
   let fields = [];
 
   for (let f of displayFields) {
-    fields.push(`${f}: ${(target || source)[f] || "undefined"}`);
+    fields.push(
+      <span>
+        <label>{f}:</label> {(target || source)[f] || "undefined"}
+      </span>
+    );
   }
 
-  fields.push((target || source).id);
+  fields.push(
+    <span>
+      <label>id:</label> {(target || source).id}
+    </span>
+  );
 
-  return fields.join(" | ");
+  return <>{fields}</>;
 }
 
 function recordsAreDifferent(a: ValidRecord, b: ValidRecord): boolean {
