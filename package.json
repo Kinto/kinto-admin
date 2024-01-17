@@ -6,6 +6,7 @@
   "scripts": {
     "build": "vite build",
     "build:readme": "toctoc README.md -w",
+    "build:kinto-single": "ASSET_PATH=/v1/admin KINTO_ADMIN_SINGLE_SERVER=1 vite build",
     "cs-check": "prettier -l \"{src,test}/**/*.{js,ts,tsx}\"",
     "cs-format": "prettier \"{src,test}/**/*.{js,ts,tsx}\" --write",
     "lint": "eslint \"src/**/*.{js,ts,tsx}\" \"test/**/*.{js,ts,tsx}\"",

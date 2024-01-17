@@ -42,11 +42,35 @@ describe("HomePage component", () => {
           server: expect.stringMatching(/./),
         });
       });
+
+      it("should call getServerInfo if expiresAt is in the past", () => {
+        vi.useFakeTimers();
+        let fakeDate = new Date(2024, 1, 2, 3, 4, 5, 6);
+        vi.setSystemTime(fakeDate);
+        
+        const auth = {
+          authType: "anonymous",
+          server: "http://server.test/v1",
+          expiresAt: new Date(2024, 1, 2, 3, 4, 5, 0).getTime(),
+        };
+        const getServerInfo = vi.spyOn(SessionActions, "getServerInfo");
+        localStore.saveSession({ auth });
+        renderWithProvider(<HomePage />);
+
+        expect(getServerInfo).toHaveBeenCalled();
+
+        vi.useRealTimers();
+      });
     });
 
     describe("After OpenID redirection", () => {
       it("should setup session when component is mounted", () => {
         const setupSession = vi.spyOn(SessionActions, "setupSession");
+        
+        vi.useFakeTimers();
+        let fakeDate = new Date(2024, 1, 2, 3, 4, 5, 6);
+        vi.setSystemTime(fakeDate);
+        
         const payload =
           "eyJzZXJ2ZXIiOiJodHRwczovL2RlbW8ua2ludG8tc3RvcmFnZS5vcmcvdjEvIiwiYXV0aFR5cGUiOiJvcGVuaWQtYXV0aDAiLCJyZWRpcmVjdFVSTCI6bnVsbH0";
         const token =
@@ -65,7 +89,10 @@ describe("HomePage component", () => {
           tokenType: "Bearer",
           credentials: { token: "oXJNgbNayWPKF" },
           server: "https://demo.kinto-storage.org/v1/",
+          expiresAt: fakeDate.getTime() + 86400 * 1000,
         });
+
+        vi.useRealTimers();
       });
     });
   });
