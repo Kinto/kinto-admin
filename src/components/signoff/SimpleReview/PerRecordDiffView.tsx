@@ -102,7 +102,7 @@ function Diff({
   target?: ValidRecord;
   className?: string;
   allLines?: boolean;
-  displayFields?: string[]
+  displayFields?: string[];
 }) {
   let diff: string[];
 
@@ -124,7 +124,8 @@ function Diff({
       data-testid="record-diff"
     >
       <div className="card-header">
-        <DiffLabel changeType={changeType} /> {formatDiffHeader({ source, target, displayFields })}
+        <DiffLabel changeType={changeType} />{" "}
+        {formatDiffHeader({ source, target, displayFields })}
       </div>
       <div className="card-body p-0">
         <pre className="json-record json-record-simple-review mb-0">
@@ -166,22 +167,22 @@ function DiffLabel({ changeType }: { changeType: ChangeType }) {
 }
 
 export function formatDiffHeader({
-  source, 
-  target, 
-  displayFields = []
+  source,
+  target,
+  displayFields = [],
 }: {
-  source: ValidRecord, 
-  target: ValidRecord, 
-  displayFields: string[]
+  source: ValidRecord;
+  target: ValidRecord;
+  displayFields: string[];
 }) {
   let fields = [];
 
   for (let f of displayFields) {
-    fields.push(`${f}: ${(target || source)[f] || "undefined" }`);
+    fields.push(`${f}: ${(target || source)[f] || "undefined"}`);
   }
 
   fields.push((target || source).id);
-  
+
   return fields.join(" | ");
 }
 
