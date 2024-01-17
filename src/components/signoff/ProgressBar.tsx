@@ -25,12 +25,12 @@ export function ProgressStep({
   step,
   children,
 }: ProgressStepProps) {
-  const status =
-    currentStep === step
-      ? "active"
-      : step < currentStep
-      ? "complete"
-      : "disabled";
+  let status = "disabled";
+  if (currentStep === step) {
+    status = "active";
+  } else if (step < currentStep) {
+    status = "complete";
+  }
   return (
     <div className={`col-3 bs-wizard-step ${status}`} key={step}>
       <div className="text-center bs-wizard-stepnum">{label}</div>

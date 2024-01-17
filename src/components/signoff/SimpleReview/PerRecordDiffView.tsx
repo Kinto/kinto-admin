@@ -124,11 +124,12 @@ function Diff({
       <div className="card-body p-0">
         <pre className="json-record json-record-simple-review mb-0">
           {diff.map((chunk: string, i) => {
-            const className = chunk.startsWith("+")
-              ? "added"
-              : chunk.startsWith("-")
-              ? "removed"
-              : "";
+            let className = "";
+            if (chunk.startsWith("+")) {
+              className = "added";
+            } else if (chunk.startsWith("-")) {
+              className = "removed";
+            }
             return (
               <div key={i} className={className}>
                 <code>{chunk}</code>
