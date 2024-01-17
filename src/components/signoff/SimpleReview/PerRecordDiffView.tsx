@@ -218,9 +218,9 @@ export function findChangeTypes(
     const hasChanges = recordsAreDifferent(matchingOldItem, item);
     const hasChangesWithoutExtraFields = item.last_modified
       ? recordsAreDifferent(
-        omit(matchingOldItem, EXTRA_FIELDS),
-        omit(item, EXTRA_FIELDS)
-      )
+          omit(matchingOldItem, EXTRA_FIELDS),
+          omit(item, EXTRA_FIELDS)
+        )
       : hasChanges;
 
     if (hasChanges && !hasChangesWithoutExtraFields) {
