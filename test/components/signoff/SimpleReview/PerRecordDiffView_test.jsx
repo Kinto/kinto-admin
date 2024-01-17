@@ -1,6 +1,7 @@
 import PerRecordDiffView, {
   findChangeTypes,
   ChangeType,
+  formatDiffHeader,
 } from "../../../../src/components/signoff/SimpleReview/PerRecordDiffView";
 import React from "react";
 import { render } from "@testing-library/react";
@@ -133,5 +134,46 @@ describe("findChangeTypes", () => {
       { id: "d", changeType: ChangeType.REMOVE, source: d },
       { id: "e", changeType: ChangeType.EMPTY_UPDATE, source: e, target: e2 },
     ]);
+  });
+});
+
+describe("formatDiffHeader", () => {
+  it("returns expected header based on provided records and displayFields", () => {
+    expect(formatDiffHeader({
+      target: { id: "foo"}
+    })).toStrictEqual("foo");
+
+    expect(formatDiffHeader({
+      source: { id: "foo"}
+    })).toStrictEqual("foo");
+
+    expect(formatDiffHeader({
+      source: { 
+        id: "foo",
+        prop1: "val1",
+        prop2: "val2",
+      },
+      target: { 
+        id: "foo",
+        prop1: "val3",
+        prop2: "val4",
+      }
+    })).toStrictEqual("foo");
+
+    expect(formatDiffHeader({
+      source: { 
+        id: "foo",
+        prop1: "val1",
+        prop2: "val2",
+        prop3: "prevVal",
+      },
+      target: { 
+        id: "foo",
+        prop1: "val3",
+        prop2: "val4",
+        // prop3 intentionally undefined
+      },
+      displayFields: [ "prop1", "prop2", "prop3"]
+    })).toStrictEqual("prop1: val3 | prop2: val4 | prop3: undefined | foo");
   });
 });
