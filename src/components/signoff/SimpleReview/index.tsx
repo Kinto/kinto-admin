@@ -158,7 +158,7 @@ export default function SimpleReview({
         </div>
       );
     }
-    
+
     return (
       <>
         {signoffSource.status !== "signed" && (
