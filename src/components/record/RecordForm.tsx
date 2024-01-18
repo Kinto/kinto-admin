@@ -81,7 +81,7 @@ export default function RecordForm(props: Props) {
   } = collection;
   const attachmentConfig = {
     enabled: attachment?.enabled,
-    required: attachment?.required && !record?.data?.attachment
+    required: attachment?.required && !record?.data?.attachment,
   };
 
   const allowEditing = record
@@ -184,7 +184,11 @@ export default function RecordForm(props: Props) {
       );
     }
 
-    const _schema = extendSchemaWithAttachment(schema, attachmentConfig, recordData);
+    const _schema = extendSchemaWithAttachment(
+      schema,
+      attachmentConfig,
+      recordData
+    );
     let _uiSchema = extendUIWithKintoFields(uiSchema, !record);
     _uiSchema = extendUiSchemaWithAttachment(_uiSchema, attachmentConfig);
     _uiSchema = extendUiSchemaWhenDisabled(_uiSchema, !allowEditing);
@@ -202,7 +206,7 @@ export default function RecordForm(props: Props) {
   };
 
   const isUpdate = !!record;
-  
+
   const alert =
     allowEditing || collection.busy ? null : (
       <div className="alert alert-warning">
@@ -214,7 +218,7 @@ export default function RecordForm(props: Props) {
   return (
     <div>
       {alert}
-      {isUpdate && (
+      {isUpdate && attachmentConfig.enabled && (
         <AttachmentInfo
           allowEditing={allowEditing}
           capabilities={capabilities}
