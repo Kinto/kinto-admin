@@ -45,6 +45,7 @@ describe("JSONRecordForm", () => {
     expect(result.queryByLabelText("File attachment")).toBeDefined();
     fireEvent.click(result.queryByText("Submit"));
     expect(lastSubmittedData.formData).toStrictEqual({
+      attachment: undefined,
       __attachment__: undefined,
     });
   });
@@ -63,6 +64,7 @@ describe("JSONRecordForm", () => {
     fireEvent.click(result.queryByText("Submit"));
     expect(lastSubmittedData.formData).toStrictEqual({
       foo: "bar",
+      attachment: undefined,
       __attachment__: undefined,
     });
   });

@@ -76,6 +76,14 @@ export default function RecordForm(props: Props) {
     bucket,
   } = props;
 
+  const {
+    data: { schema = {}, uiSchema = {}, attachment },
+  } = collection;
+  const attachmentConfig = {
+    enabled: attachment?.enabled,
+    required: attachment?.required && !record?.data?.attachment
+  };
+
   const allowEditing = record
     ? canEditRecord(session, bucket.data.id, collection, record)
     : canCreateRecord(session, bucket.data.id, collection);
@@ -106,10 +114,6 @@ export default function RecordForm(props: Props) {
   };
 
   const getForm = () => {
-    const { collection, record } = props;
-    const {
-      data: { schema = {}, uiSchema = {}, attachment },
-    } = collection;
     const emptySchema = Object.keys(schema).length === 0;
     const recordData = record ? record.data : {};
 
@@ -180,9 +184,9 @@ export default function RecordForm(props: Props) {
       );
     }
 
-    const _schema = extendSchemaWithAttachment(schema, attachment, recordData);
+    const _schema = extendSchemaWithAttachment(schema, attachmentConfig, recordData);
     let _uiSchema = extendUIWithKintoFields(uiSchema, !record);
-    _uiSchema = extendUiSchemaWithAttachment(_uiSchema, attachment);
+    _uiSchema = extendUiSchemaWithAttachment(_uiSchema, attachmentConfig);
     _uiSchema = extendUiSchemaWhenDisabled(_uiSchema, !allowEditing);
 
     return (
@@ -197,12 +201,8 @@ export default function RecordForm(props: Props) {
     );
   };
 
-  const {
-    data: { attachment: attachmentConfig },
-  } = collection;
-  const attachmentRequired = attachmentConfig && attachmentConfig.required;
   const isUpdate = !!record;
-
+  
   const alert =
     allowEditing || collection.busy ? null : (
       <div className="alert alert-warning">
@@ -219,7 +219,7 @@ export default function RecordForm(props: Props) {
           allowEditing={allowEditing}
           capabilities={capabilities}
           record={record}
-          attachmentRequired={attachmentRequired}
+          attachmentRequired={attachment?.required}
           deleteAttachment={handleDeleteAttachment}
         />
       )}
