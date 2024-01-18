@@ -116,7 +116,7 @@ describe("RecordForm", () => {
     expect(result.findByLabelText("File attachment")).toBeDefined();
   });
 
-  it.only("Requires an attachment to submit when it's a new record and attachments are required", async () => {
+  it("Requires an attachment to submit when it's a new record and attachments are required", async () => {
     lastSubmittedData = null;
     const result = renderWithProvider(<RecordForm {...attachProps} />);
     fireEvent.change(result.queryByLabelText("TestTitle"), { target: { value: "test title" }});
