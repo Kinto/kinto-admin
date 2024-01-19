@@ -81,7 +81,7 @@ export default function RecordForm(props: Props) {
   } = collection;
   const attachmentConfig = {
     enabled: attachment?.enabled,
-    required: attachment?.required && !record?.data?.attachment,
+    required: attachment?.required && !record?.data?.attachment, // allows records to be edited without requiring a new attachment to be uploaded
   };
 
   const allowEditing = record
@@ -214,6 +214,8 @@ export default function RecordForm(props: Props) {
         {isUpdate ? " edit this" : " create a"} record.
       </div>
     );
+  
+  console.log(record);
 
   return (
     <div>

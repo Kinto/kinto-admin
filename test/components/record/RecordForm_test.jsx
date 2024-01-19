@@ -75,6 +75,14 @@ describe("RecordForm", () => {
     }
   };
 
+  const testAttachment = {
+    "hash": "efcea498c4bed6cac0076d91bf4f5df67fa875b3676248e5a6ae2ef4ed1bcef1",
+    "size": 5475,
+    "filename": "z.jpg",
+    "location": "test/test/03adc61f-9070-4e6c-a6ef-e94f5e17245f.jpg",
+    "mimetype": "image/jpeg"
+  };
+
   it("Renders an empty form for a new record (attachments disabled)", async () => {
     const result = renderWithProvider(<RecordForm {...defaultProps} />);
     fireEvent.change(result.queryByLabelText("TestTitle"), { target: { value: "test title" }});
@@ -104,16 +112,24 @@ describe("RecordForm", () => {
     expect(result.findByLabelText("File attachment")).toBeDefined();
   });
 
-  it("Renders the expected form for an existing record (attachments enabled)", async () => {
+  it("Renders the expected form for an existing record (attachments enabled) and allows user to save without updating attachment", async () => {
     const result = renderWithProvider(<RecordForm {...attachProps} record={{
       data: {
         title: "test title",
         content: "test content",
+        attachment: testAttachment
       }
     }} />);
     expect(result.queryByLabelText("TestTitle").value).toBe("test title");
     expect(result.queryByLabelText("TestContent").value).toBe("test content");
     expect(result.findByLabelText("File attachment")).toBeDefined();
+    fireEvent.change(result.queryByLabelText("TestTitle"), { target: { value: "updated title" }});
+    fireEvent.click(result.queryByText("Update record"));
+    expect(lastSubmittedData).toStrictEqual({
+      title: "updated title",
+      content: "test content",
+      attachment: testAttachment
+    });
   });
 
   it("Requires an attachment to submit when it's a new record and attachments are required", async () => {
@@ -127,7 +143,7 @@ describe("RecordForm", () => {
 
   it("Disables the form when user cannot edit", async () => {
     canEditRecord.mockReturnValue(false);
-    const result = renderWithProvider(<RecordForm {...defaultProps} record={{
+    const result = renderWithProvider(<RecordForm {...attachProps} record={{
       data: {
         title: "test title",
         content: "test content",
@@ -135,5 +151,6 @@ describe("RecordForm", () => {
     }} />);
     expect(result.queryByLabelText("TestTitle").disabled).toBe(true);
     expect(result.queryByLabelText("TestContent").disabled).toBe(true);
+    expect(result.queryByLabelText("File attachment*").disabled).toBe(true);
   });
 });
