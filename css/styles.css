@@ -32,6 +32,12 @@ h1 {
 
 .card-header span {
   margin-right: 1em;
+  max-width: 26vw;
+  display: inline-block;
+  height: 1.5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .card-header span label {
