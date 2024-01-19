@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { omit, diffJson } from "../../../utils";
+import { omit, diffJson, renderDisplayField } from "../../../utils";
 import type { ValidRecord, SignoffSourceInfo } from "../../../types";
 import { diffArrays, diffJson as diff } from "diff";
 
@@ -180,7 +180,7 @@ export function formatDiffHeader({
   for (let f of displayFields) {
     fields.push(
       <span>
-        <label>{f}:</label> {(target || source)[f] || "undefined"}
+        <label>{f}:</label> {renderDisplayField(target || source, f)}
       </span>
     );
   }
