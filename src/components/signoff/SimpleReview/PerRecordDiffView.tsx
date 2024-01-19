@@ -180,7 +180,7 @@ export function formatDiffHeader({
   for (let f of displayFields) {
     fields.push(
       <span>
-        <label>{f}:</label> { renderDisplayField(target || source, f) }
+        <label>{f}:</label> {renderDisplayField(target || source, f)}
       </span>
     );
   }
