@@ -214,7 +214,7 @@ export default function RecordForm(props: Props) {
         {isUpdate ? " edit this" : " create a"} record.
       </div>
     );
-  
+
   console.log(record);
 
   return (
