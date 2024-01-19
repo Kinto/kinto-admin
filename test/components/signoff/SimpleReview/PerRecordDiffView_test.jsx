@@ -181,6 +181,16 @@ describe("formatDiffHeader", () => {
         // prop3 intentionally undefined
       },
       displayFields: [ "prop1", "prop2", "prop3"]
-    })).toBe("prop1: val3prop2: val4prop3: undefinedid: foo");
+    })).toBe("prop1: val3prop2: val4prop3: <unknown>id: foo");
+
+    expect(getTextContent({
+      target: { 
+        id: "foo",
+        prop: { 
+          nestedProp: "nestedVal"
+        },
+      },
+      displayFields: [ "prop.nestedProp"]
+    })).toBe("prop.nestedProp: nestedValid: foo");
   });
 });
