@@ -215,8 +215,6 @@ export default function RecordForm(props: Props) {
       </div>
     );
 
-  console.log(record);
-
   return (
     <div>
       {alert}
