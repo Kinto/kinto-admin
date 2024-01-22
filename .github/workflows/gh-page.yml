@@ -1,6 +1,4 @@
 name: Deploy to GitHub Pages
-on:
-  manual:
 jobs:
   Deploy-to-GitHub-Pages:
     runs-on: ubuntu-latest
