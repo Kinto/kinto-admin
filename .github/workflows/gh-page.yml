@@ -27,7 +27,6 @@ jobs:
             npm run build
             cd build
             tar -cvf "$RUNNER_TEMP/artifact.tar" *
-            ls $RUNNER_TEMP
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -44,7 +43,6 @@ jobs:
       id-token: write
     environment: 
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to Github Pages
