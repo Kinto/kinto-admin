@@ -25,13 +25,11 @@ jobs:
       - name: Build the package
         run: |
             npm run build
-            cd build
-            tar -cvf "$RUNNER_TEMP/artifact.tar" *
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ${{ runner.temp }}/artifact.tar
+          path: build/
 
   deploy:
     needs: build
