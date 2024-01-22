@@ -168,9 +168,9 @@ If you use `target.merkle.tree.file.name` it will render the string
 8. Done!
 
 ## Deploying to github-pages
-Included is a github workflow that will release to github pages for any user acceptence testing you may want to do. You must enable github pages first (Settings > Pages). 
+A github workflow is included that will release to github pages for any user acceptence testing you may want to do. You must enable github pages first and allow deployment from github actions (Settings > Pages).
 
-By default, most branches are restricted from deploying. Additional branches can be allowed to deploy, or you can allow any branch to deploy to github pages (Settings > Environments > github-pages).
+By default, most branches are restricted from deploying. Additional branches can be allowed to deploy (or any can be allowed) under Settings > Environments > github-pages.
 
 ## License
 
