@@ -1,6 +1,8 @@
 name: Deploy to GitHub Pages
 on:
   workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   Deploy-to-GitHub-Pages:
     runs-on: ubuntu-latest
@@ -27,6 +29,8 @@ jobs:
         run: |
             git config user.name "$(git log -n 1 --pretty=format:%an)"
             git config user.email "$(git log -n 1 --pretty=format:%ae)"
+            echo $(git config user.name)
+            echo $(git config user.email)
 
       - name: Publish to gh pages
         run: npm run publish-to-gh-pages
