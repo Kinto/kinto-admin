@@ -48,5 +48,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to Github Pages
-      id: deploiyment
-      uses: actions/deploy-pages@v4
+        id: deploiyment
+        uses: actions/deploy-pages@v4
