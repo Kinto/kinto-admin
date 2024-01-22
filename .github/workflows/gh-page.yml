@@ -1,10 +1,8 @@
 name: Deploy to GitHub Pages
 on:
   workflow_dispatch:
-permissions:
-  contents: write
 jobs:
-  Deploy-to-GitHub-Pages:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,12 +23,30 @@ jobs:
             jq ${VERSION_NUMBER} package.json > temp_package.json
             mv temp_package.json package.json
       
-      - name: Copy user name and email from most recent commit
+      - name: Build the package
         run: |
-            git config user.name "$(git log -n 1 --pretty=format:%an)"
-            git config user.email "$(git log -n 1 --pretty=format:%ae)"
-            echo $(git config user.name)
-            echo $(git config user.email)
+            npm run build
+            cd build
+            tar -cvf "$RUNNER_TEMP/artifact.tar" *
 
-      - name: Publish to gh pages
-        run: npm run publish-to-gh-pages
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.sname }}
+          path: ${{ runner.temp }}/artifact.tar
+          retention-days: 2
+          if-no-files-found: error
+
+  deploy:
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment: 
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Github Pages
+      id: deploiyment
+      uses: actions/deploy-pages@v4
