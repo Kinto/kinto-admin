@@ -1,6 +1,5 @@
 name: Deploy to GitHub Pages
-on:
-  workflow_dispatch:
+on: [workflow_dispatch]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -28,11 +27,12 @@ jobs:
             npm run build
             cd build
             tar -cvf "$RUNNER_TEMP/artifact.tar" *
+            ls $RUNNER_TEMP
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.sname }}
+          name: github-pages
           path: ${{ runner.temp }}/artifact.tar
           retention-days: 2
           if-no-files-found: error
@@ -48,5 +48,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to Github Pages
-        id: deploiyment
+        id: deployment
         uses: actions/deploy-pages@v4
