@@ -1,6 +1,6 @@
 {
   "name": "kinto-admin",
-  "version": "3.0.1",
+  "version": "0.0.0-dev",
   "description": "Kinto Web Administration Console in React.js",
   "type": "module",
   "scripts": {

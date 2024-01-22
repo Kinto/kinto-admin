@@ -1,0 +1,26 @@
+name: Deploy to GitHub Pages
+on:
+  manual:
+jobs:
+  Deploy-to-GitHub-Pages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+          cache: 'npm'
+
+      - name: Install Node dependencies
+        run: npm ci
+      
+      - name: Set package version
+        run: LATEST_TAG=$(git describe --tags --abbrev=0 | sed s/^v//\;s/$// | tr -d '"')
+        run: CURRENT_BRANCH=$(git branch --show-current | tr -d '"')
+        run: CURRENT_COMMIT=$(git rev-parse --short HEAD)
+        run: VERSION_NUMBER=".version=\"${LATEST_TAG}-${CURRENT_BRANCH}-${CURRENT_COMMIT}\""
+        run: jq ${VERSION_NUMBER} package.json > temp_package.json
+        run: mv temp_package.json package.json
+      
+      - name: Publish to gh pages
+        run: npm run publish-to-gh-pages
