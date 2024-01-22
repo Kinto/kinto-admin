@@ -1,4 +1,6 @@
 name: Deploy to GitHub Pages
+on:
+  workflow_dispatch:
 jobs:
   Deploy-to-GitHub-Pages:
     runs-on: ubuntu-latest
