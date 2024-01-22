@@ -23,5 +23,10 @@ jobs:
             jq ${VERSION_NUMBER} package.json > temp_package.json
             mv temp_package.json package.json
       
+      - name: Copy user name and email from most recent commit
+        run: |
+            git config user.name "$(git log -n 1 --pretty=format:%an)"
+            git config user.email "$(git log -n 1 --pretty=format:%ae)"
+
       - name: Publish to gh pages
         run: npm run publish-to-gh-pages
