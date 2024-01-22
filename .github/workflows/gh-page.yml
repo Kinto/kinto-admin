@@ -15,12 +15,13 @@ jobs:
         run: npm ci
       
       - name: Set package version
-        run: LATEST_TAG=$(git describe --tags --abbrev=0 | sed s/^v//\;s/$// | tr -d '"')
-        run: CURRENT_BRANCH=$(git branch --show-current | tr -d '"')
-        run: CURRENT_COMMIT=$(git rev-parse --short HEAD)
-        run: VERSION_NUMBER=".version=\"${LATEST_TAG}-${CURRENT_BRANCH}-${CURRENT_COMMIT}\""
-        run: jq ${VERSION_NUMBER} package.json > temp_package.json
-        run: mv temp_package.json package.json
+        run: 
+          - LATEST_TAG=$(git describe --tags --abbrev=0 | sed s/^v//\;s/$// | tr -d '"')
+          - CURRENT_BRANCH=$(git branch --show-current | tr -d '"')
+          - CURRENT_COMMIT=$(git rev-parse --short HEAD)
+          - VERSION_NUMBER=".version=\"${LATEST_TAG}-${CURRENT_BRANCH}-${CURRENT_COMMIT}\""
+          - jq ${VERSION_NUMBER} package.json > temp_package.json
+          - mv temp_package.json package.json
       
       - name: Publish to gh pages
         run: npm run publish-to-gh-pages
