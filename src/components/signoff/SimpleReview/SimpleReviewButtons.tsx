@@ -1,6 +1,6 @@
-import CommentDialog from "../../CommentDialog";
 import React, { useState } from "react";
 import { SignoffCollectionStatus } from "../../../types";
+import { CommentDialog } from "../Comment";
 
 import { useLocation } from "react-router";
 import { parseSearchString } from "../../../locationUtils";

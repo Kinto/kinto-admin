@@ -8,7 +8,7 @@ describe("Signoff CommentDialog component", () => {
       description: "test description",
       confirmLabel: "cOnFiRm",
       onConfirm: vi.fn(),
-      onCancel: vi.fn(),
+      onClose: vi.fn(),
     };
 
     // should be rendered correctly
@@ -20,9 +20,9 @@ describe("Signoff CommentDialog component", () => {
     expect(result.queryByTestId("spinner")).toBeNull();
 
     // cancel button should call cancel event
-    expect(testProps.onCancel).toBeCalledTimes(0);
+    expect(testProps.onClose).toBeCalledTimes(0);
     fireEvent.click(cancel);
-    expect(testProps.onCancel).toBeCalledTimes(1);
+    expect(testProps.onClose).toBeCalledTimes(1);
     expect(result.queryByTestId("spinner")).toBeNull();
 
     // confirm button should call confirm event and show a spinner

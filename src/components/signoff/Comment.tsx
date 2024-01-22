@@ -15,17 +15,19 @@ export function Comment({ text }: { text: string }) {
 }
 
 type CommentDialogProps = {
+  title?: string;
   description: string;
   confirmLabel: string;
-  onConfirm: (s: string) => void;
-  onCancel: () => void;
+  onConfirm: (comment: string) => void;
+  onClose: () => void;
 };
 
 export function CommentDialog({
+  title = "Confirmation",
   description,
-  confirmLabel,
   onConfirm,
-  onCancel,
+  confirmLabel,
+  onClose,
 }: CommentDialogProps) {
   const [comment, setComment] = useState<string>("");
   const [showSpinner, setShowSpinner] = useState(false);
@@ -37,6 +39,7 @@ export function CommentDialog({
   const onClickConfirm = () => {
     setShowSpinner(true);
     onConfirm(comment);
+    onClose();
   };
 
   return (
@@ -49,13 +52,13 @@ export function CommentDialog({
       <div className="modal-dialog" role="document">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">Confirmation</h5>
+            <h5 className="modal-title">{title}</h5>
             <button
               type="button"
               className="close"
               data-dismiss="modal"
               aria-label="Close"
-              onClick={onCancel}
+              onClick={onClose}
             >
               <span aria-hidden="true">&times;</span>
             </button>
@@ -80,7 +83,7 @@ export function CommentDialog({
               type="button"
               className="btn btn-secondary"
               data-dismiss="modal"
-              onClick={onCancel}
+              onClick={onClose}
             >
               Close
             </button>
