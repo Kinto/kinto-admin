@@ -1,6 +1,5 @@
 name: Deploy to GitHub Pages
-on:
-  workflow_dispatch:
+on: [workflow_dispatch]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,17 +24,12 @@ jobs:
       
       - name: Build the package
         run: |
-            npm run build
-            cd build
-            tar -cvf "$RUNNER_TEMP/artifact.tar" *
+            ASSET_PATH=/kinto-admin/ npm run build
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: ${{ inputs.sname }}
-          path: ${{ runner.temp }}/artifact.tar
-          retention-days: 2
-          if-no-files-found: error
+          path: build/
 
   deploy:
     needs: build
@@ -44,9 +38,8 @@ jobs:
       id-token: write
     environment: 
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to Github Pages
-        id: deploiyment
+        id: deployment
         uses: actions/deploy-pages@v4

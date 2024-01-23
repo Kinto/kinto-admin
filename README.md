@@ -167,6 +167,11 @@ If you use `target.merkle.tree.file.name` it will render the string
 7. Draft a new release with the changelog
 8. Done!
 
+## Deploying to github-pages
+A github workflow is included that will release to github pages for any user acceptence testing you may want to do. You must enable github pages first and allow deployment from github actions (Settings > Pages).
+
+By default, most branches are restricted from deploying. Additional branches can be allowed to deploy (or any can be allowed) under Settings > Environments > github-pages.
+
 ## License
 
 Apache Licence Version 2.0
