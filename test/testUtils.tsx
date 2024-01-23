@@ -55,6 +55,7 @@ export function renderWithProvider(
     route = "/",
     path = "/",
     initialHistory = createMemoryHistory({ initialEntries: [route] }),
+    ...renderOptions
   } = {}
 ) {
   const { store, history } = configureAppStoreAndHistory(
@@ -68,10 +69,5 @@ export function renderWithProvider(
       </Router>
     </Provider>
   );
-  return {
-    ...render(ui, { wrapper: Wrapper }),
-    store,
-    rerender: updatedComponent =>
-      render(updatedComponent, { container: document.body, wrapper: Wrapper }),
-  };
+  return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) }
 }
