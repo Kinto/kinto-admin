@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { omit, diffJson } from "../../../utils";
+import { omit, diffJson, renderDisplayField } from "../../../utils";
 import type { ValidRecord, SignoffSourceInfo } from "../../../types";
 import { diffArrays, diffJson as diff } from "diff";
 
@@ -16,12 +16,14 @@ export interface PerRecordDiffViewProps {
   oldRecords: ValidRecord[];
   newRecords: ValidRecord[];
   collectionData: SignoffSourceInfo;
+  displayFields?: string[];
 }
 
 export default function PerRecordDiffView({
   oldRecords,
   newRecords,
   collectionData,
+  displayFields,
 }: PerRecordDiffViewProps) {
   const [showExtraFields, setShowExtraFields] = useState(false);
   const [showAllLines, setShowAllLines] = useState(false);
@@ -70,6 +72,7 @@ export default function PerRecordDiffView({
               source={source}
               target={target}
               allLines={showAllLines}
+              displayFields={displayFields}
             />
           ))}
         </div>
@@ -91,6 +94,7 @@ function Diff({
   target,
   className = "",
   allLines = false,
+  displayFields,
 }: {
   id: string;
   changeType: ChangeType;
@@ -98,6 +102,7 @@ function Diff({
   target?: ValidRecord;
   className?: string;
   allLines?: boolean;
+  displayFields?: string[];
 }) {
   let diff: string[];
 
@@ -119,7 +124,8 @@ function Diff({
       data-testid="record-diff"
     >
       <div className="card-header">
-        <DiffLabel changeType={changeType} /> {id}
+        <DiffLabel changeType={changeType} />{" "}
+        {formatDiffHeader({ source, target, displayFields })}
       </div>
       <div className="card-body p-0">
         <pre className="json-record json-record-simple-review mb-0">
@@ -158,6 +164,34 @@ function DiffLabel({ changeType }: { changeType: ChangeType }) {
     case ChangeType.EMPTY_UPDATE:
       return <span className={"text-secondary"}>[unchanged]</span>;
   }
+}
+
+export function formatDiffHeader({
+  source,
+  target,
+  displayFields = [],
+}: {
+  source: ValidRecord;
+  target: ValidRecord;
+  displayFields: string[];
+}) {
+  let fields = [];
+
+  for (let f of displayFields) {
+    fields.push(
+      <span>
+        <label>{f}:</label> {renderDisplayField(target || source, f)}
+      </span>
+    );
+  }
+
+  fields.push(
+    <span>
+      <label>id:</label> {(target || source).id}
+    </span>
+  );
+
+  return <>{fields}</>;
 }
 
 function recordsAreDifferent(a: ValidRecord, b: ValidRecord): boolean {

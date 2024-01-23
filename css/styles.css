@@ -30,6 +30,20 @@ h1 {
   border-color: #b8daff;
 }
 
+.card-header span {
+  margin-right: 1em;
+  max-width: 26em;
+  display: inline-block;
+  height: 1.5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card-header span label {
+  font-weight: bold;
+}
+
 .sidebar-filters > .card-body {
   padding: 15px 15px 0 15px;
 }
