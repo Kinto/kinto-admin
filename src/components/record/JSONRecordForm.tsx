@@ -53,7 +53,7 @@ type Props = {
 
 function splitAttachment(record: string) {
   let jsRecord = JSON.parse(record);
-  const attachment = jsRecord.attachment || {};
+  const attachment = jsRecord.attachment;
   jsRecord = omit(jsRecord, ["attachment"]);
   return {
     attachment: attachment,
@@ -69,16 +69,6 @@ export default function JSONRecordForm({
   attachmentEnabled,
   attachmentRequired,
 }: Props) {
-  const handleOnSubmit = data => {
-    const formData = attachmentEnabled
-      ? {
-          ...JSON.parse(data.formData.jsonContent),
-          __attachment__: data.formData.__attachment__,
-        }
-      : JSON.parse(data.formData);
-    onSubmit({ ...data, formData });
-  };
-
   const _uiSchema = attachmentEnabled ? uiSchemaWithUpload : uiSchema;
   const _record: any | string = attachmentEnabled
     ? splitAttachment(record)
@@ -87,6 +77,17 @@ export default function JSONRecordForm({
   if (attachmentEnabled && attachmentRequired) {
     _schema.required.push("__attachment__");
   }
+
+  const handleOnSubmit = data => {
+    const formData = attachmentEnabled
+      ? {
+          ...JSON.parse(data.formData.jsonContent),
+          attachment: _record?.attachment,
+          __attachment__: data.formData.__attachment__,
+        }
+      : JSON.parse(data.formData);
+    onSubmit({ ...data, formData });
+  };
 
   return (
     <div>
