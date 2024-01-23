@@ -1,7 +1,6 @@
 /* Utils for tests. */
 
 import React from "react";
-import ReactDOM from "react-dom";
 import { render } from "@testing-library/react";
 import { Router } from "react-router";
 import { Provider } from "react-redux";
@@ -10,30 +9,6 @@ import * as notificationsActions from "../src/actions/notifications";
 import { createMemoryHistory } from "history";
 import { Route } from "react-router-dom";
 
-export function createComponent(
-  ui,
-  {
-    initialState,
-    route = "/",
-    path = "/",
-    initialHistory = createMemoryHistory({ initialEntries: [route] }),
-  } = {}
-) {
-  const { store, history } = configureAppStoreAndHistory(
-    initialState,
-    initialHistory
-  );
-  const domContainer = document.createElement("div");
-  ReactDOM.render(
-    <Provider store={store}>
-      <Router history={history}>
-        <Route path={path}>{ui}</Route>
-      </Router>
-    </Provider>,
-    domContainer
-  );
-  return domContainer.children.length == 0 ? null : domContainer;
-}
 
 export function mockNotifyError() {
   return vi
