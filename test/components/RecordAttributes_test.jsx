@@ -24,6 +24,10 @@ describe("RecordAttributes component", () => {
           },
         },
       },
+      attachment: {
+        enabled: true,
+        required: false,
+      }
     },
     permissions: {
       write: [],
