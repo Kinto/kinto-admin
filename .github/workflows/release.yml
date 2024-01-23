@@ -1,0 +1,39 @@
+name: Create a release on tag
+on: 
+  push: 
+    tags:
+      - "v*.*.*"
+jobs:
+  build: 
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+          cache: 'npm'
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Set package version
+        run: |
+            LATEST_TAG=$(GITHUB_REF | sed s/^v//\;s/$// | tr -d '"')
+            VERSION_NUMBER=".version=\"${LATEST_TAG}\""
+            jq ${VERSION_NUMBER} package.json > temp_package.json
+            mv temp_package.json package.json
+
+      - name: Build the package
+        run: |
+            npm run build:kinto-single
+            cd build
+            tar -cvf "$RUNNER_TEMP/kinto-admin-release.tar" *
+
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          fail_on_unmatched_files: true
+          files: ${{ runner.temp }}/kinto-admin-release.tar
