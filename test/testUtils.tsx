@@ -9,7 +9,6 @@ import * as notificationsActions from "../src/actions/notifications";
 import { createMemoryHistory } from "history";
 import { Route } from "react-router-dom";
 
-
 export function mockNotifyError() {
   return vi
     .spyOn(notificationsActions, "notifyError")
@@ -69,5 +68,5 @@ export function renderWithProvider(
       </Router>
     </Provider>
   );
-  return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) }
+  return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) };
 }
