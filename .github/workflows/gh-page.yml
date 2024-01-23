@@ -15,6 +15,7 @@ jobs:
       
       - name: Set package version
         run: |
+            git fetch --tags
             LATEST_TAG=$(git describe --tags --abbrev=0 | sed s/^v//\;s/$// | tr -d '"')
             CURRENT_BRANCH=$(git branch --show-current | tr -d '"')
             CURRENT_COMMIT=$(git rev-parse --short HEAD)
