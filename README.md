@@ -158,14 +158,11 @@ If you use `target.merkle.tree.file.name` it will render the string
 
 ## Releasing
 
-1. Bump the version number in `package.json` and run `npm i` to propagate that version to `package-lock.json`
-2. Commit with `git commit -a -m "Bump vX.Y.Z"`
-3. Create the tag with `git tag vX.Y.Z`
-4. Push the commit with `git push`
-5. Push the tag with `git push origin vX.Y.Z`
-6. Publish to GitHub Pages with `npm run publish-to-gh-pages`
-7. Draft a new release with the changelog
-8. Done!
+1. Create a release tag with `git tag vX.Y.Z` (this will replace the version number in the built release)
+2. Push the tag with `git push origin vX.Y.Z` or `git push origin --tags`
+3. A new release draft will be created automatically with source code and a single-server build (this may take a few minutes)
+4. Update the release body with detailed information
+5. Publish the release when ready
 
 ## Deploying to github-pages
 A github workflow is included that will release to github pages for any user acceptence testing you may want to do. You must enable github pages first and allow deployment from github actions (Settings > Pages).
