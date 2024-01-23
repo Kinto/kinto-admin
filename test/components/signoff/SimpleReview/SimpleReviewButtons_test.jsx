@@ -1,5 +1,5 @@
 import React from "react";
-import { fireEvent } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import { renderWithProvider } from "../../../testUtils";
 import SimpleReviewButtons from "../../../../src/components/signoff/SimpleReview/SimpleReviewButtons";
 
@@ -16,31 +16,31 @@ function renderButtons(props = null) {
     ...props,
   };
 
-  const node = renderWithProvider(<SimpleReviewButtons {...mergedProps} />);
-  return { approveChanges, declineChanges, rollbackChanges, node };
+  renderWithProvider(<SimpleReviewButtons {...mergedProps} />);
+  return { approveChanges, declineChanges, rollbackChanges };
 }
 
 describe("SimpleReviewHeader component", () => {
   it("should call approveChanges when approve button is clicked", async () => {
-    const { approveChanges, node } = renderButtons({
+    const { approveChanges } = renderButtons({
       status: "to-review",
       canReview: true,
     });
 
-    fireEvent.click(node.getByText(/Approve/));
+    fireEvent.click(screen.getByText(/Approve/));
     expect(approveChanges).toHaveBeenCalled();
-    expect(await node.findByTestId("spinner")).toBeDefined();
+    expect(await screen.findByTestId("spinner")).toBeDefined();
   });
 
   it("should open CommentDialog when reject is clicked call declineChanges from modal", async () => {
-    const { declineChanges, node } = renderButtons({
+    const { declineChanges } = renderButtons({
       status: "to-review",
       canReview: true,
     });
-    fireEvent.click(node.getByText(/Decline/));
-    fireEvent.click(await node.findByText("Reject changes"));
+    fireEvent.click(screen.getByText(/Decline/));
+    fireEvent.click(await screen.findByText("Reject changes"));
     expect(declineChanges).toHaveBeenCalled();
-    expect(await node.findByTestId("spinner")).toBeDefined();
+    expect(await screen.findByTestId("spinner")).toBeDefined();
   });
 
   it("should open CommentDialog when request review is clicked and call requestReview from modal", async () => {
@@ -48,13 +48,13 @@ describe("SimpleReviewHeader component", () => {
   });
 
   it("should display rollback button when status is wip and call rollbackChanges from modal", async () => {
-    const { rollbackChanges, node } = renderButtons({
+    const { rollbackChanges } = renderButtons({
       status: "work-in-progress",
       canRequestReview: true,
     });
-    fireEvent.click(node.getByText(/Rollback changes/));
-    fireEvent.click(await node.findByText("Rollback"));
+    fireEvent.click(screen.getByText(/Rollback changes/));
+    fireEvent.click(await screen.findByText("Rollback"));
     expect(rollbackChanges).toHaveBeenCalled();
-    expect(await node.findByTestId("spinner")).toBeDefined();
+    expect(await screen.findByTestId("spinner")).toBeDefined();
   });
 });
