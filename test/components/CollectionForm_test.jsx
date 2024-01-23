@@ -1,5 +1,6 @@
 import React from "react";
 import { renderWithProvider } from "../testUtils";
+import { screen } from "@testing-library/react";
 
 import CollectionForm from "../../src/components/collection/CollectionForm";
 
@@ -66,11 +67,11 @@ describe("CollectionForm component", () => {
       ],
       bucket_id: "default",
     });
-    const result = renderWithProvider(<CollectionForm {...localTestProps} />);
+    renderWithProvider(<CollectionForm {...localTestProps} />);
 
-    const warning = result.queryByText(warningText);
+    const warning = screen.queryByText(warningText);
     expect(warning).toBeNull();
-    const title = await result.findByLabelText("Collection id*");
+    const title = await screen.findByLabelText("Collection id*");
     expect(title.disabled).toBe(false);
   });
 
@@ -89,11 +90,11 @@ describe("CollectionForm component", () => {
     localTestProps.collection.data.id = "test";
     localTestProps.formData = {};
 
-    const result = renderWithProvider(<CollectionForm {...localTestProps} />);
+    renderWithProvider(<CollectionForm {...localTestProps} />);
 
-    const warning = result.queryByText(warningText);
+    const warning = screen.queryByText(warningText);
     expect(warning).toBeNull();
-    const title = await result.findByLabelText("Collection id*");
+    const title = await screen.findByLabelText("Collection id*");
     expect(title.disabled).toBe(false);
   });
 
@@ -108,11 +109,11 @@ describe("CollectionForm component", () => {
         bucket_id: "default",
       },
     ];
-    const result = renderWithProvider(<CollectionForm {...localTestProps} />);
+    renderWithProvider(<CollectionForm {...localTestProps} />);
 
-    const warning = await result.queryByText(warningText);
+    const warning = await screen.queryByText(warningText);
     expect(warning).toBeDefined();
-    const title = await result.findByLabelText("Collection id*");
+    const title = await screen.findByLabelText("Collection id*");
     expect(title.disabled).toBe(true);
   });
 
@@ -133,11 +134,11 @@ describe("CollectionForm component", () => {
     localTestProps.bid = "default";
     localTestProps.formData = {};
 
-    const result = renderWithProvider(<CollectionForm {...localTestProps} />);
+    renderWithProvider(<CollectionForm {...localTestProps} />);
 
-    const warning = await result.queryByText(warningText);
+    const warning = await screen.queryByText(warningText);
     expect(warning).toBeDefined();
-    const title = await result.findByLabelText("Collection id*");
+    const title = await screen.findByLabelText("Collection id*");
     expect(title.disabled).toBe(true);
   });
 });

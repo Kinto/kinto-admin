@@ -1,5 +1,6 @@
 import React from "react";
 import { renderWithProvider } from "../../testUtils";
+import { screen } from "@testing-library/react";
 import {
   DataList,
   ListActions,
@@ -32,11 +33,11 @@ describe("Bucket GroupDataList", () => {
   };
 
   it("Should render a list of groups as expected", () => {
-    const result = renderWithProvider(<DataList {...props} />);
-    expect(result.queryByText("groupA")).toBeDefined();
-    expect(result.queryByText("groupB")).toBeDefined();
-    expect(result.queryByText("memberA-1, memberA-2")).toBeDefined();
-    expect(result.queryByText("memberB-1, memberB-2")).toBeDefined();
+    renderWithProvider(<DataList {...props} />);
+    expect(screen.queryByText("groupA")).toBeDefined();
+    expect(screen.queryByText("groupB")).toBeDefined();
+    expect(screen.queryByText("memberA-1, memberA-2")).toBeDefined();
+    expect(screen.queryByText("memberB-1, memberB-2")).toBeDefined();
   });
 });
 
@@ -56,13 +57,13 @@ describe("Bucket GroupListActions", () => {
 
   it("Should render a Create Group button when the user has permission", () => {
     canCreateGroup.mockReturnValue(true);
-    const result = renderWithProvider(<ListActions {...props} />);
-    expect(result.queryByText("Create group")).toBeDefined();
+    renderWithProvider(<ListActions {...props} />);
+    expect(screen.queryByText("Create group")).toBeDefined();
   });
 
   it("Should render no Create Group button when the user lacks permission", () => {
     canCreateGroup.mockReturnValue(false);
-    const result = renderWithProvider(<ListActions {...props} />);
-    expect(result.queryByText("Create group")).toBeNull();
+    renderWithProvider(<ListActions {...props} />);
+    expect(screen.queryByText("Create group")).toBeNull();
   });
 });

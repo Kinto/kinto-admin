@@ -1,5 +1,6 @@
 import React from "react";
 import { renderWithProvider } from "../../testUtils";
+import { screen } from "@testing-library/react";
 import {
   DataList,
   ListActions,
@@ -58,10 +59,10 @@ describe("Bucket CollectionDataList", () => {
     },
   };
   it("Should render a list of collections as expected", () => {
-    const result = renderWithProvider(<DataList {...props} />);
-    expect(result.queryByText("test-collection-id")).toBeDefined();
-    expect(result.queryByTitle("Browse collection")).toBeDefined();
-    expect(result.queryByTitle("Edit collection attributes")).toBeDefined();
+    renderWithProvider(<DataList {...props} />);
+    expect(screen.queryByText("test-collection-id")).toBeDefined();
+    expect(screen.queryByTitle("Browse collection")).toBeDefined();
+    expect(screen.queryByTitle("Edit collection attributes")).toBeDefined();
   });
 });
 
@@ -80,13 +81,13 @@ describe("Bucket CollectionListActions", () => {
 
   it("Should render a Create Collection button when the user has permission to create one", () => {
     canCreateCollection.mockReturnValue(true);
-    const result = renderWithProvider(<ListActions {...props} />);
-    expect(result.queryByText("Create collection")).toBeDefined();
+    renderWithProvider(<ListActions {...props} />);
+    expect(screen.queryByText("Create collection")).toBeDefined();
   });
 
   it("Should render no Create Collection button when the user lacks permission", () => {
     canCreateCollection.mockReturnValue(false);
-    const result = renderWithProvider(<ListActions {...props} />);
-    expect(result.queryByText("Create collection")).toBeNull();
+    renderWithProvider(<ListActions {...props} />);
+    expect(screen.queryByText("Create collection")).toBeNull();
   });
 });

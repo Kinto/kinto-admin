@@ -1,5 +1,5 @@
 import React from "react";
-import { fireEvent, render } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import BaseForm from "../../src/components/BaseForm";
 
 const testSchema = {
@@ -40,7 +40,7 @@ const testUiSchema = {
 
 describe("BaseForm component", () => {
   it("Should render a rjsf form as expected", async () => {
-    const result = render(
+    render(
       <BaseForm
         className="testClass"
         schema={testSchema}
@@ -48,10 +48,10 @@ describe("BaseForm component", () => {
       />
     );
 
-    const inputTitle = await result.findByLabelText("Title");
-    const inputContent = await result.findByLabelText("Content");
-    const submit = await result.findByText("Submit");
-    const spinner = result.queryByTestId("spinner");
+    const inputTitle = await screen.findByLabelText("Title");
+    const inputContent = await screen.findByLabelText("Content");
+    const submit = await screen.findByText("Submit");
+    const spinner = screen.queryByTestId("spinner");
 
     expect(inputTitle.disabled).toBe(false);
     expect(inputContent.disabled).toBe(false);
@@ -60,7 +60,7 @@ describe("BaseForm component", () => {
   });
 
   it("Should disable the form if disabled is true", async () => {
-    const result = render(
+    render(
       <BaseForm
         className="testClass"
         disabled={true}
@@ -69,10 +69,10 @@ describe("BaseForm component", () => {
       />
     );
 
-    const inputTitle = await result.findByLabelText("Title");
-    const inputContent = await result.findByLabelText("Content");
-    const submit = await result.findByText("Submit");
-    const spinner = result.queryByTestId("spinner");
+    const inputTitle = await screen.findByLabelText("Title");
+    const inputContent = await screen.findByLabelText("Content");
+    const submit = await screen.findByText("Submit");
+    const spinner = screen.queryByTestId("spinner");
 
     expect(inputTitle.disabled).toBe(true);
     expect(inputContent.disabled).toBe(true);
@@ -81,7 +81,7 @@ describe("BaseForm component", () => {
   });
 
   it("Should show a spinner and disable the form when showSpinner is true", async () => {
-    const result = render(
+    render(
       <BaseForm
         className="testClass"
         showSpinner={true}
@@ -90,10 +90,10 @@ describe("BaseForm component", () => {
       />
     );
 
-    const inputTitle = await result.findByLabelText("Title");
-    const inputContent = await result.findByLabelText("Content");
-    const submit = await result.findByText("Submit");
-    const spinner = result.queryByTestId("spinner");
+    const inputTitle = await screen.findByLabelText("Title");
+    const inputContent = await screen.findByLabelText("Content");
+    const submit = await screen.findByText("Submit");
+    const spinner = screen.queryByTestId("spinner");
 
     expect(inputTitle.disabled).toBe(true);
     expect(inputContent.disabled).toBe(true);
@@ -102,7 +102,7 @@ describe("BaseForm component", () => {
   });
 
   it("Should show a spinner and disable the form when form is submitted", async () => {
-    const result = render(
+    render(
       <BaseForm
         className="testClass"
         schema={testSchema}
@@ -111,25 +111,25 @@ describe("BaseForm component", () => {
       />
     );
 
-    const inputTitle = await result.findByLabelText("Title");
-    const inputContent = await result.findByLabelText("Content");
-    const submit = await result.findByText("Submit");
+    const inputTitle = await screen.findByLabelText("Title");
+    const inputContent = await screen.findByLabelText("Content");
+    const submit = await screen.findByText("Submit");
 
     expect(inputTitle.disabled).toBe(false);
     expect(inputContent.disabled).toBe(false);
     expect(submit.disabled).toBe(false);
-    expect(result.queryByTestId("spinner")).toBeNull();
+    expect(screen.queryByTestId("spinner")).toBeNull();
 
     fireEvent.click(submit);
 
     expect(inputTitle.disabled).toBe(true);
     expect(inputContent.disabled).toBe(true);
     expect(submit.disabled).toBe(true);
-    expect(result.queryByTestId("spinner")).toBeDefined();
+    expect(screen.queryByTestId("spinner")).toBeDefined();
   });
 
   it("Should scroll to the first property that fails validation", async () => {
-    const result = render(
+    render(
       <BaseForm
         className="testClass"
         schema={testSchema}
@@ -143,8 +143,8 @@ describe("BaseForm component", () => {
     );
     const testFn = vi.fn();
 
-    const submit = await result.findByText("Submit");
-    const titleLabel = await result.findByText("Title");
+    const submit = await screen.findByText("Submit");
+    const titleLabel = await screen.findByText("Title");
     titleLabel.scrollIntoView = testFn;
     fireEvent.click(submit);
     expect(testFn).toHaveBeenCalledTimes(1);
@@ -152,7 +152,7 @@ describe("BaseForm component", () => {
   });
 
   it("Should scroll to the top of the form if validation failed without a specific property", async () => {
-    const result = render(
+    render(
       <BaseForm
         className="testClass"
         schema={testSchema}
@@ -166,8 +166,8 @@ describe("BaseForm component", () => {
     );
     const testFn = vi.fn();
 
-    const submit = await result.findByText("Submit");
-    const formWrapper = await result.findByTestId("formWrapper");
+    const submit = await screen.findByText("Submit");
+    const formWrapper = await screen.findByTestId("formWrapper");
     formWrapper.scrollIntoView = testFn;
     fireEvent.click(submit);
     expect(testFn).toHaveBeenCalledTimes(1);

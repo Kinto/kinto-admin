@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import HistoryTable from "../../src/components/HistoryTable";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
@@ -17,18 +17,18 @@ const props = {
 
 describe("HistoryTable component", () => {
   it("Should render a spinner when not yet loaded", async () => {
-    const result = render(<HistoryTable {...props} historyLoaded={false} />);
-    expect(result.queryByTestId("spinner")).toBeDefined();
+    render(<HistoryTable {...props} historyLoaded={false} />);
+    expect(screen.queryByTestId("spinner")).toBeDefined();
   });
 
   it("Should render an empty table when history is loaded but there is no data", async () => {
-    const result = render(<HistoryTable {...props} />);
-    expect(result.queryByTestId("spinner")).toBeNull();
-    expect(result.findByText("No history entry found.")).toBeDefined();
+    render(<HistoryTable {...props} />);
+    expect(screen.queryByTestId("spinner")).toBeNull();
+    expect(screen.findByText("No history entry found.")).toBeDefined();
   });
 
   it("Should render our data when data is provided", async () => {
-    const result = render(
+    render(
       <Router>
         <Route path="/">
           <HistoryTable
@@ -69,8 +69,8 @@ describe("HistoryTable component", () => {
         </Route>
       </Router>
     );
-    expect(result.queryByTestId("spinner")).toBeNull();
-    expect(result.queryByText("No history entry found.")).toBeNull();
-    expect(result.queryAllByTitle("View entry details").length).toBe(2);
+    expect(screen.queryByTestId("spinner")).toBeNull();
+    expect(screen.queryByText("No history entry found.")).toBeNull();
+    expect(screen.queryAllByTitle("View entry details").length).toBe(2);
   });
 });
