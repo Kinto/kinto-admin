@@ -1,9 +1,9 @@
 import React from "react";
 import * as localStore from "../../src/store/localStore";
-import { renderWithProvider } from "../test_utils";
+import { renderWithProvider } from "../testUtils";
 import { HomePage } from "../../src/components/HomePage";
 import * as SessionActions from "../../src/actions/session";
-import { sessionFactory } from "../test_utils";
+import { sessionFactory } from "../testUtils";
 
 describe("HomePage component", () => {
   afterEach(() => {

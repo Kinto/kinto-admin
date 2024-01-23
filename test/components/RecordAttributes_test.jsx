@@ -1,6 +1,6 @@
 import React from "react";
 import { fireEvent } from "@testing-library/react";
-import { renderWithProvider } from "../test_utils";
+import { renderWithProvider } from "../testUtils";
 import RecordAttributes from "../../src/components/record/RecordAttributes";
 import { clone } from "../../src/utils";
 

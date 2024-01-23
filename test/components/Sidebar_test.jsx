@@ -1,4 +1,4 @@
-import { renderWithProvider } from "../test_utils";
+import { renderWithProvider } from "../testUtils";
 import { Sidebar } from "../../src/components/Sidebar";
 import { clone } from "../../src/utils";
 import React from "react";

@@ -1,7 +1,7 @@
 import { push as updatePath } from "redux-first-history";
 import { call, put, take } from "redux-saga/effects";
 
-import { mockNotifyError } from "../test_utils";
+import { mockNotifyError } from "../testUtils";
 
 import { setClient } from "../../src/client";
 import * as actions from "../../src/actions/route";

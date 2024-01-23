@@ -1,6 +1,6 @@
 import React from "react";
 import { fireEvent, waitForElementToBeRemoved } from "@testing-library/react";
-import { renderWithProvider, sessionFactory } from "../../../test_utils";
+import { renderWithProvider, sessionFactory } from "../../../testUtils";
 import SimpleReview from "../../../../src/components/signoff/SimpleReview";
 import { createMemoryHistory } from "history/";
 

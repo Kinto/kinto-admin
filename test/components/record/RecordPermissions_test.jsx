@@ -1,6 +1,6 @@
 import React from "react";
 import { RecordPermissions } from "../../../src/components/record/RecordPermissions";
-import { renderWithProvider, sessionFactory } from "../../test_utils";
+import { renderWithProvider, sessionFactory } from "../../testUtils";
 
 describe("RecordPermissions component", () => {
   const route =

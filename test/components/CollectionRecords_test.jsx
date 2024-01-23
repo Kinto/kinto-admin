@@ -1,4 +1,4 @@
-import { renderWithProvider } from "../test_utils";
+import { renderWithProvider } from "../testUtils";
 import CollectionRecords from "../../src/components/collection/CollectionRecords";
 import React from "react";
 

@@ -1,7 +1,7 @@
 import SignoffToolBar from "../../../src/components/signoff/SignoffToolBar";
 import React from "react";
 import { fireEvent } from "@testing-library/react";
-import { renderWithProvider } from "../../test_utils";
+import { renderWithProvider } from "../../testUtils";
 
 describe("SignoffToolBar component", () => {
   const props = {

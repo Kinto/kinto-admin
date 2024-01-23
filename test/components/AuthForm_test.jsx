@@ -1,4 +1,4 @@
-import { renderWithProvider } from "../test_utils";
+import { renderWithProvider } from "../testUtils";
 import { DEFAULT_KINTO_SERVER } from "../../src/constants";
 import { DEFAULT_SERVERINFO } from "../../src/reducers/session";
 import { render, fireEvent, waitFor } from "@testing-library/react";
