@@ -1,5 +1,5 @@
-import React, { useState } from "react";
 import Spinner from "../Spinner";
+import React, { useState } from "react";
 
 export function Comment({ text }: { text: string }) {
   return (

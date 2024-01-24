@@ -1,15 +1,15 @@
-import session from "../../src/reducers/session";
 import {
-  SESSION_BUSY,
-  SESSION_SETUP,
-  SESSION_SETUP_COMPLETE,
-  SESSION_SERVERINFO_SUCCESS,
-  SESSION_PERMISSIONS_SUCCESS,
   SESSION_AUTHENTICATED,
   SESSION_BUCKETS_REQUEST,
   SESSION_BUCKETS_SUCCESS,
+  SESSION_BUSY,
   SESSION_LOGOUT,
+  SESSION_PERMISSIONS_SUCCESS,
+  SESSION_SERVERINFO_SUCCESS,
+  SESSION_SETUP,
+  SESSION_SETUP_COMPLETE,
 } from "../../src/constants";
+import session from "../../src/reducers/session";
 
 describe("session reducer", () => {
   const auth = {

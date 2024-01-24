@@ -1,7 +1,7 @@
-import React from "react";
-import { fireEvent, screen } from "@testing-library/react";
-import { renderWithProvider } from "../testUtils";
 import RecordCreate from "../../src/components/record/RecordCreate";
+import { renderWithProvider } from "../testUtils";
+import { fireEvent, screen } from "@testing-library/react";
+import React from "react";
 
 describe("RecordCreate component", () => {
   const bucket = {
@@ -42,7 +42,9 @@ describe("RecordCreate component", () => {
 
     beforeEach(() => {
       createRecord = vi.fn();
-      renderWithProvider(<RecordCreate {...props} createRecord={createRecord} />);
+      renderWithProvider(
+        <RecordCreate {...props} createRecord={createRecord} />
+      );
     });
 
     it("should render a form", () => {

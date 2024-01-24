@@ -1,10 +1,10 @@
-import React from "react";
+import * as SessionActions from "../../src/actions/session";
+import { HomePage } from "../../src/components/HomePage";
 import * as localStore from "../../src/store/localStore";
 import { renderWithProvider } from "../testUtils";
-import { HomePage } from "../../src/components/HomePage";
-import * as SessionActions from "../../src/actions/session";
 import { sessionFactory } from "../testUtils";
 import { screen } from "@testing-library/react";
+import React from "react";
 
 describe("HomePage component", () => {
   afterEach(() => {
@@ -48,7 +48,7 @@ describe("HomePage component", () => {
         vi.useFakeTimers();
         let fakeDate = new Date(2024, 1, 2, 3, 4, 5, 6);
         vi.setSystemTime(fakeDate);
-        
+
         const auth = {
           authType: "anonymous",
           server: "http://server.test/v1",
@@ -67,11 +67,11 @@ describe("HomePage component", () => {
     describe("After OpenID redirection", () => {
       it("should setup session when component is mounted", () => {
         const setupSession = vi.spyOn(SessionActions, "setupSession");
-        
+
         vi.useFakeTimers();
         let fakeDate = new Date(2024, 1, 2, 3, 4, 5, 6);
         vi.setSystemTime(fakeDate);
-        
+
         const payload =
           "eyJzZXJ2ZXIiOiJodHRwczovL2RlbW8ua2ludG8tc3RvcmFnZS5vcmcvdjEvIiwiYXV0aFR5cGUiOiJvcGVuaWQtYXV0aDAiLCJyZWRpcmVjdFVSTCI6bnVsbH0";
         const token =

@@ -1,8 +1,8 @@
-import { put, call } from "redux-saga/effects";
-import { mockNotifyError } from "../testUtils";
 import * as actions from "../../src/actions/record";
-import * as saga from "../../src/sagas/record";
 import { setClient } from "../../src/client";
+import * as saga from "../../src/sagas/record";
+import { mockNotifyError } from "../testUtils";
+import { call, put } from "redux-saga/effects";
 
 describe("record sagas", () => {
   describe("listHistory()", () => {

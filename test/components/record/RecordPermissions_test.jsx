@@ -1,7 +1,7 @@
-import React from "react";
 import { RecordPermissions } from "../../../src/components/record/RecordPermissions";
 import { renderWithProvider, sessionFactory } from "../../testUtils";
 import { screen } from "@testing-library/react";
+import React from "react";
 
 describe("RecordPermissions component", () => {
   const route =

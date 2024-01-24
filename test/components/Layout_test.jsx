@@ -1,9 +1,8 @@
-import React from "react";
-
-import { Layout } from "../../src/components/Layout";
 import * as sessionActions from "../../src/actions/session";
+import { Layout } from "../../src/components/Layout";
 import { renderWithProvider } from "../testUtils";
 import { fireEvent } from "@testing-library/react";
+import React from "react";
 
 describe("App component", () => {
   let app, store;

@@ -1,18 +1,16 @@
-import type {
-  Capabilities,
-  SessionState,
-  CollectionState,
-  CollectionRouteMatch,
-} from "../../types";
-import type { Location } from "history";
-
-import React, { useEffect } from "react";
-
 import * as CollectionActions from "../../actions/collection";
 import * as NotificationActions from "../../actions/notifications";
+import type {
+  Capabilities,
+  CollectionRouteMatch,
+  CollectionState,
+  SessionState,
+} from "../../types";
 import { parseHistoryFilters } from "../../utils";
 import HistoryTable from "../HistoryTable";
 import CollectionTabs from "./CollectionTabs";
+import type { Location } from "history";
+import React, { useEffect } from "react";
 
 export type OwnProps = {
   match: CollectionRouteMatch;

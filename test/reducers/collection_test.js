@@ -1,14 +1,14 @@
-import collection from "../../src/reducers/collection";
 import {
   COLLECTION_BUSY,
-  COLLECTION_RESET,
+  COLLECTION_HISTORY_SUCCESS,
   COLLECTION_RECORDS_REQUEST,
   COLLECTION_RECORDS_SUCCESS,
-  COLLECTION_HISTORY_SUCCESS,
+  COLLECTION_RESET,
+  ROUTE_LOAD_FAILURE,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
-  ROUTE_LOAD_FAILURE,
 } from "../../src/constants";
+import collection from "../../src/reducers/collection";
 
 describe("collection reducer", () => {
   it("COLLECTION_BUSY", () => {

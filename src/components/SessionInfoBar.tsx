@@ -1,10 +1,9 @@
+import * as SessionActions from "../actions/session";
+import { useAppDispatch, useAppSelector } from "../hooks/app";
 import * as React from "react";
 import { BoxArrowRight } from "react-bootstrap-icons";
 import { QuestionCircleFill } from "react-bootstrap-icons";
 import { Clipboard } from "react-bootstrap-icons";
-
-import { useAppSelector, useAppDispatch } from "../hooks/app";
-import * as SessionActions from "../actions/session";
 
 export function SessionInfoBar() {
   const { url, project_name, project_docs, user } = useAppSelector(

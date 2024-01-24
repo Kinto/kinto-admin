@@ -1,18 +1,16 @@
-import type {
-  Capabilities,
-  BucketState,
-  BucketRouteMatch,
-  SessionState,
-} from "../../types";
-import type { Location } from "history";
-
-import React, { useEffect } from "react";
-
 import * as BucketActions from "../../actions/bucket";
 import * as NotificationActions from "../../actions/notifications";
+import type {
+  BucketRouteMatch,
+  BucketState,
+  Capabilities,
+  SessionState,
+} from "../../types";
 import { parseHistoryFilters } from "../../utils";
-import BucketTabs from "./BucketTabs";
 import HistoryTable from "../HistoryTable";
+import BucketTabs from "./BucketTabs";
+import type { Location } from "history";
+import React, { useEffect } from "react";
 
 type OwnProps = {
   match: BucketRouteMatch;

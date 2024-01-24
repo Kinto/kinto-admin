@@ -1,5 +1,5 @@
-import * as localStore from "../../src/store/localStore";
 import { ANONYMOUS_AUTH } from "../../src/constants";
+import * as localStore from "../../src/store/localStore";
 
 describe("localStore", () => {
   describe("servers store", () => {

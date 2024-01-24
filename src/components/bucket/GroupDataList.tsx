@@ -1,11 +1,9 @@
-import React from "react";
-
-import { Gear } from "react-bootstrap-icons";
-import { ClockHistory } from "react-bootstrap-icons";
-
+import { canCreateGroup } from "../../permission";
 import { timeago } from "../../utils";
 import AdminLink from "../AdminLink";
-import { canCreateGroup } from "../../permission";
+import React from "react";
+import { Gear } from "react-bootstrap-icons";
+import { ClockHistory } from "react-bootstrap-icons";
 
 export function DataList(props) {
   const { bid, groups, capabilities } = props;

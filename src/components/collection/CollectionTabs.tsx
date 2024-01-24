@@ -1,15 +1,14 @@
+import { storageKeys, useLocalStorage } from "../../hooks/storage";
+import type { Capabilities } from "../../types";
+import AdminLink from "../AdminLink";
 import React from "react";
 import {
-  Gear,
-  Lock,
-  Justify,
-  ClockHistory,
   Braces,
+  ClockHistory,
+  Gear,
+  Justify,
+  Lock,
 } from "react-bootstrap-icons";
-
-import AdminLink from "../AdminLink";
-import type { Capabilities } from "../../types";
-import { storageKeys, useLocalStorage } from "../../hooks/storage";
 
 type Props = {
   bid: string;

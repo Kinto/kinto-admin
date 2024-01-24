@@ -1,9 +1,9 @@
-import createSagaMiddleware from "redux-saga";
 import createRootReducer from "../reducers";
 import rootSaga from "../sagas";
-import { createHashHistory } from "history";
 import { configureStore } from "@reduxjs/toolkit";
+import { createHashHistory } from "history";
 import { createReduxHistoryContext } from "redux-first-history";
+import createSagaMiddleware from "redux-saga";
 
 const sagaMiddleware = createSagaMiddleware();
 const configureAppStoreAndHistory = (

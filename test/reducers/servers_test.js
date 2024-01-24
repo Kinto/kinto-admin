@@ -1,6 +1,6 @@
-import servers from "../../src/reducers/servers";
 import { SERVERS_ADD, SERVERS_CLEAR } from "../../src/constants";
 import { ANONYMOUS_AUTH } from "../../src/constants";
+import servers from "../../src/reducers/servers";
 
 describe("server reducer", () => {
   describe("SERVERS_ADD", () => {

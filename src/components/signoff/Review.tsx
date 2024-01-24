@@ -1,14 +1,11 @@
-import type { SignoffSourceInfo, PreviewInfo, ChangesList } from "../../types";
-
-import React from "react";
-import { Comment } from "./Comment";
-
-import { Braces, ChatLeft, Check2 } from "react-bootstrap-icons";
-
-import AdminLink from "../AdminLink";
-import { ProgressStep } from "./ProgressBar";
-import HumanDate from "./HumanDate";
 import { storageKeys, useLocalStorage } from "../../hooks/storage";
+import type { ChangesList, PreviewInfo, SignoffSourceInfo } from "../../types";
+import AdminLink from "../AdminLink";
+import { Comment } from "./Comment";
+import HumanDate from "./HumanDate";
+import { ProgressStep } from "./ProgressBar";
+import React from "react";
+import { Braces, ChatLeft, Check2 } from "react-bootstrap-icons";
 
 type ReviewProps = {
   label: string;

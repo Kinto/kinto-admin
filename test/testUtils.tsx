@@ -1,12 +1,11 @@
 /* Utils for tests. */
-
-import React from "react";
-import { render } from "@testing-library/react";
-import { Router } from "react-router";
-import { Provider } from "react-redux";
-import { configureAppStoreAndHistory } from "../src/store/configureStore";
 import * as notificationsActions from "../src/actions/notifications";
+import { configureAppStoreAndHistory } from "../src/store/configureStore";
+import { render } from "@testing-library/react";
 import { createMemoryHistory } from "history";
+import React from "react";
+import { Provider } from "react-redux";
+import { Router } from "react-router";
 import { Route } from "react-router-dom";
 
 export function mockNotifyError() {

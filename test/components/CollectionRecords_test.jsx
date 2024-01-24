@@ -1,6 +1,6 @@
-import { screen } from "@testing-library/react";
-import { renderWithProvider } from "../testUtils";
 import CollectionRecords from "../../src/components/collection/CollectionRecords";
+import { renderWithProvider } from "../testUtils";
+import { screen } from "@testing-library/react";
 import React from "react";
 
 describe("CollectionRecords component", () => {
@@ -132,8 +132,6 @@ describe("CollectionRecords component", () => {
   });
 
   describe("No schema defined", () => {
-    
-
     const collection = {
       busy: false,
       data: {
@@ -187,8 +185,6 @@ describe("CollectionRecords component", () => {
   });
 
   describe("Tabs", () => {
-    
-
     const collection = {
       busy: false,
       data: {},
@@ -212,7 +208,9 @@ describe("CollectionRecords component", () => {
     });
 
     it("should show the total number of records", () => {
-      expect(screen.getByTestId("nav-records").textContent).toBe("Records (18)");
+      expect(screen.getByTestId("nav-records").textContent).toBe(
+        "Records (18)"
+      );
     });
   });
 
@@ -236,8 +234,6 @@ describe("CollectionRecords component", () => {
     };
 
     describe("Collection write permission", () => {
-      
-
       beforeEach(() => {
         renderWithProvider(
           <CollectionRecords
@@ -258,8 +254,6 @@ describe("CollectionRecords component", () => {
     });
 
     describe("No collection write permission", () => {
-      
-
       beforeEach(() => {
         renderWithProvider(
           <CollectionRecords

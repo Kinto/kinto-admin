@@ -1,17 +1,15 @@
-import React from "react";
-
-import type {
-  Capabilities,
-  SessionState,
-  BucketState,
-  CollectionState,
-  RecordState,
-  RecordRouteMatch,
-} from "../../types";
-
 import * as CollectionActions from "../../actions/collection";
+import type {
+  BucketState,
+  Capabilities,
+  CollectionState,
+  RecordRouteMatch,
+  RecordState,
+  SessionState,
+} from "../../types";
 import RecordForm from "./RecordForm";
 import RecordTabs from "./RecordTabs";
+import React from "react";
 
 export type OwnProps = {
   match: RecordRouteMatch;

@@ -1,13 +1,11 @@
-import { put, call } from "redux-saga/effects";
-
-import { mockNotifyError } from "../testUtils";
-
-import { notifySuccess } from "../../src/actions/notifications";
-import * as sessionActions from "../../src/actions/session";
-import { redirectTo } from "../../src/actions/route";
 import * as actions from "../../src/actions/bucket";
-import * as saga from "../../src/sagas/bucket";
+import { notifySuccess } from "../../src/actions/notifications";
+import { redirectTo } from "../../src/actions/route";
+import * as sessionActions from "../../src/actions/session";
 import { setClient } from "../../src/client";
+import * as saga from "../../src/sagas/bucket";
+import { mockNotifyError } from "../testUtils";
+import { call, put } from "redux-saga/effects";
 
 const collectionData = {
   schema: {},

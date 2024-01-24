@@ -1,15 +1,13 @@
-import type { GetStateFn, SagaGen } from "../types";
-
-import { all, takeEvery } from "redux-saga/effects";
-
 import * as c from "../constants";
-import * as sessionSagas from "./session";
-import * as routeSagas from "./route";
+import type { GetStateFn, SagaGen } from "../types";
 import * as bucketSagas from "./bucket";
-import * as groupSagas from "./group";
 import * as collectionSagas from "./collection";
+import * as groupSagas from "./group";
 import * as recordSagas from "./record";
+import * as routeSagas from "./route";
+import * as sessionSagas from "./session";
 import * as signoffSagas from "./signoff";
+import { all, takeEvery } from "redux-saga/effects";
 
 /**
  * Registers saga watchers.

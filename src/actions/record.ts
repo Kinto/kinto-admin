@@ -1,12 +1,11 @@
-import type { ResourceHistoryEntry } from "../types";
-
 import {
   RECORD_BUSY,
-  RECORD_RESET,
-  RECORD_HISTORY_REQUEST,
   RECORD_HISTORY_NEXT_REQUEST,
+  RECORD_HISTORY_REQUEST,
   RECORD_HISTORY_SUCCESS,
+  RECORD_RESET,
 } from "../constants";
+import type { ResourceHistoryEntry } from "../types";
 
 export function recordBusy(busy: boolean): {
   type: "RECORD_BUSY";

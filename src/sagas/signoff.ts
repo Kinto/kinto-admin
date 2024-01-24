@@ -1,20 +1,18 @@
+import * as collectionActions from "../actions/collection";
+import { notifyError, notifySuccess } from "../actions/notifications";
+import { routeLoadSuccess } from "../actions/route";
+import * as SignoffActions from "../actions/signoff";
+import { getClient } from "../client";
 import type {
   ActionType,
+  BucketResource,
+  ChangesList,
+  CollectionResource,
   GetStateFn,
   SagaGen,
   ServerInfo,
-  BucketResource,
-  CollectionResource,
-  ChangesList,
 } from "../types";
-
 import { call, put } from "redux-saga/effects";
-import { getClient } from "../client";
-import { routeLoadSuccess } from "../actions/route";
-import * as collectionActions from "../actions/collection";
-import { notifySuccess, notifyError } from "../actions/notifications";
-
-import * as SignoffActions from "../actions/signoff";
 
 type CapabilityResource = {
   bucket: string;

@@ -1,20 +1,15 @@
-import type { RecordData } from "../../types";
-
-import React from "react";
-
-import { SortUp } from "react-bootstrap-icons";
-import { SortDown } from "react-bootstrap-icons";
-
 import * as CollectionActions from "../../actions/collection";
+import SignoffContainer from "../../containers/signoff/SignoffToolBar";
 import { canCreateRecord } from "../../permission";
+import type { RecordData } from "../../types";
 import { capitalize } from "../../utils";
-
+import AdminLink from "../AdminLink";
 import PaginatedTable from "../PaginatedTable";
 import RecordRow from "./RecordRow";
-import AdminLink from "../AdminLink";
-import SignoffContainer from "../../containers/signoff/SignoffToolBar";
-
 import { CommonProps } from "./commonPropTypes";
+import React from "react";
+import { SortUp } from "react-bootstrap-icons";
+import { SortDown } from "react-bootstrap-icons";
 
 export function ListActions(props) {
   const { bid, cid, session, collection, bucket } = props;
