@@ -1,6 +1,6 @@
 import React from "react";
-import { fireEvent } from "@testing-library/react";
-import { renderWithProvider } from "../test_utils";
+import { fireEvent, screen } from "@testing-library/react";
+import { renderWithProvider } from "../testUtils";
 import RecordAttributes from "../../src/components/record/RecordAttributes";
 import { clone } from "../../src/utils";
 
@@ -55,25 +55,25 @@ describe("RecordAttributes component", () => {
   };
 
   describe("Simple schema", () => {
-    let node, updateRecord;
+    let updateRecord;
 
     beforeEach(() => {
       updateRecord = vi.fn();
-      node = renderWithProvider(
+      renderWithProvider(
         <RecordAttributes {...props} updateRecord={updateRecord} />
       );
     });
 
     it("should render a form", () => {
-      expect(node.getByTestId("formWrapper")).toBeDefined();
+      expect(screen.getByTestId("formWrapper")).toBeDefined();
     });
 
     it("should submitted entered data", () => {
-      const field = node.getByLabelText("foo");
+      const field = screen.getByLabelText("foo");
 
       expect(field.value).toBe("bar");
       fireEvent.change(field, { target: { value: "baz" } });
-      fireEvent.click(node.getByText("Update record"));
+      fireEvent.click(screen.getByText("Update record"));
 
       expect(updateRecord).toHaveBeenCalledWith(
         "bucket",
@@ -86,7 +86,7 @@ describe("RecordAttributes component", () => {
   });
 
   describe("Attachment info shown", () => {
-    let node;
+    
 
     const record = {
       data: {
@@ -102,7 +102,7 @@ describe("RecordAttributes component", () => {
     };
 
     beforeEach(() => {
-      node = renderWithProvider(
+      renderWithProvider(
         <RecordAttributes
           {...props}
           capabilities={{ attachments: { base_url: "" } }}
@@ -112,11 +112,11 @@ describe("RecordAttributes component", () => {
     });
 
     it("should render the attachment info", () => {
-      expect(node.getByText("Attachment information")).toBeDefined();
+      expect(screen.getByText("Attachment information")).toBeDefined();
     });
 
     it("should show a delete attachment button", () => {
-      expect(node.getByText("Delete this attachment")).toBeDefined();
+      expect(screen.getByText("Delete this attachment")).toBeDefined();
     });
 
     describe("With Gzipped attachment", () => {
@@ -127,7 +127,7 @@ describe("RecordAttributes component", () => {
       };
 
       beforeEach(() => {
-        node = renderWithProvider(
+        renderWithProvider(
           <RecordAttributes
             {...props}
             capabilities={{ attachments: { base_url: "" } }}
@@ -137,7 +137,7 @@ describe("RecordAttributes component", () => {
       });
 
       it("should show original file attributes", () => {
-        expect(node.getByTestId("attachmentInfo-currentSize").textContent).toBe(
+        expect(screen.getByTestId("attachmentInfo-currentSize").textContent).toBe(
           "100 kB"
         );
       });
@@ -160,10 +160,10 @@ describe("RecordAttributes component", () => {
         };
 
         beforeEach(() => {
-          const node = renderWithProvider(
+          renderWithProvider(
             <RecordAttributes {...props} collection={withUISchema} />
           );
-          field = node.getByLabelText("id");
+          field = screen.getByLabelText("id");
         });
 
         it("should load the id value", () => {

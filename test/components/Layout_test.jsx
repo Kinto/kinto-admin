@@ -2,7 +2,7 @@ import React from "react";
 
 import { Layout } from "../../src/components/Layout";
 import * as sessionActions from "../../src/actions/session";
-import { renderWithProvider } from "../test_utils";
+import { renderWithProvider } from "../testUtils";
 import { fireEvent } from "@testing-library/react";
 
 describe("App component", () => {

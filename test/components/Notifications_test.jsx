@@ -1,6 +1,6 @@
 import Notifications from "../../src/components/Notifications";
 import React from "react";
-import { fireEvent, render } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 describe("Notifications component", () => {
   let removeNotificationParam;
@@ -14,18 +14,18 @@ describe("Notifications component", () => {
   });
 
   it("should render an error", () => {
-    const node = render(
+    render(
       <Notifications
         removeNotification={removeNotification}
         notifications={[{ type: "danger", message: "fail" }]}
       />
     );
 
-    expect(node.getAllByTitle("Dismiss")).toHaveLength(1);
+    expect(screen.getAllByTitle("Dismiss")).toHaveLength(1);
   });
 
   it("should render multiple notifications", () => {
-    const node = render(
+    render(
       <Notifications
         removeNotification={removeNotification}
         notifications={[
@@ -35,24 +35,24 @@ describe("Notifications component", () => {
       />
     );
 
-    expect(node.getByText("info")).toBeDefined();
-    expect(node.getByText("fail")).toBeDefined();
+    expect(screen.getByText("info")).toBeDefined();
+    expect(screen.getByText("fail")).toBeDefined();
   });
 
   it("should remove a single notif when the list has one", () => {
-    const node = render(
+    render(
       <Notifications
         removeNotification={removeNotification}
         notifications={[{ type: "info", message: "plop" }]}
       />
     );
 
-    fireEvent.click(node.getByTitle("Dismiss"));
+    fireEvent.click(screen.getByTitle("Dismiss"));
     expect(removeNotificationParam).toBe(0);
   });
 
   it("should remove a single notif when the list has two", () => {
-    const node = render(
+    render(
       <Notifications
         removeNotification={removeNotification}
         notifications={[
@@ -62,7 +62,7 @@ describe("Notifications component", () => {
       />
     );
     // second notification close button clicked
-    fireEvent.click(node.getAllByTitle("Dismiss")[1]);
+    fireEvent.click(screen.getAllByTitle("Dismiss")[1]);
     expect(removeNotificationParam).toBe(1);
   });
 });

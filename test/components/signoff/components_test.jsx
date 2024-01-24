@@ -1,7 +1,7 @@
 import SignoffToolBar from "../../../src/components/signoff/SignoffToolBar";
 import React from "react";
-import { fireEvent } from "@testing-library/react";
-import { renderWithProvider } from "../../test_utils";
+import { fireEvent, screen } from "@testing-library/react";
+import { renderWithProvider } from "../../testUtils";
 
 describe("SignoffToolBar component", () => {
   const props = {
@@ -56,8 +56,8 @@ describe("SignoffToolBar component", () => {
   };
 
   it("should not be rendered if current collection is not listed in resources", () => {
-    const node = renderWithProvider(<SignoffToolBar {...props} signoff={{}} />);
-    expect(node.container.innerHTML).toBe("");
+    const { container } = renderWithProvider(<SignoffToolBar {...props} signoff={{}} />);
+    expect(container.innerHTML).toBe("");
   });
 
   it("should show the request review button if current user is editor", () => {
@@ -76,8 +76,8 @@ describe("SignoffToolBar component", () => {
         },
       },
     };
-    const node = renderWithProvider(<SignoffToolBar {...propsOverride} />);
-    expect(node.queryAllByText("Request review...")).toHaveLength(1);
+    renderWithProvider(<SignoffToolBar {...propsOverride} />);
+    expect(screen.queryAllByText("Request review...")).toHaveLength(1);
   });
 
   it("should show a spinner when the user clicks approve to prevent further changes", async () => {
@@ -121,12 +121,12 @@ describe("SignoffToolBar component", () => {
 
     localStorage.setItem("useSimpleReview", false);
 
-    const node = renderWithProvider(<SignoffToolBar {...propsOverride} />);
-    expect(node.queryByTestId("spinner")).toBeNull();
+    renderWithProvider(<SignoffToolBar {...propsOverride} />);
+    expect(screen.queryByTestId("spinner")).toBeNull();
     expect(propsOverride.approveChanges).toHaveBeenCalledTimes(0);
-    const approveButton = (await node.findByText("Approve"))
+    const approveButton = (await screen.findByText("Approve"))
     fireEvent.click(approveButton);
-    expect(await node.findByTestId("spinner")).toBeDefined();
+    expect(await screen.findByTestId("spinner")).toBeDefined();
     expect(propsOverride.approveChanges).toHaveBeenCalledTimes(1);
   });
 });

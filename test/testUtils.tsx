@@ -1,7 +1,6 @@
 /* Utils for tests. */
 
 import React from "react";
-import ReactDOM from "react-dom";
 import { render } from "@testing-library/react";
 import { Router } from "react-router";
 import { Provider } from "react-redux";
@@ -9,31 +8,6 @@ import { configureAppStoreAndHistory } from "../src/store/configureStore";
 import * as notificationsActions from "../src/actions/notifications";
 import { createMemoryHistory } from "history";
 import { Route } from "react-router-dom";
-
-export function createComponent(
-  ui,
-  {
-    initialState,
-    route = "/",
-    path = "/",
-    initialHistory = createMemoryHistory({ initialEntries: [route] }),
-  } = {}
-) {
-  const { store, history } = configureAppStoreAndHistory(
-    initialState,
-    initialHistory
-  );
-  const domContainer = document.createElement("div");
-  ReactDOM.render(
-    <Provider store={store}>
-      <Router history={history}>
-        <Route path={path}>{ui}</Route>
-      </Router>
-    </Provider>,
-    domContainer
-  );
-  return domContainer.children.length == 0 ? null : domContainer;
-}
 
 export function mockNotifyError() {
   return vi
@@ -80,6 +54,7 @@ export function renderWithProvider(
     route = "/",
     path = "/",
     initialHistory = createMemoryHistory({ initialEntries: [route] }),
+    ...renderOptions
   } = {}
 ) {
   const { store, history } = configureAppStoreAndHistory(
@@ -93,10 +68,5 @@ export function renderWithProvider(
       </Router>
     </Provider>
   );
-  return {
-    ...render(ui, { wrapper: Wrapper }),
-    store,
-    rerender: updatedComponent =>
-      render(updatedComponent, { container: document.body, wrapper: Wrapper }),
-  };
+  return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) };
 }

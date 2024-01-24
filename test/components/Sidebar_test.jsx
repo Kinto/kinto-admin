@@ -1,7 +1,8 @@
-import { renderWithProvider } from "../test_utils";
+import { renderWithProvider } from "../testUtils";
 import { Sidebar } from "../../src/components/Sidebar";
 import { clone } from "../../src/utils";
 import React from "react";
+import { screen } from "@testing-library/react";
 
 describe("Sidebar component", () => {
   const params = { bid: "mybuck", cid: "mycoll" };
@@ -26,7 +27,7 @@ describe("Sidebar component", () => {
 
   describe("Not authenticated", () => {
     it("should not render any bucket menus", () => {
-      const node = renderWithProvider(
+      renderWithProvider(
         <Sidebar
           match={{ params: {} }}
           location={{ pathname: "" }}
@@ -35,15 +36,15 @@ describe("Sidebar component", () => {
         { initialState: { session: { authenticated: false } } }
       );
 
-      expect(node.queryByTestId("sidebar-bucketMenu")).toBeNull();
+      expect(screen.queryByTestId("sidebar-bucketMenu")).toBeNull();
     });
   });
 
   describe("Authenticated", () => {
-    let node, bucketMenus;
+    let bucketMenus;
 
     beforeEach(() => {
-      node = renderWithProvider(
+      renderWithProvider(
         <Sidebar
           match={{ params }}
           location={location}
@@ -51,7 +52,7 @@ describe("Sidebar component", () => {
         />,
         { initialState: { session } }
       );
-      bucketMenus = node.getAllByTestId("sidebar-bucketMenu");
+      bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
     });
 
     it("should list the user buckets", () => {
@@ -92,7 +93,7 @@ describe("Sidebar component", () => {
 
   describe("Create bucket", () => {
     it("should be shown by default", () => {
-      const node = renderWithProvider(
+      renderWithProvider(
         <Sidebar
           match={{ params }}
           location={location}
@@ -100,14 +101,14 @@ describe("Sidebar component", () => {
         />,
         { initialState: { session } }
       );
-      expect(node.queryAllByText("Create bucket")).toHaveLength(1);
+      expect(screen.queryAllByText("Create bucket")).toHaveLength(1);
     });
 
     it("should be hidden if not allowed", () => {
       const notAllowed = clone(session);
       notAllowed.permissions = [{ resource_name: "root", permissions: [] }];
 
-      const node = renderWithProvider(
+      renderWithProvider(
         <Sidebar
           match={{ params }}
           location={location}
@@ -115,7 +116,7 @@ describe("Sidebar component", () => {
         />,
         { initialState: { session: notAllowed } }
       );
-      expect(node.queryAllByText("Create bucket")).toHaveLength(0);
+      expect(screen.queryAllByText("Create bucket")).toHaveLength(0);
     });
   });
 });

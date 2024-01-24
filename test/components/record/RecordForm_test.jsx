@@ -1,8 +1,8 @@
 import React from "react";
-import { fireEvent } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import RecordForm from "../../../src/components/record/RecordForm";
 import { canCreateRecord, canEditRecord } from "../../../src/permission";
-import { renderWithProvider } from "../../test_utils";
+import { renderWithProvider } from "../../testUtils";
 
 vi.mock("../../../src/permission", () => {
   return {
@@ -84,10 +84,10 @@ describe("RecordForm", () => {
   };
 
   it("Renders an empty form for a new record (attachments disabled)", async () => {
-    const result = renderWithProvider(<RecordForm {...defaultProps} />);
-    fireEvent.change(result.queryByLabelText("TestTitle"), { target: { value: "test title" }});
-    fireEvent.change(result.queryByLabelText("TestContent"), { target: { value: "test content" }});
-    fireEvent.click(result.queryByText("Create record"));
+    renderWithProvider(<RecordForm {...defaultProps} />);
+    fireEvent.change(screen.queryByLabelText("TestTitle"), { target: { value: "test title" }});
+    fireEvent.change(screen.queryByLabelText("TestContent"), { target: { value: "test content" }});
+    fireEvent.click(screen.queryByText("Create record"));
     expect(lastSubmittedData).toStrictEqual({
       title: "test title",
       content: "test content"
@@ -95,36 +95,36 @@ describe("RecordForm", () => {
   });
 
   it("Renders the expected form for an existing record (attachments disabled)", async () => {
-    const result = renderWithProvider(<RecordForm {...defaultProps} record={{
+    renderWithProvider(<RecordForm {...defaultProps} record={{
       data: {
         title: "test title",
         content: "test content",
       }
     }} />);
-    expect(result.queryByLabelText("TestTitle").value).toBe("test title");
-    expect(result.queryByLabelText("TestContent").value).toBe("test content");
+    expect(screen.queryByLabelText("TestTitle").value).toBe("test title");
+    expect(screen.queryByLabelText("TestContent").value).toBe("test content");
   });
 
   it("Renders an empty form for a new record (attachments enabled)", async () => {
-    const result = renderWithProvider(<RecordForm {...attachProps} />);
-    expect(result.queryByLabelText("TestTitle").value).toBe("");
-    expect(result.queryByLabelText("TestContent").value).toBe("");
-    expect(result.findByLabelText("File attachment")).toBeDefined();
+    renderWithProvider(<RecordForm {...attachProps} />);
+    expect(screen.queryByLabelText("TestTitle").value).toBe("");
+    expect(screen.queryByLabelText("TestContent").value).toBe("");
+    expect(screen.findByLabelText("File attachment")).toBeDefined();
   });
 
   it("Renders the expected form for an existing record (attachments enabled) and allows user to save without updating attachment", async () => {
-    const result = renderWithProvider(<RecordForm {...attachProps} record={{
+    renderWithProvider(<RecordForm {...attachProps} record={{
       data: {
         title: "test title",
         content: "test content",
         attachment: testAttachment
       }
     }} />);
-    expect(result.queryByLabelText("TestTitle").value).toBe("test title");
-    expect(result.queryByLabelText("TestContent").value).toBe("test content");
-    expect(result.findByLabelText("File attachment")).toBeDefined();
-    fireEvent.change(result.queryByLabelText("TestTitle"), { target: { value: "updated title" }});
-    fireEvent.click(result.queryByText("Update record"));
+    expect(screen.queryByLabelText("TestTitle").value).toBe("test title");
+    expect(screen.queryByLabelText("TestContent").value).toBe("test content");
+    expect(screen.findByLabelText("File attachment")).toBeDefined();
+    fireEvent.change(screen.queryByLabelText("TestTitle"), { target: { value: "updated title" }});
+    fireEvent.click(screen.queryByText("Update record"));
     expect(lastSubmittedData).toStrictEqual({
       title: "updated title",
       content: "test content",
@@ -134,23 +134,23 @@ describe("RecordForm", () => {
 
   it("Requires an attachment to submit when it's a new record and attachments are required", async () => {
     lastSubmittedData = null;
-    const result = renderWithProvider(<RecordForm {...attachProps} />);
-    fireEvent.change(result.queryByLabelText("TestTitle"), { target: { value: "test title" }});
-    fireEvent.change(result.queryByLabelText("TestContent"), { target: { value: "test content" }});
-    fireEvent.click(result.queryByText("Create record"));
+    renderWithProvider(<RecordForm {...attachProps} />);
+    fireEvent.change(screen.queryByLabelText("TestTitle"), { target: { value: "test title" }});
+    fireEvent.change(screen.queryByLabelText("TestContent"), { target: { value: "test content" }});
+    fireEvent.click(screen.queryByText("Create record"));
     expect(lastSubmittedData).toBeNull();
   });
 
   it("Disables the form when user cannot edit", async () => {
     canEditRecord.mockReturnValue(false);
-    const result = renderWithProvider(<RecordForm {...attachProps} record={{
+    renderWithProvider(<RecordForm {...attachProps} record={{
       data: {
         title: "test title",
         content: "test content",
       }
     }} />);
-    expect(result.queryByLabelText("TestTitle").disabled).toBe(true);
-    expect(result.queryByLabelText("TestContent").disabled).toBe(true);
-    expect(result.queryByLabelText("File attachment*").disabled).toBe(true);
+    expect(screen.queryByLabelText("TestTitle").disabled).toBe(true);
+    expect(screen.queryByLabelText("TestContent").disabled).toBe(true);
+    expect(screen.queryByLabelText("File attachment*").disabled).toBe(true);
   });
 });

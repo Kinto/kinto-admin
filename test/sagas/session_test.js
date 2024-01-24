@@ -1,4 +1,4 @@
-import { mockNotifyError } from "../test_utils";
+import { mockNotifyError } from "../testUtils";
 import { push as updatePath } from "redux-first-history";
 import { put, call } from "redux-saga/effects";
 import { saveSession, clearSession } from "../../src/store/localStore";

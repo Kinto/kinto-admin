@@ -1,6 +1,6 @@
 import { put, call } from "redux-saga/effects";
 
-import { mockNotifyError } from "../test_utils";
+import { mockNotifyError } from "../testUtils";
 
 import { notifySuccess } from "../../src/actions/notifications";
 import * as sessionActions from "../../src/actions/session";

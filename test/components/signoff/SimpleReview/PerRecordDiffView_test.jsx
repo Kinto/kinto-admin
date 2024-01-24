@@ -4,7 +4,7 @@ import PerRecordDiffView, {
   formatDiffHeader,
 } from "../../../../src/components/signoff/SimpleReview/PerRecordDiffView";
 import React from "react";
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 
 function renderSimpleReview(props = null) {
   const mergedProps = {
@@ -21,33 +21,31 @@ function renderSimpleReview(props = null) {
 }
 
 describe("PerRecordDiffView component", () => {
-  it("should render loading when authenticating", () => {
-    const node = renderSimpleReview({
+  it("should render loading when authenticating", async () => {
+    const { container } = renderSimpleReview({
       collectionData: {
         status: "signed",
         bid: "a",
         cid: "b",
       },
     });
-    expect(node.container.textContent).toBe(
-      "No changes to review, collection status is signed."
-    );
+    expect(container).toHaveTextContent("No changes to review, collection status is signed.")
   });
 
   it("should render diffs", () => {
-    const node = renderSimpleReview({
+    renderSimpleReview({
       oldRecords: [{ id: "foo" }, { id: "bar" }],
       newRecords: [{ id: "foo" }, { id: "baz" }],
     });
-    expect(node.queryAllByTestId("record-diff")).toHaveLength(2);
+    expect(screen.queryAllByTestId("record-diff")).toHaveLength(2);
   });
 
   it("should render per-record diffs", () => {
-    const node = renderSimpleReview({
+    renderSimpleReview({
       oldRecords: [{ id: "foo" }],
       newRecords: [{ id: "foo" }, { id: "bar" }],
     });
-    expect(node.queryAllByTestId("record-diff")).toHaveLength(1);
+    expect(screen.queryAllByTestId("record-diff")).toHaveLength(1);
   });
 });
 

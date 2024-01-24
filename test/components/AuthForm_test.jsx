@@ -1,4 +1,5 @@
-import { renderWithProvider } from "../test_utils";
+import { screen } from "@testing-library/react";
+import { renderWithProvider } from "../testUtils";
 import { DEFAULT_KINTO_SERVER } from "../../src/constants";
 import { DEFAULT_SERVERINFO } from "../../src/reducers/session";
 import { render, fireEvent, waitFor } from "@testing-library/react";
@@ -12,20 +13,19 @@ describe("AuthForm component", () => {
 
   describe("Single server config option", () => {
     it("should set the default server url in a visible field", () => {
-      const node = renderWithProvider(
+      renderWithProvider(
         <AuthForm
           session={{ authenticated: false, serverInfo: DEFAULT_SERVERINFO }}
         />
       );
 
-      const element = node.queryByLabelText("Server*");
+      const element = screen.queryByLabelText("Server*");
       expect(element.type).toBe("text");
       expect(element.value).toBe(DEFAULT_KINTO_SERVER);
     });
   });
   describe("Authentication types", () => {
-    let node,
-      setupSession,
+      let setupSession,
       getServerInfo,
       navigateToExternalAuth,
       navigateToOpenID,
@@ -65,31 +65,31 @@ describe("AuthForm component", () => {
           },
         },
       };
-      node = renderWithProvider(<AuthForm {...props} />);
+      renderWithProvider(<AuthForm {...props} />);
     });
 
     it("should render a setup form", () => {
-      expect(node.getByTestId("formWrapper")).toBeDefined();
+      expect(screen.getByTestId("formWrapper")).toBeDefined();
     });
 
     describe("Basic Auth", () => {
       it("should submit setup data", async () => {
-        fireEvent.change(node.queryByLabelText("Server*"), {
+        fireEvent.change(screen.queryByLabelText("Server*"), {
           target: { value: "http://test.server/v1" },
         });
-        await node.findByTestId("spinner"); // spinner should show up
+        await screen.findByTestId("spinner"); // spinner should show up
         await waitFor(() => new Promise(resolve => setTimeout(resolve, 400))); // debounce wait
-        expect(node.queryByTestId("spinner")).toBeNull(); // spinner should be gone by now
+        expect(screen.queryByTestId("spinner")).toBeNull(); // spinner should be gone by now
 
-        fireEvent.click(node.getByLabelText("Basic Auth"));
-        fireEvent.change(node.getByLabelText("Username*"), {
+        fireEvent.click(screen.getByLabelText("Basic Auth"));
+        fireEvent.change(screen.getByLabelText("Username*"), {
           target: { value: "user" },
         });
-        fireEvent.change(node.getByLabelText("Password*"), {
+        fireEvent.change(screen.getByLabelText("Password*"), {
           target: { value: "pass" },
         });
 
-        fireEvent.click(node.getByText(/Sign in using/));
+        fireEvent.click(screen.getByText(/Sign in using/));
         expect(setupSession).toHaveBeenCalledWith({
           server: "http://test.server/v1",
           authType: "basicauth",
@@ -104,18 +104,18 @@ describe("AuthForm component", () => {
 
     describe("LDAP", () => {
       it("should submit setup data", async () => {
-        fireEvent.change(node.queryByLabelText("Server*"), {
+        fireEvent.change(screen.queryByLabelText("Server*"), {
           target: { value: "http://test.server/v1" },
         });
         await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
-        fireEvent.click(node.getByLabelText("LDAP"));
-        fireEvent.change(node.getByLabelText("Email*"), {
+        fireEvent.click(screen.getByLabelText("LDAP"));
+        fireEvent.change(screen.getByLabelText("Email*"), {
           target: { value: "you@email.com" },
         });
-        fireEvent.change(node.getByLabelText("Password*"), {
+        fireEvent.change(screen.getByLabelText("Password*"), {
           target: { value: "pass" },
         });
-        fireEvent.click(node.getByText(/Sign in using/));
+        fireEvent.click(screen.getByText(/Sign in using/));
         expect(setupSession).toHaveBeenCalledWith({
           server: "http://test.server/v1",
           authType: "ldap",
@@ -130,12 +130,12 @@ describe("AuthForm component", () => {
 
     describe("FxA", () => {
       it("should navigate to external auth URL", async () => {
-        fireEvent.change(node.queryByLabelText("Server*"), {
+        fireEvent.change(screen.queryByLabelText("Server*"), {
           target: { value: "http://test.server/v1" },
         });
         await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
-        fireEvent.click(node.getByLabelText("Firefox Account"));
-        fireEvent.click(node.getByText(/Sign in using/));
+        fireEvent.click(screen.getByLabelText("Firefox Account"));
+        fireEvent.click(screen.getByText(/Sign in using/));
         expect(navigateToExternalAuth).toHaveBeenCalledWith({
           server: "http://test.server/v1",
           authType: "fxa", // fxa = credentials omitted
@@ -146,12 +146,12 @@ describe("AuthForm component", () => {
 
     describe("OpenID", () => {
       it("should navigate to external auth URL", async () => {
-        fireEvent.change(node.queryByLabelText("Server*"), {
+        fireEvent.change(screen.queryByLabelText("Server*"), {
           target: { value: "http://test.server/v1" },
         });
         await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
-        fireEvent.click(node.getByLabelText("OpenID Connect (Google)"));
-        fireEvent.click(node.getByText(/Sign in using/));
+        fireEvent.click(screen.getByLabelText("OpenID Connect (Google)"));
+        fireEvent.click(screen.getByText(/Sign in using/));
         expect(navigateToOpenID).toHaveBeenCalledWith(
           {
             server: "http://test.server/v1",
@@ -173,9 +173,9 @@ describe("AuthForm component", () => {
         servers: [],
         session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
       };
-      const node = renderWithProvider(<AuthForm {...props} />);
+      renderWithProvider(<AuthForm {...props} />);
 
-      expect(node.queryByLabelText("Server*").value).toBe(
+      expect(screen.queryByLabelText("Server*").value).toBe(
         "https://demo.kinto-storage.org/v1/"
       );
     });
@@ -188,9 +188,9 @@ describe("AuthForm component", () => {
         servers: [{ server: "http://server.test/v1", authType: "anonymous" }],
         session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
       };
-      const node = renderWithProvider(<AuthForm {...props} />);
+      renderWithProvider(<AuthForm {...props} />);
 
-      expect(node.queryByLabelText("Server*").value).toBe(
+      expect(screen.queryByLabelText("Server*").value).toBe(
         "http://server.test/v1"
       );
     });

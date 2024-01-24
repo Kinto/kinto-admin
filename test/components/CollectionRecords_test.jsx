@@ -1,4 +1,5 @@
-import { renderWithProvider } from "../test_utils";
+import { screen } from "@testing-library/react";
+import { renderWithProvider } from "../testUtils";
 import CollectionRecords from "../../src/components/collection/CollectionRecords";
 import React from "react";
 
@@ -81,8 +82,6 @@ describe("CollectionRecords component", () => {
   });
 
   describe("Schema defined", () => {
-    let node;
-
     const collection = {
       busy: false,
       data: {
@@ -105,7 +104,7 @@ describe("CollectionRecords component", () => {
     };
 
     beforeEach(() => {
-      node = renderWithProvider(
+      renderWithProvider(
         <CollectionRecords
           match={{ params: { bid: "bucket", cid: "collection" } }}
           session={{
@@ -121,19 +120,19 @@ describe("CollectionRecords component", () => {
     });
 
     it("should render a table", () => {
-      expect(node.getByTestId("paginatedTable")).toBeDefined();
+      expect(screen.getByTestId("paginatedTable")).toBeDefined();
     });
 
     it("should render record rows", () => {
-      expect(node.getByTestId("id1-row")).toBeDefined();
-      expect(node.getByTestId("id2-row")).toBeDefined();
-      expect(node.getByTestId("id1-foo").textContent).toBe("bar");
-      expect(node.getByTestId("id2-foo").textContent).toBe("baz");
+      expect(screen.getByTestId("id1-row")).toBeDefined();
+      expect(screen.getByTestId("id2-row")).toBeDefined();
+      expect(screen.getByTestId("id1-foo").textContent).toBe("bar");
+      expect(screen.getByTestId("id2-foo").textContent).toBe("baz");
     });
   });
 
   describe("No schema defined", () => {
-    let node;
+    
 
     const collection = {
       busy: false,
@@ -156,7 +155,7 @@ describe("CollectionRecords component", () => {
     };
 
     beforeEach(() => {
-      node = renderWithProvider(
+      renderWithProvider(
         <CollectionRecords
           match={{ params: { bid: "bucket", cid: "collection" } }}
           session={{
@@ -172,23 +171,23 @@ describe("CollectionRecords component", () => {
     });
 
     it("should render a table", () => {
-      expect(node.getByTestId("paginatedTable")).toBeDefined();
+      expect(screen.getByTestId("paginatedTable")).toBeDefined();
     });
 
     it("should render record rows", () => {
-      expect(node.getByTestId("id1-id").textContent).toBe("id1");
-      expect(node.getByTestId("id1-__json").textContent).toBe(
+      expect(screen.getByTestId("id1-id").textContent).toBe("id1");
+      expect(screen.getByTestId("id1-__json").textContent).toBe(
         JSON.stringify({ foo: "bar" })
       );
-      expect(node.getByTestId("id2-id").textContent).toBe("id2");
-      expect(node.getByTestId("id2-__json").textContent).toBe(
+      expect(screen.getByTestId("id2-id").textContent).toBe("id2");
+      expect(screen.getByTestId("id2-__json").textContent).toBe(
         JSON.stringify({ foo: "baz" })
       );
     });
   });
 
   describe("Tabs", () => {
-    let node;
+    
 
     const collection = {
       busy: false,
@@ -200,7 +199,7 @@ describe("CollectionRecords component", () => {
     };
 
     beforeEach(() => {
-      node = renderWithProvider(
+      renderWithProvider(
         <CollectionRecords
           match={{ params: { bid: "bucket", cid: "collection" } }}
           session={{}}
@@ -213,7 +212,7 @@ describe("CollectionRecords component", () => {
     });
 
     it("should show the total number of records", () => {
-      expect(node.getByTestId("nav-records").textContent).toBe("Records (18)");
+      expect(screen.getByTestId("nav-records").textContent).toBe("Records (18)");
     });
   });
 
@@ -237,10 +236,10 @@ describe("CollectionRecords component", () => {
     };
 
     describe("Collection write permission", () => {
-      let node;
+      
 
       beforeEach(() => {
-        node = renderWithProvider(
+        renderWithProvider(
           <CollectionRecords
             match={{ params: { bid: "bucket", cid: "collection" } }}
             session={{ permissions: null }}
@@ -253,16 +252,16 @@ describe("CollectionRecords component", () => {
       });
 
       it("should render list actions", () => {
-        expect(node.getAllByText("Create record").length).toBe(2);
-        expect(node.getAllByText("Bulk create").length).toBe(2);
+        expect(screen.getAllByText("Create record").length).toBe(2);
+        expect(screen.getAllByText("Bulk create").length).toBe(2);
       });
     });
 
     describe("No collection write permission", () => {
-      let node;
+      
 
       beforeEach(() => {
-        node = renderWithProvider(
+        renderWithProvider(
           <CollectionRecords
             match={{ params: { bid: "bucket", cid: "collection" } }}
             session={{ permissions: [] }}
@@ -275,7 +274,7 @@ describe("CollectionRecords component", () => {
       });
 
       it("should not render list actions", () => {
-        expect(node.queryByText("Bulk create")).toBeNull();
+        expect(screen.queryByText("Bulk create")).toBeNull();
       });
     });
   });

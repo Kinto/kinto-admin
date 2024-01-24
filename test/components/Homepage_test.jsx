@@ -1,9 +1,10 @@
 import React from "react";
 import * as localStore from "../../src/store/localStore";
-import { renderWithProvider } from "../test_utils";
+import { renderWithProvider } from "../testUtils";
 import { HomePage } from "../../src/components/HomePage";
 import * as SessionActions from "../../src/actions/session";
-import { sessionFactory } from "../test_utils";
+import { sessionFactory } from "../testUtils";
+import { screen } from "@testing-library/react";
 
 describe("HomePage component", () => {
   afterEach(() => {
@@ -12,12 +13,12 @@ describe("HomePage component", () => {
 
   describe("Authenticating", () => {
     it("loads a spinner when authenticating", async () => {
-      const node = renderWithProvider(<HomePage />, {
+      renderWithProvider(<HomePage />, {
         initialState: {
           session: sessionFactory({ authenticating: true }),
         },
       });
-      expect(await node.findByTestId("spinner")).toBeDefined();
+      expect(await screen.findByTestId("spinner")).toBeDefined();
     });
   });
 
@@ -99,7 +100,7 @@ describe("HomePage component", () => {
 
   describe("Authenticated", () => {
     it("should render server information heading with default info if it cannot be fetched", () => {
-      const node = renderWithProvider(<HomePage />, {
+      renderWithProvider(<HomePage />, {
         initialState: {
           session: sessionFactory({
             serverInfo: { foo: { bar: "baz" } },
@@ -108,10 +109,10 @@ describe("HomePage component", () => {
         },
       });
 
-      expect(node.getByText("Server information").textContent).toBeDefined();
+      expect(screen.getByText("Server information").textContent).toBeDefined();
 
       expect(
-        [].map.call(node.getAllByTestId("home-th"), x => x.textContent)
+        [].map.call(screen.getAllByTestId("home-th"), x => x.textContent)
       ).toStrictEqual(["url", "capabilities", "project_name", "project_docs"]);
     });
   });

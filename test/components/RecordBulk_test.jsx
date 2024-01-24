@@ -1,11 +1,11 @@
-import { fireEvent } from "@testing-library/react";
-import { renderWithProvider } from "../test_utils";
+import { fireEvent, screen } from "@testing-library/react";
+import { renderWithProvider } from "../testUtils";
 import RecordBulk from "../../src/components/record/RecordBulk";
 import React from "react";
 
 describe("RecordBulk component", () => {
   describe("Schema defined", () => {
-    let node, bulkCreateRecords;
+    let bulkCreateRecords;
     const collection = {
       data: {
         schema: {
@@ -21,7 +21,7 @@ describe("RecordBulk component", () => {
 
     beforeEach(() => {
       bulkCreateRecords = vi.fn();
-      node = renderWithProvider(
+      renderWithProvider(
         <RecordBulk
           match={{ params: { bid: "bucket", cid: "collection" } }}
           collection={collection}
@@ -31,17 +31,17 @@ describe("RecordBulk component", () => {
     });
 
     it("should render a form", () => {
-      expect(node.getByTestId("formWrapper")).toBeDefined();
+      expect(screen.getByTestId("formWrapper")).toBeDefined();
     });
 
     it("should submitted entered data", () => {
-      fireEvent.change(node.getAllByLabelText("foo")[0], {
+      fireEvent.change(screen.getAllByLabelText("foo")[0], {
         target: { value: "bar1" },
       });
-      fireEvent.change(node.getAllByLabelText("foo")[1], {
+      fireEvent.change(screen.getAllByLabelText("foo")[1], {
         target: { value: "bar2" },
       });
-      fireEvent.click(node.getByText("Bulk create"));
+      fireEvent.click(screen.getByText("Bulk create"));
       expect(bulkCreateRecords).toHaveBeenCalledWith("bucket", "collection", [
         { foo: "bar1" },
         { foo: "bar2" },

@@ -1,6 +1,7 @@
 import React from "react";
 import { RecordPermissions } from "../../../src/components/record/RecordPermissions";
-import { renderWithProvider, sessionFactory } from "../../test_utils";
+import { renderWithProvider, sessionFactory } from "../../testUtils";
+import { screen } from "@testing-library/react";
 
 describe("RecordPermissions component", () => {
   const route =
@@ -11,12 +12,12 @@ describe("RecordPermissions component", () => {
       session: sessionFactory(),
       record: { busy: false },
     };
-    const node = renderWithProvider(<RecordPermissions />, {
+    renderWithProvider(<RecordPermissions />, {
       initialState,
       route: route,
       path: path,
     });
-    expect(node.getByText(/Edit.*record permissions/).textContent).toBe(
+    expect(screen.getByText(/Edit.*record permissions/).textContent).toBe(
       "Edit test-bucket/test-collection/test-record record permissions"
     );
   });
@@ -25,11 +26,11 @@ describe("RecordPermissions component", () => {
       session: sessionFactory(),
       record: { busy: true },
     };
-    const node = renderWithProvider(<RecordPermissions />, {
+    renderWithProvider(<RecordPermissions />, {
       initialState,
       route: route,
       path: path,
     });
-    expect(await node.findByTestId("spinner")).toBeDefined();
+    expect(await screen.findByTestId("spinner")).toBeDefined();
   });
 });

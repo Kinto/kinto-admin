@@ -1,6 +1,6 @@
 import React from "react";
-import { fireEvent } from "@testing-library/react";
-import { renderWithProvider } from "../test_utils";
+import { fireEvent, screen } from "@testing-library/react";
+import { renderWithProvider } from "../testUtils";
 import RecordCreate from "../../src/components/record/RecordCreate";
 
 describe("RecordCreate component", () => {
@@ -14,7 +14,7 @@ describe("RecordCreate component", () => {
   };
 
   describe("Schema defined", () => {
-    let node, createRecord;
+    let createRecord;
     const collection = {
       data: {
         schema: {
@@ -42,19 +42,19 @@ describe("RecordCreate component", () => {
 
     beforeEach(() => {
       createRecord = vi.fn();
-      node = renderWithProvider(<RecordCreate {...props} createRecord={createRecord} />);
+      renderWithProvider(<RecordCreate {...props} createRecord={createRecord} />);
     });
 
     it("should render a form", () => {
-      expect(node.getByTestId("formWrapper")).toBeDefined();
+      expect(screen.getByTestId("formWrapper")).toBeDefined();
     });
 
     it("should submitted entered data", () => {
-      fireEvent.change(node.getByLabelText("foo"), {
+      fireEvent.change(screen.getByLabelText("foo"), {
         target: { value: "bar" },
       });
 
-      fireEvent.click(node.getByText("Create record"));
+      fireEvent.click(screen.getByText("Create record"));
 
       expect(createRecord).toHaveBeenCalledWith(
         "bucket",
