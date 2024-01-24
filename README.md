@@ -158,7 +158,7 @@ If you use `target.merkle.tree.file.name` it will render the string
 
 ## Releasing
 
-1. Create a release tag with `git tag vX.Y.Z` (this will replace the version number in the built release)
+1. Tag a commit with `git tag --annotate vX.Y.Z` (this will become the version number in the built release)
 2. Push the tag with `git push origin vX.Y.Z` or `git push origin --tags`
 3. A new release draft will be created automatically with source code and a single-server build (this may take a few minutes)
 4. Update the release body with detailed information
