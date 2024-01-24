@@ -1,8 +1,7 @@
-import React from "react";
+import CollectionForm from "../../src/components/collection/CollectionForm";
 import { renderWithProvider } from "../testUtils";
 import { screen } from "@testing-library/react";
-
-import CollectionForm from "../../src/components/collection/CollectionForm";
+import React from "react";
 
 const warningText =
   "You don't have the required permission to edit this collection.";

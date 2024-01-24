@@ -1,7 +1,7 @@
-import React from "react";
-import { render, screen } from "@testing-library/react";
 import HistoryTable from "../../src/components/HistoryTable";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { render, screen } from "@testing-library/react";
+import React from "react";
+import { Route, BrowserRouter as Router } from "react-router-dom";
 
 const props = {
   bid: "test",

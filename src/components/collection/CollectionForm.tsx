@@ -1,22 +1,19 @@
-import type {
-  SessionState,
-  BucketState,
-  CollectionState,
-  CollectionData,
-} from "../../types";
-
-import React, { useState } from "react";
-
-import { Check2 } from "react-bootstrap-icons";
-
-import BaseForm from "../BaseForm";
-import { RJSFSchema } from "@rjsf/utils";
-import JSONCollectionForm from "./JSONCollectionForm";
-import JSONEditor from "../JSONEditor";
 import { canCreateCollection, canEditCollection } from "../../permission";
+import type {
+  BucketState,
+  CollectionData,
+  CollectionState,
+  SessionState,
+} from "../../types";
 import { validateSchema, validateUiSchema } from "../../utils";
+import BaseForm from "../BaseForm";
+import JSONEditor from "../JSONEditor";
 import DeleteForm from "./DeleteForm";
 import { FormInstructions } from "./FormInstructions";
+import JSONCollectionForm from "./JSONCollectionForm";
+import { RJSFSchema } from "@rjsf/utils";
+import React, { useState } from "react";
+import { Check2 } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 
 const defaultSchema = JSON.stringify(

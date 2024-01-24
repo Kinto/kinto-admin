@@ -1,11 +1,11 @@
-import React from "react";
-import { renderWithProvider } from "../../testUtils";
-import { screen } from "@testing-library/react";
 import {
   DataList,
   ListActions,
 } from "../../../src/components/bucket/CollectionDataList";
 import { canCreateCollection } from "../../../src/permission";
+import { renderWithProvider } from "../../testUtils";
+import { screen } from "@testing-library/react";
+import React from "react";
 
 vi.mock("../../../src/permission", () => {
   return {

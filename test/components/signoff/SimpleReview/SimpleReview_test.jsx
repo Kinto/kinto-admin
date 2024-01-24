@@ -1,9 +1,12 @@
-import React from "react";
-import { fireEvent, waitForElementToBeRemoved, screen } from "@testing-library/react";
-import { renderWithProvider, sessionFactory } from "../../../testUtils";
 import SimpleReview from "../../../../src/components/signoff/SimpleReview";
+import { renderWithProvider, sessionFactory } from "../../../testUtils";
+import {
+  fireEvent,
+  screen,
+  waitForElementToBeRemoved,
+} from "@testing-library/react";
 import { createMemoryHistory } from "history/";
-
+import React from "react";
 
 vi.mock("../../../../src/permission", () => {
   return {
@@ -13,7 +16,7 @@ vi.mock("../../../../src/permission", () => {
   };
 });
 
-const rollbackChangesMock = vi.fn()
+const rollbackChangesMock = vi.fn();
 
 vi.mock("../../../../src/components/signoff/utils", () => {
   return {
@@ -70,7 +73,7 @@ function renderSimpleReview(props = null, renderProps = {}) {
         cid: "my-collection",
       },
     },
-    listRecords() { },
+    listRecords() {},
     session: sessionFactory(),
     signoff: signoffFactory(),
     async fetchRecords() {
@@ -78,9 +81,10 @@ function renderSimpleReview(props = null, renderProps = {}) {
     },
     ...props,
     rollbackChanges: rollbackChangesMock,
-
   };
-  return renderWithProvider(<SimpleReview {...mergedProps} />, { ...renderProps });
+  return renderWithProvider(<SimpleReview {...mergedProps} />, {
+    ...renderProps,
+  });
 }
 
 const fakeLocation = {
@@ -91,8 +95,8 @@ const fakeLocation = {
 
 describe("SimpleTest component", () => {
   beforeEach(async () => {
-    localStorage.setItem("useSimpleReview", true)
-  })
+    localStorage.setItem("useSimpleReview", true);
+  });
 
   it("should render spinner when authenticating", async () => {
     renderSimpleReview({
@@ -104,13 +108,15 @@ describe("SimpleTest component", () => {
   it("should render not authenticated", async () => {
     renderSimpleReview({
       session: sessionFactory({ authenticated: false, authenticating: false }),
-    })
-    expect(await screen.findByText("Not authenticated")).toBeVisible()
+    });
+    expect(await screen.findByText("Not authenticated")).toBeVisible();
   });
 
   it("should render not reviewable", async () => {
     renderSimpleReview({ signoff: undefined });
-    expect(screen.getByText(/This collection does not support/).textContent).toBe(
+    expect(
+      screen.getByText(/This collection does not support/).textContent
+    ).toBe(
       "This collection does not support reviews, or you do not have permission to review."
     );
   });
@@ -125,14 +131,16 @@ describe("SimpleTest component", () => {
     expect(screen.getByText(/Status is/).textContent).toBe(
       "Status is work-in-progress. "
     );
-    expect(screen.getByText("(No comment was left by a reviewer)")).toBeDefined();
+    expect(
+      screen.getByText("(No comment was left by a reviewer)")
+    ).toBeDefined();
     expect(screen.getByText("Show all lines")).toBeDefined();
   });
 
   it("should render a review component after records are fetched and allow for a rollback", async () => {
-    const history = createMemoryHistory({ initialEntries: ["/"] })
+    const history = createMemoryHistory({ initialEntries: ["/"] });
     renderSimpleReview(null, { initialHistory: history });
-    const historyPushSpy = vi.spyOn(history, "push")
+    const historyPushSpy = vi.spyOn(history, "push");
 
     await waitForElementToBeRemoved(() => screen.queryByTestId("spinner"));
     expect(await screen.findByTestId("simple-review-header")).toBeDefined();
@@ -140,8 +148,8 @@ describe("SimpleTest component", () => {
     // also check rollback calls history.push while we're here
     fireEvent.click(screen.queryByText(/Rollback changes/));
     fireEvent.click(screen.queryByText("Rollback"));
-    expect(rollbackChangesMock).toHaveBeenCalled()
-    expect(historyPushSpy).toHaveBeenCalled()
+    expect(rollbackChangesMock).toHaveBeenCalled();
+    expect(historyPushSpy).toHaveBeenCalled();
   });
 
   it("should hide the rollback button if the hideRollback query parameter is provided", async () => {
@@ -192,12 +200,12 @@ describe("SimpleTest component", () => {
   });
 
   it("should redirect the user if the legacy review process is enabled", async () => {
-    localStorage.setItem("useSimpleReview", false)
+    localStorage.setItem("useSimpleReview", false);
     const session = sessionFactory();
     session.serverInfo.user.principals = [];
     renderSimpleReview({ session });
 
     // Since Simple Review is the default, this means we're in the legacy UI
-    expect(screen.queryByText("Switch to Default Review UI")).toBeDefined()
+    expect(screen.queryByText("Switch to Default Review UI")).toBeDefined();
   });
 });

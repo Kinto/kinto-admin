@@ -1,15 +1,13 @@
-import { push as updatePath } from "redux-first-history";
-import { call, put, take } from "redux-saga/effects";
-
-import { mockNotifyError } from "../testUtils";
-
-import { setClient } from "../../src/client";
-import * as actions from "../../src/actions/route";
 import * as notificationActions from "../../src/actions/notifications";
+import * as actions from "../../src/actions/route";
 import * as sessionActions from "../../src/actions/session";
+import { setClient } from "../../src/client";
+import { SESSION_AUTHENTICATED } from "../../src/constants";
 import * as saga from "../../src/sagas/route";
 import { scrollToTop } from "../../src/utils";
-import { SESSION_AUTHENTICATED } from "../../src/constants";
+import { mockNotifyError } from "../testUtils";
+import { push as updatePath } from "redux-first-history";
+import { call, put, take } from "redux-saga/effects";
 
 describe("route sagas", () => {
   afterEach(() => {

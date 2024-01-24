@@ -1,19 +1,16 @@
-import React, { useState } from "react";
-
+import * as NotificationActions from "../actions/notifications";
+import { getClient } from "../client";
 import type { RecordData, ResourceHistoryEntry, RouteLocation } from "../types";
+import { diffJson, humanDate, parseHistoryFilters, timeago } from "../utils";
+import { omit, sortHistoryEntryPermissions } from "../utils";
+import AdminLink from "./AdminLink";
+import PaginatedTable from "./PaginatedTable";
+import Spinner from "./Spinner";
 import type { Location } from "history";
-
+import React, { useState } from "react";
 import { Eye } from "react-bootstrap-icons";
 import { EyeSlash } from "react-bootstrap-icons";
 import { SkipStart } from "react-bootstrap-icons";
-
-import * as NotificationActions from "../actions/notifications";
-import { diffJson, timeago, humanDate, parseHistoryFilters } from "../utils";
-import AdminLink from "./AdminLink";
-import Spinner from "./Spinner";
-import PaginatedTable from "./PaginatedTable";
-import { getClient } from "../client";
-import { omit, sortHistoryEntryPermissions } from "../utils";
 
 function Diff({ source, target }: { source: any; target: any }) {
   const diff = diffJson(source, target);

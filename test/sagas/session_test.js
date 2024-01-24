@@ -1,14 +1,14 @@
+import * as notificationsActions from "../../src/actions/notifications";
+import * as serversActions from "../../src/actions/servers";
+import * as actions from "../../src/actions/session";
+import * as clientUtils from "../../src/client";
+import { getClient, resetClient, setClient } from "../../src/client";
+import { DEFAULT_SERVERINFO } from "../../src/reducers/session";
+import * as saga from "../../src/sagas/session";
+import { clearSession, saveSession } from "../../src/store/localStore";
 import { mockNotifyError } from "../testUtils";
 import { push as updatePath } from "redux-first-history";
-import { put, call } from "redux-saga/effects";
-import { saveSession, clearSession } from "../../src/store/localStore";
-import * as actions from "../../src/actions/session";
-import * as serversActions from "../../src/actions/servers";
-import * as notificationsActions from "../../src/actions/notifications";
-import * as saga from "../../src/sagas/session";
-import * as clientUtils from "../../src/client";
-import { getClient, setClient, resetClient } from "../../src/client";
-import { DEFAULT_SERVERINFO } from "../../src/reducers/session";
+import { call, put } from "redux-saga/effects";
 
 const authData = {
   server: "http://server.test/v1",

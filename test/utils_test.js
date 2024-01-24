@@ -1,17 +1,16 @@
 import { ANONYMOUS_AUTH, DEFAULT_KINTO_SERVER } from "../src/constants";
-
 import {
+  buildAttachmentUrl,
   capitalize,
   cleanRecord,
   diffJson,
+  getServerByPriority,
+  humanDate,
   renderDisplayField,
+  sortHistoryEntryPermissions,
+  timeago,
   validateSchema,
   validateUiSchema,
-  humanDate,
-  buildAttachmentUrl,
-  timeago,
-  sortHistoryEntryPermissions,
-  getServerByPriority,
 } from "../src/utils";
 
 describe("cleanRecord", () => {

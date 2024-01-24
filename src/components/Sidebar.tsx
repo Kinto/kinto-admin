@@ -1,8 +1,12 @@
-import type { RouteParams, BucketEntry } from "../types";
-import type { RouteComponentProps } from "react-router-dom";
-
+import * as SessionActions from "../actions/session";
+import { SIDEBAR_MAX_LISTED_COLLECTIONS } from "../constants";
+import { useAppDispatch, useAppSelector } from "../hooks/app";
+import { canCreateBucket } from "../permission";
+import type { BucketEntry, RouteParams } from "../types";
+import url from "../url";
+import AdminLink from "./AdminLink";
+import Spinner from "./Spinner";
 import * as React from "react";
-
 import { Plus } from "react-bootstrap-icons";
 import { XCircleFill } from "react-bootstrap-icons";
 import { Folder2 } from "react-bootstrap-icons";
@@ -12,14 +16,7 @@ import { Lock } from "react-bootstrap-icons";
 import { Justify } from "react-bootstrap-icons";
 import { ThreeDots } from "react-bootstrap-icons";
 import { ArrowRepeat } from "react-bootstrap-icons";
-
-import * as SessionActions from "../actions/session";
-import Spinner from "./Spinner";
-import AdminLink from "./AdminLink";
-import url from "../url";
-import { canCreateBucket } from "../permission";
-import { SIDEBAR_MAX_LISTED_COLLECTIONS } from "../constants";
-import { useAppSelector, useAppDispatch } from "../hooks/app";
+import type { RouteComponentProps } from "react-router-dom";
 
 type SideBarLinkProps = {
   currentPath: string;

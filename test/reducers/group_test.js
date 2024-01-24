@@ -1,12 +1,12 @@
-import group from "../../src/reducers/group";
 import {
   GROUP_BUSY,
-  GROUP_RESET,
   GROUP_HISTORY_SUCCESS,
+  GROUP_RESET,
+  ROUTE_LOAD_FAILURE,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
-  ROUTE_LOAD_FAILURE,
 } from "../../src/constants";
+import group from "../../src/reducers/group";
 
 describe("group reducer", () => {
   describe("GROUP_BUSY", () => {

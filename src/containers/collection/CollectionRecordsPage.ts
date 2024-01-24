@@ -1,15 +1,13 @@
-import type { AppState } from "../../types";
-import type { Dispatch } from "redux";
-import type { StateProps } from "../../components/collection/CollectionRecords";
-
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
-import { push as updatePath } from "redux-first-history";
-
-import CollectionRecords from "../../components/collection/CollectionRecords";
 import * as CollectionActions from "../../actions/collection";
 import * as NotificationsActions from "../../actions/notifications";
 import * as RouteActions from "../../actions/route";
+import type { StateProps } from "../../components/collection/CollectionRecords";
+import CollectionRecords from "../../components/collection/CollectionRecords";
+import type { AppState } from "../../types";
+import { connect } from "react-redux";
+import type { Dispatch } from "redux";
+import { bindActionCreators } from "redux";
+import { push as updatePath } from "redux-first-history";
 
 function mapStateToProps(state: AppState): StateProps {
   return {

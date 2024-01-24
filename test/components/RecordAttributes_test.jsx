@@ -1,8 +1,8 @@
-import React from "react";
-import { fireEvent, screen } from "@testing-library/react";
-import { renderWithProvider } from "../testUtils";
 import RecordAttributes from "../../src/components/record/RecordAttributes";
 import { clone } from "../../src/utils";
+import { renderWithProvider } from "../testUtils";
+import { fireEvent, screen } from "@testing-library/react";
+import React from "react";
 
 describe("RecordAttributes component", () => {
   const bucket = {
@@ -27,7 +27,7 @@ describe("RecordAttributes component", () => {
       attachment: {
         enabled: true,
         required: false,
-      }
+      },
     },
     permissions: {
       write: [],
@@ -49,9 +49,9 @@ describe("RecordAttributes component", () => {
     bucket,
     collection,
     record,
-    updateRecord: () => { },
-    deleteRecord: () => { },
-    deleteAttachment: () => { },
+    updateRecord: () => {},
+    deleteRecord: () => {},
+    deleteAttachment: () => {},
   };
 
   describe("Simple schema", () => {
@@ -86,8 +86,6 @@ describe("RecordAttributes component", () => {
   });
 
   describe("Attachment info shown", () => {
-    
-
     const record = {
       data: {
         id: "abc",
@@ -137,9 +135,9 @@ describe("RecordAttributes component", () => {
       });
 
       it("should show original file attributes", () => {
-        expect(screen.getByTestId("attachmentInfo-currentSize").textContent).toBe(
-          "100 kB"
-        );
+        expect(
+          screen.getByTestId("attachmentInfo-currentSize").textContent
+        ).toBe("100 kB");
       });
     });
   });

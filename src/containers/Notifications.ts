@@ -1,11 +1,10 @@
-import type { AppState } from "../types";
-import type { Dispatch } from "redux";
-import type { StateProps } from "../components/Notifications";
-
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
-import Notifications from "../components/Notifications";
 import * as NotificationsActions from "../actions/notifications";
+import type { StateProps } from "../components/Notifications";
+import Notifications from "../components/Notifications";
+import type { AppState } from "../types";
+import { connect } from "react-redux";
+import type { Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 
 function mapStateToProps(state: AppState): StateProps {
   return {

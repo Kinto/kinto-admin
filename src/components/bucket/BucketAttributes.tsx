@@ -1,16 +1,15 @@
-import React, { useCallback } from "react";
-import type {
-  Capabilities,
-  BucketState,
-  BucketData,
-  SessionState,
-  BucketRouteMatch,
-} from "../../types";
-
 import * as BucketActions from "../../actions/bucket";
+import type {
+  BucketData,
+  BucketRouteMatch,
+  BucketState,
+  Capabilities,
+  SessionState,
+} from "../../types";
 import Spinner from "../Spinner";
 import BucketForm from "./BucketForm";
 import BucketTabs from "./BucketTabs";
+import React, { useCallback } from "react";
 
 export type OwnProps = {
   match: BucketRouteMatch;

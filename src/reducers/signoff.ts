@@ -1,6 +1,5 @@
-import type { SignoffState } from "../types";
-
 import * as constants from "../constants";
+import type { SignoffState } from "../types";
 
 const INITIAL_STATE: SignoffState = {
   collectionsInfo: null,

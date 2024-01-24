@@ -1,13 +1,13 @@
-import React from "react";
-import { render, fireEvent, screen } from "@testing-library/react";
 import JSONRecordForm from "../../../src/components/record/JSONRecordForm";
+import { fireEvent, render, screen } from "@testing-library/react";
+import React from "react";
 
 const testAttachment = {
-  "hash": "efcea498c4bed6cac0076d91bf4f5df67fa875b3676248e5a6ae2ef4ed1bcef1",
-  "size": 5475,
-  "filename": "z.jpg",
-  "location": "test/test/03adc61f-9070-4e6c-a6ef-e94f5e17245f.jpg",
-  "mimetype": "image/jpeg"
+  hash: "efcea498c4bed6cac0076d91bf4f5df67fa875b3676248e5a6ae2ef4ed1bcef1",
+  size: 5475,
+  filename: "z.jpg",
+  location: "test/test/03adc61f-9070-4e6c-a6ef-e94f5e17245f.jpg",
+  mimetype: "image/jpeg",
 };
 
 describe("JSONRecordForm", () => {
@@ -82,8 +82,8 @@ describe("JSONRecordForm", () => {
       <JSONRecordForm
         disabled={false}
         record={JSON.stringify({
-          "foo": "bar",
-          attachment: testAttachment
+          foo: "bar",
+          attachment: testAttachment,
         })}
         onSubmit={submitMock}
         attachmentEnabled={true}

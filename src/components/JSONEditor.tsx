@@ -1,6 +1,6 @@
-import React from "react";
-import CodeMirror, { ViewUpdate } from "@uiw/react-codemirror";
 import { langs } from "@uiw/codemirror-extensions-langs";
+import CodeMirror, { ViewUpdate } from "@uiw/react-codemirror";
+import React from "react";
 
 type Props = {
   readonly: boolean;

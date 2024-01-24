@@ -1,7 +1,7 @@
-import React from "react";
-import { fireEvent, screen } from "@testing-library/react";
-import { renderWithProvider } from "../../../testUtils";
 import SimpleReviewButtons from "../../../../src/components/signoff/SimpleReview/SimpleReviewButtons";
+import { renderWithProvider } from "../../../testUtils";
+import { fireEvent, screen } from "@testing-library/react";
+import React from "react";
 
 function renderButtons(props = null) {
   const approveChanges = vi.fn();

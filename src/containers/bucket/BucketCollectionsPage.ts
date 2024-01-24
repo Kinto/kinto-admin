@@ -1,12 +1,10 @@
-import type { AppState } from "../../types";
-import type { Dispatch } from "redux";
-import type { StateProps } from "../../components/bucket/BucketCollections";
-
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
-
-import BucketCollections from "../../components/bucket/BucketCollections";
 import * as BucketActions from "../../actions/bucket";
+import type { StateProps } from "../../components/bucket/BucketCollections";
+import BucketCollections from "../../components/bucket/BucketCollections";
+import type { AppState } from "../../types";
+import { connect } from "react-redux";
+import type { Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 
 function mapStateToProps(state: AppState): StateProps {
   return {

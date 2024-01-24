@@ -1,7 +1,7 @@
 import SignoffToolBar from "../../../src/components/signoff/SignoffToolBar";
-import React from "react";
-import { fireEvent, screen } from "@testing-library/react";
 import { renderWithProvider } from "../../testUtils";
+import { fireEvent, screen } from "@testing-library/react";
+import React from "react";
 
 describe("SignoffToolBar component", () => {
   const props = {
@@ -56,7 +56,9 @@ describe("SignoffToolBar component", () => {
   };
 
   it("should not be rendered if current collection is not listed in resources", () => {
-    const { container } = renderWithProvider(<SignoffToolBar {...props} signoff={{}} />);
+    const { container } = renderWithProvider(
+      <SignoffToolBar {...props} signoff={{}} />
+    );
     expect(container.innerHTML).toBe("");
   });
 
@@ -124,7 +126,7 @@ describe("SignoffToolBar component", () => {
     renderWithProvider(<SignoffToolBar {...propsOverride} />);
     expect(screen.queryByTestId("spinner")).toBeNull();
     expect(propsOverride.approveChanges).toHaveBeenCalledTimes(0);
-    const approveButton = (await screen.findByText("Approve"))
+    const approveButton = await screen.findByText("Approve");
     fireEvent.click(approveButton);
     expect(await screen.findByTestId("spinner")).toBeDefined();
     expect(propsOverride.approveChanges).toHaveBeenCalledTimes(1);

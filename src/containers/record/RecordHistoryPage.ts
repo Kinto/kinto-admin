@@ -1,13 +1,11 @@
-import type { AppState } from "../../types";
-import type { Dispatch } from "redux";
-import type { StateProps } from "../../components/record/RecordHistory";
-
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
-
-import RecordHistory from "../../components/record/RecordHistory";
-import * as RecordActions from "../../actions/record";
 import * as NotificationsActions from "../../actions/notifications";
+import * as RecordActions from "../../actions/record";
+import type { StateProps } from "../../components/record/RecordHistory";
+import RecordHistory from "../../components/record/RecordHistory";
+import type { AppState } from "../../types";
+import { connect } from "react-redux";
+import type { Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 
 function mapStateToProps(state: AppState): StateProps {
   return {

@@ -1,11 +1,9 @@
-import React from "react";
-
-import { Gear, Justify, ClockHistory } from "react-bootstrap-icons";
-
+import { canCreateCollection } from "../../permission";
 import { timeago } from "../../utils";
 import AdminLink from "../AdminLink";
 import PaginatedTable from "../PaginatedTable";
-import { canCreateCollection } from "../../permission";
+import React from "react";
+import { ClockHistory, Gear, Justify } from "react-bootstrap-icons";
 
 export function ListActions(props) {
   const { bid, session, bucket } = props;
