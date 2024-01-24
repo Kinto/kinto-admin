@@ -176,9 +176,22 @@ Releases can be created through the GitHub UI or through git command line.
 5. Publish the release when ready
 
 ## Deploying to github-pages
-A github workflow is included that will release to github pages for any user acceptence testing you may want to do. You must enable github pages first and allow deployment from github actions (Settings > Pages).
+### Repo Configuration
+A github workflow is included that will release to github pages for any user acceptence testing you may want to do. To utilize this feature:
+1. Enable github pages and allow deployment from github actions 
+    1. Go Settings > Pages
+    2. Under "Build and deployment" choose Source > GitHub Actions
+2. Choose which branches should be allowed to deploy to pages
+    1. Go Settings > Environments > Github Pages
+    2. Under "Deployment branches and tags", configure which branches should be allowed to deploy to pages
 
-By default, most branches are restricted from deploying. Additional branches can be allowed to deploy (or any can be allowed) under Settings > Environments > github-pages.
+### Running the github action
+To deploy to github pages:
+1. Open Actions
+2. Select the "Deploy to Github Pages" action
+3. Select "Run workflow" and choose the branch you wish to build against
+4. Click "Run workflow"
+5. Kinto-admin will be deployed to `https://{owner}.github.io/kinto-admin`
 
 ## License
 
