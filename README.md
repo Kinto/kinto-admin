@@ -157,10 +157,21 @@ If you use `target.merkle.tree.file.name` it will render the string
 `foobar` and `target.proof.hash` will render `abcd`.
 
 ## Releasing
+Releases can be created through the GitHub UI or through git command line.
 
+### Through GitHub UI
+1. Create a new release as normal
+2. When tagging your release, enter a standard version number like `vX.Y.Z`
+3. After the release is published (including pre-release), build assets will be attached as files, including:
+    1. Source code based on the tagged commit
+    2. A single-server build for kinto-admin in a tar file (this may take a few minutes to show up)
+
+### Through git commands
 1. Tag a commit with `git tag --annotate vX.Y.Z` (this will become the version number in the built release)
 2. Push the tag with `git push origin vX.Y.Z` or `git push origin --tags`
-3. A new release draft will be created automatically with source code and a single-server build (this may take a few minutes)
+3. A new release draft will be created automatically with build assets attached as files, including:
+    1. Source code based on the tagged commit
+    2. A single-server build for kinto-admin in a tar file (this may take a few minutes to show up)
 4. Update the release body with detailed information
 5. Publish the release when ready
 
