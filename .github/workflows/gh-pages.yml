@@ -1,5 +1,9 @@
 name: Deploy to GitHub Pages
-on: [workflow_dispatch]
+on: 
+  release:
+    types:
+      - published
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,9 +19,14 @@ jobs:
       
       - name: Set package version
         run: |
-            CURRENT_BRANCH=$(git branch --show-current | tr -d '"')
-            CURRENT_COMMIT=$(git rev-parse --short HEAD)
-            VERSION_NUMBER=".version=\"${CURRENT_BRANCH}-${CURRENT_COMMIT}\""
+            if [ $GITHUB_REF_TYPE = 'tag' ]; then
+              LATEST_TAG=$(GITHUB_REF | sed s/^v// | tr -d '"')
+              VERSION_NUMBER=".version=\"${CURRENT_BRANCH}-${CURRENT_COMMIT}\""
+            else
+              CURRENT_BRANCH=$(git branch --show-current | tr -d '"')
+              CURRENT_COMMIT=$(git rev-parse --short HEAD)
+              VERSION_NUMBER=".version=\"${CURRENT_BRANCH}-${CURRENT_COMMIT}\""
+            fi
             jq ${VERSION_NUMBER} package.json > temp_package.json
             mv temp_package.json package.json
       

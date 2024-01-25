@@ -162,22 +162,22 @@ Releases can be created through the GitHub UI or through git command line.
 ### Through GitHub UI
 1. Create a new release as normal
 2. When tagging your release, enter a standard version number like `vX.Y.Z`
-3. After the release is published (including pre-release), build assets will be attached as files, including:
+3. After the release is published (including pre-release), built assets will be attached as files, including:
     1. Source code based on the tagged commit
     2. A single-server build for kinto-admin in a tar file (this may take a few minutes to show up)
 
 ### Through git commands
 1. Tag a commit with `git tag --annotate vX.Y.Z` (this will become the version number in the built release)
 2. Push the tag with `git push origin vX.Y.Z` or `git push origin --tags`
-3. A new release draft will be created automatically with build assets attached as files, including:
+3. A new release draft will be created automatically with built assets attached as files, including:
     1. Source code based on the tagged commit
     2. A single-server build for kinto-admin in a tar file (this may take a few minutes to show up)
 4. Update the release body with detailed information
 5. Publish the release when ready
 
 ## Deploying to github-pages
-### Repo Configuration
-A github workflow is included that will release to github pages for any user acceptence testing you may want to do. To utilize this feature:
+
+### Repo configuration for forks
 1. Enable github pages and allow deployment from github actions 
     1. Go Settings > Pages
     2. Under "Build and deployment" choose Source > GitHub Actions
@@ -185,13 +185,17 @@ A github workflow is included that will release to github pages for any user acc
     1. Go Settings > Environments > Github Pages
     2. Under "Deployment branches and tags", configure which branches should be allowed to deploy to pages
 
-### Running the github action
-To deploy to github pages:
+### Deployed automatically on release publish
+Github pages will automatically be updated upon release publishing. Version will be the tag created
+
+### Running the github action manually
+You can deploy to github pages manually for To deploy to github pages manually for any user acceptance testing you may want to do.
 1. Open Actions
 2. Select the "Deploy to Github Pages" action
 3. Select "Run workflow" and choose the branch you wish to build against
 4. Click "Run workflow"
 5. Kinto-admin will be deployed to `https://{owner}.github.io/kinto-admin`
+
 
 ## License
 
