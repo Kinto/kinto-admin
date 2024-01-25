@@ -20,10 +20,8 @@ jobs:
       - name: Set package version
         run: |
             if [ $GITHUB_REF_TYPE = 'tag' ]; then
-              echo $GITHUB_REF
-              echo $GITHUB_REF_NAME
               LATEST_TAG=$(GITHUB_REF_NAME | sed s/^v// | tr -d '"')
-              VERSION_NUMBER=".version=\"${CURRENT_BRANCH}-${CURRENT_COMMIT}\""
+              VERSION_NUMBER=".version=\"${LATEST_TAG}\""
             else
               CURRENT_BRANCH=$(git branch --show-current | tr -d '"')
               CURRENT_COMMIT=$(git rev-parse --short HEAD)
