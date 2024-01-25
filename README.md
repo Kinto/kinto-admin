@@ -171,7 +171,9 @@ Releases can be created through the GitHub UI or through git command line.
 2. Push the tag with `git push origin vX.Y.Z` or `git push origin --tags`
 3. A new release draft will be created automatically with built assets attached as files, including:
     1. Source code based on the tagged commit
-    2. A single-server build for kinto-admin in a tar file (this may take a few minutes to show up)
+    2. A single-server build for kinto-admin in a tar file
+        1. This will have `ASSET_PATH=/v1/admin KINTO_ADMIN_SINGLE_SERVER=1` build property values
+        2. This may take a few minutes to show up
 4. Update the release body with detailed information
 5. Publish the release when ready
 
