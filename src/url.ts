@@ -1,5 +1,4 @@
 /* flow */
-
 import type { RouteParams } from "./types";
 
 const URLS = {

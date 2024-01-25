@@ -1,15 +1,13 @@
-import type { OpenIDAuth, TokenAuth, PortierAuth } from "../types";
-
-import * as React from "react";
-
-import * as ServersActions from "../actions/servers";
 import * as NotificationActions from "../actions/notifications";
+import * as ServersActions from "../actions/servers";
 import * as SessionActions from "../actions/session";
-import Spinner from "./Spinner";
-import AuthForm from "./AuthForm";
-import { getServerByPriority, isObject } from "../utils";
-import { loadSession } from "../store/localStore";
 import { useAppDispatch, useAppSelector } from "../hooks/app";
+import { loadSession } from "../store/localStore";
+import type { OpenIDAuth, PortierAuth, TokenAuth } from "../types";
+import { getServerByPriority, isObject } from "../utils";
+import AuthForm from "./AuthForm";
+import Spinner from "./Spinner";
+import * as React from "react";
 import { useParams } from "react-router";
 
 function ServerProps({ node }: { node: any }) {

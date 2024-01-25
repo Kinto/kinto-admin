@@ -1,36 +1,33 @@
-import { Redirect, Switch, Route } from "react-router-dom";
-
-import { CreateRoute } from "../routes";
-
-import * as React from "react";
-import Breadcrumbs from "./Breadcrumbs";
+import { HomePage } from "../components/HomePage";
+import { Sidebar } from "../components/Sidebar";
+import { BucketPermissions } from "../components/bucket/BucketPermissions";
+import { CollectionPermissions } from "../components/collection/CollectionPermissions";
+import { GroupPermissions } from "../components/group/GroupPermissions";
+import { RecordPermissions } from "../components/record/RecordPermissions";
+import Notifications from "../containers/Notifications";
 import BucketAttributesPage from "../containers/bucket/BucketAttributesPage";
 import BucketCollectionsPage from "../containers/bucket/BucketCollectionsPage";
 import BucketCreatePage from "../containers/bucket/BucketCreatePage";
 import BucketGroupsPage from "../containers/bucket/BucketGroupsPage";
 import BucketHistoryPage from "../containers/bucket/BucketHistoryPage";
-import { BucketPermissions } from "../components/bucket/BucketPermissions";
 import CollectionAttributesPage from "../containers/collection/CollectionAttributesPage";
 import CollectionCreatePage from "../containers/collection/CollectionCreatePage";
 import CollectionHistoryPage from "../containers/collection/CollectionHistoryPage";
-import { CollectionPermissions } from "../components/collection/CollectionPermissions";
 import CollectionRecordsPage from "../containers/collection/CollectionRecordsPage";
-import { HomePage } from "../components/HomePage";
 import GroupAttributesPage from "../containers/group/GroupAttributesPage";
 import GroupCreatePage from "../containers/group/GroupCreatePage";
 import GroupHistoryPage from "../containers/group/GroupHistoryPage";
-import { GroupPermissions } from "../components/group/GroupPermissions";
-import RecordCreatePage from "../containers/record/RecordCreatePage";
-import RecordBulkPage from "../containers/record/RecordBulkPage";
 import RecordAttributesPage from "../containers/record/RecordAttributesPage";
-import { RecordPermissions } from "../components/record/RecordPermissions";
+import RecordBulkPage from "../containers/record/RecordBulkPage";
+import RecordCreatePage from "../containers/record/RecordCreatePage";
 import RecordHistoryPage from "../containers/record/RecordHistoryPage";
 import SimpleReviewPage from "../containers/signoff/SimpleReviewPage";
-import { Sidebar } from "../components/Sidebar";
-import Notifications from "../containers/Notifications";
-
-import { SessionInfoBar } from "./SessionInfoBar";
 import { useAppSelector } from "../hooks/app";
+import { CreateRoute } from "../routes";
+import Breadcrumbs from "./Breadcrumbs";
+import { SessionInfoBar } from "./SessionInfoBar";
+import * as React from "react";
+import { Redirect, Route, Switch } from "react-router-dom";
 
 export function Layout() {
   const authenticated = useAppSelector(store => store.session.authenticated);

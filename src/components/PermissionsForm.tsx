@@ -1,17 +1,14 @@
-import type { Permissions } from "../types";
-
-import React from "react";
-
-import BaseForm from "./BaseForm";
+import { useAppSelector } from "../hooks/app";
 import {
-  permissionsToFormData,
   formDataToPermissions,
+  permissionsToFormData,
   preparePermissionsForm,
 } from "../permission";
-import { useParams } from "react-router";
-import { useAppSelector } from "../hooks/app";
-
+import type { Permissions } from "../types";
+import BaseForm from "./BaseForm";
 import { RJSFSchema } from "@rjsf/utils";
+import React from "react";
+import { useParams } from "react-router";
 
 type Props = {
   readonly: boolean;

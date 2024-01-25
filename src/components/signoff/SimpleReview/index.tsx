@@ -1,26 +1,25 @@
-import React, { useEffect, useState } from "react";
-import type {
-  SessionState,
-  ValidRecord,
-  CollectionRouteMatch,
-  SignoffState,
-  CollectionState,
-  Capabilities,
-} from "../../../types";
-
-import * as SignoffActions from "../../../actions/signoff";
 import * as CollectionActions from "../../../actions/collection";
-import SimpleReviewButtons from "./SimpleReviewButtons";
-import SimpleReviewHeader from "./SimpleReviewHeader";
-import PerRecordDiffView from "./PerRecordDiffView";
-import { isReviewer } from "../SignoffToolBar";
+import * as SignoffActions from "../../../actions/signoff";
+import { storageKeys, useLocalStorage } from "../../../hooks/storage";
+import { canEditCollection } from "../../../permission";
+import type {
+  Capabilities,
+  CollectionRouteMatch,
+  CollectionState,
+  SessionState,
+  SignoffState,
+  ValidRecord,
+} from "../../../types";
 import Spinner from "../../Spinner";
 import CollectionTabs from "../../collection/CollectionTabs";
-import { storageKeys, useLocalStorage } from "../../../hooks/storage";
-import { Redirect, useHistory } from "react-router-dom";
-import { Shuffle } from "react-bootstrap-icons";
-import { canEditCollection } from "../../../permission";
+import { isReviewer } from "../SignoffToolBar";
 import { isMember } from "../utils";
+import PerRecordDiffView from "./PerRecordDiffView";
+import SimpleReviewButtons from "./SimpleReviewButtons";
+import SimpleReviewHeader from "./SimpleReviewHeader";
+import React, { useEffect, useState } from "react";
+import { Shuffle } from "react-bootstrap-icons";
+import { Redirect, useHistory } from "react-router-dom";
 
 export type StateProps = {
   signoff?: SignoffState;
@@ -158,6 +157,7 @@ export default function SimpleReview({
         </div>
       );
     }
+
     return (
       <>
         {signoffSource.status !== "signed" && (
@@ -177,6 +177,7 @@ export default function SimpleReview({
           oldRecords={records.oldRecords}
           newRecords={records.newRecords}
           collectionData={signoffSource}
+          displayFields={collection?.data?.displayFields}
         />
         <button
           type="button"

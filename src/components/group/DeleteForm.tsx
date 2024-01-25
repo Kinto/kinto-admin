@@ -1,10 +1,7 @@
-import React from "react";
-
-import { Trash } from "react-bootstrap-icons";
-
 import BaseForm from "../BaseForm";
-
 import { RJSFSchema } from "@rjsf/utils";
+import React from "react";
+import { Trash } from "react-bootstrap-icons";
 
 const deleteSchema: RJSFSchema = {
   type: "string",

@@ -1,14 +1,13 @@
-import type { CollectionPermissions as CollectionPermissionsType } from "../../types";
-
-import React from "react";
-
 import * as BucketActions from "../../actions/bucket";
+import { useAppDispatch, useAppSelector } from "../../hooks/app";
+import { canEditCollection } from "../../permission";
+import type { CollectionPermissions as CollectionPermissionsType } from "../../types";
+import { PermissionsForm } from "../PermissionsForm";
 import Spinner from "../Spinner";
 import CollectionTabs from "./CollectionTabs";
-import { PermissionsForm } from "../PermissionsForm";
-import { canEditCollection } from "../../permission";
+import React from "react";
 import { useParams } from "react-router";
-import { useAppSelector, useAppDispatch } from "../../hooks/app";
+
 interface RouteParams {
   bid: string;
   cid: string;
