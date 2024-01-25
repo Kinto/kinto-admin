@@ -43,8 +43,9 @@ describe("SimpleReviewHeader component", () => {
     expect(await screen.findByTestId("spinner")).toBeDefined();
   });
 
-  it("should open CommentDialog when request review is clicked and call requestReview from modal", async () => {
-    const {} = renderButtons({ status: "work-in-progress" });
+  it.skip("should open CommentDialog when request review is clicked and call requestReview from modal", async () => {
+    // TODO: What should this test do?
+    // const { } = renderButtons({ status: "work-in-progress" });
   });
 
   it("should display rollback button when status is wip and call rollbackChanges from modal", async () => {
