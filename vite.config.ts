@@ -2,6 +2,8 @@
 
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { execSync } from 'child_process'
+
 /**
  * used to set the relative path from which we expect to serve the admin's
  * static bundle on the server:
@@ -9,6 +11,8 @@ import react from '@vitejs/plugin-react'
  *    Kinto plugin: /v1/admin/
  */
 const ASSET_PATH = process.env.ASSET_PATH || "/";
+
+const KINTO_ADMIN_VERSION = execSync('git describe --tags --abbrev=4').toString().replace(/^v|\n/g, '');
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -19,7 +23,7 @@ export default defineConfig({
   plugins: [react()],
   base: ASSET_PATH,  
   define: {
-    KINTO_ADMIN_VERSION: JSON.stringify(process.env.npm_package_version),
+    KINTO_ADMIN_VERSION: JSON.stringify(KINTO_ADMIN_VERSION)
   },
   build: {
     outDir: "build"

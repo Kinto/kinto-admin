@@ -10,6 +10,9 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with: 
+          fetch-depth: 0
+
       - uses: actions/setup-node@v4
         with:
           node-version-file: 'package.json'
@@ -17,13 +20,6 @@ jobs:
 
       - name: Install Node dependencies
         run: npm ci
-
-      - name: Set package version
-        run: |
-            LATEST_TAG=$(echo $GITHUB_REF | sed s/^v// | tr -d '"')
-            VERSION_NUMBER=".version=\"${LATEST_TAG}\""
-            jq ${VERSION_NUMBER} package.json > temp_package.json
-            mv temp_package.json package.json
 
       - name: Build the package
         run: |

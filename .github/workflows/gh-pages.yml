@@ -20,19 +20,6 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
       
-      - name: Set package version
-        run: |
-            if [ $GITHUB_REF_TYPE = 'tag' ]; then
-              LATEST_TAG=$(echo $GITHUB_REF_NAME | sed s/^v// | tr -d '"')
-              VERSION_NUMBER=".version=\"${LATEST_TAG}\""
-            else
-              LATEST_TAG=$(git describe --tags --abbrev=4 | sed s/^v// | tr -d '"')
-              CURRENT_BRANCH=$(git branch --show-current | tr -d '"')
-              VERSION_NUMBER=".version=\"${LATEST_TAG}-${CURRENT_BRANCH}\""
-            fi
-            jq ${VERSION_NUMBER} package.json > temp_package.json
-            mv temp_package.json package.json
-      
       - name: Build the package
         run: |
             ASSET_PATH=/kinto-admin/ npm run build
