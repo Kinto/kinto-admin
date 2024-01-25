@@ -172,7 +172,7 @@ export default function SignoffToolBar({
           description="Leave some notes for the reviewer:"
           confirmLabel="Request review"
           onConfirm={requestReview}
-          onCancel={cancelPendingConfirm}
+          onClose={cancelPendingConfirm}
         />
       )}
       {pendingConfirmRollbackChanges && (
@@ -180,7 +180,7 @@ export default function SignoffToolBar({
           description="This will reset the collection to the latest approved content. All pending changes will be lost. Are you sure?"
           confirmLabel="Rollback changes"
           onConfirm={rollbackChanges}
-          onCancel={cancelPendingConfirm}
+          onClose={cancelPendingConfirm}
         />
       )}
       {pendingConfirmDeclineChanges && (
@@ -188,7 +188,7 @@ export default function SignoffToolBar({
           description="Leave some notes for the editor:"
           confirmLabel="Decline changes"
           onConfirm={declineChanges}
-          onCancel={cancelPendingConfirm}
+          onClose={cancelPendingConfirm}
         />
       )}
       {showSpinner && <Spinner />}
