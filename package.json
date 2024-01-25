@@ -9,7 +9,7 @@
     "build:kinto-single": "ASSET_PATH=/v1/admin KINTO_ADMIN_SINGLE_SERVER=1 vite build",
     "cs-check": "prettier -l \"{src,test}/**/*.{js,jsx,ts,tsx}\"",
     "cs-format": "prettier \"{src,test}/**/*.{js,jsx,ts,tsx}\" --write",
-    "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\" \"test/**/*.{js,jsx,ts,tsx}\"",
+    "lint": "eslint . --ext ts,tsx",
     "preview": "vite preview",
     "publish-to-gh-pages": "ASSET_PATH=/kinto-admin/ npm run build && gh-pages --add --dist build/",
     "start": "vite",
