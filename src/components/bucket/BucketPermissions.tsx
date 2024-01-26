@@ -1,15 +1,12 @@
-import type { BucketPermissions as BucketPermissionsType } from "../../types";
-
-import React from "react";
-
 import * as BucketActions from "../../actions/bucket";
+import { useAppDispatch, useAppSelector } from "../../hooks/app";
+import { canEditBucket } from "../../permission";
+import type { BucketPermissions as BucketPermissionsType } from "../../types";
+import { PermissionsForm } from "../PermissionsForm";
 import Spinner from "../Spinner";
 import BucketTabs from "./BucketTabs";
-import { PermissionsForm } from "../PermissionsForm";
-import { canEditBucket } from "../../permission";
+import React from "react";
 import { useParams } from "react-router";
-
-import { useAppSelector, useAppDispatch } from "../../hooks/app";
 
 export function BucketPermissions() {
   const dispatch = useAppDispatch();

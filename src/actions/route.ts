@@ -1,21 +1,20 @@
-import type {
-  RouteParams,
-  RouteResources,
-  BucketResource,
-  GroupData,
-  CollectionResource,
-  RecordResource,
-  GroupResource,
-} from "../types";
-import type { Location } from "history";
-
 import {
-  ROUTE_UPDATED,
-  ROUTE_REDIRECT,
+  ROUTE_LOAD_FAILURE,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
-  ROUTE_LOAD_FAILURE,
+  ROUTE_REDIRECT,
+  ROUTE_UPDATED,
 } from "../constants";
+import type {
+  BucketResource,
+  CollectionResource,
+  GroupData,
+  GroupResource,
+  RecordResource,
+  RouteParams,
+  RouteResources,
+} from "../types";
+import type { Location } from "history";
 
 export function routeUpdated(
   params: any,

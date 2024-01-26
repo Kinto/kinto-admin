@@ -1,16 +1,13 @@
-import type { AppState, ValidRecord } from "../../types";
-import type { Dispatch } from "redux";
-
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
-
+import * as CollectionActions from "../../actions/collection";
+import * as SignoffActions from "../../actions/signoff";
+import { getClient } from "../../client";
 import type { StateProps } from "../../components/signoff/SimpleReview";
 import SimpleReview from "../../components/signoff/SimpleReview";
-
+import type { AppState, ValidRecord } from "../../types";
 import { SignoffState } from "../../types";
-import * as SignoffActions from "../../actions/signoff";
-import * as CollectionActions from "../../actions/collection";
-import { getClient } from "../../client";
+import { connect } from "react-redux";
+import type { Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 
 function fetchRecords(bid: string, cid: string): Promise<ValidRecord[]> {
   const coll = getClient().bucket(bid).collection(cid);

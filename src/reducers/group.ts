@@ -1,14 +1,14 @@
-import type { GroupState, GroupResource } from "../types";
 import {
   GROUP_BUSY,
-  GROUP_RESET,
-  GROUP_HISTORY_REQUEST,
   GROUP_HISTORY_NEXT_REQUEST,
+  GROUP_HISTORY_REQUEST,
   GROUP_HISTORY_SUCCESS,
+  GROUP_RESET,
+  ROUTE_LOAD_FAILURE,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
-  ROUTE_LOAD_FAILURE,
 } from "../constants";
+import type { GroupResource, GroupState } from "../types";
 import { paginator } from "./shared";
 
 export const INITIAL_STATE: GroupState = {

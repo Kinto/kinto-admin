@@ -1,17 +1,17 @@
-import type { BucketState, BucketResource, GroupData } from "../types";
 import {
   BUCKET_BUSY,
-  BUCKET_RESET,
-  BUCKET_COLLECTIONS_REQUEST,
   BUCKET_COLLECTIONS_NEXT_REQUEST,
+  BUCKET_COLLECTIONS_REQUEST,
   BUCKET_COLLECTIONS_SUCCESS,
-  BUCKET_HISTORY_REQUEST,
   BUCKET_HISTORY_NEXT_REQUEST,
+  BUCKET_HISTORY_REQUEST,
   BUCKET_HISTORY_SUCCESS,
+  BUCKET_RESET,
+  ROUTE_LOAD_FAILURE,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
-  ROUTE_LOAD_FAILURE,
 } from "../constants";
+import type { BucketResource, BucketState, GroupData } from "../types";
 import { paginator } from "./shared";
 
 const INITIAL_STATE: BucketState = {

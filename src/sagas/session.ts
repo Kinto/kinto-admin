@@ -1,24 +1,22 @@
-import type { PermissionData } from "kinto-http";
+import * as notificationActions from "../actions/notifications";
+import * as serversActions from "../actions/servers";
+import * as actions from "../actions/session";
+import { getAuthHeader, getClient, resetClient, setupClient } from "../client";
+import { DEFAULT_SERVERINFO } from "../reducers/session";
+import { clearSession, saveSession } from "../store/localStore";
 import type {
-  AuthData,
-  OpenIDAuth,
   ActionType,
+  AuthData,
   BucketEntry,
   CollectionEntry,
   GetStateFn,
+  OpenIDAuth,
   SagaGen,
 } from "../types";
-
+import { clone, copyToClipboard, getAuthLabel } from "../utils";
+import type { PermissionData } from "kinto-http";
 import { push as updatePath } from "redux-first-history";
 import { call, put } from "redux-saga/effects";
-
-import { saveSession, clearSession } from "../store/localStore";
-import * as notificationActions from "../actions/notifications";
-import * as actions from "../actions/session";
-import * as serversActions from "../actions/servers";
-import { DEFAULT_SERVERINFO } from "../reducers/session";
-import { clone, getAuthLabel, copyToClipboard } from "../utils";
-import { getClient, setupClient, resetClient, getAuthHeader } from "../client";
 
 export function* serverChange(getState: GetStateFn): SagaGen {
   yield put(actions.serverInfoSuccess(DEFAULT_SERVERINFO));

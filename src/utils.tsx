@@ -1,14 +1,14 @@
+import { DEFAULT_KINTO_SERVER, SINGLE_SERVER } from "./constants";
 import type {
+  Capabilities,
+  HistoryFilters,
   RecordData,
   ResourceHistoryEntry,
-  Capabilities,
   ServerEntry,
-  HistoryFilters,
 } from "./types";
+import { diffJson as diff } from "diff";
 import React from "react";
 import { format } from "timeago.js";
-import { diffJson as diff } from "diff";
-import { DEFAULT_KINTO_SERVER, SINGLE_SERVER } from "./constants";
 
 export function clone(obj: any) {
   return JSON.parse(JSON.stringify(obj));

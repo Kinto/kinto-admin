@@ -1,25 +1,22 @@
+import { canEditCollection } from "../../permission";
 import type {
   BucketState,
-  SessionState,
-  CollectionState,
-  SignoffState,
-  SignoffSourceInfo,
   ChangesList,
+  CollectionState,
+  SessionState,
+  SignoffSourceInfo,
+  SignoffState,
 } from "../../types";
-import React, { useState, useEffect } from "react";
-import { CommentDialog, Comment } from "./Comment";
-
-import { ChatLeft, XCircleFill } from "react-bootstrap-icons";
-
-import { canEditCollection } from "../../permission";
-
 import AdminLink from "../AdminLink";
-import { ProgressBar, ProgressStep } from "./ProgressBar";
-import HumanDate from "./HumanDate";
-import { Signed } from "./Signed";
-import { Review, DiffInfo } from "./Review";
 import Spinner from "../Spinner";
+import { Comment, CommentDialog } from "./Comment";
+import HumanDate from "./HumanDate";
+import { ProgressBar, ProgressStep } from "./ProgressBar";
+import { DiffInfo, Review } from "./Review";
+import { Signed } from "./Signed";
 import { isMember } from "./utils";
+import React, { useEffect, useState } from "react";
+import { ChatLeft, XCircleFill } from "react-bootstrap-icons";
 
 function isEditor(source, sessionState) {
   return isMember("editors_group", source, sessionState);
@@ -175,7 +172,7 @@ export default function SignoffToolBar({
           description="Leave some notes for the reviewer:"
           confirmLabel="Request review"
           onConfirm={requestReview}
-          onCancel={cancelPendingConfirm}
+          onClose={cancelPendingConfirm}
         />
       )}
       {pendingConfirmRollbackChanges && (
@@ -183,7 +180,7 @@ export default function SignoffToolBar({
           description="This will reset the collection to the latest approved content. All pending changes will be lost. Are you sure?"
           confirmLabel="Rollback changes"
           onConfirm={rollbackChanges}
-          onCancel={cancelPendingConfirm}
+          onClose={cancelPendingConfirm}
         />
       )}
       {pendingConfirmDeclineChanges && (
@@ -191,7 +188,7 @@ export default function SignoffToolBar({
           description="Leave some notes for the editor:"
           confirmLabel="Decline changes"
           onConfirm={declineChanges}
-          onCancel={cancelPendingConfirm}
+          onClose={cancelPendingConfirm}
         />
       )}
       {showSpinner && <Spinner />}

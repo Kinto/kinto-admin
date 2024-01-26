@@ -1,15 +1,14 @@
-import React, { useEffect } from "react";
-import type {
-  Capabilities,
-  BucketState,
-  SessionState,
-  BucketRouteMatch,
-} from "../../types";
-import type { Location } from "history";
-
 import * as BucketActions from "../../actions/bucket";
+import type {
+  BucketRouteMatch,
+  BucketState,
+  Capabilities,
+  SessionState,
+} from "../../types";
 import BucketTabs from "./BucketTabs";
 import { DataList, ListActions } from "./CollectionDataList";
+import type { Location } from "history";
+import React, { useEffect } from "react";
 
 export type OwnProps = {
   match: BucketRouteMatch;

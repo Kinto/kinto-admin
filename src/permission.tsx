@@ -1,16 +1,15 @@
 import type {
-  SessionState,
   CollectionState,
-  GroupState,
   GroupData,
-  RecordState,
+  GroupState,
   PermissionsListEntry,
+  RecordState,
+  SessionState,
 } from "./types";
+import { RJSFSchema, UiSchema } from "@rjsf/utils";
 
 export const EVERYONE = "system.Everyone";
 export const AUTHENTICATED = "system.Authenticated";
-
-import { RJSFSchema, UiSchema } from "@rjsf/utils";
 
 function can(
   session: SessionState,

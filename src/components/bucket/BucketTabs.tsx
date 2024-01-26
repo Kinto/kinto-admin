@@ -1,15 +1,13 @@
 import type { Capabilities } from "../../types";
-
-import React from "react";
-
-import {
-  Gear,
-  Lock,
-  Justify,
-  PersonFill,
-  ClockHistory,
-} from "react-bootstrap-icons";
 import AdminLink from "../AdminLink";
+import React from "react";
+import {
+  ClockHistory,
+  Gear,
+  Justify,
+  Lock,
+  PersonFill,
+} from "react-bootstrap-icons";
 
 type Props = {
   bid: string;

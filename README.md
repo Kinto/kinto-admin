@@ -83,6 +83,12 @@ Install packages:
 $ cd kinto-admin && npm install
 ```
 
+Optionally, configure `git` to use `.git-blame-ignore-revs` to remove noisy commits (e.g. running `prettier` on the entire codebase) from `git blame`:
+
+```
+git config blame.ignoreRevsFile .git-blame-ignore-revs
+```
+
 After installation of packages, run the development server.
 
 ## Development server

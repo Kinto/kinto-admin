@@ -1,9 +1,8 @@
-import React from "react";
-import type { SessionState, BucketState } from "../../types";
-
 import * as BucketActions from "../../actions/bucket";
-import BucketForm from "./BucketForm";
+import type { BucketState, SessionState } from "../../types";
 import Spinner from "../Spinner";
+import BucketForm from "./BucketForm";
+import React from "react";
 
 export type StateProps = {
   session: SessionState;

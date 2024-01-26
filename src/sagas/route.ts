@@ -1,18 +1,16 @@
-import type { ActionType, GetStateFn, SagaGen, RouteParams } from "../types";
-
-import { call, put, take } from "redux-saga/effects";
-import {
-  push as updatePath,
-  replace as replacePath,
-} from "redux-first-history";
-
-import { getClient } from "../client";
-import { storeRedirectURL } from "../actions/session";
+import { notifyError, notifyInfo } from "../actions/notifications";
 import * as actions from "../actions/route";
-import { notifyInfo, notifyError } from "../actions/notifications";
+import { storeRedirectURL } from "../actions/session";
+import { getClient } from "../client";
 import { SESSION_AUTHENTICATED } from "../constants";
-import { scrollToTop } from "../utils";
+import type { ActionType, GetStateFn, RouteParams, SagaGen } from "../types";
 import url from "../url";
+import { scrollToTop } from "../utils";
+import {
+  replace as replacePath,
+  push as updatePath,
+} from "redux-first-history";
+import { call, put, take } from "redux-saga/effects";
 
 function getBatchLoadFn(bid, cid, gid, rid) {
   return batch => {

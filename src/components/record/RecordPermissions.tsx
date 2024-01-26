@@ -1,12 +1,11 @@
-import React from "react";
-
 import * as CollectionActions from "../../actions/collection";
+import { useAppDispatch, useAppSelector } from "../../hooks/app";
+import { canEditRecord } from "../../permission";
+import { PermissionsForm } from "../PermissionsForm";
 import Spinner from "../Spinner";
 import RecordTabs from "./RecordTabs";
-import { PermissionsForm } from "../PermissionsForm";
-import { canEditRecord } from "../../permission";
+import React from "react";
 import { useParams } from "react-router";
-import { useAppSelector, useAppDispatch } from "../../hooks/app";
 
 interface RouteParams {
   bid: string;
