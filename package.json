@@ -23,7 +23,7 @@
     "node": ">=16"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^1.8.1",
+    "@reduxjs/toolkit": "^2.1.0",
     "@rjsf/bootstrap-4": "^5.13.2",
     "@rjsf/core": "^5.13.2",
     "@rjsf/validator-ajv8": "^5.13.2",
