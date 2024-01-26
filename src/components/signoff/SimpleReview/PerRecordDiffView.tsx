@@ -1,5 +1,5 @@
-import type { SignoffSourceInfo, ValidRecord } from "../../../types";
-import { diffJson, omit, renderDisplayField } from "../../../utils";
+import type { SignoffSourceInfo, ValidRecord } from "@src/types";
+import { diffJson, omit, renderDisplayField } from "@src/utils";
 import { diffJson as diff, diffArrays } from "diff";
 import React, { useState } from "react";
 

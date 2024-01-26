@@ -8,8 +8,8 @@ import {
   SESSION_SERVERINFO_SUCCESS,
   SESSION_SETUP,
   SESSION_SETUP_COMPLETE,
-} from "../../src/constants";
-import session from "../../src/reducers/session";
+} from "@src/constants";
+import session from "@src/reducers/session";
 
 describe("session reducer", () => {
   const auth = {

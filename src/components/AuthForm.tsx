@@ -1,11 +1,11 @@
-import * as ServersActions from "../actions/servers";
-import * as SessionActions from "../actions/session";
-import { ANONYMOUS_AUTH, SINGLE_SERVER } from "../constants";
-import type { ServerEntry, SessionState } from "../types";
-import { getAuthLabel, getServerByPriority, omit } from "../utils";
 import BaseForm from "./BaseForm";
 import ServerHistory from "./ServerHistory";
 import { RJSFSchema } from "@rjsf/utils";
+import * as ServersActions from "@src/actions/servers";
+import * as SessionActions from "@src/actions/session";
+import { ANONYMOUS_AUTH, SINGLE_SERVER } from "@src/constants";
+import type { ServerEntry, SessionState } from "@src/types";
+import { getAuthLabel, getServerByPriority, omit } from "@src/utils";
 import React, { useState } from "react";
 
 const KNOWN_AUTH_METHODS = [

@@ -4,8 +4,8 @@ import {
   GROUP_HISTORY_REQUEST,
   GROUP_HISTORY_SUCCESS,
   GROUP_RESET,
-} from "../constants";
-import type { ResourceHistoryEntry } from "../types";
+} from "@src/constants";
+import type { ResourceHistoryEntry } from "@src/types";
 
 export function groupBusy(busy: boolean): {
   type: "GROUP_BUSY";

@@ -9,8 +9,8 @@ import {
   ROUTE_LOAD_FAILURE,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
-} from "../../src/constants";
-import bucket from "../../src/reducers/bucket";
+} from "@src/constants";
+import bucket from "@src/reducers/bucket";
 
 describe("bucket reducer", () => {
   describe("BUCKET_BUSY", () => {

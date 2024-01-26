@@ -5,8 +5,8 @@ import {
   ROUTE_LOAD_FAILURE,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
-} from "../../src/constants";
-import group from "../../src/reducers/group";
+} from "@src/constants";
+import group from "@src/reducers/group";
 
 describe("group reducer", () => {
   describe("GROUP_BUSY", () => {

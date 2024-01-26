@@ -1,12 +1,12 @@
-import { useAppSelector } from "../hooks/app";
+import BaseForm from "./BaseForm";
+import { RJSFSchema } from "@rjsf/utils";
+import { useAppSelector } from "@src/hooks/app";
 import {
   formDataToPermissions,
   permissionsToFormData,
   preparePermissionsForm,
-} from "../permission";
-import type { Permissions } from "../types";
-import BaseForm from "./BaseForm";
-import { RJSFSchema } from "@rjsf/utils";
+} from "@src/permission";
+import type { Permissions } from "@src/types";
 import React from "react";
 import { useParams } from "react-router";
 

@@ -1,5 +1,5 @@
-import { ANONYMOUS_AUTH } from "../constants";
-import type { ServerEntry, SessionState } from "../types";
+import { ANONYMOUS_AUTH } from "@src/constants";
+import type { ServerEntry, SessionState } from "@src/types";
 
 const HISTORY_KEY = "kinto-admin-server-history";
 const SESSION_KEY = "kinto-admin-session";

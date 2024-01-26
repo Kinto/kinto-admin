@@ -15,7 +15,7 @@ import {
   GROUP_CREATE_REQUEST,
   GROUP_DELETE_REQUEST,
   GROUP_UPDATE_REQUEST,
-} from "../constants";
+} from "@src/constants";
 import type {
   BucketData,
   BucketUpdate,
@@ -25,7 +25,7 @@ import type {
   GroupUpdate,
   HistoryFilters,
   ResourceHistoryEntry,
-} from "../types";
+} from "@src/types";
 
 export function createBucket(
   bid: string,

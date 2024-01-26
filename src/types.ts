@@ -1,4 +1,4 @@
-import { store } from "./store/configureStore";
+import { store } from "@src/store/configureStore";
 
 export type ActionType<T extends (...args: any[]) => any> = ReturnType<T>;
 

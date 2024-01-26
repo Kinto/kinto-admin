@@ -1,14 +1,14 @@
-import * as CollectionActions from "../../actions/collection";
-import * as NotificationActions from "../../actions/notifications";
+import CollectionTabs from "./CollectionTabs";
+import * as CollectionActions from "@src/actions/collection";
+import * as NotificationActions from "@src/actions/notifications";
+import HistoryTable from "@src/components/HistoryTable";
 import type {
   Capabilities,
   CollectionRouteMatch,
   CollectionState,
   SessionState,
-} from "../../types";
-import { parseHistoryFilters } from "../../utils";
-import HistoryTable from "../HistoryTable";
-import CollectionTabs from "./CollectionTabs";
+} from "@src/types";
+import { parseHistoryFilters } from "@src/utils";
 import type { Location } from "history";
 import React, { useEffect } from "react";
 

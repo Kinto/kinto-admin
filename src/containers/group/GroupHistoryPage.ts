@@ -1,8 +1,8 @@
-import * as GroupActions from "../../actions/group";
-import * as NotificationsActions from "../../actions/notifications";
-import type { StateProps } from "../../components/group/GroupHistory";
-import GroupHistory from "../../components/group/GroupHistory";
-import type { AppState } from "../../types";
+import * as GroupActions from "@src/actions/group";
+import * as NotificationsActions from "@src/actions/notifications";
+import type { StateProps } from "@src/components/group/GroupHistory";
+import GroupHistory from "@src/components/group/GroupHistory";
+import type { AppState } from "@src/types";
 import { connect } from "react-redux";
 import type { Dispatch } from "redux";
 import { bindActionCreators } from "redux";

@@ -11,7 +11,7 @@ import {
   canEditRecord,
   formDataToPermissions,
   permissionsToFormData,
-} from "../src/permission";
+} from "@src/permission";
 
 describe("canCreateBucket", () => {
   it("should always return true if no permissions list", () => {

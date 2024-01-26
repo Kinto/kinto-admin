@@ -1,4 +1,4 @@
-import url from "../src/url";
+import url from "@src/url";
 
 describe("url", () => {
   it("should generate a url", () => {

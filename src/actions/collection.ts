@@ -13,13 +13,13 @@ import {
   RECORD_CREATE_REQUEST,
   RECORD_DELETE_REQUEST,
   RECORD_UPDATE_REQUEST,
-} from "../constants";
+} from "@src/constants";
 import type {
   HistoryFilters,
   RecordData,
   RecordUpdate,
   ResourceHistoryEntry,
-} from "../types";
+} from "@src/types";
 
 export function collectionBusy(busy: boolean): {
   type: "COLLECTION_BUSY";

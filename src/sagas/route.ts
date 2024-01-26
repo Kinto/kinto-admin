@@ -1,11 +1,11 @@
-import { notifyError, notifyInfo } from "../actions/notifications";
-import * as actions from "../actions/route";
-import { storeRedirectURL } from "../actions/session";
-import { getClient } from "../client";
-import { SESSION_AUTHENTICATED } from "../constants";
-import type { ActionType, GetStateFn, RouteParams, SagaGen } from "../types";
-import url from "../url";
-import { scrollToTop } from "../utils";
+import { notifyError, notifyInfo } from "@src/actions/notifications";
+import * as actions from "@src/actions/route";
+import { storeRedirectURL } from "@src/actions/session";
+import { getClient } from "@src/client";
+import { SESSION_AUTHENTICATED } from "@src/constants";
+import type { ActionType, GetStateFn, RouteParams, SagaGen } from "@src/types";
+import url from "@src/url";
+import { scrollToTop } from "@src/utils";
 import {
   replace as replacePath,
   push as updatePath,

@@ -1,5 +1,5 @@
-import type { Capabilities } from "../../types";
-import AdminLink from "../AdminLink";
+import AdminLink from "@src/components/AdminLink";
+import type { Capabilities } from "@src/types";
 import React from "react";
 import {
   ClockHistory,

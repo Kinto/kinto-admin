@@ -1,11 +1,11 @@
+import BucketTabs from "./BucketTabs";
+import { DataList, ListActions } from "./GroupDataList";
 import type {
   BucketRouteMatch,
   BucketState,
   Capabilities,
   SessionState,
-} from "../../types";
-import BucketTabs from "./BucketTabs";
-import { DataList, ListActions } from "./GroupDataList";
+} from "@src/types";
 import React from "react";
 
 type OwnProps = {

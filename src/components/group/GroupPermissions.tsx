@@ -1,13 +1,13 @@
-import * as BucketActions from "../../actions/bucket";
-import { useAppDispatch, useAppSelector } from "../../hooks/app";
-import { canEditGroup } from "../../permission";
+import GroupTabs from "./GroupTabs";
+import * as BucketActions from "@src/actions/bucket";
+import { PermissionsForm } from "@src/components/PermissionsForm";
+import Spinner from "@src/components/Spinner";
+import { useAppDispatch, useAppSelector } from "@src/hooks/app";
+import { canEditGroup } from "@src/permission";
 import type {
   GroupPermissionsRouteMatchParams,
   GroupPermissions as GroupPermissionsType,
-} from "../../types";
-import { PermissionsForm } from "../PermissionsForm";
-import Spinner from "../Spinner";
-import GroupTabs from "./GroupTabs";
+} from "@src/types";
 import React from "react";
 import { useParams } from "react-router";
 

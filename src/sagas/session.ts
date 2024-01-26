@@ -1,9 +1,14 @@
-import * as notificationActions from "../actions/notifications";
-import * as serversActions from "../actions/servers";
-import * as actions from "../actions/session";
-import { getAuthHeader, getClient, resetClient, setupClient } from "../client";
-import { DEFAULT_SERVERINFO } from "../reducers/session";
-import { clearSession, saveSession } from "../store/localStore";
+import * as notificationActions from "@src/actions/notifications";
+import * as serversActions from "@src/actions/servers";
+import * as actions from "@src/actions/session";
+import {
+  getAuthHeader,
+  getClient,
+  resetClient,
+  setupClient,
+} from "@src/client";
+import { DEFAULT_SERVERINFO } from "@src/reducers/session";
+import { clearSession, saveSession } from "@src/store/localStore";
 import type {
   ActionType,
   AuthData,
@@ -12,8 +17,8 @@ import type {
   GetStateFn,
   OpenIDAuth,
   SagaGen,
-} from "../types";
-import { clone, copyToClipboard, getAuthLabel } from "../utils";
+} from "@src/types";
+import { clone, copyToClipboard, getAuthLabel } from "@src/utils";
 import type { PermissionData } from "kinto-http";
 import { push as updatePath } from "redux-first-history";
 import { call, put } from "redux-saga/effects";

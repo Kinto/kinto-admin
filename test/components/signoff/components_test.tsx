@@ -1,5 +1,5 @@
-import SignoffToolBar from "../../../src/components/signoff/SignoffToolBar";
-import { renderWithProvider } from "../../testUtils";
+import SignoffToolBar from "@src/components/signoff/SignoffToolBar";
+import { renderWithProvider } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
 

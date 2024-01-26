@@ -1,8 +1,8 @@
-import * as NotificationsActions from "../../actions/notifications";
-import * as RecordActions from "../../actions/record";
-import type { StateProps } from "../../components/record/RecordHistory";
-import RecordHistory from "../../components/record/RecordHistory";
-import type { AppState } from "../../types";
+import * as NotificationsActions from "@src/actions/notifications";
+import * as RecordActions from "@src/actions/record";
+import type { StateProps } from "@src/components/record/RecordHistory";
+import RecordHistory from "@src/components/record/RecordHistory";
+import type { AppState } from "@src/types";
 import { connect } from "react-redux";
 import type { Dispatch } from "redux";
 import { bindActionCreators } from "redux";

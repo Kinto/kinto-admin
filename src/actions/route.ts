@@ -4,7 +4,7 @@ import {
   ROUTE_LOAD_SUCCESS,
   ROUTE_REDIRECT,
   ROUTE_UPDATED,
-} from "../constants";
+} from "@src/constants";
 import type {
   BucketResource,
   CollectionResource,
@@ -13,7 +13,7 @@ import type {
   RecordResource,
   RouteParams,
   RouteResources,
-} from "../types";
+} from "@src/types";
 import type { Location } from "history";
 
 export function routeUpdated(

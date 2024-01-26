@@ -1,13 +1,13 @@
-import * as GroupActions from "../../actions/group";
-import * as NotificationActions from "../../actions/notifications";
+import CollectionTabs from "./GroupTabs";
+import * as GroupActions from "@src/actions/group";
+import * as NotificationActions from "@src/actions/notifications";
+import HistoryTable from "@src/components/HistoryTable";
 import type {
   Capabilities,
   GroupRouteMatch,
   GroupState,
   SessionState,
-} from "../../types";
-import HistoryTable from "../HistoryTable";
-import CollectionTabs from "./GroupTabs";
+} from "@src/types";
 import type { Location } from "history";
 import React, { useEffect } from "react";
 

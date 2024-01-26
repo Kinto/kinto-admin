@@ -1,12 +1,12 @@
-import * as NotificationActions from "../actions/notifications";
-import * as ServersActions from "../actions/servers";
-import * as SessionActions from "../actions/session";
-import { useAppDispatch, useAppSelector } from "../hooks/app";
-import { loadSession } from "../store/localStore";
-import type { OpenIDAuth, PortierAuth, TokenAuth } from "../types";
-import { getServerByPriority, isObject } from "../utils";
 import AuthForm from "./AuthForm";
 import Spinner from "./Spinner";
+import * as NotificationActions from "@src/actions/notifications";
+import * as ServersActions from "@src/actions/servers";
+import * as SessionActions from "@src/actions/session";
+import { useAppDispatch, useAppSelector } from "@src/hooks/app";
+import { loadSession } from "@src/store/localStore";
+import type { OpenIDAuth, PortierAuth, TokenAuth } from "@src/types";
+import { getServerByPriority, isObject } from "@src/utils";
 import * as React from "react";
 import { useParams } from "react-router";
 

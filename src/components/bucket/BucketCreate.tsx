@@ -1,7 +1,7 @@
-import * as BucketActions from "../../actions/bucket";
-import type { BucketState, SessionState } from "../../types";
-import Spinner from "../Spinner";
 import BucketForm from "./BucketForm";
+import * as BucketActions from "@src/actions/bucket";
+import Spinner from "@src/components/Spinner";
+import type { BucketState, SessionState } from "@src/types";
 import React from "react";
 
 export type StateProps = {

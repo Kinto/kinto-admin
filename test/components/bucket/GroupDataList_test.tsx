@@ -1,9 +1,6 @@
-import {
-  DataList,
-  ListActions,
-} from "../../../src/components/bucket/GroupDataList";
-import { canCreateGroup } from "../../../src/permission";
-import { renderWithProvider } from "../../testUtils";
+import { DataList, ListActions } from "@src/components/bucket/GroupDataList";
+import { canCreateGroup } from "@src/permission";
+import { renderWithProvider } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import React from "react";
 

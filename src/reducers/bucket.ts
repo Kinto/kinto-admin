@@ -1,3 +1,4 @@
+import { paginator } from "./shared";
 import {
   BUCKET_BUSY,
   BUCKET_COLLECTIONS_NEXT_REQUEST,
@@ -10,9 +11,8 @@ import {
   ROUTE_LOAD_FAILURE,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
-} from "../constants";
-import type { BucketResource, BucketState, GroupData } from "../types";
-import { paginator } from "./shared";
+} from "@src/constants";
+import type { BucketResource, BucketState, GroupData } from "@src/types";
 
 const INITIAL_STATE: BucketState = {
   busy: false,

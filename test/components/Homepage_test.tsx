@@ -1,8 +1,8 @@
-import * as SessionActions from "../../src/actions/session";
-import { HomePage } from "../../src/components/HomePage";
-import * as localStore from "../../src/store/localStore";
-import { renderWithProvider } from "../testUtils";
-import { sessionFactory } from "../testUtils";
+import * as SessionActions from "@src/actions/session";
+import { HomePage } from "@src/components/HomePage";
+import * as localStore from "@src/store/localStore";
+import { renderWithProvider } from "@test/testUtils";
+import { sessionFactory } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import React from "react";
 

@@ -10,8 +10,8 @@ import {
   SESSION_SETUP,
   SESSION_SETUP_COMPLETE,
   SESSION_STORE_REDIRECT_URL,
-} from "../constants";
-import type { AuthData, ServerInfo, SessionState } from "../types";
+} from "@src/constants";
+import type { AuthData, ServerInfo, SessionState } from "@src/types";
 
 export const DEFAULT_SERVERINFO: ServerInfo = {
   url: "",

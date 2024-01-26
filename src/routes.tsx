@@ -1,4 +1,4 @@
-import * as RouteActions from "./actions/route";
+import * as RouteActions from "@src/actions/route";
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { Route } from "react-router-dom";

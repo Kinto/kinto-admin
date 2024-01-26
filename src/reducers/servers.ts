@@ -1,6 +1,6 @@
-import { SERVERS_ADD, SERVERS_CLEAR } from "../constants";
-import { clearServers, loadServers, saveServers } from "../store/localStore";
-import type { ServerEntry } from "../types";
+import { SERVERS_ADD, SERVERS_CLEAR } from "@src/constants";
+import { clearServers, loadServers, saveServers } from "@src/store/localStore";
+import type { ServerEntry } from "@src/types";
 
 const INITIAL_STATE: ServerEntry[] = loadServers();
 

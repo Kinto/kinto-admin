@@ -1,12 +1,12 @@
-import * as bucketActions from "../../src/actions/bucket";
-import * as collectionActions from "../../src/actions/collection";
-import * as routeActions from "../../src/actions/route";
-import * as sessionActions from "../../src/actions/session";
-import * as bucketSagas from "../../src/sagas/bucket";
-import * as collectionSagas from "../../src/sagas/collection";
-import * as routeSagas from "../../src/sagas/route";
-import * as sessionSagas from "../../src/sagas/session";
-import { configureAppStoreAndHistory } from "../../src/store/configureStore";
+import * as bucketActions from "@src/actions/bucket";
+import * as collectionActions from "@src/actions/collection";
+import * as routeActions from "@src/actions/route";
+import * as sessionActions from "@src/actions/session";
+import * as bucketSagas from "@src/sagas/bucket";
+import * as collectionSagas from "@src/sagas/collection";
+import * as routeSagas from "@src/sagas/route";
+import * as sessionSagas from "@src/sagas/session";
+import { configureAppStoreAndHistory } from "@src/store/configureStore";
 
 function expectSagaCalled(saga, action) {
   // Note: the rootSaga function is called by configureStore

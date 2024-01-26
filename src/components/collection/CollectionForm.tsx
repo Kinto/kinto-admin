@@ -1,17 +1,17 @@
-import { canCreateCollection, canEditCollection } from "../../permission";
+import DeleteForm from "./DeleteForm";
+import { FormInstructions } from "./FormInstructions";
+import JSONCollectionForm from "./JSONCollectionForm";
+import { RJSFSchema } from "@rjsf/utils";
+import BaseForm from "@src/components/BaseForm";
+import JSONEditor from "@src/components/JSONEditor";
+import { canCreateCollection, canEditCollection } from "@src/permission";
 import type {
   BucketState,
   CollectionData,
   CollectionState,
   SessionState,
-} from "../../types";
-import { validateSchema, validateUiSchema } from "../../utils";
-import BaseForm from "../BaseForm";
-import JSONEditor from "../JSONEditor";
-import DeleteForm from "./DeleteForm";
-import { FormInstructions } from "./FormInstructions";
-import JSONCollectionForm from "./JSONCollectionForm";
-import { RJSFSchema } from "@rjsf/utils";
+} from "@src/types";
+import { validateSchema, validateUiSchema } from "@src/utils";
 import React, { useState } from "react";
 import { Check2 } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";

@@ -1,5 +1,5 @@
-import { NOTIFICATION_ADDED, NOTIFICATION_REMOVED } from "../../src/constants";
-import notifications from "../../src/reducers/notifications";
+import { NOTIFICATION_ADDED, NOTIFICATION_REMOVED } from "@src/constants";
+import notifications from "@src/reducers/notifications";
 
 describe("notifications reducer", () => {
   it("NOTIFICATION_ADDED", () => {

@@ -1,7 +1,7 @@
-import * as BucketActions from "../../actions/bucket";
-import type { StateProps } from "../../components/group/GroupCreate";
-import GroupCreate from "../../components/group/GroupCreate";
-import type { AppState } from "../../types";
+import * as BucketActions from "@src/actions/bucket";
+import type { StateProps } from "@src/components/group/GroupCreate";
+import GroupCreate from "@src/components/group/GroupCreate";
+import type { AppState } from "@src/types";
 import { connect } from "react-redux";
 import type { Dispatch } from "redux";
 import { bindActionCreators } from "redux";

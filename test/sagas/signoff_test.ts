@@ -1,9 +1,9 @@
-import * as collection_actions from "../../src/actions/collection";
-import * as notificationActions from "../../src/actions/notifications";
-import { routeLoadSuccess } from "../../src/actions/route";
-import * as actions from "../../src/actions/signoff";
-import { setClient } from "../../src/client";
-import * as saga from "../../src/sagas/signoff";
+import * as collection_actions from "@src/actions/collection";
+import * as notificationActions from "@src/actions/notifications";
+import { routeLoadSuccess } from "@src/actions/route";
+import * as actions from "@src/actions/signoff";
+import { setClient } from "@src/client";
+import * as saga from "@src/sagas/signoff";
 import { call, put } from "redux-saga/effects";
 
 describe("Signoff sagas", () => {

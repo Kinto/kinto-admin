@@ -1,6 +1,6 @@
-import createRootReducer from "../reducers";
-import rootSaga from "../sagas";
 import { configureStore } from "@reduxjs/toolkit";
+import createRootReducer from "@src/reducers";
+import rootSaga from "@src/sagas";
 import { createHashHistory } from "history";
 import { createReduxHistoryContext } from "redux-first-history";
 import createSagaMiddleware from "redux-saga";

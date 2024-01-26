@@ -1,7 +1,7 @@
-import AuthForm from "../../src/components/AuthForm";
-import { DEFAULT_KINTO_SERVER } from "../../src/constants";
-import { DEFAULT_SERVERINFO } from "../../src/reducers/session";
-import { renderWithProvider } from "../testUtils";
+import AuthForm from "@src/components/AuthForm";
+import { DEFAULT_KINTO_SERVER } from "@src/constants";
+import { DEFAULT_SERVERINFO } from "@src/reducers/session";
+import { renderWithProvider } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import React from "react";

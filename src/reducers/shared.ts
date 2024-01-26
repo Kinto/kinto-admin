@@ -14,8 +14,8 @@ import {
   RECORD_HISTORY_NEXT_REQUEST,
   RECORD_HISTORY_REQUEST,
   RECORD_HISTORY_SUCCESS,
-} from "../constants";
-import type { Paginator } from "../types";
+} from "@src/constants";
+import type { Paginator } from "@src/types";
 
 const INITIAL_STATE: Paginator<any> = {
   entries: [],

@@ -1,11 +1,11 @@
-import { DEFAULT_KINTO_SERVER, SINGLE_SERVER } from "./constants";
+import { DEFAULT_KINTO_SERVER, SINGLE_SERVER } from "@src/constants";
 import type {
   Capabilities,
   HistoryFilters,
   RecordData,
   ResourceHistoryEntry,
   ServerEntry,
-} from "./types";
+} from "@src/types";
 import { diffJson as diff } from "diff";
 import React from "react";
 import { format } from "timeago.js";

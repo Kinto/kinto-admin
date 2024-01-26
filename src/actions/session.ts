@@ -1,3 +1,4 @@
+import { notifyError } from "./notifications";
 import {
   SESSION_AUTHENTICATED,
   SESSION_AUTHENTICATION_FAILED,
@@ -13,9 +14,8 @@ import {
   SESSION_SETUP,
   SESSION_SETUP_COMPLETE,
   SESSION_STORE_REDIRECT_URL,
-} from "../constants";
-import type { ActionType, AuthData, ServerInfo } from "../types";
-import { notifyError } from "./notifications";
+} from "@src/constants";
+import type { ActionType, AuthData, ServerInfo } from "@src/types";
 
 type NavigationResult = ActionType<typeof notifyError> | { type: null };
 

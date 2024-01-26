@@ -2,7 +2,7 @@ import PerRecordDiffView, {
   ChangeType,
   findChangeTypes,
   formatDiffHeader,
-} from "../../../../src/components/signoff/SimpleReview/PerRecordDiffView";
+} from "@src/components/signoff/SimpleReview/PerRecordDiffView";
 import { render, screen } from "@testing-library/react";
 import React from "react";
 

@@ -1,11 +1,11 @@
-import * as SessionActions from "../actions/session";
-import { SIDEBAR_MAX_LISTED_COLLECTIONS } from "../constants";
-import { useAppDispatch, useAppSelector } from "../hooks/app";
-import { canCreateBucket } from "../permission";
-import type { BucketEntry, RouteParams } from "../types";
-import url from "../url";
 import AdminLink from "./AdminLink";
 import Spinner from "./Spinner";
+import * as SessionActions from "@src/actions/session";
+import { SIDEBAR_MAX_LISTED_COLLECTIONS } from "@src/constants";
+import { useAppDispatch, useAppSelector } from "@src/hooks/app";
+import { canCreateBucket } from "@src/permission";
+import type { BucketEntry, RouteParams } from "@src/types";
+import url from "@src/url";
 import * as React from "react";
 import { Plus } from "react-bootstrap-icons";
 import { XCircleFill } from "react-bootstrap-icons";

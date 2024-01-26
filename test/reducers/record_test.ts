@@ -9,8 +9,8 @@ import {
   ROUTE_LOAD_FAILURE,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
-} from "../../src/constants";
-import record from "../../src/reducers/record";
+} from "@src/constants";
+import record from "@src/reducers/record";
 
 describe("record reducer", () => {
   describe("busy flag", () => {

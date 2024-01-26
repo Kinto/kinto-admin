@@ -1,12 +1,12 @@
-import * as BucketActions from "../../actions/bucket";
+import BucketTabs from "./BucketTabs";
+import { DataList, ListActions } from "./CollectionDataList";
+import * as BucketActions from "@src/actions/bucket";
 import type {
   BucketRouteMatch,
   BucketState,
   Capabilities,
   SessionState,
-} from "../../types";
-import BucketTabs from "./BucketTabs";
-import { DataList, ListActions } from "./CollectionDataList";
+} from "@src/types";
 import type { Location } from "history";
 import React, { useEffect } from "react";
 

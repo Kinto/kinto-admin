@@ -1,5 +1,5 @@
-import CollectionRecords from "../../src/components/collection/CollectionRecords";
-import { renderWithProvider } from "../testUtils";
+import CollectionRecords from "@src/components/collection/CollectionRecords";
+import { renderWithProvider } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import React from "react";
 

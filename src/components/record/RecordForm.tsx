@@ -1,15 +1,3 @@
-import * as CollectionActions from "../../actions/collection";
-import { canCreateRecord, canEditRecord } from "../../permission";
-import type {
-  BucketState,
-  Capabilities,
-  CollectionState,
-  RecordState,
-  SessionState,
-} from "../../types";
-import AdminLink from "../AdminLink";
-import BaseForm from "../BaseForm";
-import Spinner from "../Spinner";
 import {
   AttachmentInfo,
   extendSchemaWithAttachment,
@@ -17,6 +5,18 @@ import {
 } from "./AttachmentInfo";
 import JSONRecordForm from "./JSONRecordForm";
 import { RJSFSchema } from "@rjsf/utils";
+import * as CollectionActions from "@src/actions/collection";
+import AdminLink from "@src/components/AdminLink";
+import BaseForm from "@src/components/BaseForm";
+import Spinner from "@src/components/Spinner";
+import { canCreateRecord, canEditRecord } from "@src/permission";
+import type {
+  BucketState,
+  Capabilities,
+  CollectionState,
+  RecordState,
+  SessionState,
+} from "@src/types";
 import React, { useState } from "react";
 import { Check2 } from "react-bootstrap-icons";
 import { Trash } from "react-bootstrap-icons";

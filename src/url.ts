@@ -1,5 +1,5 @@
 /* flow */
-import type { RouteParams } from "./types";
+import type { RouteParams } from "@src/types";
 
 const URLS = {
   // Root url

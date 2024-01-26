@@ -1,7 +1,7 @@
-import { canCreateCollection } from "../../permission";
-import { timeago } from "../../utils";
-import AdminLink from "../AdminLink";
-import PaginatedTable from "../PaginatedTable";
+import AdminLink from "@src/components/AdminLink";
+import PaginatedTable from "@src/components/PaginatedTable";
+import { canCreateCollection } from "@src/permission";
+import { timeago } from "@src/utils";
 import React from "react";
 import { ClockHistory, Gear, Justify } from "react-bootstrap-icons";
 

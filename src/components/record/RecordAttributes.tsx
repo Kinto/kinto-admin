@@ -1,4 +1,6 @@
-import * as CollectionActions from "../../actions/collection";
+import RecordForm from "./RecordForm";
+import RecordTabs from "./RecordTabs";
+import * as CollectionActions from "@src/actions/collection";
 import type {
   BucketState,
   Capabilities,
@@ -6,9 +8,7 @@ import type {
   RecordRouteMatch,
   RecordState,
   SessionState,
-} from "../../types";
-import RecordForm from "./RecordForm";
-import RecordTabs from "./RecordTabs";
+} from "@src/types";
 import React from "react";
 
 export type OwnProps = {

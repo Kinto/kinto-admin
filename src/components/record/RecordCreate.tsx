@@ -1,12 +1,12 @@
-import * as CollectionActions from "../../actions/collection";
+import RecordForm from "./RecordForm";
+import * as CollectionActions from "@src/actions/collection";
 import type {
   BucketState,
   Capabilities,
   CollectionRouteMatch,
   CollectionState,
   SessionState,
-} from "../../types";
-import RecordForm from "./RecordForm";
+} from "@src/types";
 import React, { useCallback } from "react";
 
 export type OwnProps = {
