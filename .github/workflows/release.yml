@@ -30,9 +30,9 @@ jobs:
 
       - name: Create release if one doesn't exist yet
         run: |
-          EXISTING_RELEASE=$(gh release view $TAG --json="id")
+          EXISTING_RELEASE=$(gh release view $GITHUB_REF --json="id")
           if [[ -z $EXISTING_RELEASE ]]; then
-              gh release create $TAG --generate-notes -d
+              gh release create $GITHUB_REF --generate-notes -d
           fi
       
       - name: Upload built package to release
