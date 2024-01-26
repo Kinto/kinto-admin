@@ -1,17 +1,17 @@
-import type { RecordState, RecordResource } from "../types";
 import {
   RECORD_BUSY,
   RECORD_CREATE_REQUEST,
-  RECORD_UPDATE_REQUEST,
   RECORD_DELETE_REQUEST,
-  RECORD_HISTORY_REQUEST,
   RECORD_HISTORY_NEXT_REQUEST,
+  RECORD_HISTORY_REQUEST,
   RECORD_HISTORY_SUCCESS,
   RECORD_RESET,
+  RECORD_UPDATE_REQUEST,
+  ROUTE_LOAD_FAILURE,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
-  ROUTE_LOAD_FAILURE,
 } from "../constants";
+import type { RecordResource, RecordState } from "../types";
 import { paginator } from "./shared";
 
 const INITIAL_STATE: RecordState = {

@@ -1,14 +1,9 @@
-import React from "react";
-
-import type { RecordState, RecordData, Capabilities } from "../../types";
-
-import { filesize } from "filesize";
-
-import { Paperclip } from "react-bootstrap-icons";
-
+import type { Capabilities, RecordData, RecordState } from "../../types";
 import { buildAttachmentUrl, omit } from "../../utils";
-
 import { UiSchema } from "@rjsf/utils";
+import { filesize } from "filesize";
+import React from "react";
+import { Paperclip } from "react-bootstrap-icons";
 
 export function extendSchemaWithAttachment(
   schema: any,

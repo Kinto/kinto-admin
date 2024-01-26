@@ -1,8 +1,7 @@
+import { breadcrumbifyPath } from "../../locationUtils";
+import "./style.css";
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { breadcrumbifyPath } from "../../locationUtils";
-
-import "./style.css";
 
 interface BreadcrumbsProps {
   separator: string;

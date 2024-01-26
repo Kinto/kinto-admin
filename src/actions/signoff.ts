@@ -1,6 +1,5 @@
-import type { SignoffCollectionsInfo } from "../types";
-
 import * as constants from "../constants";
+import type { SignoffCollectionsInfo } from "../types";
 
 export function confirmRequestReview(): {
   type: "SIGNOFF_CONFIRM_REVIEW_REQUEST";

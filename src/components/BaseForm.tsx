@@ -1,11 +1,10 @@
-import React, { useRef, useState } from "react";
-import { withTheme, FormProps } from "@rjsf/core";
-import { Theme as Bootstrap4Theme } from "@rjsf/bootstrap-4";
-import validator from "@rjsf/validator-ajv8";
-import { RJSFSchema, RJSFValidationError } from "@rjsf/utils";
-
-import TagsField from "./TagsField";
 import Spinner from "./Spinner";
+import TagsField from "./TagsField";
+import { Theme as Bootstrap4Theme } from "@rjsf/bootstrap-4";
+import { FormProps, withTheme } from "@rjsf/core";
+import { RJSFSchema, RJSFValidationError } from "@rjsf/utils";
+import validator from "@rjsf/validator-ajv8";
+import React, { useRef, useState } from "react";
 
 const adminFields = { tags: TagsField };
 

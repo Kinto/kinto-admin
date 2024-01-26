@@ -1,17 +1,15 @@
-import type {
-  Capabilities,
-  GroupState,
-  GroupRouteMatch,
-  SessionState,
-} from "../../types";
-import type { Location } from "history";
-
-import React, { useEffect } from "react";
-
 import * as GroupActions from "../../actions/group";
 import * as NotificationActions from "../../actions/notifications";
+import type {
+  Capabilities,
+  GroupRouteMatch,
+  GroupState,
+  SessionState,
+} from "../../types";
 import HistoryTable from "../HistoryTable";
 import CollectionTabs from "./GroupTabs";
+import type { Location } from "history";
+import React, { useEffect } from "react";
 
 export type OwnProps = {
   match: GroupRouteMatch;

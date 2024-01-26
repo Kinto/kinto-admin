@@ -1,9 +1,8 @@
-import type { SignoffSourceInfo, DestinationInfo } from "../../types";
-
-import React from "react";
+import type { DestinationInfo, SignoffSourceInfo } from "../../types";
 import AdminLink from "../AdminLink";
-import { ProgressStep } from "./ProgressBar";
 import HumanDate from "./HumanDate";
+import { ProgressStep } from "./ProgressBar";
+import React from "react";
 
 type SignedProps = {
   label: string;

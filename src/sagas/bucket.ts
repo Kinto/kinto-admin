@@ -1,13 +1,11 @@
-import type { ActionType, GetStateFn, SagaGen } from "../types";
-
-import { call, put } from "redux-saga/effects";
-
-import { getClient } from "../client";
-import { notifySuccess, notifyError } from "../actions/notifications";
-import { sessionBusy, listBuckets } from "../actions/session";
-import { redirectTo } from "../actions/route";
 import * as actions from "../actions/bucket";
+import { notifyError, notifySuccess } from "../actions/notifications";
+import { redirectTo } from "../actions/route";
+import { listBuckets, sessionBusy } from "../actions/session";
+import { getClient } from "../client";
 import { MAX_PER_PAGE } from "../constants";
+import type { ActionType, GetStateFn, SagaGen } from "../types";
+import { call, put } from "redux-saga/effects";
 
 function getBucket(bid) {
   return getClient().bucket(bid);

@@ -1,15 +1,13 @@
+import * as BucketActions from "../../actions/bucket";
 import type {
-  SessionState,
+  BucketRouteMatch,
   BucketState,
   CollectionState,
-  BucketRouteMatch,
+  SessionState,
 } from "../../types";
-
-import React from "react";
-
-import * as BucketActions from "../../actions/bucket";
 import Spinner from "../Spinner";
 import CollectionForm from "./CollectionForm";
+import React from "react";
 
 export type OwnProps = {
   match: BucketRouteMatch;

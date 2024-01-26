@@ -1,6 +1,5 @@
-import React from "react";
-
 import Spinner from "./Spinner";
+import React from "react";
 
 type Props = {
   thead: React.ReactNode;

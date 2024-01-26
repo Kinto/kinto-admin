@@ -1,20 +1,17 @@
-import React from "react";
-
+import { useAppSelector } from "../../hooks/app";
 import type { RecordData } from "../../types";
-
-import { Dropdown } from "react-bootstrap";
-
-import {
-  ClipboardCheck,
-  Paperclip,
-  Pencil,
-  Lock,
-  Trash,
-} from "react-bootstrap-icons";
-import { renderDisplayField, timeago, buildAttachmentUrl } from "../../utils";
+import { buildAttachmentUrl, renderDisplayField, timeago } from "../../utils";
 import AdminLink from "../AdminLink";
 import { CommonProps } from "./commonPropTypes";
-import { useAppSelector } from "../../hooks/app";
+import React from "react";
+import { Dropdown } from "react-bootstrap";
+import {
+  ClipboardCheck,
+  Lock,
+  Paperclip,
+  Pencil,
+  Trash,
+} from "react-bootstrap-icons";
 
 type RecordsViewProps = CommonProps & {
   bid: string;

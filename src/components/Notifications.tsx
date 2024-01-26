@@ -1,8 +1,7 @@
+import * as actions from "../actions/notifications";
 import type { Notifications } from "../types";
-
 import React from "react";
 import { AlertList } from "react-bs-notifier";
-import * as actions from "../actions/notifications";
 
 function NotificationDetails({ details }: { details: Array<string> }) {
   if (details.length === 0) {

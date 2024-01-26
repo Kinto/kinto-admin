@@ -1,11 +1,10 @@
-import CommentDialog from "../../CommentDialog";
-import React, { useState } from "react";
-import { SignoffCollectionStatus } from "../../../types";
-
-import { useLocation } from "react-router";
 import { parseSearchString } from "../../../locationUtils";
-import { ChatLeft, Check2, XCircleFill } from "react-bootstrap-icons";
+import { SignoffCollectionStatus } from "../../../types";
 import Spinner from "../../Spinner";
+import { CommentDialog } from "../Comment";
+import React, { useState } from "react";
+import { ChatLeft, Check2, XCircleFill } from "react-bootstrap-icons";
+import { useLocation } from "react-router";
 
 export interface SimpleReviewButtonsProps {
   status: SignoffCollectionStatus;

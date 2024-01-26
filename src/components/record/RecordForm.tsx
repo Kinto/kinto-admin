@@ -1,26 +1,25 @@
-import React, { useState } from "react";
+import * as CollectionActions from "../../actions/collection";
+import { canCreateRecord, canEditRecord } from "../../permission";
 import type {
   BucketState,
-  SessionState,
+  Capabilities,
   CollectionState,
   RecordState,
-  Capabilities,
+  SessionState,
 } from "../../types";
-import { Check2 } from "react-bootstrap-icons";
-import { Trash } from "react-bootstrap-icons";
-import * as CollectionActions from "../../actions/collection";
-import BaseForm from "../BaseForm";
 import AdminLink from "../AdminLink";
+import BaseForm from "../BaseForm";
 import Spinner from "../Spinner";
-import JSONRecordForm from "./JSONRecordForm";
-import { canCreateRecord, canEditRecord } from "../../permission";
 import {
   AttachmentInfo,
   extendSchemaWithAttachment,
   extendUiSchemaWithAttachment,
 } from "./AttachmentInfo";
-
+import JSONRecordForm from "./JSONRecordForm";
 import { RJSFSchema } from "@rjsf/utils";
+import React, { useState } from "react";
+import { Check2 } from "react-bootstrap-icons";
+import { Trash } from "react-bootstrap-icons";
 
 export function extendUIWithKintoFields(uiSchema: any, isCreate: boolean): any {
   return {

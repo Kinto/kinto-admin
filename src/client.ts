@@ -1,5 +1,4 @@
 import type { AuthData } from "./types";
-
 import KintoClient from "kinto-http";
 
 let client: KintoClient;

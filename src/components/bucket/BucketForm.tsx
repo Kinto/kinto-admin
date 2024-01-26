@@ -1,16 +1,14 @@
-import React from "react";
-import { Link } from "react-router-dom";
-
-import { Check2 } from "react-bootstrap-icons";
-
+import { canEditBucket } from "../../permission";
+import type { BucketData, BucketState, SessionState } from "../../types";
+import { omit } from "../../utils";
 import BaseForm from "../BaseForm";
 import JSONEditor from "../JSONEditor";
 import Spinner from "../Spinner";
-import { RJSFSchema } from "@rjsf/utils";
-import { canEditBucket } from "../../permission";
-import { omit } from "../../utils";
 import DeleteForm from "./DeleteForm";
-import type { BucketState, BucketData, SessionState } from "../../types";
+import { RJSFSchema } from "@rjsf/utils";
+import React from "react";
+import { Check2 } from "react-bootstrap-icons";
+import { Link } from "react-router-dom";
 
 const schema: RJSFSchema = {
   type: "object",

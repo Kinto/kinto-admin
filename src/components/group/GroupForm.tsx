@@ -1,20 +1,19 @@
-import React, { useCallback } from "react";
+import { canCreateGroup, canEditGroup } from "../../permission";
 import type {
-  SessionState,
   BucketState,
-  GroupState,
   GroupData,
+  GroupState,
+  SessionState,
 } from "../../types";
-
-import { Check2 } from "react-bootstrap-icons";
-import { RJSFSchema, UiSchema } from "@rjsf/utils";
-import BaseForm from "../BaseForm";
+import { omit } from "../../utils";
 import AdminLink from "../AdminLink";
+import BaseForm from "../BaseForm";
 import JSONEditor from "../JSONEditor";
 import Spinner from "../Spinner";
-import { canCreateGroup, canEditGroup } from "../../permission";
-import { omit } from "../../utils";
 import DeleteForm from "./DeleteForm";
+import { RJSFSchema, UiSchema } from "@rjsf/utils";
+import React, { useCallback } from "react";
+import { Check2 } from "react-bootstrap-icons";
 
 const schema: RJSFSchema = {
   type: "object",

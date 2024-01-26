@@ -1,17 +1,15 @@
-import React, { useCallback } from "react";
-
-import type { CollectionState, CollectionRouteMatch } from "../../types";
-
 import * as CollectionActions from "../../actions/collection";
 import * as NotificationActions from "../../actions/notifications";
-import BaseForm from "../BaseForm";
+import type { CollectionRouteMatch, CollectionState } from "../../types";
 import AdminLink from "../AdminLink";
-import Spinner from "../Spinner";
+import BaseForm from "../BaseForm";
 import JSONEditor from "../JSONEditor";
+import Spinner from "../Spinner";
 import {
   extendSchemaWithAttachment,
   extendUiSchemaWithAttachment,
 } from "./AttachmentInfo";
+import React, { useCallback } from "react";
 
 export type OwnProps = {
   match: CollectionRouteMatch;

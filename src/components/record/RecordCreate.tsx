@@ -1,15 +1,13 @@
-import React, { useCallback } from "react";
-
-import type {
-  SessionState,
-  BucketState,
-  CollectionState,
-  CollectionRouteMatch,
-  Capabilities,
-} from "../../types";
-
 import * as CollectionActions from "../../actions/collection";
+import type {
+  BucketState,
+  Capabilities,
+  CollectionRouteMatch,
+  CollectionState,
+  SessionState,
+} from "../../types";
 import RecordForm from "./RecordForm";
+import React, { useCallback } from "react";
 
 export type OwnProps = {
   match: CollectionRouteMatch;

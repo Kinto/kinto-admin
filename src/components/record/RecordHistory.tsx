@@ -1,17 +1,15 @@
+import * as NotificationActions from "../../actions/notifications";
+import * as RecordActions from "../../actions/record";
 import type {
   Capabilities,
-  SessionState,
-  RecordState,
   RecordRouteMatch,
+  RecordState,
+  SessionState,
 } from "../../types";
-import type { Location } from "history";
-
-import React, { useEffect } from "react";
-
-import * as RecordActions from "../../actions/record";
-import * as NotificationActions from "../../actions/notifications";
 import HistoryTable from "../HistoryTable";
 import RecordTabs from "./RecordTabs";
+import type { Location } from "history";
+import React, { useEffect } from "react";
 
 export type OwnProps = {
   match: RecordRouteMatch;

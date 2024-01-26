@@ -1,11 +1,10 @@
+import * as RouteActions from "./actions/route";
 import React, { useEffect } from "react";
+import { connect } from "react-redux";
 import { Route } from "react-router-dom";
 import type { RouteComponentProps } from "react-router-dom";
 import type { Dispatch } from "redux";
 import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
-
-import * as RouteActions from "./actions/route";
 
 type ComponentWrapperProps = RouteComponentProps & {
   component: React.ComponentType;
