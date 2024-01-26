@@ -1,3 +1,4 @@
+import { RJSFSchema, UiSchema } from "@rjsf/utils";
 import type {
   CollectionState,
   GroupData,
@@ -5,8 +6,7 @@ import type {
   PermissionsListEntry,
   RecordState,
   SessionState,
-} from "./types";
-import { RJSFSchema, UiSchema } from "@rjsf/utils";
+} from "@src/types";
 
 export const EVERYONE = "system.Everyone";
 export const AUTHENTICATED = "system.Authenticated";

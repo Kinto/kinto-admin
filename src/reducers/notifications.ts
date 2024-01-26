@@ -2,8 +2,8 @@ import {
   NOTIFICATION_ADDED,
   NOTIFICATION_CLEAR,
   NOTIFICATION_REMOVED,
-} from "../constants";
-import type { Notification, Notifications } from "../types";
+} from "@src/constants";
+import type { Notification, Notifications } from "@src/types";
 
 const INITIAL_STATE: Notifications = [];
 

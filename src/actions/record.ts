@@ -4,8 +4,8 @@ import {
   RECORD_HISTORY_REQUEST,
   RECORD_HISTORY_SUCCESS,
   RECORD_RESET,
-} from "../constants";
-import type { ResourceHistoryEntry } from "../types";
+} from "@src/constants";
+import type { ResourceHistoryEntry } from "@src/types";
 
 export function recordBusy(busy: boolean): {
   type: "RECORD_BUSY";

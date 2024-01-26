@@ -1,5 +1,5 @@
-import BaseForm from "../BaseForm";
 import { RJSFSchema } from "@rjsf/utils";
+import BaseForm from "@src/components/BaseForm";
 import React from "react";
 import { Trash } from "react-bootstrap-icons";
 

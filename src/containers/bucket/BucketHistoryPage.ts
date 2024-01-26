@@ -1,8 +1,8 @@
-import * as BucketActions from "../../actions/bucket";
-import * as NotificationsActions from "../../actions/notifications";
-import type { StateProps } from "../../components/bucket/BucketHistory";
-import BucketHistory from "../../components/bucket/BucketHistory";
-import type { AppState } from "../../types";
+import * as BucketActions from "@src/actions/bucket";
+import * as NotificationsActions from "@src/actions/notifications";
+import type { StateProps } from "@src/components/bucket/BucketHistory";
+import BucketHistory from "@src/components/bucket/BucketHistory";
+import type { AppState } from "@src/types";
 import { connect } from "react-redux";
 import type { Dispatch } from "redux";
 import { bindActionCreators } from "redux";

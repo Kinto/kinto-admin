@@ -1,5 +1,5 @@
-import { RecordPermissions } from "../../../src/components/record/RecordPermissions";
-import { renderWithProvider, sessionFactory } from "../../testUtils";
+import { RecordPermissions } from "@src/components/record/RecordPermissions";
+import { renderWithProvider, sessionFactory } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import React from "react";
 

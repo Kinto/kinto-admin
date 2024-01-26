@@ -1,4 +1,4 @@
-import { ANONYMOUS_AUTH, DEFAULT_KINTO_SERVER } from "../src/constants";
+import { ANONYMOUS_AUTH, DEFAULT_KINTO_SERVER } from "@src/constants";
 import {
   buildAttachmentUrl,
   capitalize,
@@ -11,7 +11,7 @@ import {
   timeago,
   validateSchema,
   validateUiSchema,
-} from "../src/utils";
+} from "@src/utils";
 
 describe("cleanRecord", () => {
   it("should remove id, schema, attachment and last_modified from properties", () => {

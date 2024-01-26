@@ -1,5 +1,5 @@
-import CollectionForm from "../../src/components/collection/CollectionForm";
-import { renderWithProvider } from "../testUtils";
+import CollectionForm from "@src/components/collection/CollectionForm";
+import { renderWithProvider } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import React from "react";
 

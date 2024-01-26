@@ -1,7 +1,7 @@
-import * as NotificationsActions from "../actions/notifications";
-import type { StateProps } from "../components/Notifications";
-import Notifications from "../components/Notifications";
-import type { AppState } from "../types";
+import * as NotificationsActions from "@src/actions/notifications";
+import type { StateProps } from "@src/components/Notifications";
+import Notifications from "@src/components/Notifications";
+import type { AppState } from "@src/types";
 import { connect } from "react-redux";
 import type { Dispatch } from "redux";
 import { bindActionCreators } from "redux";

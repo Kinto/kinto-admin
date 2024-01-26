@@ -1,10 +1,10 @@
-import * as CollectionActions from "../../actions/collection";
-import * as SignoffActions from "../../actions/signoff";
-import { getClient } from "../../client";
-import type { StateProps } from "../../components/signoff/SimpleReview";
-import SimpleReview from "../../components/signoff/SimpleReview";
-import type { AppState, ValidRecord } from "../../types";
-import { SignoffState } from "../../types";
+import * as CollectionActions from "@src/actions/collection";
+import * as SignoffActions from "@src/actions/signoff";
+import { getClient } from "@src/client";
+import type { StateProps } from "@src/components/signoff/SimpleReview";
+import SimpleReview from "@src/components/signoff/SimpleReview";
+import type { AppState, ValidRecord } from "@src/types";
+import { SignoffState } from "@src/types";
 import { connect } from "react-redux";
 import type { Dispatch } from "redux";
 import { bindActionCreators } from "redux";

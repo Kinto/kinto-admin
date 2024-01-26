@@ -1,10 +1,10 @@
-import * as actions from "../../src/actions/collection";
-import { notifySuccess } from "../../src/actions/notifications";
-import * as recordActions from "../../src/actions/record";
-import { redirectTo } from "../../src/actions/route";
-import { setClient } from "../../src/client";
-import * as saga from "../../src/sagas/collection";
-import { mockNotifyError } from "../testUtils";
+import * as actions from "@src/actions/collection";
+import { notifySuccess } from "@src/actions/notifications";
+import * as recordActions from "@src/actions/record";
+import { redirectTo } from "@src/actions/route";
+import { setClient } from "@src/client";
+import * as saga from "@src/sagas/collection";
+import { mockNotifyError } from "@test/testUtils";
 import { call, put } from "redux-saga/effects";
 
 const record = { id: 1, foo: "bar1" };

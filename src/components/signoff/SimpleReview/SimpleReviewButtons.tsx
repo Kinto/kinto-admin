@@ -1,7 +1,7 @@
-import { parseSearchString } from "../../../locationUtils";
-import { SignoffCollectionStatus } from "../../../types";
-import Spinner from "../../Spinner";
 import { CommentDialog } from "../Comment";
+import Spinner from "@src/components/Spinner";
+import { parseSearchString } from "@src/locationUtils";
+import { SignoffCollectionStatus } from "@src/types";
 import React, { useState } from "react";
 import { ChatLeft, Check2, XCircleFill } from "react-bootstrap-icons";
 import { useLocation } from "react-router";

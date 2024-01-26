@@ -1,4 +1,7 @@
-import * as BucketActions from "../../actions/bucket";
+import CollectionForm from "./CollectionForm";
+import CollectionTabs from "./CollectionTabs";
+import * as BucketActions from "@src/actions/bucket";
+import Spinner from "@src/components/Spinner";
 import type {
   BucketState,
   Capabilities,
@@ -6,10 +9,7 @@ import type {
   CollectionRouteMatch,
   CollectionState,
   SessionState,
-} from "../../types";
-import Spinner from "../Spinner";
-import CollectionForm from "./CollectionForm";
-import CollectionTabs from "./CollectionTabs";
+} from "@src/types";
 import React from "react";
 
 export type OwnProps = {

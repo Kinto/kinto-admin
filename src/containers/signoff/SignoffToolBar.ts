@@ -1,5 +1,5 @@
-import * as SignoffActions from "../../actions/signoff";
-import SignoffToolBar from "../../components/signoff/SignoffToolBar";
+import * as SignoffActions from "@src/actions/signoff";
+import SignoffToolBar from "@src/components/signoff/SignoffToolBar";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 

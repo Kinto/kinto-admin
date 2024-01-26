@@ -1,6 +1,6 @@
 import "../css/styles.css";
-import { Layout } from "./components/Layout";
-import { history, store } from "./store/configureStore";
+import { Layout } from "@src/components/Layout";
+import { history, store } from "@src/store/configureStore";
 import "bootstrap/dist/css/bootstrap.css";
 import * as React from "react";
 import { Provider } from "react-redux";

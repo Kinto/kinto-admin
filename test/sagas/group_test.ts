@@ -1,7 +1,7 @@
-import * as actions from "../../src/actions/group";
-import { setClient } from "../../src/client";
-import * as saga from "../../src/sagas/group";
-import { mockNotifyError } from "../testUtils";
+import * as actions from "@src/actions/group";
+import { setClient } from "@src/client";
+import * as saga from "@src/sagas/group";
+import { mockNotifyError } from "@test/testUtils";
 import { call, put } from "redux-saga/effects";
 
 describe("group sagas", () => {

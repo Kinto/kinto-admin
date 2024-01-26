@@ -1,3 +1,4 @@
+import { paginator } from "./shared";
 import {
   COLLECTION_BUSY,
   COLLECTION_HISTORY_NEXT_REQUEST,
@@ -11,9 +12,8 @@ import {
   ROUTE_LOAD_FAILURE,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
-} from "../constants";
-import type { CollectionResource, CollectionState } from "../types";
-import { paginator } from "./shared";
+} from "@src/constants";
+import type { CollectionResource, CollectionState } from "@src/types";
 
 const DEFAULT_SORT: string = "-last_modified";
 

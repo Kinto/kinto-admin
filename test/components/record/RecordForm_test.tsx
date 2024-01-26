@@ -1,6 +1,6 @@
-import RecordForm from "../../../src/components/record/RecordForm";
-import { canCreateRecord, canEditRecord } from "../../../src/permission";
-import { renderWithProvider } from "../../testUtils";
+import RecordForm from "@src/components/record/RecordForm";
+import { canCreateRecord, canEditRecord } from "@src/permission";
+import { renderWithProvider } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
 

@@ -1,7 +1,14 @@
-import * as CollectionActions from "../../../actions/collection";
-import * as SignoffActions from "../../../actions/signoff";
-import { storageKeys, useLocalStorage } from "../../../hooks/storage";
-import { canEditCollection } from "../../../permission";
+import { isReviewer } from "../SignoffToolBar";
+import { isMember } from "../utils";
+import PerRecordDiffView from "./PerRecordDiffView";
+import SimpleReviewButtons from "./SimpleReviewButtons";
+import SimpleReviewHeader from "./SimpleReviewHeader";
+import * as CollectionActions from "@src/actions/collection";
+import * as SignoffActions from "@src/actions/signoff";
+import Spinner from "@src/components/Spinner";
+import CollectionTabs from "@src/components/collection/CollectionTabs";
+import { storageKeys, useLocalStorage } from "@src/hooks/storage";
+import { canEditCollection } from "@src/permission";
 import type {
   Capabilities,
   CollectionRouteMatch,
@@ -9,14 +16,7 @@ import type {
   SessionState,
   SignoffState,
   ValidRecord,
-} from "../../../types";
-import Spinner from "../../Spinner";
-import CollectionTabs from "../../collection/CollectionTabs";
-import { isReviewer } from "../SignoffToolBar";
-import { isMember } from "../utils";
-import PerRecordDiffView from "./PerRecordDiffView";
-import SimpleReviewButtons from "./SimpleReviewButtons";
-import SimpleReviewHeader from "./SimpleReviewHeader";
+} from "@src/types";
 import React, { useEffect, useState } from "react";
 import { Shuffle } from "react-bootstrap-icons";
 import { Redirect, useHistory } from "react-router-dom";

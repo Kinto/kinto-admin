@@ -1,6 +1,6 @@
-import { Sidebar } from "../../src/components/Sidebar";
-import { clone } from "../../src/utils";
-import { renderWithProvider } from "../testUtils";
+import { Sidebar } from "@src/components/Sidebar";
+import { clone } from "@src/utils";
+import { renderWithProvider } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import React from "react";
 

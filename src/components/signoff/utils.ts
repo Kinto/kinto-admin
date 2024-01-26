@@ -1,4 +1,4 @@
-import { SessionState, SignoffSourceInfo } from "../../types";
+import { SessionState, SignoffSourceInfo } from "@src/types";
 
 export function isMember(
   groupKey: string,

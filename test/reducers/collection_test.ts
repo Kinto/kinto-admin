@@ -7,8 +7,8 @@ import {
   ROUTE_LOAD_FAILURE,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
-} from "../../src/constants";
-import collection from "../../src/reducers/collection";
+} from "@src/constants";
+import collection from "@src/reducers/collection";
 
 describe("collection reducer", () => {
   it("COLLECTION_BUSY", () => {

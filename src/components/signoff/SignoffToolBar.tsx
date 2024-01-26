@@ -1,12 +1,3 @@
-import { canEditCollection } from "../../permission";
-import type {
-  BucketState,
-  ChangesList,
-  CollectionState,
-  SessionState,
-  SignoffSourceInfo,
-  SignoffState,
-} from "../../types";
 import AdminLink from "../AdminLink";
 import Spinner from "../Spinner";
 import { Comment, CommentDialog } from "./Comment";
@@ -15,6 +6,15 @@ import { ProgressBar, ProgressStep } from "./ProgressBar";
 import { DiffInfo, Review } from "./Review";
 import { Signed } from "./Signed";
 import { isMember } from "./utils";
+import { canEditCollection } from "@src/permission";
+import type {
+  BucketState,
+  ChangesList,
+  CollectionState,
+  SessionState,
+  SignoffSourceInfo,
+  SignoffState,
+} from "@src/types";
 import React, { useEffect, useState } from "react";
 import { ChatLeft, XCircleFill } from "react-bootstrap-icons";
 

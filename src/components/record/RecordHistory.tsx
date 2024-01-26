@@ -1,13 +1,13 @@
-import * as NotificationActions from "../../actions/notifications";
-import * as RecordActions from "../../actions/record";
+import RecordTabs from "./RecordTabs";
+import * as NotificationActions from "@src/actions/notifications";
+import * as RecordActions from "@src/actions/record";
+import HistoryTable from "@src/components/HistoryTable";
 import type {
   Capabilities,
   RecordRouteMatch,
   RecordState,
   SessionState,
-} from "../../types";
-import HistoryTable from "../HistoryTable";
-import RecordTabs from "./RecordTabs";
+} from "@src/types";
 import type { Location } from "history";
 import React, { useEffect } from "react";
 

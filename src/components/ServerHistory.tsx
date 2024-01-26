@@ -1,5 +1,5 @@
-import { ANONYMOUS_AUTH } from "../constants";
-import { debounce } from "../utils";
+import { ANONYMOUS_AUTH } from "@src/constants";
+import { debounce } from "@src/utils";
 import React, { useCallback, useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";

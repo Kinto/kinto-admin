@@ -1,4 +1,4 @@
-import { SignoffSourceInfo } from "../../../types";
+import { SignoffSourceInfo } from "@src/types";
 import React from "react";
 
 export default function SimpleReviewHeader({

@@ -2,8 +2,8 @@ import {
   NOTIFICATION_ADDED,
   NOTIFICATION_CLEAR,
   NOTIFICATION_REMOVED,
-} from "../constants";
-import type { ClientError } from "../types";
+} from "@src/constants";
+import type { ClientError } from "@src/types";
 
 const DEFAULT_NOTIFICATIONS_TIMEOUT = 4000; // milliseconds
 

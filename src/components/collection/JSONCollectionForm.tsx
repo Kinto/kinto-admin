@@ -1,11 +1,11 @@
-import type { CollectionData } from "../../types";
-import { omit } from "../../utils";
-import JSONEditor from "../JSONEditor";
-import Spinner from "../Spinner";
 import { Theme as Bootstrap4Theme } from "@rjsf/bootstrap-4";
 import { withTheme } from "@rjsf/core";
 import { RJSFSchema, UiSchema } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv8";
+import JSONEditor from "@src/components/JSONEditor";
+import Spinner from "@src/components/Spinner";
+import type { CollectionData } from "@src/types";
+import { omit } from "@src/utils";
 import React, { useState } from "react";
 
 const FormWithTheme = withTheme(Bootstrap4Theme);

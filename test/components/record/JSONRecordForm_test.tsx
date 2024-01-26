@@ -1,4 +1,4 @@
-import JSONRecordForm from "../../../src/components/record/JSONRecordForm";
+import JSONRecordForm from "@src/components/record/JSONRecordForm";
 import { fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
 

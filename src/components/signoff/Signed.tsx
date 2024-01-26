@@ -1,7 +1,7 @@
-import type { DestinationInfo, SignoffSourceInfo } from "../../types";
 import AdminLink from "../AdminLink";
 import HumanDate from "./HumanDate";
 import { ProgressStep } from "./ProgressBar";
+import type { DestinationInfo, SignoffSourceInfo } from "@src/types";
 import React from "react";
 
 type SignedProps = {

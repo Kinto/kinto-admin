@@ -1,6 +1,6 @@
-import { storageKeys, useLocalStorage } from "../../hooks/storage";
-import type { Capabilities } from "../../types";
-import AdminLink from "../AdminLink";
+import AdminLink from "@src/components/AdminLink";
+import { storageKeys, useLocalStorage } from "@src/hooks/storage";
+import type { Capabilities } from "@src/types";
 import React from "react";
 import {
   Braces,

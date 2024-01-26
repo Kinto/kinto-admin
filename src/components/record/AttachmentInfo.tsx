@@ -1,6 +1,6 @@
-import type { Capabilities, RecordData, RecordState } from "../../types";
-import { buildAttachmentUrl, omit } from "../../utils";
 import { UiSchema } from "@rjsf/utils";
+import type { Capabilities, RecordData, RecordState } from "@src/types";
+import { buildAttachmentUrl, omit } from "@src/utils";
 import { filesize } from "filesize";
 import React from "react";
 import { Paperclip } from "react-bootstrap-icons";

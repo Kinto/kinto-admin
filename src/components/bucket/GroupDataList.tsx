@@ -1,6 +1,6 @@
-import { canCreateGroup } from "../../permission";
-import { timeago } from "../../utils";
-import AdminLink from "../AdminLink";
+import AdminLink from "@src/components/AdminLink";
+import { canCreateGroup } from "@src/permission";
+import { timeago } from "@src/utils";
 import React from "react";
 import { Gear } from "react-bootstrap-icons";
 import { ClockHistory } from "react-bootstrap-icons";

@@ -1,9 +1,9 @@
-import * as CollectionActions from "../../actions/collection";
-import * as NotificationsActions from "../../actions/notifications";
-import * as RouteActions from "../../actions/route";
-import type { StateProps } from "../../components/collection/CollectionRecords";
-import CollectionRecords from "../../components/collection/CollectionRecords";
-import type { AppState } from "../../types";
+import * as CollectionActions from "@src/actions/collection";
+import * as NotificationsActions from "@src/actions/notifications";
+import * as RouteActions from "@src/actions/route";
+import type { StateProps } from "@src/components/collection/CollectionRecords";
+import CollectionRecords from "@src/components/collection/CollectionRecords";
+import type { AppState } from "@src/types";
 import { connect } from "react-redux";
 import type { Dispatch } from "redux";
 import { bindActionCreators } from "redux";

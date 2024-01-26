@@ -1,14 +1,14 @@
-import * as CollectionActions from "../../actions/collection";
-import * as NotificationActions from "../../actions/notifications";
-import type { CollectionRouteMatch, CollectionState } from "../../types";
-import AdminLink from "../AdminLink";
-import BaseForm from "../BaseForm";
-import JSONEditor from "../JSONEditor";
-import Spinner from "../Spinner";
 import {
   extendSchemaWithAttachment,
   extendUiSchemaWithAttachment,
 } from "./AttachmentInfo";
+import * as CollectionActions from "@src/actions/collection";
+import * as NotificationActions from "@src/actions/notifications";
+import AdminLink from "@src/components/AdminLink";
+import BaseForm from "@src/components/BaseForm";
+import JSONEditor from "@src/components/JSONEditor";
+import Spinner from "@src/components/Spinner";
+import type { CollectionRouteMatch, CollectionState } from "@src/types";
 import React, { useCallback } from "react";
 
 export type OwnProps = {

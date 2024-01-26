@@ -1,4 +1,7 @@
-import * as BucketActions from "../../actions/bucket";
+import GroupForm from "./GroupForm";
+import GroupTabs from "./GroupTabs";
+import * as BucketActions from "@src/actions/bucket";
+import Spinner from "@src/components/Spinner";
 import type {
   BucketState,
   Capabilities,
@@ -6,10 +9,7 @@ import type {
   GroupRouteMatch,
   GroupState,
   SessionState,
-} from "../../types";
-import Spinner from "../Spinner";
-import GroupForm from "./GroupForm";
-import GroupTabs from "./GroupTabs";
+} from "@src/types";
 import React, { useCallback } from "react";
 
 export type OwnProps = {

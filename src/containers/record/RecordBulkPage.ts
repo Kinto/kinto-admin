@@ -1,8 +1,8 @@
-import * as CollectionActions from "../../actions/collection";
-import * as NotificationsActions from "../../actions/notifications";
-import type { StateProps } from "../../components/record/RecordBulk";
-import RecordBulk from "../../components/record/RecordBulk";
-import type { AppState } from "../../types";
+import * as CollectionActions from "@src/actions/collection";
+import * as NotificationsActions from "@src/actions/notifications";
+import type { StateProps } from "@src/components/record/RecordBulk";
+import RecordBulk from "@src/components/record/RecordBulk";
+import type { AppState } from "@src/types";
 import { connect } from "react-redux";
 import type { Dispatch } from "redux";
 import { bindActionCreators } from "redux";

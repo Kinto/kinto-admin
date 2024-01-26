@@ -1,14 +1,14 @@
-import * as BucketActions from "../../actions/bucket";
-import * as NotificationActions from "../../actions/notifications";
+import BucketTabs from "./BucketTabs";
+import * as BucketActions from "@src/actions/bucket";
+import * as NotificationActions from "@src/actions/notifications";
+import HistoryTable from "@src/components/HistoryTable";
 import type {
   BucketRouteMatch,
   BucketState,
   Capabilities,
   SessionState,
-} from "../../types";
-import { parseHistoryFilters } from "../../utils";
-import HistoryTable from "../HistoryTable";
-import BucketTabs from "./BucketTabs";
+} from "@src/types";
+import { parseHistoryFilters } from "@src/utils";
 import type { Location } from "history";
 import React, { useEffect } from "react";
 

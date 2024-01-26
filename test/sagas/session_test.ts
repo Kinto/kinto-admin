@@ -1,12 +1,12 @@
-import * as notificationsActions from "../../src/actions/notifications";
-import * as serversActions from "../../src/actions/servers";
-import * as actions from "../../src/actions/session";
-import * as clientUtils from "../../src/client";
-import { getClient, resetClient, setClient } from "../../src/client";
-import { DEFAULT_SERVERINFO } from "../../src/reducers/session";
-import * as saga from "../../src/sagas/session";
-import { clearSession, saveSession } from "../../src/store/localStore";
-import { mockNotifyError } from "../testUtils";
+import * as notificationsActions from "@src/actions/notifications";
+import * as serversActions from "@src/actions/servers";
+import * as actions from "@src/actions/session";
+import * as clientUtils from "@src/client";
+import { getClient, resetClient, setClient } from "@src/client";
+import { DEFAULT_SERVERINFO } from "@src/reducers/session";
+import * as saga from "@src/sagas/session";
+import { clearSession, saveSession } from "@src/store/localStore";
+import { mockNotifyError } from "@test/testUtils";
 import { push as updatePath } from "redux-first-history";
 import { call, put } from "redux-saga/effects";
 

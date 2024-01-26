@@ -1,6 +1,6 @@
-import * as CollectionActions from "../../actions/collection";
-import * as RouteActions from "../../actions/route";
-import type { Capabilities } from "../../types";
+import * as CollectionActions from "@src/actions/collection";
+import * as RouteActions from "@src/actions/route";
+import type { Capabilities } from "@src/types";
 
 export type CommonStateProps = {
   capabilities: Capabilities;

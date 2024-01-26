@@ -1,18 +1,18 @@
-import * as CollectionActions from "../../actions/collection";
-import * as RouteActions from "../../actions/route";
-import { storageKeys, useLocalStorage } from "../../hooks/storage";
+import CollectionTabs from "./CollectionTabs";
+import RecordTable from "./RecordTable";
+import { ListActions } from "./RecordTable";
+import { CommonProps, CommonStateProps } from "./commonPropTypes";
+import * as CollectionActions from "@src/actions/collection";
+import * as RouteActions from "@src/actions/route";
+import AdminLink from "@src/components/AdminLink";
+import Spinner from "@src/components/Spinner";
+import { storageKeys, useLocalStorage } from "@src/hooks/storage";
 import type {
   BucketState,
   CollectionRouteMatch,
   CollectionState,
   SessionState,
-} from "../../types";
-import AdminLink from "../AdminLink";
-import Spinner from "../Spinner";
-import CollectionTabs from "./CollectionTabs";
-import RecordTable from "./RecordTable";
-import { ListActions } from "./RecordTable";
-import { CommonProps, CommonStateProps } from "./commonPropTypes";
+} from "@src/types";
 import React, { useCallback, useEffect } from "react";
 import { Shuffle } from "react-bootstrap-icons";
 

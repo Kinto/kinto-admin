@@ -1,4 +1,4 @@
-import { humanDate, timeago } from "../../utils";
+import { humanDate, timeago } from "@src/utils";
 import React from "react";
 
 export default function HumanDate({

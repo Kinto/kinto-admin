@@ -1,7 +1,7 @@
-import * as CollectionActions from "../../actions/collection";
-import type { StateProps } from "../../components/record/RecordCreate";
-import RecordCreate from "../../components/record/RecordCreate";
-import type { AppState } from "../../types";
+import * as CollectionActions from "@src/actions/collection";
+import type { StateProps } from "@src/components/record/RecordCreate";
+import RecordCreate from "@src/components/record/RecordCreate";
+import type { AppState } from "@src/types";
 import { connect } from "react-redux";
 import type { Dispatch } from "redux";
 import { bindActionCreators } from "redux";

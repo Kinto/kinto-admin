@@ -1,3 +1,4 @@
+import { paginator } from "./shared";
 import {
   GROUP_BUSY,
   GROUP_HISTORY_NEXT_REQUEST,
@@ -7,9 +8,8 @@ import {
   ROUTE_LOAD_FAILURE,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
-} from "../constants";
-import type { GroupResource, GroupState } from "../types";
-import { paginator } from "./shared";
+} from "@src/constants";
+import type { GroupResource, GroupState } from "@src/types";
 
 export const INITIAL_STATE: GroupState = {
   data: null,

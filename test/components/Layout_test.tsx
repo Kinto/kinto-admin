@@ -1,6 +1,6 @@
-import * as sessionActions from "../../src/actions/session";
-import { Layout } from "../../src/components/Layout";
-import { renderWithProvider } from "../testUtils";
+import * as sessionActions from "@src/actions/session";
+import { Layout } from "@src/components/Layout";
+import { renderWithProvider } from "@test/testUtils";
 import { fireEvent } from "@testing-library/react";
 import React from "react";
 

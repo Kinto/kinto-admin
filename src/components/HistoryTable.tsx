@@ -1,11 +1,15 @@
-import * as NotificationActions from "../actions/notifications";
-import { getClient } from "../client";
-import type { RecordData, ResourceHistoryEntry, RouteLocation } from "../types";
-import { diffJson, humanDate, parseHistoryFilters, timeago } from "../utils";
-import { omit, sortHistoryEntryPermissions } from "../utils";
 import AdminLink from "./AdminLink";
 import PaginatedTable from "./PaginatedTable";
 import Spinner from "./Spinner";
+import * as NotificationActions from "@src/actions/notifications";
+import { getClient } from "@src/client";
+import type {
+  RecordData,
+  ResourceHistoryEntry,
+  RouteLocation,
+} from "@src/types";
+import { diffJson, humanDate, parseHistoryFilters, timeago } from "@src/utils";
+import { omit, sortHistoryEntryPermissions } from "@src/utils";
 import type { Location } from "history";
 import React, { useState } from "react";
 import { Eye } from "react-bootstrap-icons";

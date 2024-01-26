@@ -1,12 +1,12 @@
-import * as BucketActions from "../../actions/bucket";
+import GroupForm from "./GroupForm";
+import * as BucketActions from "@src/actions/bucket";
+import Spinner from "@src/components/Spinner";
 import type {
   BucketRouteMatch,
   BucketState,
   GroupState,
   SessionState,
-} from "../../types";
-import Spinner from "../Spinner";
-import GroupForm from "./GroupForm";
+} from "@src/types";
 import React from "react";
 
 export type OwnProps = {

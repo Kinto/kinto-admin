@@ -1,8 +1,8 @@
-import * as actions from "../actions/group";
-import { notifyError } from "../actions/notifications";
-import { getClient } from "../client";
-import { MAX_PER_PAGE } from "../constants";
-import type { ActionType, GetStateFn, SagaGen } from "../types";
+import * as actions from "@src/actions/group";
+import { notifyError } from "@src/actions/notifications";
+import { getClient } from "@src/client";
+import { MAX_PER_PAGE } from "@src/constants";
+import type { ActionType, GetStateFn, SagaGen } from "@src/types";
 import { call, put } from "redux-saga/effects";
 
 function getBucket(bid) {

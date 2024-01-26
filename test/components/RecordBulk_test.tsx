@@ -1,5 +1,5 @@
-import RecordBulk from "../../src/components/record/RecordBulk";
-import { renderWithProvider } from "../testUtils";
+import RecordBulk from "@src/components/record/RecordBulk";
+import { renderWithProvider } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
 

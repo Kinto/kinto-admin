@@ -1,4 +1,4 @@
-import { SERVERS_ADD, SERVERS_CLEAR } from "../constants";
+import { SERVERS_ADD, SERVERS_CLEAR } from "@src/constants";
 
 export function addServer(
   server: string,

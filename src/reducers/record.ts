@@ -1,3 +1,4 @@
+import { paginator } from "./shared";
 import {
   RECORD_BUSY,
   RECORD_CREATE_REQUEST,
@@ -10,9 +11,8 @@ import {
   ROUTE_LOAD_FAILURE,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
-} from "../constants";
-import type { RecordResource, RecordState } from "../types";
-import { paginator } from "./shared";
+} from "@src/constants";
+import type { RecordResource, RecordState } from "@src/types";
 
 const INITIAL_STATE: RecordState = {
   busy: false,

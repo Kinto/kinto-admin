@@ -1,8 +1,8 @@
-import { useAppSelector } from "../../hooks/app";
-import type { RecordData } from "../../types";
-import { buildAttachmentUrl, renderDisplayField, timeago } from "../../utils";
-import AdminLink from "../AdminLink";
 import { CommonProps } from "./commonPropTypes";
+import AdminLink from "@src/components/AdminLink";
+import { useAppSelector } from "@src/hooks/app";
+import type { RecordData } from "@src/types";
+import { buildAttachmentUrl, renderDisplayField, timeago } from "@src/utils";
 import React from "react";
 import { Dropdown } from "react-bootstrap";
 import {

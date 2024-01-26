@@ -1,5 +1,5 @@
-import * as actions from "../actions/notifications";
-import type { Notifications } from "../types";
+import * as actions from "@src/actions/notifications";
+import type { Notifications } from "@src/types";
 import React from "react";
 import { AlertList } from "react-bs-notifier";
 

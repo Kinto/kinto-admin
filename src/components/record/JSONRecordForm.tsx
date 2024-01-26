@@ -1,7 +1,7 @@
-import { omit } from "../../utils";
-import BaseForm from "../BaseForm";
-import JSONEditor from "../JSONEditor";
 import { RJSFSchema, UiSchema } from "@rjsf/utils";
+import BaseForm from "@src/components/BaseForm";
+import JSONEditor from "@src/components/JSONEditor";
+import { omit } from "@src/utils";
 import React from "react";
 
 const schema: RJSFSchema = {

@@ -1,5 +1,5 @@
-import * as SessionActions from "../actions/session";
-import { useAppDispatch, useAppSelector } from "../hooks/app";
+import * as SessionActions from "@src/actions/session";
+import { useAppDispatch, useAppSelector } from "@src/hooks/app";
 import * as React from "react";
 import { BoxArrowRight } from "react-bootstrap-icons";
 import { QuestionCircleFill } from "react-bootstrap-icons";

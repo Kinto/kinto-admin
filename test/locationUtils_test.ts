@@ -1,4 +1,4 @@
-import { breadcrumbifyPath, parseSearchString } from "../src/locationUtils";
+import { breadcrumbifyPath, parseSearchString } from "@src/locationUtils";
 
 describe("locationUtils", () => {
   test("breadcrumbify should return expected arrays", () => {

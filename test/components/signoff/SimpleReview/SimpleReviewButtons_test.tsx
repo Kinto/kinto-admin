@@ -1,5 +1,5 @@
-import SimpleReviewButtons from "../../../../src/components/signoff/SimpleReview/SimpleReviewButtons";
-import { renderWithProvider } from "../../../testUtils";
+import SimpleReviewButtons from "@src/components/signoff/SimpleReview/SimpleReviewButtons";
+import { renderWithProvider } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
 

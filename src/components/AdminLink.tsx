@@ -1,5 +1,5 @@
-import type { RouteParams } from "../types";
-import url from "../url";
+import type { RouteParams } from "@src/types";
+import url from "@src/url";
 import { PureComponent } from "react";
 import * as React from "react";
 import { Link } from "react-router-dom";

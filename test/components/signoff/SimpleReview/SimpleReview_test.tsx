@@ -1,5 +1,5 @@
-import SimpleReview from "../../../../src/components/signoff/SimpleReview";
-import { renderWithProvider, sessionFactory } from "../../../testUtils";
+import SimpleReview from "@src/components/signoff/SimpleReview";
+import { renderWithProvider, sessionFactory } from "@test/testUtils";
 import {
   fireEvent,
   screen,
