@@ -18,6 +18,10 @@
     "experimentalDecorators": true,
     "declaration": true,
     "allowJs": false, 
+    "paths": {
+      "@src/*": ["./src/*"],
+      "@test/*": ["./test/*"],
+    }
   },
   "include": ["src", "test", "__mocks__"],
   "references": [{ "path": "./tsconfig.node.json" }]
