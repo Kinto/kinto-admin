@@ -3,6 +3,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { execSync } from 'child_process'
+import path from 'path'
 
 /**
  * used to set the relative path from which we expect to serve the admin's
@@ -24,6 +25,12 @@ export default defineConfig({
   base: ASSET_PATH,  
   define: {
     KINTO_ADMIN_VERSION: JSON.stringify(KINTO_ADMIN_VERSION)
+  },
+  resolve: {
+    alias: {
+      '@src': path.resolve(__dirname, './src'),
+      '@test': path.resolve(__dirname, './test')
+    }
   },
   build: {
     outDir: "build"
