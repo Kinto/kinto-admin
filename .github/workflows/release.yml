@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      
     steps:
       - uses: actions/checkout@v4
         with: 
@@ -23,13 +24,17 @@ jobs:
 
       - name: Build the package
         run: |
-            npm run build:kinto-single
-            cd build
-            tar -cvf "$RUNNER_TEMP/kinto-admin-release.tar" *
+          npm run build:kinto-single
+          cd build
+          tar -cvf "$RUNNER_TEMP/kinto-admin-release.tar" *
 
-      - name: Create release
-        uses: softprops/action-gh-release@v1
-        with:
-          draft: true
-          fail_on_unmatched_files: true
-          files: ${{ runner.temp }}/kinto-admin-release.tar
+      - name: Create release if one doesn't exist yet
+        run: |
+          EXISTING_RELEASE=$(gh release view $TAG --json="id")
+          if [[ -z $EXISTING_RELEASE ]]; then
+              gh release create $TAG --generate-notes -d
+          fi
+      
+      - name: Upload built package to release
+        run: |
+          gh release upload $GITHUB_REF "$RUNNER_TEMP/kinto-admin-release.tar" --clobber
