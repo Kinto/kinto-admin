@@ -1,0 +1,42 @@
+name: Create a release on tag
+on: 
+  push: 
+    tags:
+      - "v*.*.*"
+jobs:
+  build: 
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      
+    steps:
+      - uses: actions/checkout@v4
+        with: 
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+          cache: 'npm'
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Build the package
+        run: |
+          npm run build:kinto-single
+          cd build
+          tar -cvf "$RUNNER_TEMP/kinto-admin-release.tar" *
+
+      - name: Create release if one doesn't exist yet
+        run: |
+          EXISTING_RELEASE=$(gh release view $GITHUB_REF --json="id" || echo '')
+          if [[ -z $EXISTING_RELEASE ]]; then
+              gh release create $GITHUB_REF --generate-notes -d
+          fi
+      
+      - name: Upload built package to release
+        run: |
+          gh release upload $GITHUB_REF "$RUNNER_TEMP/kinto-admin-release.tar" --clobber

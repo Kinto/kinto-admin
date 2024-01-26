@@ -1,6 +1,6 @@
 {
   "name": "kinto-admin",
-  "version": "3.0.1",
+  "version": "0.0.0-dev",
   "description": "Kinto Web Administration Console in React.js",
   "type": "module",
   "scripts": {
@@ -11,7 +11,6 @@
     "cs-format": "prettier \"{src,test}/**/*.{js,jsx,ts,tsx}\" --write",
     "lint": "eslint . --ext ts,tsx",
     "preview": "vite preview",
-    "publish-to-gh-pages": "ASSET_PATH=/kinto-admin/ npm run build && gh-pages --add --dist build/",
     "start": "vite",
     "tdd": "vitest",
     "test": "vitest --watch=false",
@@ -64,7 +63,6 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "gh-pages": "^6.0.0",
     "prettier": "^3.0.2",
     "toctoc": "^0.4.0",
     "typescript": "^5.3.3",
