@@ -1,2 +1,5 @@
+# Use @src and @test aliases for @src and @test directories, respectively 
+10de8b02e202d59f2d8431843abbe7a5ffb4adf4
+
 # Run prettier after installing @trivago/prettier-plugin-sort-imports
 f993f8379304ce0f44cae0bd4b76b004aa1caa30
