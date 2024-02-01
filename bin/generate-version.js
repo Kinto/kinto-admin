@@ -45,6 +45,12 @@ const getGitLatestReleaseVersion = async () => {
 };
 
 const main = (() => {
+  /**
+   * The `KINTO_ADMIN_VERSION` env var is used when someone wants to download
+   * an earlier release and build assets from source. Since they won't be in a
+   * `git` directory to be able to pull version information from the latest
+   * tag, this allows them to inject the version they're downloading into the bundle.
+   */
   const kintoAdminVersion = process.env.KINTO_ADMIN_VERSION;
 
   return async () => {

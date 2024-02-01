@@ -37,18 +37,40 @@ pre-commit`` and ``pre-commit install``. (If you have a
 
 ## Installation
 
-The easiest way to install and use Kinto Admin on your server is to:
-- download a [release](https://github.com/Kinto/kinto-admin/releases/) from Github.
+### Prebuilt Single Server Assets
+If you intend to use Kinto Admin in a Kinto Server with standard options, since [version v3.0.3](https://github.com/Kinto/kinto-admin/releases/tag/v3.0.3), you can download prebuilt assets for each release. 
+
+### Building the Assets
+To customize your Kinto Admin installation, you can download the source code and built the asset bundle. See [below](#build-customization) for customization options
+
+#### Latest Release
+- download the latest [release](https://github.com/Kinto/kinto-admin/releases/latest) from Github.
 
 - Unzip the directory, then install dependencies:
-```
-$ cd kinto-admin && npm install
+```bash 
+cd kinto-admin && npm ci
 ```
 
 - Build the static bundle with:
+
+```bash
+npm run build
 ```
-$ npm run build
+
+#### Earlier Release
+To download an earlier release, set a `KINTO_ADMIN_VERSION` environment variable with the tag you're downloading. For example:
+
+```bash
+export KINTO_ADMIN_VERSION="v1.2.3"
+
+curl -OL "https://github.com/Kinto/kinto-admin/archive/refs/tags/${KINTO_ADMIN_VERSION}.tar.gz"
+# ...
+npm ci
+npm run build
 ```
+
+This will inject the version into the built asset bundle.
+
 
 This will generate a production-ready assets in a `build` directory, ready to be served from your server of choice.
 
