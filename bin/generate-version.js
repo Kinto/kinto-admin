@@ -1,65 +1,40 @@
 #!/usr/bin/env node
 import { execSync } from "child_process";
 import { writeFileSync } from "fs";
-import * as https from "https";
+import fetch from "node-fetch";
 
-async function getLatestRelease() {
-  return new Promise((resolve, reject) => {
-    https
-      .get(
-        "https://api.github.com/repos/Kinto/kinto-admin/releases/latest",
-        { headers: { "user-agent": "Kinto Admin CI" } },
-        res => {
-          let data = "";
-
-          res.on("data", chunk => {
-            data += chunk;
-          });
-
-          res.on("end", () => {
-            try {
-              const jsonData = JSON.parse(data);
-              const result = jsonData.tag_name;
-              resolve(result);
-            } catch (error) {
-              reject(new Error(`Error parsing JSON: ${error.message}`));
-            }
-          });
-        }
-      )
-      .on("error", error => {
-        reject(new Error(`Error making HTTP request: ${error.message}`));
-      });
-  });
+async function getLatestReleaseVersion() {
+  const res = await fetch(
+    "https://api.github.com/repos/Kinto/kinto-admin/releases/latest",
+    { headers: { "user-agent": "Kinto Admin CI" } } // `user-agent` header required by Github API
+  );
+  const body = await res.json();
+  return body.tag_name.replace(/^v/, "");
 }
 
-const getGitLatestReleaseVersion = async () => {
+const getGitVersion = () => {
   try {
     return execSync("git describe --tags --abbrev=4", {
       encoding: "utf-8",
-    }).trim();
+    })
+      .trim()
+      .replace(/^v/, "");
   } catch (error) {
     console.log(error);
-    return await getLatestRelease();
   }
 };
 
-const main = (() => {
+(async () => {
   /**
    * The `KINTO_ADMIN_VERSION` env var is used when someone wants to download
    * an earlier release and build assets from source. Since they won't be in a
    * `git` directory to be able to pull version information from the latest
    * tag, this allows them to inject the version they're downloading into the bundle.
    */
-  const kintoAdminVersion = process.env.KINTO_ADMIN_VERSION;
+  const version =
+    process.env.KINTO_ADMIN_VERSION ||
+    getGitVersion() ||
+    (await getLatestReleaseVersion());
 
-  return async () => {
-    const version =
-      kintoAdminVersion ||
-      (await getGitLatestReleaseVersion()).replace(/^v/, "");
-
-    writeFileSync("./public/VERSION", version);
-  };
+  writeFileSync("./public/VERSION", version);
 })();
-
-main();
