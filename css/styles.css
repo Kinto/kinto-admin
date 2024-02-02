@@ -321,6 +321,7 @@ table.record-list td.load-more {
 }
 
 .collections-menu-entry-edit {
+  position: absolute;
   margin-right: -0.5em;
   color: #888;
 }
