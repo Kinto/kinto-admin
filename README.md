@@ -12,6 +12,10 @@ Kinto-based systems.
 
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
+     - [Prebuilt Single Server Assets](#prebuilt-single-server-assets)
+     - [Building the Assets](#building-the-assets)
+        - [Latest Release](#latest-release)
+        - [Earlier Release](#earlier-release)
   - [Build customization](#build-customization)
      - [Single Server](#single-server)
      - [Building for relative paths](#building-for-relative-paths)
@@ -22,6 +26,12 @@ Kinto-based systems.
      - [Browser support](#browser-support)
      - [How to display a nested field value using the collection displayFields property?](#how-to-display-a-nested-field-value-using-the-collection-displayfields-property)
   - [Releasing](#releasing)
+     - [Through GitHub UI](#through-github-ui)
+     - [Through git commands](#through-git-commands)
+  - [Deploying to github-pages](#deploying-to-github-pages)
+     - [Repo configuration for forks](#repo-configuration-for-forks)
+     - [Deployed automatically on release publish](#deployed-automatically-on-release-publish)
+     - [Running the github action manually](#running-the-github-action-manually)
   - [License](#license)
 
 ---
@@ -37,20 +47,40 @@ pre-commit`` and ``pre-commit install``. (If you have a
 
 ## Installation
 
-The easiest way to install and use Kinto Admin on your server is to:
-- download a [release](https://github.com/Kinto/kinto-admin/releases/) from Github.
+### Prebuilt Single Server Assets
+If you intend to use Kinto Admin in a Kinto Server with standard options, since [version v3.0.3](https://github.com/Kinto/kinto-admin/releases/tag/v3.0.3), you can download prebuilt assets for each release. 
+
+### Building the Assets
+To customize your Kinto Admin installation, you can download the source code and build the asset bundle. Then, you can serve the bundle from your server of choice. See [below](#build-customization) for customization options.
+
+#### Latest Release
+- download the latest [release](https://github.com/Kinto/kinto-admin/releases/latest) from Github.
 
 - Unzip the directory, then install dependencies:
-```
-$ cd kinto-admin && npm install
+``` 
+$ cd kinto-admin && npm ci
 ```
 
 - Build the static bundle with:
+
 ```
 $ npm run build
 ```
 
-This will generate a production-ready assets in a `build` directory, ready to be served from your server of choice.
+#### Earlier Release
+To download an earlier release, set a `KINTO_ADMIN_VERSION` environment variable with the tag you're downloading. For example:
+
+```bash
+export KINTO_ADMIN_VERSION="v1.2.3"
+
+curl -OL "https://github.com/Kinto/kinto-admin/archive/refs/tags/${KINTO_ADMIN_VERSION}.tar.gz"
+# ...
+npm ci
+npm run build
+```
+
+This will inject the version into the built asset bundle.
+
 
 ## Build customization
 Use the following options to customize the Kinto Admin build.
@@ -59,14 +89,14 @@ Use the following options to customize the Kinto Admin build.
 By default, Kinto Admin gives you the option to connect to multiple Kinto Servers. If you only want Kinto Admin to connect to the server from which it's being served, you can set the `KINTO_ADMIN_SINGLE_SERVER` flag as an environment variable:
 
 ```
-KINTO_ADMIN_SINGLE_SERVER=1 npm run build
+$ KINTO_ADMIN_SINGLE_SERVER=1 npm run build
 ```
 
 ### Building for relative paths
-By default, Kinto Admin assumes assets will be served from the root path (`/`) of the server. If you'd like to serve assets from a different location, set that option with an `ASSET_PATH` environment variable:
+By default, Kinto Admin assumes assets will be served from the root path (`/`) of the server. If you'd like to serve assets from a different location, set that option with the `ASSET_PATH` environment variable:
 
 ```
-ASSET_PATH="/some/prefix/" npm run build
+$ ASSET_PATH="/some/prefix/" npm run build
 ```
 
 ## Hacking on kinto-admin
@@ -86,10 +116,13 @@ $ cd kinto-admin && npm install
 Optionally, configure `git` to use `.git-blame-ignore-revs` to remove noisy commits (e.g. running `prettier` on the entire codebase) from `git blame`:
 
 ```
-git config blame.ignoreRevsFile .git-blame-ignore-revs
+$ git config blame.ignoreRevsFile .git-blame-ignore-revs
 ```
 
 After installation of packages, run the development server.
+```
+$ npm run start
+```
 
 ## Development server
 
@@ -101,7 +134,7 @@ install Kinto Admin using the installation instructions above.
 To run in development mode:
 
 ```
-$ npm start
+$ npm run start
 ```
 
 The application is served at [localhost:3000](http://localhost:3000/), and any
