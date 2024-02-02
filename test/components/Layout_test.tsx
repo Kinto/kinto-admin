@@ -12,10 +12,6 @@ describe("App component", () => {
     store = app.store;
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
   describe("Session top bar", () => {
     it("should not render a session top bar when not authenticated", () => {
       expect(app.queryByTestId("sessionInfo-bar")).toBeNull();
