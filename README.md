@@ -57,14 +57,14 @@ To customize your Kinto Admin installation, you can download the source code and
 - download the latest [release](https://github.com/Kinto/kinto-admin/releases/latest) from Github.
 
 - Unzip the directory, then install dependencies:
-```bash 
-cd kinto-admin && npm ci
+``` 
+$ cd kinto-admin && npm ci
 ```
 
 - Build the static bundle with:
 
-```bash
-npm run build
+```
+$ npm run build
 ```
 
 #### Earlier Release
@@ -89,7 +89,7 @@ Use the following options to customize the Kinto Admin build.
 By default, Kinto Admin gives you the option to connect to multiple Kinto Servers. If you only want Kinto Admin to connect to the server from which it's being served, you can set the `KINTO_ADMIN_SINGLE_SERVER` flag as an environment variable:
 
 ```
-KINTO_ADMIN_SINGLE_SERVER=1 npm run build
+$ KINTO_ADMIN_SINGLE_SERVER=1 npm run build
 ```
 
 ### Building for relative paths
