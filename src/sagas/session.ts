@@ -268,7 +268,7 @@ export function* listBuckets(
 
     // Retrieve and build the list of buckets
     const client = getClient();
-    let data;
+    let data = [];
     try {
       data = (yield call([client, client.listBuckets])).data;
     } catch (error) {
@@ -277,7 +277,6 @@ export function* listBuckets(
       if (!/HTTP 40[13]/.test(error.message)) {
         throw error;
       }
-      data = [];
     }
 
     // If the default_bucket plugin is enabled, show the Default bucket first in the list.

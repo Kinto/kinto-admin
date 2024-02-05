@@ -7,6 +7,14 @@ const mock = vi.fn().mockImplementation(server => {
   return {
     fetchServerInfo: mockFetchServerInfo,
     remote: server,
+    listBuckets: () => {
+      return {
+        data: []
+      };
+    },
+    batch: () => {
+      return [];
+    },
   };
 });
 
