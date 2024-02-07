@@ -32,11 +32,11 @@ jobs:
 
       - name: Create release if one doesn't exist yet
         run: |
-          EXISTING_RELEASE=$(gh release view $GITHUB_REF --json="id" || echo '')
+          EXISTING_RELEASE=$(gh release view $GITHUB_REF_NAME --json="id" || echo '')
           if [[ -z $EXISTING_RELEASE ]]; then
-              gh release create $GITHUB_REF --generate-notes -d
+              gh release create $GITHUB_REF_NAME --generate-notes -d
           fi
       
       - name: Upload built package to release
         run: |
-          gh release upload $GITHUB_REF "$RUNNER_TEMP/kinto-admin-release.tar" --clobber
+          gh release upload $GITHUB_REF_NAME "$RUNNER_TEMP/kinto-admin-release.tar" --clobber
