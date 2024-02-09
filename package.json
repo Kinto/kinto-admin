@@ -17,7 +17,9 @@
     "test": "npm run generate-version && vitest --watch=false",
     "test:ci": "npm run test",
     "test-all": "npm run lint && npm run test",
-    "test-all:ci": "npm run lint && npm run test:ci"
+    "test-all:ci": "npm run lint && npm run test:ci",
+    "playwright": "playwright test",
+    "playwright:install": "playwright install firefox"
   },
   "engines": {
     "npm": ">=8",
@@ -50,6 +52,7 @@
     "timeago.js": "^4.0.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.41.2",
     "@testing-library/jest-dom": "^6.1.4",
     "@testing-library/react": "^12.1.5",
     "@testing-library/react-hooks": "^8.0.1",
