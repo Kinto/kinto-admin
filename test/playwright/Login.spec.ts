@@ -1,42 +1,9 @@
-import { test, expect, request } from '@playwright/test';
-import { baseUrl, baseApi } from "./config"
-
-const baseConfig = {
-  "project_name": "kinto",
-  "project_version": "1",
-  "http_api_version": "1.22",
-  "project_docs": "https://kinto.readthedocs.io/",
-  "url": baseApi,
-  "settings": {
-    "batch_max_requests": 25,
-    "readonly": false,
-    "explicit_permissions": true
-  },
-  "capabilities": {
-    "default_bucket": {
-      "description": "The default bucket is an alias for a personal bucket where collections are created implicitly.",
-      "url": "https://kinto.readthedocs.io/en/latest/api/1.x/buckets.html#personal-bucket-default"
-    },
-    "admin": {
-      "description": "Serves the admin console.",
-      "url": "https://github.com/Kinto/kinto-admin/",
-      "version": "0.0.0-dev"
-    },
-    "accounts": {
-      "description": "Manage user accounts.",
-      "url": "https://kinto.readthedocs.io/en/latest/api/1.x/accounts.html",
-      "validation_enabled": false
-    },
-    "permissions_endpoint": {
-      "description": "The permissions endpoint can be used to list all user objects permissions.",
-      "url": "https://kinto.readthedocs.io/en/latest/configuration/settings.html#activating-the-permissions-endpoint"
-    }
-  }
-};
+import { test, expect } from '@playwright/test';
+import { baseUrl, baseApi, baseConfig, authenticatedConfig } from "./config"
 
 test('Login page loads and user logs in successfully', async ({ page }) => {
   // mock API response for get server info
-  await page.route(`${baseApi}`, async route => {
+  await page.route(baseApi, async route => {
     await route.fulfill({
       json: baseConfig,
     });
@@ -54,13 +21,7 @@ test('Login page loads and user logs in successfully', async ({ page }) => {
   // mock API response, including user object this time
   await page.route(`${baseApi}`, async route => {
     await route.fulfill({
-      json: {
-        ...baseConfig,
-        user: {
-          id: "user",
-          principals: ["account:user"]
-        }
-      }
+      json: authenticatedConfig
     });
   });
 
@@ -81,7 +42,7 @@ test('Login page loads and user logs in successfully', async ({ page }) => {
 
 test('Login page loads and user fails to login', async ({ page }) => {
   // mock API response
-  await page.route(`${baseApi}`, async route => {
+  await page.route(baseApi, async route => {
     await route.fulfill({
       json: baseConfig,
     });
