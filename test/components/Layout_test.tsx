@@ -1,7 +1,7 @@
 import * as sessionActions from "@src/actions/session";
 import { Layout } from "@src/components/Layout";
 import { renderWithProvider } from "@test/testUtils";
-import { fireEvent } from "@testing-library/react";
+import { fireEvent, waitFor } from "@testing-library/react";
 import React from "react";
 
 describe("App component", () => {
@@ -17,20 +17,21 @@ describe("App component", () => {
       expect(app.queryByTestId("sessionInfo-bar")).toBeNull();
     });
 
-    it("should render a session top bar when anonymous", () => {
+    it("should render a session top bar when anonymous", async () => {
       const serverInfo = {
         url: "http://test.server/v1/",
         capabilities: {},
       };
       store.dispatch(sessionActions.serverInfoSuccess(serverInfo));
       store.dispatch(sessionActions.setAuthenticated());
+      await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
       const content = app.container.textContent;
 
       expect(content).toContain("Anonymous");
       expect(content).toContain(serverInfo.url);
     });
 
-    it("should display a link to the server docs", () => {
+    it("should display a link to the server docs", async () => {
       const serverInfo = {
         url: "http://test.server/v1/",
         project_docs: "https://remote-settings.readthedocs.io/",
@@ -40,11 +41,12 @@ describe("App component", () => {
       store.dispatch(
         sessionActions.setAuthenticated({ user: { id: "fxa:abc" } })
       );
+      await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
 
       expect(app.getByText(/Documentation/).href).toBe(serverInfo.project_docs);
     });
 
-    it("should render a session top bar when authenticated", () => {
+    it("should render a session top bar when authenticated", async () => {
       const serverInfo = {
         url: "http://test.server/v1/",
         capabilities: {},
@@ -59,6 +61,7 @@ describe("App component", () => {
       store.dispatch(sessionActions.serverInfoSuccess(serverInfo));
       store.dispatch(sessionActions.setupComplete());
       store.dispatch(sessionActions.setAuthenticated(credentials));
+      await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
 
       const infoBar = app.getByTestId("sessionInfo-bar");
       expect(infoBar).toBeDefined();
