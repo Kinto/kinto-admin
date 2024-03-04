@@ -1,5 +1,5 @@
 import { useLocalStorage } from "@src/hooks/storage";
-import { act, renderHook } from "@testing-library/react-hooks";
+import { act, renderHook } from "@testing-library/react";
 
 describe("useLocalStorage", () => {
   it("should return default value if a value isn't set yet", () => {

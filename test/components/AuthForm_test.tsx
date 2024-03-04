@@ -35,7 +35,7 @@ describe("AuthForm component", () => {
       setupSession = vi.fn();
       serverChange = vi.fn();
       (getServerInfo = async () => {
-        new Promise(resolve => setTimeout(resolve, 1000)); // simulate server response taking a second
+        return new Promise(resolve => setTimeout(resolve, 100)); // simulate server response taking 100ms
       }),
         (navigateToExternalAuth = vi.fn());
       navigateToOpenID = vi.fn();
@@ -78,7 +78,7 @@ describe("AuthForm component", () => {
           target: { value: "http://test.server/v1" },
         });
         await screen.findByTestId("spinner"); // spinner should show up
-        await waitFor(() => new Promise(resolve => setTimeout(resolve, 400))); // debounce wait
+        await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
         expect(screen.queryByTestId("spinner")).toBeNull(); // spinner should be gone by now
 
         fireEvent.click(screen.getByLabelText("Basic Auth"));
