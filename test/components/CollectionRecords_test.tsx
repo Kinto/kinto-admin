@@ -272,4 +272,42 @@ describe("CollectionRecords component", () => {
       });
     });
   });
+
+  it("Does not crash when bucket.data is nullish", () => {
+    const listRecordsMock = vi.fn();
+
+    const props = {
+      session: { authenticated: true, permissions: ["foo"] },
+      bucket: {
+        ...bucket,
+        data: null,
+      },
+      collection: {
+        busy: false,
+        data: {
+          schema: {
+            type: "object",
+            properties: {
+              foo: { type: "string" },
+            },
+          },
+          displayFields: ["foo"],
+          last_modified: 123,
+        },
+        permissions: {
+          write: ["basicauth:plop"],
+        },
+        recordsLoaded: true,
+        records: [],
+      },
+      capabilities,
+      listRecords: listRecordsMock,
+    };
+    renderWithProvider(
+      <CollectionRecords
+        {...props}
+        match={{ params: { bid: "bucket1", cid: "collection1" } }}
+      />
+    );
+  });
 });

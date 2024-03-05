@@ -18,7 +18,7 @@ export function ListActions(props) {
   }
   return (
     <div className="list-actions">
-      {canCreateRecord(session, bucket.data.id, collection) && (
+      {canCreateRecord(session, bucket.data?.id, collection) && (
         <>
           <AdminLink
             key="__1"

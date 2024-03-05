@@ -79,6 +79,10 @@ export default function SignoffToolBar({
     }
   }, [collectionState.data]);
 
+  if (!bucketState.data?.id) {
+    return null;
+  }
+
   const {
     data: { id: bid },
   } = bucketState;
