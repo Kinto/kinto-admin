@@ -19,7 +19,7 @@ import type {
   SagaGen,
 } from "@src/types";
 import { clone, copyToClipboard, getAuthLabel } from "@src/utils";
-import type { PermissionData } from "kinto-http";
+import { PermissionData } from "kinto/lib/http";
 import { push as updatePath } from "redux-first-history";
 import { call, put } from "redux-saga/effects";
 

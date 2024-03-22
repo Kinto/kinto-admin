@@ -35,7 +35,7 @@
     "diff": "^5.2.0",
     "filesize": "^10.1.0",
     "history": "^4.10.1",
-    "kinto-http": "^5.3.0",
+    "kinto": "^15.0.0",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-bootstrap": "^1.6.7",

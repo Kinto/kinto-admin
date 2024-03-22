@@ -3,7 +3,7 @@ import { vi } from 'vitest';
 
 export const mockFetchServerInfo = vi.fn().mockReturnValue(DEFAULT_SERVERINFO);
 
-const mock = vi.fn().mockImplementation(server => {
+export const KintoClient = vi.fn().mockImplementation(server => {
   return {
     fetchServerInfo: mockFetchServerInfo,
     remote: server,
@@ -18,4 +18,3 @@ const mock = vi.fn().mockImplementation(server => {
   };
 });
 
-export default mock;
