@@ -2,7 +2,7 @@
 
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { execSync } from 'child_process'
+import { readFileSync } from 'fs'
 import path from 'path'
 
 /**
@@ -13,7 +13,7 @@ import path from 'path'
  */
 const ASSET_PATH = process.env.ASSET_PATH || "/";
 
-const KINTO_ADMIN_VERSION = execSync('git describe --tags --abbrev=4').toString().replace(/^v|\n/g, '');
+const KINTO_ADMIN_VERSION = readFileSync('./public/VERSION').toString();
 
 // https://vitejs.dev/config/
 export default defineConfig({

@@ -108,6 +108,22 @@ export default function CollectionRecords(props: Props) {
         capabilities={capabilities}
         totalRecords={totalRecords}
       >
+        {capabilities.signer && !useSimpleReview && (
+          <AdminLink
+            className="btn btn-secondary"
+            params={{ bid, cid }}
+            name="collection:simple-review"
+            onClick={() => {
+              setUseSimpleReview(true);
+            }}
+            style={{
+              float: "right",
+              marginTop: "0em",
+            }}
+          >
+            <Shuffle className="icon" /> Switch to Default Review UI
+          </AdminLink>
+        )}
         {listActions}
         {busy ? (
           <Spinner />
@@ -131,22 +147,6 @@ export default function CollectionRecords(props: Props) {
           />
         )}
         {listActions}
-        {capabilities.signer && !useSimpleReview && (
-          <AdminLink
-            className="btn btn-secondary"
-            params={{ bid, cid }}
-            name="collection:simple-review"
-            onClick={() => {
-              setUseSimpleReview(true);
-            }}
-            style={{
-              float: "right",
-              marginTop: "1.5em",
-            }}
-          >
-            <Shuffle className="icon" /> Switch to Default Review UI
-          </AdminLink>
-        )}
       </CollectionTabs>
     </div>
   );

@@ -7,6 +7,14 @@ export const KintoClient = vi.fn().mockImplementation(server => {
   return {
     fetchServerInfo: mockFetchServerInfo,
     remote: server,
+    listBuckets: () => {
+      return {
+        data: []
+      };
+    },
+    batch: () => {
+      return [];
+    },
   };
 });
 
