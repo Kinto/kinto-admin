@@ -110,10 +110,12 @@ export default function SignoffToolBar({
   const { status } = source;
 
   const canRequestReview = canEdit && isEditor(source, sessionState);
+
   const canReview =
     canEdit &&
-    isReviewer(source, sessionState) &&
-    !hasRequestedReview(source, sessionState);
+    ((isReviewer(source, sessionState) &&
+      !hasRequestedReview(source, sessionState)) ||
+      !sessionState.serverInfo?.capabilities?.signer?.to_review_enabled);
   const canRollback = canEdit;
   const hasHistory = "history" in sessionState.serverInfo.capabilities;
 

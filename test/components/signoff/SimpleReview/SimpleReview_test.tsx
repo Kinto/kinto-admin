@@ -74,7 +74,14 @@ function renderSimpleReview(props = null, renderProps = {}) {
       },
     },
     listRecords() {},
-    session: sessionFactory(),
+    session: sessionFactory(
+      {},
+      {
+        signer: {
+          to_review_enabled: true,
+        },
+      }
+    ),
     signoff: signoffFactory(),
     async fetchRecords() {
       return [];

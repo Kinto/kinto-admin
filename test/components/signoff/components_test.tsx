@@ -19,6 +19,7 @@ describe("SignoffToolBar component", () => {
           signer: {
             reviewers_group: "reviewers",
             editors_group: "{collection_id}_editors",
+            to_review_enabled: true,
           },
         },
       },
@@ -131,4 +132,8 @@ describe("SignoffToolBar component", () => {
     expect(await screen.findByTestId("spinner")).toBeDefined();
     expect(propsOverride.approveChanges).toHaveBeenCalledTimes(1);
   });
+
+  it("should hide the review buttons if the current user cannot review", async () => {});
+
+  it("should show the review buttons if signer.to_review_enabled is falsy", async () => {});
 });
