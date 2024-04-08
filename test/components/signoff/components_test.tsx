@@ -3,6 +3,22 @@ import { renderWithProvider } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
 
+vi.mock("../../../src/permission", () => {
+  return {
+    canEditCollection: () => {
+      return true;
+    },
+  };
+});
+
+vi.mock("../../../src/components/signoff/utils", () => {
+  return {
+    isMember: () => {
+      return true;
+    },
+  };
+});
+
 describe("SignoffToolBar component", () => {
   const props = {
     sessionState: {
@@ -133,7 +149,62 @@ describe("SignoffToolBar component", () => {
     expect(propsOverride.approveChanges).toHaveBeenCalledTimes(1);
   });
 
-  it("should hide the review buttons if the current user cannot review", async () => {});
+  describe("to_review_enabled checks", () => {
+    const propsOverride = {
+      ...props,
+      sessionState: {
+        ...props.sessionState,
+        serverInfo: {
+          ...props.sessionState.serverInfo,
+          capabilities: {
+            ...props.sessionState.serverInfo.capabilities,
+            signer: {
+              ...props.sessionState.serverInfo.capabilities.signer,
+              to_review_enabled: false,
+            },
+          },
+          user: {
+            id: "fxa:yo",
+            principals: [
+              "fxa:yo",
+              "/buckets/stage/groups/certs_editors",
+              "/buckets/stage/groups/certs_reviewers",
+            ],
+          },
+        },
+      },
+      signoff: {
+        ...props.signoff,
+        collectionsInfo: {
+          source: {
+            bid: "stage",
+            cid: "certs",
+            lastEditDate: 1524063083971,
+            lastReviewRequestBy: "fxa:yo",
+            changes: {
+              lastUpdated: 42,
+            },
+            status: "to-review",
+          },
+          destination: {
+            bid: "prod",
+            cid: "certs",
+          },
+        },
+      },
+    };
 
-  it("should show the review buttons if signer.to_review_enabled is falsy", async () => {});
+    it("should show the review buttons if signer.to_review_enabled is falsy", async () => {
+      renderWithProvider(<SignoffToolBar {...propsOverride} />);
+      expect(await screen.findByText("Approve")).toBeDefined();
+    });
+
+    it("should not show the review buttons if signer.to_review_enabled is true and the current user requested review", async () => {
+      propsOverride.sessionState.serverInfo.capabilities.signer.to_review_enabled =
+        true;
+
+      renderWithProvider(<SignoffToolBar {...propsOverride} />);
+      expect(screen.queryByText("Approve")).toBeNull();
+    });
+  });
 });

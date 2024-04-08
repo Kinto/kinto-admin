@@ -215,4 +215,57 @@ describe("SimpleTest component", () => {
     // Since Simple Review is the default, this means we're in the legacy UI
     expect(screen.queryByText("Switch to Default Review UI")).toBeDefined();
   });
+
+  describe("to_review_enabled checks", () => {
+    const signoff = {
+      collectionsInfo: {
+        source: {
+          bid: "stage",
+          cid: "certs",
+          lastEditDate: 1524063083971,
+          lastReviewRequestBy: "user1",
+          changes: {
+            lastUpdated: 42,
+          },
+          status: "to-review",
+        },
+        destination: {
+          bid: "prod",
+          cid: "certs",
+        },
+      },
+    };
+
+    it("should show the review buttons if signer.to_review_enabled is falsy", async () => {
+      renderSimpleReview({
+        session: sessionFactory(
+          {},
+          {
+            signer: {
+              to_review_enabled: false,
+            },
+          }
+        ),
+        signoff,
+      });
+      await waitForElementToBeRemoved(() => screen.queryByTestId("spinner"));
+      expect(await screen.findByText(/Approve/)).toBeDefined();
+    });
+
+    it("should not show the review buttons if signer.to_review_enabled is true and the current user requested review", async () => {
+      renderSimpleReview({
+        session: sessionFactory(
+          {},
+          {
+            signer: {
+              to_review_enabled: true,
+            },
+          }
+        ),
+        signoff,
+      });
+      await waitForElementToBeRemoved(() => screen.queryByTestId("spinner"));
+      expect(screen.queryByText(/Approve/)).toBeNull();
+    });
+  });
 });
