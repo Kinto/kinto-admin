@@ -65,10 +65,12 @@ export default function SimpleReview({
   const destBid = signoffDest?.bid;
   const destCid = signoffDest?.cid;
 
+  console.log(signoffSource)
   const canReview = signoffSource
     ? (isReviewer(signoffSource, session) &&
         session.serverInfo?.user?.id !== signoffSource.lastReviewRequestBy) ||
-      !session.serverInfo?.capabilities?.signer?.to_review_enabled
+        session.serverInfo?.capabilities?.signer?.to_review_enabled === false
+        
     : false;
 
   const [records, setRecords] = useState<{
