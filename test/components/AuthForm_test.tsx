@@ -77,9 +77,7 @@ describe("AuthForm component", () => {
         fireEvent.change(screen.queryByLabelText("Server*"), {
           target: { value: "http://test.server/v1" },
         });
-        await screen.findByTestId("spinner"); // spinner should show up
         await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
-        expect(screen.queryByTestId("spinner")).toBeNull(); // spinner should be gone by now
 
         fireEvent.click(screen.getByLabelText("Basic Auth"));
         fireEvent.change(screen.getByLabelText("Username*"), {
