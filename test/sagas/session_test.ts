@@ -77,6 +77,11 @@ describe("session sagas", () => {
 
     describe("Success", () => {
       it("should call client.fetchServerInfo", () => {
+        // ensure that sessionBusy is called
+        expect(getServerInfo.next().value).toStrictEqual(
+          put(actions.sessionBusy(true))
+        );
+
         const fetchServerInfoCall = getServerInfo.next().value;
         client = getClient();
         expect(fetchServerInfoCall).toStrictEqual(
@@ -105,6 +110,7 @@ describe("session sagas", () => {
         action = actions.getServerInfo(authData);
         getServerInfo = saga.getServerInfo(getState, action);
         getServerInfo.next();
+        getServerInfo.next();
         expect(setupClient).toHaveBeenCalledWith({
           authType: "openid",
           provider: "google",
@@ -120,6 +126,7 @@ describe("session sagas", () => {
         // Make sure that we don't keep previously stored capabilities when
         // the new server fails.
         getServerInfo = saga.getServerInfo(getState, action);
+        getServerInfo.next();
         getServerInfo.next();
         expect(getServerInfo.throw().value).toStrictEqual(
           put(actions.serverInfoSuccess(DEFAULT_SERVERINFO))
@@ -154,6 +161,8 @@ describe("session sagas", () => {
 
       it("should ignore the success of the oldest", () => {
         getServerInfo1.next();
+        getServerInfo1.next();
+        getServerInfo2.next();
         getServerInfo2.next();
         // Latest to have started is getServerInfo2, it's taken into account.
         expect(getServerInfo2.next(serverInfo).value).toStrictEqual(
@@ -165,6 +174,8 @@ describe("session sagas", () => {
 
       it("should ignore the error of the oldest", () => {
         getServerInfo1.next();
+        getServerInfo1.next();
+        getServerInfo2.next();
         getServerInfo2.next();
         // Latest to have started is getServerInfo2, it's taken into account.
         expect(getServerInfo2.next(serverInfo).value).toStrictEqual(
