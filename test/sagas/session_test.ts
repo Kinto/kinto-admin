@@ -97,6 +97,10 @@ describe("session sagas", () => {
         expect(getServerInfo.next(serverInfo).value).toMatchObject(
           put(actions.serverInfoSuccess(serverInfo))
         );
+        // ensure that sessionBusy is called
+        expect(getServerInfo.next().value).toStrictEqual(
+          put(actions.sessionBusy(false))
+        );
       });
 
       it("should split the auth if it's openID", () => {
@@ -139,6 +143,10 @@ describe("session sagas", () => {
         expect(mocked).toHaveBeenCalledWith(
           "Could not reach server http://server.test/v1",
           undefined
+        );
+        // ensure that sessionBusy is called
+        expect(getServerInfo.next().value).toStrictEqual(
+          put(actions.sessionBusy(false))
         );
       });
     });

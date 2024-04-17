@@ -92,6 +92,7 @@ export function* getServerInfo(
       )
     );
   }
+  yield put(actions.sessionBusy(false))
 }
 
 export function* setupSession(
