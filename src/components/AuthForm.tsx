@@ -291,7 +291,6 @@ export default function AuthForm({
   const { schema: currentSchema, uiSchema: curentUiSchema } =
     authSchemas(authType);
 
-  const [showSpinner, setshowSpinner] = useState(false);
   const [schema, setSchema] = useState(currentSchema);
   const [uiSchema, setUiSchema] = useState(curentUiSchema);
   const [formData, setFormData] = useState({
@@ -305,7 +304,6 @@ export default function AuthForm({
 
   const serverInfoCallback = async auth => {
     await getServerInfo(auth);
-    setshowSpinner(false);
   };
 
   const authMethods = getSupportedAuthMethods(session);
@@ -322,7 +320,6 @@ export default function AuthForm({
 
   const onChange = ({ formData: updatedData }: RJSFSchema) => {
     if (formData.server !== updatedData.server) {
-      setshowSpinner(true);
       const newServer = servers.find(x => x.server === updatedData.server);
       updatedData.authType = newServer?.authType || ANONYMOUS_AUTH;
     }
@@ -382,7 +379,7 @@ export default function AuthForm({
           formData={formData}
           onChange={onChange}
           onSubmit={onSubmit}
-          showSpinner={showSpinner}
+          showSpinner={session.busy}
         >
           <button type="submit" className="btn btn-info">
             {"Sign in using "}

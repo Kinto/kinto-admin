@@ -33,6 +33,7 @@ export function* getServerInfo(
   action: ActionType<typeof actions.getServerInfo>
 ): SagaGen {
   const { auth } = action;
+  yield put(actions.sessionBusy(true));
 
   let processedAuth: AuthData = auth;
   if (auth.authType.startsWith("openid-")) {
@@ -91,6 +92,7 @@ export function* getServerInfo(
       )
     );
   }
+  yield put(actions.sessionBusy(false));
 }
 
 export function* setupSession(
