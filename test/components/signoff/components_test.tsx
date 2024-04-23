@@ -161,6 +161,7 @@ describe("SignoffToolBar component", () => {
             signer: {
               ...props.sessionState.serverInfo.capabilities.signer,
               to_review_enabled: false,
+              resources: [],
             },
           },
           user: {
@@ -194,7 +195,7 @@ describe("SignoffToolBar component", () => {
       },
     };
 
-    it("should show the review buttons if signer.to_review_enabled is falsy", async () => {
+    it("should show the review buttons if signer.to_review_enabled is false", async () => {
       renderWithProvider(<SignoffToolBar {...propsOverride} />);
       expect(await screen.findByText("Approve")).toBeDefined();
     });
@@ -205,6 +206,24 @@ describe("SignoffToolBar component", () => {
 
       renderWithProvider(<SignoffToolBar {...propsOverride} />);
       expect(screen.queryByText("Approve")).toBeNull();
+    });
+
+    it("should show the review buttons if signer.resources.to_review_enabled is false", async () => {
+      propsOverride.sessionState.serverInfo.capabilities.signer.resources = [
+        {
+          source: {
+            bucket: propsOverride.signoff.collectionsInfo.source.bid,
+            collection: propsOverride.signoff.collectionsInfo.source.cid,
+          },
+          destination: {
+            bucket: propsOverride.signoff.collectionsInfo.destination.bid,
+            collection: propsOverride.signoff.collectionsInfo.destination.cid,
+          },
+          to_review_enabled: false,
+        },
+      ];
+      renderWithProvider(<SignoffToolBar {...propsOverride} />);
+      expect(await screen.findByText("Approve")).toBeDefined();
     });
   });
 });

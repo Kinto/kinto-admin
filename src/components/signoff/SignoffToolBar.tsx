@@ -111,11 +111,26 @@ export default function SignoffToolBar({
 
   const canRequestReview = canEdit && isEditor(source, sessionState);
 
+  let toReviewEnabled =
+    sessionState.serverInfo?.capabilities?.signer?.to_review_enabled === true;
+  if (toReviewEnabled) {
+    const resourceMatch =
+      sessionState.serverInfo?.capabilities?.signer?.resources?.find(
+        x =>
+          x.source.bucket === source.bid &&
+          x.source.collection === source.cid &&
+          x.destination.bucket === destination.bid &&
+          x.destination.collection === destination.cid
+      );
+    toReviewEnabled =
+      !resourceMatch || resourceMatch.to_review_enabled !== false;
+  }
+
   const canReview =
     canEdit &&
     ((isReviewer(source, sessionState) &&
       !hasRequestedReview(source, sessionState)) ||
-      !sessionState.serverInfo?.capabilities?.signer?.to_review_enabled);
+      !toReviewEnabled);
   const canRollback = canEdit;
   const hasHistory = "history" in sessionState.serverInfo.capabilities;
 

@@ -65,12 +65,25 @@ export default function SimpleReview({
   const destBid = signoffDest?.bid;
   const destCid = signoffDest?.cid;
 
-  console.log(signoffSource)
+  let toReviewEnabled =
+    session.serverInfo?.capabilities?.signer?.to_review_enabled === true;
+  if (toReviewEnabled) {
+    const resourceMatch =
+      session.serverInfo?.capabilities?.signer?.resources?.find(
+        x =>
+          x.source.bucket === sourceBid &&
+          x.source.collection === sourceCid &&
+          x.destination.bucket === destBid &&
+          x.destination.collection === destCid
+      );
+    toReviewEnabled =
+      !resourceMatch || resourceMatch.to_review_enabled !== false;
+  }
+
   const canReview = signoffSource
     ? (isReviewer(signoffSource, session) &&
         session.serverInfo?.user?.id !== signoffSource.lastReviewRequestBy) ||
-        session.serverInfo?.capabilities?.signer?.to_review_enabled === false
-        
+      !toReviewEnabled
     : false;
 
   const [records, setRecords] = useState<{

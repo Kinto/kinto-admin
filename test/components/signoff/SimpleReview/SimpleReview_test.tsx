@@ -236,13 +236,42 @@ describe("SimpleTest component", () => {
       },
     };
 
-    it("should show the review buttons if signer.to_review_enabled is falsy", async () => {
+    it("should show the review buttons if signer.to_review_enabled is false", async () => {
       renderSimpleReview({
         session: sessionFactory(
           {},
           {
             signer: {
               to_review_enabled: false,
+            },
+          }
+        ),
+        signoff,
+      });
+      await waitForElementToBeRemoved(() => screen.queryByTestId("spinner"));
+      expect(await screen.findByText(/Approve/)).toBeDefined();
+    });
+
+    it("should show the review buttons if signer.resources.to_review_enabled is false", async () => {
+      renderSimpleReview({
+        session: sessionFactory(
+          {},
+          {
+            signer: {
+              to_review_enabled: true,
+              resources: [
+                {
+                  source: {
+                    bucket: signoff.collectionsInfo.source.bid,
+                    collection: signoff.collectionsInfo.source.cid,
+                  },
+                  destination: {
+                    bucket: signoff.collectionsInfo.destination.bid,
+                    collection: signoff.collectionsInfo.destination.cid,
+                  },
+                  to_review_enabled: false,
+                },
+              ],
             },
           }
         ),
