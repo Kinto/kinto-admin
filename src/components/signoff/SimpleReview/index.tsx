@@ -1,5 +1,5 @@
 import { isReviewer } from "../SignoffToolBar";
-import { isMember } from "../utils";
+import { isMember, toReviewEnabled } from "../utils";
 import PerRecordDiffView from "./PerRecordDiffView";
 import SimpleReviewButtons from "./SimpleReviewButtons";
 import SimpleReviewHeader from "./SimpleReviewHeader";
@@ -66,8 +66,9 @@ export default function SimpleReview({
   const destCid = signoffDest?.cid;
 
   const canReview = signoffSource
-    ? isReviewer(signoffSource, session) &&
-      session.serverInfo?.user?.id !== signoffSource.lastReviewRequestBy
+    ? (isReviewer(signoffSource, session) &&
+        session.serverInfo?.user?.id !== signoffSource.lastReviewRequestBy) ||
+      !toReviewEnabled(session, signoffSource, signoffDest)
     : false;
 
   const [records, setRecords] = useState<{

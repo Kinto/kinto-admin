@@ -5,7 +5,7 @@ import HumanDate from "./HumanDate";
 import { ProgressBar, ProgressStep } from "./ProgressBar";
 import { DiffInfo, Review } from "./Review";
 import { Signed } from "./Signed";
-import { isMember } from "./utils";
+import { isMember, toReviewEnabled } from "./utils";
 import { canEditCollection } from "@src/permission";
 import type {
   BucketState,
@@ -110,10 +110,12 @@ export default function SignoffToolBar({
   const { status } = source;
 
   const canRequestReview = canEdit && isEditor(source, sessionState);
+
   const canReview =
     canEdit &&
-    isReviewer(source, sessionState) &&
-    !hasRequestedReview(source, sessionState);
+    ((isReviewer(source, sessionState) &&
+      !hasRequestedReview(source, sessionState)) ||
+      !toReviewEnabled(sessionState, source, destination));
   const canRollback = canEdit;
   const hasHistory = "history" in sessionState.serverInfo.capabilities;
 

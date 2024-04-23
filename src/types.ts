@@ -68,6 +68,7 @@ export type Capabilities = {
     resources: any[];
     editors_group: string;
     reviewers_group: string;
+    to_review_enabled: boolean;
   };
 };
 

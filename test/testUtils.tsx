@@ -16,7 +16,7 @@ export function mockNotifyError() {
     });
 }
 
-export function sessionFactory(props) {
+export function sessionFactory(props = {}, capabilities = {}) {
   return {
     busy: false,
     authenticating: false,
@@ -35,7 +35,9 @@ export function sessionFactory(props) {
       url: "",
       project_name: "foo",
       project_docs: "foo",
-      capabilities: {},
+      capabilities: {
+        ...capabilities,
+      },
       user: {
         id: "user1",
         principals: [`/buckets/main-workspace/groups/my-collection-reviewers`],

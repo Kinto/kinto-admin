@@ -1,4 +1,5 @@
 import SimpleReview from "@src/components/signoff/SimpleReview";
+import { toReviewEnabled } from "@src/components/signoff/utils";
 import { renderWithProvider, sessionFactory } from "@test/testUtils";
 import {
   fireEvent,
@@ -23,6 +24,7 @@ vi.mock("../../../../src/components/signoff/utils", () => {
     isMember: () => {
       return true;
     },
+    toReviewEnabled: vi.fn(),
   };
 });
 
@@ -207,5 +209,46 @@ describe("SimpleTest component", () => {
 
     // Since Simple Review is the default, this means we're in the legacy UI
     expect(screen.queryByText("Switch to Default Review UI")).toBeDefined();
+  });
+
+  describe("to_review_enabled checks", () => {
+    const signoff = {
+      collectionsInfo: {
+        source: {
+          bid: "stage",
+          cid: "certs",
+          lastEditDate: 1524063083971,
+          lastReviewRequestBy: "user1",
+          changes: {
+            lastUpdated: 42,
+          },
+          status: "to-review",
+        },
+        destination: {
+          bid: "prod",
+          cid: "certs",
+        },
+      },
+    };
+
+    it("should show the review buttons if to_review_enabled is false", async () => {
+      renderSimpleReview({
+        session: sessionFactory(),
+        signoff,
+      });
+      toReviewEnabled.mockReturnValue(false);
+      await waitForElementToBeRemoved(() => screen.queryByTestId("spinner"));
+      expect(await screen.findByText(/Approve/)).toBeDefined();
+    });
+
+    it("should not show the review buttons if signer.to_review_enabled is true and the current user requested review", async () => {
+      toReviewEnabled.mockReturnValue(true);
+      renderSimpleReview({
+        session: sessionFactory(),
+        signoff,
+      });
+      await waitForElementToBeRemoved(() => screen.queryByTestId("spinner"));
+      expect(screen.queryByText(/Approve/)).toBeNull();
+    });
   });
 });

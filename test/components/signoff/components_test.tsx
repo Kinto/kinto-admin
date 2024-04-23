@@ -1,7 +1,25 @@
 import SignoffToolBar from "@src/components/signoff/SignoffToolBar";
+import { toReviewEnabled } from "@src/components/signoff/utils";
 import { renderWithProvider } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
+
+vi.mock("../../../src/permission", () => {
+  return {
+    canEditCollection: () => {
+      return true;
+    },
+  };
+});
+
+vi.mock("../../../src/components/signoff/utils", () => {
+  return {
+    isMember: () => {
+      return true;
+    },
+    toReviewEnabled: vi.fn(),
+  };
+});
 
 describe("SignoffToolBar component", () => {
   const props = {
@@ -19,6 +37,7 @@ describe("SignoffToolBar component", () => {
           signer: {
             reviewers_group: "reviewers",
             editors_group: "{collection_id}_editors",
+            to_review_enabled: true,
           },
         },
       },
@@ -130,5 +149,63 @@ describe("SignoffToolBar component", () => {
     fireEvent.click(approveButton);
     expect(await screen.findByTestId("spinner")).toBeDefined();
     expect(propsOverride.approveChanges).toHaveBeenCalledTimes(1);
+  });
+
+  describe("to_review_enabled checks", () => {
+    const propsOverride = {
+      ...props,
+      sessionState: {
+        ...props.sessionState,
+        serverInfo: {
+          ...props.sessionState.serverInfo,
+          capabilities: {
+            ...props.sessionState.serverInfo.capabilities,
+            signer: {
+              ...props.sessionState.serverInfo.capabilities.signer,
+              resources: [],
+            },
+          },
+          user: {
+            id: "fxa:yo",
+            principals: [
+              "fxa:yo",
+              "/buckets/stage/groups/certs_editors",
+              "/buckets/stage/groups/certs_reviewers",
+            ],
+          },
+        },
+      },
+      signoff: {
+        ...props.signoff,
+        collectionsInfo: {
+          source: {
+            bid: "stage",
+            cid: "certs",
+            lastEditDate: 1524063083971,
+            lastReviewRequestBy: "fxa:yo",
+            changes: {
+              lastUpdated: 42,
+            },
+            status: "to-review",
+          },
+          destination: {
+            bid: "prod",
+            cid: "certs",
+          },
+        },
+      },
+    };
+
+    it("should show the review buttons if signer.to_review_enabled is false", async () => {
+      toReviewEnabled.mockReturnValue(false);
+      renderWithProvider(<SignoffToolBar {...propsOverride} />);
+      expect(await screen.findByText("Approve")).toBeDefined();
+    });
+
+    it("should not show the review buttons if signer.to_review_enabled is true and the current user requested review", async () => {
+      toReviewEnabled.mockReturnValue(true);
+      renderWithProvider(<SignoffToolBar {...propsOverride} />);
+      expect(screen.queryByText("Approve")).toBeNull();
+    });
   });
 });
