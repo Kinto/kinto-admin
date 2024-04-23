@@ -1,5 +1,5 @@
 import { isReviewer } from "../SignoffToolBar";
-import { isMember } from "../utils";
+import { isMember, toReviewEnabled } from "../utils";
 import PerRecordDiffView from "./PerRecordDiffView";
 import SimpleReviewButtons from "./SimpleReviewButtons";
 import SimpleReviewHeader from "./SimpleReviewHeader";
@@ -65,25 +65,10 @@ export default function SimpleReview({
   const destBid = signoffDest?.bid;
   const destCid = signoffDest?.cid;
 
-  let toReviewEnabled =
-    session.serverInfo?.capabilities?.signer?.to_review_enabled === true;
-  if (toReviewEnabled) {
-    const resourceMatch =
-      session.serverInfo?.capabilities?.signer?.resources?.find(
-        x =>
-          x.source.bucket === sourceBid &&
-          x.source.collection === sourceCid &&
-          x.destination.bucket === destBid &&
-          x.destination.collection === destCid
-      );
-    toReviewEnabled =
-      !resourceMatch || resourceMatch.to_review_enabled !== false;
-  }
-
   const canReview = signoffSource
     ? (isReviewer(signoffSource, session) &&
         session.serverInfo?.user?.id !== signoffSource.lastReviewRequestBy) ||
-      !toReviewEnabled
+      !toReviewEnabled(session, signoffSource, signoffDest)
     : false;
 
   const [records, setRecords] = useState<{

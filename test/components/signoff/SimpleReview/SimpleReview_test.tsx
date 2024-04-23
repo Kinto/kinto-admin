@@ -1,4 +1,5 @@
 import SimpleReview from "@src/components/signoff/SimpleReview";
+import { toReviewEnabled } from "@src/components/signoff/utils";
 import { renderWithProvider, sessionFactory } from "@test/testUtils";
 import {
   fireEvent,
@@ -23,6 +24,7 @@ vi.mock("../../../../src/components/signoff/utils", () => {
     isMember: () => {
       return true;
     },
+    toReviewEnabled: vi.fn(),
   };
 });
 
@@ -74,14 +76,7 @@ function renderSimpleReview(props = null, renderProps = {}) {
       },
     },
     listRecords() {},
-    session: sessionFactory(
-      {},
-      {
-        signer: {
-          to_review_enabled: true,
-        },
-      }
-    ),
+    session: sessionFactory(),
     signoff: signoffFactory(),
     async fetchRecords() {
       return [];
@@ -236,61 +231,20 @@ describe("SimpleTest component", () => {
       },
     };
 
-    it("should show the review buttons if signer.to_review_enabled is false", async () => {
+    it("should show the review buttons if to_review_enabled is false", async () => {
       renderSimpleReview({
-        session: sessionFactory(
-          {},
-          {
-            signer: {
-              to_review_enabled: false,
-            },
-          }
-        ),
+        session: sessionFactory(),
         signoff,
       });
-      await waitForElementToBeRemoved(() => screen.queryByTestId("spinner"));
-      expect(await screen.findByText(/Approve/)).toBeDefined();
-    });
-
-    it("should show the review buttons if signer.resources.to_review_enabled is false", async () => {
-      renderSimpleReview({
-        session: sessionFactory(
-          {},
-          {
-            signer: {
-              to_review_enabled: true,
-              resources: [
-                {
-                  source: {
-                    bucket: signoff.collectionsInfo.source.bid,
-                    collection: signoff.collectionsInfo.source.cid,
-                  },
-                  destination: {
-                    bucket: signoff.collectionsInfo.destination.bid,
-                    collection: signoff.collectionsInfo.destination.cid,
-                  },
-                  to_review_enabled: false,
-                },
-              ],
-            },
-          }
-        ),
-        signoff,
-      });
+      toReviewEnabled.mockReturnValue(false);
       await waitForElementToBeRemoved(() => screen.queryByTestId("spinner"));
       expect(await screen.findByText(/Approve/)).toBeDefined();
     });
 
     it("should not show the review buttons if signer.to_review_enabled is true and the current user requested review", async () => {
+      toReviewEnabled.mockReturnValue(true);
       renderSimpleReview({
-        session: sessionFactory(
-          {},
-          {
-            signer: {
-              to_review_enabled: true,
-            },
-          }
-        ),
+        session: sessionFactory(),
         signoff,
       });
       await waitForElementToBeRemoved(() => screen.queryByTestId("spinner"));

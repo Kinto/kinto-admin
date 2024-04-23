@@ -1,4 +1,5 @@
 import SignoffToolBar from "@src/components/signoff/SignoffToolBar";
+import { toReviewEnabled } from "@src/components/signoff/utils";
 import { renderWithProvider } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
@@ -16,6 +17,7 @@ vi.mock("../../../src/components/signoff/utils", () => {
     isMember: () => {
       return true;
     },
+    toReviewEnabled: vi.fn(),
   };
 });
 
@@ -160,7 +162,6 @@ describe("SignoffToolBar component", () => {
             ...props.sessionState.serverInfo.capabilities,
             signer: {
               ...props.sessionState.serverInfo.capabilities.signer,
-              to_review_enabled: false,
               resources: [],
             },
           },
@@ -196,34 +197,15 @@ describe("SignoffToolBar component", () => {
     };
 
     it("should show the review buttons if signer.to_review_enabled is false", async () => {
+      toReviewEnabled.mockReturnValue(false);
       renderWithProvider(<SignoffToolBar {...propsOverride} />);
       expect(await screen.findByText("Approve")).toBeDefined();
     });
 
     it("should not show the review buttons if signer.to_review_enabled is true and the current user requested review", async () => {
-      propsOverride.sessionState.serverInfo.capabilities.signer.to_review_enabled =
-        true;
-
+      toReviewEnabled.mockReturnValue(true);
       renderWithProvider(<SignoffToolBar {...propsOverride} />);
       expect(screen.queryByText("Approve")).toBeNull();
-    });
-
-    it("should show the review buttons if signer.resources.to_review_enabled is false", async () => {
-      propsOverride.sessionState.serverInfo.capabilities.signer.resources = [
-        {
-          source: {
-            bucket: propsOverride.signoff.collectionsInfo.source.bid,
-            collection: propsOverride.signoff.collectionsInfo.source.cid,
-          },
-          destination: {
-            bucket: propsOverride.signoff.collectionsInfo.destination.bid,
-            collection: propsOverride.signoff.collectionsInfo.destination.cid,
-          },
-          to_review_enabled: false,
-        },
-      ];
-      renderWithProvider(<SignoffToolBar {...propsOverride} />);
-      expect(await screen.findByText("Approve")).toBeDefined();
     });
   });
 });
