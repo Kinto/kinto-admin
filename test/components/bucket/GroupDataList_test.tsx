@@ -36,6 +36,11 @@ describe("Bucket GroupDataList", () => {
     expect(screen.queryByText("memberA-1, memberA-2")).toBeDefined();
     expect(screen.queryByText("memberB-1, memberB-2")).toBeDefined();
   });
+
+  it("Should render a spinner when showSpinner is true", () => {
+    renderWithProvider(<DataList {...props} showSpinner={true} />);
+    expect(screen.queryByTestId("spinner")).toBeDefined();
+  });
 });
 
 describe("Bucket GroupListActions", () => {
