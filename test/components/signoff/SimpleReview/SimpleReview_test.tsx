@@ -117,7 +117,7 @@ describe("SimpleTest component", () => {
   it("should render not reviewable", async () => {
     renderSimpleReview({ signoff: undefined });
     expect(
-      screen.getByText(/This collection does not support/).textContent
+      (await screen.findByText(/This collection does not support/)).textContent
     ).toBe(
       "This collection does not support reviews, or you do not have permission to review."
     );

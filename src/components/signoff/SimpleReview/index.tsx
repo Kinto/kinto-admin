@@ -116,6 +116,8 @@ export default function SimpleReview({
             console.error(ex);
           }
         }
+      } else {
+        setRecords({ oldRecords: [], newRecords: [], loading: false });
       }
     }
     getRecords();
@@ -139,8 +141,7 @@ export default function SimpleReview({
     );
   } else if (
     session.authenticating ||
-    session.busy ||
-    (records.loading && signoffSource && signoffDest)
+    session.busy
   ) {
     return <Spinner />;
   }
@@ -196,6 +197,8 @@ export default function SimpleReview({
     );
   };
 
+  console.warn(records)
+  
   return (
     <div className="list-page">
       <h1>
@@ -212,7 +215,7 @@ export default function SimpleReview({
         capabilities={capabilities || {}}
         totalRecords={collection?.totalRecords || 0}
       >
-        <SignoffContent />
+        {records.loading ? <Spinner /> : <SignoffContent />}
       </CollectionTabs>
     </div>
   );
