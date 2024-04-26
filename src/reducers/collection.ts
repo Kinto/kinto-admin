@@ -25,7 +25,7 @@ export const INITIAL_STATE: CollectionState = {
     write: [],
     "record:create": [],
   },
-  currentSort: DEFAULT_SORT,
+  currentSort: undefined,
   records: [],
   recordsLoaded: false,
   hasNextRecords: false,

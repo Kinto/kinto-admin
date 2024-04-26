@@ -44,7 +44,7 @@ describe("collection sagas", () => {
         beforeAll(() => {
           const action = actions.listRecords("bucket", "collection");
           const getState = () => ({
-            collection: { data: { sort: "-last_modified" } },
+            collection: { data: { sort: "last_modified" } },
           });
           listRecords = saga.listRecords(getState, action);
         });
@@ -52,7 +52,7 @@ describe("collection sagas", () => {
         it("should list collection records", () => {
           expect(listRecords.next().value).toStrictEqual(
             call([collection, collection.listRecords], {
-              sort: "-last_modified",
+              sort: "last_modified",
               limit: 200,
             })
           );
