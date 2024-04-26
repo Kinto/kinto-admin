@@ -44,6 +44,10 @@ h1 {
   font-weight: bold;
 }
 
+.card > .card-body {
+  position: relative;
+}
+
 .sidebar-filters > .card-body {
   padding: 15px 15px 0 15px;
 }

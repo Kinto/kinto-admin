@@ -60,16 +60,13 @@ export default function BucketAttributes({
     [bid, updateBucket]
   );
 
-  if (busy) {
-    return <Spinner />;
-  }
-
   return (
     <div>
       <h1>
         Edit <b>{bid}</b> bucket attributes
       </h1>
       <BucketTabs bid={bid} capabilities={capabilities} selected="attributes">
+        {busy ? <Spinner /> :
         <BucketForm
           session={session}
           bid={bid}
@@ -77,7 +74,7 @@ export default function BucketAttributes({
           formData={formData}
           deleteBucket={handleDeleteBucket}
           onSubmit={handleSubmit}
-        />
+        />}
       </BucketTabs>
     </div>
   );
