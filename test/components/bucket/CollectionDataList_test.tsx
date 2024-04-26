@@ -64,6 +64,10 @@ describe("Bucket CollectionDataList", () => {
     expect(screen.queryByTitle("Browse collection")).toBeDefined();
     expect(screen.queryByTitle("Edit collection attributes")).toBeDefined();
   });
+  it("Should render a spinner when showSpinner is true", () => {
+    renderWithProvider(<DataList {...props} showSpinner={true} />);
+    expect(screen.queryByTestId("spinner")).toBeDefined();
+  });
 });
 
 describe("Bucket CollectionListActions", () => {
