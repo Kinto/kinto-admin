@@ -30,7 +30,7 @@ export default function BucketCollections({
     params: { bid },
   } = match;
   const { groups } = bucket;
-  
+
   const listActions = (
     <ListActions bid={bid} session={session} bucket={bucket} />
   );
@@ -47,7 +47,12 @@ export default function BucketCollections({
             <p>This bucket has no groups.</p>
           </div>
         ) : (
-          <DataList bid={bid} groups={groups} capabilities={capabilities} showSpinner={bucket.busy} />
+          <DataList
+            bid={bid}
+            groups={groups}
+            capabilities={capabilities}
+            showSpinner={bucket.busy}
+          />
         )}
         {listActions}
       </BucketTabs>

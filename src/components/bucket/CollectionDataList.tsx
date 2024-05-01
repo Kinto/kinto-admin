@@ -1,10 +1,10 @@
+import Spinner from "../Spinner";
 import AdminLink from "@src/components/AdminLink";
 import PaginatedTable from "@src/components/PaginatedTable";
 import { canCreateCollection } from "@src/permission";
 import { timeago } from "@src/utils";
 import React from "react";
 import { ClockHistory, Gear, Justify } from "react-bootstrap-icons";
-import Spinner from "../Spinner";
 
 export function ListActions(props) {
   const { bid, session, bucket } = props;
@@ -29,7 +29,13 @@ export function ListActions(props) {
 }
 
 export function DataList(props) {
-  const { bid, collections, capabilities, listBucketNextCollections, showSpinner } = props;
+  const {
+    bid,
+    collections,
+    capabilities,
+    listBucketNextCollections,
+    showSpinner,
+  } = props;
   const { loaded, entries, hasNextPage } = collections;
   const thead = (
     <thead>
@@ -46,9 +52,13 @@ export function DataList(props) {
 
   const tbody = (
     <tbody className={!loaded ? "loading" : ""}>
-      {showSpinner && <tr>
-        <td colSpan={6}>
-          <Spinner /></td></tr>}
+      {showSpinner && (
+        <tr>
+          <td colSpan={6}>
+            <Spinner />
+          </td>
+        </tr>
+      )}
       {entries.map((collection, index) => {
         const {
           id: cid,

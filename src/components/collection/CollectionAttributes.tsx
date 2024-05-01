@@ -63,10 +63,6 @@ export default function CollectionAttributes({
   } = match;
   const { busy, data: formData } = collection;
 
-  if (busy) {
-    return <Spinner />;
-  }
-
   return (
     <div>
       <h1>
@@ -82,16 +78,20 @@ export default function CollectionAttributes({
         selected="attributes"
         capabilities={capabilities}
       >
-        <CollectionForm
-          bid={bid}
-          cid={cid}
-          session={session}
-          bucket={bucket}
-          collection={collection}
-          deleteCollection={handleDeleteCollection}
-          formData={formData}
-          onSubmit={onSubmit}
-        />
+        {busy ? (
+          <Spinner />
+        ) : (
+          <CollectionForm
+            bid={bid}
+            cid={cid}
+            session={session}
+            bucket={bucket}
+            collection={collection}
+            deleteCollection={handleDeleteCollection}
+            formData={formData}
+            onSubmit={onSubmit}
+          />
+        )}
       </CollectionTabs>
     </div>
   );

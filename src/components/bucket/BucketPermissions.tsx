@@ -29,13 +29,16 @@ export function BucketPermissions() {
         capabilities={session.serverInfo.capabilities}
         selected="permissions"
       >
-        { busy ? <Spinner /> : 
-        <PermissionsForm
-          permissions={permissions}
-          acls={acls}
-          readonly={!canEditBucket(session, bucket.data.id)}
-          onSubmit={onSubmit}
-        />}
+        {busy ? (
+          <Spinner />
+        ) : (
+          <PermissionsForm
+            permissions={permissions}
+            acls={acls}
+            readonly={!canEditBucket(session, bucket.data.id)}
+            onSubmit={onSubmit}
+          />
+        )}
       </BucketTabs>
     </div>
   );

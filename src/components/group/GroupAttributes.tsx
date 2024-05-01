@@ -60,10 +60,6 @@ export default function GroupAttributes(props: Props) {
     [bid, deleteGroup]
   );
 
-  if (busy || formData == null) {
-    return <Spinner />;
-  }
-
   return (
     <div>
       <h1>
@@ -79,16 +75,20 @@ export default function GroupAttributes(props: Props) {
         selected="attributes"
         capabilities={capabilities}
       >
-        <GroupForm
-          bid={bid}
-          gid={gid}
-          session={session}
-          bucket={bucket}
-          group={group}
-          deleteGroup={onDeleteGroup}
-          formData={formData}
-          onSubmit={onSubmit}
-        />
+        {busy || formData == null ? (
+          <Spinner />
+        ) : (
+          <GroupForm
+            bid={bid}
+            gid={gid}
+            session={session}
+            bucket={bucket}
+            group={group}
+            deleteGroup={onDeleteGroup}
+            formData={formData}
+            onSubmit={onSubmit}
+          />
+        )}
       </GroupTabs>
     </div>
   );

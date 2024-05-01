@@ -1,10 +1,10 @@
+import Spinner from "../Spinner";
 import AdminLink from "@src/components/AdminLink";
 import { canCreateGroup } from "@src/permission";
 import { timeago } from "@src/utils";
 import React from "react";
 import { Gear } from "react-bootstrap-icons";
 import { ClockHistory } from "react-bootstrap-icons";
-import Spinner from "../Spinner";
 
 export function DataList(props) {
   const { bid, groups, capabilities, showSpinner } = props;
@@ -19,10 +19,13 @@ export function DataList(props) {
         </tr>
       </thead>
       <tbody>
-        {showSpinner && <tr>
-          <td colSpan={4}>
-          <Spinner />
-            </td></tr>}
+        {showSpinner && (
+          <tr>
+            <td colSpan={4}>
+              <Spinner />
+            </td>
+          </tr>
+        )}
         {groups.map((group, index) => {
           const { id: gid, members, last_modified } = group;
           const date = new Date(last_modified);

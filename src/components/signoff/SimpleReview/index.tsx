@@ -139,10 +139,7 @@ export default function SimpleReview({
         Not authenticated
       </div>
     );
-  } else if (
-    session.authenticating ||
-    session.busy
-  ) {
+  } else if (session.authenticating || session.busy) {
     return <Spinner />;
   }
   const handleRollback = (text: string) => {
@@ -197,8 +194,8 @@ export default function SimpleReview({
     );
   };
 
-  console.warn(records)
-  
+  console.warn(records);
+
   return (
     <div className="list-page">
       <h1>

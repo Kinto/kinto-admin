@@ -66,15 +66,18 @@ export default function BucketAttributes({
         Edit <b>{bid}</b> bucket attributes
       </h1>
       <BucketTabs bid={bid} capabilities={capabilities} selected="attributes">
-        {busy ? <Spinner /> :
-        <BucketForm
-          session={session}
-          bid={bid}
-          bucket={bucket}
-          formData={formData}
-          deleteBucket={handleDeleteBucket}
-          onSubmit={handleSubmit}
-        />}
+        {busy ? (
+          <Spinner />
+        ) : (
+          <BucketForm
+            session={session}
+            bid={bid}
+            bucket={bucket}
+            formData={formData}
+            deleteBucket={handleDeleteBucket}
+            onSubmit={handleSubmit}
+          />
+        )}
       </BucketTabs>
     </div>
   );

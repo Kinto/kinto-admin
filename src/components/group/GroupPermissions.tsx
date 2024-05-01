@@ -22,9 +22,6 @@ export function GroupPermissions() {
   const onSubmit = ({ formData }: { formData: GroupPermissionsType }) => {
     dispatch(BucketActions.updateGroup(bid, gid, { permissions: formData }));
   };
-  if (busy) {
-    return <Spinner />;
-  }
   return (
     <div>
       <h1>
@@ -40,12 +37,16 @@ export function GroupPermissions() {
         capabilities={session.serverInfo.capabilities}
         selected="permissions"
       >
-        <PermissionsForm
-          permissions={permissions}
-          acls={["read", "write"]}
-          readonly={!canEditGroup(session, bucket.data.id, group)}
-          onSubmit={onSubmit}
-        />
+        {busy ? (
+          <Spinner />
+        ) : (
+          <PermissionsForm
+            permissions={permissions}
+            acls={["read", "write"]}
+            readonly={!canEditGroup(session, bucket.data.id, group)}
+            onSubmit={onSubmit}
+          />
+        )}
       </GroupTabs>
     </div>
   );
