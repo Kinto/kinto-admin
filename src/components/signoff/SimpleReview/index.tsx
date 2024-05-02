@@ -194,8 +194,6 @@ export default function SimpleReview({
     );
   };
 
-  console.warn(records);
-
   return (
     <div className="list-page">
       <h1>

@@ -43,6 +43,7 @@ export default function GroupAttributes(props: Props) {
     params: { bid, gid },
   } = match;
   const { busy, data: formData } = group;
+  console.log(group);
 
   const onSubmit = useCallback(
     (formData: GroupData) => {
@@ -75,7 +76,7 @@ export default function GroupAttributes(props: Props) {
         selected="attributes"
         capabilities={capabilities}
       >
-        {busy || formData == null ? (
+        {busy || formData == null ? ( // formData will be null until it is fetched, busy will be false until the fetch starts, need to wait for for both conditions before rendering
           <Spinner />
         ) : (
           <GroupForm
