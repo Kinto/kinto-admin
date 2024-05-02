@@ -43,6 +43,7 @@ export default function GroupAttributes(props: Props) {
     params: { bid, gid },
   } = match;
   const { busy, data: formData } = group;
+  console.log(group);
 
   const onSubmit = useCallback(
     (formData: GroupData) => {
@@ -60,10 +61,6 @@ export default function GroupAttributes(props: Props) {
     [bid, deleteGroup]
   );
 
-  if (busy || formData == null) {
-    return <Spinner />;
-  }
-
   return (
     <div>
       <h1>
@@ -79,16 +76,20 @@ export default function GroupAttributes(props: Props) {
         selected="attributes"
         capabilities={capabilities}
       >
-        <GroupForm
-          bid={bid}
-          gid={gid}
-          session={session}
-          bucket={bucket}
-          group={group}
-          deleteGroup={onDeleteGroup}
-          formData={formData}
-          onSubmit={onSubmit}
-        />
+        {busy || formData == null ? ( // formData will be null until it is fetched, busy will be false until the fetch starts, need to wait for for both conditions before rendering
+          <Spinner />
+        ) : (
+          <GroupForm
+            bid={bid}
+            gid={gid}
+            session={session}
+            bucket={bucket}
+            group={group}
+            deleteGroup={onDeleteGroup}
+            formData={formData}
+            onSubmit={onSubmit}
+          />
+        )}
       </GroupTabs>
     </div>
   );

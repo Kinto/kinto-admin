@@ -26,9 +26,6 @@ export function RecordPermissions() {
   };
   const { busy, permissions } = record;
   const acls = ["read", "write"];
-  if (busy) {
-    return <Spinner />;
-  }
   return (
     <div>
       <h1>
@@ -45,12 +42,16 @@ export function RecordPermissions() {
         capabilities={session.serverInfo.capabilities}
         selected="permissions"
       >
-        <PermissionsForm
-          permissions={permissions}
-          acls={acls}
-          readonly={!canEditRecord(session, bid, collection, record)}
-          onSubmit={onSubmit}
-        />
+        {busy ? (
+          <Spinner />
+        ) : (
+          <PermissionsForm
+            permissions={permissions}
+            acls={acls}
+            readonly={!canEditRecord(session, bid, collection, record)}
+            onSubmit={onSubmit}
+          />
+        )}
       </RecordTabs>
     </div>
   );

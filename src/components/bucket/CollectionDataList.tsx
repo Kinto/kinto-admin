@@ -1,3 +1,4 @@
+import Spinner from "../Spinner";
 import AdminLink from "@src/components/AdminLink";
 import PaginatedTable from "@src/components/PaginatedTable";
 import { canCreateCollection } from "@src/permission";
@@ -28,7 +29,13 @@ export function ListActions(props) {
 }
 
 export function DataList(props) {
-  const { bid, collections, capabilities, listBucketNextCollections } = props;
+  const {
+    bid,
+    collections,
+    capabilities,
+    listBucketNextCollections,
+    showSpinner,
+  } = props;
   const { loaded, entries, hasNextPage } = collections;
   const thead = (
     <thead>
@@ -45,6 +52,13 @@ export function DataList(props) {
 
   const tbody = (
     <tbody className={!loaded ? "loading" : ""}>
+      {showSpinner && (
+        <tr>
+          <td colSpan={6}>
+            <Spinner />
+          </td>
+        </tr>
+      )}
       {entries.map((collection, index) => {
         const {
           id: cid,

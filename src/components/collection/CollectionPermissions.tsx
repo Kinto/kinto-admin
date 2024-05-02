@@ -28,9 +28,6 @@ export function CollectionPermissions() {
     );
   };
 
-  if (busy) {
-    return <Spinner />;
-  }
   return (
     <div>
       <h1>
@@ -46,12 +43,16 @@ export function CollectionPermissions() {
         capabilities={session.serverInfo.capabilities}
         selected="permissions"
       >
-        <PermissionsForm
-          permissions={permissions}
-          acls={acls}
-          readonly={!canEditCollection(session, bucket.data.id, collection)}
-          onSubmit={onSubmit}
-        />
+        {busy ? (
+          <Spinner />
+        ) : (
+          <PermissionsForm
+            permissions={permissions}
+            acls={acls}
+            readonly={!canEditCollection(session, bucket.data.id, collection)}
+            onSubmit={onSubmit}
+          />
+        )}
       </CollectionTabs>
     </div>
   );

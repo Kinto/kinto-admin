@@ -116,6 +116,8 @@ export default function SimpleReview({
             console.error(ex);
           }
         }
+      } else {
+        setRecords({ oldRecords: [], newRecords: [], loading: false });
       }
     }
     getRecords();
@@ -137,11 +139,7 @@ export default function SimpleReview({
         Not authenticated
       </div>
     );
-  } else if (
-    session.authenticating ||
-    session.busy ||
-    (records.loading && signoffSource && signoffDest)
-  ) {
+  } else if (session.authenticating || session.busy) {
     return <Spinner />;
   }
   const handleRollback = (text: string) => {
@@ -212,7 +210,7 @@ export default function SimpleReview({
         capabilities={capabilities || {}}
         totalRecords={collection?.totalRecords || 0}
       >
-        <SignoffContent />
+        {records.loading ? <Spinner /> : <SignoffContent />}
       </CollectionTabs>
     </div>
   );

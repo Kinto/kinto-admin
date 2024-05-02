@@ -1,3 +1,4 @@
+import Spinner from "../Spinner";
 import AdminLink from "@src/components/AdminLink";
 import { canCreateGroup } from "@src/permission";
 import { timeago } from "@src/utils";
@@ -6,7 +7,7 @@ import { Gear } from "react-bootstrap-icons";
 import { ClockHistory } from "react-bootstrap-icons";
 
 export function DataList(props) {
-  const { bid, groups, capabilities } = props;
+  const { bid, groups, capabilities, showSpinner } = props;
   return (
     <table className="table table-striped table-bordered record-list">
       <thead>
@@ -18,6 +19,13 @@ export function DataList(props) {
         </tr>
       </thead>
       <tbody>
+        {showSpinner && (
+          <tr>
+            <td colSpan={4}>
+              <Spinner />
+            </td>
+          </tr>
+        )}
         {groups.map((group, index) => {
           const { id: gid, members, last_modified } = group;
           const date = new Date(last_modified);

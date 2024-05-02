@@ -19,9 +19,6 @@ export function BucketPermissions() {
 
   const { busy, permissions } = bucket;
   const acls = ["read", "write", "collection:create", "group:create"];
-  if (busy) {
-    return <Spinner />;
-  }
   return (
     <div>
       <h1>
@@ -32,12 +29,16 @@ export function BucketPermissions() {
         capabilities={session.serverInfo.capabilities}
         selected="permissions"
       >
-        <PermissionsForm
-          permissions={permissions}
-          acls={acls}
-          readonly={!canEditBucket(session, bucket.data.id)}
-          onSubmit={onSubmit}
-        />
+        {busy ? (
+          <Spinner />
+        ) : (
+          <PermissionsForm
+            permissions={permissions}
+            acls={acls}
+            readonly={!canEditBucket(session, bucket.data.id)}
+            onSubmit={onSubmit}
+          />
+        )}
       </BucketTabs>
     </div>
   );

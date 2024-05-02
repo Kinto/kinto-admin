@@ -76,6 +76,7 @@ export default function BucketCollections({
             collections={collections}
             listBucketNextCollections={listBucketNextCollections}
             capabilities={capabilities}
+            showSpinner={!collections.loaded}
           />
         )}
         {listActions}
