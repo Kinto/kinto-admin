@@ -172,4 +172,22 @@ describe("BaseForm component", () => {
     fireEvent.click(submit);
     expect(testFn).toHaveBeenCalledTimes(1);
   });
+
+  it("Should show an error message when bad config causes the rjsf component to crash", async () => {
+    render(
+      <BaseForm
+        className="testClass"
+        schema={testSchema}
+        uiSchema={{
+          ...testUiSchema,
+          content: {
+            "ui:widget": "foo-not-real-thing",
+          },
+        }}
+      />
+    );
+
+    expect(await screen.findByText(/Error rendering form/)).toBeDefined();
+    expect(await screen.findByText(/foo-not-real-thing/)).toBeDefined();
+  });
 });
