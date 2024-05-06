@@ -192,12 +192,23 @@ export default function RecordForm(props: Props) {
     _uiSchema = extendUiSchemaWithAttachment(_uiSchema, attachmentConfig);
     _uiSchema = extendUiSchemaWhenDisabled(_uiSchema, !allowEditing);
 
+    const formCrashMsg = (
+      <div>
+        This is likely caused by a bad <code>ui:widget</code> value in this{" "}
+        <AdminLink name="collection:attributes" params={{ bid, cid }}>
+          collection's UI schema
+        </AdminLink>
+        .
+      </div>
+    );
+
     return (
       <BaseForm
         schema={_schema}
         uiSchema={_uiSchema}
         formData={recordData}
         onSubmit={handleOnSubmit}
+        formCrashMsg={formCrashMsg}
       >
         {buttons}
       </BaseForm>
