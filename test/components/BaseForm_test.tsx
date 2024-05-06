@@ -184,10 +184,12 @@ describe("BaseForm component", () => {
             "ui:widget": "foo-not-real-thing",
           },
         }}
+        formCrashMsg={<div>My custom crash message</div>}
       />
     );
 
     expect(await screen.findByText(/Error rendering form/)).toBeDefined();
     expect(await screen.findByText(/foo-not-real-thing/)).toBeDefined();
+    expect(await screen.findByText(/My custom crash message/)).toBeDefined();
   });
 });

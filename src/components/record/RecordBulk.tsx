@@ -98,6 +98,16 @@ export default function RecordBulk({
     bulkFormData = ["{}", "{}"];
   }
 
+  const formCrashMsg = (
+    <div>
+      This is likely caused by a bad <code>ui:widget</code> value in this{" "}
+      <AdminLink name="collection:attributes" params={{ bid, cid }}>
+        collection's UI schema
+      </AdminLink>
+      .
+    </div>
+  );
+
   return (
     <div>
       <h1>
@@ -117,6 +127,7 @@ export default function RecordBulk({
               uiSchema={bulkUiSchema}
               formData={bulkFormData}
               onSubmit={onSubmit}
+              formCrashMsg={formCrashMsg}
             >
               <input
                 type="submit"

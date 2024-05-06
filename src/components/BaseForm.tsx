@@ -12,6 +12,7 @@ const FormWithTheme = withTheme(Bootstrap4Theme);
 
 export type BaseFormProps = Omit<FormProps, "validator"> & {
   showSpinner?: boolean;
+  formCrashMsg?: ReactNode;
   onSubmit: (data: RJSFSchema) => void;
 };
 
@@ -37,7 +38,7 @@ export default function BaseForm(props: BaseFormProps) {
 
   return (
     <div className="formWrapper" ref={formRef} data-testid="formWrapper">
-      <ErrorBoundary>
+      <ErrorBoundary formCrashMsg={props.formCrashMsg}>
         <FormWithTheme
           {...restProps}
           focusOnFirstError={errorFocus}
@@ -67,6 +68,7 @@ class ErrorBoundary extends Component {
 
   declare props: {
     children: ReactNode;
+    formCrashMsg?: ReactNode;
   };
 
   constructor(props) {
@@ -85,10 +87,7 @@ class ErrorBoundary extends Component {
       return (
         <>
           <h2>Error rendering form</h2>
-          <div>
-            This is likely caused by a bad <code>ui:widget</code> value in this
-            collection's UI schema.
-          </div>
+          {this.props.formCrashMsg || <></>}
           <code>
             {this.state.thrown.name}: {this.state.thrown.message}
           </code>
