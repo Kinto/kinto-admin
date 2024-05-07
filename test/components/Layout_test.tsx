@@ -1,52 +1,54 @@
 import * as sessionActions from "@src/actions/session";
 import { Layout } from "@src/components/Layout";
 import { renderWithProvider } from "@test/testUtils";
-import { fireEvent, waitFor } from "@testing-library/react";
+import { act, fireEvent, screen } from "@testing-library/react";
 import React from "react";
 
 describe("App component", () => {
-  let app, store;
-  beforeEach(() => {
-    vi.spyOn(sessionActions, "logout");
-    app = renderWithProvider(<Layout />);
-    store = app.store;
-  });
-
   describe("Session top bar", () => {
     it("should not render a session top bar when not authenticated", () => {
-      expect(app.queryByTestId("sessionInfo-bar")).toBeNull();
+      renderWithProvider(<Layout />);
+      expect(screen.queryByTestId("sessionInfo-bar")).toBeNull();
     });
 
     it("should render a session top bar when anonymous", async () => {
+      const { store, container } = renderWithProvider(<Layout />);
       const serverInfo = {
         url: "http://test.server/v1/",
         capabilities: {},
       };
-      store.dispatch(sessionActions.serverInfoSuccess(serverInfo));
-      store.dispatch(sessionActions.setAuthenticated());
-      await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
-      const content = app.container.textContent;
+      act(() => {
+        store.dispatch(sessionActions.serverInfoSuccess(serverInfo));
+        store.dispatch(sessionActions.setAuthenticated());
+      });
+      const content = container.textContent;
 
       expect(content).toContain("Anonymous");
       expect(content).toContain(serverInfo.url);
     });
 
     it("should display a link to the server docs", async () => {
+      const { store } = renderWithProvider(<Layout />);
       const serverInfo = {
         url: "http://test.server/v1/",
         project_docs: "https://remote-settings.readthedocs.io/",
         capabilities: {},
       };
-      store.dispatch(sessionActions.serverInfoSuccess(serverInfo));
-      store.dispatch(
-        sessionActions.setAuthenticated({ user: { id: "fxa:abc" } })
+      act(() => {
+        store.dispatch(sessionActions.serverInfoSuccess(serverInfo));
+        store.dispatch(
+          sessionActions.setAuthenticated({ user: { id: "fxa:abc" } })
+        );
+      });
+      expect(screen.getByText(/Documentation/)).toHaveAttribute(
+        "href",
+        serverInfo.project_docs
       );
-      await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
-
-      expect(app.getByText(/Documentation/).href).toBe(serverInfo.project_docs);
     });
 
     it("should render a session top bar when authenticated", async () => {
+      const { store } = renderWithProvider(<Layout />);
+      const spy = vi.spyOn(sessionActions, "logout");
       const serverInfo = {
         url: "http://test.server/v1/",
         capabilities: {},
@@ -58,12 +60,13 @@ describe("App component", () => {
         username: "user",
         password: "pass",
       };
-      store.dispatch(sessionActions.serverInfoSuccess(serverInfo));
-      store.dispatch(sessionActions.setupComplete());
-      store.dispatch(sessionActions.setAuthenticated(credentials));
-      await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
+      act(() => {
+        store.dispatch(sessionActions.serverInfoSuccess(serverInfo));
+        store.dispatch(sessionActions.setupComplete());
+        store.dispatch(sessionActions.setAuthenticated(credentials));
+      });
 
-      const infoBar = app.getByTestId("sessionInfo-bar");
+      const infoBar = screen.getByTestId("sessionInfo-bar");
       expect(infoBar).toBeDefined();
 
       const content = infoBar.textContent;
@@ -71,8 +74,10 @@ describe("App component", () => {
       expect(content).toContain(serverInfo.user.id);
       expect(content).not.toContain(credentials.password);
 
-      fireEvent.click(app.getByText(/Logout/));
+      fireEvent.click(screen.getByText(/Logout/));
       expect(sessionActions.logout).toHaveBeenCalled();
+
+      spy.mockClear();
     });
   });
 });
