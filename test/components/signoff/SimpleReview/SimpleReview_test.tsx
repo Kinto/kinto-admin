@@ -104,7 +104,7 @@ describe("SimpleTest component", () => {
     renderSimpleReview({
       session: sessionFactory({ authenticated: false, authenticating: true }),
     });
-    expect(screen.queryByTestId("spinner")).toBeDefined();
+    expect(screen.findByTestId("spinner")).toBeDefined();
   });
 
   it("should render not authenticated", async () => {
@@ -208,7 +208,7 @@ describe("SimpleTest component", () => {
     renderSimpleReview({ session });
 
     // Since Simple Review is the default, this means we're in the legacy UI
-    expect(screen.queryByText("Switch to Default Review UI")).toBeDefined();
+    expect(screen.findByText("Switch to Default Review UI")).toBeDefined();
   });
 
   describe("to_review_enabled checks", () => {
