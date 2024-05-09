@@ -152,7 +152,7 @@ type BucketsMenuProps = {
 };
 
 function filterBuckets(buckets, filters): BucketEntry[] {
-  const { showReadOnly, search } = filters;
+  const { showReadOnly, search, bid = null, cid = null } = filters;
   return buckets
     .slice(0)
     .reduce((acc, bucket) => {
@@ -174,13 +174,15 @@ function filterBuckets(buckets, filters): BucketEntry[] {
       if (showReadOnly) {
         return bucket;
       }
-      const writableCollections = bucket.collections.filter(c => !c.readonly);
-      if (bucket.readonly && writableCollections.length == 0) {
+      const visibleCollections = bucket.collections.filter(
+        c => !c.readonly || (bucket.id === bid && c.id === cid) // always return the current bucket/collection we're on
+      );
+      if (bucket.readonly && visibleCollections.length == 0) {
         return null;
       }
       return {
         ...bucket,
-        collections: writableCollections,
+        collections: visibleCollections,
       };
     })
     .filter(Boolean);
@@ -206,7 +208,12 @@ const BucketsMenu = (props: BucketsMenuProps) => {
     setSearch(event.target.value || null);
   };
 
-  const filteredBuckets = filterBuckets(buckets, { showReadOnly, search });
+  const filteredBuckets = filterBuckets(buckets, {
+    showReadOnly,
+    search,
+    bid,
+    cid,
+  });
   // Sort buckets by id.
   const sortedBuckets = filteredBuckets.sort((a, b) => (a.id > b.id ? 1 : -1));
   return (
