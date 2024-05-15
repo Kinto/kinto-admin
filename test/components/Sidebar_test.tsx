@@ -129,7 +129,7 @@ describe("Sidebar component", () => {
       )[0];
 
       expect(targetEntry.classList.contains("active")).toBe(true);
-      expect(screen.getAllByTestId("sidebar-menuEntry")).toHaveLength(1); // should only have 1 menu entry for the current read-only collection
+      expect(screen.getByTestId("sidebar-menuEntry")).toBeDefined(); // should only have 1 menu entry for the current read-only collection
     });
   });
 
