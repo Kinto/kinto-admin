@@ -43,7 +43,6 @@ export default function GroupAttributes(props: Props) {
     params: { bid, gid },
   } = match;
   const { busy, data: formData } = group;
-  console.log(group);
 
   const onSubmit = useCallback(
     (formData: GroupData) => {

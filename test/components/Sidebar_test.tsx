@@ -91,6 +91,48 @@ describe("Sidebar component", () => {
     });
   });
 
+  describe("Read only collections", () => {
+    let bucketMenus;
+
+    beforeEach(() => {
+      renderWithProvider(
+        <Sidebar
+          match={{ params }}
+          location={location}
+          capabilities={capabilities}
+        />,
+        {
+          initialState: {
+            session: {
+              ...session,
+              buckets: session.buckets.map(b => {
+                return {
+                  ...b,
+                  collections: b.collections.map(c => {
+                    return {
+                      ...c,
+                      readonly: true,
+                    };
+                  }),
+                };
+              }),
+            },
+          },
+        }
+      );
+      bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
+    });
+
+    it("should highlight the selected collection even if it's read-only and we haven't enabled show read-only collections", () => {
+      const targetEntry = bucketMenus[0].querySelectorAll(
+        ".collections-menu-entry"
+      )[0];
+
+      expect(targetEntry.classList.contains("active")).toBe(true);
+      expect(screen.getByTestId("sidebar-menuEntry")).toBeDefined(); // should only have 1 menu entry for the current read-only collection
+    });
+  });
+
   describe("Create bucket", () => {
     it("should be shown by default", () => {
       renderWithProvider(
