@@ -1,4 +1,4 @@
-import { getClient, setClient } from "@src/client";
+import { setClient } from "@src/client";
 import { SessionInfoBar } from "@src/components/SessionInfoBar";
 import { renderWithProvider } from "@test/testUtils";
 import { screen, waitFor } from "@testing-library/react";
