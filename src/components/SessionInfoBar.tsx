@@ -1,25 +1,25 @@
 import * as SessionActions from "@src/actions/session";
+import { getClient } from "@src/client";
 import { useAppDispatch, useAppSelector } from "@src/hooks/app";
-import React, { useState, useEffect } from "react";
+import { KintoResponse } from "kinto/lib/types";
+import React, { useEffect, useState } from "react";
 import { BoxArrowRight, CircleFill } from "react-bootstrap-icons";
 import { QuestionCircleFill } from "react-bootstrap-icons";
 import { Clipboard } from "react-bootstrap-icons";
-import { getClient } from "@src/client";
-import { KintoResponse } from "kinto/lib/types";
 
 export function SessionInfoBar() {
   const { url, project_name, project_docs, user } = useAppSelector(
     store => store.session.serverInfo
   );
   const dispatch = useAppDispatch();
-  const [ isHealthy, setIsHealthy ] = useState(false);
+  const [isHealthy, setIsHealthy] = useState(false);
   const client = getClient();
 
-  const checkHeartbeat = async() => {
+  const checkHeartbeat = async () => {
     try {
-      let res:KintoResponse = await client.execute({
-        path: '/__heartbeat__',
-        headers: undefined
+      let res: KintoResponse = await client.execute({
+        path: "/__heartbeat__",
+        headers: undefined,
       });
       for (let p in res) {
         if (!p) {
@@ -28,7 +28,7 @@ export function SessionInfoBar() {
         }
       }
       setIsHealthy(true);
-    } catch(ex) {
+    } catch (ex) {
       setIsHealthy(false);
     } finally {
       setTimeout(checkHeartbeat, 60000);
@@ -63,7 +63,17 @@ export function SessionInfoBar() {
         >
           <Clipboard className="icon" />
         </a>
-        { isHealthy ? <CircleFill color="green" title="Server heartbeat status is healthy" /> : <CircleFill color="red" title="Server heartbeat status IS NOT healthy" /> }
+        {isHealthy ? (
+          <CircleFill
+            color="green"
+            title="Server heartbeat status is healthy"
+          />
+        ) : (
+          <CircleFill
+            color="red"
+            title="Server heartbeat status IS NOT healthy"
+          />
+        )}
         <a
           href={project_docs}
           target="_blank"
