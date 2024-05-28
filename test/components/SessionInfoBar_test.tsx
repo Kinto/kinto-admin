@@ -18,14 +18,19 @@ describe("SessionInfoBar component", () => {
     vi.resetAllMocks();
   });
 
-  it("Should show green by default", async () => {
+  it("Should show green server status by default and render user/server info as expected", async () => {
     client.execute.mockResolvedValue({});
     renderWithProvider(<SessionInfoBar />);
     await waitFor(() => new Promise(resolve => setTimeout(resolve, 100))); // debounce wait
     expect(screen.getByTitle(healthyStr)).toBeDefined();
+
+    expect(screen.getByTitle("Copy authentication header")).toBeDefined();
+    expect(screen.getByText("Documentation")).toBeDefined();
+    expect(screen.getByText("Logout")).toBeDefined();
+    expect(screen.getByText("Anonymous")).toBeDefined();
   });
 
-  it("Should show green when heartbeat returns all true checks", async () => {
+  it("Should show green server status when heartbeat returns all true checks", async () => {
     client.execute.mockResolvedValue({
       foo: true,
       bar: true,
@@ -35,7 +40,7 @@ describe("SessionInfoBar component", () => {
     expect(screen.getByTitle(healthyStr)).toBeDefined();
   });
 
-  it("Should show red x when heartbeat returns any false checks", async () => {
+  it("Should show failed server status when heartbeat returns any false checks", async () => {
     client.execute.mockResolvedValue({
       foo: false,
       bar: true,
@@ -46,7 +51,7 @@ describe("SessionInfoBar component", () => {
     expect(screen.getByTitle(unhealthyStr)).toBeDefined();
   });
 
-  it("Should show red x when heartbeat check throws an error", async () => {
+  it("Should show failed server status when heartbeat check throws an error", async () => {
     client.execute.mockImplementation(() => {
       throw new Error("Test error");
     });
