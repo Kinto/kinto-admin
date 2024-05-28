@@ -3,7 +3,7 @@ import { getClient } from "@src/client";
 import { useAppDispatch, useAppSelector } from "@src/hooks/app";
 import { KintoResponse } from "kinto/lib/types";
 import React, { useEffect, useState } from "react";
-import { BoxArrowRight, CircleFill, XCircleFill } from "react-bootstrap-icons";
+import { BoxArrowRight, CircleFill, ExclamationCircleFill } from "react-bootstrap-icons";
 import { QuestionCircleFill } from "react-bootstrap-icons";
 import { Clipboard } from "react-bootstrap-icons";
 
@@ -70,7 +70,7 @@ export function SessionInfoBar() {
               title="Server heartbeat status is healthy"
             />
           ) : (
-            <XCircleFill
+            <ExclamationCircleFill
               color="red"
               title="Server heartbeat status IS NOT healthy"
             />
