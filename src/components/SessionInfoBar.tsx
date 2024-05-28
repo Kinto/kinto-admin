@@ -22,9 +22,9 @@ export function SessionInfoBar() {
         headers: undefined,
       });
       for (let p in res) {
-        if (!p) {
+        if (!res[p]) {
           setIsHealthy(false);
-          break;
+          return;
         }
       }
       setIsHealthy(true);
