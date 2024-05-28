@@ -63,17 +63,19 @@ export function SessionInfoBar() {
         >
           <Clipboard className="icon" />
         </a>
-        {isHealthy ? (
-          <CircleFill
-            color="green"
-            title="Server heartbeat status is healthy"
-          />
-        ) : (
-          <XCircleFill
-            color="red"
-            title="Server heartbeat status IS NOT healthy"
-          />
-        )}
+        <a href={`${url}__heartbeat__`} target="_blank">
+          {isHealthy ? (
+            <CircleFill
+              color="green"
+              title="Server heartbeat status is healthy"
+            />
+          ) : (
+            <XCircleFill
+              color="red"
+              title="Server heartbeat status IS NOT healthy"
+            />
+          )}
+        </a>
         <a
           href={project_docs}
           target="_blank"
