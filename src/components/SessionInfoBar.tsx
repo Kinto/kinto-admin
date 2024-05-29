@@ -1,15 +1,14 @@
 import * as SessionActions from "@src/actions/session";
 import { getClient } from "@src/client";
 import { useAppDispatch, useAppSelector } from "@src/hooks/app";
-import { KintoResponse } from "kinto/lib/types";
 import React, { useEffect, useState } from "react";
 import {
   BoxArrowRight,
   CircleFill,
+  Clipboard,
   ExclamationCircleFill,
+  QuestionCircleFill,
 } from "react-bootstrap-icons";
-import { QuestionCircleFill } from "react-bootstrap-icons";
-import { Clipboard } from "react-bootstrap-icons";
 
 export function SessionInfoBar() {
   const { url, project_name, project_docs, user } = useAppSelector(
@@ -21,12 +20,12 @@ export function SessionInfoBar() {
 
   const checkHeartbeat = async () => {
     try {
-      let res: KintoResponse = await client.execute({
+      let response: Record<string, any> = await client.execute({
         path: "/__heartbeat__",
         headers: undefined,
       });
-      for (let p in res) {
-        if (!res[p]) {
+      for (let prop in response) {
+        if (response[prop] === false) {
           setIsHealthy(false);
           return;
         }

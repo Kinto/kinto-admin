@@ -1,4 +1,4 @@
-import { notifyError } from "./notifications";
+import { notifyError, notifySuccess } from "./notifications";
 import {
   SESSION_AUTHENTICATED,
   SESSION_AUTHENTICATION_FAILED,
@@ -17,15 +17,7 @@ import {
 } from "@src/constants";
 import type { ActionType, AuthData, ServerInfo } from "@src/types";
 
-const AUTH_REDIRECT_RESULT: ActionType<typeof notifyError> = {
-  notification: {
-    details: [],
-    message: "Redirecting to auth provider...",
-    timeout: 0,
-    type: "success",
-  },
-  type: "NOTIFICATION_ADDED",
-};
+const AUTH_REDIRECT_RESULT = notifySuccess("Redirecting to auth provider...");
 
 export function sessionBusy(busy: boolean): {
   type: "SESSION_BUSY";
