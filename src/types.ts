@@ -529,3 +529,8 @@ export type DestinationInfo = {
   bid: string;
   cid: string;
 };
+
+export type HeartbeatState = {
+  success: boolean;
+  response: Record<string, any>;
+};

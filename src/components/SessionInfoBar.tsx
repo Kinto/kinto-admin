@@ -1,7 +1,7 @@
+import * as HeartbeatActions from "@src/actions/heartbeat";
 import * as SessionActions from "@src/actions/session";
-import { getClient } from "@src/client";
 import { useAppDispatch, useAppSelector } from "@src/hooks/app";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   BoxArrowRight,
   CircleFill,
@@ -11,31 +11,19 @@ import {
 } from "react-bootstrap-icons";
 
 export function SessionInfoBar() {
-  const { url, project_name, project_docs, user } = useAppSelector(
-    store => store.session.serverInfo
+  const { heartbeat, url, project_name, project_docs, user } = useAppSelector(
+    store => {
+      return {
+        ...store.session.serverInfo,
+        heartbeat: store.heartbeat,
+      };
+    }
   );
   const dispatch = useAppDispatch();
-  const [isHealthy, setIsHealthy] = useState(true);
-  const client = getClient();
 
   const checkHeartbeat = async () => {
-    try {
-      let response: Record<string, any> = await client.execute({
-        path: "/__heartbeat__",
-        headers: undefined,
-      });
-      for (let prop in response) {
-        if (response[prop] === false) {
-          setIsHealthy(false);
-          return;
-        }
-      }
-      setIsHealthy(true);
-    } catch (ex) {
-      setIsHealthy(false);
-    } finally {
-      setTimeout(checkHeartbeat, 60000);
-    }
+    dispatch(HeartbeatActions.heartbeatRequest());
+    setTimeout(checkHeartbeat, 60000);
   };
 
   useEffect(() => {
@@ -67,7 +55,7 @@ export function SessionInfoBar() {
           <Clipboard className="icon" />
         </a>
         <a href={`${url}__heartbeat__`} target="_blank">
-          {isHealthy ? (
+          {heartbeat.success !== false ? (
             <CircleFill
               color="green"
               title="Server heartbeat status is healthy"
