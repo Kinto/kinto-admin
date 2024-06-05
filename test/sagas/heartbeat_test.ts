@@ -20,7 +20,6 @@ describe("Heartbeat saga", () => {
 
   it("Should return the expected default model", async () => {
     client.execute.mockResolvedValue({});
-    
     let saga = runSaga(
       {
         dispatch: actions.heartbeatRequest,
@@ -42,7 +41,6 @@ describe("Heartbeat saga", () => {
       foo: true,
       bar: false,
     });
-    
     let saga = runSaga(
       {
         dispatch: actions.heartbeatRequest,
@@ -65,7 +63,6 @@ describe("Heartbeat saga", () => {
   it("Should return false for success when the client throws", async () => {
     const err = new Error("throwing an error");
     client.execute.mockRejectedValue(err);
-    
     let saga = runSaga(
       {
         dispatch: actions.heartbeatRequest,
