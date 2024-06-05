@@ -15,11 +15,12 @@ describe("Heartbeat saga", () => {
 
   beforeEach(() => {
     vi.restoreAllMocks();
+    vi.spyOn(actions, "heartbeatResponse");
   });
 
   it("Should return the expected default model", async () => {
     client.execute.mockResolvedValue({});
-    vi.spyOn(actions, "heartbeatResponse");
+    
     let saga = runSaga(
       {
         dispatch: actions.heartbeatRequest,
@@ -41,7 +42,7 @@ describe("Heartbeat saga", () => {
       foo: true,
       bar: false,
     });
-    vi.spyOn(actions, "heartbeatResponse");
+    
     let saga = runSaga(
       {
         dispatch: actions.heartbeatRequest,
@@ -64,7 +65,7 @@ describe("Heartbeat saga", () => {
   it("Should return false for success when the client throws", async () => {
     const err = new Error("throwing an error");
     client.execute.mockRejectedValue(err);
-    vi.spyOn(actions, "heartbeatResponse");
+    
     let saga = runSaga(
       {
         dispatch: actions.heartbeatRequest,
