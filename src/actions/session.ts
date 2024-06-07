@@ -1,4 +1,4 @@
-import { notifyError } from "./notifications";
+import { notifyError, notifySuccess } from "./notifications";
 import {
   SESSION_AUTHENTICATED,
   SESSION_AUTHENTICATION_FAILED,
@@ -17,7 +17,7 @@ import {
 } from "@src/constants";
 import type { ActionType, AuthData, ServerInfo } from "@src/types";
 
-type NavigationResult = ActionType<typeof notifyError> | { type: null };
+const AUTH_REDIRECT_RESULT = notifySuccess("Redirecting to auth provider...");
 
 export function sessionBusy(busy: boolean): {
   type: "SESSION_BUSY";
@@ -111,14 +111,17 @@ export function logout(): {
   return { type: SESSION_LOGOUT };
 }
 
-function navigateToFxA(server: string, redirect: string): NavigationResult {
+function navigateToFxA(server: string, redirect: string) {
   document.location.href = `${server}/fxa-oauth/login?redirect=${encodeURIComponent(
     redirect
   )}`;
-  return { type: null };
+  return AUTH_REDIRECT_RESULT;
 }
 
-function postToPortier(server: string, redirect: string): NavigationResult {
+function postToPortier(
+  server: string,
+  redirect: string
+): ActionType<typeof notifyError> {
   // Alter the AuthForm to make it posting Portier auth information to the
   // dedicated Kinto server endpoint. This is definitely one of the ugliest
   // part of this project, but it works :)
@@ -144,7 +147,7 @@ function postToPortier(server: string, redirect: string): NavigationResult {
     hiddenRedirect.setAttribute("value", redirect);
     form.appendChild(hiddenRedirect);
     form.submit();
-    return { type: null };
+    return AUTH_REDIRECT_RESULT;
   } catch (error) {
     return notifyError("Couldn't redirect to authentication endpoint.", error);
   }
@@ -153,7 +156,7 @@ function postToPortier(server: string, redirect: string): NavigationResult {
 export function navigateToOpenID(
   authFormData: any,
   provider: any
-): NavigationResult {
+): ActionType<typeof notifyError> {
   const { origin, pathname } = document.location;
   const { server } = authFormData;
   const strippedServer = server.replace(/\/$/, "");
@@ -162,16 +165,19 @@ export function navigateToOpenID(
   const payload = btoa(JSON.stringify(authFormData));
   const redirect = encodeURIComponent(`${origin}${pathname}#/auth/${payload}/`);
   document.location.href = `${strippedServer}/${strippedAuthPath}?callback=${redirect}&scope=openid email`;
-  return { type: null };
+  return AUTH_REDIRECT_RESULT;
 }
 
 /**
  * Massive side effect: this will navigate away from the current page to perform
  * authentication to a third-party service, like FxA.
  */
-export function navigateToExternalAuth(authFormData: any): NavigationResult {
+export function navigateToExternalAuth(
+  authFormData: any
+): ActionType<typeof notifyError> {
   const { origin, pathname } = document.location;
   const { server, authType } = authFormData;
+
   try {
     const payload = btoa(JSON.stringify(authFormData));
     const redirect = `${origin}${pathname}#/auth/${payload}/`;

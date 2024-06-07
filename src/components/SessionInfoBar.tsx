@@ -1,15 +1,35 @@
+import * as HeartbeatActions from "@src/actions/heartbeat";
 import * as SessionActions from "@src/actions/session";
 import { useAppDispatch, useAppSelector } from "@src/hooks/app";
-import * as React from "react";
-import { BoxArrowRight } from "react-bootstrap-icons";
-import { QuestionCircleFill } from "react-bootstrap-icons";
-import { Clipboard } from "react-bootstrap-icons";
+import React, { useEffect } from "react";
+import {
+  BoxArrowRight,
+  CircleFill,
+  Clipboard,
+  ExclamationCircleFill,
+  QuestionCircleFill,
+} from "react-bootstrap-icons";
 
 export function SessionInfoBar() {
-  const { url, project_name, project_docs, user } = useAppSelector(
-    store => store.session.serverInfo
+  const { heartbeat, url, project_name, project_docs, user } = useAppSelector(
+    store => {
+      return {
+        ...store.session.serverInfo,
+        heartbeat: store.heartbeat,
+      };
+    }
   );
   const dispatch = useAppDispatch();
+
+  const checkHeartbeat = async () => {
+    dispatch(HeartbeatActions.heartbeatRequest());
+    setTimeout(checkHeartbeat, 60000);
+  };
+
+  useEffect(() => {
+    checkHeartbeat();
+  }, []);
+
   return (
     <div className="session-info-bar" data-testid="sessionInfo-bar">
       <h1 className="kinto-admin-title">{project_name}</h1>
@@ -33,6 +53,19 @@ export function SessionInfoBar() {
           }}
         >
           <Clipboard className="icon" />
+        </a>
+        <a href={`${url}__heartbeat__`} target="_blank">
+          {heartbeat.success !== false ? (
+            <CircleFill
+              color="green"
+              title="Server heartbeat status is healthy"
+            />
+          ) : (
+            <ExclamationCircleFill
+              color="red"
+              title="Server heartbeat status IS NOT healthy"
+            />
+          )}
         </a>
         <a
           href={project_docs}
