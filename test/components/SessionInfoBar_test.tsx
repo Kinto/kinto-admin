@@ -1,7 +1,7 @@
 import { setClient } from "@src/client";
 import { SessionInfoBar } from "@src/components/SessionInfoBar";
 import { renderWithProvider } from "@test/testUtils";
-import { screen, waitFor } from "@testing-library/react";
+import { act, screen, waitFor } from "@testing-library/react";
 
 describe("SessionInfoBar component", () => {
   const client = {
@@ -14,20 +14,38 @@ describe("SessionInfoBar component", () => {
     setClient(client);
   });
 
-  beforeEach(() => {
-    vi.resetAllMocks();
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.useRealTimers();
   });
 
-  it("Should show green server status by default and render user/server info as expected", async () => {
-    client.execute.mockResolvedValue({});
-    renderWithProvider(<SessionInfoBar />);
-    await waitFor(() => new Promise(resolve => setTimeout(resolve, 100))); // debounce wait
-    expect(screen.getByTitle(healthyStr)).toBeDefined();
+  it.only("Should show green server status by default and render user/server info as expected, and render again every minute", async () => {
+    vi.useFakeTimers();
+    let fakeDate = new Date(2024, 0, 1);
+    vi.setSystemTime(fakeDate);
 
+    client.execute.mockResolvedValue({});
+    expect(client.execute).toHaveBeenCalledTimes(0);
+    renderWithProvider(<SessionInfoBar />);
+    await vi.waitFor(() => {
+      expect(client.execute).toHaveBeenCalledTimes(2); // 2 due to provider causing re-render
+    })
+
+    expect(screen.getByTitle(healthyStr)).toBeDefined();
     expect(screen.getByTitle("Copy authentication header")).toBeDefined();
     expect(screen.getByText("Documentation")).toBeDefined();
     expect(screen.getByText("Logout")).toBeDefined();
     expect(screen.getByText("Anonymous")).toBeDefined();
+
+    // ensure execute is called every minute for 5 minutes
+    for (let i = 1; i < 5; i++) {
+      await vi.advanceTimersByTimeAsync(60100);
+      act(async() => {
+        await vi.waitFor(() => {
+          expect(client.execute).toHaveBeenCalledTimes(2 + i);
+        });
+      });
+    }
   });
 
   it("Should show green server status when heartbeat returns all true checks", async () => {
