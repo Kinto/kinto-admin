@@ -29,7 +29,7 @@ describe("SessionInfoBar component", () => {
     renderWithProvider(<SessionInfoBar />);
     await vi.waitFor(() => {
       expect(client.execute).toHaveBeenCalledTimes(2); // 2 due to provider causing re-render
-    })
+    });
 
     expect(screen.getByTitle(healthyStr)).toBeDefined();
     expect(screen.getByTitle("Copy authentication header")).toBeDefined();
@@ -40,7 +40,7 @@ describe("SessionInfoBar component", () => {
     // ensure execute is called every minute for 5 minutes
     for (let i = 1; i < 5; i++) {
       await vi.advanceTimersByTimeAsync(60100);
-      act(async() => {
+      act(async () => {
         await vi.waitFor(() => {
           expect(client.execute).toHaveBeenCalledTimes(2 + i);
         });
