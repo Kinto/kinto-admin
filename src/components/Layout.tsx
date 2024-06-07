@@ -3,6 +3,8 @@ import { SessionInfoBar } from "./SessionInfoBar";
 import { HomePage } from "@src/components/HomePage";
 import { Sidebar } from "@src/components/Sidebar";
 import { BucketPermissions } from "@src/components/bucket/BucketPermissions";
+import { CollectionAttributes } from "@src/components/collection/CollectionAttributes";
+import { CollectionCreate } from "@src/components/collection/CollectionCreate";
 import { CollectionPermissions } from "@src/components/collection/CollectionPermissions";
 import { GroupPermissions } from "@src/components/group/GroupPermissions";
 import { RecordPermissions } from "@src/components/record/RecordPermissions";
@@ -12,8 +14,6 @@ import BucketCollectionsPage from "@src/containers/bucket/BucketCollectionsPage"
 import BucketCreatePage from "@src/containers/bucket/BucketCreatePage";
 import BucketGroupsPage from "@src/containers/bucket/BucketGroupsPage";
 import BucketHistoryPage from "@src/containers/bucket/BucketHistoryPage";
-import CollectionAttributesPage from "@src/containers/collection/CollectionAttributesPage";
-import CollectionCreatePage from "@src/containers/collection/CollectionCreatePage";
 import CollectionHistoryPage from "@src/containers/collection/CollectionHistoryPage";
 import CollectionRecordsPage from "@src/containers/collection/CollectionRecordsPage";
 import GroupAttributesPage from "@src/containers/group/GroupAttributesPage";
@@ -164,7 +164,7 @@ export function Layout() {
                                 exact
                                 title="create"
                                 path="/buckets/:bid/collections/create"
-                                component={CollectionCreatePage}
+                                component={CollectionCreate}
                               />
                               <Redirect
                                 exact
@@ -180,7 +180,7 @@ export function Layout() {
                                     exact
                                     title="attributes"
                                     path="/buckets/:bid/collections/:cid/attributes"
-                                    component={CollectionAttributesPage}
+                                    component={CollectionAttributes}
                                   />
                                   <CreateRoute
                                     exact
