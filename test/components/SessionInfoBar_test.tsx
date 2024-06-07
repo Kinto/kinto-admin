@@ -1,7 +1,7 @@
 import { setClient } from "@src/client";
 import { SessionInfoBar } from "@src/components/SessionInfoBar";
 import { renderWithProvider } from "@test/testUtils";
-import { act, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, screen, waitFor } from "@testing-library/react";
 
 describe("SessionInfoBar component", () => {
   const client = {
@@ -15,7 +15,7 @@ describe("SessionInfoBar component", () => {
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
     vi.useRealTimers();
   });
 
@@ -28,7 +28,7 @@ describe("SessionInfoBar component", () => {
     expect(client.execute).toHaveBeenCalledTimes(0);
     renderWithProvider(<SessionInfoBar />);
     await vi.waitFor(() => {
-      expect(client.execute).toHaveBeenCalledTimes(2); // 2 due to provider causing re-render
+      expect(client.execute).toHaveBeenCalledTimes(2); // 2 due to provider causing re-render in tests
     });
 
     expect(screen.getByTitle(healthyStr)).toBeDefined();
@@ -40,9 +40,9 @@ describe("SessionInfoBar component", () => {
     // ensure execute is called every minute for 5 minutes
     for (let i = 1; i < 5; i++) {
       await vi.advanceTimersByTimeAsync(60100);
-      act(async () => {
+      await act(async () => {
         await vi.waitFor(() => {
-          expect(client.execute).toHaveBeenCalledTimes(2 + i);
+          expect(client.execute).toHaveBeenCalledTimes(2 + i * 2);
         });
       });
     }
