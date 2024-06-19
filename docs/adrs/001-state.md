@@ -56,6 +56,7 @@ We have already put in the effort to convert our components to be functional. Th
     - Group sagas logically. Ex: auth state, bucket state, etc.
 2. Swarm and knock them all out over the course of a sprint
     - Use multiple PR's (one per issue if possible) to make reviews easier
+    - Make multiple releases (continuous delivery) to easily identify possible issues faster
 
 ### Implementation plan B - Gradual
 1. Devs should create hooks going forward for any new state
@@ -83,9 +84,8 @@ Redux is our current state management tool.
  - Still relies on hooks to reduce dependency injection (useAppDispatch)
  - Another dependency
 
-#### [Code example](https://github.com/Kinto/kinto-admin/pull/3271/files)
+#### [Code example - redux](https://github.com/Kinto/kinto-admin/pull/3271/files)
 
-</details>
 
 ### Option 2 - Migrate to hooks
 If we were building kinto-admin today, nobody would pick Redux over hooks. A few custom hooks along with the standard redux hooks could manage our state with far fewer lines of code.
@@ -105,5 +105,5 @@ If we were building kinto-admin today, nobody would pick Redux over hooks. A few
  - Some refactoring of parent components/pages
  - Relearning some best practices
 
-#### [Code example](https://github.com/Kinto/kinto-admin/pull/3270/files)
+#### [Code example - hooks](https://github.com/Kinto/kinto-admin/pull/3270/files)
 
