@@ -4,6 +4,10 @@ updates:
   directory: "/"
   schedule:
     interval: weekly
+  groups:
+    rjsf:
+      patterns:
+      - "@rjsf*"
 - package-ecosystem: github-actions
   directory: "/"
   schedule:
