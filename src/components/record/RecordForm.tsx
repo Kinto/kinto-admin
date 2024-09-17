@@ -42,10 +42,6 @@ export function extendUIWithKintoFields(uiSchema: any, isCreate: boolean): any {
   };
 }
 
-export function extendUiSchemaWhenDisabled(uiSchema: any, disabled: boolean) {
-  return { ...uiSchema, "ui:disabled": disabled };
-}
-
 type Props = {
   bid: string;
   bucket: BucketState;
@@ -190,7 +186,6 @@ export default function RecordForm(props: Props) {
     );
     let _uiSchema = extendUIWithKintoFields(uiSchema, !record);
     _uiSchema = extendUiSchemaWithAttachment(_uiSchema, attachmentConfig);
-    _uiSchema = extendUiSchemaWhenDisabled(_uiSchema, !allowEditing);
 
     const formCrashMsg = (
       <div>
@@ -209,6 +204,7 @@ export default function RecordForm(props: Props) {
         formData={recordData}
         onSubmit={handleOnSubmit}
         formCrashMsg={formCrashMsg}
+        disabled={!allowEditing}
       >
         {buttons}
       </BaseForm>

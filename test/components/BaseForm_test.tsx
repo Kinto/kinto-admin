@@ -35,7 +35,6 @@ const testUiSchema = {
     "ui:widget": "hidden",
     "ui:disabled": true,
   },
-  "ui:disabled": false,
 };
 
 describe("BaseForm component", () => {
