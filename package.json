@@ -33,7 +33,7 @@
     "@uiw/react-codemirror": "^4.21.24",
     "bootstrap": "^4.6.2",
     "bootstrap-icons": "^1.11.3",
-    "diff": "^5.2.0",
+    "diff": "^7.0.0",
     "filesize": "^10.1.0",
     "history": "^4.10.1",
     "kinto": "^15.0.0",
