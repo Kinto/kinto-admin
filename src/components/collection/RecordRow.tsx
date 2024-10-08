@@ -132,7 +132,7 @@ export default function RecordRow({
             <Dropdown.Item
               onClick={() => {
                 navigator.clipboard.writeText(
-                  `${session.auth.server}buckets/${bid}/collections/${cid}/records/${record.id}`
+                  `${session.auth.server}/buckets/${bid}/collections/${cid}/records/${record.id}`
                 );
               }}
             >
