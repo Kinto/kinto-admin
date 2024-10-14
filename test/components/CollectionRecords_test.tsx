@@ -1,6 +1,6 @@
 import CollectionRecords from "@src/components/collection/CollectionRecords";
 import { renderWithProvider } from "@test/testUtils";
-import { screen } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
 
 describe("CollectionRecords component", () => {
@@ -128,6 +128,27 @@ describe("CollectionRecords component", () => {
       expect(screen.getByTestId("id2-row")).toBeDefined();
       expect(screen.getByTestId("id1-foo").textContent).toBe("bar");
       expect(screen.getByTestId("id2-foo").textContent).toBe("baz");
+    });
+
+    it("should apply live filtering", () => {
+      let quickFilter = screen.getByTestId("quickFilter");
+      fireEvent.change(quickFilter, {
+        target: { value: "bar" },
+      });
+      expect(screen.getByTestId("id1-row")).toBeDefined();
+      expect(screen.queryByTestId("id2-row")).toBeNull();
+
+      fireEvent.change(quickFilter, {
+        target: { value: "baz" },
+      });
+      expect(screen.getByTestId("id2-row")).toBeDefined();
+      expect(screen.queryByTestId("id1-row")).toBeNull();
+
+      fireEvent.change(quickFilter, {
+        target: { value: "" },
+      });
+      expect(screen.getByTestId("id1-row")).toBeDefined();
+      expect(screen.queryByTestId("id2-row")).toBeDefined();
     });
   });
 
