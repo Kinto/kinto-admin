@@ -216,13 +216,10 @@ export default function RecordTable({
     <>
       <input
         type="text"
-        className="form-control"
+        className="form-control quickFilter"
         placeholder="Quicksearch"
         onChange={onFilterChange}
         value={filter}
-        style={{
-          marginBottom: "-0.5em",
-        }}
         data-testid="quickFilter"
       />
       <PaginatedTable
