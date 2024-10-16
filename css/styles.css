@@ -454,6 +454,10 @@ form button[type="submit"].btn-primary {
   display: none;
 }
 
+.quickFilter {
+  margin-bottom: -0.5em;
+}
+
 /* Spinner http://tobiasahlin.com/spinkit/ */
 .spinner {
   margin: 30px auto 0;

@@ -7,7 +7,7 @@ import SignoffContainer from "@src/containers/signoff/SignoffToolBar";
 import { canCreateRecord } from "@src/permission";
 import type { RecordData } from "@src/types";
 import { capitalize } from "@src/utils";
-import React from "react";
+import React, { useState } from "react";
 import { SortUp } from "react-bootstrap-icons";
 import { SortDown } from "react-bootstrap-icons";
 
@@ -129,6 +129,12 @@ export default function RecordTable({
   redirectTo,
   capabilities,
 }: TableProps) {
+  const [filter, setFilter] = useState("");
+
+  const onFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilter(e.target.value);
+  };
+
   const getFieldTitle = displayField => {
     if (displayField === "__json") {
       return "Data";
@@ -151,6 +157,12 @@ export default function RecordTable({
       <div className="alert alert-info">
         <p>This collection has no records.</p>
       </div>
+    );
+  }
+
+  if (filter && records.length) {
+    records = records.filter(x =>
+      JSON.stringify(x).match(new RegExp(filter, "i"))
     );
   }
 
@@ -201,13 +213,23 @@ export default function RecordTable({
   );
 
   return (
-    <PaginatedTable
-      thead={thead}
-      tbody={tbody}
-      dataLoaded={recordsLoaded}
-      colSpan={displayFields.length + 2}
-      hasNextPage={hasNextRecords}
-      listNextPage={listNextRecords}
-    />
+    <>
+      <input
+        type="text"
+        className="form-control quickFilter"
+        placeholder="Quicksearch"
+        onChange={onFilterChange}
+        value={filter}
+        data-testid="quickFilter"
+      />
+      <PaginatedTable
+        thead={thead}
+        tbody={tbody}
+        dataLoaded={recordsLoaded}
+        colSpan={displayFields.length + 2}
+        hasNextPage={hasNextRecords}
+        listNextPage={listNextRecords}
+      />
+    </>
   );
 }
