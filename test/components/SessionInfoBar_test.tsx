@@ -55,8 +55,8 @@ describe("SessionInfoBar component", () => {
         session: {
           authenticated: true,
           serverInfo: { user: { id: "foo" } },
-        }
-      }
+        },
+      },
     });
     expect(screen.getByText("Logout")).toBeDefined();
     expect(screen.getByText("foo")).toBeDefined();
