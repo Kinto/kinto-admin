@@ -43,17 +43,19 @@ export function SessionInfoBar() {
         )}
         {" on "}
         <strong>{url}</strong>{" "}
-        <a
-          href=""
-          className="btn btn-sm btn-link"
-          title="Copy authentication header"
-          onClick={event => {
-            event.preventDefault();
-            dispatch(SessionActions.copyAuthenticationHeader());
-          }}
-        >
-          <Clipboard className="icon" />
-        </a>
+        {user?.id && (
+          <a
+            href=""
+            className="btn btn-sm btn-link"
+            title="Copy authentication header"
+            onClick={event => {
+              event.preventDefault();
+              dispatch(SessionActions.copyAuthenticationHeader());
+            }}
+          >
+            <Clipboard className="icon" />
+          </a>
+        )}
         <a href={`${url}__heartbeat__`} target="_blank">
           {heartbeat.success !== false ? (
             <CircleFill
