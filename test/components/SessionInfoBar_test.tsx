@@ -32,10 +32,11 @@ describe("SessionInfoBar component", () => {
     });
 
     expect(screen.getByTitle(healthyStr)).toBeDefined();
-    expect(screen.getByTitle("Copy authentication header")).toBeDefined();
     expect(screen.getByText("Documentation")).toBeDefined();
     expect(screen.getByText("Logout")).toBeDefined();
     expect(screen.getByText("Anonymous")).toBeDefined();
+    // Copy auth header should not render for anonymous logins
+    expect(screen.queryByTitle("Copy authentication header")).toBeNull();
 
     // ensure execute is called every minute for 5 minutes
     for (let i = 1; i < 5; i++) {
@@ -46,6 +47,20 @@ describe("SessionInfoBar component", () => {
         });
       });
     }
+  });
+
+  it("Should show copy authentication header when a user is logged in", async () => {
+    renderWithProvider(<SessionInfoBar />, {
+      initialState: {
+        session: {
+          authenticated: true,
+          serverInfo: { user: { id: "foo" } },
+        }
+      }
+    });
+    expect(screen.getByText("Logout")).toBeDefined();
+    expect(screen.getByText("foo")).toBeDefined();
+    expect(screen.getByTitle("Copy authentication header")).toBeDefined();
   });
 
   it("Should show green server status when heartbeat returns all true checks", async () => {
