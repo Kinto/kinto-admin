@@ -6,6 +6,7 @@ import * as recordSagas from "./record";
 import * as routeSagas from "./route";
 import * as sessionSagas from "./session";
 import * as signoffSagas from "./signoff";
+import * as versionSagas from "./version";
 import * as c from "@src/constants";
 import type { GetStateFn, SagaGen } from "@src/types";
 import { all, takeEvery } from "redux-saga/effects";
@@ -146,6 +147,8 @@ export default function* rootSaga(getState: GetStateFn): SagaGen {
     ),
     // heartbeat
     takeEvery(c.HEARTBEAT_REQUEST, heartbeatSagas.heartbeatRequest, getState),
+    // version example
+    takeEvery("VERSION_REQUEST", versionSagas.versionRequest, getState),
   ];
 
   yield all(sagas);
