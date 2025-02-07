@@ -26,7 +26,7 @@ export default function JSONEditor({
       value={value}
       onChange={onCodeChange}
       height="auto"
-      extensions={[langs.json()]}
+      extensions={[langs.tsx()]}
       indentWithTab={false}
     />
   );
