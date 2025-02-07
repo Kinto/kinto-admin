@@ -55,7 +55,7 @@ function fetchCollectionStateAt(
   bid: string,
   cid: string,
   timestamp?: string
-): Promise<Object[]> {
+): Promise<object[]> {
   const coll = getClient().bucket(bid).collection(cid);
   const query = timestamp ? { at: parseInt(timestamp, 10) } : {};
   return coll.listRecords(query).then(({ data: records }) => {

@@ -34,10 +34,10 @@ describe("AuthForm component", () => {
     beforeEach(() => {
       setupSession = vi.fn();
       serverChange = vi.fn();
-      (getServerInfo = async () => {
+      getServerInfo = async () => {
         return new Promise(resolve => setTimeout(resolve, 100)); // simulate server response taking 100ms
-      }),
-        (navigateToExternalAuth = vi.fn());
+      };
+      navigateToExternalAuth = vi.fn();
       navigateToOpenID = vi.fn();
       const props = {
         match: {},

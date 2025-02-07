@@ -18,7 +18,7 @@ export function loadServers(): ServerEntry[] {
         : entry
     );
     return withLegacyHistory;
-  } catch (err) {
+  } catch (_err) {
     return [];
   }
 }
@@ -26,7 +26,7 @@ export function loadServers(): ServerEntry[] {
 export function saveServers(history: ServerEntry[]): ServerEntry[] {
   try {
     localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
-  } catch (err) {
+  } catch (_err) {
     // Not much to do here, let's fail silently
   }
 
@@ -40,7 +40,7 @@ export function clearServers(): ServerEntry[] {
 export function loadSession(): SessionState | null {
   try {
     return JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
-  } catch (err) {
+  } catch (_err) {
     return null;
   }
 }
