@@ -37,7 +37,9 @@ export const onGroupHistoryEnter = (props: Props) => {
   if (!session.authenticated) {
     return;
   }
-  listGroupHistory && listGroupHistory(bid, gid);
+  if (listGroupHistory) {
+    listGroupHistory(bid, gid);
+  }
 };
 
 export default function GroupHistory(props: Props) {

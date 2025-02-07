@@ -158,7 +158,7 @@ export function* onCollectionRecordsRequest(
 
 export async function fetchSourceAttributes(
   source: CapabilityResource
-): Promise<Object> {
+): Promise<object> {
   const client = getClient();
   const sourceClient = client
     .bucket(source.bucket)

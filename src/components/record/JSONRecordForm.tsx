@@ -47,7 +47,7 @@ type Props = {
   record: string; // JSON string representation of a record data
   attachmentEnabled?: boolean;
   attachmentRequired?: boolean;
-  onSubmit: (data: Object) => void;
+  onSubmit: (data: object) => void;
   children?: React.ReactNode;
 };
 

@@ -263,7 +263,7 @@ export type ResourceHistoryEntry = {
   user_id: string;
 };
 
-export type EmptyRouteParams = {};
+export type EmptyRouteParams = object;
 
 export type BucketRouteMatch = {
   params: { bid: string };
@@ -411,6 +411,8 @@ export type OpenIDAuth = {
 } & AuthData;
 
 export type SagaGen = Generator<any, void, any>;
+
+export type SagaNextFunction = (...args: any[]) => any;
 
 export type CollectionEntry = {
   id: string;

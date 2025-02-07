@@ -78,7 +78,7 @@ const loginPasswordUiSchema = {
 };
 
 const authSchemas = authType => {
-  const customizedSchemas: Object = {
+  const customizedSchemas: object = {
     accounts: {
       schema: {
         ...baseAuthSchema,

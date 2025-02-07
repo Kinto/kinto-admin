@@ -25,6 +25,7 @@ import type {
   GroupUpdate,
   HistoryFilters,
   ResourceHistoryEntry,
+  SagaNextFunction,
 } from "@src/types";
 
 export function createBucket(
@@ -76,12 +77,12 @@ export function listBucketNextCollections(): {
 export function listBucketCollectionsSuccess(
   entries: CollectionData[],
   hasNextPage: boolean,
-  next: Function | null | undefined
+  next: SagaNextFunction | null | undefined
 ): {
   type: "BUCKET_COLLECTIONS_SUCCESS";
   entries: CollectionData[];
   hasNextPage: boolean;
-  next: Function | null | undefined;
+  next: SagaNextFunction | null | undefined;
 } {
   return { type: BUCKET_COLLECTIONS_SUCCESS, entries, hasNextPage, next };
 }
@@ -106,12 +107,12 @@ export function listBucketNextHistory(): {
 export function listBucketHistorySuccess(
   entries: ResourceHistoryEntry[],
   hasNextPage: boolean,
-  next: Function | null | undefined
+  next: SagaNextFunction | null | undefined
 ): {
   type: "BUCKET_HISTORY_SUCCESS";
   entries: ResourceHistoryEntry[];
   hasNextPage: boolean;
-  next: Function | null | undefined;
+  next: SagaNextFunction | null | undefined;
 } {
   return { type: BUCKET_HISTORY_SUCCESS, entries, hasNextPage, next };
 }

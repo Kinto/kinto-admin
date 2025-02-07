@@ -110,11 +110,11 @@ export function HomePage() {
         try {
           // Token is encoded in base64 for a safe path parsing.
           parsedToken = JSON.parse(atob(token));
-        } catch (e) {
+        } catch (_e) {
           // Previous version of Kinto exposed the JSON directly in the URL.
           try {
             parsedToken = JSON.parse(token);
-          } catch (e) {
+          } catch (_ee) {
             throw new Error(`Token doesn't seems to be a valid JSON: {token}`);
           }
         }

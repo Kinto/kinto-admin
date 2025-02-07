@@ -44,7 +44,7 @@ export function validJSON(string: string): boolean {
   try {
     JSON.parse(string);
     return true;
-  } catch (err) {
+  } catch (_err) {
     return false;
   }
 }
@@ -53,7 +53,7 @@ export function validateSchema(jsonSchema: string) {
   let schema: any;
   try {
     schema = JSON.parse(jsonSchema);
-  } catch (err) {
+  } catch (_err) {
     throw "The schema is not valid JSON";
   }
   const checks: Array<{ test: () => boolean; error: string }> = [
@@ -95,7 +95,7 @@ export function validateUiSchema(jsonUiSchema: string, jsonSchema: string) {
     schema: any = JSON.parse(jsonSchema);
   try {
     uiSchema = JSON.parse(jsonUiSchema);
-  } catch (err) {
+  } catch (_err) {
     throw "The uiSchema is not valid JSON";
   }
   const hasOrder: boolean = Object.prototype.hasOwnProperty.call(
@@ -193,7 +193,7 @@ export function linkify(string: string): any {
   return string;
 }
 
-export function renderDisplayField(record: Object, displayField: string): any {
+export function renderDisplayField(record: object, displayField: string): any {
   if (!record) {
     return "<unknown>";
   }
@@ -298,7 +298,7 @@ export function getServerByPriority(servers: ServerEntry[] | null | undefined) {
   return SINGLE_SERVER || servers?.[0]?.server || DEFAULT_KINTO_SERVER;
 }
 
-export function isObjectEmpty(obj: Object) {
+export function isObjectEmpty(obj: object) {
   return Object.keys(obj).length === 0;
 }
 
@@ -359,8 +359,8 @@ export async function copyToClipboard(s: string | null | undefined) {
 }
 
 export function diffJson(
-  a: Object,
-  b: Object,
+  a: object,
+  b: object,
   // Number of lines to show above/below changes in diffs.
   nLines: number | "all" = 3
 ): string[] {

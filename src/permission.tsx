@@ -169,8 +169,8 @@ export function canEditRecord(
  */
 export function permissionsToFormData(
   bid: string,
-  permissionsObject: Object
-): Object {
+  permissionsObject: object
+): object {
   const groupRegexp = new RegExp(`^/buckets/${bid}/groups/([^/]+)$`);
   const formData = Object.keys(permissionsObject).reduce(
     (acc, permissionName) => {
@@ -229,7 +229,7 @@ export function permissionsToFormData(
  * Transform the permissions form result into data processable by the API.
  * See `permissionsToFormData()` and `preparePermissionsForm()`.
  */
-export function formDataToPermissions(bid: string, formData: Object): Object {
+export function formDataToPermissions(bid: string, formData: object): object {
   const { anonymous, authenticated, groups, principals } = formData as any;
   const fromGeneric = [
     {

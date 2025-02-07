@@ -5,7 +5,7 @@ import {
   RECORD_HISTORY_SUCCESS,
   RECORD_RESET,
 } from "@src/constants";
-import type { ResourceHistoryEntry } from "@src/types";
+import type { ResourceHistoryEntry, SagaNextFunction } from "@src/types";
 
 export function recordBusy(busy: boolean): {
   type: "RECORD_BUSY";
@@ -42,12 +42,12 @@ export function listRecordNextHistory(): {
 export function listRecordHistorySuccess(
   entries: ResourceHistoryEntry[],
   hasNextPage: boolean,
-  next: Function | null | undefined
+  next: SagaNextFunction | null | undefined
 ): {
   type: "RECORD_HISTORY_SUCCESS";
   entries: ResourceHistoryEntry[];
   hasNextPage: boolean;
-  next: Function | null | undefined;
+  next: SagaNextFunction | null | undefined;
 } {
   return { type: RECORD_HISTORY_SUCCESS, entries, hasNextPage, next };
 }

@@ -67,9 +67,9 @@ export function serverInfoSuccess(serverInfo: ServerInfo): {
   return { type: SESSION_SERVERINFO_SUCCESS, serverInfo };
 }
 
-export function permissionsListSuccess(permissions: Object[]): {
+export function permissionsListSuccess(permissions: object[]): {
   type: "SESSION_PERMISSIONS_SUCCESS";
-  permissions: Object[];
+  permissions: object[];
 } {
   return { type: SESSION_PERMISSIONS_SUCCESS, permissions };
 }
@@ -80,9 +80,9 @@ export function listBuckets(): {
   return { type: SESSION_BUCKETS_REQUEST };
 }
 
-export function bucketsSuccess(buckets: Object[]): {
+export function bucketsSuccess(buckets: object[]): {
   type: "SESSION_BUCKETS_SUCCESS";
-  buckets: Object[];
+  buckets: object[];
 } {
   return { type: SESSION_BUCKETS_SUCCESS, buckets };
 }

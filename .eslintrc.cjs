@@ -23,7 +23,7 @@ module.exports = {
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",
-      { "vars": "all", "args": "none", "varsIgnorePattern": "^_" }
+      { "vars": "all", "args": "none", "varsIgnorePattern": "^_", "caughtErrorsIgnorePattern": "^_" }
     ],
     "no-console": "off"
   },

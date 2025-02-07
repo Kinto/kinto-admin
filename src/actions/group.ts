@@ -5,7 +5,7 @@ import {
   GROUP_HISTORY_SUCCESS,
   GROUP_RESET,
 } from "@src/constants";
-import type { ResourceHistoryEntry } from "@src/types";
+import type { ResourceHistoryEntry, SagaNextFunction } from "@src/types";
 
 export function groupBusy(busy: boolean): {
   type: "GROUP_BUSY";
@@ -40,12 +40,12 @@ export function listGroupNextHistory(): {
 export function listGroupHistorySuccess(
   entries: ResourceHistoryEntry[],
   hasNextPage: boolean,
-  next: Function | null | undefined
+  next: SagaNextFunction | null | undefined
 ): {
   type: "GROUP_HISTORY_SUCCESS";
   entries: ResourceHistoryEntry[];
   hasNextPage: boolean;
-  next: Function | null | undefined;
+  next: SagaNextFunction | null | undefined;
 } {
   return { type: GROUP_HISTORY_SUCCESS, entries, hasNextPage, next };
 }

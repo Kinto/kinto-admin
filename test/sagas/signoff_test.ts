@@ -115,7 +115,7 @@ describe("Signoff sagas", () => {
         };
 
         const result = saga.onCollectionRecordsRequest(getState, action);
-        result.next().value; // put(), tested above
+        result.next(); // put(), tested above
         expect(result.next().value).toStrictEqual(
           call(saga.fetchSourceAttributes, {
             bucket: "stage",

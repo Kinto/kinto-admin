@@ -19,6 +19,7 @@ import type {
   RecordData,
   RecordUpdate,
   ResourceHistoryEntry,
+  SagaNextFunction,
 } from "@src/types";
 
 export function collectionBusy(busy: boolean): {
@@ -56,13 +57,13 @@ export function listNextRecords(): {
 export function listRecordsSuccess(
   records: RecordData[],
   hasNextRecords: boolean,
-  listNextRecords: Function | null | undefined,
+  listNextRecords: SagaNextFunction | null | undefined,
   isNextPage: boolean = false
 ): {
   type: "COLLECTION_RECORDS_SUCCESS";
   records: RecordData[];
   hasNextRecords: boolean;
-  listNextRecords: Function | null | undefined;
+  listNextRecords: SagaNextFunction | null | undefined;
   isNextPage: boolean;
 } {
   return {
@@ -106,12 +107,12 @@ export function listCollectionNextHistory(): {
 export function listCollectionHistorySuccess(
   entries: ResourceHistoryEntry[],
   hasNextPage: boolean,
-  next: Function | null | undefined
+  next: SagaNextFunction | null | undefined
 ): {
   type: "COLLECTION_HISTORY_SUCCESS";
   entries: ResourceHistoryEntry[];
   hasNextPage: boolean;
-  next: Function | null | undefined;
+  next: SagaNextFunction | null | undefined;
 } {
   return { type: COLLECTION_HISTORY_SUCCESS, entries, hasNextPage, next };
 }
