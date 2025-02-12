@@ -1,6 +1,6 @@
 import Spinner from "./Spinner";
 import TagsField from "./TagsField";
-import base64input from "./rjsf/base64input";
+import Base64Input from "./rjsf/Base64Input";
 import { Theme as Bootstrap4Theme } from "@rjsf/bootstrap-4";
 import { FormProps, withTheme } from "@rjsf/core";
 import {
@@ -22,7 +22,7 @@ export type BaseFormProps = Omit<FormProps, "validator"> & {
 };
 
 const customWidgets: RegistryWidgetsType = {
-  base64input: base64input,
+  base64input: Base64Input,
 };
 
 export default function BaseForm(props: BaseFormProps) {

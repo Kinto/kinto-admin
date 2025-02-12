@@ -1,13 +1,7 @@
-import {
-  RJSFSchema,
-  RegistryWidgetsType,
-  UiSchema,
-  WidgetProps,
-} from "@rjsf/utils";
-import validator from "@rjsf/validator-ajv8";
+import { ErrorSchema, WidgetProps } from "@rjsf/utils";
 import { Dash, Download } from "react-bootstrap-icons";
 
-export default function base64input({
+export default function Base64Input({
   disabled,
   onChange,
   readonly,
@@ -57,14 +51,14 @@ function CurrentValDisplay({ val }) {
   );
 }
 
-async function getBase64Str(evt, callback) {
+async function getBase64Str(evt, changeCallback) {
   const files = evt.target.files;
   if (!files || !files.length) {
-    callback(null);
+    changeCallback(null);
     return;
   }
 
-  const readPromise = new Promise((res, rej) => {
+  const readPromise = new Promise<String>((res, rej) => {
     const reader = new FileReader();
     reader.onloadend = () => res(reader.result);
     reader.onerror = rej;
@@ -73,6 +67,12 @@ async function getBase64Str(evt, callback) {
 
   let str = await readPromise;
 
-  // throw an error if we exceed X bytes?
-  callback(str);
+  changeCallback(
+    str,
+    str.length > 1024 * 1024
+      ? {
+          __errors: ["The base64 string cannot exceed 1MB in size."],
+        }
+      : undefined
+  );
 }
