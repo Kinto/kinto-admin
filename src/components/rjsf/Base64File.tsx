@@ -1,4 +1,4 @@
-import { ErrorSchema, WidgetProps } from "@rjsf/utils";
+import { WidgetProps } from "@rjsf/utils";
 import { Dash, Download } from "react-bootstrap-icons";
 
 export default function Base64File({
@@ -66,7 +66,7 @@ async function getBase64Str(evt, changeCallback) {
 
   console.log("#### alex foo getBase64Str 2");
 
-  const readPromise = new Promise<String>((res, rej) => {
+  const readPromise = new Promise<string>((res, rej) => {
     const reader = new FileReader();
     reader.onloadend = () => res(reader.result);
     reader.onerror = rej;
