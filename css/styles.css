@@ -606,9 +606,11 @@ i.fa:before {
 }
 
 .rjsf .b64-thumb {
-  max-width: 200px;
-  max-height: 200px;
   display: block;
+  max-width: 250px;
+  max-height: 250px;
+  min-width: 50px;
+  min-height: 50px;
 }
 
 .formWrapper {

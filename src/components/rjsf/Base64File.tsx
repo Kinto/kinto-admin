@@ -1,7 +1,7 @@
 import { ErrorSchema, WidgetProps } from "@rjsf/utils";
 import { Dash, Download } from "react-bootstrap-icons";
 
-export default function Base64Input({
+export default function Base64File({
   disabled,
   onChange,
   readonly,
@@ -13,6 +13,7 @@ export default function Base64Input({
       <CurrentValDisplay val={value} />
       <input
         type="file"
+        data-testid="b64-file"
         required={required && !value}
         disabled={disabled}
         readOnly={readonly}
@@ -24,7 +25,7 @@ export default function Base64Input({
         <button
           type="button"
           className="btn btn-danger btn-sm"
-          title="Remove"
+          title="Remove existing value"
           onClick={() => onChange("")}
         >
           <Dash className="icon" />
@@ -41,11 +42,15 @@ function CurrentValDisplay({ val }) {
 
   // images render a thumbnail, everything else shows a download icon
   return (
-    <a href={val} download={true} target="_blank">
+    <a href={val} download={true} target="_blank" data-testid="b64-download">
       {val.match(/^data:image\//) ? (
-        <img src={val} className="b64-thumb" />
+        <img
+          src={val}
+          className="b64-thumb"
+          title="Image preview, click to download"
+        />
       ) : (
-        <Download className="iconLarge" />
+        <Download className="iconLarge" title="Click to download" />
       )}
     </a>
   );
@@ -53,10 +58,13 @@ function CurrentValDisplay({ val }) {
 
 async function getBase64Str(evt, changeCallback) {
   const files = evt.target.files;
+  console.log("#### alex foo getBase64Str 1");
   if (!files || !files.length) {
     changeCallback(null);
     return;
   }
+
+  console.log("#### alex foo getBase64Str 2");
 
   const readPromise = new Promise<String>((res, rej) => {
     const reader = new FileReader();
@@ -65,14 +73,19 @@ async function getBase64Str(evt, changeCallback) {
     reader.readAsDataURL(files[0]);
   });
 
-  let str = await readPromise;
-
-  changeCallback(
-    str,
-    str.length > 1024 * 1024
-      ? {
-          __errors: ["The base64 string cannot exceed 1MB in size."],
-        }
-      : undefined
-  );
+  try {
+    let str = await readPromise;
+    changeCallback(
+      str,
+      str.length > 1024 * 1024
+        ? {
+            __errors: ["The base64 string cannot exceed 1MB in size."],
+          }
+        : undefined
+    );
+  } catch (ex) {
+    changeCallback("", {
+      __errors: [ex.toString()],
+    });
+  }
 }
