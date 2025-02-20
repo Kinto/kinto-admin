@@ -1,8 +1,13 @@
 import Spinner from "./Spinner";
 import TagsField from "./TagsField";
+import Base64File from "./rjsf/Base64File";
 import { Theme as Bootstrap4Theme } from "@rjsf/bootstrap-4";
 import { FormProps, withTheme } from "@rjsf/core";
-import { RJSFSchema, RJSFValidationError } from "@rjsf/utils";
+import {
+  RJSFSchema,
+  RJSFValidationError,
+  RegistryWidgetsType,
+} from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv8";
 import React, { Component, ReactNode, useRef, useState } from "react";
 
@@ -14,6 +19,10 @@ export type BaseFormProps = Omit<FormProps, "validator"> & {
   showSpinner?: boolean;
   formCrashMsg?: ReactNode;
   onSubmit: (data: RJSFSchema) => void;
+};
+
+const customWidgets: RegistryWidgetsType = {
+  base64file: Base64File,
 };
 
 export default function BaseForm(props: BaseFormProps) {
@@ -48,6 +57,7 @@ export default function BaseForm(props: BaseFormProps) {
           // @ts-ignore
           fields={adminFields}
           disabled={disabled || showSpinner || isSubmitting}
+          widgets={customWidgets}
         />
         {(isSubmitting || showSpinner) && <Spinner />}
       </ErrorBoundary>

@@ -13,6 +13,13 @@ h1 {
   margin-bottom: calc(-0.125em / 2);
 }
 
+.iconLarge {
+  width: 50px;
+  height: 50px;
+  color: black;
+  display: block;
+}
+
 .main {
   padding-top: 2.8em;
 }
@@ -596,6 +603,14 @@ i.fa:before {
 
 .rjsf .input-group-append button.dropdown-toggle {
   font-size: 12pt;
+}
+
+.rjsf .b64-thumb {
+  display: block;
+  max-width: 250px;
+  max-height: 250px;
+  min-width: 50px;
+  min-height: 50px;
 }
 
 .formWrapper {

@@ -22,6 +22,7 @@ Kinto-based systems.
   - [Hacking on kinto-admin](#hacking-on-kinto-admin)
   - [Development server](#development-server)
   - [Tests](#tests)
+  - [Custom RJSF Fields](#Custom-RJSF-fields)
   - [FAQ](#faq)
      - [Browser support](#browser-support)
      - [How to display a nested field value using the collection displayFields property?](#how-to-display-a-nested-field-value-using-the-collection-displayfields-property)
@@ -147,6 +148,37 @@ To run tests:
 ```
 $ npm run test-all
 ```
+
+## Custom RJSF fields
+We have expanded the RJSF functionality with a base64 encoded file upload. It can be used by declaring a `string` field on a collection's JSON schema and specifying the `base64file` widget in the UI schema. Examples:
+
+JSON schema:
+```
+{
+  "type": "object",
+  "properties": {
+    "b64example": {
+      "type": "string",
+      "title": "Base64 Upload",
+      "description": "Upload a small file here..."
+    }
+  }
+}
+```
+
+UI schema:
+```
+{
+  "b64example": {
+    "ui:widget": "base64file"
+  },
+  "ui:order": [
+    "b64example"
+  ]
+}
+```
+
+
 ## FAQ
 
 ### Browser support
