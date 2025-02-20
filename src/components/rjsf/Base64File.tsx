@@ -3,7 +3,7 @@ import { Dash, Download } from "react-bootstrap-icons";
 
 export default function Base64File({
   disabled,
-  onChange,
+  onChange: rjsfOnChange,
   readonly,
   required,
   value,
@@ -18,7 +18,7 @@ export default function Base64File({
         disabled={disabled}
         readOnly={readonly}
         onChange={async evt => {
-          await getBase64Str(evt, onChange);
+          await onChange(evt, rjsfOnChange);
         }}
       />
       {value && !readonly && !disabled && (
@@ -26,7 +26,7 @@ export default function Base64File({
           type="button"
           className="btn btn-danger btn-sm"
           title="Remove existing value"
-          onClick={() => onChange("")}
+          onClick={() => rjsfOnChange("")}
         >
           <Dash className="icon" />
         </button>
@@ -37,7 +37,7 @@ export default function Base64File({
 
 function CurrentValDisplay({ val }) {
   if (!val) {
-    return <></>;
+    return null;
   }
 
   // images render a thumbnail, everything else shows a download icon
@@ -56,20 +56,17 @@ function CurrentValDisplay({ val }) {
   );
 }
 
-async function getBase64Str(evt, changeCallback) {
+async function onChange(evt, changeCallback) {
   const files = evt.target.files;
-  console.log("#### alex foo getBase64Str 1");
   if (!files || !files.length) {
     changeCallback(null);
     return;
   }
 
-  console.log("#### alex foo getBase64Str 2");
-
-  const readPromise = new Promise<string>((res, rej) => {
+  const readPromise = new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
-    reader.onloadend = () => res(reader.result);
-    reader.onerror = rej;
+    reader.onloadend = () => resolve(reader.result);
+    reader.onerror = reject;
     reader.readAsDataURL(files[0]);
   });
 
