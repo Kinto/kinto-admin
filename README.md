@@ -150,7 +150,7 @@ $ npm run test-all
 ```
 
 ## Custom RJSF fields
-We have expanded the RJSF functionality with a base64 encoded file upload. It can be used by declaring a string field on a collection's JSON schema and specifying the base64file widget in the UI schema. Examples:
+We have expanded the RJSF functionality with a base64 encoded file upload. It can be used by declaring a `string` field on a collection's JSON schema and specifying the `base64file` widget in the UI schema. Examples:
 
 JSON schema:
 ```
