@@ -1,5 +1,5 @@
 /* Utils for tests. */
-import * as notificationsActions from "@src/actions/notifications";
+import * as notificationsActions from "@src/hooks/notifications";
 import { configureAppStoreAndHistory } from "@src/store/configureStore";
 import { render } from "@testing-library/react";
 import { createMemoryHistory } from "history";

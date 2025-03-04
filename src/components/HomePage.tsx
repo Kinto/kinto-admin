@@ -1,9 +1,9 @@
 import AuthForm from "./AuthForm";
 import Spinner from "./Spinner";
-import * as NotificationActions from "@src/actions/notifications";
 import * as ServersActions from "@src/actions/servers";
 import * as SessionActions from "@src/actions/session";
 import { useAppDispatch, useAppSelector } from "@src/hooks/app";
+import { notifyError } from "@src/hooks/notifications";
 import { loadSession } from "@src/store/localStore";
 import type { OpenIDAuth, PortierAuth, TokenAuth } from "@src/types";
 import { getServerByPriority, isObject } from "@src/utils";
@@ -154,7 +154,7 @@ export function HomePage() {
       dispatch(SessionActions.setupSession(authData));
     } catch (error) {
       const message = "Couldn't proceed with authentication.";
-      dispatch(NotificationActions.notifyError(message, error));
+      notifyError(message, error);
     }
     // dependency array left empty so this behaves like `componentDidMount`
   }, []);

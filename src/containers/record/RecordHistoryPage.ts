@@ -1,4 +1,3 @@
-import * as NotificationsActions from "@src/actions/notifications";
 import * as RecordActions from "@src/actions/record";
 import type { StateProps } from "@src/components/record/RecordHistory";
 import RecordHistory from "@src/components/record/RecordHistory";
@@ -15,13 +14,12 @@ function mapStateToProps(state: AppState): StateProps {
   };
 }
 
-type DispatchProps = typeof RecordActions & typeof NotificationsActions;
+type DispatchProps = typeof RecordActions;
 
 function mapDispatchToProps(dispatch: Dispatch): DispatchProps {
   return bindActionCreators(
     {
       ...RecordActions,
-      ...NotificationsActions,
     },
     dispatch
   );

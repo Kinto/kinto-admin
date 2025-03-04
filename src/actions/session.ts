@@ -1,4 +1,3 @@
-import { notifyError, notifySuccess } from "./notifications";
 import {
   SESSION_AUTHENTICATED,
   SESSION_AUTHENTICATION_FAILED,
@@ -15,6 +14,7 @@ import {
   SESSION_SETUP_COMPLETE,
   SESSION_STORE_REDIRECT_URL,
 } from "@src/constants";
+import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import type { ActionType, AuthData, ServerInfo } from "@src/types";
 
 const AUTH_REDIRECT_RESULT = notifySuccess("Redirecting to auth provider...");
@@ -118,10 +118,7 @@ function navigateToFxA(server: string, redirect: string) {
   return AUTH_REDIRECT_RESULT;
 }
 
-function postToPortier(
-  server: string,
-  redirect: string
-): ActionType<typeof notifyError> {
+function postToPortier(server: string, redirect: string) {
   // Alter the AuthForm to make it posting Portier auth information to the
   // dedicated Kinto server endpoint. This is definitely one of the ugliest
   // part of this project, but it works :)
@@ -153,10 +150,7 @@ function postToPortier(
   }
 }
 
-export function navigateToOpenID(
-  authFormData: any,
-  provider: any
-): ActionType<typeof notifyError> {
+export function navigateToOpenID(authFormData: any, provider: any) {
   const { origin, pathname } = document.location;
   const { server } = authFormData;
   const strippedServer = server.replace(/\/$/, "");
@@ -172,9 +166,7 @@ export function navigateToOpenID(
  * Massive side effect: this will navigate away from the current page to perform
  * authentication to a third-party service, like FxA.
  */
-export function navigateToExternalAuth(
-  authFormData: any
-): ActionType<typeof notifyError> {
+export function navigateToExternalAuth(authFormData: any) {
   const { origin, pathname } = document.location;
   const { server, authType } = authFormData;
 
