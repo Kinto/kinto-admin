@@ -1,6 +1,5 @@
 import * as bucketSagas from "./bucket";
 import * as collectionSagas from "./collection";
-import * as groupSagas from "./group";
 import * as heartbeatSagas from "./heartbeat";
 import * as recordSagas from "./record";
 import * as routeSagas from "./route";
@@ -71,12 +70,6 @@ export default function* rootSaga(getState: GetStateFn): SagaGen {
     takeEvery(c.GROUP_CREATE_REQUEST, bucketSagas.createGroup, getState),
     takeEvery(c.GROUP_UPDATE_REQUEST, bucketSagas.updateGroup, getState),
     takeEvery(c.GROUP_DELETE_REQUEST, bucketSagas.deleteGroup, getState),
-    takeEvery(c.GROUP_HISTORY_REQUEST, groupSagas.listHistory, getState),
-    takeEvery(
-      c.GROUP_HISTORY_NEXT_REQUEST,
-      groupSagas.listNextHistory,
-      getState
-    ),
     // collection/records
     takeEvery(
       c.COLLECTION_RECORDS_REQUEST,

@@ -1,6 +1,5 @@
 import { onBucketHistoryEnter } from "@src/components/bucket/BucketHistory";
 import { onCollectionHistoryEnter } from "@src/components/collection/CollectionHistory";
-import { onGroupHistoryEnter } from "@src/components/group/GroupHistory";
 import { onRecordHistoryEnter } from "@src/components/record/RecordHistory";
 
 describe("Routes onEnter", () => {
@@ -46,14 +45,6 @@ describe("Routes onEnter", () => {
         listCollectionHistory: listCollectionHistory,
       });
       expect(listCollectionHistory).toHaveBeenCalledWith("bid", "cid", filters);
-    });
-  });
-
-  describe("Groups history", () => {
-    it("should dispatch load history", () => {
-      const listGroupHistory = vi.fn();
-      onGroupHistoryEnter({ ...props, listGroupHistory: listGroupHistory });
-      expect(listGroupHistory).toHaveBeenCalledWith("bid", "gid");
     });
   });
 

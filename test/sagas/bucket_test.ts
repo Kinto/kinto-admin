@@ -1,8 +1,8 @@
 import * as actions from "@src/actions/bucket";
-import { notifySuccess } from "@src/actions/notifications";
 import { redirectTo } from "@src/actions/route";
 import * as sessionActions from "@src/actions/session";
 import { setClient } from "@src/client";
+import { notifySuccess } from "@src/hooks/notifications";
 import * as saga from "@src/sagas/bucket";
 import { mockNotifyError } from "@test/testUtils";
 import { call, put } from "redux-saga/effects";
@@ -64,7 +64,7 @@ describe("bucket sagas", () => {
 
       it("should dispatch a notification", () => {
         expect(createBucket.next().value).toStrictEqual(
-          put(notifySuccess("Bucket created."))
+          notifySuccess("Bucket created.")
         );
       });
 
