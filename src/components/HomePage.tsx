@@ -4,11 +4,30 @@ import * as NotificationActions from "@src/actions/notifications";
 import * as ServersActions from "@src/actions/servers";
 import * as SessionActions from "@src/actions/session";
 import { useAppDispatch, useAppSelector } from "@src/hooks/app";
+import { useKintoVersion } from "@src/hooks/version";
 import { loadSession } from "@src/store/localStore";
 import type { OpenIDAuth, PortierAuth, TokenAuth } from "@src/types";
 import { getServerByPriority, isObject } from "@src/utils";
 import * as React from "react";
 import { useParams } from "react-router";
+
+function ServerVersion() {
+  const versionInfo = useKintoVersion();
+  return versionInfo ? (
+    <div>
+      {Object.keys(versionInfo).map(key => {
+        return (
+          <div>
+            <label>{key}: </label>
+            {versionInfo[key]}
+          </div>
+        );
+      })}
+    </div>
+  ) : (
+    <div>Loading...</div>
+  );
+}
 
 function ServerProps({ node }: { node: any }) {
   const nodes = Array.isArray(node)
@@ -50,6 +69,7 @@ function SessionInfo({ session: { serverInfo } }) {
         </div>
         <div className="card-body">
           <ServerProps node={serverInfo} />
+          <ServerVersion />
         </div>
       </div>
     </div>
