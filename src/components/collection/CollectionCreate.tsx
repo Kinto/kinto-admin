@@ -1,40 +1,16 @@
 import CollectionForm from "./CollectionForm";
-import * as BucketActions from "@src/actions/bucket";
+import { createCollection } from "@src/actions/bucket";
 import Spinner from "@src/components/Spinner";
-import type {
-  BucketRouteMatch,
-  BucketState,
-  CollectionState,
-  SessionState,
-} from "@src/types";
+import { useAppDispatch, useAppSelector } from "@src/hooks/app";
+import type { RouteParams } from "@src/types";
 import React from "react";
+import { useParams } from "react-router";
 
-export type OwnProps = {
-  match: BucketRouteMatch;
-};
-
-export type StateProps = {
-  session: SessionState;
-  bucket: BucketState;
-  collection: CollectionState;
-};
-
-export type Props = OwnProps &
-  StateProps & {
-    createCollection: typeof BucketActions.createCollection;
-  };
-
-export default function CollectionCreate({
-  match,
-  session,
-  bucket,
-  collection,
-  createCollection,
-}: Props) {
-  const {
-    params: { bid },
-  } = match;
-  const { busy } = session;
+export function CollectionCreate() {
+  const dispatch = useAppDispatch();
+  const { session, bucket, collection } = useAppSelector(state => state);
+  const busy = session.busy;
+  const { bid } = useParams<RouteParams>();
 
   if (busy) {
     return <Spinner />;
@@ -51,7 +27,7 @@ export default function CollectionCreate({
             session={session}
             bucket={bucket}
             collection={collection}
-            onSubmit={formData => createCollection(bid, formData)}
+            onSubmit={formData => dispatch(createCollection(bid, formData))}
           />
         </div>
       </div>
