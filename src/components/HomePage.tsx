@@ -3,12 +3,34 @@ import Spinner from "./Spinner";
 import * as NotificationActions from "@src/actions/notifications";
 import * as ServersActions from "@src/actions/servers";
 import * as SessionActions from "@src/actions/session";
+import * as VersionActions from "@src/actions/version";
 import { useAppDispatch, useAppSelector } from "@src/hooks/app";
 import { loadSession } from "@src/store/localStore";
 import type { OpenIDAuth, PortierAuth, TokenAuth } from "@src/types";
 import { getServerByPriority, isObject } from "@src/utils";
 import * as React from "react";
 import { useParams } from "react-router";
+
+function ServerVersion({
+  versionInfo,
+}: {
+  versionInfo: Record<string, string> | null;
+}) {
+  return versionInfo ? (
+    <div>
+      {Object.keys(versionInfo).map(key => {
+        return (
+          <div>
+            <label>{key}: </label>
+            {versionInfo[key]}
+          </div>
+        );
+      })}
+    </div>
+  ) : (
+    <div>Loading...</div>
+  );
+}
 
 function ServerProps({ node }: { node: any }) {
   const nodes = Array.isArray(node)
@@ -41,7 +63,7 @@ function ServerProps({ node }: { node: any }) {
   );
 }
 
-function SessionInfo({ session: { serverInfo } }) {
+function SessionInfo({ session: { serverInfo }, versionInfo }) {
   return (
     <div>
       <div className="card server-info-panel">
@@ -50,6 +72,7 @@ function SessionInfo({ session: { serverInfo } }) {
         </div>
         <div className="card-body">
           <ServerProps node={serverInfo} />
+          <ServerVersion versionInfo={versionInfo} />
         </div>
       </div>
     </div>
@@ -60,6 +83,7 @@ export function HomePage() {
   const dispatch = useAppDispatch();
   const session = useAppSelector(state => state.session);
   const servers = useAppSelector(state => state.servers);
+  const versionInfo = useAppSelector(state => state.version);
   const { authenticated, authenticating, serverInfo } = session;
   const { project_name } = serverInfo;
   const params = useParams<{ payload?: string; token?: string }>();
@@ -73,6 +97,7 @@ export function HomePage() {
       !(new Date().getTime() >= session.auth.expiresAt)
     ) {
       dispatch(SessionActions.setupSession(session.auth));
+      dispatch(VersionActions.versionRequest());
     } else {
       dispatch(
         SessionActions.getServerInfo({
@@ -165,7 +190,7 @@ export function HomePage() {
       {authenticating ? (
         <Spinner />
       ) : authenticated ? (
-        <SessionInfo session={session} />
+        <SessionInfo session={session} versionInfo={versionInfo} />
       ) : (
         <AuthForm
           setupSession={auth => dispatch(SessionActions.setupSession(auth))}
