@@ -1,8 +1,8 @@
 import * as collectionActions from "@src/actions/collection";
-import { notifyError, notifySuccess } from "@src/actions/notifications";
 import { routeLoadSuccess } from "@src/actions/route";
 import * as SignoffActions from "@src/actions/signoff";
 import { getClient } from "@src/client";
+import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import type {
   ActionType,
   BucketResource,
@@ -150,7 +150,6 @@ export function* onCollectionRecordsRequest(
     if (ex.data?.code === 401) {
       console.warn(ex);
     } else {
-      console.error(ex);
       notifyError("Error received when requesting signoff info from server.");
     }
   }
@@ -233,9 +232,9 @@ export function* handleRequestReview(
         record: null,
       })
     );
-    yield put(notifySuccess("Review requested."));
+    notifySuccess("Review requested.");
   } catch (e) {
-    yield put(notifyError("Couldn't request review.", e));
+    notifyError("Couldn't request review.", e);
   }
 }
 
@@ -269,9 +268,9 @@ export function* handleRollbackChanges(
         record: null,
       })
     );
-    yield put(notifySuccess("Changes were rolled back."));
+    notifySuccess("Changes were rolled back.");
   } catch (e) {
-    yield put(notifyError("Couldn't rollback changes.", e));
+    notifyError("Couldn't rollback changes.", e);
   }
 }
 
@@ -305,9 +304,9 @@ export function* handleDeclineChanges(
         record: null,
       })
     );
-    yield put(notifySuccess("Changes declined."));
+    notifySuccess("Changes declined.");
   } catch (e) {
-    yield put(notifyError("Couldn't decline changes.", e));
+    notifyError("Couldn't decline changes.", e);
   }
 }
 
@@ -341,9 +340,9 @@ export function* handleApproveChanges(
         record: null,
       })
     );
-    yield put(notifySuccess("Signature requested."));
+    notifySuccess("Signature requested.");
   } catch (e) {
-    yield put(notifyError("Couldn't approve changes.", e));
+    notifyError("Couldn't approve changes.", e);
   }
 }
 

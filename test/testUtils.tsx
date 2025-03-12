@@ -1,5 +1,5 @@
 /* Utils for tests. */
-import * as notificationsActions from "@src/actions/notifications";
+import * as notificationsHooks from "@src/hooks/notifications";
 import { configureAppStoreAndHistory } from "@src/store/configureStore";
 import { render } from "@testing-library/react";
 import { createMemoryHistory } from "history";
@@ -10,7 +10,15 @@ import { Route } from "react-router-dom";
 
 export function mockNotifyError() {
   return vi
-    .spyOn(notificationsActions, "notifyError")
+    .spyOn(notificationsHooks, "notifyError")
+    .mockImplementation((...args) => {
+      return args;
+    });
+}
+
+export function mockNotifySuccess() {
+  return vi
+    .spyOn(notificationsHooks, "notifySuccess")
     .mockImplementation((...args) => {
       return args;
     });

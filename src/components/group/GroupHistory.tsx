@@ -1,7 +1,6 @@
 import CollectionTabs from "./GroupTabs";
-import * as GroupActions from "@src/actions/group";
-import * as NotificationActions from "@src/actions/notifications";
 import HistoryTable from "@src/components/HistoryTable";
+import { useListHistory } from "@src/hooks/group";
 import type {
   Capabilities,
   GroupRouteMatch,
@@ -9,7 +8,7 @@ import type {
   SessionState,
 } from "@src/types";
 import type { Location } from "history";
-import React, { useEffect } from "react";
+import React from "react";
 
 export type OwnProps = {
   match: GroupRouteMatch;
@@ -22,47 +21,18 @@ export type StateProps = {
   session: SessionState;
 };
 
-export type Props = OwnProps &
-  StateProps & {
-    listGroupHistory: typeof GroupActions.listGroupHistory;
-    listGroupNextHistory: typeof GroupActions.listGroupNextHistory;
-    notifyError: typeof NotificationActions.notifyError;
-  };
-
-export const onGroupHistoryEnter = (props: Props) => {
-  const { match, listGroupHistory, session } = props;
-  const {
-    params: { bid, gid },
-  } = match;
-  if (!session.authenticated) {
-    return;
-  }
-  if (listGroupHistory) {
-    listGroupHistory(bid, gid);
-  }
-};
+export type Props = OwnProps & StateProps;
 
 export default function GroupHistory(props: Props) {
   const {
-    match,
-    group,
     capabilities,
     location,
-    listGroupNextHistory,
-    notifyError,
+    match: {
+      params: { bid, gid },
+    },
   } = props;
 
-  useEffect(() => {
-    onGroupHistoryEnter(props);
-  }, []);
-
-  const {
-    params: { bid, gid },
-  } = match;
-
-  const {
-    history: { entries, loaded, hasNextPage },
-  } = group;
+  const history = useListHistory(bid, gid);
 
   return (
     <div>
@@ -80,12 +50,11 @@ export default function GroupHistory(props: Props) {
       >
         <HistoryTable
           bid={bid}
-          historyLoaded={loaded}
-          history={entries}
-          hasNextHistory={hasNextPage}
-          listNextHistory={listGroupNextHistory}
+          historyLoaded={history.data !== undefined}
+          history={history.data || []}
+          hasNextHistory={history.hasNextPage}
+          listNextHistory={history.next}
           location={location}
-          notifyError={notifyError}
         />
       </CollectionTabs>
     </div>

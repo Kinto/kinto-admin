@@ -1,12 +1,18 @@
 import * as collection_actions from "@src/actions/collection";
-import * as notificationActions from "@src/actions/notifications";
 import { routeLoadSuccess } from "@src/actions/route";
 import * as actions from "@src/actions/signoff";
 import { setClient } from "@src/client";
 import * as saga from "@src/sagas/signoff";
+import { mockNotifyError, mockNotifySuccess } from "@test/testUtils";
 import { call, put } from "redux-saga/effects";
 
 describe("Signoff sagas", () => {
+  let notifyErrorMock, notifySuccessMock;
+  beforeEach(() => {
+    notifyErrorMock = mockNotifyError();
+    notifySuccessMock = mockNotifySuccess();
+  });
+
   describe("list hook", () => {
     let getState;
 
@@ -54,7 +60,7 @@ describe("Signoff sagas", () => {
         });
       });
 
-      beforeEach(() => {
+      afterEach(() => {
         vi.restoreAllMocks();
       });
 
@@ -216,7 +222,6 @@ describe("Signoff sagas", () => {
         });
         vi.spyOn(console, "warn");
         vi.spyOn(console, "error");
-        const notifyErrorSpy = vi.spyOn(notificationActions, "notifyError");
         const action = collection_actions.listRecords(
           "stage",
           "source-plugins",
@@ -226,7 +231,7 @@ describe("Signoff sagas", () => {
         expect(result.next().value).toBeUndefined();
         expect(console.warn).toHaveBeenCalledTimes(1);
         expect(console.error).toHaveBeenCalledTimes(0);
-        expect(notifyErrorSpy).toHaveBeenCalledTimes(0);
+        expect(notifyErrorMock).toHaveBeenCalledTimes(0);
       });
 
       it("Should catch and log an error if an error (not 401) response is received", () => {
@@ -239,7 +244,6 @@ describe("Signoff sagas", () => {
         });
         vi.spyOn(console, "warn");
         vi.spyOn(console, "error");
-        const notifyErrorSpy = vi.spyOn(notificationActions, "notifyError");
         const action = collection_actions.listRecords(
           "stage",
           "source-plugins",
@@ -248,9 +252,7 @@ describe("Signoff sagas", () => {
         const result = saga.onCollectionRecordsRequest(getState, action);
         expect(result.next().value).toBeUndefined();
         expect(console.warn).toHaveBeenCalledTimes(0);
-        // console.error called once in `onCollectionRecordsRequest`, and once in `notifyError`
-        expect(console.error).toHaveBeenCalledTimes(2);
-        expect(notifyErrorSpy).toHaveBeenCalledTimes(1);
+        expect(notifyErrorMock).toHaveBeenCalledTimes(1);
       });
     });
   });
@@ -310,7 +312,7 @@ describe("Signoff sagas", () => {
         );
       });
 
-      it("should dispatch the routeLoadSuccess action", () => {
+      it("should dispatch the routeLoadSuccess action and send a notification", () => {
         expect(
           handleRequestReview.next({
             data: { id: "coll", status: "to-review" },
@@ -326,12 +328,8 @@ describe("Signoff sagas", () => {
             })
           )
         );
-      });
-
-      it("should dispatch a success notification", () => {
-        expect(handleRequestReview.next().value).toStrictEqual(
-          put(notificationActions.notifySuccess("Review requested."))
-        );
+        handleRequestReview.next();
+        expect(notifySuccessMock).toHaveBeenCalledWith("Review requested.");
       });
     });
 
@@ -384,12 +382,8 @@ describe("Signoff sagas", () => {
             })
           )
         );
-      });
-
-      it("should dispatch a success notification", () => {
-        expect(handleDeclineChanges.next().value).toStrictEqual(
-          put(notificationActions.notifySuccess("Changes declined."))
-        );
+        handleDeclineChanges.next();
+        expect(notifySuccessMock).toHaveBeenCalledWith("Changes declined.");
       });
     });
 
@@ -439,12 +433,8 @@ describe("Signoff sagas", () => {
             })
           )
         );
-      });
-
-      it("should dispatch a success notification", () => {
-        expect(handleApproveChanges.next().value).toStrictEqual(
-          put(notificationActions.notifySuccess("Signature requested."))
-        );
+        handleApproveChanges.next();
+        expect(notifySuccessMock).toHaveBeenCalledWith("Signature requested.");
       });
     });
 
@@ -497,11 +487,9 @@ describe("Signoff sagas", () => {
             })
           )
         );
-      });
-
-      it("should dispatch a success notification", () => {
-        expect(handleRollbackChanges.next().value).toStrictEqual(
-          put(notificationActions.notifySuccess("Changes were rolled back."))
+        handleRollbackChanges.next();
+        expect(notifySuccessMock).toHaveBeenCalledWith(
+          "Changes were rolled back."
         );
       });
     });

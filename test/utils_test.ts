@@ -6,6 +6,7 @@ import {
   diffJson,
   getServerByPriority,
   humanDate,
+  makeObservable,
   renderDisplayField,
   sortHistoryEntryPermissions,
   timeago,
@@ -436,5 +437,37 @@ describe("getServerByPriority", () => {
   it("should return the default server", () => {
     const server = getServerByPriority([]);
     expect(server).toBe(DEFAULT_KINTO_SERVER);
+  });
+});
+
+describe("makeObservable", () => {
+  it("should allow us to alter a shared object and subscribe to those events", () => {
+    const testObj = makeObservable("string1");
+    const testFn1 = vi.fn();
+    const testFn2 = vi.fn();
+    const testFn3 = vi.fn();
+
+    testObj.subscribe(testFn1);
+    testObj.subscribe(testFn2);
+    let testFn3Unsub = testObj.subscribe(testFn3);
+
+    testObj.set("string2");
+    testObj.set("string3");
+
+    testFn3Unsub();
+
+    testObj.set("string4");
+
+    expect(testFn1).toHaveBeenCalledWith("string2");
+    expect(testFn1).toHaveBeenCalledWith("string3");
+    expect(testFn1).toHaveBeenCalledWith("string4");
+
+    expect(testFn2).toHaveBeenCalledWith("string2");
+    expect(testFn2).toHaveBeenCalledWith("string3");
+    expect(testFn2).toHaveBeenCalledWith("string4");
+
+    expect(testFn3).toHaveBeenCalledWith("string2");
+    expect(testFn3).toHaveBeenCalledWith("string3");
+    expect(testFn3).not.toHaveBeenCalledWith("string4");
   });
 });

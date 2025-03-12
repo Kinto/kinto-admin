@@ -1,5 +1,4 @@
 import RecordTabs from "./RecordTabs";
-import * as NotificationActions from "@src/actions/notifications";
 import * as RecordActions from "@src/actions/record";
 import HistoryTable from "@src/components/HistoryTable";
 import type {
@@ -26,7 +25,6 @@ export type Props = OwnProps &
   StateProps & {
     listRecordHistory: typeof RecordActions.listRecordHistory;
     listRecordNextHistory: typeof RecordActions.listRecordNextHistory;
-    notifyError: typeof NotificationActions.notifyError;
   };
 
 export const onRecordHistoryEnter = (props: Props) => {
@@ -41,14 +39,8 @@ export const onRecordHistoryEnter = (props: Props) => {
 };
 
 export default function RecordHistory(props: Props) {
-  const {
-    match,
-    location,
-    record,
-    capabilities,
-    listRecordNextHistory,
-    notifyError,
-  } = props;
+  const { match, location, record, capabilities, listRecordNextHistory } =
+    props;
 
   useEffect(() => {
     onRecordHistoryEnter(props);
@@ -83,7 +75,6 @@ export default function RecordHistory(props: Props) {
           hasNextHistory={hasNextPage}
           listNextHistory={listRecordNextHistory}
           location={location}
-          notifyError={notifyError}
         />
       </RecordTabs>
     </div>

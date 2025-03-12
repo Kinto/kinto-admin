@@ -1,4 +1,3 @@
-import * as notificationActions from "@src/actions/notifications";
 import * as serversActions from "@src/actions/servers";
 import * as actions from "@src/actions/session";
 import {
@@ -7,6 +6,12 @@ import {
   resetClient,
   setupClient,
 } from "@src/client";
+import {
+  clearNotifications,
+  notifyError,
+  notifyInfo,
+  notifySuccess,
+} from "@src/hooks/notifications";
 import { DEFAULT_SERVERINFO } from "@src/reducers/session";
 import { clearSession, saveSession } from "@src/store/localStore";
 import type {
@@ -25,7 +30,7 @@ import { call, put } from "redux-saga/effects";
 
 export function* serverChange(getState: GetStateFn): SagaGen {
   yield put(actions.serverInfoSuccess(DEFAULT_SERVERINFO));
-  yield put(notificationActions.clearNotifications());
+  clearNotifications();
 }
 
 export function* getServerInfo(
@@ -85,12 +90,8 @@ export function* getServerInfo(
 
     // Reset the server info that we might have added previously to the state.
     yield put(actions.serverInfoSuccess(DEFAULT_SERVERINFO));
-    yield put(
-      notificationActions.notifyError(
-        `Could not reach server ${auth.server}`,
-        error
-      )
-    );
+
+    notifyError(`Could not reach server ${auth.server}`, error);
   }
   yield put(actions.sessionBusy(false));
 }
@@ -134,11 +135,9 @@ export function* setupSession(
         (authType != "basicauth" && !userId.startsWith("basicauth:"))
       : authType == "anonymous";
     if (!hasValidCredentials) {
-      yield put(
-        notificationActions.notifyError("Authentication failed.", {
-          message: `Could not authenticate with ${authLabel}`,
-        })
-      );
+      notifyError("Authentication failed.", {
+        message: `Could not authenticate with ${authLabel}`,
+      });
       // Show back login form.
       yield put(actions.authenticationFailed());
       return;
@@ -152,15 +151,11 @@ export function* setupSession(
 
     yield put(actions.listBuckets());
     yield put(actions.setupComplete(auth));
-    yield put(
-      notificationActions.notifySuccess("Authenticated.", {
-        details: [authLabel],
-      })
-    );
+    notifySuccess("Authenticated.", {
+      details: [authLabel],
+    });
   } catch (error) {
-    yield put(
-      notificationActions.notifyError("Couldn't complete session setup.", error)
-    );
+    notifyError("Couldn't complete session setup.", error);
   }
 }
 
@@ -174,7 +169,7 @@ export function* sessionLogout(
     // We can't push twice the same path using hash history.
     yield put(updatePath("/"));
   }
-  yield put(notificationActions.notifySuccess("Logged out."));
+  notifySuccess("Logged out.");
   yield call(clearSession);
 }
 
@@ -190,7 +185,7 @@ export function* sessionCopyAuthenticationHeader(
   }
   const authHeader = getAuthHeader(auth);
   yield call(copyToClipboard, authHeader);
-  yield put(notificationActions.notifySuccess("Header copied to clipboard"));
+  notifySuccess("Header copied to clipboard");
 }
 
 export function expandBucketsCollections(
@@ -330,13 +325,11 @@ export function* listBuckets(
       buckets = expandBucketsCollections(buckets, permissions);
       yield put(actions.permissionsListSuccess(permissions));
     } else {
-      yield put(
-        notificationActions.notifyInfo(
-          [
-            "Permissions endpoint is not enabled on server, ",
-            "listed resources in the sidebar might be incomplete.",
-          ].join("")
-        )
+      notifyInfo(
+        [
+          "Permissions endpoint is not enabled on server, ",
+          "listed resources in the sidebar might be incomplete.",
+        ].join("")
       );
     }
 
@@ -345,6 +338,6 @@ export function* listBuckets(
     // Save current app state
     yield call(saveSession, getState().session);
   } catch (error) {
-    yield put(notificationActions.notifyError("Couldn't list buckets.", error));
+    notifyError("Couldn't list buckets.", error);
   }
 }
