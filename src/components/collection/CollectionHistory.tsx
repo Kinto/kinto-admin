@@ -1,6 +1,5 @@
 import CollectionTabs from "./CollectionTabs";
 import * as CollectionActions from "@src/actions/collection";
-import * as NotificationActions from "@src/actions/notifications";
 import HistoryTable from "@src/components/HistoryTable";
 import type {
   Capabilities,
@@ -27,7 +26,6 @@ export type Props = OwnProps &
   StateProps & {
     listCollectionHistory: typeof CollectionActions.listCollectionHistory;
     listCollectionNextHistory: typeof CollectionActions.listCollectionNextHistory;
-    notifyError: typeof NotificationActions.notifyError;
   };
 
 export const onCollectionHistoryEnter = (props: Props) => {
@@ -51,7 +49,6 @@ export default function CollectionHistory(props: Props) {
     capabilities,
     location,
     listCollectionNextHistory,
-    notifyError,
   } = props;
   const {
     params: { bid, cid },
@@ -87,7 +84,6 @@ export default function CollectionHistory(props: Props) {
           hasNextHistory={hasNextPage}
           listNextHistory={listCollectionNextHistory}
           location={location}
-          notifyError={notifyError}
         />
       </CollectionTabs>
     </div>

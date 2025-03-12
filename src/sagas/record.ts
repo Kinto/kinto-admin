@@ -1,7 +1,7 @@
-import { notifyError } from "@src/actions/notifications";
 import * as actions from "@src/actions/record";
 import { getClient } from "@src/client";
 import { MAX_PER_PAGE } from "@src/constants";
+import { notifyError } from "@src/hooks/notifications";
 import type { ActionType, GetStateFn, SagaGen } from "@src/types";
 import { call, put } from "redux-saga/effects";
 
@@ -28,7 +28,7 @@ export function* listHistory(
     );
     yield put(actions.listRecordHistorySuccess(data, hasNextPage, next));
   } catch (error) {
-    yield put(notifyError("Couldn't list record history.", error));
+    notifyError("Couldn't list record history.", error);
   }
 }
 
@@ -45,6 +45,6 @@ export function* listNextHistory(getState: GetStateFn): SagaGen {
     const { data, hasNextPage, next } = yield call(fetchNextHistory);
     yield put(actions.listRecordHistorySuccess(data, hasNextPage, next));
   } catch (error) {
-    yield put(notifyError("Couldn't process next page.", error));
+    notifyError("Couldn't process next page.", error);
   }
 }

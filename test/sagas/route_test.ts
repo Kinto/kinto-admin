@@ -1,8 +1,8 @@
-import * as notificationActions from "@src/actions/notifications";
 import * as actions from "@src/actions/route";
 import * as sessionActions from "@src/actions/session";
 import { setClient } from "@src/client";
 import { SESSION_AUTHENTICATED } from "@src/constants";
+import * as notificationsHooks from "@src/hooks/notifications";
 import * as saga from "@src/sagas/route";
 import { scrollToTop } from "@src/utils";
 import { mockNotifyError } from "@test/testUtils";
@@ -365,6 +365,8 @@ describe("route sagas", () => {
     describe("Not authenticated", () => {
       let routeUpdated;
 
+      let notifyInfoMock = vi.spyOn(notificationsHooks, "notifyInfo");
+
       beforeAll(() => {
         const getState = () => ({ session: { authenticated: false } });
         const action = actions.routeUpdated({}, { pathname: "/blah" });
@@ -383,16 +385,11 @@ describe("route sagas", () => {
         );
       });
 
-      it("should dispatch a notification", () => {
-        expect(routeUpdated.next().value).toStrictEqual(
-          put(notificationActions.notifyInfo("Authentication required."))
-        );
-      });
-
-      it("should wait for the SESSION_AUTHENTICATED event", () => {
+      it("should show a notification and wait for the SESSION_AUTHENTICATED event", () => {
         expect(routeUpdated.next().value).toStrictEqual(
           take(SESSION_AUTHENTICATED)
         );
+        expect(notifyInfoMock).toHaveBeenCalledWith("Authentication required.");
       });
 
       it("should redirect the user to the initially requested URL", () => {

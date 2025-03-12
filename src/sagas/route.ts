@@ -1,8 +1,8 @@
-import { notifyError, notifyInfo } from "@src/actions/notifications";
 import * as actions from "@src/actions/route";
 import { storeRedirectURL } from "@src/actions/session";
 import { getClient } from "@src/client";
 import { SESSION_AUTHENTICATED } from "@src/constants";
+import { notifyError, notifyInfo } from "@src/hooks/notifications";
 import type { ActionType, GetStateFn, RouteParams, SagaGen } from "@src/types";
 import url from "@src/url";
 import { scrollToTop } from "@src/utils";
@@ -106,7 +106,7 @@ export function* loadRoute(params: RouteParams): SagaGen {
     );
   } catch (error) {
     yield put(actions.routeLoadFailure());
-    yield put(notifyError("Couldn't retrieve route resources.", error));
+    notifyError("Couldn't retrieve route resources.", error);
   }
 }
 
@@ -139,7 +139,7 @@ export function* routeUpdated(
       // Store current requested URL, wait for user authentication then redirect
       yield put(storeRedirectURL(location.pathname));
       yield put(actions.redirectTo("home", {}));
-      yield put(notifyInfo("Authentication required."));
+      notifyInfo("Authentication required.");
       // pause until the user is authenticated
       yield take(SESSION_AUTHENTICATED);
       // Redirect the user to the initially requested URL

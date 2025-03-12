@@ -1,12 +1,12 @@
-import * as notificationsActions from "@src/actions/notifications";
 import * as serversActions from "@src/actions/servers";
 import * as actions from "@src/actions/session";
 import * as clientUtils from "@src/client";
 import { getClient, resetClient, setClient } from "@src/client";
+import * as notificationHooks from "@src/hooks/notifications";
 import { DEFAULT_SERVERINFO } from "@src/reducers/session";
 import * as saga from "@src/sagas/session";
-import { clearSession, saveSession } from "@src/store/localStore";
-import { mockNotifyError } from "@test/testUtils";
+import { saveSession } from "@src/store/localStore";
+import { mockNotifyError, mockNotifySuccess } from "@test/testUtils";
 import { push as updatePath } from "redux-first-history";
 import { call, put } from "redux-saga/effects";
 
@@ -20,6 +20,12 @@ const authData = {
 };
 
 describe("session sagas", () => {
+  let notifyErrorMock, notifySuccessMock;
+  beforeEach(() => {
+    notifyErrorMock = mockNotifyError();
+    notifySuccessMock = mockNotifySuccess();
+  });
+
   describe("serverChange()", () => {
     let serverChange, getState;
 
@@ -33,6 +39,11 @@ describe("session sagas", () => {
 
     const sessionState = { serverInfo };
 
+    let clearNotificationMock = vi.spyOn(
+      notificationHooks,
+      "clearNotifications"
+    );
+
     beforeAll(() => {
       getState = () => ({
         session: sessionState,
@@ -40,16 +51,12 @@ describe("session sagas", () => {
       serverChange = saga.serverChange(getState);
     });
 
-    it("should reset the server info in the state", () => {
+    it("should reset the server info in the state and clear notifications", () => {
       expect(serverChange.next().value).toStrictEqual(
         put(actions.serverInfoSuccess(DEFAULT_SERVERINFO))
       );
-    });
-
-    it("should clear the notifications", () => {
-      expect(serverChange.next().value).toStrictEqual(
-        put(notificationsActions.clearNotifications({ force: true }))
-      );
+      serverChange.next();
+      expect(clearNotificationMock).toHaveBeenCalled();
     });
   });
 
@@ -138,15 +145,13 @@ describe("session sagas", () => {
       });
 
       it("should notify the error", () => {
-        const mocked = mockNotifyError();
-        getServerInfo.next();
-        expect(mocked).toHaveBeenCalledWith(
-          "Could not reach server http://server.test/v1",
-          undefined
-        );
         // ensure that sessionBusy is called
         expect(getServerInfo.next().value).toStrictEqual(
           put(actions.sessionBusy(false))
+        );
+        expect(notifyErrorMock).toHaveBeenCalledWith(
+          "Could not reach server http://server.test/v1",
+          undefined
         );
       });
     });
@@ -246,17 +251,12 @@ describe("session sagas", () => {
         expect(setupSession.next().value).toStrictEqual(
           put(actions.setupComplete(authData))
         );
+        setupSession.next();
+        expect(notifySuccessMock).toBeCalledWith("Authenticated.", {
+          details: ["Basic Auth"],
+        });
       });
 
-      it("should notify the success", () => {
-        expect(setupSession.next().value).toStrictEqual(
-          put(
-            notificationsActions.notifySuccess("Authenticated.", {
-              details: ["Basic Auth"],
-            })
-          )
-        );
-      });
       it("should correctly authenticate the user when using openID", () => {
         vi.spyOn(serversActions, "addServer");
         const authData = {
@@ -303,15 +303,11 @@ describe("session sagas", () => {
         setupSession = saga.setupSession(getState, action);
         setupSession.next(); // call getServerInfo.
         expect(setupSession.next().value).toStrictEqual(
-          put(
-            notificationsActions.notifyError("Authentication failed.", {
-              message: "Could not authenticate with Basic Auth",
-            })
-          )
-        );
-        expect(setupSession.next().value).toStrictEqual(
           put(actions.authenticationFailed())
         );
+        expect(notifyErrorMock).toHaveBeenCalledWith("Authentication failed.", {
+          message: "Could not authenticate with Basic Auth",
+        });
       });
 
       it("should check the user ID prefix for basicauth", () => {
@@ -541,18 +537,10 @@ describe("session sagas", () => {
       );
     });
 
-    it("should redirect to the homepage", () => {
+    it("should redirect to the homepage with a notification", () => {
       expect(sessionLogout.next().value).toStrictEqual(put(updatePath("/")));
-    });
-
-    it("should notify users they're logged out", () => {
-      expect(sessionLogout.next().value).toStrictEqual(
-        put(notificationsActions.notifySuccess("Logged out."))
-      );
-    });
-
-    it("should clear the saved session", () => {
-      expect(sessionLogout.next().value).toStrictEqual(call(clearSession));
+      sessionLogout.next();
+      expect(notifySuccessMock).toHaveBeenCalledWith("Logged out.");
     });
 
     it("should reset the client", () => {

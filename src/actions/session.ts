@@ -1,4 +1,3 @@
-import { notifyError, notifySuccess } from "./notifications";
 import {
   SESSION_AUTHENTICATED,
   SESSION_AUTHENTICATION_FAILED,
@@ -15,9 +14,10 @@ import {
   SESSION_SETUP_COMPLETE,
   SESSION_STORE_REDIRECT_URL,
 } from "@src/constants";
-import type { ActionType, AuthData, ServerInfo } from "@src/types";
+import { notifyError, notifySuccess } from "@src/hooks/notifications";
+import type { AuthData, ServerInfo } from "@src/types";
 
-const AUTH_REDIRECT_RESULT = notifySuccess("Redirecting to auth provider...");
+const noop_action = { type: "noop" };
 
 export function sessionBusy(busy: boolean): {
   type: "SESSION_BUSY";
@@ -115,13 +115,11 @@ function navigateToFxA(server: string, redirect: string) {
   document.location.href = `${server}/fxa-oauth/login?redirect=${encodeURIComponent(
     redirect
   )}`;
-  return AUTH_REDIRECT_RESULT;
+  notifySuccess("Redirecting to auth provider...");
+  return noop_action;
 }
 
-function postToPortier(
-  server: string,
-  redirect: string
-): ActionType<typeof notifyError> {
+function postToPortier(server: string, redirect: string) {
   // Alter the AuthForm to make it posting Portier auth information to the
   // dedicated Kinto server endpoint. This is definitely one of the ugliest
   // part of this project, but it works :)
@@ -132,13 +130,15 @@ function postToPortier(
     );
     const form = document.querySelector("form.rjsf");
     if (!(form instanceof HTMLFormElement)) {
-      return notifyError("Missing authentication form.");
+      notifyError("Missing authentication form.");
+      return noop_action;
     }
     form.setAttribute("method", "post");
     form.setAttribute("action", portierUrl);
     const emailInput = form.querySelector("#root_email");
     if (!emailInput) {
-      return notifyError("Couldn't find email input widget in form.");
+      notifyError("Couldn't find email input widget in form.");
+      return noop_action;
     }
     emailInput.setAttribute("name", "email");
     const hiddenRedirect = document.createElement("input");
@@ -147,16 +147,15 @@ function postToPortier(
     hiddenRedirect.setAttribute("value", redirect);
     form.appendChild(hiddenRedirect);
     form.submit();
-    return AUTH_REDIRECT_RESULT;
+    notifySuccess("Redirecting to auth provider...");
+    return noop_action;
   } catch (error) {
-    return notifyError("Couldn't redirect to authentication endpoint.", error);
+    notifyError("Couldn't redirect to authentication endpoint.", error);
+    return noop_action;
   }
 }
 
-export function navigateToOpenID(
-  authFormData: any,
-  provider: any
-): ActionType<typeof notifyError> {
+export function navigateToOpenID(authFormData: any, provider: any) {
   const { origin, pathname } = document.location;
   const { server } = authFormData;
   const strippedServer = server.replace(/\/$/, "");
@@ -165,16 +164,15 @@ export function navigateToOpenID(
   const payload = btoa(JSON.stringify(authFormData));
   const redirect = encodeURIComponent(`${origin}${pathname}#/auth/${payload}/`);
   document.location.href = `${strippedServer}/${strippedAuthPath}?callback=${redirect}&scope=openid email`;
-  return AUTH_REDIRECT_RESULT;
+  notifySuccess("Redirecting to auth provider...");
+  return noop_action;
 }
 
 /**
  * Massive side effect: this will navigate away from the current page to perform
  * authentication to a third-party service, like FxA.
  */
-export function navigateToExternalAuth(
-  authFormData: any
-): ActionType<typeof notifyError> {
+export function navigateToExternalAuth(authFormData: any) {
   const { origin, pathname } = document.location;
   const { server, authType } = authFormData;
 
@@ -186,9 +184,11 @@ export function navigateToExternalAuth(
     } else if (authType === "portier") {
       return postToPortier(server, redirect);
     } else {
-      return notifyError(`Unsupported auth navigation type "${authType}".`);
+      notifyError(`Unsupported auth navigation type "${authType}".`);
+      return noop_action;
     }
   } catch (error) {
-    return notifyError("Couldn't redirect to authentication endpoint.", error);
+    notifyError("Couldn't redirect to authentication endpoint.", error);
+    return noop_action;
   }
 }
