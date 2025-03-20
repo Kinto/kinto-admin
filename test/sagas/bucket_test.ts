@@ -1,10 +1,9 @@
 import * as actions from "@src/actions/bucket";
-import { notifySuccess } from "@src/actions/notifications";
 import { redirectTo } from "@src/actions/route";
 import * as sessionActions from "@src/actions/session";
 import { setClient } from "@src/client";
 import * as saga from "@src/sagas/bucket";
-import { mockNotifyError } from "@test/testUtils";
+import { mockNotifyError, mockNotifySuccess } from "@test/testUtils";
 import { call, put } from "redux-saga/effects";
 
 const collectionData = {
@@ -21,6 +20,11 @@ const groupData = {
 };
 
 describe("bucket sagas", () => {
+  let notifyErrorMock, notifySuccessMock;
+  beforeEach(() => {
+    notifyErrorMock = mockNotifyError();
+    notifySuccessMock = mockNotifySuccess();
+  });
   afterEach(() => {
     vi.resetAllMocks();
   });
@@ -62,16 +66,11 @@ describe("bucket sagas", () => {
         );
       });
 
-      it("should dispatch a notification", () => {
-        expect(createBucket.next().value).toStrictEqual(
-          put(notifySuccess("Bucket created."))
-        );
-      });
-
-      it("should unmark the current session as busy", () => {
+      it("should unmark the current session as busy and send a notification", () => {
         expect(createBucket.next().value).toStrictEqual(
           put(sessionActions.sessionBusy(false))
         );
+        expect(notifySuccessMock).toHaveBeenCalledWith("Bucket created.");
       });
     });
 
@@ -86,9 +85,11 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError();
         createBucket.throw("error");
-        expect(mocked).toHaveBeenCalledWith("Couldn't create bucket.", "error");
+        expect(notifyErrorMock).toHaveBeenCalledWith(
+          "Couldn't create bucket.",
+          "error"
+        );
       });
 
       it("should unmark the current session as busy", () => {
@@ -144,15 +145,12 @@ describe("bucket sagas", () => {
           );
         });
 
-        it("should dispatch a notification", () => {
-          expect(updateBucket.next().value).toStrictEqual(
-            put(notifySuccess("Bucket attributes updated."))
-          );
-        });
-
-        it("should unmark the current session as busy", () => {
+        it("should unmark the current session as busy and send a notifiation", () => {
           expect(updateBucket.next().value).toStrictEqual(
             put(sessionActions.sessionBusy(false))
+          );
+          expect(notifySuccessMock).toBeCalledWith(
+            "Bucket attributes updated."
           );
         });
       });
@@ -173,9 +171,8 @@ describe("bucket sagas", () => {
         });
 
         it("should dispatch an error notification action", () => {
-          const mocked = mockNotifyError();
           updateBucket.throw("error");
-          expect(mocked).toHaveBeenCalledWith(
+          expect(notifyErrorMock).toHaveBeenCalledWith(
             "Couldn't update bucket.",
             "error"
           );
@@ -230,21 +227,18 @@ describe("bucket sagas", () => {
           );
         });
 
-        it("should update the route path", () => {
+        it("should update the route path and send a notification", () => {
           expect(updateBucket.next().value).toStrictEqual(
             put(redirectTo("bucket:permissions", { bid: "bucket" }))
           );
         });
 
-        it("should dispatch a notification", () => {
-          expect(updateBucket.next().value).toStrictEqual(
-            put(notifySuccess("Bucket permissions updated."))
-          );
-        });
-
-        it("should unmark the current session as busy", () => {
+        it("should unmark the current session as busy and send a notification", () => {
           expect(updateBucket.next().value).toStrictEqual(
             put(sessionActions.sessionBusy(false))
+          );
+          expect(notifySuccessMock).toHaveBeenCalledWith(
+            "Bucket permissions updated."
           );
         });
       });
@@ -265,9 +259,8 @@ describe("bucket sagas", () => {
         });
 
         it("should dispatch an error notification action", () => {
-          const mocked = mockNotifyError();
           updateBucket.throw("error");
-          expect(mocked).toHaveBeenCalledWith(
+          expect(notifyErrorMock).toHaveBeenCalledWith(
             "Couldn't update bucket.",
             "error"
           );
@@ -324,16 +317,11 @@ describe("bucket sagas", () => {
         );
       });
 
-      it("should dispatch a notification", () => {
-        expect(deleteBucket.next().value).toStrictEqual(
-          put(notifySuccess("Bucket deleted."))
-        );
-      });
-
-      it("should unmark the current collection as busy", () => {
+      it("should unmark the current collection as busy and send a notification", () => {
         expect(deleteBucket.next().value).toStrictEqual(
           put(sessionActions.sessionBusy(false))
         );
+        expect(notifySuccessMock).toHaveBeenCalledWith("Bucket deleted.");
       });
     });
 
@@ -351,13 +339,12 @@ describe("bucket sagas", () => {
         deleteBucket.next();
       });
 
-      it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError();
+      it("should dispatch an error notification action and unmark collection as busy", () => {
         deleteBucket.throw("error");
-        expect(mocked).toHaveBeenCalledWith("Couldn't delete bucket.", "error");
-      });
-
-      it("should unmark the current collection as busy", () => {
+        expect(notifyErrorMock).toHaveBeenCalledWith(
+          "Couldn't delete bucket.",
+          "error"
+        );
         expect(deleteBucket.next().value).toStrictEqual(
           put(sessionActions.sessionBusy(false))
         );
@@ -403,16 +390,11 @@ describe("bucket sagas", () => {
         );
       });
 
-      it("should dispatch a notification", () => {
-        expect(createCollection.next().value).toStrictEqual(
-          put(notifySuccess("Collection created."))
-        );
-      });
-
-      it("should reload the list of buckets/collections", () => {
+      it("should dispatch a notification and reload the list of buckets/collections", () => {
         expect(createCollection.next().value).toStrictEqual(
           put(sessionActions.listBuckets())
         );
+        expect(notifySuccessMock).toHaveBeenCalledWith("Collection created.");
       });
     });
 
@@ -435,9 +417,8 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError();
         createCollection.throw("error");
-        expect(mocked).toHaveBeenCalledWith(
+        expect(notifyErrorMock).toHaveBeenCalledWith(
           "Couldn't create collection.",
           "error"
         );
@@ -498,8 +479,9 @@ describe("bucket sagas", () => {
         });
 
         it("should dispatch a notification", () => {
-          expect(updateCollection.next().value).toStrictEqual(
-            put(notifySuccess("Collection attributes updated."))
+          updateCollection.next();
+          expect(notifySuccessMock).toHaveBeenCalledWith(
+            "Collection attributes updated."
           );
         });
       });
@@ -517,9 +499,8 @@ describe("bucket sagas", () => {
           );
           updateCollection.next();
 
-          const mocked = mockNotifyError();
           updateCollection.throw("error");
-          expect(mocked).toHaveBeenCalledWith(
+          expect(notifyErrorMock).toHaveBeenCalledWith(
             "Couldn't update collection.",
             "error"
           );
@@ -579,8 +560,9 @@ describe("bucket sagas", () => {
         });
 
         it("should dispatch a notification", () => {
-          expect(updateCollection.next().value).toStrictEqual(
-            put(notifySuccess("Collection permissions updated."))
+          updateCollection.next();
+          expect(notifySuccessMock).toHaveBeenCalledWith(
+            "Collection permissions updated."
           );
         });
       });
@@ -603,9 +585,8 @@ describe("bucket sagas", () => {
         });
 
         it("should dispatch an error notification action", () => {
-          const mocked = mockNotifyError();
           updateCollection.throw("error");
-          expect(mocked).toHaveBeenCalledWith(
+          expect(notifyErrorMock).toHaveBeenCalledWith(
             "Couldn't update collection.",
             "error"
           );
@@ -649,16 +630,11 @@ describe("bucket sagas", () => {
         );
       });
 
-      it("should dispatch a notification", () => {
-        expect(deleteCollection.next().value).toStrictEqual(
-          put(notifySuccess("Collection deleted."))
-        );
-      });
-
-      it("should reload the list of buckets/collections", () => {
+      it("should dispatch a notification then reload the list of buckets/collections", () => {
         expect(deleteCollection.next().value).toStrictEqual(
           put(sessionActions.listBuckets())
         );
+        expect(notifySuccessMock).toHaveBeenCalledWith("Collection deleted.");
       });
     });
 
@@ -677,9 +653,8 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError();
         deleteCollection.throw("error");
-        expect(mocked).toHaveBeenCalledWith(
+        expect(notifyErrorMock).toHaveBeenCalledWith(
           "Couldn't delete collection.",
           "error"
         );
@@ -728,9 +703,8 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError();
         listBucketCollections.throw("error");
-        expect(mocked).toHaveBeenCalledWith(
+        expect(notifyErrorMock).toHaveBeenCalledWith(
           "Couldn't list bucket collections.",
           "error"
         );
@@ -800,9 +774,8 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError();
         listHistory.throw("error");
-        expect(mocked).toHaveBeenCalledWith(
+        expect(notifyErrorMock).toHaveBeenCalledWith(
           "Couldn't list bucket history.",
           "error"
         );
@@ -873,9 +846,8 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch a notification", () => {
-        expect(createGroup.next().value).toStrictEqual(
-          put(notifySuccess("Group created."))
-        );
+        createGroup.next();
+        expect(notifySuccessMock).toHaveBeenCalledWith("Group created.");
       });
     });
 
@@ -898,9 +870,11 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError();
         createGroup.throw("error");
-        expect(mocked).toHaveBeenCalledWith("Couldn't create group.", "error");
+        expect(notifyErrorMock).toHaveBeenCalledWith(
+          "Couldn't create group.",
+          "error"
+        );
       });
     });
   });
@@ -952,8 +926,9 @@ describe("bucket sagas", () => {
         });
 
         it("should dispatch a notification", () => {
-          expect(updateGroup.next().value).toStrictEqual(
-            put(notifySuccess("Group attributes updated."))
+          updateGroup.next();
+          expect(notifySuccessMock).toHaveBeenCalledWith(
+            "Group attributes updated."
           );
         });
       });
@@ -971,9 +946,8 @@ describe("bucket sagas", () => {
           );
           updateGroup.next();
 
-          const mocked = mockNotifyError();
           updateGroup.throw("error");
-          expect(mocked).toHaveBeenCalledWith(
+          expect(notifyErrorMock).toHaveBeenCalledWith(
             "Couldn't update group.",
             "error"
           );
@@ -1026,8 +1000,9 @@ describe("bucket sagas", () => {
         });
 
         it("should dispatch a notification", () => {
-          expect(updateGroup.next().value).toStrictEqual(
-            put(notifySuccess("Group permissions updated."))
+          updateGroup.next();
+          expect(notifySuccessMock).toHaveBeenCalledWith(
+            "Group permissions updated."
           );
         });
       });
@@ -1050,9 +1025,8 @@ describe("bucket sagas", () => {
         });
 
         it("should dispatch an error notification action", () => {
-          const mocked = mockNotifyError();
           updateGroup.throw("error");
-          expect(mocked).toHaveBeenCalledWith(
+          expect(notifyErrorMock).toHaveBeenCalledWith(
             "Couldn't update group.",
             "error"
           );
@@ -1090,16 +1064,12 @@ describe("bucket sagas", () => {
         );
       });
 
-      it("should update the route path", () => {
+      it("should update the route path and trigger a notification", () => {
         expect(deleteGroup.next().value).toStrictEqual(
           put(redirectTo("bucket:groups", { bid: "bucket" }))
         );
-      });
-
-      it("should dispatch a notification", () => {
-        expect(deleteGroup.next().value).toStrictEqual(
-          put(notifySuccess("Group deleted."))
-        );
+        deleteGroup.next();
+        expect(notifySuccessMock).toHaveBeenCalledWith("Group deleted.");
       });
     });
 
@@ -1118,9 +1088,11 @@ describe("bucket sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError();
         deleteGroup.throw("error");
-        expect(mocked).toHaveBeenCalledWith("Couldn't delete group.", "error");
+        expect(notifyErrorMock).toHaveBeenCalledWith(
+          "Couldn't delete group.",
+          "error"
+        );
       });
     });
   });

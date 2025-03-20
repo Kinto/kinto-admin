@@ -1,10 +1,9 @@
 import * as actions from "@src/actions/collection";
-import { notifySuccess } from "@src/actions/notifications";
 import * as recordActions from "@src/actions/record";
 import { redirectTo } from "@src/actions/route";
 import { setClient } from "@src/client";
 import * as saga from "@src/sagas/collection";
-import { mockNotifyError } from "@test/testUtils";
+import { mockNotifyError, mockNotifySuccess } from "@test/testUtils";
 import { call, put } from "redux-saga/effects";
 
 const record = { id: 1, foo: "bar1" };
@@ -16,6 +15,11 @@ const recordsWithAttachment = [
 ];
 
 describe("collection sagas", () => {
+  let notifySuccessMock, notifyErrorMock;
+  beforeEach(() => {
+    notifySuccessMock = mockNotifySuccess();
+    notifyErrorMock = mockNotifyError();
+  });
   afterEach(() => {
     vi.resetAllMocks();
   });
@@ -144,9 +148,11 @@ describe("collection sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError();
         listRecords.throw("error");
-        expect(mocked).toHaveBeenCalledWith("Couldn't list records.", "error");
+        expect(notifyErrorMock).toHaveBeenCalledWith(
+          "Couldn't list records.",
+          "error"
+        );
       });
     });
   });
@@ -189,9 +195,8 @@ describe("collection sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError();
         listNextRecords.throw("error");
-        expect(mocked).toHaveBeenCalledWith(
+        expect(notifyErrorMock).toHaveBeenCalledWith(
           "Couldn't process next page.",
           "error"
         );
@@ -251,16 +256,11 @@ describe("collection sagas", () => {
         );
       });
 
-      it("should dispatch a notification", () => {
-        expect(createRecord.next().value).toStrictEqual(
-          put(notifySuccess("Record created."))
-        );
-      });
-
-      it("should unmark the current record as busy", () => {
+      it("should unmark the current record as busy and send a notification", () => {
         expect(createRecord.next().value).toStrictEqual(
           put(recordActions.recordBusy(false))
         );
+        expect(notifySuccessMock).toHaveBeenCalledWith("Record created.");
       });
     });
 
@@ -306,16 +306,11 @@ describe("collection sagas", () => {
         );
       });
 
-      it("should dispatch a notification", () => {
-        expect(createRecord.next().value).toStrictEqual(
-          put(notifySuccess("Record created."))
-        );
-      });
-
-      it("should unmark the current record as busy", () => {
+      it("should unmark the current record as busy and send a notification", () => {
         expect(createRecord.next().value).toStrictEqual(
           put(recordActions.recordBusy(false))
         );
+        expect(notifySuccessMock).toHaveBeenCalledWith("Record created.");
       });
     });
 
@@ -331,15 +326,14 @@ describe("collection sagas", () => {
         createRecord.next();
       });
 
-      it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError();
+      it("should unmark the current record as busy and send a notification", () => {
         createRecord.throw("error");
-        expect(mocked).toHaveBeenCalledWith("Couldn't create record.", "error");
-      });
-
-      it("should unmark the current record as busy", () => {
         expect(createRecord.next().value).toStrictEqual(
           put(recordActions.recordBusy(false))
+        );
+        expect(notifyErrorMock).toHaveBeenCalledWith(
+          "Couldn't create record.",
+          "error"
         );
       });
     });
@@ -421,15 +415,12 @@ describe("collection sagas", () => {
           );
         });
 
-        it("should dispatch a notification", () => {
-          expect(updateRecord.next().value).toStrictEqual(
-            put(notifySuccess("Record attributes updated."))
-          );
-        });
-
-        it("should unmark the current record as busy", () => {
+        it("should unmark the current record as busy and send a notification", () => {
           expect(updateRecord.next().value).toStrictEqual(
             put(recordActions.recordBusy(false))
+          );
+          expect(notifySuccessMock).toHaveBeenCalledWith(
+            "Record attributes updated."
           );
         });
       });
@@ -487,15 +478,12 @@ describe("collection sagas", () => {
           );
         });
 
-        it("should dispatch a notification", () => {
-          expect(updateRecord.next().value).toStrictEqual(
-            put(notifySuccess("Record permissions updated."))
-          );
-        });
-
-        it("should unmark the current record as busy", () => {
+        it("should unmark the current record as busy and send a notification", () => {
           expect(updateRecord.next().value).toStrictEqual(
             put(recordActions.recordBusy(false))
+          );
+          expect(notifySuccessMock).toHaveBeenCalledWith(
+            "Record permissions updated."
           );
         });
       });
@@ -516,9 +504,8 @@ describe("collection sagas", () => {
         });
 
         it("should dispatch an error notification action", () => {
-          const mocked = mockNotifyError();
           updateRecord.throw("error");
-          expect(mocked).toHaveBeenCalledWith(
+          expect(notifyErrorMock).toHaveBeenCalledWith(
             "Couldn't update record.",
             "error"
           );
@@ -617,15 +604,12 @@ describe("collection sagas", () => {
           );
         });
 
-        it("should dispatch a notification", () => {
-          expect(updateRecord.next().value).toStrictEqual(
-            put(notifySuccess("Record attributes updated."))
-          );
-        });
-
-        it("should unmark the current record as busy", () => {
+        it("should unmark the current record as busy and send a notification", () => {
           expect(updateRecord.next().value).toStrictEqual(
             put(recordActions.recordBusy(false))
+          );
+          expect(notifySuccessMock).toHaveBeenCalledWith(
+            "Record attributes updated."
           );
         });
       });
@@ -638,18 +622,14 @@ describe("collection sagas", () => {
           updateRecord.next();
         });
 
-        it("should dispatch an error notification action", () => {
-          const mocked = mockNotifyError();
+        it("should send a notification and unmark the current record as busy", () => {
           updateRecord.throw("error");
-          expect(mocked).toHaveBeenCalledWith(
-            "Couldn't update record.",
-            "error"
-          );
-        });
-
-        it("should unmark the current record as busy", () => {
           expect(updateRecord.next().value).toStrictEqual(
             put(recordActions.recordBusy(false))
+          );
+          expect(notifyErrorMock).toHaveBeenCalledWith(
+            "Couldn't update record.",
+            "error"
           );
         });
       });
@@ -714,16 +694,11 @@ describe("collection sagas", () => {
         );
       });
 
-      it("should dispatch a notification", () => {
-        expect(deleteRecord.next().value).toStrictEqual(
-          put(notifySuccess("Record deleted."))
-        );
-      });
-
-      it("should unmark the current record as busy", () => {
+      it("should unmark the current record as busy and send a notification", () => {
         expect(deleteRecord.next().value).toStrictEqual(
           put(recordActions.recordBusy(false))
         );
+        expect(notifySuccessMock).toHaveBeenCalledWith("Record deleted.");
       });
     });
 
@@ -741,15 +716,14 @@ describe("collection sagas", () => {
         deleteRecord.next();
       });
 
-      it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError();
+      it("should dispatch an error notification action and unmark the current record as busy", () => {
         deleteRecord.throw("error");
-        expect(mocked).toHaveBeenCalledWith("Couldn't delete record.", "error");
-      });
-
-      it("should unmark the current record as busy", () => {
         expect(deleteRecord.next().value).toStrictEqual(
           put(recordActions.recordBusy(false))
+        );
+        expect(notifyErrorMock).toHaveBeenCalledWith(
+          "Couldn't delete record.",
+          "error"
         );
       });
     });
@@ -786,7 +760,7 @@ describe("collection sagas", () => {
       );
     });
 
-    it("should update the route path", () => {
+    it("should update the route path and send a notification", () => {
       expect(deleteAttachment.next().value).toStrictEqual(
         put(
           redirectTo("record:attributes", {
@@ -796,12 +770,8 @@ describe("collection sagas", () => {
           })
         )
       );
-    });
-
-    it("should dispatch a notification", () => {
-      expect(deleteAttachment.next().value).toStrictEqual(
-        put(notifySuccess("Attachment deleted."))
-      );
+      deleteAttachment.next();
+      expect(notifySuccessMock).toHaveBeenCalledWith("Attachment deleted.");
     });
   });
 
@@ -873,16 +843,11 @@ describe("collection sagas", () => {
         );
       });
 
-      it("should dispatch a notification", () => {
-        expect(bulkCreateRecords.next().value).toStrictEqual(
-          put(notifySuccess("2 records created."))
-        );
-      });
-
-      it("should unmark the current collection as busy", () => {
+      it("should unmark the current collection as busy and send a notification", () => {
         expect(bulkCreateRecords.next().value).toStrictEqual(
           put(actions.collectionBusy(false))
         );
+        expect(notifySuccessMock).toHaveBeenCalledWith("2 records created.");
       });
     });
 
@@ -943,16 +908,11 @@ describe("collection sagas", () => {
         );
       });
 
-      it("should dispatch a notification", () => {
-        expect(bulkCreateRecords.next().value).toStrictEqual(
-          put(notifySuccess("2 records created."))
-        );
-      });
-
-      it("should unmark the current collection as busy", () => {
+      it("should unmark the current collection as busy and send a notification", () => {
         expect(bulkCreateRecords.next().value).toStrictEqual(
           put(actions.collectionBusy(false))
         );
+        expect(notifySuccessMock).toHaveBeenCalledWith("2 records created.");
       });
     });
 
@@ -977,9 +937,8 @@ describe("collection sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError();
         bulkCreateRecords.throw("error");
-        expect(mocked).toHaveBeenCalledWith(
+        expect(notifyErrorMock).toHaveBeenCalledWith(
           "Couldn't create some records.",
           "error",
           { details: [] }
@@ -1089,9 +1048,8 @@ describe("collection sagas", () => {
       });
 
       it("should dispatch an error notification action", () => {
-        const mocked = mockNotifyError();
         listHistory.throw("error");
-        expect(mocked).toHaveBeenCalledWith(
+        expect(notifyErrorMock).toHaveBeenCalledWith(
           "Couldn't list collection history.",
           "error"
         );

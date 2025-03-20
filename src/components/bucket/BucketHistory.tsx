@@ -1,6 +1,5 @@
 import BucketTabs from "./BucketTabs";
 import * as BucketActions from "@src/actions/bucket";
-import * as NotificationActions from "@src/actions/notifications";
 import HistoryTable from "@src/components/HistoryTable";
 import type {
   BucketRouteMatch,
@@ -17,7 +16,7 @@ type OwnProps = {
   location: Location;
 };
 
-type StateProps = {
+export type StateProps = {
   bucket: BucketState;
   capabilities: Capabilities;
   session: SessionState;
@@ -27,7 +26,6 @@ type Props = OwnProps &
   StateProps & {
     listBucketHistory: typeof BucketActions.listBucketHistory;
     listBucketNextHistory: typeof BucketActions.listBucketNextHistory;
-    notifyError: typeof NotificationActions.notifyError;
   };
 
 export const onBucketHistoryEnter = (props: Props) => {
@@ -43,14 +41,8 @@ export const onBucketHistoryEnter = (props: Props) => {
 };
 
 export default function BucketHistory(props: Props) {
-  const {
-    match,
-    bucket,
-    capabilities,
-    location,
-    listBucketNextHistory,
-    notifyError,
-  } = props;
+  const { match, bucket, capabilities, location, listBucketNextHistory } =
+    props;
 
   useEffect(() => {
     onBucketHistoryEnter(props);
@@ -76,7 +68,6 @@ export default function BucketHistory(props: Props) {
           hasNextHistory={hasNextHistoryPage}
           listNextHistory={listBucketNextHistory}
           location={location}
-          notifyError={notifyError}
         />
       </BucketTabs>
     </div>

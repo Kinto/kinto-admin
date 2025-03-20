@@ -1,9 +1,9 @@
 import * as actions from "@src/actions/bucket";
-import { notifyError, notifySuccess } from "@src/actions/notifications";
 import { redirectTo } from "@src/actions/route";
 import { listBuckets, sessionBusy } from "@src/actions/session";
 import { getClient } from "@src/client";
 import { MAX_PER_PAGE } from "@src/constants";
+import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import type { ActionType, GetStateFn, SagaGen } from "@src/types";
 import { call, put } from "redux-saga/effects";
 
@@ -26,9 +26,9 @@ export function* createBucket(
     yield call([client, client.createBucket], bid, { data, safe: true });
     yield put(listBuckets());
     yield put(redirectTo("bucket:attributes", { bid }));
-    yield put(notifySuccess("Bucket created."));
+    notifySuccess("Bucket created.");
   } catch (error) {
-    yield put(notifyError("Couldn't create bucket.", error));
+    yield notifyError("Couldn't create bucket.", error);
   } finally {
     yield put(sessionBusy(false));
   }
@@ -56,17 +56,17 @@ export function* updateBucket(
         safe: true,
       });
       yield put(redirectTo("bucket:attributes", { bid }));
-      yield put(notifySuccess("Bucket attributes updated."));
+      notifySuccess("Bucket attributes updated.");
     } else if (permissions) {
       yield call([bucket, bucket.setPermissions], permissions, {
         safe: true,
         last_modified,
       });
       yield put(redirectTo("bucket:permissions", { bid }));
-      yield put(notifySuccess("Bucket permissions updated."));
+      notifySuccess("Bucket permissions updated.");
     }
   } catch (error) {
-    yield put(notifyError("Couldn't update bucket.", error));
+    yield notifyError("Couldn't update bucket.", error);
   } finally {
     yield put(sessionBusy(false));
   }
@@ -91,9 +91,9 @@ export function* deleteBucket(
     });
     yield put(listBuckets());
     yield put(redirectTo("home", {}));
-    yield put(notifySuccess("Bucket deleted."));
+    notifySuccess("Bucket deleted.");
   } catch (error) {
-    yield put(notifyError("Couldn't delete bucket.", error));
+    yield notifyError("Couldn't delete bucket.", error);
   } finally {
     yield put(sessionBusy(false));
   }
@@ -109,10 +109,10 @@ export function* createCollection(
     const bucket = getBucket(bid);
     yield call([bucket, bucket.createCollection], cid, { data, safe: true });
     yield put(redirectTo("collection:records", { bid, cid }));
-    yield put(notifySuccess("Collection created."));
+    notifySuccess("Collection created.");
     yield put(listBuckets());
   } catch (error) {
-    yield put(notifyError("Couldn't create collection.", error));
+    notifyError("Couldn't create collection.", error);
   }
 }
 
@@ -136,17 +136,17 @@ export function* updateCollection(
       const updatedCollection = { ...data, last_modified };
       yield call([coll, coll.setData], updatedCollection, { safe: true });
       yield put(redirectTo("collection:attributes", { bid, cid }));
-      yield put(notifySuccess("Collection attributes updated."));
+      notifySuccess("Collection attributes updated.");
     } else if (permissions) {
       yield call([coll, coll.setPermissions], permissions, {
         safe: true,
         last_modified,
       });
       yield put(redirectTo("collection:permissions", { bid, cid }));
-      yield put(notifySuccess("Collection permissions updated."));
+      notifySuccess("Collection permissions updated.");
     }
   } catch (error) {
-    yield put(notifyError("Couldn't update collection.", error));
+    notifyError("Couldn't update collection.", error);
   }
 }
 
@@ -167,10 +167,10 @@ export function* deleteCollection(
       last_modified,
     });
     yield put(redirectTo("bucket:collections", { bid }));
-    yield put(notifySuccess("Collection deleted."));
+    notifySuccess("Collection deleted.");
     yield put(listBuckets());
   } catch (error) {
-    yield put(notifyError("Couldn't delete collection.", error));
+    notifyError("Couldn't delete collection.", error);
   }
 }
 
@@ -189,7 +189,7 @@ export function* listBucketCollections(
     );
     yield put(actions.listBucketCollectionsSuccess(data, hasNextPage, next));
   } catch (error) {
-    yield put(notifyError("Couldn't list bucket collections.", error));
+    notifyError("Couldn't list bucket collections.", error);
   }
 }
 
@@ -206,7 +206,7 @@ export function* listBucketNextCollections(getState: GetStateFn): SagaGen {
     const { data, hasNextPage, next } = yield call(fetchNextCollections);
     yield put(actions.listBucketCollectionsSuccess(data, hasNextPage, next));
   } catch (error) {
-    yield put(notifyError("Couldn't process next page.", error));
+    notifyError("Couldn't process next page.", error);
   }
 }
 
@@ -232,7 +232,7 @@ export function* listHistory(
     );
     yield put(actions.listBucketHistorySuccess(data, hasNextPage, next));
   } catch (error) {
-    yield put(notifyError("Couldn't list bucket history.", error));
+    notifyError("Couldn't list bucket history.", error);
   }
 }
 
@@ -249,7 +249,7 @@ export function* listNextHistory(getState: GetStateFn): SagaGen {
     const { data, hasNextPage, next } = yield call(fetchNextHistory);
     yield put(actions.listBucketHistorySuccess(data, hasNextPage, next));
   } catch (error) {
-    yield put(notifyError("Couldn't process next page.", error));
+    notifyError("Couldn't process next page.", error);
   }
 }
 
@@ -266,9 +266,9 @@ export function* createGroup(
       safe: true,
     });
     yield put(redirectTo("bucket:groups", { bid }));
-    yield put(notifySuccess("Group created."));
+    notifySuccess("Group created.");
   } catch (error) {
-    yield put(notifyError("Couldn't create group.", error));
+    notifyError("Couldn't create group.", error);
   }
 }
 
@@ -294,7 +294,7 @@ export function* updateGroup(
       const updatedGroup = { ...data, id: gid, last_modified };
       yield call([bucket, bucket.updateGroup], updatedGroup, { safe: true });
       yield put(redirectTo("bucket:groups", { bid }));
-      yield put(notifySuccess("Group attributes updated."));
+      notifySuccess("Group attributes updated.");
     } else if (permissions) {
       yield call([bucket, bucket.updateGroup], loadedData, {
         permissions,
@@ -302,10 +302,10 @@ export function* updateGroup(
         safe: true,
       });
       yield put(redirectTo("group:permissions", { bid, gid }));
-      yield put(notifySuccess("Group permissions updated."));
+      notifySuccess("Group permissions updated.");
     }
   } catch (error) {
-    yield put(notifyError("Couldn't update group.", error));
+    notifyError("Couldn't update group.", error);
   }
 }
 
@@ -328,8 +328,8 @@ export function* deleteGroup(
       last_modified,
     });
     yield put(redirectTo("bucket:groups", { bid }));
-    yield put(notifySuccess("Group deleted."));
+    notifySuccess("Group deleted.");
   } catch (error) {
-    yield put(notifyError("Couldn't delete group.", error));
+    notifyError("Couldn't delete group.", error);
   }
 }

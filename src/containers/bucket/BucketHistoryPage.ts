@@ -1,7 +1,7 @@
 import * as BucketActions from "@src/actions/bucket";
-import * as NotificationsActions from "@src/actions/notifications";
-import type { StateProps } from "@src/components/bucket/BucketHistory";
-import BucketHistory from "@src/components/bucket/BucketHistory";
+import BucketHistory, {
+  StateProps,
+} from "@src/components/bucket/BucketHistory";
 import type { AppState } from "@src/types";
 import { connect } from "react-redux";
 import type { Dispatch } from "redux";
@@ -15,13 +15,12 @@ function mapStateToProps(state: AppState): StateProps {
   };
 }
 
-type DispatchProps = typeof BucketActions & typeof NotificationsActions;
+type DispatchProps = typeof BucketActions;
 
 function mapDispatchToProps(dispatch: Dispatch): DispatchProps {
   return bindActionCreators(
     {
       ...BucketActions,
-      ...NotificationsActions,
     },
     dispatch
   );

@@ -1,8 +1,8 @@
 import AdminLink from "./AdminLink";
 import PaginatedTable from "./PaginatedTable";
 import Spinner from "./Spinner";
-import * as NotificationActions from "@src/actions/notifications";
 import { getClient } from "@src/client";
+import { notifyError } from "@src/hooks/notifications";
 import type {
   RecordData,
   ResourceHistoryEntry,
@@ -287,9 +287,8 @@ type HistoryTableProps = {
   history: ResourceHistoryEntry[];
   historyLoaded: boolean;
   hasNextHistory: boolean;
-  listNextHistory?: (...args: any) => any;
-  enableDiffOverview: boolean;
-  notifyError: typeof NotificationActions.notifyError;
+  listNextHistory?;
+  enableDiffOverview?: boolean;
 };
 
 export default function HistoryTable({
@@ -301,7 +300,6 @@ export default function HistoryTable({
   hasNextHistory,
   listNextHistory,
   enableDiffOverview = false,
-  notifyError,
 }: HistoryTableProps) {
   const [diffOverview, setDiffOverview] = useState(false);
   const [busy, setBusy] = useState(false);

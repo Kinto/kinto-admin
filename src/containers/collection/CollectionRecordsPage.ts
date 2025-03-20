@@ -1,5 +1,4 @@
 import * as CollectionActions from "@src/actions/collection";
-import * as NotificationsActions from "@src/actions/notifications";
 import * as RouteActions from "@src/actions/route";
 import type { StateProps } from "@src/components/collection/CollectionRecords";
 import CollectionRecords from "@src/components/collection/CollectionRecords";
@@ -19,7 +18,6 @@ function mapStateToProps(state: AppState): StateProps {
 }
 
 type DispatchProps = typeof CollectionActions &
-  typeof NotificationsActions &
   typeof RouteActions & {
     updatePath: typeof updatePath;
   };
@@ -28,7 +26,6 @@ function mapDispatchToProps(dispatch: Dispatch): DispatchProps {
   return bindActionCreators(
     {
       ...CollectionActions,
-      ...NotificationsActions,
       ...RouteActions,
       updatePath,
     },

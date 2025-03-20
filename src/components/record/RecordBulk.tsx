@@ -3,11 +3,11 @@ import {
   extendUiSchemaWithAttachment,
 } from "./AttachmentInfo";
 import * as CollectionActions from "@src/actions/collection";
-import * as NotificationActions from "@src/actions/notifications";
 import AdminLink from "@src/components/AdminLink";
 import BaseForm from "@src/components/BaseForm";
 import JSONEditor from "@src/components/JSONEditor";
 import Spinner from "@src/components/Spinner";
+import { notifyError } from "@src/hooks/notifications";
 import type { CollectionRouteMatch, CollectionState } from "@src/types";
 import React, { useCallback } from "react";
 
@@ -22,13 +22,11 @@ export type StateProps = {
 export type Props = OwnProps &
   StateProps & {
     bulkCreateRecords: typeof CollectionActions.bulkCreateRecords;
-    notifyError: typeof NotificationActions.notifyError;
   };
 
 export default function RecordBulk({
   match,
   collection,
-  notifyError,
   bulkCreateRecords,
 }: Props) {
   const onSubmit = useCallback(
@@ -41,7 +39,8 @@ export default function RecordBulk({
       } = collection;
 
       if (formData.length === 0) {
-        return notifyError("The form is empty.");
+        notifyError("The form is empty.");
+        return { type: "noop" };
       }
 
       if (Object.keys(schema).length === 0) {
@@ -54,7 +53,7 @@ export default function RecordBulk({
 
       bulkCreateRecords(bid, cid, formData);
     },
-    [match, collection, notifyError, bulkCreateRecords]
+    [match, collection, bulkCreateRecords]
   );
 
   const {

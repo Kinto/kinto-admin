@@ -1,5 +1,4 @@
 import * as CollectionActions from "@src/actions/collection";
-import * as NotificationsActions from "@src/actions/notifications";
 import type { StateProps } from "@src/components/collection/CollectionHistory";
 import CollectionHistory from "@src/components/collection/CollectionHistory";
 import type { AppState } from "@src/types";
@@ -15,13 +14,12 @@ function mapStateToProps(state: AppState): StateProps {
   };
 }
 
-type DispatchProps = typeof CollectionActions & typeof NotificationsActions;
+type DispatchProps = typeof CollectionActions;
 
 function mapDispatchToProps(dispatch: Dispatch): DispatchProps {
   return bindActionCreators(
     {
       ...CollectionActions,
-      ...NotificationsActions,
     },
     dispatch
   );
