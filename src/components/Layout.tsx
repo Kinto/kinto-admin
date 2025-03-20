@@ -1,12 +1,12 @@
 import Breadcrumbs from "./Breadcrumbs";
 import { SessionInfoBar } from "./SessionInfoBar";
 import { HomePage } from "@src/components/HomePage";
+import Notifications from "@src/components/Notifications";
 import { Sidebar } from "@src/components/Sidebar";
 import { BucketPermissions } from "@src/components/bucket/BucketPermissions";
 import { CollectionPermissions } from "@src/components/collection/CollectionPermissions";
 import { GroupPermissions } from "@src/components/group/GroupPermissions";
 import { RecordPermissions } from "@src/components/record/RecordPermissions";
-import Notifications from "@src/containers/Notifications";
 import BucketAttributesPage from "@src/containers/bucket/BucketAttributesPage";
 import BucketCollectionsPage from "@src/containers/bucket/BucketCollectionsPage";
 import BucketCreatePage from "@src/containers/bucket/BucketCreatePage";

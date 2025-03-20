@@ -1,11 +1,13 @@
 import * as BucketActions from "@src/actions/bucket";
-import BucketHistory from "@src/components/bucket/BucketHistory";
+import BucketHistory, {
+  StateProps,
+} from "@src/components/bucket/BucketHistory";
 import type { AppState } from "@src/types";
 import { connect } from "react-redux";
 import type { Dispatch } from "redux";
 import { bindActionCreators } from "redux";
 
-function mapStateToProps(state: AppState) {
+function mapStateToProps(state: AppState): StateProps {
   return {
     bucket: state.bucket,
     session: state.session,

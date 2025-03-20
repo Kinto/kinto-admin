@@ -5,13 +5,13 @@ import { PaginationResult } from "kinto/lib/http/base";
 import { HistoryEntry } from "kinto/lib/types";
 import { useEffect, useState } from "react";
 
-type listHistoryResult = {
+type ListHistoryResult = {
   data?: PaginationResult<HistoryEntry<any>>;
   hasNextPage?: boolean;
   next?: Promise<PaginationResult<HistoryEntry<any>>> | null;
 };
 
-export function useListHistory(bid: string, gid: string): listHistoryResult {
+export function useListHistory(bid: string, gid: string): ListHistoryResult {
   const [val, setVal] = useState({});
 
   useEffect(() => {

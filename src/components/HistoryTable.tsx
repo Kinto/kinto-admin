@@ -284,7 +284,7 @@ type HistoryTableProps = {
   bid: string;
   cid?: string;
   location: Location;
-  history;
+  history: ResourceHistoryEntry[];
   historyLoaded: boolean;
   hasNextHistory: boolean;
   listNextHistory?;

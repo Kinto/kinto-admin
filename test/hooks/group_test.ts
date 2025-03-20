@@ -17,19 +17,19 @@ describe("useListHistory", () => {
     });
   });
 
-  it("should call the group history enpoint and return the expected object", async () => {
+  it("should call the history enpoint and return the expected results filtered on group id", async () => {
     listHistoryMock.mockReturnValue({
-      data: [],
+      data: [{ foo: "bar" }],
       hasNextPage: false,
       next: null,
     });
-    const { result } = renderHook(() => useListHistory("bid", "cid"));
+    const { result } = renderHook(() => useListHistory("bid", "gid"));
 
     expect(result.current).toEqual({});
 
     await vi.waitFor(() => {
       expect(result.current).toMatchObject({
-        data: [],
+        data: [{ foo: "bar" }],
         hasNextPage: false,
       });
     });
@@ -49,7 +49,7 @@ describe("useListHistory", () => {
         };
       },
     });
-    const { result } = renderHook(() => useListHistory("bid", "cid"));
+    const { result } = renderHook(() => useListHistory("bid", "gid"));
 
     expect(result.current).toEqual({});
 
@@ -73,7 +73,7 @@ describe("useListHistory", () => {
       throw new Error("test error");
     });
 
-    renderHook(() => useListHistory("bid", "cid"));
+    renderHook(() => useListHistory("bid", "gid"));
 
     await vi.waitFor(() => {
       expect(notifyErrorMock).toHaveBeenCalledWith(

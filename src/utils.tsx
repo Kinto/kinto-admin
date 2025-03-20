@@ -404,6 +404,8 @@ export function diffJson(
 }
 
 // allows us to share something between components outside of providers
+// we could also use a context provider, but theat could cause confusion
+// while redux is still in place.
 export function makeObservable(target) {
   let listeners = [];
   let value = target;

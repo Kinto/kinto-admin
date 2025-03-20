@@ -16,7 +16,7 @@ type OwnProps = {
   location: Location;
 };
 
-type StateProps = {
+export type StateProps = {
   bucket: BucketState;
   capabilities: Capabilities;
   session: SessionState;
