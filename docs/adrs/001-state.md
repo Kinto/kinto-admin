@@ -1,7 +1,7 @@
 # The state of state management in kinto-admin
 
- - Status: proposed
- - Date: 2024-06-19
+ - Status: implementing
+ - Date: 2025-03-20
 
 
 Tracking issues:
@@ -106,4 +106,3 @@ If we were building kinto-admin today, nobody would pick Redux over hooks. A few
  - Relearning some best practices
 
 #### [Code example - hooks](https://github.com/Kinto/kinto-admin/pull/3270/files)
-
