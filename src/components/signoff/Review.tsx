@@ -147,7 +147,7 @@ export function DiffInfo(props: {
       query={{
         since,
         resource_name: "record",
-        exclude_user_id: "plugin:kinto-signer",
+        exclude_user_id: "plugin:remote-settings",
       }}
     >
       details...
