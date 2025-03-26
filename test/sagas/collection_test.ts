@@ -1008,7 +1008,7 @@ describe("collection sagas", () => {
       it("should filter user ids if provided", () => {
         const action = actions.listCollectionHistory("bucket", "collection", {
           since: 42,
-          exclude_user_id: "plugin:kinto-signer",
+          exclude_user_id: "plugin:remote-settings",
         });
         const historySaga = saga.listHistory(() => ({}), action);
         expect(historySaga.next().value).toStrictEqual(
@@ -1016,7 +1016,7 @@ describe("collection sagas", () => {
             filters: {
               resource_name: undefined,
               collection_id: "collection",
-              exclude_user_id: "plugin:kinto-signer",
+              exclude_user_id: "plugin:remote-settings",
               "gt_target.data.last_modified": 42,
             },
             limit: 200,
