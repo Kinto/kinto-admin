@@ -1,9 +1,9 @@
 import AuthForm from "./AuthForm";
 import Spinner from "./Spinner";
-import * as ServersActions from "@src/actions/servers";
 import * as SessionActions from "@src/actions/session";
 import { useAppDispatch, useAppSelector } from "@src/hooks/app";
 import { notifyError } from "@src/hooks/notifications";
+import { useServers } from "@src/hooks/servers";
 import { loadSession } from "@src/store/localStore";
 import type { OpenIDAuth, PortierAuth, TokenAuth } from "@src/types";
 import { getServerByPriority, isObject } from "@src/utils";
@@ -59,7 +59,7 @@ function SessionInfo({ session: { serverInfo } }) {
 export function HomePage() {
   const dispatch = useAppDispatch();
   const session = useAppSelector(state => state.session);
-  const servers = useAppSelector(state => state.servers);
+  const servers = useServers();
   const { authenticated, authenticating, serverInfo } = session;
   const { project_name } = serverInfo;
   const params = useParams<{ payload?: string; token?: string }>();
@@ -173,7 +173,6 @@ export function HomePage() {
           getServerInfo={auth => dispatch(SessionActions.getServerInfo(auth))}
           session={session}
           servers={servers}
-          clearServers={() => dispatch(ServersActions.clearServers())}
           navigateToExternalAuth={authFormData =>
             dispatch(SessionActions.navigateToExternalAuth(authFormData))
           }
