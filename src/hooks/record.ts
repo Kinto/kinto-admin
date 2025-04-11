@@ -55,7 +55,7 @@ export function useRecords(
 
   useEffect(() => {
     fetchRecords(bid, cid, sort, [], setVal);
-  }, []);
+  }, [bid, cid, sort]);
 
   return val;
 }
@@ -78,7 +78,6 @@ async function fetchRecords(
         sort,
         limit: MAX_PER_PAGE,
       });
-      console.log(result);
     }
   } catch (err) {
     notifyError("Error fetching record list", err);
@@ -109,7 +108,7 @@ export function useRecordHistory(
 
   useEffect(() => {
     fetchHistory(bid, cid, rid, [], setVal);
-  }, []);
+  }, [bid, cid, rid]);
 
   return val;
 }
