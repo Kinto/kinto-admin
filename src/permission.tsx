@@ -4,7 +4,6 @@ import type {
   GroupData,
   GroupState,
   PermissionsListEntry,
-  RecordState,
   SessionState,
 } from "@src/types";
 
@@ -126,7 +125,7 @@ export function canEditRecord(
   session: SessionState,
   bucketId: string,
   collection: CollectionState,
-  record: RecordState
+  recordId: string
 ): boolean {
   return can(session, (perm: PermissionsListEntry) => {
     return (
@@ -135,7 +134,7 @@ export function canEditRecord(
           perm.collection_id == collection.data.id) ||
         (perm.resource_name == "record" &&
           perm.collection_id == collection.data.id &&
-          perm.record_id == record.data.id)) &&
+          perm.record_id == recordId)) &&
       perm.permissions.includes("write") &&
       perm.bucket_id == bucketId
     );

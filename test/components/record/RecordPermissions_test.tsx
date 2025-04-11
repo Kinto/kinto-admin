@@ -1,17 +1,30 @@
 import { RecordPermissions } from "@src/components/record/RecordPermissions";
+import * as recordHooks from "@src/hooks/record";
 import { renderWithProvider, sessionFactory } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import React from "react";
 
 describe("RecordPermissions component", () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+  });
+
   const route =
     "/buckets/test-bucket/collections/test-collection/records/test-record/permissions";
   const path = "/buckets/:bid/collections/:cid/records/:rid/permissions";
+
   it("renders", () => {
+    vi.spyOn(recordHooks, "useRecord").mockReturnValue({
+      data: {},
+      permissions: {
+        write: [],
+        read: [],
+      },
+    });
     const initialState = {
       session: sessionFactory(),
-      record: { busy: false },
     };
+
     renderWithProvider(<RecordPermissions />, {
       initialState,
       route: route,
@@ -22,9 +35,10 @@ describe("RecordPermissions component", () => {
     );
   });
   it("renders a loading spinner when record is busy", async () => {
+    vi.spyOn(recordHooks, "useRecord").mockReturnValue(undefined);
+
     const initialState = {
       session: sessionFactory(),
-      record: { busy: true },
     };
     renderWithProvider(<RecordPermissions />, {
       initialState,

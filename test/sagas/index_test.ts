@@ -118,13 +118,6 @@ describe("root saga", () => {
   });
 
   describe("Collection watchers registration", () => {
-    it("should watch for the listRecords action", () => {
-      const saga = vi.spyOn(collectionSagas, "listRecords");
-      const action = collectionActions.listRecords();
-
-      expectSagaCalled(saga, action);
-    });
-
     it("should watch for the createRecord action", () => {
       const saga = vi.spyOn(collectionSagas, "createRecord");
       const action = collectionActions.createRecord();
