@@ -3,9 +3,6 @@ import {
   RECORD_BUSY,
   RECORD_CREATE_REQUEST,
   RECORD_DELETE_REQUEST,
-  RECORD_HISTORY_NEXT_REQUEST,
-  RECORD_HISTORY_REQUEST,
-  RECORD_HISTORY_SUCCESS,
   RECORD_RESET,
   RECORD_UPDATE_REQUEST,
   ROUTE_LOAD_FAILURE,
@@ -56,11 +53,6 @@ export default function record(
     }
     case RECORD_RESET: {
       return INITIAL_STATE;
-    }
-    case RECORD_HISTORY_REQUEST:
-    case RECORD_HISTORY_NEXT_REQUEST:
-    case RECORD_HISTORY_SUCCESS: {
-      return { ...state, history: paginator(state.history, action) };
     }
     default: {
       return state;
