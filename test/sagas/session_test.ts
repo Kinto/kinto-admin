@@ -1,8 +1,8 @@
-import * as serversActions from "@src/actions/servers";
 import * as actions from "@src/actions/session";
 import * as clientUtils from "@src/client";
 import { getClient, resetClient, setClient } from "@src/client";
 import * as notificationHooks from "@src/hooks/notifications";
+import * as serversHooks from "@src/hooks/servers";
 import { DEFAULT_SERVERINFO } from "@src/reducers/session";
 import * as saga from "@src/sagas/session";
 import { saveSession } from "@src/store/localStore";
@@ -235,12 +235,6 @@ describe("session sagas", () => {
         );
       });
 
-      it("should add server to recent history", () => {
-        expect(setupSession.next().value).toStrictEqual(
-          put(serversActions.addServer("http://server.test/v1", "basicauth"))
-        );
-      });
-
       it("should retrieve buckets hierarchy", () => {
         expect(setupSession.next().value).toStrictEqual(
           put(actions.listBuckets())
@@ -258,7 +252,9 @@ describe("session sagas", () => {
       });
 
       it("should correctly authenticate the user when using openID", () => {
-        vi.spyOn(serversActions, "addServer");
+        vi.spyOn(serversHooks, "addServer").mockImplementation((...args) => {
+          return args;
+        });
         const authData = {
           server: "http://server.test/v1",
           authType: "openid-google",
@@ -281,7 +277,7 @@ describe("session sagas", () => {
           put(actions.setAuthenticated())
         );
         setupSession.next();
-        expect(serversActions.addServer).toHaveBeenCalledWith(
+        expect(serversHooks.addServer).toHaveBeenCalledWith(
           serverInfo.url,
           authData.authType
         );

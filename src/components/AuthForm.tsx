@@ -1,9 +1,9 @@
 import BaseForm from "./BaseForm";
 import ServerHistory from "./ServerHistory";
 import { RJSFSchema } from "@rjsf/utils";
-import * as ServersActions from "@src/actions/servers";
 import * as SessionActions from "@src/actions/session";
 import { ANONYMOUS_AUTH, SINGLE_SERVER } from "@src/constants";
+import { clearServersHistory } from "@src/hooks/servers";
 import type { ServerEntry, SessionState } from "@src/types";
 import { getAuthLabel, getServerByPriority, omit } from "@src/utils";
 import React, { useState } from "react";
@@ -220,7 +220,6 @@ function extendSchemaWithHistory(schema, servers, authMethods): RJSFSchema {
 function extendUiSchemaWithHistory(
   uiSchema,
   servers,
-  clearServers,
   getServerInfo,
   serverChange,
   singleAuthMethod
@@ -247,7 +246,12 @@ function extendUiSchemaWithHistory(
     server: {
       ...uiSchema.server,
       "ui:widget": ServerHistory,
-      "ui:options": { servers, clearServers, getServerInfo, serverChange },
+      "ui:options": {
+        servers,
+        clearServersHistory,
+        getServerInfo,
+        serverChange,
+      },
     },
   };
 }
@@ -274,7 +278,6 @@ type AuthFormProps = {
   getServerInfo: typeof SessionActions.getServerInfo;
   navigateToExternalAuth: typeof SessionActions.navigateToExternalAuth;
   navigateToOpenID: typeof SessionActions.navigateToOpenID;
-  clearServers: typeof ServersActions.clearServers;
 };
 
 export default function AuthForm({
@@ -285,7 +288,6 @@ export default function AuthForm({
   getServerInfo,
   navigateToExternalAuth,
   navigateToOpenID,
-  clearServers,
 }: AuthFormProps) {
   const authType = (servers.length && servers[0].authType) || ANONYMOUS_AUTH;
   const { schema: currentSchema, uiSchema: curentUiSchema } =
@@ -312,7 +314,6 @@ export default function AuthForm({
   const finalUiSchema = extendUiSchemaWithHistory(
     uiSchema,
     servers,
-    clearServers,
     serverInfoCallback,
     serverChangeCallback,
     singleAuthMethod

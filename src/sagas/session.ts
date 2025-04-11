@@ -1,4 +1,3 @@
-import * as serversActions from "@src/actions/servers";
 import * as actions from "@src/actions/session";
 import {
   getAuthHeader,
@@ -12,6 +11,7 @@ import {
   notifyInfo,
   notifySuccess,
 } from "@src/hooks/notifications";
+import { addServer } from "@src/hooks/servers";
 import { DEFAULT_SERVERINFO } from "@src/reducers/session";
 import { clearSession, saveSession } from "@src/store/localStore";
 import type {
@@ -147,7 +147,7 @@ export function* setupSession(
     // Note, that "authenticated" can also mean "anonymous" if picked in the auth form.
     yield put(actions.setAuthenticated());
     // Store this valid server url in the history
-    yield put(serversActions.addServer(serverInfo.url, fullAuthType));
+    addServer(serverInfo.url, fullAuthType);
 
     yield put(actions.listBuckets());
     yield put(actions.setupComplete(auth));
