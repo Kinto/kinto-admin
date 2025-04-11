@@ -1,7 +1,6 @@
 import bucket from "./bucket";
 import collection from "./collection";
 import heartbeat from "./heartbeat";
-import record from "./record";
 import servers from "./servers";
 import session from "./session";
 import signoff from "./signoff";
@@ -16,7 +15,6 @@ export default function createRootReducer(routerReducer: Reducer<RouterState>) {
     bucket,
     collection,
     heartbeat,
-    record,
     servers,
     signoff,
   });

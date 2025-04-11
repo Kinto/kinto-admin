@@ -1,5 +1,4 @@
 import * as actions from "@src/actions/collection";
-import * as recordActions from "@src/actions/record";
 import { redirectTo } from "@src/actions/route";
 import { setClient } from "@src/client";
 import * as saga from "@src/sagas/collection";
@@ -22,186 +21,6 @@ describe("collection sagas", () => {
   });
   afterEach(() => {
     vi.resetAllMocks();
-  });
-
-  describe("listRecords()", () => {
-    describe("Success", () => {
-      let collection;
-
-      beforeAll(() => {
-        collection = { listRecords() {} };
-        const bucket = {
-          collection() {
-            return collection;
-          },
-        };
-        setClient({
-          bucket() {
-            return bucket;
-          },
-        });
-      });
-
-      describe("Default sort", () => {
-        let listRecords;
-
-        beforeAll(() => {
-          const action = actions.listRecords("bucket", "collection");
-          const getState = () => ({
-            collection: { data: { sort: "last_modified" } },
-          });
-          listRecords = saga.listRecords(getState, action);
-        });
-
-        it("should list collection records", () => {
-          expect(listRecords.next().value).toStrictEqual(
-            call([collection, collection.listRecords], {
-              sort: "last_modified",
-              limit: 200,
-            })
-          );
-        });
-
-        it("should dispatch the listRecordsSuccess action", () => {
-          expect(listRecords.next({ data: records }).value).toStrictEqual(
-            put(actions.listRecordsSuccess(records))
-          );
-        });
-      });
-
-      describe("Current sort", () => {
-        let listRecords;
-
-        beforeAll(() => {
-          const action = actions.listRecords("bucket", "collection");
-          const getState = () => ({
-            collection: { currentSort: "title", data: { sort: "nope" } },
-          });
-          listRecords = saga.listRecords(getState, action);
-        });
-
-        it("should list collection records", () => {
-          expect(listRecords.next().value).toStrictEqual(
-            call([collection, collection.listRecords], {
-              sort: "title",
-              limit: 200,
-            })
-          );
-        });
-
-        it("should dispatch the listRecordsSuccess action", () => {
-          expect(listRecords.next({ data: records }).value).toStrictEqual(
-            put(actions.listRecordsSuccess(records))
-          );
-        });
-      });
-
-      describe("Custom sort", () => {
-        let listRecords;
-
-        beforeAll(() => {
-          const action = actions.listRecords("bucket", "collection", "title");
-          const getState = () => ({
-            collection: { currentSort: "nope", data: { sort: "nope" } },
-          });
-          listRecords = saga.listRecords(getState, action);
-        });
-
-        it("should list collection records", () => {
-          expect(listRecords.next().value).toStrictEqual(
-            call([collection, collection.listRecords], {
-              sort: "title",
-              limit: 200,
-            })
-          );
-        });
-
-        it("should dispatch the listRecordsSuccess action", () => {
-          expect(listRecords.next({ data: records }).value).toStrictEqual(
-            put(actions.listRecordsSuccess(records))
-          );
-        });
-      });
-    });
-
-    describe("Failure", () => {
-      let listRecords, collection;
-
-      beforeAll(() => {
-        collection = { listRecords() {} };
-        const bucket = {
-          collection() {
-            return collection;
-          },
-        };
-        setClient({
-          bucket() {
-            return bucket;
-          },
-        });
-        const getState = () => ({
-          collection: { data: { sort: "nope" } },
-        });
-        const action = actions.listRecords("bucket", "collection");
-        listRecords = saga.listRecords(getState, action);
-        listRecords.next();
-      });
-
-      it("should dispatch an error notification action", () => {
-        listRecords.throw("error");
-        expect(notifyErrorMock).toHaveBeenCalledWith(
-          "Couldn't list records.",
-          "error"
-        );
-      });
-    });
-  });
-
-  describe("listNextRecords()", () => {
-    describe("Success", () => {
-      let listNextRecords, collection;
-
-      beforeAll(() => {
-        const action = actions.listNextRecords();
-        collection = { listNextRecords() {} };
-        const getState = () => ({ collection });
-        listNextRecords = saga.listNextRecords(getState, action);
-      });
-
-      it("should list collection records", () => {
-        expect(listNextRecords.next().value).toStrictEqual(
-          call(collection.listNextRecords)
-        );
-      });
-
-      it("should dispatch the listNextRecordsSuccess action", () => {
-        const fakeNext = () => {};
-        const result = { data: records, hasNextPage: false, next: fakeNext };
-        expect(listNextRecords.next(result).value).toStrictEqual(
-          put(actions.listRecordsSuccess(records, false, fakeNext, true))
-        );
-      });
-    });
-
-    describe("Failure", () => {
-      let listNextRecords, collection;
-
-      beforeAll(() => {
-        const action = actions.listNextRecords();
-        collection = { listNextRecords() {} };
-        const getState = () => ({ collection });
-        listNextRecords = saga.listNextRecords(getState, action);
-        listNextRecords.next();
-      });
-
-      it("should dispatch an error notification action", () => {
-        listNextRecords.throw("error");
-        expect(notifyErrorMock).toHaveBeenCalledWith(
-          "Couldn't process next page.",
-          "error"
-        );
-      });
-    });
   });
 
   describe("createRecord()", () => {
@@ -256,10 +75,8 @@ describe("collection sagas", () => {
         );
       });
 
-      it("should unmark the current record as busy and send a notification", () => {
-        expect(createRecord.next().value).toStrictEqual(
-          put(recordActions.recordBusy(false))
-        );
+      it("should send a notification", () => {
+        createRecord.next();
         expect(notifySuccessMock).toHaveBeenCalledWith("Record created.");
       });
     });
@@ -306,10 +123,8 @@ describe("collection sagas", () => {
         );
       });
 
-      it("should unmark the current record as busy and send a notification", () => {
-        expect(createRecord.next().value).toStrictEqual(
-          put(recordActions.recordBusy(false))
-        );
+      it("should send a notification", () => {
+        createRecord.next();
         expect(notifySuccessMock).toHaveBeenCalledWith("Record created.");
       });
     });
@@ -326,11 +141,8 @@ describe("collection sagas", () => {
         createRecord.next();
       });
 
-      it("should unmark the current record as busy and send a notification", () => {
+      it("should send a notification", () => {
         createRecord.throw("error");
-        expect(createRecord.next().value).toStrictEqual(
-          put(recordActions.recordBusy(false))
-        );
         expect(notifyErrorMock).toHaveBeenCalledWith(
           "Couldn't create record.",
           "error"
@@ -398,12 +210,6 @@ describe("collection sagas", () => {
           );
         });
 
-        it("should dispatch the resetRecord action", () => {
-          expect(updateRecord.next({ data: record }).value).toStrictEqual(
-            put(recordActions.resetRecord())
-          );
-        });
-
         it("should update the route path", () => {
           expect(updateRecord.next().value).toStrictEqual(
             put(
@@ -415,10 +221,8 @@ describe("collection sagas", () => {
           );
         });
 
-        it("should unmark the current record as busy and send a notification", () => {
-          expect(updateRecord.next().value).toStrictEqual(
-            put(recordActions.recordBusy(false))
-          );
+        it("should send a notification", () => {
+          updateRecord.next();
           expect(notifySuccessMock).toHaveBeenCalledWith(
             "Record attributes updated."
           );
@@ -478,10 +282,8 @@ describe("collection sagas", () => {
           );
         });
 
-        it("should unmark the current record as busy and send a notification", () => {
-          expect(updateRecord.next().value).toStrictEqual(
-            put(recordActions.recordBusy(false))
-          );
+        it("should send a notification", () => {
+          updateRecord.next();
           expect(notifySuccessMock).toHaveBeenCalledWith(
             "Record permissions updated."
           );
@@ -508,12 +310,6 @@ describe("collection sagas", () => {
           expect(notifyErrorMock).toHaveBeenCalledWith(
             "Couldn't update record.",
             "error"
-          );
-        });
-
-        it("should unmark the current record as busy", () => {
-          expect(updateRecord.next().value).toStrictEqual(
-            put(recordActions.recordBusy(false))
           );
         });
       });
@@ -587,12 +383,6 @@ describe("collection sagas", () => {
           );
         });
 
-        it("should dispatch the resetRecord action", () => {
-          expect(updateRecord.next({ data: record }).value).toStrictEqual(
-            put(recordActions.resetRecord())
-          );
-        });
-
         it("should update the route path", () => {
           expect(updateRecord.next().value).toStrictEqual(
             put(
@@ -604,10 +394,8 @@ describe("collection sagas", () => {
           );
         });
 
-        it("should unmark the current record as busy and send a notification", () => {
-          expect(updateRecord.next().value).toStrictEqual(
-            put(recordActions.recordBusy(false))
-          );
+        it("should send a notification", () => {
+          updateRecord.next();
           expect(notifySuccessMock).toHaveBeenCalledWith(
             "Record attributes updated."
           );
@@ -622,11 +410,8 @@ describe("collection sagas", () => {
           updateRecord.next();
         });
 
-        it("should send a notification and unmark the current record as busy", () => {
+        it("should send a notification", () => {
           updateRecord.throw("error");
-          expect(updateRecord.next().value).toStrictEqual(
-            put(recordActions.recordBusy(false))
-          );
           expect(notifyErrorMock).toHaveBeenCalledWith(
             "Couldn't update record.",
             "error"
@@ -694,10 +479,8 @@ describe("collection sagas", () => {
         );
       });
 
-      it("should unmark the current record as busy and send a notification", () => {
-        expect(deleteRecord.next().value).toStrictEqual(
-          put(recordActions.recordBusy(false))
-        );
+      it("should send a notification", () => {
+        deleteRecord.next();
         expect(notifySuccessMock).toHaveBeenCalledWith("Record deleted.");
       });
     });
@@ -716,11 +499,8 @@ describe("collection sagas", () => {
         deleteRecord.next();
       });
 
-      it("should dispatch an error notification action and unmark the current record as busy", () => {
+      it("should dispatch an error notification", () => {
         deleteRecord.throw("error");
-        expect(deleteRecord.next().value).toStrictEqual(
-          put(recordActions.recordBusy(false))
-        );
         expect(notifyErrorMock).toHaveBeenCalledWith(
           "Couldn't delete record.",
           "error"

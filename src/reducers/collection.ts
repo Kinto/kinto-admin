@@ -4,18 +4,12 @@ import {
   COLLECTION_HISTORY_NEXT_REQUEST,
   COLLECTION_HISTORY_REQUEST,
   COLLECTION_HISTORY_SUCCESS,
-  COLLECTION_RECORDS_NEXT_REQUEST,
-  COLLECTION_RECORDS_REQUEST,
-  COLLECTION_RECORDS_SUCCESS,
   COLLECTION_RESET,
-  COLLECTION_TOTAL_RECORDS,
   ROUTE_LOAD_FAILURE,
   ROUTE_LOAD_REQUEST,
   ROUTE_LOAD_SUCCESS,
 } from "@src/constants";
 import type { CollectionResource, CollectionState } from "@src/types";
-
-const DEFAULT_SORT: string = "-last_modified";
 
 export const INITIAL_STATE: CollectionState = {
   busy: false,
@@ -65,38 +59,6 @@ export function collection(
     }
     case COLLECTION_RESET: {
       return INITIAL_STATE;
-    }
-    case COLLECTION_RECORDS_REQUEST: {
-      const {
-        currentSort,
-        data: { sort: preferedSort },
-      } = state;
-      const { sort: newSort = preferedSort || DEFAULT_SORT } = action;
-      // If a new sort filter is used, purge the previous records list and
-      // pagination state.
-      const records = currentSort !== newSort ? [] : state.records;
-      return { ...state, currentSort: newSort, records, recordsLoaded: false };
-    }
-    case COLLECTION_RECORDS_NEXT_REQUEST: {
-      return { ...state, recordsLoaded: false };
-    }
-    case COLLECTION_RECORDS_SUCCESS: {
-      const { records, hasNextRecords, listNextRecords, isNextPage } = action;
-      return {
-        ...state,
-        // if isNextPage is true, we're fetching the next page of data so don't wipe state
-        records: isNextPage ? [...state.records, ...records] : records,
-        recordsLoaded: true,
-        hasNextRecords,
-        listNextRecords,
-      };
-    }
-    case COLLECTION_TOTAL_RECORDS: {
-      const { totalRecords } = action;
-      return {
-        ...state,
-        totalRecords,
-      };
     }
     case COLLECTION_HISTORY_REQUEST:
     case COLLECTION_HISTORY_NEXT_REQUEST:
