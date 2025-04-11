@@ -2,8 +2,6 @@ import {
   RECORD_BUSY,
   RECORD_CREATE_REQUEST,
   RECORD_DELETE_REQUEST,
-  RECORD_HISTORY_REQUEST,
-  RECORD_HISTORY_SUCCESS,
   RECORD_RESET,
   RECORD_UPDATE_REQUEST,
   ROUTE_LOAD_FAILURE,
@@ -98,42 +96,6 @@ describe("record reducer", () => {
           { type: RECORD_RESET }
         )
       ).toStrictEqual(initial);
-    });
-  });
-
-  describe("RECORD_HISTORY_REQUEST", () => {
-    it("should update record history state", () => {
-      const state = record(undefined, {
-        type: RECORD_HISTORY_REQUEST,
-      });
-      expect(state.history.loaded).toBe(false);
-    });
-  });
-
-  describe("RECORD_HISTORY_SUCCESS", () => {
-    it("should update record history state", () => {
-      const fakeNext = () => {};
-      const initial = {
-        history: {
-          entries: [],
-          loaded: false,
-          hasNextPage: true,
-          next: fakeNext,
-        },
-      };
-      const action = {
-        type: RECORD_HISTORY_SUCCESS,
-        entries: [1, 2, 3],
-        hasNextPage: true,
-        next: fakeNext,
-      };
-
-      const state = record(initial, action);
-
-      expect(state.history.entries).toStrictEqual([1, 2, 3]);
-      expect(state.history.loaded).toBe(true);
-      expect(state.history.hasNextPage).toBe(true);
-      expect(state.history.next).toBe(fakeNext);
     });
   });
 });

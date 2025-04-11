@@ -11,9 +11,6 @@ import {
   GROUP_HISTORY_NEXT_REQUEST,
   GROUP_HISTORY_REQUEST,
   GROUP_HISTORY_SUCCESS,
-  RECORD_HISTORY_NEXT_REQUEST,
-  RECORD_HISTORY_REQUEST,
-  RECORD_HISTORY_SUCCESS,
 } from "@src/constants";
 import type { Paginator } from "@src/types";
 
@@ -36,17 +33,14 @@ export function paginator(
     case GROUP_HISTORY_REQUEST:
     case GROUP_HISTORY_NEXT_REQUEST:
     case COLLECTION_HISTORY_REQUEST:
-    case COLLECTION_HISTORY_NEXT_REQUEST:
-    case RECORD_HISTORY_REQUEST:
-    case RECORD_HISTORY_NEXT_REQUEST: {
+    case COLLECTION_HISTORY_NEXT_REQUEST: {
       return { ...state, loaded: false };
     }
     // history responses
     case BUCKET_COLLECTIONS_SUCCESS:
     case BUCKET_HISTORY_SUCCESS:
     case GROUP_HISTORY_SUCCESS:
-    case COLLECTION_HISTORY_SUCCESS:
-    case RECORD_HISTORY_SUCCESS: {
+    case COLLECTION_HISTORY_SUCCESS: {
       const { entries, hasNextPage, next } = action;
       return {
         entries: [...state.entries, ...entries],
