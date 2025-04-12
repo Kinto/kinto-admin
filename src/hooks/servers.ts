@@ -3,13 +3,12 @@ import { ServerEntry } from "@src/types";
 import { makeObservable } from "@src/utils";
 import { useEffect, useState } from "react";
 
-let state = makeObservable([]);
+let state = makeObservable(loadServers());
 
 export function useServers(): ServerEntry[] {
   const [val, setVal] = useState<ServerEntry[]>(state.get());
 
   useEffect(() => {
-    setVal(loadServers());
     return state.subscribe(setVal);
   }, []);
 

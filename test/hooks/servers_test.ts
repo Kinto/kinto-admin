@@ -1,4 +1,5 @@
 import { addServer, clearServersHistory, useServers } from "@src/hooks/servers";
+import { loadServers } from "@src/store/localStore";
 import { renderHook } from "@testing-library/react";
 
 describe("servers hooks", () => {
@@ -10,6 +11,7 @@ describe("servers hooks", () => {
     it("should add server to recent history", async () => {
       const { result } = renderHook(() => useServers());
       expect(result.current).toEqual([]);
+      expect(result.current).toEqual(loadServers());
 
       addServer("http://server.test/v1", "basicauth");
 
@@ -18,6 +20,7 @@ describe("servers hooks", () => {
         expect(result.current).toEqual([
           { server: "http://server.test/v1", authType: "basicauth" },
         ]);
+        expect(result.current).toStrictEqual(loadServers());
       });
     });
 
