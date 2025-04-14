@@ -1,4 +1,5 @@
 import { ANONYMOUS_AUTH } from "@src/constants";
+import { clearServersHistory } from "@src/hooks/servers";
 import { debounce } from "@src/utils";
 import React, { useCallback, useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
@@ -38,8 +39,7 @@ export default function ServerHistory(props: ServerHistoryProps) {
   const clear = useCallback(
     event => {
       event.preventDefault();
-      const { clearServers } = props.options;
-      clearServers();
+      clearServersHistory();
     },
     [props]
   );
