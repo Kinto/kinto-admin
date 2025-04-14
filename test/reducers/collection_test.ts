@@ -1,8 +1,6 @@
 import {
   COLLECTION_BUSY,
   COLLECTION_HISTORY_SUCCESS,
-  COLLECTION_RECORDS_REQUEST,
-  COLLECTION_RECORDS_SUCCESS,
   COLLECTION_RESET,
   ROUTE_LOAD_FAILURE,
   ROUTE_LOAD_REQUEST,
@@ -23,65 +21,6 @@ describe("collection reducer", () => {
     expect(collection(altered, { type: COLLECTION_RESET })).toStrictEqual(
       initial
     );
-  });
-
-  describe("COLLECTION_RECORDS_REQUEST", () => {
-    it("should update the recordsLoaded flag", () => {
-      expect(
-        collection(
-          { data: {}, recordsLoaded: true },
-          {
-            type: COLLECTION_RECORDS_REQUEST,
-          }
-        )
-      ).toHaveProperty("recordsLoaded", false);
-    });
-
-    it("should update the currentSort parameter", () => {
-      expect(
-        collection(undefined, {
-          type: COLLECTION_RECORDS_REQUEST,
-          sort: "title",
-        })
-      ).toHaveProperty("currentSort", "title");
-    });
-
-    it("should use default prefered sort when none is provided", () => {
-      expect(
-        collection(
-          { data: { sort: "plop" } },
-          {
-            type: COLLECTION_RECORDS_REQUEST,
-          }
-        )
-      ).toHaveProperty("currentSort", "plop");
-    });
-
-    it("should use default sort when none is provided", () => {
-      expect(
-        collection(
-          { data: {} },
-          {
-            type: COLLECTION_RECORDS_REQUEST,
-          }
-        )
-      ).toHaveProperty("currentSort", "-last_modified");
-    });
-
-    it("should reset records list when the sort param changes", () => {
-      expect(
-        collection(
-          {
-            data: { sort: "initial" },
-            records: [1, 2, 3],
-          },
-          {
-            type: COLLECTION_RECORDS_REQUEST,
-            sort: "title",
-          }
-        )
-      ).toHaveProperty("records", []);
-    });
   });
 
   describe("ROUTE_LOAD_REQUEST", () => {
@@ -122,47 +61,6 @@ describe("collection reducer", () => {
       expect(
         collection({ busy: true }, { type: ROUTE_LOAD_FAILURE })
       ).toHaveProperty("busy", false);
-    });
-  });
-
-  describe("COLLECTION_RECORDS_SUCCESS", () => {
-    const records = [1, 2, 3];
-
-    let state;
-
-    beforeEach(() => {
-      state = collection(undefined, {
-        type: COLLECTION_RECORDS_SUCCESS,
-        records,
-      });
-    });
-
-    it("should assign received records to state", () => {
-      expect(state.records).toStrictEqual(records);
-    });
-
-    it("should mark records as loaded", () => {
-      expect(state.recordsLoaded).toBe(true);
-    });
-
-    it("should append new records received to existing list", () => {
-      const state2 = collection(state, {
-        type: COLLECTION_RECORDS_SUCCESS,
-        records: [4, 5],
-        isNextPage: true,
-      });
-
-      expect(state2.records).toStrictEqual([1, 2, 3, 4, 5]);
-    });
-
-    it("should pull fresh records when isNextPage is false", () => {
-      const state2 = collection(state, {
-        type: COLLECTION_RECORDS_SUCCESS,
-        records: [4, 5],
-        isNextPage: false,
-      });
-
-      expect(state2.records).toStrictEqual([4, 5]);
     });
   });
 

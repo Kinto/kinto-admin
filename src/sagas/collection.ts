@@ -1,5 +1,4 @@
 import * as actions from "@src/actions/collection";
-import { recordBusy, resetRecord } from "@src/actions/record";
 import { redirectTo } from "@src/actions/route";
 import { getClient } from "@src/client";
 import { MAX_PER_PAGE } from "@src/constants";
@@ -30,62 +29,6 @@ export function* deleteAttachment(
     yield notifyError("Couldn't delete attachment.", error);
   } finally {
     yield put(actions.collectionBusy(false));
-  }
-}
-
-export function* listRecords(
-  getState: GetStateFn,
-  action: ActionType<typeof actions.listRecords>
-): SagaGen {
-  const {
-    collection: {
-      currentSort,
-      data: { sort: defaultSort },
-    },
-  } = getState();
-  const { bid, cid, sort = currentSort } = action;
-  try {
-    const coll = getCollection(bid, cid);
-    const { data, hasNextPage, next } = yield call([coll, coll.listRecords], {
-      sort: sort || currentSort || defaultSort,
-      limit: MAX_PER_PAGE,
-    });
-    // Show list of records.
-    yield put(
-      actions.listRecordsSuccess(
-        data,
-        hasNextPage,
-        next,
-        /* isNextPage: */ false
-      )
-    );
-    // Request number of total records.
-    const totalRecords = yield call([coll, coll.getTotalRecords]);
-    yield put(actions.collectionTotalRecords(totalRecords));
-  } catch (error) {
-    notifyError("Couldn't list records.", error);
-  }
-}
-
-export function* listNextRecords(getState: GetStateFn): SagaGen {
-  const {
-    collection: { listNextRecords },
-  } = getState();
-  if (listNextRecords == null) {
-    return;
-  }
-  try {
-    const { data, hasNextPage, next } = yield call(listNextRecords);
-    yield put(
-      actions.listRecordsSuccess(
-        data,
-        hasNextPage,
-        next,
-        /* isNextPage: */ true
-      )
-    );
-  } catch (error) {
-    notifyError("Couldn't process next page.", error);
   }
 }
 
@@ -158,8 +101,6 @@ export function* createRecord(
     notifySuccess("Record created.");
   } catch (error) {
     yield notifyError("Couldn't create record.", error);
-  } finally {
-    yield put(recordBusy(false));
   }
 }
 
@@ -194,7 +135,6 @@ export function* updateRecord(
       } else {
         yield call([coll, coll.updateRecord], updatedRecord, { safe: true });
       }
-      yield put(resetRecord());
       yield put(redirectTo("collection:records", { bid, cid }));
       notifySuccess("Record attributes updated.");
     } else if (permissions) {
@@ -208,8 +148,6 @@ export function* updateRecord(
     }
   } catch (error) {
     yield notifyError("Couldn't update record.", error);
-  } finally {
-    yield put(recordBusy(false));
   }
 }
 
@@ -228,8 +166,6 @@ export function* deleteRecord(
     notifySuccess("Record deleted.");
   } catch (error) {
     yield notifyError("Couldn't delete record.", error);
-  } finally {
-    yield put(recordBusy(false));
   }
 }
 

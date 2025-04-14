@@ -71,16 +71,6 @@ export default function* rootSaga(getState: GetStateFn): SagaGen {
     takeEvery(c.GROUP_DELETE_REQUEST, bucketSagas.deleteGroup, getState),
     // collection/records
     takeEvery(
-      c.COLLECTION_RECORDS_REQUEST,
-      collectionSagas.listRecords,
-      getState
-    ),
-    takeEvery(
-      c.COLLECTION_RECORDS_NEXT_REQUEST,
-      collectionSagas.listNextRecords,
-      getState
-    ),
-    takeEvery(
       c.COLLECTION_HISTORY_REQUEST,
       collectionSagas.listHistory,
       getState

@@ -4,11 +4,7 @@ import {
   COLLECTION_HISTORY_NEXT_REQUEST,
   COLLECTION_HISTORY_REQUEST,
   COLLECTION_HISTORY_SUCCESS,
-  COLLECTION_RECORDS_NEXT_REQUEST,
-  COLLECTION_RECORDS_REQUEST,
-  COLLECTION_RECORDS_SUCCESS,
   COLLECTION_RESET,
-  COLLECTION_TOTAL_RECORDS,
   RECORD_BULK_CREATE_REQUEST,
   RECORD_CREATE_REQUEST,
   RECORD_DELETE_REQUEST,
@@ -33,56 +29,6 @@ export function resetCollection(): {
   type: "COLLECTION_RESET";
 } {
   return { type: COLLECTION_RESET };
-}
-
-export function listRecords(
-  bid: string,
-  cid: string,
-  sort?: string
-): {
-  type: "COLLECTION_RECORDS_REQUEST";
-  bid: string;
-  cid: string;
-  sort: string | null | undefined;
-} {
-  return { type: COLLECTION_RECORDS_REQUEST, bid, cid, sort };
-}
-
-export function listNextRecords(): {
-  type: "COLLECTION_RECORDS_NEXT_REQUEST";
-} {
-  return { type: COLLECTION_RECORDS_NEXT_REQUEST };
-}
-
-export function listRecordsSuccess(
-  records: RecordData[],
-  hasNextRecords: boolean,
-  listNextRecords: SagaNextFunction | null | undefined,
-  isNextPage: boolean = false
-): {
-  type: "COLLECTION_RECORDS_SUCCESS";
-  records: RecordData[];
-  hasNextRecords: boolean;
-  listNextRecords: SagaNextFunction | null | undefined;
-  isNextPage: boolean;
-} {
-  return {
-    type: COLLECTION_RECORDS_SUCCESS,
-    records,
-    hasNextRecords,
-    listNextRecords,
-    isNextPage,
-  };
-}
-
-export function collectionTotalRecords(totalRecords: number): {
-  type: "COLLECTION_TOTAL_RECORDS";
-  totalRecords: number;
-} {
-  return {
-    type: COLLECTION_TOTAL_RECORDS,
-    totalRecords,
-  };
 }
 
 export function listCollectionHistory(

@@ -1,12 +1,12 @@
 import RecordRow from "./RecordRow";
 import { CommonProps } from "./commonPropTypes";
-import * as CollectionActions from "@src/actions/collection";
 import AdminLink from "@src/components/AdminLink";
 import PaginatedTable from "@src/components/PaginatedTable";
 import SignoffContainer from "@src/containers/signoff/SignoffToolBar";
 import { canCreateRecord } from "@src/permission";
 import type { RecordData } from "@src/types";
 import { capitalize } from "@src/utils";
+import { PaginationResult } from "kinto/lib/http/base";
 import React, { useState } from "react";
 import { SortUp } from "react-bootstrap-icons";
 import { SortDown } from "react-bootstrap-icons";
@@ -108,7 +108,7 @@ type RecordsViewProps = CommonProps & {
 type TableProps = RecordsViewProps & {
   currentSort: string;
   hasNextRecords: boolean;
-  listNextRecords: typeof CollectionActions.listNextRecords;
+  listNextRecords?: Promise<PaginationResult<RecordData>>;
   records: RecordData[];
   recordsLoaded: boolean;
   updateSort: (s: string) => void;

@@ -1,4 +1,3 @@
-import * as collection_actions from "@src/actions/collection";
 import { routeLoadSuccess } from "@src/actions/route";
 import * as actions from "@src/actions/signoff";
 import { setClient } from "@src/client";
@@ -65,20 +64,18 @@ describe("Signoff sagas", () => {
       });
 
       it("should do nothing if current collection is not configured", () => {
-        const action = collection_actions.listRecords("bid", "cid", "");
-        const result = saga.onCollectionRecordsRequest(getState, action);
+        const result = saga.onCollectionRecordsRequest(getState, "bid", "cid");
         expect(result.next().value).toStrictEqual(
           put(actions.workflowInfo(null))
         );
       });
 
       it("should pick resource for current collection if source matches", () => {
-        const action = collection_actions.listRecords(
+        const result = saga.onCollectionRecordsRequest(
+          getState,
           "stage",
-          "source-plugins",
-          ""
+          "source-plugins"
         );
-        const result = saga.onCollectionRecordsRequest(getState, action);
         expect(result.next().value).toStrictEqual(
           put(
             actions.workflowInfo({
@@ -100,11 +97,6 @@ describe("Signoff sagas", () => {
       });
 
       it("should update the workflow info with source attributes", () => {
-        const action = collection_actions.listRecords(
-          "stage",
-          "source-plugins",
-          ""
-        );
         const fetchSourceAttributesResult = {
           last_edit_by: "Last Edit By",
           last_edit_date: "2018-04-15T16:51:23.971129+00:00",
@@ -120,7 +112,11 @@ describe("Signoff sagas", () => {
           status: "to-review",
         };
 
-        const result = saga.onCollectionRecordsRequest(getState, action);
+        const result = saga.onCollectionRecordsRequest(
+          getState,
+          "stage",
+          "source-plugins"
+        );
         result.next(); // put(), tested above
         expect(result.next().value).toStrictEqual(
           call(saga.fetchSourceAttributes, {
@@ -190,8 +186,11 @@ describe("Signoff sagas", () => {
       });
 
       it("should pick resource for current collection if bucket matches", () => {
-        const action = collection_actions.listRecords("stage", "cid", "");
-        const result = saga.onCollectionRecordsRequest(getState, action);
+        const result = saga.onCollectionRecordsRequest(
+          getState,
+          "stage",
+          "cid"
+        );
         expect(result.next().value).toStrictEqual(
           put(
             actions.workflowInfo({
@@ -222,12 +221,11 @@ describe("Signoff sagas", () => {
         });
         vi.spyOn(console, "warn");
         vi.spyOn(console, "error");
-        const action = collection_actions.listRecords(
+        const result = saga.onCollectionRecordsRequest(
+          getState,
           "stage",
-          "source-plugins",
-          ""
+          "source-plugins"
         );
-        const result = saga.onCollectionRecordsRequest(getState, action);
         expect(result.next().value).toBeUndefined();
         expect(console.warn).toHaveBeenCalledTimes(1);
         expect(console.error).toHaveBeenCalledTimes(0);
@@ -244,12 +242,11 @@ describe("Signoff sagas", () => {
         });
         vi.spyOn(console, "warn");
         vi.spyOn(console, "error");
-        const action = collection_actions.listRecords(
+        const result = saga.onCollectionRecordsRequest(
+          getState,
           "stage",
-          "source-plugins",
-          ""
+          "source-plugins"
         );
-        const result = saga.onCollectionRecordsRequest(getState, action);
         expect(result.next().value).toBeUndefined();
         expect(console.warn).toHaveBeenCalledTimes(0);
         expect(notifyErrorMock).toHaveBeenCalledTimes(1);
@@ -306,9 +303,7 @@ describe("Signoff sagas", () => {
           }).value
         ).toHaveProperty(
           "payload.args",
-          expect.arrayContaining([
-            collection_actions.listRecords("buck", "coll"),
-          ])
+          expect.arrayContaining(["buck", "coll"])
         );
       });
 
@@ -360,9 +355,7 @@ describe("Signoff sagas", () => {
           }).value
         ).toHaveProperty(
           "payload.args",
-          expect.arrayContaining([
-            collection_actions.listRecords("buck", "coll"),
-          ])
+          expect.arrayContaining(["buck", "coll"])
         );
       });
 
@@ -411,9 +404,7 @@ describe("Signoff sagas", () => {
           }).value
         ).toHaveProperty(
           "payload.args",
-          expect.arrayContaining([
-            collection_actions.listRecords("buck", "coll"),
-          ])
+          expect.arrayContaining(["buck", "coll"])
         );
       });
 
@@ -465,9 +456,7 @@ describe("Signoff sagas", () => {
           }).value
         ).toHaveProperty(
           "payload.args",
-          expect.arrayContaining([
-            collection_actions.listRecords("buck", "coll"),
-          ])
+          expect.arrayContaining(["buck", "coll"])
         );
       });
 

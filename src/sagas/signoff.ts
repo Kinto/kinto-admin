@@ -1,4 +1,3 @@
-import * as collectionActions from "@src/actions/collection";
 import { routeLoadSuccess } from "@src/actions/route";
 import * as SignoffActions from "@src/actions/signoff";
 import { getClient } from "@src/client";
@@ -41,10 +40,10 @@ function assertResourceId(
 
 export function* onCollectionRecordsRequest(
   getState: GetStateFn,
-  action: ActionType<typeof collectionActions.listRecords>
+  bid: string,
+  cid: string
 ): SagaGen {
   try {
-    const { bid, cid } = action;
     const {
       session: { serverInfo },
     } = getState();
@@ -218,11 +217,7 @@ export function* handleRequestReview(
       data: { id: cid },
     } = collection;
     // Go through the same saga as page load to refresh attributes after signoff changes.
-    yield call(
-      onCollectionRecordsRequest,
-      getState,
-      collectionActions.listRecords(bid, cid)
-    );
+    yield call(onCollectionRecordsRequest, getState, bid, cid);
     yield put(
       routeLoadSuccess({
         bucket,
@@ -254,11 +249,7 @@ export function* handleRollbackChanges(
       data: { id: cid },
     } = collection;
     // Go through the same saga as page load to refresh attributes after signoff changes.
-    yield call(
-      onCollectionRecordsRequest,
-      getState,
-      collectionActions.listRecords(bid, cid)
-    );
+    yield call(onCollectionRecordsRequest, getState, bid, cid);
     yield put(
       routeLoadSuccess({
         bucket,
@@ -290,11 +281,7 @@ export function* handleDeclineChanges(
       data: { id: cid },
     } = collection;
     // Go through the same saga as page load to refresh attributes after signoff changes.
-    yield call(
-      onCollectionRecordsRequest,
-      getState,
-      collectionActions.listRecords(bid, cid)
-    );
+    yield call(onCollectionRecordsRequest, getState, bid, cid);
     yield put(
       routeLoadSuccess({
         bucket,
@@ -326,11 +313,7 @@ export function* handleApproveChanges(
       data: { id: cid },
     } = collection;
     // Go through the same saga as page load to refresh attributes after signoff changes.
-    yield call(
-      onCollectionRecordsRequest,
-      getState,
-      collectionActions.listRecords(bid, cid)
-    );
+    yield call(onCollectionRecordsRequest, getState, bid, cid);
     yield put(
       routeLoadSuccess({
         bucket,

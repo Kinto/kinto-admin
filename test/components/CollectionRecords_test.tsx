@@ -1,9 +1,14 @@
 import CollectionRecords from "@src/components/collection/CollectionRecords";
+import * as recordHooks from "@src/hooks/record";
 import { renderWithProvider } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
 
 describe("CollectionRecords component", () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+  });
+
   const capabilities = {
     history: {},
   };
@@ -17,8 +22,9 @@ describe("CollectionRecords component", () => {
     },
   };
 
-  it("Calls listRecords every time bid or cid changes", async () => {
-    const listRecordsMock = vi.fn();
+  it("Calls useRecords every time bid or cid changes", async () => {
+    const useRecordsMock = vi.fn().mockReturnValue({});
+    vi.spyOn(recordHooks, "useRecords").mockImplementation(useRecordsMock);
 
     const props = {
       session: { authenticated: true, permissions: ["foo"] },
@@ -42,7 +48,6 @@ describe("CollectionRecords component", () => {
         records: [],
       },
       capabilities,
-      listRecords: listRecordsMock,
     };
     const result = renderWithProvider(
       <CollectionRecords
@@ -51,7 +56,7 @@ describe("CollectionRecords component", () => {
       />
     );
 
-    expect(listRecordsMock).toHaveBeenCalledTimes(1);
+    expect(useRecordsMock).toHaveBeenCalledTimes(1);
 
     result.rerender(
       <CollectionRecords
@@ -60,7 +65,7 @@ describe("CollectionRecords component", () => {
       />
     );
 
-    expect(listRecordsMock).toHaveBeenCalledTimes(2);
+    expect(useRecordsMock).toHaveBeenCalledTimes(2);
 
     result.rerender(
       <CollectionRecords
@@ -69,7 +74,7 @@ describe("CollectionRecords component", () => {
       />
     );
 
-    expect(listRecordsMock).toHaveBeenCalledTimes(3);
+    expect(useRecordsMock).toHaveBeenCalledTimes(3);
 
     result.rerender(
       <CollectionRecords
@@ -78,7 +83,7 @@ describe("CollectionRecords component", () => {
       />
     );
 
-    expect(listRecordsMock).toHaveBeenCalledTimes(4);
+    expect(useRecordsMock).toHaveBeenCalledTimes(4);
   });
 
   describe("Schema defined", () => {
@@ -104,6 +109,13 @@ describe("CollectionRecords component", () => {
     };
 
     beforeEach(() => {
+      vi.spyOn(recordHooks, "useRecords").mockReturnValue({
+        data: collection.records,
+        hasNextPage: false,
+        lastModified: 42,
+        totalRecords: collection.records.length,
+        next: undefined,
+      });
       renderWithProvider(
         <CollectionRecords
           match={{ params: { bid: "bucket", cid: "collection" } }}
@@ -114,7 +126,6 @@ describe("CollectionRecords component", () => {
           bucket={bucket}
           collection={collection}
           capabilities={capabilities}
-          listRecords={() => {}}
         />
       );
     });
@@ -174,6 +185,14 @@ describe("CollectionRecords component", () => {
     };
 
     beforeEach(() => {
+      vi.spyOn(recordHooks, "useRecords").mockReturnValue({
+        data: collection.records,
+        hasNextPage: false,
+        lastModified: 42,
+        totalRecords: collection.records.length,
+        next: undefined,
+      });
+
       renderWithProvider(
         <CollectionRecords
           match={{ params: { bid: "bucket", cid: "collection" } }}
@@ -184,7 +203,6 @@ describe("CollectionRecords component", () => {
           bucket={bucket}
           collection={collection}
           capabilities={capabilities}
-          listRecords={() => {}}
         />
       );
     });
@@ -223,7 +241,7 @@ describe("CollectionRecords component", () => {
           bucket={bucket}
           collection={collection}
           capabilities={capabilities}
-          listRecords={() => {}}
+          useRecords={() => {}}
         />
       );
     });
@@ -263,7 +281,7 @@ describe("CollectionRecords component", () => {
             bucket={bucket}
             collection={collection}
             capabilities={capabilities}
-            listRecords={() => {}}
+            useRecords={() => {}}
           />
         );
       });
@@ -283,7 +301,7 @@ describe("CollectionRecords component", () => {
             bucket={bucket}
             collection={collection}
             capabilities={capabilities}
-            listRecords={() => {}}
+            useRecords={() => {}}
           />
         );
       });
@@ -295,7 +313,7 @@ describe("CollectionRecords component", () => {
   });
 
   it("Does not crash when bucket.data is nullish", () => {
-    const listRecordsMock = vi.fn();
+    const useRecordsMock = vi.fn();
 
     const props = {
       session: { authenticated: true, permissions: ["foo"] },
@@ -322,7 +340,7 @@ describe("CollectionRecords component", () => {
         records: [],
       },
       capabilities,
-      listRecords: listRecordsMock,
+      useRecords: useRecordsMock,
     };
     renderWithProvider(
       <CollectionRecords
