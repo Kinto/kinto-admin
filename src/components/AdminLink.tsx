@@ -2,7 +2,7 @@ import type { RouteParams } from "@src/types";
 import url from "@src/url";
 import { PureComponent } from "react";
 import * as React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 type Props = Omit<React.ComponentProps<typeof Link>, "to"> & {
   name: string;

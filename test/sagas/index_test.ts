@@ -6,11 +6,11 @@ import * as bucketSagas from "@src/sagas/bucket";
 import * as collectionSagas from "@src/sagas/collection";
 import * as routeSagas from "@src/sagas/route";
 import * as sessionSagas from "@src/sagas/session";
-import { configureAppStoreAndHistory } from "@src/store/configureStore";
+import { configureAppStore } from "@src/store/configureStore";
 
 function expectSagaCalled(saga, action) {
   // Note: the rootSaga function is called by configureStore
-  const { store } = configureAppStoreAndHistory();
+  const { store } = configureAppStore();
   store.dispatch(action);
   expect(saga.mock.calls[0][0].name).toBe("bound getState");
   expect(saga.mock.calls[0][1]).toStrictEqual(action);

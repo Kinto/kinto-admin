@@ -4,7 +4,6 @@ import type { AppState } from "@src/types";
 import { connect } from "react-redux";
 import type { Dispatch } from "redux";
 import { bindActionCreators } from "redux";
-import { push as updatePath } from "redux-first-history";
 
 function mapStateToProps(state: AppState) {
   return {
@@ -20,7 +19,6 @@ function mapDispatchToProps(dispatch: Dispatch): DispatchProps {
   return bindActionCreators(
     {
       ...BucketActions,
-      updatePath,
     },
     dispatch
   );

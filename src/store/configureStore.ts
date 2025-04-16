@@ -1,19 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import createRootReducer from "@src/reducers";
 import rootSaga from "@src/sagas";
-import { createHashHistory } from "history";
-import { createReduxHistoryContext } from "redux-first-history";
 import createSagaMiddleware from "redux-saga";
 
 const sagaMiddleware = createSagaMiddleware();
-const configureAppStoreAndHistory = (
-  initialState = {},
-  initialHistory = createHashHistory()
-) => {
-  const { createReduxHistory, routerMiddleware, routerReducer } =
-    createReduxHistoryContext({ history: initialHistory });
+
+const configureAppStore = (initialState = {}) => {
   const store = configureStore({
-    reducer: createRootReducer(routerReducer),
+    reducer: createRootReducer(),
     middleware: getDefaultMiddleware =>
       // TODO: disabling these checks is unsafe, but it looks like these checks are newer than our code that causes the errors
       // Find a way to fix or remove redux
@@ -21,16 +15,15 @@ const configureAppStoreAndHistory = (
         thunk: false,
         serializableCheck: false,
         immutableCheck: false,
-      }).concat(sagaMiddleware, routerMiddleware),
+      }).concat(sagaMiddleware),
     preloadedState: initialState,
   });
-  const history = createReduxHistory(store);
   // Every saga will receive the store getState() function as first argument
   // by default; this allows sagas to share the same signature and access the
   // state consistently.
   sagaMiddleware.run(rootSaga, store.getState.bind(store));
-  return { store, history };
+  return { store };
 };
 
-const { store, history } = configureAppStoreAndHistory();
-export { store, history, configureAppStoreAndHistory };
+const { store } = configureAppStore();
+export { store, configureAppStore };

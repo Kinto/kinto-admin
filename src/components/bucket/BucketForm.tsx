@@ -8,7 +8,7 @@ import type { BucketData, BucketState, SessionState } from "@src/types";
 import { omit } from "@src/utils";
 import React from "react";
 import { Check2 } from "react-bootstrap-icons";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 const schema: RJSFSchema = {
   type: "object",
