@@ -19,7 +19,7 @@ import type {
 } from "@src/types";
 import React, { useEffect, useState } from "react";
 import { Shuffle } from "react-bootstrap-icons";
-import { Redirect, useHistory } from "react-router-dom";
+import { redirect, useNavigate } from "react-router";
 
 export type StateProps = {
   signoff?: SignoffState;
@@ -56,7 +56,7 @@ export default function SimpleReview({
     storageKeys.useSimpleReview,
     true
   );
-  const history = useHistory();
+  const navigate = useNavigate();
   const signoffSource = signoff?.collectionsInfo?.source;
   const sourceBid = signoffSource?.bid;
   const sourceCid = signoffSource?.cid;
@@ -144,7 +144,7 @@ export default function SimpleReview({
   }
   const handleRollback = (text: string) => {
     rollbackChanges(text);
-    history.push(`/buckets/${bid}/collections/${cid}/records`);
+    navigate(`/buckets/${bid}/collections/${cid}/records`);
   };
 
   const SignoffContent = () => {

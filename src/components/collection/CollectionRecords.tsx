@@ -3,7 +3,6 @@ import RecordTable from "./RecordTable";
 import { ListActions } from "./RecordTable";
 import { CommonProps, CommonStateProps } from "./commonPropTypes";
 import * as CollectionActions from "@src/actions/collection";
-import * as RouteActions from "@src/actions/route";
 import AdminLink from "@src/components/AdminLink";
 import Spinner from "@src/components/Spinner";
 import { storageKeys, useLocalStorage } from "@src/hooks/storage";
@@ -33,7 +32,6 @@ type Props = CommonProps &
     deleteRecord: typeof CollectionActions.deleteRecord;
     listRecords: typeof CollectionActions.listRecords;
     listNextRecords: typeof CollectionActions.listNextRecords;
-    redirectTo: typeof RouteActions.redirectTo;
   };
 
 export default function CollectionRecords(props: Props) {

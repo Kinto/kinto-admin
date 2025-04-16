@@ -25,7 +25,7 @@ import type {
 } from "@src/types";
 import { clone, copyToClipboard, getAuthLabel } from "@src/utils";
 import { PermissionData } from "kinto/lib/http";
-import { push as updatePath } from "redux-first-history";
+import { redirect } from "react-router";
 import { call, put } from "redux-saga/effects";
 
 export function* serverChange(getState: GetStateFn): SagaGen {
@@ -164,11 +164,7 @@ export function* sessionLogout(
   action: ActionType<typeof actions.logout>
 ): SagaGen {
   resetClient();
-  const state = getState();
-  if (state.router.location.pathname !== "/") {
-    // We can't push twice the same path using hash history.
-    yield put(updatePath("/"));
-  }
+  redirect("/");
   notifySuccess("Logged out.");
   yield call(clearSession);
 }

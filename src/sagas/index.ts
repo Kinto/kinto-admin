@@ -2,7 +2,6 @@ import * as bucketSagas from "./bucket";
 import * as collectionSagas from "./collection";
 import * as heartbeatSagas from "./heartbeat";
 import * as recordSagas from "./record";
-import * as routeSagas from "./route";
 import * as sessionSagas from "./session";
 import * as signoffSagas from "./signoff";
 import * as c from "@src/constants";
@@ -27,9 +26,6 @@ export default function* rootSaga(getState: GetStateFn): SagaGen {
       sessionSagas.sessionCopyAuthenticationHeader,
       getState
     ),
-    // route
-    takeEvery(c.ROUTE_REDIRECT, routeSagas.routeRedirect, getState),
-    takeEvery(c.ROUTE_UPDATED, routeSagas.routeUpdated, getState),
     // bucket
     takeEvery(c.BUCKET_CREATE_REQUEST, bucketSagas.createBucket, getState),
     takeEvery(c.BUCKET_UPDATE_REQUEST, bucketSagas.updateBucket, getState),

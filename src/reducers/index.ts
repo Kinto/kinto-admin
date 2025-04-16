@@ -6,12 +6,9 @@ import record from "./record";
 import session from "./session";
 import signoff from "./signoff";
 import { combineReducers } from "@reduxjs/toolkit";
-import { Reducer } from "redux";
-import { RouterState } from "redux-first-history";
 
-export default function createRootReducer(routerReducer: Reducer<RouterState>) {
+export default function createRootReducer() {
   return combineReducers({
-    router: routerReducer,
     session,
     bucket,
     collection,

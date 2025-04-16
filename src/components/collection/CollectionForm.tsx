@@ -14,7 +14,7 @@ import type {
 import { validateSchema, validateUiSchema } from "@src/utils";
 import React, { useState } from "react";
 import { Check2 } from "react-bootstrap-icons";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 const defaultSchema = JSON.stringify(
   {

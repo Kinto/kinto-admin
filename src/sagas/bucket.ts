@@ -1,10 +1,10 @@
 import * as actions from "@src/actions/bucket";
-import { redirectTo } from "@src/actions/route";
 import { listBuckets, sessionBusy } from "@src/actions/session";
 import { getClient } from "@src/client";
 import { MAX_PER_PAGE } from "@src/constants";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import type { ActionType, GetStateFn, SagaGen } from "@src/types";
+import { redirect } from "react-router";
 import { call, put } from "redux-saga/effects";
 
 function getBucket(bid) {

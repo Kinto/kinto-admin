@@ -1,12 +1,11 @@
 /* Utils for tests. */
 import * as notificationsHooks from "@src/hooks/notifications";
-import { configureAppStoreAndHistory } from "@src/store/configureStore";
+import { configureAppStore } from "@src/store/configureStore";
 import { render } from "@testing-library/react";
 import { createMemoryHistory } from "history";
 import React from "react";
 import { Provider } from "react-redux";
-import { Router } from "react-router";
-import { Route } from "react-router-dom";
+import { BrowserRouter, Route } from "react-router";
 
 export function mockNotifyError() {
   return vi
@@ -58,23 +57,14 @@ export function sessionFactory(props = {}, capabilities = {}) {
 
 export function renderWithProvider(
   ui,
-  {
-    initialState,
-    route = "/",
-    path = "/",
-    initialHistory = createMemoryHistory({ initialEntries: [route] }),
-    ...renderOptions
-  } = {}
+  { initialState, route = "/", path = "/", ...renderOptions } = {}
 ) {
-  const { store, history } = configureAppStoreAndHistory(
-    initialState,
-    initialHistory
-  );
+  const { store } = configureAppStore(initialState);
   const Wrapper = ({ children }) => (
     <Provider store={store}>
-      <Router history={history}>
+      <BrowserRouter>
         <Route path={path}>{children}</Route>
-      </Router>
+      </BrowserRouter>
     </Provider>
   );
   return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) };
