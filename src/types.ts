@@ -386,5 +386,6 @@ export type DestinationInfo = {
 
 export type HeartbeatState = {
   success: boolean;
-  response: Record<string, any>;
+  response?: Record<string, any>;
+  details?: any;
 };

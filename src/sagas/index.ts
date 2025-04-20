@@ -1,4 +1,3 @@
-import * as heartbeatSagas from "./heartbeat";
 import * as sessionSagas from "./session";
 import * as c from "@src/constants";
 import type { GetStateFn, SagaGen } from "@src/types";
@@ -22,8 +21,6 @@ export default function* rootSaga(getState: GetStateFn): SagaGen {
       sessionSagas.sessionCopyAuthenticationHeader,
       getState
     ),
-    // heartbeat
-    takeEvery(c.HEARTBEAT_REQUEST, heartbeatSagas.heartbeatRequest, getState),
   ];
 
   yield all(sagas);
