@@ -28,7 +28,7 @@ describe("SessionInfoBar component", () => {
     expect(client.execute).toHaveBeenCalledTimes(0);
     renderWithProvider(<SessionInfoBar />);
     await vi.waitFor(() => {
-      expect(client.execute).toHaveBeenCalledTimes(2); // 2 due to provider causing re-render in tests
+      expect(client.execute).toHaveBeenCalledTimes(1);
     });
 
     expect(screen.getByTitle(healthyStr)).toBeDefined();
@@ -43,7 +43,7 @@ describe("SessionInfoBar component", () => {
       await vi.advanceTimersByTimeAsync(60100);
       await act(async () => {
         await vi.waitFor(() => {
-          expect(client.execute).toHaveBeenCalledTimes(2 + i * 2);
+          expect(client.execute).toHaveBeenCalledTimes(i + 1);
         });
       });
     }
