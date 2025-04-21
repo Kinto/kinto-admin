@@ -4,7 +4,7 @@ import { getClient } from "@src/client";
 import { MAX_PER_PAGE } from "@src/constants";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import type { ActionType, GetStateFn, SagaGen } from "@src/types";
-import { redirect } from "react-router";
+import { Navigate } from "react-router";
 import { call, put } from "redux-saga/effects";
 
 function getBucket(bid) {
@@ -25,7 +25,7 @@ export function* createBucket(
     yield put(sessionBusy(true));
     yield call([client, client.createBucket], bid, { data, safe: true });
     yield put(listBuckets());
-    yield put(redirectTo("bucket:attributes", { bid }));
+    // yield put(redirectTo("bucket:attributes", { bid }));
     notifySuccess("Bucket created.");
   } catch (error) {
     yield notifyError("Couldn't create bucket.", error);
@@ -55,14 +55,14 @@ export function* updateBucket(
       yield call([bucket, bucket.setData], updatedBucket, {
         safe: true,
       });
-      yield put(redirectTo("bucket:attributes", { bid }));
+      // yield put(redirectTo("bucket:attributes", { bid }));
       notifySuccess("Bucket attributes updated.");
     } else if (permissions) {
       yield call([bucket, bucket.setPermissions], permissions, {
         safe: true,
         last_modified,
       });
-      yield put(redirectTo("bucket:permissions", { bid }));
+      // yield put(redirectTo("bucket:permissions", { bid }));
       notifySuccess("Bucket permissions updated.");
     }
   } catch (error) {
@@ -90,7 +90,7 @@ export function* deleteBucket(
       last_modified,
     });
     yield put(listBuckets());
-    yield put(redirectTo("home", {}));
+    // yield put(redirectTo("home", {}));
     notifySuccess("Bucket deleted.");
   } catch (error) {
     yield notifyError("Couldn't delete bucket.", error);
@@ -108,7 +108,7 @@ export function* createCollection(
     const { id: cid, ...data } = collectionData;
     const bucket = getBucket(bid);
     yield call([bucket, bucket.createCollection], cid, { data, safe: true });
-    yield put(redirectTo("collection:records", { bid, cid }));
+    // yield put(redirectTo("collection:records", { bid, cid }));
     notifySuccess("Collection created.");
     yield put(listBuckets());
   } catch (error) {
@@ -125,24 +125,18 @@ export function* updateCollection(
     cid,
     collection: { data, permissions },
   } = action;
-  const {
-    collection: {
-      data: { last_modified },
-    },
-  } = getState();
   try {
     const coll = getCollection(bid, cid);
     if (data) {
-      const updatedCollection = { ...data, last_modified };
-      yield call([coll, coll.setData], updatedCollection, { safe: true });
-      yield put(redirectTo("collection:attributes", { bid, cid }));
+      yield call([coll, coll.setData], data, { safe: true });
+      // TODO: yield put(redirectTo("collection:attributes", { bid, cid }));
       notifySuccess("Collection attributes updated.");
     } else if (permissions) {
       yield call([coll, coll.setPermissions], permissions, {
         safe: true,
-        last_modified,
+        last_modified: data.last_modified,
       });
-      yield put(redirectTo("collection:permissions", { bid, cid }));
+      // yield put(redirectTo("collection:permissions", { bid, cid }));
       notifySuccess("Collection permissions updated.");
     }
   } catch (error) {
@@ -166,7 +160,7 @@ export function* deleteCollection(
       safe: true,
       last_modified,
     });
-    yield put(redirectTo("bucket:collections", { bid }));
+    // yield put(redirectTo("bucket:collections", { bid }));
     notifySuccess("Collection deleted.");
     yield put(listBuckets());
   } catch (error) {
@@ -265,7 +259,7 @@ export function* createGroup(
       data: groupData,
       safe: true,
     });
-    yield put(redirectTo("bucket:groups", { bid }));
+    // yield put(redirectTo("bucket:groups", { bid }));
     notifySuccess("Group created.");
   } catch (error) {
     notifyError("Couldn't create group.", error);
@@ -293,7 +287,7 @@ export function* updateGroup(
     if (data) {
       const updatedGroup = { ...data, id: gid, last_modified };
       yield call([bucket, bucket.updateGroup], updatedGroup, { safe: true });
-      yield put(redirectTo("bucket:groups", { bid }));
+      // yield put(redirectTo("bucket:groups", { bid }));
       notifySuccess("Group attributes updated.");
     } else if (permissions) {
       yield call([bucket, bucket.updateGroup], loadedData, {
@@ -301,7 +295,7 @@ export function* updateGroup(
         last_modified,
         safe: true,
       });
-      yield put(redirectTo("group:permissions", { bid, gid }));
+      // yield put(redirectTo("group:permissions", { bid, gid }));
       notifySuccess("Group permissions updated.");
     }
   } catch (error) {

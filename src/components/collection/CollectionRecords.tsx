@@ -5,18 +5,17 @@ import { CommonProps, CommonStateProps } from "./commonPropTypes";
 import * as CollectionActions from "@src/actions/collection";
 import AdminLink from "@src/components/AdminLink";
 import Spinner from "@src/components/Spinner";
+import { DEFAULT_SORT } from "@src/constants";
+import { useBucket } from "@src/hooks/bucket";
+import { useCollection } from "@src/hooks/collection";
+import { useRecordList } from "@src/hooks/record";
 import { storageKeys, useLocalStorage } from "@src/hooks/storage";
-import type {
-  BucketState,
-  CollectionRouteMatch,
-  CollectionState,
-  SessionState,
-} from "@src/types";
-import React, { useCallback, useEffect } from "react";
+import type { BucketState, CollectionState, SessionState } from "@src/types";
+import React, { useCallback, useEffect, useState } from "react";
 import { Shuffle } from "react-bootstrap-icons";
+import { useParams } from "react-router";
 
 type OwnProps = {
-  match: CollectionRouteMatch;
   location: Location;
 };
 
@@ -35,61 +34,27 @@ type Props = CommonProps &
   };
 
 export default function CollectionRecords(props: Props) {
-  const {
-    match,
-    session,
-    bucket,
-    collection,
-    deleteRecord,
-    listNextRecords,
-    redirectTo,
-    capabilities,
-    listRecords,
-  } = props;
+  const { session, deleteRecord, capabilities } = props;
 
-  const {
-    params: { bid, cid },
-  } = match;
-
-  const updateSort = useCallback(
-    sort => {
-      listRecords(bid, cid, sort);
-    },
-    [bid, cid, listRecords]
-  );
-
-  const {
-    busy,
-    data,
-    currentSort,
-    records,
-    recordsLoaded,
-    hasNextRecords,
-    totalRecords,
-  } = collection;
-  const { schema, displayFields } = data;
+  const { bid, cid } = useParams();
+  const [sort, setSort] = useState(null);
+  const collection = useCollection(bid, cid);
 
   const [useSimpleReview, setUseSimpleReview] = useLocalStorage(
     storageKeys.useSimpleReview,
     true
   );
+
   useEffect(() => {
-    if (!session.authenticated || !data?.last_modified) {
+    if (!session.authenticated || !collection?.last_modified) {
       return;
     }
-    const { currentSort } = collection;
-    listRecords(bid, cid, currentSort);
-  }, [bid, cid, data.last_modified || 0]);
+    setSort(collection.sort || DEFAULT_SORT);
+  }, [bid, cid, collection?.last_modified || 0]);
 
-  const listActions = (
-    <ListActions
-      bid={bid}
-      cid={cid}
-      bucket={bucket}
-      session={session}
-      collection={collection}
-    />
-  );
+  const records = useRecordList(bid, cid, sort);
+
+  const listActions = <ListActions session={session} collection={collection} />;
 
   return (
     <div className="list-page">
@@ -104,7 +69,7 @@ export default function CollectionRecords(props: Props) {
         cid={cid}
         selected="records"
         capabilities={capabilities}
-        totalRecords={totalRecords}
+        totalRecords={collection?.totalRecords}
       >
         {capabilities.signer && !useSimpleReview && (
           <AdminLink
@@ -123,24 +88,25 @@ export default function CollectionRecords(props: Props) {
           </AdminLink>
         )}
         {listActions}
-        {busy ? (
+        {!collection || !records.data ? (
           <Spinner />
         ) : (
           <RecordTable
             bid={bid}
             cid={cid}
-            records={records}
-            recordsLoaded={recordsLoaded}
-            hasNextRecords={hasNextRecords}
-            listNextRecords={listNextRecords}
-            currentSort={currentSort}
-            schema={schema || {}}
+            records={records.data || []}
+            recordsLoaded={!!records.data}
+            hasNextRecords={records.hasNextPage}
+            listNextRecords={records.next}
+            currentSort={sort}
+            schema={collection?.schema || {}}
             displayFields={
-              displayFields?.length ? displayFields : ["id", "__json"]
+              collection?.displayFields?.length
+                ? collection.displayFields
+                : ["id", "__json"]
             }
             deleteRecord={deleteRecord}
-            updateSort={updateSort}
-            redirectTo={redirectTo}
+            updateSort={setSort}
             capabilities={capabilities}
           />
         )}

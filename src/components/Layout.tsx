@@ -26,41 +26,47 @@ import RecordHistoryPage from "@src/containers/record/RecordHistoryPage";
 import SimpleReviewPage from "@src/containers/signoff/SimpleReviewPage";
 import { useAppSelector } from "@src/hooks/app";
 import * as React from "react";
-import {
-  Navigate,
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-} from "react-router";
+import { Navigate, Route, Routes } from "react-router";
 
 export function Layout() {
   const authenticated = useAppSelector(store => store.session.authenticated);
   const contentClasses = `col-sm-9 content`;
   const version = KINTO_ADMIN_VERSION;
 
+  if (!authenticated) {
+    return (
+      <div className="container-fluid main">
+        <div className="row">
+          <div className="col-sm-3 sidebar"></div>
+          <div className={contentClasses}>
+            <Routes>
+              <Route path="/auth/:payload/:token" Component={HomePage} />
+              <Route path="/*" Component={HomePage} />
+            </Routes>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
-      {authenticated && <SessionInfoBar />}
+      <SessionInfoBar />
       <div className="container-fluid main">
         <div className="row">
           <div className="col-sm-3 sidebar">
-            {authenticated && (
-              <Routes>
-                {/* We need a "sidebar route" for each case where the sidebar
-                    needs the :gid or :cid to higlight the proper entry */}
-                <Route
-                  path="/buckets/:bid/collections/:cid"
-                  Component={Sidebar}
-                />
-                <Route path="/buckets/:bid" Component={Sidebar} />
-                <Route path="/" Component={Sidebar} />
-              </Routes>
-            )}
+            <Routes>
+              <Route
+                path="/buckets/:bid/collections/:cid/*"
+                Component={Sidebar}
+              />
+              <Route path="/buckets/:bid/*" Component={Sidebar} />
+              <Route path="/" Component={Sidebar} />
+            </Routes>
           </div>
           <div className={contentClasses}>
             <Notifications />
-            {authenticated && <Breadcrumbs separator=" / " />}
+            <Breadcrumbs separator=" / " />
             <Routes>
               <Route path="/" Component={HomePage} />
               <Route path="/auth/:payload/:token" Component={HomePage} />

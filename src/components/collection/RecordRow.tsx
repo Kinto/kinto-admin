@@ -12,6 +12,7 @@ import {
   Pencil,
   Trash,
 } from "react-bootstrap-icons";
+import { useNavigate } from "react-router";
 
 type RecordsViewProps = CommonProps & {
   bid: string;
@@ -30,10 +31,10 @@ export default function RecordRow({
   record,
   displayFields,
   capabilities,
-  redirectTo,
   deleteRecord,
   schema = {},
 }: RowProps) {
+  const navigate = useNavigate();
   const session = useAppSelector(state => state.session);
 
   const lastModified = () => {
@@ -50,7 +51,7 @@ export default function RecordRow({
   const onDoubleClick = (event: React.MouseEvent) => {
     event.preventDefault();
     const { id: rid } = record;
-    redirectTo("record:attributes", { bid, cid, rid });
+    navigate(`/buckets/${bid}/collections/${cid}/records/${rid}/attributes`);
   };
 
   const onDeleteClick = (event: React.MouseEvent) => {

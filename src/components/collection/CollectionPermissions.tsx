@@ -3,22 +3,16 @@ import * as BucketActions from "@src/actions/bucket";
 import { PermissionsForm } from "@src/components/PermissionsForm";
 import Spinner from "@src/components/Spinner";
 import { useAppDispatch, useAppSelector } from "@src/hooks/app";
+import { useCollectionPermissions } from "@src/hooks/collection";
 import { canEditCollection } from "@src/permission";
 import type { CollectionPermissions as CollectionPermissionsType } from "@src/types";
 import React from "react";
 import { useParams } from "react-router";
 
-interface RouteParams {
-  bid: string;
-  cid: string;
-}
-
 export function CollectionPermissions() {
-  const { bid, cid } = useParams<RouteParams>();
+  const { bid, cid } = useParams();
   const session = useAppSelector(state => state.session);
-  const bucket = useAppSelector(state => state.bucket);
-  const collection = useAppSelector(state => state.collection);
-  const { busy, permissions } = collection;
+  const permissions = useCollectionPermissions(bid, cid);
   const acls = ["read", "write", "record:create"];
   const dispatch = useAppDispatch();
 
@@ -43,13 +37,13 @@ export function CollectionPermissions() {
         capabilities={session.serverInfo.capabilities}
         selected="permissions"
       >
-        {busy ? (
+        {!permissions ? (
           <Spinner />
         ) : (
           <PermissionsForm
             permissions={permissions}
             acls={acls}
-            readonly={!canEditCollection(session, bucket.data.id, collection)}
+            readonly={!canEditCollection(session, bid, cid)}
             onSubmit={onSubmit}
           />
         )}

@@ -4,16 +4,9 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 function mapStateToProps(state) {
-  const {
-    session: sessionState,
-    bucket: bucketState,
-    collection: collectionState,
-    signoff,
-  } = state;
+  const { session: sessionState, signoff } = state;
   return {
     sessionState,
-    bucketState,
-    collectionState,
     signoff,
   };
 }

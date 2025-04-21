@@ -2,6 +2,8 @@ import CollectionForm from "./CollectionForm";
 import CollectionTabs from "./CollectionTabs";
 import * as BucketActions from "@src/actions/bucket";
 import Spinner from "@src/components/Spinner";
+import { useBucket } from "@src/hooks/bucket";
+import { useCollection } from "@src/hooks/collection";
 import type {
   BucketState,
   Capabilities,
@@ -11,6 +13,7 @@ import type {
   SessionState,
 } from "@src/types";
 import React from "react";
+import { useParams } from "react-router";
 
 export type OwnProps = {
   match: CollectionRouteMatch;
@@ -30,25 +33,19 @@ export type Props = OwnProps &
   };
 
 export default function CollectionAttributes({
-  match,
   session,
-  bucket,
-  collection,
   capabilities,
   updateCollection,
   deleteCollection,
 }: Props) {
+  const { bid, cid } = useParams();
+  const collection = useCollection(bid, cid);
+
   const onSubmit = (formData: CollectionData) => {
-    const {
-      params: { bid, cid },
-    } = match;
     updateCollection(bid, cid, { data: formData });
   };
 
   const handleDeleteCollection = (cid: string) => {
-    const {
-      params: { bid },
-    } = match;
     const message = [
       "This will delete the collection and all the records it contains.",
       "Are you sure?",
@@ -57,11 +54,6 @@ export default function CollectionAttributes({
       deleteCollection(bid, cid);
     }
   };
-
-  const {
-    params: { bid, cid },
-  } = match;
-  const { busy, data: formData } = collection;
 
   return (
     <div>
@@ -78,17 +70,12 @@ export default function CollectionAttributes({
         selected="attributes"
         capabilities={capabilities}
       >
-        {busy ? (
+        {!collection ? (
           <Spinner />
         ) : (
           <CollectionForm
-            bid={bid}
-            cid={cid}
             session={session}
-            bucket={bucket}
-            collection={collection}
             deleteCollection={handleDeleteCollection}
-            formData={formData}
             onSubmit={onSubmit}
           />
         )}

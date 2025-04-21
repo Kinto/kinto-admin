@@ -48,7 +48,7 @@ export function RecordPermissions() {
           <PermissionsForm
             permissions={permissions}
             acls={acls}
-            readonly={!canEditRecord(session, bid, collection, record)}
+            readonly={!canEditRecord(session, bid, cid, record)}
             onSubmit={onSubmit}
           />
         )}

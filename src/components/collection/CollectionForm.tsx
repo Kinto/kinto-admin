@@ -4,6 +4,8 @@ import JSONCollectionForm from "./JSONCollectionForm";
 import { RJSFSchema } from "@rjsf/utils";
 import BaseForm from "@src/components/BaseForm";
 import JSONEditor from "@src/components/JSONEditor";
+import { useBucket } from "@src/hooks/bucket";
+import { useCollection } from "@src/hooks/collection";
 import { canCreateCollection, canEditCollection } from "@src/permission";
 import type {
   BucketState,
@@ -14,7 +16,7 @@ import type {
 import { validateSchema, validateUiSchema } from "@src/utils";
 import React, { useState } from "react";
 import { Check2 } from "react-bootstrap-icons";
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
 
 const defaultSchema = JSON.stringify(
   {
@@ -234,18 +236,17 @@ type Props = {
 };
 
 export default function CollectionForm({
-  cid,
   session,
-  bucket,
-  collection,
   deleteCollection,
   onSubmit,
-  formData: propFormData = undefined,
 }: Props) {
   const [asJSON, setAsJSON] = useState(false);
-  const allowEditing = propFormData
-    ? canEditCollection(session, bucket?.data?.id, collection)
-    : canCreateCollection(session, bucket?.data?.id);
+  const { bid, cid } = useParams();
+  const collection = useCollection(bid, cid);
+
+  const allowEditing = collection?.id
+    ? canEditCollection(session, bid, cid)
+    : canCreateCollection(session, bid);
 
   const toggleJSON = event => {
     event.preventDefault();
@@ -269,15 +270,15 @@ export default function CollectionForm({
     onSubmit(collectionData);
   };
 
-  const creation = !propFormData?.id;
+  const creation = !collection?.id;
   const showDeleteForm = !creation && allowEditing;
   const formDataSerialized = creation
-    ? propFormData
+    ? undefined
     : {
-        displayFields: propFormData.displayFields || [],
-        ...propFormData,
-        schema: JSON.stringify(propFormData.schema || {}, null, 2),
-        uiSchema: JSON.stringify(propFormData.uiSchema || {}, null, 2),
+        displayFields: collection?.displayFields || [],
+        ...collection,
+        schema: JSON.stringify(collection.schema || {}, null, 2),
+        uiSchema: JSON.stringify(collection.uiSchema || {}, null, 2),
       };
 
   const _uiSchema = creation
@@ -290,7 +291,7 @@ export default function CollectionForm({
       };
 
   const alert =
-    allowEditing || bucket.busy || collection.busy ? null : (
+    allowEditing || !collection.id ? null : (
       <div className="alert alert-warning">
         You don't have the required permission to{" "}
         {collection.data?.id
@@ -325,7 +326,7 @@ export default function CollectionForm({
       {asJSON ? (
         <JSONCollectionForm
           cid={cid}
-          formData={collection.data}
+          formData={collection}
           onSubmit={handleOnSubmit}
         >
           {buttons}

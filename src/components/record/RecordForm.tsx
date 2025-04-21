@@ -80,8 +80,8 @@ export default function RecordForm(props: Props) {
   };
 
   const allowEditing = record
-    ? canEditRecord(session, bucket.data.id, collection, record)
-    : canCreateRecord(session, bucket.data.id, collection);
+    ? canEditRecord(session, bucket.data.id, cid, record)
+    : canCreateRecord(session, bucket.data.id, cid);
 
   const handleDeleteRecord = () => {
     const { rid } = props;

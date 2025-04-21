@@ -1,0 +1,174 @@
+import { getClient } from "@src/client";
+import type {
+  ChangesList,
+  CollectionData,
+  SignoffCollectionsInfo,
+} from "@src/types";
+import { useEffect, useState } from "react";
+
+type CapabilityResource = {
+  bucket: string;
+  collection: string;
+};
+
+type SignerResource = {
+  source: CapabilityResource;
+  preview?: CapabilityResource;
+  destination: CapabilityResource;
+  // List of changes, present or absent depending on status.
+  // If work-in-progress, show changes since the last review request. It will be
+  // null if no changes were made.
+  changesOnSource?: ChangesList | null | undefined;
+  // If to-review, show changes since the last approval. It will be null if no
+  // changes were made.
+  changesOnPreview?: ChangesList | null | undefined;
+  editors_group: string;
+  reviewers_group: string;
+};
+
+export function useSignoff(
+  bid: string,
+  cid: string,
+  collection: CollectionData,
+  signer: any
+): SignoffCollectionsInfo {
+  const resource = _pickSignoffResource(signer, bid, cid);
+  const [val, setVal] = useState(resource);
+
+  useEffect(() => {
+    if (resource && collection?.id) {
+      calculateChangesInfo(bid, cid, collection, resource, setVal);
+    }
+  }, [signer, bid, collection?.id]);
+
+  return val;
+}
+
+async function calculateChangesInfo(
+  bid: string,
+  cid: string,
+  collection: CollectionData,
+  resource: SignerResource,
+  setVal
+) {
+  if (collection.status === "signed") {
+    console.log(collection);
+    return;
+  }
+
+  let changesOnSource = null;
+  let changesOnPreview = null;
+
+  if (collection.status === "work-in-progress") {
+    changesOnSource = await fetchChangesInfo(resource.source, resource.preview);
+  } else if (collection.status !== "signed") {
+    changesOnPreview = await fetchChangesInfo(
+      resource.source,
+      resource.destination
+    );
+  }
+
+  setVal({
+    ...resource,
+    source: {
+      ...resource.source,
+      lastEditBy: collection.last_edit_by,
+      lastEditDate: collection.last_edit_date,
+      lastEditorComment: collection.last_editor_comment,
+      lastReviewBy: collection.last_review_by,
+      lastReviewDate: collection.last_review_date,
+      lastReviewRequestBy: collection.last_review_request_by,
+      lastReviewRequestDate: collection.last_review_request_date,
+      lastReviewerComment: collection.last_reviewer_comment,
+      lastSignatureBy: collection.last_signature_by,
+      lastSignatureDate: collection.last_signature_date,
+    },
+    changesOnPreview,
+    changesOnSource,
+  });
+}
+
+function _pickSignoffResource(
+  signer: any,
+  bid: string,
+  cid: string
+): SignoffCollectionsInfo | null {
+  if (!signer) {
+    console.log("kinto-remote-settings signer is not enabled.");
+    return null;
+  }
+  const resources = signer.resources;
+  let resource = resources.filter(({ source, preview, destination }) => {
+    // If the resource has no collection info, it means that reviewing was configured
+    // by bucket on the server, and that it applies to every collection (thus this one too).
+    return (
+      // We are viewing the source.
+      (source.bucket == bid &&
+        (!source.collection || source.collection == cid)) ||
+      // Preview is enabled and we are viewing it.
+      (preview &&
+        preview.bucket == bid &&
+        (!preview.collection || preview.collection == cid)) ||
+      // We are viewing the destination.
+      (destination.bucket == bid &&
+        (!destination.collection || destination.collection == cid))
+    );
+  })[0];
+  // The whole UI expects to have collection information for source/preview/destination.
+  // If configured by bucket, fill-up the missing attribute as if it would be configured
+  // explicitly for this collection.
+  if (resource && !resource.source.collection) {
+    resource = {
+      ...resource,
+      source: {
+        ...resource.source,
+        collection: cid,
+      },
+      destination: {
+        ...resource.destination,
+        collection: cid,
+      },
+    };
+    if (resource.preview) {
+      resource.preview.collection = cid;
+    }
+  }
+  return resource;
+}
+
+async function fetchChangesInfo(
+  source: CapabilityResource,
+  other: CapabilityResource
+): Promise<ChangesList> {
+  const client = getClient();
+
+  // We get the records timetamp, because it's only bumped when records are changed,
+  // unlike the metadata timestamp which is bumped on signature refresh.
+  let sinceETag = await client
+    .bucket(other.bucket)
+    .collection(other.collection)
+    .getRecordsTimestamp();
+
+  if (!sinceETag) {
+    const data = await client
+      .bucket(other.bucket)
+      .collection(other.collection)
+      .getData<{ last_modified: number }>();
+    sinceETag = `${data.last_modified}`;
+  }
+
+  // Look up changes since ETag.
+  const { data: changes } = await client
+    .bucket(source.bucket)
+    .collection(source.collection)
+    .listRecords({
+      since: sinceETag,
+      fields: ["deleted"], // limit amount of data to fetch.
+    });
+  const since: number = parseInt(sinceETag.replace('"', ""), 10);
+  return {
+    since,
+    deleted: changes.filter(r => r.deleted).length,
+    updated: changes.filter(r => !r.deleted).length,
+  };
+}

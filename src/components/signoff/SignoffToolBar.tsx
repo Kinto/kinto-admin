@@ -6,17 +6,18 @@ import { ProgressBar, ProgressStep } from "./ProgressBar";
 import { DiffInfo, Review } from "./Review";
 import { Signed } from "./Signed";
 import { isMember, toReviewEnabled } from "./utils";
+import { useCollection } from "@src/hooks/collection";
+import { useSignoff } from "@src/hooks/signoff";
 import { canEditCollection } from "@src/permission";
 import type {
-  BucketState,
   ChangesList,
-  CollectionState,
   SessionState,
   SignoffSourceInfo,
   SignoffState,
 } from "@src/types";
 import React, { useEffect, useState } from "react";
 import { ChatLeft, XCircleFill } from "react-bootstrap-icons";
+import { useParams } from "react-router";
 
 function isEditor(source, sessionState) {
   return isMember("editors_group", source, sessionState);
@@ -39,8 +40,6 @@ function hasRequestedReview(source, sessionState) {
 
 type SignoffToolBarProps = {
   sessionState: SessionState;
-  bucketState: BucketState;
-  collectionState: CollectionState;
   signoff: SignoffState;
   requestReview: (s: string) => void;
   rollbackChanges: (s: string) => void;
@@ -54,9 +53,6 @@ type SignoffToolBarProps = {
 
 export default function SignoffToolBar({
   sessionState,
-  bucketState,
-  collectionState,
-  signoff = {} as SignoffState,
   confirmRequestReview,
   requestReview,
   rollbackChanges,
@@ -66,7 +62,15 @@ export default function SignoffToolBar({
   cancelPendingConfirm,
   declineChanges,
 }: SignoffToolBarProps) {
+  const { bid, cid } = useParams();
   const [showSpinner, setShowSpinner] = useState(false);
+  const collection = useCollection(bid, cid);
+  const signoff = useSignoff(
+    bid,
+    cid,
+    collection,
+    sessionState.serverInfo.capabilities.signer
+  );
 
   const handleApproveChanges = () => {
     setShowSpinner(true);
@@ -77,37 +81,29 @@ export default function SignoffToolBar({
     if (showSpinner) {
       setShowSpinner(false);
     }
-  }, [collectionState.data]);
+  }, [collection]);
 
-  if (!bucketState.data?.id) {
+  const canEdit = canEditCollection(sessionState, bid, cid);
+
+  if (!signoff || !sessionState.serverInfo.capabilities.signer) {
     return null;
   }
 
   const {
-    data: { id: bid },
-  } = bucketState;
-
-  const canEdit = canEditCollection(sessionState, bid, collectionState);
-
-  const {
-    data: { id: cid },
-  } = collectionState;
-
-  const {
-    collectionsInfo,
     pendingConfirmReviewRequest,
     pendingConfirmRollbackChanges,
     pendingConfirmDeclineChanges,
+    source,
+    destination,
+    preview,
+    changesOnSource,
+    changesOnPreview,
   } = signoff;
 
-  if (!collectionsInfo) {
-    return null;
-  }
-
-  const { source, destination, preview, changesOnSource, changesOnPreview } =
-    collectionsInfo;
-
   const { status } = source;
+
+  console.log(signoff);
+  console.log(collection);
 
   const canRequestReview = canEdit && isEditor(source, sessionState);
 
@@ -119,7 +115,7 @@ export default function SignoffToolBar({
   const canRollback = canEdit;
   const hasHistory = "history" in sessionState.serverInfo.capabilities;
 
-  const isCurrentUrl = source.bid == bid && source.cid == cid;
+  const isCurrentUrl = source.bucket == bid && source.collection == cid;
   const currentStep = status == "to-review" ? 1 : status == "signed" ? 2 : 0;
 
   return (
@@ -151,7 +147,9 @@ export default function SignoffToolBar({
           label="Waiting review"
           step={1}
           currentStep={currentStep}
-          isCurrentUrl={!!preview && preview.bid == bid && preview.cid == cid}
+          isCurrentUrl={
+            !!preview && preview.bucket == bid && preview.collection == cid
+          }
           canEdit={canReview}
           hasHistory={hasHistory}
           approveChanges={handleApproveChanges}
@@ -164,7 +162,9 @@ export default function SignoffToolBar({
           label="Approved"
           step={2}
           currentStep={currentStep}
-          isCurrentUrl={destination.bid == bid && destination.cid == cid}
+          isCurrentUrl={
+            destination.bucket == bid && destination.collection == cid
+          }
           source={source}
           destination={destination}
         />

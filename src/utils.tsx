@@ -321,8 +321,7 @@ export const getAuthLabel = (authType: string) => {
   return labels[authType];
 };
 
-export function parseHistoryFilters(s: string): HistoryFilters {
-  const params = new URLSearchParams(s);
+export function parseHistoryFilters(params: URLSearchParams): HistoryFilters {
   const ret: HistoryFilters = {};
   const since = params.get("since");
   if (since) {

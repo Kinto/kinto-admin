@@ -15,6 +15,7 @@ import React, { useState } from "react";
 import { Eye } from "react-bootstrap-icons";
 import { EyeSlash } from "react-bootstrap-icons";
 import { SkipStart } from "react-bootstrap-icons";
+import { useSearchParams } from "react-router";
 
 function Diff({ source, target }: { source: any; target: any }) {
   const diff = diffJson(source, target);
@@ -283,7 +284,6 @@ function DiffOverview({ source, target, since }: DiffOverviewProps) {
 type HistoryTableProps = {
   bid: string;
   cid?: string;
-  location: Location;
   history: ResourceHistoryEntry[];
   historyLoaded: boolean;
   hasNextHistory: boolean;
@@ -294,7 +294,6 @@ type HistoryTableProps = {
 export default function HistoryTable({
   bid,
   cid,
-  location,
   history,
   historyLoaded,
   hasNextHistory,
@@ -305,6 +304,7 @@ export default function HistoryTable({
   const [busy, setBusy] = useState(false);
   const [current, setCurrent] = useState(null);
   const [previous, setPrevious] = useState(null);
+  const [params, setParams] = useSearchParams();
 
   const onDiffOverviewClick = async since => {
     if (!enableDiffOverview || cid == null) {
@@ -333,7 +333,7 @@ export default function HistoryTable({
     setPrevious(null);
   };
 
-  const query = parseHistoryFilters(location.search);
+  const query = parseHistoryFilters(params);
   const routeLocation = { pathname: location.pathname, query };
   const { since } = query;
   const isFiltered = !!since;

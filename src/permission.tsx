@@ -62,13 +62,13 @@ export function canCreateCollection(
 export function canEditCollection(
   session: SessionState,
   bucketId: string,
-  collection: CollectionState
+  collectionId: string
 ): boolean {
   return can(session, (perm: PermissionsListEntry) => {
     return (
       (perm.resource_name == "bucket" ||
         (perm.resource_name == "collection" &&
-          perm.collection_id == collection.data.id)) &&
+          perm.collection_id == collectionId)) &&
       perm.bucket_id == bucketId &&
       perm.permissions.includes("write")
     );
@@ -109,13 +109,13 @@ export function canEditGroup(
 export function canCreateRecord(
   session: SessionState,
   bucketId: string,
-  collection: CollectionState
+  collectionId: string
 ): boolean {
   return can(session, (perm: PermissionsListEntry) => {
     return (
       ((perm.resource_name == "bucket" && perm.permissions.includes("write")) ||
         (perm.resource_name == "collection" &&
-          perm.collection_id == collection.data.id &&
+          perm.collection_id == collectionId &&
           perm.permissions.includes("record:create"))) &&
       perm.bucket_id == bucketId
     );
@@ -125,16 +125,16 @@ export function canCreateRecord(
 export function canEditRecord(
   session: SessionState,
   bucketId: string,
-  collection: CollectionState,
+  collectionId: string,
   record: RecordState
 ): boolean {
   return can(session, (perm: PermissionsListEntry) => {
     return (
       (perm.resource_name == "bucket" ||
         (perm.resource_name == "collection" &&
-          perm.collection_id == collection.data.id) ||
+          perm.collection_id == collectionId) ||
         (perm.resource_name == "record" &&
-          perm.collection_id == collection.data.id &&
+          perm.collection_id == collectionId &&
           perm.record_id == record.data.id)) &&
       perm.permissions.includes("write") &&
       perm.bucket_id == bucketId

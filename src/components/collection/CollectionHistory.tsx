@@ -1,20 +1,10 @@
 import CollectionTabs from "./CollectionTabs";
 import * as CollectionActions from "@src/actions/collection";
 import HistoryTable from "@src/components/HistoryTable";
-import type {
-  Capabilities,
-  CollectionRouteMatch,
-  CollectionState,
-  SessionState,
-} from "@src/types";
+import type { Capabilities, CollectionState, SessionState } from "@src/types";
 import { parseHistoryFilters } from "@src/utils";
-import type { Location } from "history";
 import React, { useEffect } from "react";
-
-export type OwnProps = {
-  match: CollectionRouteMatch;
-  location: Location;
-};
+import { useParams, useSearchParams } from "react-router";
 
 export type StateProps = {
   session: SessionState;
@@ -22,44 +12,41 @@ export type StateProps = {
   capabilities: Capabilities;
 };
 
-export type Props = OwnProps &
-  StateProps & {
-    listCollectionHistory: typeof CollectionActions.listCollectionHistory;
-    listCollectionNextHistory: typeof CollectionActions.listCollectionNextHistory;
-  };
-
-export const onCollectionHistoryEnter = (props: Props) => {
-  const { listCollectionHistory, match, session, location } = props;
-  const {
-    params: { bid, cid },
-  } = match;
-  const filters = parseHistoryFilters(location.search);
-  if (!session.authenticated) {
-    // We're not authenticated, skip requesting the list of records. This likely
-    // occurs when users refresh the page and lose their session.
-    return;
-  }
-  listCollectionHistory(bid, cid, filters);
+export type Props = StateProps & {
+  listCollectionHistory: typeof CollectionActions.listCollectionHistory;
+  listCollectionNextHistory: typeof CollectionActions.listCollectionNextHistory;
 };
 
 export default function CollectionHistory(props: Props) {
+  const { bid, cid } = useParams();
+  const [params, setParams] = useSearchParams();
+  console.log(params);
+
   const {
-    match,
     collection,
     capabilities,
-    location,
+    listCollectionHistory,
     listCollectionNextHistory,
+    session,
   } = props;
-  const {
-    params: { bid, cid },
-  } = match;
+
   const {
     history: { entries, loaded, hasNextPage },
   } = collection;
 
+  const onCollectionHistoryEnter = () => {
+    if (!session.authenticated) {
+      // We're not authenticated, skip requesting the list of records. This likely
+      // occurs when users refresh the page and lose their session.
+      return;
+    }
+    const filters = parseHistoryFilters(params);
+    listCollectionHistory(bid, cid, filters);
+  };
+
   useEffect(() => {
-    onCollectionHistoryEnter(props);
-  }, [props.location]);
+    onCollectionHistoryEnter();
+  }, [bid, cid, ...params]);
 
   return (
     <div>
@@ -83,7 +70,6 @@ export default function CollectionHistory(props: Props) {
           history={entries}
           hasNextHistory={hasNextPage}
           listNextHistory={listCollectionNextHistory}
-          location={location}
         />
       </CollectionTabs>
     </div>

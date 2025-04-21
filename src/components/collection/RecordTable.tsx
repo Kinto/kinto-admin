@@ -10,15 +10,18 @@ import { capitalize } from "@src/utils";
 import React, { useState } from "react";
 import { SortUp } from "react-bootstrap-icons";
 import { SortDown } from "react-bootstrap-icons";
+import { useParams } from "react-router";
 
 export function ListActions(props) {
-  const { bid, cid, session, collection, bucket } = props;
-  if (session.busy || collection.busy) {
+  const { session, collection } = props;
+  const { bid, cid } = useParams();
+
+  if (session.busy || !collection?.id) {
     return null;
   }
   return (
     <div className="list-actions">
-      {canCreateRecord(session, bucket.data?.id, collection) && (
+      {canCreateRecord(session, bid, cid) && (
         <>
           <AdminLink
             key="__1"
@@ -126,7 +129,6 @@ export default function RecordTable({
   displayFields,
   deleteRecord,
   updateSort,
-  redirectTo,
   capabilities,
 }: TableProps) {
   const [filter, setFilter] = useState("");
@@ -205,7 +207,6 @@ export default function RecordTable({
           schema={schema}
           displayFields={displayFields}
           deleteRecord={deleteRecord}
-          redirectTo={redirectTo}
           capabilities={capabilities}
         />
       ))}

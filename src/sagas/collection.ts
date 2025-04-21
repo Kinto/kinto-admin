@@ -24,7 +24,7 @@ export function* deleteAttachment(
     const coll = getCollection(bid, cid);
     yield put(actions.collectionBusy(true));
     yield call([coll, coll.removeAttachment], rid);
-    yield put(redirectTo("record:attributes", { bid, cid, rid }));
+    // yield put(redirectTo("record:attributes", { bid, cid, rid }));
     notifySuccess("Attachment deleted.");
   } catch (error) {
     yield notifyError("Couldn't delete attachment.", error);
@@ -154,7 +154,7 @@ export function* createRecord(
     } else {
       yield call([coll, coll.createRecord], record, { safe: true });
     }
-    yield put(redirectTo("collection:records", { bid, cid }));
+    // yield put(redirectTo("collection:records", { bid, cid }));
     notifySuccess("Record created.");
   } catch (error) {
     yield notifyError("Couldn't create record.", error);
@@ -195,7 +195,7 @@ export function* updateRecord(
         yield call([coll, coll.updateRecord], updatedRecord, { safe: true });
       }
       yield put(resetRecord());
-      yield put(redirectTo("collection:records", { bid, cid }));
+      // yield put(redirectTo("collection:records", { bid, cid }));
       notifySuccess("Record attributes updated.");
     } else if (permissions) {
       yield call([coll, coll.updateRecord], currentRecord as any, {
@@ -203,7 +203,7 @@ export function* updateRecord(
         safe: true,
         last_modified,
       });
-      yield put(redirectTo("record:permissions", { bid, cid, rid }));
+      // yield put(redirectTo("record:permissions", { bid, cid, rid }));
       notifySuccess("Record permissions updated.");
     }
   } catch (error) {
@@ -224,7 +224,7 @@ export function* deleteRecord(
   try {
     const coll = getCollection(bid, cid);
     yield call([coll, coll.deleteRecord], rid, { safe: true, last_modified });
-    yield put(redirectTo("collection:records", { bid, cid }));
+    // yield put(redirectTo("collection:records", { bid, cid }));
     notifySuccess("Record deleted.");
   } catch (error) {
     yield notifyError("Couldn't delete record.", error);
@@ -254,7 +254,7 @@ export function* bulkCreateRecords(
           yield call([coll, coll.createRecord], record as any);
         }
       }
-      yield put(redirectTo("collection:records", { bid, cid }));
+      // yield put(redirectTo("collection:records", { bid, cid }));
       notifySuccess(`${records.length} records created.`);
     } else {
       const { errors, published } = yield call(
@@ -270,7 +270,7 @@ export function* bulkCreateRecords(
         errorDetails = errors.map(err => err.error.message);
         throw new Error("Some records could not be created.");
       }
-      yield put(redirectTo("collection:records", { bid, cid }));
+      // yield put(redirectTo("collection:records", { bid, cid }));
       notifySuccess(`${published.length} records created.`);
     }
   } catch (error) {
