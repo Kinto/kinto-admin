@@ -69,7 +69,7 @@ export default function CollectionRecords(props: Props) {
         cid={cid}
         selected="records"
         capabilities={capabilities}
-        totalRecords={collection?.totalRecords}
+        totalRecords={records?.totalRecords}
       >
         {capabilities.signer && !useSimpleReview && (
           <AdminLink

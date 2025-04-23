@@ -291,10 +291,10 @@ export default function CollectionForm({
       };
 
   const alert =
-    allowEditing || !collection.id ? null : (
+    allowEditing || !collection?.id ? null : (
       <div className="alert alert-warning">
         You don't have the required permission to{" "}
-        {collection.data?.id
+        {collection?.id
           ? "edit this collection"
           : "create a collection in this bucket"}
         .

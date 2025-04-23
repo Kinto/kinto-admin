@@ -38,7 +38,7 @@ async function fetchRecords(
   setVal,
   nextPageFn?
 ) {
-  let result;
+  let result, totalCount;
 
   try {
     if (nextPageFn) {
@@ -49,6 +49,10 @@ async function fetchRecords(
         limit: MAX_PER_PAGE,
       });
     }
+    totalCount = await getClient()
+      .bucket(bid)
+      .collection(cid)
+      .getTotalRecords();
   } catch (err) {
     notifyError("Error fetching record list", err);
     return;
@@ -60,7 +64,7 @@ async function fetchRecords(
     data,
     hasNextPage: result.hasNextPage,
     lastModified: result.last_modified,
-    totalRecords: result.totalRecords,
+    totalRecords: totalCount,
     next: () => {
       if (result.hasNextPage && result.next) {
         fetchRecords(bid, cid, sort, data, setVal, result.next);

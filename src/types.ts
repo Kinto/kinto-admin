@@ -504,8 +504,8 @@ export type SignoffCollectionStatus =
 
 export type SignoffSourceInfo = {
   // Basic Info (before loading from info server)
-  bid: string;
-  cid: string;
+  bucket: string;
+  collection: string;
   // Full info.
   status?: SignoffCollectionStatus;
   lastEditBy?: string;
@@ -523,13 +523,13 @@ export type SignoffSourceInfo = {
 };
 
 export type PreviewInfo = {
-  bid: string;
-  cid: string;
+  bucket: string;
+  collection: string;
 };
 
 export type DestinationInfo = {
-  bid: string;
-  cid: string;
+  bucket: string;
+  collection: string;
 };
 
 export type HeartbeatState = {

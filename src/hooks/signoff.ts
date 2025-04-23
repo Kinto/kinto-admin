@@ -36,25 +36,19 @@ export function useSignoff(
   const [val, setVal] = useState(resource);
 
   useEffect(() => {
-    if (resource && collection?.id) {
-      calculateChangesInfo(bid, cid, collection, resource, setVal);
+    if (resource && resource.source) {
+      calculateChangesInfo(resource, setVal);
     }
-  }, [signer, bid, collection?.id]);
+  }, [resource?.source?.bucket, resource?.source?.collection]);
 
   return val;
 }
 
-async function calculateChangesInfo(
-  bid: string,
-  cid: string,
-  collection: CollectionData,
-  resource: SignerResource,
-  setVal
-) {
-  if (collection.status === "signed") {
-    console.log(collection);
-    return;
-  }
+async function calculateChangesInfo(resource: SignerResource, setVal) {
+  const collection = await getClient()
+    .bucket(resource.source.bucket)
+    .collection(resource.source.collection)
+    .getData();
 
   let changesOnSource = null;
   let changesOnPreview = null;
@@ -68,20 +62,24 @@ async function calculateChangesInfo(
     );
   }
 
+  console.log(collection);
+
   setVal({
     ...resource,
     source: {
       ...resource.source,
       lastEditBy: collection.last_edit_by,
-      lastEditDate: collection.last_edit_date,
+      lastEditDate: new Date(collection.last_edit_date).getTime() || null,
       lastEditorComment: collection.last_editor_comment,
       lastReviewBy: collection.last_review_by,
-      lastReviewDate: collection.last_review_date,
+      lastReviewDate: new Date(collection.last_review_date).getTime() || null,
       lastReviewRequestBy: collection.last_review_request_by,
-      lastReviewRequestDate: collection.last_review_request_date,
+      lastReviewRequestDate:
+        new Date(collection.last_review_request_date).getTime() || null,
       lastReviewerComment: collection.last_reviewer_comment,
       lastSignatureBy: collection.last_signature_by,
-      lastSignatureDate: collection.last_signature_date,
+      lastSignatureDate:
+        new Date(collection.last_signature_date).getTime() || null,
     },
     changesOnPreview,
     changesOnSource,

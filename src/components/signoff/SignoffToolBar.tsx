@@ -102,9 +102,6 @@ export default function SignoffToolBar({
 
   const { status } = source;
 
-  console.log(signoff);
-  console.log(collection);
-
   const canRequestReview = canEdit && isEditor(source, sessionState);
 
   const canReview =
@@ -117,6 +114,8 @@ export default function SignoffToolBar({
 
   const isCurrentUrl = source.bucket == bid && source.collection == cid;
   const currentStep = status == "to-review" ? 1 : status == "signed" ? 2 : 0;
+
+  console.log(signoff);
 
   return (
     <div className={isCurrentUrl ? "interactive" : "informative"}>
@@ -258,7 +257,8 @@ type WorkInProgressInfosProps = {
 };
 function WorkInProgressInfos(props: WorkInProgressInfosProps) {
   const { isCurrentStep, isCurrentUrl, source, hasHistory, changes } = props;
-  const { bid, cid, lastEditBy, lastEditDate, lastReviewerComment } = source;
+  const { bucket, collection, lastEditBy, lastEditDate, lastReviewerComment } =
+    source;
   if (!lastEditDate) {
     return (
       <ul>
@@ -283,16 +283,16 @@ function WorkInProgressInfos(props: WorkInProgressInfosProps) {
       {!isCurrentUrl && (
         <li>
           <strong>Source: </strong>
-          <AdminLink name="collection:records" params={{ bid, cid }}>
-            {`${bid}/${cid}`}
+          <AdminLink name="collection:records" params={{ bucket, collection }}>
+            {`${bucket}/${collection}`}
           </AdminLink>
         </li>
       )}
       {isCurrentStep && changes && (
         <DiffInfo
           hasHistory={hasHistory}
-          bid={bid}
-          cid={cid}
+          bid={bucket}
+          cid={collection}
           changes={changes}
         />
       )}

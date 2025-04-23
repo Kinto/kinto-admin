@@ -20,7 +20,6 @@ export type Props = StateProps & {
 export default function CollectionHistory(props: Props) {
   const { bid, cid } = useParams();
   const [params, setParams] = useSearchParams();
-  console.log(params);
 
   const {
     collection,
