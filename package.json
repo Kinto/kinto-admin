@@ -44,8 +44,8 @@
     "react-bs-notifier": "^7.0.0",
     "react-dom": "^18.2.0",
     "react-redux": "^9.1.0",
-    "react-router": "^5.2.1",
-    "react-router-dom": "^5.3.0",
+    "react-router": "^7.5.2",
+    "react-router-dom": "^7.5.2",
     "redux-first-history": "^5.2.0",
     "redux-saga": "^1.3.0",
     "timeago.js": "^4.0.2"
