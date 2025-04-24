@@ -10,7 +10,6 @@ import type {
 } from "@src/types";
 import { diffJson, humanDate, parseHistoryFilters, timeago } from "@src/utils";
 import { omit, sortHistoryEntryPermissions } from "@src/utils";
-import type { Location } from "history";
 import React, { useState } from "react";
 import { Eye } from "react-bootstrap-icons";
 import { EyeSlash } from "react-bootstrap-icons";

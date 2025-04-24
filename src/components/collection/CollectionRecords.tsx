@@ -88,7 +88,7 @@ export default function CollectionRecords(props: Props) {
           </AdminLink>
         )}
         {listActions}
-        {!collection || !records.data ? (
+        {!collection?.id || !records.data ? (
           <Spinner />
         ) : (
           <RecordTable

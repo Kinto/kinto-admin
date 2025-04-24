@@ -33,9 +33,10 @@ export function useSignoff(
   signer: any
 ): SignoffCollectionsInfo {
   const resource = _pickSignoffResource(signer, bid, cid);
-  const [val, setVal] = useState(resource);
+  const [val, setVal] = useState({});
 
   useEffect(() => {
+    setVal(resource);
     if (resource && resource.source) {
       calculateChangesInfo(resource, setVal);
     }
@@ -62,12 +63,11 @@ async function calculateChangesInfo(resource: SignerResource, setVal) {
     );
   }
 
-  console.log(collection);
-
   setVal({
     ...resource,
     source: {
       ...resource.source,
+      status: collection.status,
       lastEditBy: collection.last_edit_by,
       lastEditDate: new Date(collection.last_edit_date).getTime() || null,
       lastEditorComment: collection.last_editor_comment,
@@ -80,6 +80,8 @@ async function calculateChangesInfo(resource: SignerResource, setVal) {
       lastSignatureBy: collection.last_signature_by,
       lastSignatureDate:
         new Date(collection.last_signature_date).getTime() || null,
+      editors_group: collection.editors_group,
+      reviewers_group: collection.reviewers_group,
     },
     changesOnPreview,
     changesOnSource,

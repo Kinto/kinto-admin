@@ -16,7 +16,7 @@ export function useListHistory(bid: string, gid: string): ListHistoryResult {
 
   useEffect(() => {
     fetchHistory(bid, gid, [], setVal);
-  }, []);
+  }, [bid, gid]);
 
   return val;
 }
@@ -59,4 +59,22 @@ async function fetchHistory(
       }
     },
   });
+}
+
+export function useGroupList(bid: string) {
+  const [val, setVal] = useState(undefined);
+
+  useEffect(() => {
+    getClient()
+      .bucket(bid)
+      .listGroups()
+      .then(result => {
+        setVal(result.data || []);
+      })
+      .catch(err => {
+        notifyError("Unable to load record", err);
+      });
+  }, [bid]);
+
+  return val;
 }

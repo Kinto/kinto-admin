@@ -7,12 +7,10 @@ import type {
   GroupState,
   SessionState,
 } from "@src/types";
-import type { Location } from "history";
 import React from "react";
 
 export type OwnProps = {
   match: GroupRouteMatch;
-  location: Location;
 };
 
 export type StateProps = {
@@ -26,7 +24,6 @@ export type Props = OwnProps & StateProps;
 export default function GroupHistory(props: Props) {
   const {
     capabilities,
-    location,
     match: {
       params: { bid, gid },
     },
@@ -54,7 +51,6 @@ export default function GroupHistory(props: Props) {
           history={history.data || []}
           hasNextHistory={history.hasNextPage}
           listNextHistory={history.next}
-          location={location}
         />
       </CollectionTabs>
     </div>

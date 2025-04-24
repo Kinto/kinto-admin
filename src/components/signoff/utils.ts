@@ -12,14 +12,14 @@ export function isMember(
     return false;
   }
   const { principals } = user;
-  const { bid, cid } = source;
+  const { bucket, collection } = source;
   const { signer = {} } = capabilities;
   // @ts-ignore
   const { [groupKey]: defaultGroupName } = signer;
   // @ts-ignore
   const { [groupKey]: groupName = defaultGroupName } = source;
-  const expectedGroup = groupName.replace("{collection_id}", cid);
-  const expectedPrincipal = `/buckets/${bid}/groups/${expectedGroup}`;
+  const expectedGroup = groupName.replace("{collection_id}", collection);
+  const expectedPrincipal = `/buckets/${bucket}/groups/${expectedGroup}`;
 
   return principals.includes(expectedPrincipal);
 }

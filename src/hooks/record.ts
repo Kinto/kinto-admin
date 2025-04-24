@@ -22,6 +22,7 @@ export function useRecordList(
   const [val, setVal] = useState({});
 
   useEffect(() => {
+    setVal({});
     if (sort) {
       fetchRecords(bid, cid, sort, [], setVal);
     }
@@ -95,4 +96,61 @@ export function useRecord(
   }, [bid, cid, rid, cacheBust]);
 
   return val;
+}
+
+export function useRecordHistory(
+  bid: string,
+  cid: string,
+  rid: string,
+  cacheBust?: number
+) {
+  const [val, setVal] = useState({});
+
+  useEffect(() => {
+    fetchHistory(bid, cid, rid, [], setVal);
+  }, [bid, cid, rid, cacheBust]);
+
+  return val;
+}
+
+async function fetchHistory(
+  bid: string,
+  cid: string,
+  rid: string,
+  curData,
+  setVal,
+  nextPageFn?
+) {
+  let result;
+
+  try {
+    if (nextPageFn) {
+      result = await nextPageFn();
+    } else {
+      result = await getClient()
+        .bucket(bid)
+        .listHistory({
+          limit: MAX_PER_PAGE,
+          filters: {
+            collection_id: cid,
+            record_id: rid,
+          },
+        });
+    }
+  } catch (err) {
+    notifyError("Error fetching record history", err);
+    return;
+  }
+
+  const data = curData.concat(result.data);
+
+  setVal({
+    data,
+    hasNextPage: result.hasNextPage,
+    next: () => {
+      if (result.hasNextPage && result.next) {
+        fetchHistory(bid, cid, rid, data, setVal, result.next);
+      }
+    },
+  });
 }

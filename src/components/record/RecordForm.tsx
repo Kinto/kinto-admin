@@ -9,6 +9,9 @@ import * as CollectionActions from "@src/actions/collection";
 import AdminLink from "@src/components/AdminLink";
 import BaseForm from "@src/components/BaseForm";
 import Spinner from "@src/components/Spinner";
+import { useBucket } from "@src/hooks/bucket";
+import { useCollection } from "@src/hooks/collection";
+import { useRecord } from "@src/hooks/record";
 import { canCreateRecord, canEditRecord } from "@src/permission";
 import type {
   BucketState,
@@ -20,6 +23,7 @@ import type {
 import React, { useState } from "react";
 import { Check2 } from "react-bootstrap-icons";
 import { Trash } from "react-bootstrap-icons";
+import { useParams } from "react-router";
 
 export function extendUIWithKintoFields(uiSchema: any, isCreate: boolean): any {
   return {
@@ -57,31 +61,26 @@ type Props = {
 };
 
 export default function RecordForm(props: Props) {
+  const { bid, cid, rid } = useParams();
   const [asJSON, setAsJSON] = useState(false);
+  const collection = useCollection(bid, cid);
+  const record = useRecord(bid, cid, rid);
 
-  const {
-    bid,
-    cid,
-    session,
-    collection,
-    record,
-    deleteRecord,
-    onSubmit,
-    capabilities,
-    bucket,
-  } = props;
+  if (!collection || !record) {
+    return <Spinner />;
+  }
 
-  const {
-    data: { schema = {}, uiSchema = {}, attachment },
-  } = collection;
+  const { session, deleteRecord, onSubmit, capabilities } = props;
+
+  const { schema = {}, uiSchema = {}, attachment } = collection;
   const attachmentConfig = {
     enabled: attachment?.enabled,
     required: attachment?.required && !record?.data?.attachment, // allows records to be edited without requiring a new attachment to be uploaded
   };
 
   const allowEditing = record
-    ? canEditRecord(session, bucket.data.id, cid, record)
-    : canCreateRecord(session, bucket.data.id, cid);
+    ? canEditRecord(session, bid, cid, rid)
+    : canCreateRecord(session, bid, cid);
 
   const handleDeleteRecord = () => {
     const { rid } = props;
@@ -111,12 +110,6 @@ export default function RecordForm(props: Props) {
   const getForm = () => {
     const emptySchema = Object.keys(schema).length === 0;
     const recordData = record ? record.data : {};
-
-    // Show a spinner if the collection metadata is being loaded, or the record
-    // itself on edition.
-    if (collection.busy || (record && record.busy)) {
-      return <Spinner />;
-    }
 
     const buttons = (
       <div className="row record-form-buttons">

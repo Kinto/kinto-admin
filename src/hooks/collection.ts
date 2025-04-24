@@ -13,6 +13,7 @@ export function useCollection(bid: string, cid: string, cacheBust?: number) {
   const [val, setVal] = useState(undefined);
 
   useEffect(() => {
+    setVal(undefined);
     getClient()
       .bucket(bid)
       .collection(cid)

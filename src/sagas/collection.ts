@@ -167,10 +167,7 @@ export function* updateRecord(
   getState: GetStateFn,
   action: ActionType<typeof actions.updateRecord>
 ): SagaGen {
-  const {
-    session,
-    record: { data: currentRecord },
-  } = getState();
+  const { session } = getState();
   const {
     bid,
     cid,
@@ -178,11 +175,10 @@ export function* updateRecord(
     record: { data, permissions },
     attachment,
   } = action;
-  const { last_modified } = currentRecord;
   try {
     const coll = getCollection(bid, cid);
     if (data) {
-      const updatedRecord = { ...data, id: rid, last_modified };
+      const updatedRecord = { ...data, id: rid };
       if (session.serverInfo.capabilities.attachments != null && attachment) {
         const attachmentOptions = { safe: true };
         yield call(
@@ -198,10 +194,10 @@ export function* updateRecord(
       // yield put(redirectTo("collection:records", { bid, cid }));
       notifySuccess("Record attributes updated.");
     } else if (permissions) {
-      yield call([coll, coll.updateRecord], currentRecord as any, {
+      yield call([coll, coll.updateRecord], data as any, {
         permissions,
         safe: true,
-        last_modified,
+        last_modified: data.last_modified,
       });
       // yield put(redirectTo("record:permissions", { bid, cid, rid }));
       notifySuccess("Record permissions updated.");

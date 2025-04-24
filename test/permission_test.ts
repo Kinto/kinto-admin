@@ -338,8 +338,7 @@ describe("canEditRecord", () => {
         },
       ],
     };
-    const record = { data: { id: "blah" } };
-    expect(canEditRecord(session, "abc", "bar", record)).toBe(false);
+    expect(canEditRecord(session, "abc", "bar", "blah")).toBe(false);
   });
 
   it("should return false if permission is not listed", () => {
@@ -354,8 +353,7 @@ describe("canEditRecord", () => {
         },
       ],
     };
-    const record = { data: { id: "blah" } };
-    expect(canEditRecord(session, "xyz", "foo", record)).toBe(false);
+    expect(canEditRecord(session, "xyz", "foo", "blah")).toBe(false);
   });
 
   it("should return true if permission is listed", () => {
@@ -370,8 +368,7 @@ describe("canEditRecord", () => {
         },
       ],
     };
-    const record = { data: { id: "blah" } };
-    expect(canEditRecord(session, "xyz", "foo", record)).toBe(true);
+    expect(canEditRecord(session, "xyz", "foo", "blah")).toBe(true);
   });
 
   it("should return true if permission on bucket is listed", () => {
@@ -384,8 +381,7 @@ describe("canEditRecord", () => {
         },
       ],
     };
-    const record = { data: { id: "blah" } };
-    expect(canEditRecord(session, "xyz", "foo", record)).toBe(true);
+    expect(canEditRecord(session, "xyz", "foo", "blah")).toBe(true);
   });
 
   it("should return true if permission on collection is listed", () => {
@@ -399,8 +395,7 @@ describe("canEditRecord", () => {
         },
       ],
     };
-    const record = { data: { id: "blah" } };
-    expect(canEditRecord(session, "xyz", "foo", record)).toBe(true);
+    expect(canEditRecord(session, "xyz", "foo", "blah")).toBe(true);
   });
 });
 

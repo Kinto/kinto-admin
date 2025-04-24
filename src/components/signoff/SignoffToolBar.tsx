@@ -85,7 +85,7 @@ export default function SignoffToolBar({
 
   const canEdit = canEditCollection(sessionState, bid, cid);
 
-  if (!signoff || !sessionState.serverInfo.capabilities.signer) {
+  if (!signoff?.source || !sessionState.serverInfo.capabilities.signer) {
     return null;
   }
 
@@ -100,8 +100,6 @@ export default function SignoffToolBar({
     changesOnPreview,
   } = signoff;
 
-  const { status } = source;
-
   const canRequestReview = canEdit && isEditor(source, sessionState);
 
   const canReview =
@@ -113,9 +111,10 @@ export default function SignoffToolBar({
   const hasHistory = "history" in sessionState.serverInfo.capabilities;
 
   const isCurrentUrl = source.bucket == bid && source.collection == cid;
-  const currentStep = status == "to-review" ? 1 : status == "signed" ? 2 : 0;
-
-  console.log(signoff);
+  const currentStep = Math.max(
+    ["work-in-progress", "to-review", "signed"].indexOf(source.status),
+    0
+  );
 
   return (
     <div className={isCurrentUrl ? "interactive" : "informative"}>

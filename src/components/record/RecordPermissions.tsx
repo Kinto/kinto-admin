@@ -3,28 +3,25 @@ import * as CollectionActions from "@src/actions/collection";
 import { PermissionsForm } from "@src/components/PermissionsForm";
 import Spinner from "@src/components/Spinner";
 import { useAppDispatch, useAppSelector } from "@src/hooks/app";
+import { useRecord } from "@src/hooks/record";
 import { canEditRecord } from "@src/permission";
 import React from "react";
 import { useParams } from "react-router";
 
-interface RouteParams {
-  bid: string;
-  cid: string;
-  rid: string;
-}
 export function RecordPermissions() {
   const session = useAppSelector(state => state.session);
-  const collection = useAppSelector(state => state.collection);
-  const record = useAppSelector(state => state.record);
   const dispatch = useAppDispatch();
-  const { bid, cid, rid } = useParams<RouteParams>();
+  const { bid, cid, rid } = useParams();
+  const record = useRecord(bid, cid, rid);
 
   const onSubmit = ({ formData }: { formData: any }) => {
     dispatch(
-      CollectionActions.updateRecord(bid, cid, rid, { permissions: formData })
+      CollectionActions.updateRecord(bid, cid, rid, {
+        data: record.data,
+        permissions: formData,
+      })
     );
   };
-  const { busy, permissions } = record;
   const acls = ["read", "write"];
   return (
     <div>
@@ -42,13 +39,13 @@ export function RecordPermissions() {
         capabilities={session.serverInfo.capabilities}
         selected="permissions"
       >
-        {busy ? (
+        {!record?.permissions ? (
           <Spinner />
         ) : (
           <PermissionsForm
-            permissions={permissions}
+            permissions={record.permissions}
             acls={acls}
-            readonly={!canEditRecord(session, bid, cid, record)}
+            readonly={!canEditRecord(session, bid, cid, rid)}
             onSubmit={onSubmit}
           />
         )}

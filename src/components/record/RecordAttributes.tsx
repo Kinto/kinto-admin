@@ -1,6 +1,9 @@
+import Spinner from "../Spinner";
 import RecordForm from "./RecordForm";
 import RecordTabs from "./RecordTabs";
 import * as CollectionActions from "@src/actions/collection";
+import { useCollection } from "@src/hooks/collection";
+import { useRecord } from "@src/hooks/record";
 import type {
   BucketState,
   Capabilities,
@@ -10,6 +13,7 @@ import type {
   SessionState,
 } from "@src/types";
 import React from "react";
+import { useParams } from "react-router";
 
 export type OwnProps = {
   match: RecordRouteMatch;
@@ -31,19 +35,13 @@ export type Props = OwnProps &
   };
 
 export default function RecordAttributes({
-  match,
   session,
   capabilities,
-  bucket,
-  collection,
-  record,
   deleteRecord,
   deleteAttachment,
   updateRecord,
 }: Props) {
-  const {
-    params: { bid, cid, rid },
-  } = match;
+  const { bid, cid, rid } = useParams();
 
   const onSubmit = ({ __attachment__: attachment, ...recordData }: any) => {
     updateRecord(bid, cid, rid, { data: recordData }, attachment);
@@ -66,13 +64,7 @@ export default function RecordAttributes({
         capabilities={capabilities}
       >
         <RecordForm
-          bid={bid}
-          cid={cid}
-          rid={rid}
           session={session}
-          bucket={bucket}
-          collection={collection}
-          record={record}
           deleteRecord={deleteRecord}
           deleteAttachment={deleteAttachment}
           onSubmit={onSubmit}
