@@ -67,15 +67,12 @@ export function Layout() {
               <Route path="/auth/:payload/:token" Component={HomePage} />
               {/* /buckets */}
               <Route path="/buckets" element={<Navigate to="/" replace />} />
-              <Route path="/buckets" />
               <Route path="/buckets/create" Component={BucketCreatePage} />
               <Route
                 path="/buckets/:bid"
                 element={<Navigate to="/buckets/:bid/collections" replace />}
               />
-              <Route path="/buckets/:bid" />
               <Route path="/buckets/:bid/groups" Component={BucketGroupsPage} />
-              <Route path="/buckets/:bid/groups" />
               <Route
                 path="/buckets/:bid/groups/create"
                 Component={GroupCreatePage}
@@ -86,7 +83,6 @@ export function Layout() {
                   <Navigate to="/buckets/:bid/groups/:gid/attributes" replace />
                 }
               />
-              <Route path="/buckets/:bid/groups/:gid" />
               <Route
                 path="/buckets/:bid/groups/:gid/attributes"
                 Component={GroupAttributesPage}
@@ -115,7 +111,6 @@ export function Layout() {
                 path="/buckets/:bid/collections"
                 Component={BucketCollectionsPage}
               />
-              <Route path="/buckets/:bid/collections" />
               <Route
                 path="/buckets/:bid/collections/create"
                 Component={CollectionCreatePage}
@@ -129,7 +124,6 @@ export function Layout() {
                   />
                 }
               />
-              <Route path="/buckets/:bid/collections/:cid" />
               <Route
                 path="/buckets/:bid/collections/:cid/attributes"
                 Component={CollectionAttributesPage}
@@ -150,7 +144,6 @@ export function Layout() {
                 path="/buckets/:bid/collections/:cid/records"
                 Component={CollectionRecordsPage}
               />
-              <Route path="/buckets/:bid/collections/:cid/records" />
               <Route
                 path="/buckets/:bid/collections/:cid/records/create"
                 Component={RecordCreatePage}
@@ -168,7 +161,6 @@ export function Layout() {
                   />
                 }
               />
-              <Route path="/buckets/:bid/collections/:cid/records/:rid" />
               <Route
                 path="/buckets/:bid/collections/:cid/records/:rid/attributes"
                 Component={RecordAttributesPage}
