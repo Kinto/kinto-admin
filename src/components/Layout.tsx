@@ -56,12 +56,7 @@ export function Layout() {
         <div className="row">
           <div className="col-sm-3 sidebar">
             <Routes>
-              <Route
-                path="/buckets/:bid/collections/:cid/*"
-                Component={Sidebar}
-              />
-              <Route path="/buckets/:bid/*" Component={Sidebar} />
-              <Route path="/" Component={Sidebar} />
+              <Route path="/buckets?/:bid?/collections?/:cid?/*" Component={Sidebar} />
             </Routes>
           </div>
           <div className={contentClasses}>
