@@ -8,26 +8,20 @@ import type {
   SessionState,
 } from "@src/types";
 import React from "react";
+import { useParams } from "react-router";
 
 export type OwnProps = {
   match: GroupRouteMatch;
 };
 
 export type StateProps = {
-  group: GroupState;
   capabilities: Capabilities;
-  session: SessionState;
 };
 
 export type Props = OwnProps & StateProps;
 
-export default function GroupHistory(props: Props) {
-  const {
-    capabilities,
-    match: {
-      params: { bid, gid },
-    },
-  } = props;
+export default function GroupHistory({ capabilities }: Props) {
+  const { bid, gid } = useParams();
 
   const history = useListHistory(bid, gid);
 

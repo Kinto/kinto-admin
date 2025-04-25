@@ -7,7 +7,6 @@ import { bindActionCreators } from "redux";
 
 function mapStateToProps(state: AppState) {
   return {
-    bucket: state.bucket,
     session: state.session,
     capabilities: state.session.serverInfo.capabilities,
   };

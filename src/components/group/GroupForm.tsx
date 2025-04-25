@@ -4,6 +4,7 @@ import AdminLink from "@src/components/AdminLink";
 import BaseForm from "@src/components/BaseForm";
 import JSONEditor from "@src/components/JSONEditor";
 import Spinner from "@src/components/Spinner";
+import { useGroup } from "@src/hooks/group";
 import { canCreateGroup, canEditGroup } from "@src/permission";
 import type {
   BucketState,
@@ -14,6 +15,7 @@ import type {
 import { omit } from "@src/utils";
 import React, { useCallback } from "react";
 import { Check2 } from "react-bootstrap-icons";
+import { useParams } from "react-router";
 
 const schema: RJSFSchema = {
   type: "object",
@@ -59,15 +61,10 @@ type Props = {
 };
 
 export default function GroupForm(props: Props) {
-  const {
-    gid,
-    session,
-    bucket,
-    group,
-    formData = {} as GroupData,
-    onSubmit: propOnSubmit,
-    deleteGroup,
-  } = props;
+  const { bid, gid } = useParams();
+  const group = useGroup(bid, gid);
+
+  const { session, onSubmit: propOnSubmit, deleteGroup } = props;
 
   const onSubmit = useCallback(
     ({ formData }) => {
@@ -83,10 +80,10 @@ export default function GroupForm(props: Props) {
     [propOnSubmit]
   );
 
-  const creation = !formData.id;
+  const creation = !gid;
   const hasWriteAccess = creation
-    ? canCreateGroup(session, bucket.data.id)
-    : canEditGroup(session, bucket.data.id, group);
+    ? canCreateGroup(session, bid)
+    : canEditGroup(session, bid, gid);
   const formIsEditable = creation || hasWriteAccess;
   const showDeleteForm = !creation && hasWriteAccess;
 
@@ -99,6 +96,7 @@ export default function GroupForm(props: Props) {
         },
       };
 
+  const formData = bid && gid && group?.data ? { ...group.data } : {};
   const attributes = omit(formData, ["id", "last_modified", "members"]);
   const data = JSON.stringify(attributes, null, 2);
   const formDataSerialized = {
@@ -107,7 +105,7 @@ export default function GroupForm(props: Props) {
   };
 
   const alert =
-    formIsEditable || group.busy ? null : (
+    formIsEditable || !group ? null : (
       <div className="alert alert-warning">
         You don't have the required permission to edit this group.
       </div>
@@ -133,7 +131,7 @@ export default function GroupForm(props: Props) {
   return (
     <div>
       {alert}
-      {group.busy ? (
+      {!group ? (
         <Spinner />
       ) : (
         <BaseForm

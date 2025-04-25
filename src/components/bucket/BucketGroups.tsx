@@ -1,5 +1,7 @@
+import Spinner from "../Spinner";
 import BucketTabs from "./BucketTabs";
 import { DataList, ListActions } from "./GroupDataList";
+import { useGroupList } from "@src/hooks/group";
 import type {
   BucketRouteMatch,
   BucketState,
@@ -7,32 +9,21 @@ import type {
   SessionState,
 } from "@src/types";
 import React from "react";
-
-type OwnProps = {
-  match: BucketRouteMatch;
-};
+import { useParams } from "react-router";
 
 type StateProps = {
   session: SessionState;
-  bucket: BucketState;
   capabilities: Capabilities;
 };
 
-type Props = OwnProps & StateProps;
+type Props = StateProps;
 
-export default function BucketCollections({
-  match,
-  session,
-  bucket,
-  capabilities,
-}: Props) {
-  const {
-    params: { bid },
-  } = match;
-  const { groups } = bucket;
+export default function BucketCollections({ session, capabilities }: Props) {
+  const { bid } = useParams();
+  const groups = useGroupList(bid);
 
   const listActions = (
-    <ListActions bid={bid} session={session} bucket={bucket} />
+    <ListActions bid={bid} session={session} busy={!groups} />
   );
 
   return (
@@ -42,7 +33,7 @@ export default function BucketCollections({
       </h1>
       <BucketTabs bid={bid} selected="groups" capabilities={capabilities}>
         {listActions}
-        {!bucket.busy && groups.length === 0 ? (
+        {groups && groups.length === 0 ? (
           <div className="alert alert-info">
             <p>This bucket has no groups.</p>
           </div>
@@ -51,7 +42,7 @@ export default function BucketCollections({
             bid={bid}
             groups={groups}
             capabilities={capabilities}
-            showSpinner={bucket.busy}
+            showSpinner={!groups}
           />
         )}
         {listActions}

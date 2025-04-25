@@ -91,15 +91,15 @@ export function canCreateGroup(
 export function canEditGroup(
   session: SessionState,
   bucketId: string,
-  group: GroupState
+  groupId: string
 ): boolean {
   return can(session, (perm: PermissionsListEntry) => {
-    if (group.data == null) {
+    if (!groupId) {
       return false;
     }
     return (
       (perm.resource_name == "bucket" ||
-        (perm.resource_name == "group" && perm.group_id == group.data.id)) &&
+        (perm.resource_name == "group" && perm.group_id == groupId)) &&
       perm.bucket_id == bucketId &&
       perm.permissions.includes("write")
     );

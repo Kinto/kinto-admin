@@ -3,6 +3,7 @@ import * as BucketActions from "@src/actions/bucket";
 import { PermissionsForm } from "@src/components/PermissionsForm";
 import Spinner from "@src/components/Spinner";
 import { useAppDispatch, useAppSelector } from "@src/hooks/app";
+import { useGroup } from "@src/hooks/group";
 import { canEditGroup } from "@src/permission";
 import type {
   GroupPermissionsRouteMatchParams,
@@ -12,11 +13,10 @@ import React from "react";
 import { useParams } from "react-router";
 
 export function GroupPermissions() {
-  const group = useAppSelector(state => state.group);
-  const bucket = useAppSelector(state => state.bucket);
-  const { busy, permissions } = group;
+  const { bid, gid } = useParams();
+  const group = useGroup(bid, gid);
   const session = useAppSelector(state => state.session);
-  const { bid, gid } = useParams<GroupPermissionsRouteMatchParams>();
+
   const dispatch = useAppDispatch();
 
   const onSubmit = ({ formData }: { formData: GroupPermissionsType }) => {
@@ -37,13 +37,13 @@ export function GroupPermissions() {
         capabilities={session.serverInfo.capabilities}
         selected="permissions"
       >
-        {busy ? (
+        {!group ? (
           <Spinner />
         ) : (
           <PermissionsForm
-            permissions={permissions}
+            permissions={group.permissions}
             acls={["read", "write"]}
-            readonly={!canEditGroup(session, bucket.data.id, group)}
+            readonly={!canEditGroup(session, bid, gid)}
             onSubmit={onSubmit}
           />
         )}

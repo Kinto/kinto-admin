@@ -300,10 +300,17 @@ export default function HistoryTable({
   enableDiffOverview = false,
 }: HistoryTableProps) {
   const [diffOverview, setDiffOverview] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [current, setCurrent] = useState(null);
   const [previous, setPrevious] = useState(null);
   const [params, setParams] = useSearchParams();
+
+  const nextHistoryWrapper = async () => {
+    setLoading(true);
+    await listNextHistory();
+    setLoading(false);
+  };
 
   const onDiffOverviewClick = async since => {
     if (!enableDiffOverview || cid == null) {
@@ -351,7 +358,7 @@ export default function HistoryTable({
   );
 
   const tbody = (
-    <tbody className={!historyLoaded ? "loading" : ""}>
+    <tbody className={!historyLoaded || loading ? "loading" : ""}>
       {history.length === 0 ? (
         <tr>
           <td colSpan={6}>
@@ -395,7 +402,7 @@ export default function HistoryTable({
           tbody={tbody}
           dataLoaded={historyLoaded}
           hasNextPage={hasNextHistory}
-          listNextPage={listNextHistory}
+          listNextPage={nextHistoryWrapper}
         />
       )}
     </div>

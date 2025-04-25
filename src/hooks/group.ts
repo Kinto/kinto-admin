@@ -61,6 +61,24 @@ async function fetchHistory(
   });
 }
 
+export function useGroup(bid: string, gid: string, cacheBust?: number) {
+  const [val, setVal] = useState(undefined);
+
+  useEffect(() => {
+    getClient()
+      .bucket(bid)
+      .getGroup(gid)
+      .then(result => {
+        setVal(result);
+      })
+      .catch(err => {
+        notifyError("Unable to load group", err);
+      });
+  }, [bid, gid, cacheBust]);
+
+  return val;
+}
+
 export function useGroupList(bid: string) {
   const [val, setVal] = useState(undefined);
 
@@ -72,7 +90,7 @@ export function useGroupList(bid: string) {
         setVal(result.data || []);
       })
       .catch(err => {
-        notifyError("Unable to load record", err);
+        notifyError("Unable to load group list", err);
       });
   }, [bid]);
 

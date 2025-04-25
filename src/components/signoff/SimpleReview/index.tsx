@@ -7,11 +7,12 @@ import * as CollectionActions from "@src/actions/collection";
 import * as SignoffActions from "@src/actions/signoff";
 import Spinner from "@src/components/Spinner";
 import CollectionTabs from "@src/components/collection/CollectionTabs";
+import { useCollection } from "@src/hooks/collection";
+import { useSignoff } from "@src/hooks/signoff";
 import { storageKeys, useLocalStorage } from "@src/hooks/storage";
 import { canEditCollection } from "@src/permission";
 import type {
   Capabilities,
-  CollectionRouteMatch,
   CollectionState,
   SessionState,
   SignoffState,
@@ -19,7 +20,7 @@ import type {
 } from "@src/types";
 import React, { useEffect, useState } from "react";
 import { Shuffle } from "react-bootstrap-icons";
-import { redirect, useNavigate } from "react-router";
+import { Navigate, useNavigate, useParams } from "react-router";
 
 export type StateProps = {
   signoff?: SignoffState;
@@ -35,12 +36,9 @@ export type SimpleReviewProps = StateProps & {
   requestReview: typeof SignoffActions.requestReview;
   rollbackChanges: typeof SignoffActions.rollbackChanges;
   listRecords: typeof CollectionActions.listRecords;
-  match: CollectionRouteMatch;
-  location: Location;
 };
 
 export default function SimpleReview({
-  signoff,
   session,
   fetchRecords,
   approveChanges,
@@ -48,22 +46,28 @@ export default function SimpleReview({
   requestReview,
   rollbackChanges,
   listRecords,
-  match,
-  collection,
   capabilities,
 }: SimpleReviewProps) {
+  const { bid, cid } = useParams();
+  const collection = useCollection(bid, cid);
   const [useSimpleReview, setUseSimpleReview] = useLocalStorage(
     storageKeys.useSimpleReview,
     true
   );
+  const signoff = useSignoff(
+    bid,
+    cid,
+    collection,
+    session.serverInfo.capabilities.signer
+  );
   const navigate = useNavigate();
-  const signoffSource = signoff?.collectionsInfo?.source;
-  const sourceBid = signoffSource?.bid;
-  const sourceCid = signoffSource?.cid;
+  const signoffSource = signoff?.source;
+  const sourceBid = signoffSource?.bucket;
+  const sourceCid = signoffSource?.collection;
 
-  const signoffDest = signoff?.collectionsInfo?.destination;
-  const destBid = signoffDest?.bid;
-  const destCid = signoffDest?.cid;
+  const signoffDest = signoff?.destination;
+  const destBid = signoffDest?.bucket;
+  const destCid = signoffDest?.collection;
 
   const canReview = signoffSource
     ? (isReviewer(signoffSource, session) &&
@@ -81,9 +85,6 @@ export default function SimpleReview({
     oldRecords: [],
   });
 
-  const {
-    params: { bid, cid },
-  } = match;
   const canRequestReview =
     canEditCollection(session, bid, cid) &&
     isMember("editors_group", signoffSource, session);
@@ -124,13 +125,7 @@ export default function SimpleReview({
   }, [destBid, destCid, sourceBid, sourceCid]);
 
   if (!useSimpleReview) {
-    return (
-      <Redirect
-        exact
-        from={`/buckets/${bid}/collections/${cid}/simple-review`}
-        to={`/buckets/${bid}/collections/${cid}/records`}
-      />
-    );
+    return <Navigate to={`/buckets/${bid}/collections/${cid}/records`} />;
   }
 
   if (!session.authenticated) {

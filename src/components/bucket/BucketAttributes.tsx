@@ -2,6 +2,7 @@ import BucketForm from "./BucketForm";
 import BucketTabs from "./BucketTabs";
 import * as BucketActions from "@src/actions/bucket";
 import Spinner from "@src/components/Spinner";
+import { useBucket } from "@src/hooks/bucket";
 import type {
   BucketData,
   BucketRouteMatch,
@@ -10,6 +11,7 @@ import type {
   SessionState,
 } from "@src/types";
 import React, { useCallback } from "react";
+import { useParams } from "react-router";
 
 export type OwnProps = {
   match: BucketRouteMatch;
@@ -17,7 +19,6 @@ export type OwnProps = {
 
 export type StateProps = {
   session: SessionState;
-  bucket: BucketState;
   capabilities: Capabilities;
 };
 
@@ -28,17 +29,12 @@ export type Props = OwnProps &
   };
 
 export default function BucketAttributes({
-  match,
   session,
-  bucket,
   capabilities,
   updateBucket,
   deleteBucket,
 }: Props) {
-  const {
-    params: { bid },
-  } = match;
-  const { busy, data: formData } = bucket;
+  const { bid } = useParams();
 
   const handleDeleteBucket = useCallback(
     (bid: string) => {
@@ -66,18 +62,12 @@ export default function BucketAttributes({
         Edit <b>{bid}</b> bucket attributes
       </h1>
       <BucketTabs bid={bid} capabilities={capabilities} selected="attributes">
-        {busy ? (
-          <Spinner />
-        ) : (
-          <BucketForm
-            session={session}
-            bid={bid}
-            bucket={bucket}
-            formData={formData}
-            deleteBucket={handleDeleteBucket}
-            onSubmit={handleSubmit}
-          />
-        )}
+        <BucketForm
+          session={session}
+          bid={bid}
+          deleteBucket={handleDeleteBucket}
+          onSubmit={handleSubmit}
+        />
       </BucketTabs>
     </div>
   );

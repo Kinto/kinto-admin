@@ -2,6 +2,7 @@ import GroupForm from "./GroupForm";
 import GroupTabs from "./GroupTabs";
 import * as BucketActions from "@src/actions/bucket";
 import Spinner from "@src/components/Spinner";
+import { useGroup } from "@src/hooks/group";
 import type {
   BucketState,
   Capabilities,
@@ -11,38 +12,21 @@ import type {
   SessionState,
 } from "@src/types";
 import React, { useCallback } from "react";
-
-export type OwnProps = {
-  match: GroupRouteMatch;
-};
+import { useParams } from "react-router";
 
 export type StateProps = {
   session: SessionState;
-  bucket: BucketState;
-  group: GroupState;
   capabilities: Capabilities;
 };
 
-export type Props = OwnProps &
-  StateProps & {
-    updateGroup: typeof BucketActions.updateGroup;
-    deleteGroup: typeof BucketActions.deleteGroup;
-  };
+export type Props = StateProps & {
+  updateGroup: typeof BucketActions.updateGroup;
+  deleteGroup: typeof BucketActions.deleteGroup;
+};
 
 export default function GroupAttributes(props: Props) {
-  const {
-    match,
-    session,
-    bucket,
-    group,
-    capabilities,
-    updateGroup,
-    deleteGroup,
-  } = props;
-  const {
-    params: { bid, gid },
-  } = match;
-  const { busy, data: formData } = group;
+  const { session, capabilities, updateGroup, deleteGroup } = props;
+  const { bid, gid } = useParams();
 
   const onSubmit = useCallback(
     (formData: GroupData) => {
@@ -75,20 +59,11 @@ export default function GroupAttributes(props: Props) {
         selected="attributes"
         capabilities={capabilities}
       >
-        {busy || formData == null ? ( // formData will be null until it is fetched, busy will be false until the fetch starts, need to wait for for both conditions before rendering
-          <Spinner />
-        ) : (
-          <GroupForm
-            bid={bid}
-            gid={gid}
-            session={session}
-            bucket={bucket}
-            group={group}
-            deleteGroup={onDeleteGroup}
-            formData={formData}
-            onSubmit={onSubmit}
-          />
-        )}
+        <GroupForm
+          session={session}
+          deleteGroup={onDeleteGroup}
+          onSubmit={onSubmit}
+        />
       </GroupTabs>
     </div>
   );

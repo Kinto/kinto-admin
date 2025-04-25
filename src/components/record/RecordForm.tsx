@@ -9,17 +9,10 @@ import * as CollectionActions from "@src/actions/collection";
 import AdminLink from "@src/components/AdminLink";
 import BaseForm from "@src/components/BaseForm";
 import Spinner from "@src/components/Spinner";
-import { useBucket } from "@src/hooks/bucket";
 import { useCollection } from "@src/hooks/collection";
 import { useRecord } from "@src/hooks/record";
 import { canCreateRecord, canEditRecord } from "@src/permission";
-import type {
-  BucketState,
-  Capabilities,
-  CollectionState,
-  RecordState,
-  SessionState,
-} from "@src/types";
+import type { Capabilities, RecordState, SessionState } from "@src/types";
 import React, { useState } from "react";
 import { Check2 } from "react-bootstrap-icons";
 import { Trash } from "react-bootstrap-icons";
@@ -47,12 +40,7 @@ export function extendUIWithKintoFields(uiSchema: any, isCreate: boolean): any {
 }
 
 type Props = {
-  bid: string;
-  bucket: BucketState;
-  cid: string;
-  rid?: string;
   session: SessionState;
-  collection: CollectionState;
   record?: RecordState;
   deleteRecord?: typeof CollectionActions.deleteRecord;
   deleteAttachment?: typeof CollectionActions.deleteAttachment;
@@ -120,7 +108,7 @@ export default function RecordForm(props: Props) {
             disabled={!allowEditing}
           >
             <Check2 className="icon" />
-            {` ${record ? "Update" : "Create"} record`}
+            {` ${recordData?.id ? "Update" : "Create"} record`}
           </button>
           {" or "}
           <AdminLink name="collection:records" params={{ bid, cid }}>
@@ -136,7 +124,7 @@ export default function RecordForm(props: Props) {
           )}
         </div>
         <div className="col-sm-6 text-right">
-          {allowEditing && record && (
+          {allowEditing && recordData?.id && (
             <button
               type="button"
               className="btn btn-danger delete"

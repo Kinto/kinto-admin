@@ -51,3 +51,44 @@ export function useCollectionPermissions(
 
   return val;
 }
+
+export function useCollectionList(bid: string, cacheBust?: number) {
+  const [val, setVal] = useState(undefined);
+
+  useEffect(() => {
+    setVal(undefined);
+    fetchCollections(bid, [], setVal);
+  }, [bid, cacheBust]);
+
+  return val;
+}
+
+async function fetchCollections(bid: string, curData, setVal, nextPageFn?) {
+  let result;
+
+  try {
+    if (nextPageFn) {
+      result = await nextPageFn();
+    } else {
+      result = await getClient().bucket(bid).listCollections({
+        limit: MAX_PER_PAGE,
+      });
+    }
+  } catch (err) {
+    notifyError("Error fetching collection list", err);
+    return;
+  }
+
+  const data = curData.concat(result.data);
+
+  setVal({
+    data,
+    hasNextPage: result.hasNextPage,
+    lastModified: result.last_modified,
+    next: () => {
+      if (result.hasNextPage && result.next) {
+        return fetchCollections(bid, data, setVal, result.next);
+      }
+    },
+  });
+}
