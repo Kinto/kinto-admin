@@ -26,8 +26,6 @@ export default function BucketCollections({
   const { bid } = useParams();
   const collections = useCollectionList(bid);
 
-  console.log(collections);
-
   const listActions = (
     <ListActions bid={bid} session={session} busy={!collections} />
   );
