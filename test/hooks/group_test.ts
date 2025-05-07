@@ -1,9 +1,9 @@
 import * as client from "@src/client";
-import { useListHistory } from "@src/hooks/group";
+import { useGroupHistory } from "@src/hooks/group";
 import { mockNotifyError } from "@test/testUtils";
 import { renderHook } from "@testing-library/react";
 
-describe("useListHistory", () => {
+describe("useGroupHistory", () => {
   let listHistoryMock;
 
   beforeAll(() => {
@@ -23,7 +23,7 @@ describe("useListHistory", () => {
       hasNextPage: false,
       next: null,
     });
-    const { result } = renderHook(() => useListHistory("bid", "gid"));
+    const { result } = renderHook(() => useGroupHistory("bid", "gid"));
 
     expect(result.current).toEqual({});
 
@@ -49,7 +49,7 @@ describe("useListHistory", () => {
         };
       },
     });
-    const { result } = renderHook(() => useListHistory("bid", "gid"));
+    const { result } = renderHook(() => useGroupHistory("bid", "gid"));
 
     expect(result.current).toEqual({});
 
@@ -73,7 +73,7 @@ describe("useListHistory", () => {
       throw new Error("test error");
     });
 
-    renderHook(() => useListHistory("bid", "gid"));
+    renderHook(() => useGroupHistory("bid", "gid"));
 
     await vi.waitFor(() => {
       expect(notifyErrorMock).toHaveBeenCalledWith(

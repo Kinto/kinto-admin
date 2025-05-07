@@ -92,3 +92,63 @@ async function fetchCollections(bid: string, curData, setVal, nextPageFn?) {
     },
   });
 }
+
+export function useCollectionHistory(
+  bid: string,
+  cid: string,
+  filters: any,
+  cacheBust?: number
+) {
+  const [val, setVal] = useState({});
+
+  useEffect(() => {
+    fetchHistory(bid, cid, filters, [], setVal);
+  }, [bid, cid, cacheBust]);
+
+  return val;
+}
+
+async function fetchHistory(
+  bid: string,
+  cid: string,
+  filters: any,
+  curData,
+  setVal,
+  nextPageFn?
+) {
+  let result;
+
+  try {
+    if (nextPageFn) {
+      result = await nextPageFn();
+    } else {
+      const { resource_name, exclude_user_id, since } = filters;
+      result = await getClient()
+        .bucket(bid)
+        .listHistory({
+          limit: MAX_PER_PAGE,
+          filters: {
+            resource_name,
+            exclude_user_id,
+            collection_id: cid,
+            "gt_target.data.last_modified": since,
+          },
+        });
+    }
+  } catch (err) {
+    notifyError("Error fetching record history", err);
+    return;
+  }
+
+  const data = curData.concat(result.data);
+
+  setVal({
+    data,
+    hasNextPage: result.hasNextPage,
+    next: () => {
+      if (result.hasNextPage && result.next) {
+        fetchHistory(bid, cid, filters, data, setVal, result.next);
+      }
+    },
+  });
+}

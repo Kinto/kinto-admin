@@ -1,6 +1,6 @@
 import CollectionTabs from "./GroupTabs";
 import HistoryTable from "@src/components/HistoryTable";
-import { useListHistory } from "@src/hooks/group";
+import { useGroupHistory } from "@src/hooks/group";
 import type {
   Capabilities,
   GroupRouteMatch,
@@ -23,7 +23,7 @@ export type Props = OwnProps & StateProps;
 export default function GroupHistory({ capabilities }: Props) {
   const { bid, gid } = useParams();
 
-  const history = useListHistory(bid, gid);
+  const history = useGroupHistory(bid, gid);
 
   return (
     <div>

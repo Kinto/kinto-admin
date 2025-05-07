@@ -68,7 +68,6 @@ export default function SignoffToolBar({
   const signoff = useSignoff(
     bid,
     cid,
-    collection,
     sessionState.serverInfo.capabilities.signer
   );
 

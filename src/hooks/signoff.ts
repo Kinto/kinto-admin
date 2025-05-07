@@ -29,7 +29,6 @@ type SignerResource = {
 export function useSignoff(
   bid: string,
   cid: string,
-  collection: CollectionData,
   signer: any
 ): SignoffCollectionsInfo {
   const resource = _pickSignoffResource(signer, bid, cid);

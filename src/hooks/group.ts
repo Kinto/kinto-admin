@@ -11,7 +11,7 @@ type ListHistoryResult = {
   next?: Promise<PaginationResult<HistoryEntry<any>>> | null;
 };
 
-export function useListHistory(bid: string, gid: string): ListHistoryResult {
+export function useGroupHistory(bid: string, gid: string): ListHistoryResult {
   const [val, setVal] = useState({});
 
   useEffect(() => {

@@ -54,12 +54,7 @@ export default function SimpleReview({
     storageKeys.useSimpleReview,
     true
   );
-  const signoff = useSignoff(
-    bid,
-    cid,
-    collection,
-    session.serverInfo.capabilities.signer
-  );
+  const signoff = useSignoff(bid, cid, session.serverInfo.capabilities.signer);
   const navigate = useNavigate();
   const signoffSource = signoff?.source;
   const sourceBid = signoffSource?.bucket;
@@ -134,7 +129,11 @@ export default function SimpleReview({
         Not authenticated
       </div>
     );
-  } else if (session.authenticating || session.busy) {
+  } else if (
+    session.authenticating ||
+    session.busy ||
+    (signoff?.source && !signoff.source.status)
+  ) {
     return <Spinner />;
   }
   const handleRollback = (text: string) => {
@@ -171,7 +170,7 @@ export default function SimpleReview({
           oldRecords={records.oldRecords}
           newRecords={records.newRecords}
           collectionData={signoffSource}
-          displayFields={collection?.data?.displayFields}
+          displayFields={collection?.displayFields}
         />
         <button
           type="button"
