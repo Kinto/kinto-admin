@@ -71,23 +71,13 @@ export function Layout() {
               {/* /buckets */}
               <Route path="/buckets" element={<Navigate to="/" replace />} />
               <Route path="/buckets/create" Component={BucketCreatePage} />
-              <Route
-                path="/buckets/:bid"
-                element={<Navigate to="/buckets/:bid/collections" replace />}
-              />
               <Route path="/buckets/:bid/groups" Component={BucketGroupsPage} />
               <Route
                 path="/buckets/:bid/groups/create"
                 Component={GroupCreatePage}
               />
               <Route
-                path="/buckets/:bid/groups/:gid"
-                element={
-                  <Navigate to="/buckets/:bid/groups/:gid/attributes" replace />
-                }
-              />
-              <Route
-                path="/buckets/:bid/groups/:gid/attributes"
+                path="/buckets/:bid/groups/:gid/attributes?"
                 Component={GroupAttributesPage}
               />
               <Route
@@ -111,21 +101,12 @@ export function Layout() {
                 Component={BucketHistoryPage}
               />
               <Route
-                path="/buckets/:bid/collections"
+                path="/buckets/:bid/collections?"
                 Component={BucketCollectionsPage}
               />
               <Route
                 path="/buckets/:bid/collections/create"
                 Component={CollectionCreatePage}
-              />
-              <Route
-                path="/buckets/:bid/collections/:cid"
-                element={
-                  <Navigate
-                    to="/buckets/:bid/collections/:cid/records"
-                    replace
-                  />
-                }
               />
               <Route
                 path="/buckets/:bid/collections/:cid/attributes"
@@ -144,7 +125,7 @@ export function Layout() {
                 Component={SimpleReviewPage}
               />
               <Route
-                path="/buckets/:bid/collections/:cid/records"
+                path="/buckets/:bid/collections/:cid/records?"
                 Component={CollectionRecordsPage}
               />
               <Route
@@ -156,16 +137,7 @@ export function Layout() {
                 Component={RecordBulkPage}
               />
               <Route
-                path="/buckets/:bid/collections/:cid/records/:rid"
-                element={
-                  <Navigate
-                    to="/buckets/:bid/collections/:cid/records/:rid/attributes"
-                    replace
-                  />
-                }
-              />
-              <Route
-                path="/buckets/:bid/collections/:cid/records/:rid/attributes"
+                path="/buckets/:bid/collections/:cid/records/:rid/attributes?"
                 Component={RecordAttributesPage}
               />
               <Route
