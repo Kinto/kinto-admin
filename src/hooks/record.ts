@@ -83,6 +83,7 @@ export function useRecord(
   const [val, setVal] = useState(undefined);
 
   useEffect(() => {
+    if (!rid) return;
     getClient()
       .bucket(bid)
       .collection(cid)

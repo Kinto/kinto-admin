@@ -12,26 +12,10 @@ import { useParams } from "react-router";
 export type StateProps = {
   session: SessionState;
   capabilities: Capabilities;
-  bucket: BucketState;
-  collection: CollectionState;
 };
 
-export type Props = StateProps & {
-  createRecord: typeof CollectionActions.createRecord;
-};
-
-export default function RecordCreate({
-  session,
-  capabilities,
-  createRecord,
-}: Props) {
+export default function RecordCreate({ session, capabilities }: StateProps) {
   const { bid, cid } = useParams();
-  const onSubmit = useCallback(
-    ({ __attachment__: attachment, ...record }) => {
-      createRecord(bid, cid, record, attachment);
-    },
-    [bid, cid, createRecord]
-  );
 
   return (
     <div>
@@ -43,11 +27,7 @@ export default function RecordCreate({
       </h1>
       <div className="card">
         <div className="card-body">
-          <RecordForm
-            session={session}
-            onSubmit={onSubmit}
-            capabilities={capabilities}
-          />
+          <RecordForm session={session} capabilities={capabilities} />
         </div>
       </div>
     </div>

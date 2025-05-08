@@ -6,6 +6,7 @@ import {
 import JSONRecordForm from "./JSONRecordForm";
 import { RJSFSchema } from "@rjsf/utils";
 import * as CollectionActions from "@src/actions/collection";
+import { getClient } from "@src/client";
 import AdminLink from "@src/components/AdminLink";
 import BaseForm from "@src/components/BaseForm";
 import Spinner from "@src/components/Spinner";
@@ -16,7 +17,7 @@ import type { Capabilities, RecordState, SessionState } from "@src/types";
 import React, { useState } from "react";
 import { Check2 } from "react-bootstrap-icons";
 import { Trash } from "react-bootstrap-icons";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 export function extendUIWithKintoFields(uiSchema: any, isCreate: boolean): any {
   return {
@@ -44,7 +45,6 @@ type Props = {
   record?: RecordState;
   deleteRecord?: typeof CollectionActions.deleteRecord;
   deleteAttachment?: typeof CollectionActions.deleteAttachment;
-  onSubmit: (data) => void;
   capabilities: Capabilities;
 };
 
@@ -53,12 +53,14 @@ export default function RecordForm(props: Props) {
   const [asJSON, setAsJSON] = useState(false);
   const collection = useCollection(bid, cid);
   const record = useRecord(bid, cid, rid);
+  const navigate = useNavigate();
+  const isUpdate = !!record;
 
-  if (!collection || !record) {
+  if (!collection || (rid && !record)) {
     return <Spinner />;
   }
 
-  const { session, deleteRecord, onSubmit, capabilities } = props;
+  const { session, deleteRecord, capabilities } = props;
 
   const { schema = {}, uiSchema = {}, attachment } = collection;
   const attachmentConfig = {
@@ -71,14 +73,13 @@ export default function RecordForm(props: Props) {
     : canCreateRecord(session, bid, cid);
 
   const handleDeleteRecord = () => {
-    const { rid } = props;
     if (rid && deleteRecord && confirm("Are you sure?")) {
       deleteRecord(bid, cid, rid);
     }
   };
 
   const handleDeleteAttachment = () => {
-    const { rid, deleteAttachment } = props;
+    const { deleteAttachment } = props;
     if (rid && deleteAttachment) {
       deleteAttachment(bid, cid, rid);
     }
@@ -91,8 +92,29 @@ export default function RecordForm(props: Props) {
     setAsJSON(!asJSON);
   };
 
-  const handleOnSubmit = ({ formData }: RJSFSchema) => {
-    onSubmit(formData);
+  const handleOnSubmit = async ({ formData }: RJSFSchema) => {
+    const col = getClient().bucket(bid).collection(cid);
+    const { __attachment__: attachment, ...updatedRecord } = formData;
+
+    if (capabilities.attachments && attachment) {
+      await col.addAttachment(
+        attachment,
+        { ...updatedRecord, id: rid },
+        {
+          safe: true,
+        }
+      );
+    } else if (isUpdate) {
+      await col.updateRecord(
+        { ...updatedRecord, id: rid },
+        {
+          safe: true,
+        }
+      );
+    } else {
+      col.createRecord(updatedRecord);
+    }
+    navigate(`/buckets/${bid}/collections/${cid}/records/`);
   };
 
   const getForm = () => {
@@ -191,8 +213,6 @@ export default function RecordForm(props: Props) {
       </BaseForm>
     );
   };
-
-  const isUpdate = !!record;
 
   const alert =
     allowEditing || collection.busy ? null : (
