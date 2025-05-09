@@ -91,6 +91,7 @@ export function useRecord(
   const [val, setVal] = useState(undefined);
 
   useEffect(() => {
+    if (val) setVal(undefined);
     if (!rid) return;
     getClient()
       .bucket(bid)

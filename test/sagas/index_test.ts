@@ -1,8 +1,6 @@
 import * as bucketActions from "@src/actions/bucket";
-import * as collectionActions from "@src/actions/collection";
 import * as sessionActions from "@src/actions/session";
 import * as bucketSagas from "@src/sagas/bucket";
-import * as collectionSagas from "@src/sagas/collection";
 import * as sessionSagas from "@src/sagas/session";
 import { configureAppStore } from "@src/store/configureStore";
 

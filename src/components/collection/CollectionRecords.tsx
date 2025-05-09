@@ -2,33 +2,19 @@ import CollectionTabs from "./CollectionTabs";
 import RecordTable from "./RecordTable";
 import { ListActions } from "./RecordTable";
 import { CommonProps, CommonStateProps } from "./commonPropTypes";
-import * as CollectionActions from "@src/actions/collection";
 import AdminLink from "@src/components/AdminLink";
 import Spinner from "@src/components/Spinner";
 import { DEFAULT_SORT } from "@src/constants";
+import { useAppSelector } from "@src/hooks/app";
 import { useCollection } from "@src/hooks/collection";
 import { useRecordList } from "@src/hooks/record";
 import { storageKeys, useLocalStorage } from "@src/hooks/storage";
-import type { BucketState, CollectionState, SessionState } from "@src/types";
 import React, { useEffect, useState } from "react";
 import { Shuffle } from "react-bootstrap-icons";
 import { useParams } from "react-router";
 
-type OwnProps = {
-  location: Location;
-};
-
-export type StateProps = CommonStateProps & {
-  session: SessionState;
-  bucket: BucketState;
-  collection: CollectionState;
-};
-
-type Props = CommonProps & OwnProps & StateProps;
-
-export default function CollectionRecords(props: Props) {
-  const { session, capabilities } = props;
-
+export default function CollectionRecords() {
+  const session = useAppSelector(state => state.session);
   const { bid, cid } = useParams();
   const [sort, setSort] = useState(null);
   const collection = useCollection(bid, cid);
@@ -62,10 +48,10 @@ export default function CollectionRecords(props: Props) {
         bid={bid}
         cid={cid}
         selected="records"
-        capabilities={capabilities}
+        capabilities={session.serverInfo.capabilities}
         totalRecords={records?.totalRecords}
       >
-        {capabilities.signer && !useSimpleReview && (
+        {session.serverInfo.capabilities.signer && !useSimpleReview && (
           <AdminLink
             className="btn btn-secondary"
             params={{ bid, cid }}
@@ -100,9 +86,9 @@ export default function CollectionRecords(props: Props) {
                 : ["id", "__json"]
             }
             updateSort={setSort}
-            capabilities={capabilities}
+            capabilities={session.serverInfo.capabilities}
             callback={() => {
-              setCacheVal(new Date().getTime());
+              setCacheVal(cacheVal + 1);
             }}
           />
         )}

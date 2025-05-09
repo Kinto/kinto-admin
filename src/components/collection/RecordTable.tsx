@@ -1,6 +1,5 @@
 import RecordRow from "./RecordRow";
 import { CommonProps } from "./commonPropTypes";
-import * as CollectionActions from "@src/actions/collection";
 import { getClient } from "@src/client";
 import AdminLink from "@src/components/AdminLink";
 import PaginatedTable from "@src/components/PaginatedTable";
@@ -112,7 +111,7 @@ type RecordsViewProps = CommonProps & {
 type TableProps = RecordsViewProps & {
   currentSort: string;
   hasNextRecords: boolean;
-  listNextRecords: typeof CollectionActions.listNextRecords;
+  listNextRecords: () => void;
   records: RecordData[];
   recordsLoaded: boolean;
   updateSort: (s: string) => void;

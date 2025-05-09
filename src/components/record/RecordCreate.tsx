@@ -1,14 +1,8 @@
 import RecordForm from "./RecordForm";
-import type { Capabilities, SessionState } from "@src/types";
 import React from "react";
 import { useParams } from "react-router";
 
-export type StateProps = {
-  session: SessionState;
-  capabilities: Capabilities;
-};
-
-export default function RecordCreate({ session, capabilities }: StateProps) {
+export default function RecordCreate() {
   const { bid, cid } = useParams();
 
   return (
@@ -21,7 +15,7 @@ export default function RecordCreate({ session, capabilities }: StateProps) {
       </h1>
       <div className="card">
         <div className="card-body">
-          <RecordForm session={session} capabilities={capabilities} />
+          <RecordForm />
         </div>
       </div>
     </div>

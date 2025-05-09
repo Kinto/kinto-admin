@@ -4,8 +4,13 @@ import { HomePage } from "@src/components/HomePage";
 import Notifications from "@src/components/Notifications";
 import { Sidebar } from "@src/components/Sidebar";
 import { BucketPermissions } from "@src/components/bucket/BucketPermissions";
+import CollectionHistory from "@src/components/collection/CollectionHistory";
 import { CollectionPermissions } from "@src/components/collection/CollectionPermissions";
+import CollectionRecords from "@src/components/collection/CollectionRecords";
 import { GroupPermissions } from "@src/components/group/GroupPermissions";
+import RecordAttributes from "@src/components/record/RecordAttributes";
+import RecordBulk from "@src/components/record/RecordBulk";
+import RecordCreate from "@src/components/record/RecordCreate";
 import { RecordPermissions } from "@src/components/record/RecordPermissions";
 import BucketAttributesPage from "@src/containers/bucket/BucketAttributesPage";
 import BucketCollectionsPage from "@src/containers/bucket/BucketCollectionsPage";
@@ -14,14 +19,9 @@ import BucketGroupsPage from "@src/containers/bucket/BucketGroupsPage";
 import BucketHistoryPage from "@src/containers/bucket/BucketHistoryPage";
 import CollectionAttributesPage from "@src/containers/collection/CollectionAttributesPage";
 import CollectionCreatePage from "@src/containers/collection/CollectionCreatePage";
-import CollectionHistoryPage from "@src/containers/collection/CollectionHistoryPage";
-import CollectionRecordsPage from "@src/containers/collection/CollectionRecordsPage";
 import GroupAttributesPage from "@src/containers/group/GroupAttributesPage";
 import GroupCreatePage from "@src/containers/group/GroupCreatePage";
 import GroupHistoryPage from "@src/containers/group/GroupHistoryPage";
-import RecordAttributesPage from "@src/containers/record/RecordAttributesPage";
-import RecordBulkPage from "@src/containers/record/RecordBulkPage";
-import RecordCreatePage from "@src/containers/record/RecordCreatePage";
 import RecordHistoryPage from "@src/containers/record/RecordHistoryPage";
 import SimpleReviewPage from "@src/containers/signoff/SimpleReviewPage";
 import { useAppSelector } from "@src/hooks/app";
@@ -118,7 +118,7 @@ export function Layout() {
               />
               <Route
                 path="/buckets/:bid/collections/:cid/history"
-                Component={CollectionHistoryPage}
+                Component={CollectionHistory}
               />
               <Route
                 path="/buckets/:bid/collections/:cid/simple-review"
@@ -126,19 +126,19 @@ export function Layout() {
               />
               <Route
                 path="/buckets/:bid/collections/:cid/records?"
-                Component={CollectionRecordsPage}
+                Component={CollectionRecords}
               />
               <Route
                 path="/buckets/:bid/collections/:cid/records/create"
-                Component={RecordCreatePage}
+                Component={RecordCreate}
               />
               <Route
                 path="/buckets/:bid/collections/:cid/records/bulk"
-                Component={RecordBulkPage}
+                Component={RecordBulk}
               />
               <Route
                 path="/buckets/:bid/collections/:cid/records/:rid/attributes?"
-                Component={RecordAttributesPage}
+                Component={RecordAttributes}
               />
               <Route
                 path="/buckets/:bid/collections/:cid/records/:rid/permissions"

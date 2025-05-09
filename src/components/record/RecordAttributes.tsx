@@ -1,14 +1,7 @@
 import RecordForm from "./RecordForm";
 import RecordTabs from "./RecordTabs";
-import * as CollectionActions from "@src/actions/collection";
-import type {
-  BucketState,
-  Capabilities,
-  CollectionState,
-  RecordRouteMatch,
-  RecordState,
-  SessionState,
-} from "@src/types";
+import { useAppSelector } from "@src/hooks/app";
+import type { Capabilities, RecordRouteMatch, SessionState } from "@src/types";
 import React from "react";
 import { useParams } from "react-router";
 
@@ -21,19 +14,11 @@ export type StateProps = {
   capabilities: Capabilities;
 };
 
-export type Props = OwnProps &
-  StateProps & {
-    deleteRecord: typeof CollectionActions.deleteRecord;
-    deleteAttachment: typeof CollectionActions.deleteAttachment;
-  };
+export type Props = OwnProps & StateProps;
 
-export default function RecordAttributes({
-  session,
-  capabilities,
-  deleteRecord,
-  deleteAttachment,
-}: Props) {
+export default function RecordAttributes() {
   const { bid, cid, rid } = useParams();
+  const session = useAppSelector(state => state.session);
 
   return (
     <div>
@@ -49,13 +34,11 @@ export default function RecordAttributes({
         cid={cid}
         rid={rid}
         selected="attributes"
-        capabilities={capabilities}
+        capabilities={session.serverInfo.capabilities}
       >
         <RecordForm
           session={session}
-          deleteRecord={deleteRecord}
-          deleteAttachment={deleteAttachment}
-          capabilities={capabilities}
+          capabilities={session.serverInfo.capabilities}
         />
       </RecordTabs>
     </div>

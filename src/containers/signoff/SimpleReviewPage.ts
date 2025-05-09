@@ -1,4 +1,3 @@
-import * as CollectionActions from "@src/actions/collection";
 import * as SignoffActions from "@src/actions/signoff";
 import { getClient } from "@src/client";
 import type { StateProps } from "@src/components/signoff/SimpleReview";
@@ -24,7 +23,6 @@ function mapStateToProps(
     signoff: state.signoff,
     collection: state.collection,
     capabilities: state.session.serverInfo.capabilities,
-    fetchRecords,
   };
 }
 
@@ -32,7 +30,6 @@ function mapDispatchToProps(dispatch: Dispatch): typeof SignoffActions {
   return bindActionCreators(
     {
       ...SignoffActions,
-      ...CollectionActions,
     },
     dispatch
   );

@@ -1,5 +1,6 @@
 import CollectionTabs from "./CollectionTabs";
 import HistoryTable from "@src/components/HistoryTable";
+import { useAppSelector } from "@src/hooks/app";
 import { useCollectionHistory } from "@src/hooks/collection";
 import type { Capabilities, CollectionState, SessionState } from "@src/types";
 import { parseHistoryFilters } from "@src/utils";
@@ -10,13 +11,12 @@ export type StateProps = {
   capabilities: Capabilities;
 };
 
-export default function CollectionHistory(props: StateProps) {
+export default function CollectionHistory() {
   const { bid, cid } = useParams();
   const [params, setParams] = useSearchParams();
   const filters = parseHistoryFilters(params);
   const history = useCollectionHistory(bid, cid, filters);
-
-  const { capabilities } = props;
+  const session = useAppSelector(state => state.session);
 
   return (
     <div>
@@ -30,7 +30,7 @@ export default function CollectionHistory(props: StateProps) {
         bid={bid}
         cid={cid}
         selected="history"
-        capabilities={capabilities}
+        capabilities={session.serverInfo.capabilities}
       >
         <HistoryTable
           enableDiffOverview
