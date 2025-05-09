@@ -6,12 +6,11 @@ import * as CollectionActions from "@src/actions/collection";
 import AdminLink from "@src/components/AdminLink";
 import Spinner from "@src/components/Spinner";
 import { DEFAULT_SORT } from "@src/constants";
-import { useBucket } from "@src/hooks/bucket";
 import { useCollection } from "@src/hooks/collection";
 import { useRecordList } from "@src/hooks/record";
 import { storageKeys, useLocalStorage } from "@src/hooks/storage";
 import type { BucketState, CollectionState, SessionState } from "@src/types";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Shuffle } from "react-bootstrap-icons";
 import { useParams } from "react-router";
 
@@ -25,20 +24,15 @@ export type StateProps = CommonStateProps & {
   collection: CollectionState;
 };
 
-type Props = CommonProps &
-  OwnProps &
-  StateProps & {
-    deleteRecord: typeof CollectionActions.deleteRecord;
-    listRecords: typeof CollectionActions.listRecords;
-    listNextRecords: typeof CollectionActions.listNextRecords;
-  };
+type Props = CommonProps & OwnProps & StateProps;
 
 export default function CollectionRecords(props: Props) {
-  const { session, deleteRecord, capabilities } = props;
+  const { session, capabilities } = props;
 
   const { bid, cid } = useParams();
   const [sort, setSort] = useState(null);
   const collection = useCollection(bid, cid);
+  const [cacheVal, setCacheVal] = useState(0);
 
   const [useSimpleReview, setUseSimpleReview] = useLocalStorage(
     storageKeys.useSimpleReview,
@@ -52,7 +46,7 @@ export default function CollectionRecords(props: Props) {
     setSort(collection.sort || DEFAULT_SORT);
   }, [bid, cid, collection?.last_modified || 0]);
 
-  const records = useRecordList(bid, cid, sort);
+  const records = useRecordList(bid, cid, sort, false, cacheVal);
 
   const listActions = <ListActions session={session} collection={collection} />;
 
@@ -105,9 +99,11 @@ export default function CollectionRecords(props: Props) {
                 ? collection.displayFields
                 : ["id", "__json"]
             }
-            deleteRecord={deleteRecord}
             updateSort={setSort}
             capabilities={capabilities}
+            callback={() => {
+              setCacheVal(new Date().getTime());
+            }}
           />
         )}
         {listActions}

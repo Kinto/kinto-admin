@@ -84,27 +84,4 @@ describe("root saga", () => {
       expectSagaCalled(saga, action);
     });
   });
-
-  describe("Collection watchers registration", () => {
-    it("should watch for the deleteRecord action", () => {
-      const saga = vi.spyOn(collectionSagas, "deleteRecord");
-      const action = collectionActions.deleteRecord();
-
-      expectSagaCalled(saga, action);
-    });
-
-    it("should watch for the deleteAttachment action", () => {
-      const saga = vi.spyOn(collectionSagas, "deleteAttachment");
-      const action = collectionActions.deleteAttachment();
-
-      expectSagaCalled(saga, action);
-    });
-
-    it("should watch for the bulkCreateRecords action", () => {
-      const saga = vi.spyOn(collectionSagas, "bulkCreateRecords");
-      const action = collectionActions.bulkCreateRecords();
-
-      expectSagaCalled(saga, action);
-    });
-  });
 });

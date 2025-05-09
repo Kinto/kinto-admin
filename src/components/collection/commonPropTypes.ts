@@ -6,5 +6,5 @@ export type CommonStateProps = {
 };
 
 export type CommonProps = CommonStateProps & {
-  deleteRecord: typeof CollectionActions.deleteRecord;
+  deleteRecord: (rid: string, last_modified: number) => void;
 };

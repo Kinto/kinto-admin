@@ -2,10 +2,8 @@ import {
   ATTACHMENT_DELETE_REQUEST,
   COLLECTION_BUSY,
   COLLECTION_RESET,
-  RECORD_BULK_CREATE_REQUEST,
   RECORD_DELETE_REQUEST,
 } from "@src/constants";
-import type { RecordData } from "@src/types";
 
 export function collectionBusy(busy: boolean): {
   type: "COLLECTION_BUSY";
@@ -46,17 +44,4 @@ export function deleteAttachment(
   rid: string;
 } {
   return { type: ATTACHMENT_DELETE_REQUEST, bid, cid, rid };
-}
-
-export function bulkCreateRecords(
-  bid: string,
-  cid: string,
-  records: RecordData[]
-): {
-  type: "RECORD_BULK_CREATE_REQUEST";
-  bid: string;
-  cid: string;
-  records: RecordData[];
-} {
-  return { type: RECORD_BULK_CREATE_REQUEST, bid, cid, records };
 }

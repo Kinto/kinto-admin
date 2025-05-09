@@ -1,6 +1,7 @@
 import RecordRow from "./RecordRow";
 import { CommonProps } from "./commonPropTypes";
 import * as CollectionActions from "@src/actions/collection";
+import { getClient } from "@src/client";
 import AdminLink from "@src/components/AdminLink";
 import PaginatedTable from "@src/components/PaginatedTable";
 import SignoffContainer from "@src/containers/signoff/SignoffToolBar";
@@ -115,6 +116,7 @@ type TableProps = RecordsViewProps & {
   records: RecordData[];
   recordsLoaded: boolean;
   updateSort: (s: string) => void;
+  callback: () => void;
 };
 
 export default function RecordTable({
@@ -127,14 +129,22 @@ export default function RecordTable({
   currentSort,
   schema,
   displayFields,
-  deleteRecord,
   updateSort,
   capabilities,
+  callback,
 }: TableProps) {
   const [filter, setFilter] = useState("");
 
   const onFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilter(e.target.value);
+  };
+
+  const deleteRecord = async (rid, last_modified) => {
+    await getClient().bucket(bid).collection(cid).deleteRecord(rid, {
+      safe: true,
+      last_modified,
+    });
+    callback();
   };
 
   const getFieldTitle = displayField => {

@@ -52,7 +52,8 @@ export default function RecordForm(props: Props) {
   const { bid, cid, rid } = useParams();
   const [asJSON, setAsJSON] = useState(false);
   const collection = useCollection(bid, cid);
-  const record = useRecord(bid, cid, rid);
+  const [cacheVal, setCacheVal] = useState(0);
+  const record = useRecord(bid, cid, rid, cacheVal);
   const navigate = useNavigate();
   const isUpdate = !!record;
 
@@ -231,7 +232,9 @@ export default function RecordForm(props: Props) {
           capabilities={capabilities}
           record={record}
           attachmentRequired={attachment?.required}
-          deleteAttachment={handleDeleteAttachment}
+          callback={() => {
+            setCacheVal(new Date().getTime());
+          }}
         />
       )}
       {getForm()}

@@ -1,9 +1,11 @@
 import { UiSchema } from "@rjsf/utils";
+import { getClient } from "@src/client";
 import type { Capabilities, RecordData, RecordState } from "@src/types";
 import { buildAttachmentUrl, omit } from "@src/utils";
 import { filesize } from "filesize";
 import React from "react";
 import { Paperclip } from "react-bootstrap-icons";
+import { useParams } from "react-router";
 
 export function extendSchemaWithAttachment(
   schema: any,
@@ -81,17 +83,18 @@ export type AttachmentInfoProps = {
   record?: RecordState;
   allowEditing: boolean;
   attachmentRequired: boolean | null | undefined;
-  deleteAttachment: () => void;
   capabilities: Capabilities;
+  callback: () => void;
 };
 
 export function AttachmentInfo(props: AttachmentInfoProps) {
+  const { bid, cid } = useParams();
   const {
     allowEditing,
     record: recordState,
     attachmentRequired,
-    deleteAttachment,
     capabilities,
+    callback,
   } = props;
   if (recordState == null) {
     return null;
@@ -103,6 +106,11 @@ export function AttachmentInfo(props: AttachmentInfoProps) {
   }
 
   const attachmentURL = buildAttachmentUrl(record, capabilities);
+
+  const deleteAttachment = async () => {
+    await getClient().bucket(bid).collection(cid).removeAttachment(record.id);
+    callback();
+  };
 
   const FileSize: React.FC<{ bytes: number }> = ({ bytes }) => {
     return <>{filesize(bytes)}</>;

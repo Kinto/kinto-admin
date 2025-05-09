@@ -32,7 +32,6 @@ export default function RecordRow({
   displayFields,
   capabilities,
   deleteRecord,
-  schema = {},
 }: RowProps) {
   const navigate = useNavigate();
   const session = useAppSelector(state => state.session);
@@ -61,7 +60,7 @@ export default function RecordRow({
       throw Error("can't happen");
     }
     if (window.confirm("Are you sure?")) {
-      deleteRecord(bid, cid, rid, last_modified);
+      deleteRecord(rid, last_modified);
     }
   };
 
