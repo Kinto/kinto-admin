@@ -1,10 +1,8 @@
 import * as bucketActions from "@src/actions/bucket";
 import * as collectionActions from "@src/actions/collection";
-import * as routeActions from "@src/actions/route";
 import * as sessionActions from "@src/actions/session";
 import * as bucketSagas from "@src/sagas/bucket";
 import * as collectionSagas from "@src/sagas/collection";
-import * as routeSagas from "@src/sagas/route";
 import * as sessionSagas from "@src/sagas/session";
 import { configureAppStore } from "@src/store/configureStore";
 
@@ -25,15 +23,6 @@ describe("root saga", () => {
     // To match the behavior of older versions of redux-saga, we're ignoring
     // calls to console.error from these tests.
     vi.spyOn(console, "error").mockImplementation(() => {});
-  });
-
-  describe("Route watchers registration", () => {
-    it("should watch for the setup action", () => {
-      const saga = vi.spyOn(routeSagas, "routeUpdated");
-      const action = routeActions.routeUpdated();
-
-      expectSagaCalled(saga, action);
-    });
   });
 
   describe("Session watchers registration", () => {
@@ -94,51 +83,9 @@ describe("root saga", () => {
 
       expectSagaCalled(saga, action);
     });
-
-    it("should watch for the listBucketCollections action", () => {
-      const saga = vi.spyOn(bucketSagas, "listBucketCollections");
-      const action = bucketActions.listBucketCollections();
-
-      expectSagaCalled(saga, action);
-    });
-
-    it("should watch for the listHistory action", () => {
-      const saga = vi.spyOn(bucketSagas, "listHistory");
-      const action = bucketActions.listBucketHistory();
-
-      expectSagaCalled(saga, action);
-    });
-
-    it("should watch for the listNextHistory action", () => {
-      const saga = vi.spyOn(bucketSagas, "listNextHistory");
-      const action = bucketActions.listBucketNextHistory();
-
-      expectSagaCalled(saga, action);
-    });
   });
 
   describe("Collection watchers registration", () => {
-    it("should watch for the listRecords action", () => {
-      const saga = vi.spyOn(collectionSagas, "listRecords");
-      const action = collectionActions.listRecords();
-
-      expectSagaCalled(saga, action);
-    });
-
-    it("should watch for the createRecord action", () => {
-      const saga = vi.spyOn(collectionSagas, "createRecord");
-      const action = collectionActions.createRecord();
-
-      expectSagaCalled(saga, action);
-    });
-
-    it("should watch for the updateRecord action", () => {
-      const saga = vi.spyOn(collectionSagas, "updateRecord");
-      const action = collectionActions.updateRecord();
-
-      expectSagaCalled(saga, action);
-    });
-
     it("should watch for the deleteRecord action", () => {
       const saga = vi.spyOn(collectionSagas, "deleteRecord");
       const action = collectionActions.deleteRecord();
@@ -156,20 +103,6 @@ describe("root saga", () => {
     it("should watch for the bulkCreateRecords action", () => {
       const saga = vi.spyOn(collectionSagas, "bulkCreateRecords");
       const action = collectionActions.bulkCreateRecords();
-
-      expectSagaCalled(saga, action);
-    });
-
-    it("should watch for the listHistory action", () => {
-      const saga = vi.spyOn(collectionSagas, "listHistory");
-      const action = collectionActions.listCollectionHistory();
-
-      expectSagaCalled(saga, action);
-    });
-
-    it("should watch for the listNextHistory action", () => {
-      const saga = vi.spyOn(collectionSagas, "listNextHistory");
-      const action = collectionActions.listCollectionNextHistory();
 
       expectSagaCalled(saga, action);
     });

@@ -17,14 +17,16 @@ export function useRecordList(
   bid: string,
   cid: string,
   sort: string,
+  fetchAll = false,
   cacheBust?: number
 ): RecordListResult {
   const [val, setVal] = useState({});
 
   useEffect(() => {
     setVal({});
+    if (!bid || !cid) return;
     if (sort) {
-      fetchRecords(bid, cid, sort, [], setVal);
+      fetchRecords(bid, cid, sort, fetchAll, [], setVal);
     }
   }, [bid, cid, sort, cacheBust]);
 
@@ -35,6 +37,7 @@ async function fetchRecords(
   bid: string,
   cid: string,
   sort: string,
+  fetchAll: boolean,
   curData,
   setVal,
   nextPageFn?
@@ -61,6 +64,11 @@ async function fetchRecords(
 
   const data = curData.concat(result.data);
 
+  if (fetchAll && result.hasNextPage) {
+    fetchRecords(bid, cid, sort, fetchAll, data, setVal, result.next);
+    return;
+  }
+
   setVal({
     data,
     hasNextPage: result.hasNextPage,
@@ -68,7 +76,7 @@ async function fetchRecords(
     totalRecords: totalCount,
     next: () => {
       if (result.hasNextPage && result.next) {
-        fetchRecords(bid, cid, sort, data, setVal, result.next);
+        fetchRecords(bid, cid, sort, fetchAll, data, setVal, result.next);
       }
     },
   });

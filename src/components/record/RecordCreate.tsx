@@ -1,12 +1,6 @@
 import RecordForm from "./RecordForm";
-import * as CollectionActions from "@src/actions/collection";
-import type {
-  BucketState,
-  Capabilities,
-  CollectionState,
-  SessionState,
-} from "@src/types";
-import React, { useCallback } from "react";
+import type { Capabilities, SessionState } from "@src/types";
+import React from "react";
 import { useParams } from "react-router";
 
 export type StateProps = {

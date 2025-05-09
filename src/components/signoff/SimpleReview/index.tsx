@@ -8,6 +8,7 @@ import * as SignoffActions from "@src/actions/signoff";
 import Spinner from "@src/components/Spinner";
 import CollectionTabs from "@src/components/collection/CollectionTabs";
 import { useCollection } from "@src/hooks/collection";
+import { useRecordList } from "@src/hooks/record";
 import { useSignoff } from "@src/hooks/signoff";
 import { storageKeys, useLocalStorage } from "@src/hooks/storage";
 import { canEditCollection } from "@src/permission";
@@ -18,7 +19,7 @@ import type {
   SignoffState,
   ValidRecord,
 } from "@src/types";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Shuffle } from "react-bootstrap-icons";
 import { Navigate, useNavigate, useParams } from "react-router";
 
@@ -27,7 +28,6 @@ export type StateProps = {
   session: SessionState;
   capabilities: Capabilities;
   collection: CollectionState;
-  fetchRecords(bid: string, cid: string): Promise<Array<ValidRecord>>;
 };
 
 export type SimpleReviewProps = StateProps & {
@@ -35,17 +35,14 @@ export type SimpleReviewProps = StateProps & {
   declineChanges: typeof SignoffActions.declineChanges;
   requestReview: typeof SignoffActions.requestReview;
   rollbackChanges: typeof SignoffActions.rollbackChanges;
-  listRecords: typeof CollectionActions.listRecords;
 };
 
 export default function SimpleReview({
   session,
-  fetchRecords,
   approveChanges,
   declineChanges,
   requestReview,
   rollbackChanges,
-  listRecords,
   capabilities,
 }: SimpleReviewProps) {
   const { bid, cid } = useParams();
@@ -64,60 +61,18 @@ export default function SimpleReview({
   const destBid = signoffDest?.bucket;
   const destCid = signoffDest?.collection;
 
+  const newRecords = useRecordList(sourceBid, sourceCid, "id", true);
+  const oldRecords = useRecordList(destBid, destCid, "id", true);
+
   const canReview = signoffSource
     ? (isReviewer(signoffSource, session) &&
         session.serverInfo?.user?.id !== signoffSource.lastReviewRequestBy) ||
       !toReviewEnabled(session, signoffSource, signoffDest)
     : false;
 
-  const [records, setRecords] = useState<{
-    loading: boolean;
-    newRecords: ValidRecord[];
-    oldRecords: ValidRecord[];
-  }>({
-    loading: true,
-    newRecords: [],
-    oldRecords: [],
-  });
-
   const canRequestReview =
     canEditCollection(session, bid, cid) &&
     isMember("editors_group", signoffSource, session);
-
-  useEffect(() => {
-    async function load() {
-      if (bid && cid) {
-        // For signoff
-        listRecords(bid, cid, "id");
-      }
-    }
-    load();
-  }, [bid, cid]);
-
-  useEffect(() => {
-    // get collection data
-    async function getRecords() {
-      if (destCid && destBid && sourceBid && sourceCid) {
-        try {
-          const newRecords = await fetchRecords(sourceBid, sourceCid);
-          const oldRecords = await fetchRecords(destBid, destCid);
-          setRecords({ oldRecords, newRecords, loading: false });
-        } catch (ex) {
-          if (ex.data?.code === 401) {
-            setRecords({
-              ...records,
-              loading: false,
-            });
-          } else {
-            console.error(ex);
-          }
-        }
-      } else {
-        setRecords({ oldRecords: [], newRecords: [], loading: false });
-      }
-    }
-    getRecords();
-  }, [destBid, destCid, sourceBid, sourceCid]);
 
   if (!useSimpleReview) {
     return <Navigate to={`/buckets/${bid}/collections/${cid}/records`} />;
@@ -167,8 +122,8 @@ export default function SimpleReview({
           </SimpleReviewHeader>
         )}
         <PerRecordDiffView
-          oldRecords={records.oldRecords}
-          newRecords={records.newRecords}
+          oldRecords={oldRecords.data || []}
+          newRecords={newRecords.data || []}
           collectionData={signoffSource}
           displayFields={collection?.displayFields}
         />
@@ -204,7 +159,11 @@ export default function SimpleReview({
         capabilities={capabilities || {}}
         totalRecords={collection?.totalRecords || 0}
       >
-        {records.loading ? <Spinner /> : <SignoffContent />}
+        {!oldRecords.data || !newRecords.data ? (
+          <Spinner />
+        ) : (
+          <SignoffContent />
+        )}
       </CollectionTabs>
     </div>
   );

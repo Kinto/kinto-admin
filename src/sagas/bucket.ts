@@ -1,7 +1,6 @@
 import * as actions from "@src/actions/bucket";
 import { listBuckets, sessionBusy } from "@src/actions/session";
 import { getClient } from "@src/client";
-import { MAX_PER_PAGE } from "@src/constants";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import type { ActionType, GetStateFn, SagaGen } from "@src/types";
 import { Navigate } from "react-router";
@@ -165,85 +164,6 @@ export function* deleteCollection(
     yield put(listBuckets());
   } catch (error) {
     notifyError("Couldn't delete collection.", error);
-  }
-}
-
-export function* listBucketCollections(
-  getState: GetStateFn,
-  action: ActionType<typeof actions.listBucketCollections>
-): SagaGen {
-  const { bid } = action;
-  try {
-    const bucket = getBucket(bid);
-    const { data, hasNextPage, next } = yield call(
-      [bucket, bucket.listCollections],
-      {
-        limit: MAX_PER_PAGE,
-      }
-    );
-    yield put(actions.listBucketCollectionsSuccess(data, hasNextPage, next));
-  } catch (error) {
-    notifyError("Couldn't list bucket collections.", error);
-  }
-}
-
-export function* listBucketNextCollections(getState: GetStateFn): SagaGen {
-  const {
-    bucket: {
-      collections: { next: fetchNextCollections },
-    },
-  } = getState();
-  if (fetchNextCollections == null) {
-    return;
-  }
-  try {
-    const { data, hasNextPage, next } = yield call(fetchNextCollections);
-    yield put(actions.listBucketCollectionsSuccess(data, hasNextPage, next));
-  } catch (error) {
-    notifyError("Couldn't process next page.", error);
-  }
-}
-
-export function* listHistory(
-  getState: GetStateFn,
-  action: ActionType<typeof actions.listBucketHistory>
-): SagaGen {
-  const {
-    bid,
-    filters: { resource_name },
-  } = action;
-  try {
-    const bucket = getBucket(bid);
-    const { data, hasNextPage, next } = yield call(
-      [bucket, bucket.listHistory],
-      {
-        limit: MAX_PER_PAGE,
-        filters: {
-          resource_name,
-          exclude_resource_name: "record",
-        },
-      }
-    );
-    yield put(actions.listBucketHistorySuccess(data, hasNextPage, next));
-  } catch (error) {
-    notifyError("Couldn't list bucket history.", error);
-  }
-}
-
-export function* listNextHistory(getState: GetStateFn): SagaGen {
-  const {
-    bucket: {
-      history: { next: fetchNextHistory },
-    },
-  } = getState();
-  if (fetchNextHistory == null) {
-    return;
-  }
-  try {
-    const { data, hasNextPage, next } = yield call(fetchNextHistory);
-    yield put(actions.listBucketHistorySuccess(data, hasNextPage, next));
-  } catch (error) {
-    notifyError("Couldn't process next page.", error);
   }
 }
 

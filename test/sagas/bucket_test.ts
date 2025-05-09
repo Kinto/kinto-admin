@@ -1,5 +1,4 @@
 import * as actions from "@src/actions/bucket";
-import { redirectTo } from "@src/actions/route";
 import * as sessionActions from "@src/actions/session";
 import { setClient } from "@src/client";
 import * as saga from "@src/sagas/bucket";
@@ -57,12 +56,6 @@ describe("bucket sagas", () => {
       it("should reload the list of buckets/collections", () => {
         expect(createBucket.next().value).toStrictEqual(
           put(sessionActions.listBuckets())
-        );
-      });
-
-      it("should update the route path", () => {
-        expect(createBucket.next().value).toStrictEqual(
-          put(redirectTo("bucket:attributes", { bid: "bucket" }))
         );
       });
 
@@ -659,155 +652,6 @@ describe("bucket sagas", () => {
           "error"
         );
       });
-    });
-  });
-
-  describe("listBucketCollections()", () => {
-    describe("Success", () => {
-      let bucket, listBucketCollections;
-
-      beforeAll(() => {
-        bucket = { listCollections() {} };
-        setClient({
-          bucket() {
-            return bucket;
-          },
-        });
-        const action = actions.listBucketCollections("bucket");
-        listBucketCollections = saga.listBucketCollections(() => ({}), action);
-      });
-
-      it("should list the collections", () => {
-        expect(listBucketCollections.next().value).toStrictEqual(
-          call([bucket, bucket.listCollections], {
-            limit: 200,
-          })
-        );
-      });
-
-      it("should dispatch the listBucketCollectionsSuccess action", () => {
-        const results = [];
-        expect(
-          listBucketCollections.next({ data: results }).value
-        ).toStrictEqual(put(actions.listBucketCollectionsSuccess(results)));
-      });
-    });
-
-    describe("Failure", () => {
-      let listBucketCollections;
-
-      beforeAll(() => {
-        const action = actions.listBucketCollections("bucket");
-        listBucketCollections = saga.listBucketCollections(() => ({}), action);
-        listBucketCollections.next();
-      });
-
-      it("should dispatch an error notification action", () => {
-        listBucketCollections.throw("error");
-        expect(notifyErrorMock).toHaveBeenCalledWith(
-          "Couldn't list bucket collections.",
-          "error"
-        );
-      });
-    });
-  });
-
-  describe("listHistory()", () => {
-    describe("Success", () => {
-      let bucket, listHistory;
-
-      beforeAll(() => {
-        bucket = { listHistory() {} };
-        setClient({
-          bucket() {
-            return bucket;
-          },
-        });
-        const action = actions.listBucketHistory("bucket");
-        const getState = () => ({});
-        listHistory = saga.listHistory(getState, action);
-      });
-
-      it("should list the history", () => {
-        expect(listHistory.next().value).toStrictEqual(
-          call([bucket, bucket.listHistory], {
-            filters: {
-              resource_name: undefined,
-              exclude_resource_name: "record",
-            },
-            limit: 200,
-          })
-        );
-      });
-
-      it("should dispatch the listBucketHistorySuccess action", () => {
-        const results = [];
-        expect(listHistory.next({ data: results }).value).toStrictEqual(
-          put(actions.listBucketHistorySuccess(results))
-        );
-      });
-
-      it("should filter by resource_name if provided", () => {
-        const action = actions.listBucketHistory("bucket", {
-          resource_name: "bucket",
-        });
-        const historySaga = saga.listHistory(() => ({}), action);
-        expect(historySaga.next().value).toStrictEqual(
-          call([bucket, bucket.listHistory], {
-            filters: {
-              resource_name: "bucket",
-              exclude_resource_name: "record",
-            },
-            limit: 200,
-          })
-        );
-      });
-    });
-
-    describe("Failure", () => {
-      let listHistory;
-
-      beforeAll(() => {
-        const action = actions.listBucketHistory("bucket");
-        listHistory = saga.listHistory(() => ({}), action);
-        listHistory.next();
-      });
-
-      it("should dispatch an error notification action", () => {
-        listHistory.throw("error");
-        expect(notifyErrorMock).toHaveBeenCalledWith(
-          "Couldn't list bucket history.",
-          "error"
-        );
-      });
-    });
-  });
-
-  describe("listNextHistory()", () => {
-    let listNextHistory;
-
-    const fakeNext = () => {};
-
-    beforeAll(() => {
-      const action = actions.listBucketNextHistory();
-      const getState = () => ({ bucket: { history: { next: fakeNext } } });
-      listNextHistory = saga.listNextHistory(getState, action);
-    });
-
-    it("should fetch the next history page", () => {
-      expect(listNextHistory.next().value).toStrictEqual(call(fakeNext));
-    });
-
-    it("should dispatch the listBucketHistorySuccess action", () => {
-      expect(
-        listNextHistory.next({
-          data: [],
-          hasNextPage: true,
-          next: fakeNext,
-        }).value
-      ).toStrictEqual(
-        put(actions.listBucketHistorySuccess([], true, fakeNext))
-      );
     });
   });
 
