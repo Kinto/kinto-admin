@@ -23,7 +23,7 @@ import RecordBulk from "@src/components/record/RecordBulk";
 import RecordCreate from "@src/components/record/RecordCreate";
 import RecordHistory from "@src/components/record/RecordHistory";
 import { RecordPermissions } from "@src/components/record/RecordPermissions";
-import SimpleReviewPage from "@src/containers/signoff/SimpleReviewPage";
+import SimpleReview from "@src/components/signoff/SimpleReview";
 import { useAppSelector } from "@src/hooks/app";
 import * as React from "react";
 import { Navigate, Route, Routes } from "react-router";
@@ -119,7 +119,7 @@ export function Layout() {
               />
               <Route
                 path="/buckets/:bid/collections/:cid/simple-review"
-                Component={SimpleReviewPage}
+                Component={SimpleReview}
               />
               <Route
                 path="/buckets/:bid/collections/:cid/records?"

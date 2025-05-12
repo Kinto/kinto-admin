@@ -1,12 +1,6 @@
 import { notifyError } from "./notifications";
 import { getClient } from "@src/client";
 import { MAX_PER_PAGE } from "@src/constants";
-import type {
-  RecordData,
-  RecordResource,
-  ResourceHistoryEntry,
-} from "@src/types";
-import { PaginationResult } from "kinto/lib/http/base";
 import { useEffect, useState } from "react";
 
 export function useCollection(bid: string, cid: string, cacheBust?: number) {
@@ -38,6 +32,8 @@ export function useCollectionPermissions(
   const [val, setVal] = useState(undefined);
 
   useEffect(() => {
+    setVal(undefined);
+    if (!bid || !cid) return;
     getClient()
       .bucket(bid)
       .collection(cid)

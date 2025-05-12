@@ -1,25 +1,37 @@
 import CollectionTabs from "./CollectionTabs";
-import * as BucketActions from "@src/actions/bucket";
+import { listBuckets } from "@src/actions/session";
+import { getClient } from "@src/client";
 import { PermissionsForm } from "@src/components/PermissionsForm";
 import Spinner from "@src/components/Spinner";
 import { useAppDispatch, useAppSelector } from "@src/hooks/app";
-import { useCollectionPermissions } from "@src/hooks/collection";
+import { useCollection, useCollectionPermissions } from "@src/hooks/collection";
+import { notifySuccess } from "@src/hooks/notifications";
 import { canEditCollection } from "@src/permission";
 import type { CollectionPermissions as CollectionPermissionsType } from "@src/types";
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router";
 
 export function CollectionPermissions() {
   const { bid, cid } = useParams();
+  const [cacheVal, setCacheVal] = useState(0);
   const session = useAppSelector(state => state.session);
-  const permissions = useCollectionPermissions(bid, cid);
+  const collection = useCollection(bid, cid, cacheVal);
+  const permissions = useCollectionPermissions(bid, cid, cacheVal);
   const acls = ["read", "write", "record:create"];
   const dispatch = useAppDispatch();
 
-  const onSubmit = ({ formData }: { formData: CollectionPermissionsType }) => {
-    dispatch(
-      BucketActions.updateCollection(bid, cid, { permissions: formData })
-    );
+  const onSubmit = async ({
+    formData,
+  }: {
+    formData: CollectionPermissionsType;
+  }) => {
+    await getClient().bucket(bid).collection(cid).setPermissions(formData, {
+      safe: true,
+      last_modified: collection.last_modified,
+    });
+    notifySuccess("Collection permissions updated.");
+    setCacheVal(cacheVal + 1);
+    dispatch(listBuckets());
   };
 
   return (
@@ -31,12 +43,7 @@ export function CollectionPermissions() {
         </b>{" "}
         collection permissions
       </h1>
-      <CollectionTabs
-        bid={bid}
-        cid={cid}
-        capabilities={session.serverInfo.capabilities}
-        selected="permissions"
-      >
+      <CollectionTabs bid={bid} cid={cid} selected="permissions">
         {!permissions ? (
           <Spinner />
         ) : (

@@ -1,6 +1,4 @@
-import * as bucketActions from "@src/actions/bucket";
 import * as sessionActions from "@src/actions/session";
-import * as bucketSagas from "@src/sagas/bucket";
 import * as sessionSagas from "@src/sagas/session";
 import { configureAppStore } from "@src/store/configureStore";
 
@@ -34,50 +32,6 @@ describe("root saga", () => {
     it("should watch for the listBuckets action", () => {
       const saga = vi.spyOn(sessionSagas, "listBuckets");
       const action = sessionActions.listBuckets();
-
-      expectSagaCalled(saga, action);
-    });
-  });
-
-  describe("Bucket watchers registration", () => {
-    it("should watch for the createBucket action", () => {
-      const saga = vi.spyOn(bucketSagas, "createBucket");
-      const action = bucketActions.createBucket();
-
-      expectSagaCalled(saga, action);
-    });
-
-    it("should watch for the updateBucket action", () => {
-      const saga = vi.spyOn(bucketSagas, "updateBucket");
-      const action = bucketActions.updateBucket();
-
-      expectSagaCalled(saga, action);
-    });
-
-    it("should watch for the deleteBucket action", () => {
-      const saga = vi.spyOn(bucketSagas, "deleteBucket");
-      const action = bucketActions.deleteBucket();
-
-      expectSagaCalled(saga, action);
-    });
-
-    it("should watch for the createCollection action", () => {
-      const saga = vi.spyOn(bucketSagas, "createCollection");
-      const action = bucketActions.createCollection();
-
-      expectSagaCalled(saga, action);
-    });
-
-    it("should watch for the updateCollection action", () => {
-      const saga = vi.spyOn(bucketSagas, "updateCollection");
-      const action = bucketActions.updateCollection();
-
-      expectSagaCalled(saga, action);
-    });
-
-    it("should watch for the deleteCollection action", () => {
-      const saga = vi.spyOn(bucketSagas, "deleteCollection");
-      const action = bucketActions.deleteCollection();
 
       expectSagaCalled(saga, action);
     });

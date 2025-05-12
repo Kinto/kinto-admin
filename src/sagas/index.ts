@@ -1,6 +1,5 @@
 import * as heartbeatSagas from "./heartbeat";
 import * as sessionSagas from "./session";
-import * as signoffSagas from "./signoff";
 import * as c from "@src/constants";
 import type { GetStateFn, SagaGen } from "@src/types";
 import { all, takeEvery } from "redux-saga/effects";
@@ -21,27 +20,6 @@ export default function* rootSaga(getState: GetStateFn): SagaGen {
     takeEvery(
       c.SESSION_COPY_AUTHENTICATION_HEADER,
       sessionSagas.sessionCopyAuthenticationHeader,
-      getState
-    ),
-    // signoff
-    takeEvery(
-      c.SIGNOFF_REVIEW_REQUEST,
-      signoffSagas.handleRequestReview,
-      getState
-    ),
-    takeEvery(
-      c.SIGNOFF_ROLLBACK_CHANGES,
-      signoffSagas.handleRollbackChanges,
-      getState
-    ),
-    takeEvery(
-      c.SIGNOFF_DECLINE_REQUEST,
-      signoffSagas.handleDeclineChanges,
-      getState
-    ),
-    takeEvery(
-      c.SIGNOFF_SIGNOFF_REQUEST,
-      signoffSagas.handleApproveChanges,
       getState
     ),
     // heartbeat

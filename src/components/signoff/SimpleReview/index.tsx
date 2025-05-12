@@ -1,3 +1,4 @@
+import { getClient } from "@src/client";
 import { isReviewer } from "../SignoffToolBar";
 import { isMember, toReviewEnabled } from "../utils";
 import PerRecordDiffView from "./PerRecordDiffView";
@@ -6,50 +7,24 @@ import SimpleReviewHeader from "./SimpleReviewHeader";
 import * as SignoffActions from "@src/actions/signoff";
 import Spinner from "@src/components/Spinner";
 import CollectionTabs from "@src/components/collection/CollectionTabs";
+import { useAppSelector } from "@src/hooks/app";
 import { useCollection } from "@src/hooks/collection";
 import { useRecordList } from "@src/hooks/record";
 import { useSignoff } from "@src/hooks/signoff";
 import { storageKeys, useLocalStorage } from "@src/hooks/storage";
 import { canEditCollection } from "@src/permission";
-import type {
-  Capabilities,
-  CollectionState,
-  SessionState,
-  SignoffState,
-  ValidRecord,
-} from "@src/types";
 import React from "react";
 import { Shuffle } from "react-bootstrap-icons";
 import { Navigate, useNavigate, useParams } from "react-router";
 
-export type StateProps = {
-  signoff?: SignoffState;
-  session: SessionState;
-  capabilities: Capabilities;
-  collection: CollectionState;
-};
-
-export type SimpleReviewProps = StateProps & {
-  approveChanges: typeof SignoffActions.approveChanges;
-  declineChanges: typeof SignoffActions.declineChanges;
-  requestReview: typeof SignoffActions.requestReview;
-  rollbackChanges: typeof SignoffActions.rollbackChanges;
-};
-
-export default function SimpleReview({
-  session,
-  approveChanges,
-  declineChanges,
-  requestReview,
-  rollbackChanges,
-  capabilities,
-}: SimpleReviewProps) {
+export default function SimpleReview() {
   const { bid, cid } = useParams();
   const collection = useCollection(bid, cid);
   const [useSimpleReview, setUseSimpleReview] = useLocalStorage(
     storageKeys.useSimpleReview,
     true
   );
+  const session = useAppSelector(state => state.session);
   const signoff = useSignoff(bid, cid, session.serverInfo.capabilities.signer);
   const navigate = useNavigate();
   const signoffSource = signoff?.source;
@@ -90,10 +65,28 @@ export default function SimpleReview({
   ) {
     return <Spinner />;
   }
-  const handleRollback = (text: string) => {
-    rollbackChanges(text);
+  const rollbackChanges = (text: string) => {
+
     navigate(`/buckets/${bid}/collections/${cid}/records`);
   };
+
+  const approveChanges = async() => {
+
+    navigate(`/buckets/${bid}/collections/${cid}/records`);
+  }
+
+  const declineChanges = async(text: string) => {
+
+    navigate(`/buckets/${bid}/collections/${cid}/records`);
+  }
+
+  const requestReview = async(text: string) => {
+    getClient().bucket(sourceBid).collection(sourceCid).setData({
+      status: "to-review",
+      last_re
+    })
+    navigate(`/buckets/${bid}/collections/${cid}/records`);
+  }
 
   const SignoffContent = () => {
     if (!signoffSource || !signoffSource?.status) {
@@ -114,7 +107,7 @@ export default function SimpleReview({
               approveChanges={approveChanges}
               declineChanges={declineChanges}
               requestReview={requestReview}
-              rollbackChanges={handleRollback}
+              rollbackChanges={rollbackChanges}
               canReview={canReview}
               canRequestReview={canRequestReview}
             />
@@ -155,7 +148,6 @@ export default function SimpleReview({
         bid={bid}
         cid={cid}
         selected="simple-review"
-        capabilities={capabilities || {}}
         totalRecords={collection?.totalRecords || 0}
       >
         {!oldRecords.data || !newRecords.data ? (
