@@ -1,9 +1,8 @@
 import * as actions from "@src/actions/bucket";
-import { listBuckets, sessionBusy } from "@src/actions/session";
+import { listBuckets } from "@src/actions/session";
 import { getClient } from "@src/client";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import type { ActionType, GetStateFn, SagaGen } from "@src/types";
-import { Navigate } from "react-router";
 import { call, put } from "redux-saga/effects";
 
 function getBucket(bid) {
@@ -12,90 +11,6 @@ function getBucket(bid) {
 
 function getCollection(bid, cid) {
   return getBucket(bid).collection(cid);
-}
-
-export function* createBucket(
-  getState: GetStateFn,
-  action: ActionType<typeof actions.createBucket>
-): SagaGen {
-  const { bid, data } = action;
-  try {
-    const client = getClient();
-    yield put(sessionBusy(true));
-    yield call([client, client.createBucket], bid, { data, safe: true });
-    yield put(listBuckets());
-    // yield put(redirectTo("bucket:attributes", { bid }));
-    notifySuccess("Bucket created.");
-  } catch (error) {
-    yield notifyError("Couldn't create bucket.", error);
-  } finally {
-    yield put(sessionBusy(false));
-  }
-}
-
-export function* updateBucket(
-  getState: GetStateFn,
-  action: ActionType<typeof actions.updateBucket>
-): SagaGen {
-  const {
-    bid,
-    bucket: { data, permissions },
-  } = action;
-  const {
-    bucket: {
-      data: { last_modified },
-    },
-  } = getState();
-  try {
-    const bucket = getBucket(bid);
-    yield put(sessionBusy(true));
-    if (data) {
-      const updatedBucket = { ...data, last_modified };
-      yield call([bucket, bucket.setData], updatedBucket, {
-        safe: true,
-      });
-      // yield put(redirectTo("bucket:attributes", { bid }));
-      notifySuccess("Bucket attributes updated.");
-    } else if (permissions) {
-      yield call([bucket, bucket.setPermissions], permissions, {
-        safe: true,
-        last_modified,
-      });
-      // yield put(redirectTo("bucket:permissions", { bid }));
-      notifySuccess("Bucket permissions updated.");
-    }
-  } catch (error) {
-    yield notifyError("Couldn't update bucket.", error);
-  } finally {
-    yield put(sessionBusy(false));
-  }
-}
-
-export function* deleteBucket(
-  getState: GetStateFn,
-  action: ActionType<typeof actions.deleteBucket>
-): SagaGen {
-  const { bid } = action;
-  const {
-    bucket: {
-      data: { last_modified },
-    },
-  } = getState();
-  try {
-    const client = getClient();
-    yield put(sessionBusy(true));
-    yield call([client, client.deleteBucket], bid, {
-      safe: true,
-      last_modified,
-    });
-    yield put(listBuckets());
-    // yield put(redirectTo("home", {}));
-    notifySuccess("Bucket deleted.");
-  } catch (error) {
-    yield notifyError("Couldn't delete bucket.", error);
-  } finally {
-    yield put(sessionBusy(false));
-  }
 }
 
 export function* createCollection(

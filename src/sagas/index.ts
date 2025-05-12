@@ -24,10 +24,6 @@ export default function* rootSaga(getState: GetStateFn): SagaGen {
       sessionSagas.sessionCopyAuthenticationHeader,
       getState
     ),
-    // bucket
-    takeEvery(c.BUCKET_CREATE_REQUEST, bucketSagas.createBucket, getState),
-    takeEvery(c.BUCKET_UPDATE_REQUEST, bucketSagas.updateBucket, getState),
-    takeEvery(c.BUCKET_DELETE_REQUEST, bucketSagas.deleteBucket, getState),
     // bucket/collections
     takeEvery(
       c.COLLECTION_CREATE_REQUEST,

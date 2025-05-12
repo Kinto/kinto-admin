@@ -13,6 +13,8 @@ export function useBucket(bid: string, cacheBust?: number) {
   const [val, setVal] = useState(undefined);
 
   useEffect(() => {
+    setVal(undefined);
+    if (!bid) return;
     getClient()
       .bucket(bid)
       .getData()

@@ -1,15 +1,18 @@
 import DeleteForm from "./DeleteForm";
 import { RJSFSchema } from "@rjsf/utils";
+import { listBuckets } from "@src/actions/session";
+import { getClient } from "@src/client";
 import BaseForm from "@src/components/BaseForm";
 import JSONEditor from "@src/components/JSONEditor";
 import Spinner from "@src/components/Spinner";
+import { useAppSelector } from "@src/hooks/app";
 import { useBucket } from "@src/hooks/bucket";
+import { notifySuccess } from "@src/hooks/notifications";
 import { canEditBucket } from "@src/permission";
-import type { BucketData, BucketState, SessionState } from "@src/types";
 import { omit } from "@src/utils";
-import React from "react";
+import React, { useState } from "react";
 import { Check2 } from "react-bootstrap-icons";
-import { Link, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 
 const schema: RJSFSchema = {
   type: "object",
@@ -34,20 +37,13 @@ const uiSchema = {
   },
 };
 
-type Props = {
-  session: SessionState;
-  formData?: BucketData;
-  deleteBucket?: (bid: string) => any;
-  onSubmit: (data: any) => any;
-};
-
-export default function BucketForm({ session, deleteBucket, onSubmit }: Props) {
+export default function BucketForm() {
   const { bid } = useParams();
-  const bucket = useBucket(bid);
+  const [cacheVal, setCacheVal] = useState(0);
+  const bucket = useBucket(bid, cacheVal);
+  const session = useAppSelector(state => state.session);
+  const navigate = useNavigate();
 
-  if (bid && !bucket) {
-    return <Spinner />;
-  }
   const creation = !bid;
   const hasWriteAccess = canEditBucket(session, bid);
   const formIsEditable = creation || hasWriteAccess;
@@ -73,7 +69,7 @@ export default function BucketForm({ session, deleteBucket, onSubmit }: Props) {
       };
 
   const alert =
-    formIsEditable || bucket.busy ? null : (
+    formIsEditable || !bucket ? null : (
       <div className="alert alert-warning">
         You don't have the required permission to edit this bucket.
       </div>
@@ -94,10 +90,42 @@ export default function BucketForm({ session, deleteBucket, onSubmit }: Props) {
     </div>
   );
 
+  console.log(bucket);
+
+  const handleOnSubmit = async ({ formData }: RJSFSchema) => {
+    const { id, data } = formData;
+    const attributes = JSON.parse(data);
+
+    if (creation) {
+      try {
+        await getClient().createBucket(id, { data: attributes, safe: true });
+        navigate(`/buckets/${id}/attributes`);
+        notifySuccess("Bucket created.");
+      } catch (ex) {}
+    } else {
+      try {
+        await getClient()
+          .bucket(bid)
+          .setData(
+            { ...attributes, last_modified: bucket.last_modified },
+            { safe: true }
+          );
+        setCacheVal(cacheVal + 1);
+        notifySuccess("Bucket attributes updated.");
+      } catch (ex) {}
+    }
+    listBuckets();
+  };
+
+  const handleDelete = async () => {
+    await getClient().deleteBucket(bid);
+    navigate(`/`);
+  };
+
   return (
     <div>
       {alert}
-      {bucket.busy ? (
+      {bid && !bucket ? (
         <Spinner />
       ) : (
         <BaseForm
@@ -106,17 +134,12 @@ export default function BucketForm({ session, deleteBucket, onSubmit }: Props) {
             formIsEditable ? _uiSchema : { ..._uiSchema, "ui:readonly": true }
           }
           formData={formDataSerialized}
-          onSubmit={({ formData }) => {
-            const { id, data } = formData;
-            // Parse JSON fields so they can be sent to the server
-            const attributes = JSON.parse(data);
-            onSubmit({ id, ...attributes });
-          }}
+          onSubmit={handleOnSubmit}
         >
           {buttons}
         </BaseForm>
       )}
-      {showDeleteForm && <DeleteForm bid={bid} onSubmit={deleteBucket} />}
+      {showDeleteForm && <DeleteForm bid={bid} onSubmit={handleDelete} />}
     </div>
   );
 }

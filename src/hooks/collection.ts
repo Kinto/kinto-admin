@@ -14,6 +14,7 @@ export function useCollection(bid: string, cid: string, cacheBust?: number) {
 
   useEffect(() => {
     setVal(undefined);
+    if (!bid || !cid) return;
     getClient()
       .bucket(bid)
       .collection(cid)

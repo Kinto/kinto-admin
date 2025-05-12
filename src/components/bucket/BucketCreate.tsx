@@ -1,22 +1,12 @@
 import BucketForm from "./BucketForm";
-import * as BucketActions from "@src/actions/bucket";
 import Spinner from "@src/components/Spinner";
-import type { BucketState, SessionState } from "@src/types";
+import { useAppSelector } from "@src/hooks/app";
 import React from "react";
 
-export type StateProps = {
-  session: SessionState;
-  bucket: BucketState;
-};
+export default function BucketCreate() {
+  const session = useAppSelector(state => state.session);
 
-export type Props = StateProps & {
-  createBucket: typeof BucketActions.createBucket;
-};
-
-export default function BucketCreate({ session, bucket, createBucket }) {
-  const { busy } = session;
-
-  if (busy) {
+  if (session.busy || session.authenticating) {
     return <Spinner />;
   }
 
@@ -25,11 +15,7 @@ export default function BucketCreate({ session, bucket, createBucket }) {
       <h1>Create a new bucket</h1>
       <div className="card">
         <div className="card-body">
-          <BucketForm
-            session={session}
-            bucket={bucket}
-            onSubmit={({ id, ...attributes }) => createBucket(id, attributes)}
-          />
+          <BucketForm />
         </div>
       </div>
     </div>

@@ -1,5 +1,4 @@
 import bucket from "./bucket";
-import collection from "./collection";
 import group from "./group";
 import heartbeat from "./heartbeat";
 import record from "./record";
@@ -11,7 +10,6 @@ export default function createRootReducer() {
   return combineReducers({
     session,
     bucket,
-    collection,
     group,
     heartbeat,
     record,
