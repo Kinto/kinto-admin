@@ -3,24 +3,24 @@ import { SessionInfoBar } from "./SessionInfoBar";
 import { HomePage } from "@src/components/HomePage";
 import Notifications from "@src/components/Notifications";
 import { Sidebar } from "@src/components/Sidebar";
+import BucketAttributes from "@src/components/bucket/BucketAttributes";
+import BucketCollections from "@src/components/bucket/BucketCollections";
+import BucketCreate from "@src/components/bucket/BucketCreate";
+import BucketGroups from "@src/components/bucket/BucketGroups";
+import BucketHistory from "@src/components/bucket/BucketHistory";
 import { BucketPermissions } from "@src/components/bucket/BucketPermissions";
 import CollectionHistory from "@src/components/collection/CollectionHistory";
 import { CollectionPermissions } from "@src/components/collection/CollectionPermissions";
 import CollectionRecords from "@src/components/collection/CollectionRecords";
+import GroupCreate from "@src/components/group/GroupCreate";
 import { GroupPermissions } from "@src/components/group/GroupPermissions";
 import RecordAttributes from "@src/components/record/RecordAttributes";
 import RecordBulk from "@src/components/record/RecordBulk";
 import RecordCreate from "@src/components/record/RecordCreate";
 import { RecordPermissions } from "@src/components/record/RecordPermissions";
-import BucketAttributesPage from "@src/containers/bucket/BucketAttributesPage";
-import BucketCollectionsPage from "@src/containers/bucket/BucketCollectionsPage";
-import BucketCreatePage from "@src/containers/bucket/BucketCreatePage";
-import BucketGroupsPage from "@src/containers/bucket/BucketGroupsPage";
-import BucketHistoryPage from "@src/containers/bucket/BucketHistoryPage";
 import CollectionAttributesPage from "@src/containers/collection/CollectionAttributesPage";
 import CollectionCreatePage from "@src/containers/collection/CollectionCreatePage";
 import GroupAttributesPage from "@src/containers/group/GroupAttributesPage";
-import GroupCreatePage from "@src/containers/group/GroupCreatePage";
 import GroupHistoryPage from "@src/containers/group/GroupHistoryPage";
 import RecordHistoryPage from "@src/containers/record/RecordHistoryPage";
 import SimpleReviewPage from "@src/containers/signoff/SimpleReviewPage";
@@ -70,11 +70,11 @@ export function Layout() {
               <Route path="/auth/:payload/:token" Component={HomePage} />
               {/* /buckets */}
               <Route path="/buckets" element={<Navigate to="/" replace />} />
-              <Route path="/buckets/create" Component={BucketCreatePage} />
-              <Route path="/buckets/:bid/groups" Component={BucketGroupsPage} />
+              <Route path="/buckets/create" Component={BucketCreate} />
+              <Route path="/buckets/:bid/groups" Component={BucketGroups} />
               <Route
                 path="/buckets/:bid/groups/create"
-                Component={GroupCreatePage}
+                Component={GroupCreate}
               />
               <Route
                 path="/buckets/:bid/groups/:gid/attributes?"
@@ -90,19 +90,16 @@ export function Layout() {
               />
               <Route
                 path="/buckets/:bid/attributes"
-                Component={BucketAttributesPage}
+                Component={BucketAttributes}
               />
               <Route
                 path="/buckets/:bid/permissions"
                 Component={BucketPermissions}
               />
-              <Route
-                path="/buckets/:bid/history"
-                Component={BucketHistoryPage}
-              />
+              <Route path="/buckets/:bid/history" Component={BucketHistory} />
               <Route
                 path="/buckets/:bid/collections?"
-                Component={BucketCollectionsPage}
+                Component={BucketCollections}
               />
               <Route
                 path="/buckets/:bid/collections/create"

@@ -1,26 +1,14 @@
-import Spinner from "../Spinner";
 import BucketTabs from "./BucketTabs";
 import { DataList, ListActions } from "./GroupDataList";
+import { useAppSelector } from "@src/hooks/app";
 import { useGroupList } from "@src/hooks/group";
-import type {
-  BucketRouteMatch,
-  BucketState,
-  Capabilities,
-  SessionState,
-} from "@src/types";
 import React from "react";
 import { useParams } from "react-router";
 
-type StateProps = {
-  session: SessionState;
-  capabilities: Capabilities;
-};
-
-type Props = StateProps;
-
-export default function BucketCollections({ session, capabilities }: Props) {
+export default function BucketGroups() {
   const { bid } = useParams();
   const groups = useGroupList(bid);
+  const session = useAppSelector(state => state.session);
 
   const listActions = (
     <ListActions bid={bid} session={session} busy={!groups} />
@@ -31,7 +19,7 @@ export default function BucketCollections({ session, capabilities }: Props) {
       <h1>
         Groups of <b>{bid}</b>
       </h1>
-      <BucketTabs bid={bid} selected="groups" capabilities={capabilities}>
+      <BucketTabs bid={bid} selected="groups">
         {listActions}
         {groups && groups.length === 0 ? (
           <div className="alert alert-info">
@@ -41,7 +29,7 @@ export default function BucketCollections({ session, capabilities }: Props) {
           <DataList
             bid={bid}
             groups={groups}
-            capabilities={capabilities}
+            capabilities={session.serverInfo.capabilities}
             showSpinner={!groups}
           />
         )}

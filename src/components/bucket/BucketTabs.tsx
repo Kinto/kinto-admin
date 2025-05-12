@@ -1,4 +1,5 @@
 import AdminLink from "@src/components/AdminLink";
+import { useAppSelector } from "@src/hooks/app";
 import type { Capabilities } from "@src/types";
 import React from "react";
 import {
@@ -12,16 +13,11 @@ import {
 type Props = {
   bid: string;
   selected: "collections" | "groups" | "attributes" | "permissions" | "history";
-  capabilities: Capabilities;
   children?: React.ReactNode;
 };
 
-export default function BucketTabs({
-  bid,
-  selected,
-  capabilities,
-  children,
-}: Props) {
+export default function BucketTabs({ bid, selected, children }: Props) {
+  const session = useAppSelector(state => state.session);
   return (
     <div className="card">
       <div className="card-header">
@@ -63,7 +59,7 @@ export default function BucketTabs({
               </AdminLink>
             </li>
           ))}
-          {"history" in capabilities && (
+          {"history" in session.serverInfo.capabilities && (
             <li className="nav-item" role="presentation">
               <AdminLink
                 name="bucket:history"

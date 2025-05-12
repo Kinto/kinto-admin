@@ -1,37 +1,14 @@
 import GroupForm from "./GroupForm";
-import * as BucketActions from "@src/actions/bucket";
 import Spinner from "@src/components/Spinner";
-import type {
-  BucketRouteMatch,
-  BucketState,
-  GroupState,
-  SessionState,
-} from "@src/types";
+import { useAppSelector } from "@src/hooks/app";
 import React from "react";
+import { useParams } from "react-router";
 
-export type OwnProps = {
-  match: BucketRouteMatch;
-};
+export default function GroupCreate() {
+  const { bid, gid } = useParams();
+  const session = useAppSelector(state => state.session);
 
-export type StateProps = {
-  session: SessionState;
-  bucket: BucketState;
-  group: GroupState;
-};
-
-export type Props = OwnProps &
-  StateProps & {
-    createGroup: typeof BucketActions.createGroup;
-  };
-
-export default function GroupCreate(props: Props) {
-  const { match, session, bucket, group, createGroup } = props;
-  const {
-    params: { bid },
-  } = match;
-  const { busy } = session;
-
-  if (busy) {
+  if (session.busy) {
     return <Spinner />;
   }
 
@@ -42,12 +19,7 @@ export default function GroupCreate(props: Props) {
       </h1>
       <div className="card">
         <div className="card-body">
-          <GroupForm
-            session={session}
-            bucket={bucket}
-            group={group}
-            onSubmit={formData => createGroup(bid, formData)}
-          />
+          <GroupForm />
         </div>
       </div>
     </div>

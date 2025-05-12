@@ -1,30 +1,14 @@
 import BucketTabs from "./BucketTabs";
 import { DataList, ListActions } from "./CollectionDataList";
-import * as BucketActions from "@src/actions/bucket";
+import { useAppSelector } from "@src/hooks/app";
 import { useCollectionList } from "@src/hooks/collection";
-import type { Capabilities, SessionState } from "@src/types";
-import React, { useEffect } from "react";
+import React from "react";
 import { useParams } from "react-router";
 
-export type StateProps = {
-  session: SessionState;
-  capabilities: Capabilities;
-};
-
-export type Props = OwnProps &
-  StateProps & {
-    listBucketCollections: typeof BucketActions.listBucketCollections;
-    listBucketNextCollections: typeof BucketActions.listBucketNextCollections;
-  };
-
-export default function BucketCollections({
-  session,
-  capabilities,
-  listBucketCollections,
-  listBucketNextCollections,
-}) {
+export default function BucketCollections() {
   const { bid } = useParams();
   const collections = useCollectionList(bid);
+  const session = useAppSelector(state => state.session);
 
   const listActions = (
     <ListActions bid={bid} session={session} busy={!collections} />
@@ -35,7 +19,7 @@ export default function BucketCollections({
       <h1>
         Collections of <b>{bid}</b>
       </h1>
-      <BucketTabs bid={bid} selected="collections" capabilities={capabilities}>
+      <BucketTabs bid={bid} selected="collections">
         {listActions}
         {collections && collections.length === 0 ? (
           <div className="alert alert-info">
@@ -45,8 +29,8 @@ export default function BucketCollections({
           <DataList
             bid={bid}
             collections={collections}
-            listBucketNextCollections={listBucketNextCollections}
-            capabilities={capabilities}
+            listBucketNextCollections={collections?.next}
+            capabilities={session.serverInfo.capabilities}
             showSpinner={!collections}
           />
         )}

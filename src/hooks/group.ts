@@ -65,6 +65,8 @@ export function useGroup(bid: string, gid: string, cacheBust?: number) {
   const [val, setVal] = useState(undefined);
 
   useEffect(() => {
+    setVal(undefined);
+    if (!bid || !gid) return;
     getClient()
       .bucket(bid)
       .getGroup(gid)

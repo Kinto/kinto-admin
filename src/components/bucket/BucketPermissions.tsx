@@ -1,41 +1,49 @@
 import BucketTabs from "./BucketTabs";
-import * as BucketActions from "@src/actions/bucket";
+import { getClient } from "@src/client";
 import { PermissionsForm } from "@src/components/PermissionsForm";
 import Spinner from "@src/components/Spinner";
-import { useAppDispatch, useAppSelector } from "@src/hooks/app";
+import { useAppSelector } from "@src/hooks/app";
+import { useBucket, useBucketPermissions } from "@src/hooks/bucket";
+import { notifySuccess } from "@src/hooks/notifications";
 import { canEditBucket } from "@src/permission";
 import type { BucketPermissions as BucketPermissionsType } from "@src/types";
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router";
 
 export function BucketPermissions() {
-  const dispatch = useAppDispatch();
-  const { bid } = useParams<{ bid: string }>();
+  const { bid } = useParams();
+  const [cacheVal, setCacheVal] = useState(0);
   const session = useAppSelector(store => store.session);
-  const bucket = useAppSelector(store => store.bucket);
-  const onSubmit = ({ formData }: { formData: BucketPermissionsType }) => {
-    dispatch(BucketActions.updateBucket(bid, { permissions: formData }));
+  const bucket = useBucket(bid, cacheVal);
+  const permissions = useBucketPermissions(bid, cacheVal);
+
+  const onSubmit = async ({
+    formData,
+  }: {
+    formData: BucketPermissionsType;
+  }) => {
+    await getClient().bucket(bid).setPermissions(formData, {
+      safe: true,
+      last_modified: bucket.last_modified,
+    });
+    notifySuccess("Bucket permissions updated.");
+    setCacheVal(cacheVal + 1);
   };
 
-  const { busy, permissions } = bucket;
   const acls = ["read", "write", "collection:create", "group:create"];
   return (
     <div>
       <h1>
         Edit <b>{bid}</b> bucket permissions
       </h1>
-      <BucketTabs
-        bid={bid}
-        capabilities={session.serverInfo.capabilities}
-        selected="permissions"
-      >
-        {busy ? (
+      <BucketTabs bid={bid} selected="permissions">
+        {!permissions ? (
           <Spinner />
         ) : (
           <PermissionsForm
             permissions={permissions}
             acls={acls}
-            readonly={!canEditBucket(session, bucket.data.id)}
+            readonly={!canEditBucket(session, bid)}
             onSubmit={onSubmit}
           />
         )}

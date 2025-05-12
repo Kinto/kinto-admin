@@ -1,21 +1,17 @@
 import DeleteForm from "./DeleteForm";
 import { RJSFSchema, UiSchema } from "@rjsf/utils";
+import { getClient } from "@src/client";
 import AdminLink from "@src/components/AdminLink";
 import BaseForm from "@src/components/BaseForm";
 import JSONEditor from "@src/components/JSONEditor";
 import Spinner from "@src/components/Spinner";
+import { useAppSelector } from "@src/hooks/app";
 import { useGroup } from "@src/hooks/group";
 import { canCreateGroup, canEditGroup } from "@src/permission";
-import type {
-  BucketState,
-  GroupData,
-  GroupState,
-  SessionState,
-} from "@src/types";
 import { omit } from "@src/utils";
-import React, { useCallback } from "react";
+import React, { useState } from "react";
 import { Check2 } from "react-bootstrap-icons";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 const schema: RJSFSchema = {
   type: "object",
@@ -49,36 +45,41 @@ const uiSchema: UiSchema = {
   },
 };
 
-type Props = {
-  bid?: string;
-  gid?: string;
-  session: SessionState;
-  bucket: BucketState;
-  group: GroupState;
-  formData?: GroupData;
-  onSubmit: (formData: GroupData) => any;
-  deleteGroup?: (gid: string) => any;
-};
-
-export default function GroupForm(props: Props) {
+export default function GroupForm() {
   const { bid, gid } = useParams();
-  const group = useGroup(bid, gid);
+  const [cacheVal, setCacheVal] = useState(0);
+  const group = useGroup(bid, gid, cacheVal);
+  const navigate = useNavigate();
+  const session = useAppSelector(state => state.session);
 
-  const { session, onSubmit: propOnSubmit, deleteGroup } = props;
+  const onSubmit = async ({ formData }) => {
+    const { data } = formData;
+    const attributes = JSON.parse(data);
+    const toSave = {
+      // #273: Ensure omitting "members" value from entered JSON data so we
+      // don't override the ones entered in the dedicated field
+      ...omit(formData, ["data"]),
+      ...omit(attributes, ["members"]),
+    };
 
-  const onSubmit = useCallback(
-    ({ formData }) => {
-      const { data } = formData;
-      const attributes = JSON.parse(data);
-      propOnSubmit({
-        // #273: Ensure omitting "members" value from entered JSON data so we
-        // don't override the ones entered in the dedicated field
-        ...omit(formData, ["data"]),
-        ...omit(attributes, ["members"]),
-      } as any);
-    },
-    [propOnSubmit]
-  );
+    if (!gid) {
+      getClient().bucket(bid).createGroup(toSave.id, toSave.members, {
+        data: toSave,
+        safe: true,
+      });
+      navigate(`/buckets/${bid}/groups/${toSave.id}`);
+    } else {
+      getClient().bucket(bid).updateGroup(toSave, {
+        safe: true,
+      });
+      setCacheVal(cacheVal + 1);
+    }
+  };
+
+  const deleteGroup = async () => {
+    await getClient().bucket(bid).deleteGroup(gid);
+    navigate(`/buckets/${bid}/groups`);
+  };
 
   const creation = !gid;
   const hasWriteAccess = creation
@@ -131,7 +132,7 @@ export default function GroupForm(props: Props) {
   return (
     <div>
       {alert}
-      {!group ? (
+      {bid && gid && !group ? (
         <Spinner />
       ) : (
         <BaseForm

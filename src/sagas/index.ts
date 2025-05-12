@@ -40,10 +40,6 @@ export default function* rootSaga(getState: GetStateFn): SagaGen {
       bucketSagas.deleteCollection,
       getState
     ),
-    // bucket/groups
-    takeEvery(c.GROUP_CREATE_REQUEST, bucketSagas.createGroup, getState),
-    takeEvery(c.GROUP_UPDATE_REQUEST, bucketSagas.updateGroup, getState),
-    takeEvery(c.GROUP_DELETE_REQUEST, bucketSagas.deleteGroup, getState),
     // signoff
     takeEvery(
       c.SIGNOFF_REVIEW_REQUEST,
