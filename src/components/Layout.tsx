@@ -12,7 +12,9 @@ import { BucketPermissions } from "@src/components/bucket/BucketPermissions";
 import CollectionHistory from "@src/components/collection/CollectionHistory";
 import { CollectionPermissions } from "@src/components/collection/CollectionPermissions";
 import CollectionRecords from "@src/components/collection/CollectionRecords";
+import GroupAttributes from "@src/components/group/GroupAttributes";
 import GroupCreate from "@src/components/group/GroupCreate";
+import GroupHistory from "@src/components/group/GroupHistory";
 import { GroupPermissions } from "@src/components/group/GroupPermissions";
 import RecordAttributes from "@src/components/record/RecordAttributes";
 import RecordBulk from "@src/components/record/RecordBulk";
@@ -20,8 +22,6 @@ import RecordCreate from "@src/components/record/RecordCreate";
 import { RecordPermissions } from "@src/components/record/RecordPermissions";
 import CollectionAttributesPage from "@src/containers/collection/CollectionAttributesPage";
 import CollectionCreatePage from "@src/containers/collection/CollectionCreatePage";
-import GroupAttributesPage from "@src/containers/group/GroupAttributesPage";
-import GroupHistoryPage from "@src/containers/group/GroupHistoryPage";
 import RecordHistoryPage from "@src/containers/record/RecordHistoryPage";
 import SimpleReviewPage from "@src/containers/signoff/SimpleReviewPage";
 import { useAppSelector } from "@src/hooks/app";
@@ -78,7 +78,7 @@ export function Layout() {
               />
               <Route
                 path="/buckets/:bid/groups/:gid/attributes?"
-                Component={GroupAttributesPage}
+                Component={GroupAttributes}
               />
               <Route
                 path="/buckets/:bid/groups/:gid/permissions"
@@ -86,7 +86,7 @@ export function Layout() {
               />
               <Route
                 path="/buckets/:bid/groups/:gid/history"
-                Component={GroupHistoryPage}
+                Component={GroupHistory}
               />
               <Route
                 path="/buckets/:bid/attributes"
