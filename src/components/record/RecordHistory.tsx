@@ -1,31 +1,12 @@
 import RecordTabs from "./RecordTabs";
-import * as RecordActions from "@src/actions/record";
 import HistoryTable from "@src/components/HistoryTable";
-import { useRecord, useRecordHistory } from "@src/hooks/record";
-import type {
-  Capabilities,
-  RecordRouteMatch,
-  RecordState,
-  SessionState,
-} from "@src/types";
+import { useRecordHistory } from "@src/hooks/record";
 import React from "react";
 import { useParams } from "react-router";
 
-export type StateProps = {
-  session: SessionState;
-  capabilities: Capabilities;
-  record: RecordState;
-};
-
-export type Props = StateProps & {
-  listRecordHistory: typeof RecordActions.listRecordHistory;
-  listRecordNextHistory: typeof RecordActions.listRecordNextHistory;
-};
-
-export default function RecordHistory(props: Props) {
+export default function RecordHistory() {
   const { bid, cid, rid } = useParams();
   const history = useRecordHistory(bid, cid, rid);
-  const { capabilities } = props;
 
   return (
     <div>
@@ -35,13 +16,7 @@ export default function RecordHistory(props: Props) {
           {bid}/{cid}/{rid}
         </b>
       </h1>
-      <RecordTabs
-        bid={bid}
-        cid={cid}
-        rid={rid}
-        selected="history"
-        capabilities={capabilities}
-      >
+      <RecordTabs bid={bid} cid={cid} rid={rid} selected="history">
         <HistoryTable
           bid={bid}
           historyLoaded={history.data !== undefined}

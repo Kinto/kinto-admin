@@ -1,16 +1,20 @@
+import Spinner from "../Spinner";
 import DeleteForm from "./DeleteForm";
 import { FormInstructions } from "./FormInstructions";
 import JSONCollectionForm from "./JSONCollectionForm";
 import { RJSFSchema } from "@rjsf/utils";
+import { listBuckets } from "@src/actions/session";
+import { getClient } from "@src/client";
 import BaseForm from "@src/components/BaseForm";
 import JSONEditor from "@src/components/JSONEditor";
-import { useAppSelector } from "@src/hooks/app";
+import { useAppDispatch, useAppSelector } from "@src/hooks/app";
 import { useCollection } from "@src/hooks/collection";
+import { notifySuccess } from "@src/hooks/notifications";
 import { canCreateCollection, canEditCollection } from "@src/permission";
 import { validateSchema, validateUiSchema } from "@src/utils";
 import React, { useState } from "react";
 import { Check2 } from "react-bootstrap-icons";
-import { Link, useParams } from "react-router";
+import { Link, redirect, useNavigate, useParams } from "react-router";
 
 const defaultSchema = JSON.stringify(
   {
@@ -225,6 +229,12 @@ export default function CollectionForm() {
   const { bid, cid } = useParams();
   const [cacheVal, setCacheVal] = useState(0);
   const collection = useCollection(bid, cid, cacheVal);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  if (cid && !collection) {
+    return <Spinner />;
+  }
 
   const allowEditing = collection?.id
     ? canEditCollection(session, bid, cid)
@@ -291,7 +301,7 @@ export default function CollectionForm() {
     </div>
   );
 
-  const handleOnSubmit = ({ formData }) => {
+  const handleOnSubmit = async ({ formData }) => {
     const collectionData = asJSON
       ? formData
       : {
@@ -299,10 +309,30 @@ export default function CollectionForm() {
           schema: JSON.parse(formData.schema),
           uiSchema: JSON.parse(formData.uiSchema),
         };
-    onSubmit(collectionData);
+
+    if (creation) {
+      await getClient().bucket(bid).createCollection(collectionData.id, {
+        data: collectionData,
+        safe: true,
+      });
+      notifySuccess("Collection created.");
+      navigate(`/buckets/${bid}/collections/${formData.id}/records`);
+    } else {
+      await getClient().bucket(bid).collection(cid).setData(collectionData, {
+        safe: true,
+        last_modified: collection.last_modified,
+      });
+      notifySuccess("Collection attributes updated.");
+      setCacheVal(cacheVal + 1);
+    }
+    dispatch(listBuckets());
   };
 
-  const deleteCollection = async () => {};
+  const deleteCollection = async () => {
+    await getClient().bucket(bid).deleteCollection(cid);
+    dispatch(listBuckets());
+    navigate(`/buckets/${bid}/collections`);
+  };
 
   return (
     <div>

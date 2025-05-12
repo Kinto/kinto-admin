@@ -1,4 +1,3 @@
-import * as bucketSagas from "./bucket";
 import * as heartbeatSagas from "./heartbeat";
 import * as sessionSagas from "./session";
 import * as signoffSagas from "./signoff";
@@ -22,22 +21,6 @@ export default function* rootSaga(getState: GetStateFn): SagaGen {
     takeEvery(
       c.SESSION_COPY_AUTHENTICATION_HEADER,
       sessionSagas.sessionCopyAuthenticationHeader,
-      getState
-    ),
-    // bucket/collections
-    takeEvery(
-      c.COLLECTION_CREATE_REQUEST,
-      bucketSagas.createCollection,
-      getState
-    ),
-    takeEvery(
-      c.COLLECTION_UPDATE_REQUEST,
-      bucketSagas.updateCollection,
-      getState
-    ),
-    takeEvery(
-      c.COLLECTION_DELETE_REQUEST,
-      bucketSagas.deleteCollection,
       getState
     ),
     // signoff

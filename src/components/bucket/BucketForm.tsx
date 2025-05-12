@@ -5,7 +5,7 @@ import { getClient } from "@src/client";
 import BaseForm from "@src/components/BaseForm";
 import JSONEditor from "@src/components/JSONEditor";
 import Spinner from "@src/components/Spinner";
-import { useAppSelector } from "@src/hooks/app";
+import { useAppDispatch, useAppSelector } from "@src/hooks/app";
 import { useBucket } from "@src/hooks/bucket";
 import { notifySuccess } from "@src/hooks/notifications";
 import { canEditBucket } from "@src/permission";
@@ -43,6 +43,7 @@ export default function BucketForm() {
   const bucket = useBucket(bid, cacheVal);
   const session = useAppSelector(state => state.session);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const creation = !bid;
   const hasWriteAccess = canEditBucket(session, bid);
@@ -112,7 +113,7 @@ export default function BucketForm() {
         notifySuccess("Bucket attributes updated.");
       } catch (ex) {}
     }
-    listBuckets();
+    dispatch(listBuckets());
   };
 
   const handleDelete = async () => {

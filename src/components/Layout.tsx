@@ -21,8 +21,8 @@ import { GroupPermissions } from "@src/components/group/GroupPermissions";
 import RecordAttributes from "@src/components/record/RecordAttributes";
 import RecordBulk from "@src/components/record/RecordBulk";
 import RecordCreate from "@src/components/record/RecordCreate";
+import RecordHistory from "@src/components/record/RecordHistory";
 import { RecordPermissions } from "@src/components/record/RecordPermissions";
-import RecordHistoryPage from "@src/containers/record/RecordHistoryPage";
 import SimpleReviewPage from "@src/containers/signoff/SimpleReviewPage";
 import { useAppSelector } from "@src/hooks/app";
 import * as React from "react";
@@ -143,7 +143,7 @@ export function Layout() {
               />
               <Route
                 path="/buckets/:bid/collections/:cid/records/:rid/history"
-                Component={RecordHistoryPage}
+                Component={RecordHistory}
               />
               <Route path="*" Component={_ => <h1>Page not found.</h1>} />
             </Routes>
