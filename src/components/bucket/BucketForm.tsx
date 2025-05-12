@@ -90,8 +90,6 @@ export default function BucketForm() {
     </div>
   );
 
-  console.log(bucket);
-
   const handleOnSubmit = async ({ formData }: RJSFSchema) => {
     const { id, data } = formData;
     const attributes = JSON.parse(data);

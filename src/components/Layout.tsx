@@ -9,6 +9,8 @@ import BucketCreate from "@src/components/bucket/BucketCreate";
 import BucketGroups from "@src/components/bucket/BucketGroups";
 import BucketHistory from "@src/components/bucket/BucketHistory";
 import { BucketPermissions } from "@src/components/bucket/BucketPermissions";
+import CollectionAttributes from "@src/components/collection/CollectionAttributes";
+import CollectionCreate from "@src/components/collection/CollectionCreate";
 import CollectionHistory from "@src/components/collection/CollectionHistory";
 import { CollectionPermissions } from "@src/components/collection/CollectionPermissions";
 import CollectionRecords from "@src/components/collection/CollectionRecords";
@@ -20,8 +22,6 @@ import RecordAttributes from "@src/components/record/RecordAttributes";
 import RecordBulk from "@src/components/record/RecordBulk";
 import RecordCreate from "@src/components/record/RecordCreate";
 import { RecordPermissions } from "@src/components/record/RecordPermissions";
-import CollectionAttributesPage from "@src/containers/collection/CollectionAttributesPage";
-import CollectionCreatePage from "@src/containers/collection/CollectionCreatePage";
 import RecordHistoryPage from "@src/containers/record/RecordHistoryPage";
 import SimpleReviewPage from "@src/containers/signoff/SimpleReviewPage";
 import { useAppSelector } from "@src/hooks/app";
@@ -103,11 +103,11 @@ export function Layout() {
               />
               <Route
                 path="/buckets/:bid/collections/create"
-                Component={CollectionCreatePage}
+                Component={CollectionCreate}
               />
               <Route
                 path="/buckets/:bid/collections/:cid/attributes"
-                Component={CollectionAttributesPage}
+                Component={CollectionAttributes}
               />
               <Route
                 path="/buckets/:bid/collections/:cid/permissions"

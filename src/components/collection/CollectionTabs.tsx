@@ -1,6 +1,6 @@
 import AdminLink from "@src/components/AdminLink";
+import { useAppSelector } from "@src/hooks/app";
 import { storageKeys, useLocalStorage } from "@src/hooks/storage";
-import type { Capabilities } from "@src/types";
 import React from "react";
 import {
   Braces,
@@ -20,7 +20,6 @@ type Props = {
     | "permissions"
     | "history"
     | "simple-review";
-  capabilities: Capabilities;
   children?: React.ReactNode;
   totalRecords?: number | null;
 };
@@ -29,11 +28,11 @@ export default function CollectionTabs({
   bid,
   cid,
   selected,
-  capabilities,
   children,
   totalRecords,
 }: Props) {
   const [useSimpleReview] = useLocalStorage(storageKeys.useSimpleReview, true);
+  const session = useAppSelector(state => state.session);
 
   return (
     <div className="card">
@@ -55,7 +54,7 @@ export default function CollectionTabs({
               Records {totalRecords ? `(${totalRecords})` : null}
             </AdminLink>
           </li>
-          {capabilities.signer && useSimpleReview && (
+          {session.serverInfo.capabilities.signer && useSimpleReview && (
             <li
               className="nav-item"
               role="presentation"
@@ -105,7 +104,7 @@ export default function CollectionTabs({
               Permissions
             </AdminLink>
           </li>
-          {"history" in capabilities && (
+          {"history" in session.serverInfo.capabilities && (
             <li
               className="nav-item"
               role="presentation"

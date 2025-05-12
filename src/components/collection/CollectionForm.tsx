@@ -4,15 +4,9 @@ import JSONCollectionForm from "./JSONCollectionForm";
 import { RJSFSchema } from "@rjsf/utils";
 import BaseForm from "@src/components/BaseForm";
 import JSONEditor from "@src/components/JSONEditor";
-import { useBucket } from "@src/hooks/bucket";
+import { useAppSelector } from "@src/hooks/app";
 import { useCollection } from "@src/hooks/collection";
 import { canCreateCollection, canEditCollection } from "@src/permission";
-import type {
-  BucketState,
-  CollectionData,
-  CollectionState,
-  SessionState,
-} from "@src/types";
 import { validateSchema, validateUiSchema } from "@src/utils";
 import React, { useState } from "react";
 import { Check2 } from "react-bootstrap-icons";
@@ -225,24 +219,12 @@ function validate({ schema, uiSchema, displayFields }, errors) {
   return errors;
 }
 
-type Props = {
-  cid?: string;
-  session: SessionState;
-  bucket: BucketState;
-  collection: CollectionState;
-  deleteCollection?: (cid: string) => any;
-  onSubmit: (formData: CollectionData) => any;
-  formData?: CollectionData;
-};
-
-export default function CollectionForm({
-  session,
-  deleteCollection,
-  onSubmit,
-}: Props) {
+export default function CollectionForm() {
+  const session = useAppSelector(state => state.session);
   const [asJSON, setAsJSON] = useState(false);
   const { bid, cid } = useParams();
-  const collection = useCollection(bid, cid);
+  const [cacheVal, setCacheVal] = useState(0);
+  const collection = useCollection(bid, cid, cacheVal);
 
   const allowEditing = collection?.id
     ? canEditCollection(session, bid, cid)
@@ -257,17 +239,6 @@ export default function CollectionForm({
   const onSchemalessLinkClick = event => {
     event.preventDefault();
     setAsJSON(true);
-  };
-
-  const handleOnSubmit = ({ formData }) => {
-    const collectionData = asJSON
-      ? formData
-      : {
-          ...formData,
-          schema: JSON.parse(formData.schema),
-          uiSchema: JSON.parse(formData.uiSchema),
-        };
-    onSubmit(collectionData);
   };
 
   const creation = !collection?.id;
@@ -319,6 +290,19 @@ export default function CollectionForm({
       </a>
     </div>
   );
+
+  const handleOnSubmit = ({ formData }) => {
+    const collectionData = asJSON
+      ? formData
+      : {
+          ...formData,
+          schema: JSON.parse(formData.schema),
+          uiSchema: JSON.parse(formData.uiSchema),
+        };
+    onSubmit(collectionData);
+  };
+
+  const deleteCollection = async () => {};
 
   return (
     <div>

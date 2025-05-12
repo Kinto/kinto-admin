@@ -33,12 +33,7 @@ export default function GroupHistory({ capabilities }: Props) {
           {bid}/{gid}
         </b>
       </h1>
-      <CollectionTabs
-        bid={bid}
-        gid={gid}
-        selected="history"
-        capabilities={capabilities}
-      >
+      <CollectionTabs bid={bid} gid={gid} selected="history">
         <HistoryTable
           bid={bid}
           historyLoaded={history.data !== undefined}
