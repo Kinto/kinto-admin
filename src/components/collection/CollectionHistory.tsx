@@ -2,18 +2,13 @@ import CollectionTabs from "./CollectionTabs";
 import HistoryTable from "@src/components/HistoryTable";
 import { useAppSelector } from "@src/hooks/app";
 import { useCollectionHistory } from "@src/hooks/collection";
-import type { Capabilities, CollectionState, SessionState } from "@src/types";
 import { parseHistoryFilters } from "@src/utils";
 import React from "react";
 import { useParams, useSearchParams } from "react-router";
 
-export type StateProps = {
-  capabilities: Capabilities;
-};
-
 export default function CollectionHistory() {
   const { bid, cid } = useParams();
-  const [params, setParams] = useSearchParams();
+  const [params, _] = useSearchParams();
   const filters = parseHistoryFilters(params);
   const history = useCollectionHistory(bid, cid, filters);
   const session = useAppSelector(state => state.session);

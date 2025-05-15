@@ -1,7 +1,6 @@
 import CollectionTabs from "./CollectionTabs";
 import RecordTable from "./RecordTable";
 import { ListActions } from "./RecordTable";
-import { CommonProps, CommonStateProps } from "./commonPropTypes";
 import AdminLink from "@src/components/AdminLink";
 import Spinner from "@src/components/Spinner";
 import { DEFAULT_SORT } from "@src/constants";
@@ -34,7 +33,15 @@ export default function CollectionRecords() {
 
   const records = useRecordList(bid, cid, sort, false, cacheVal);
 
-  const listActions = <ListActions session={session} collection={collection} />;
+  const listActions = (
+    <ListActions
+      session={session}
+      collection={collection}
+      callback={() => {
+        setCacheVal(cacheVal + 1);
+      }}
+    />
+  );
 
   return (
     <div className="list-page">

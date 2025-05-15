@@ -1,9 +1,5 @@
 import { getClient } from "@src/client";
-import type {
-  ChangesList,
-  CollectionData,
-  SignoffCollectionsInfo,
-} from "@src/types";
+import type { ChangesList, SignoffCollectionsInfo } from "@src/types";
 import { useEffect, useState } from "react";
 
 type CapabilityResource = {
@@ -29,7 +25,8 @@ type SignerResource = {
 export function useSignoff(
   bid: string,
   cid: string,
-  signer: any
+  signer: any,
+  cacheBust?: number
 ): SignoffCollectionsInfo {
   const resource = _pickSignoffResource(signer, bid, cid);
   const [val, setVal] = useState({});
@@ -39,7 +36,7 @@ export function useSignoff(
     if (resource && resource.source) {
       calculateChangesInfo(resource, setVal);
     }
-  }, [resource?.source?.bucket, resource?.source?.collection]);
+  }, [resource?.source?.bucket, resource?.source?.collection, cacheBust]);
 
   return val;
 }

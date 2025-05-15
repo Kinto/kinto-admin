@@ -304,7 +304,7 @@ export default function HistoryTable({
   const [busy, setBusy] = useState(false);
   const [current, setCurrent] = useState(null);
   const [previous, setPrevious] = useState(null);
-  const [params, setParams] = useSearchParams();
+  const [params, _] = useSearchParams();
 
   const nextHistoryWrapper = async () => {
     setLoading(true);

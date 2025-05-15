@@ -9,7 +9,6 @@ import {
   Justify,
   Lock,
 } from "react-bootstrap-icons";
-import { C } from "vitest/dist/chunks/reporters.d.CqBhtcTq.js";
 
 type Props = {
   bid: string;

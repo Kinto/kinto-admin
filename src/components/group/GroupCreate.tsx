@@ -5,7 +5,7 @@ import React from "react";
 import { useParams } from "react-router";
 
 export default function GroupCreate() {
-  const { bid, gid } = useParams();
+  const { bid } = useParams();
   const session = useAppSelector(state => state.session);
 
   if (session.busy) {

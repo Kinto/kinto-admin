@@ -13,7 +13,6 @@ import { useAppSelector } from "@src/hooks/app";
 import { useCollection } from "@src/hooks/collection";
 import { useRecord } from "@src/hooks/record";
 import { canCreateRecord, canEditRecord } from "@src/permission";
-import type { Capabilities, RecordState, SessionState } from "@src/types";
 import React, { useState } from "react";
 import { Check2 } from "react-bootstrap-icons";
 import { Trash } from "react-bootstrap-icons";

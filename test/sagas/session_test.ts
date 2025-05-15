@@ -7,7 +7,6 @@ import { DEFAULT_SERVERINFO } from "@src/reducers/session";
 import * as saga from "@src/sagas/session";
 import { saveSession } from "@src/store/localStore";
 import { mockNotifyError, mockNotifySuccess } from "@test/testUtils";
-import { redirect } from "react-router";
 import { call, put } from "redux-saga/effects";
 
 const authData = {

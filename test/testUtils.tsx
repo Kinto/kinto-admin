@@ -2,7 +2,6 @@
 import * as notificationsHooks from "@src/hooks/notifications";
 import { configureAppStore } from "@src/store/configureStore";
 import { render } from "@testing-library/react";
-import { createMemoryHistory } from "history";
 import React from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route } from "react-router";

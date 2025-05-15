@@ -7,7 +7,7 @@ import JSONEditor from "@src/components/JSONEditor";
 import Spinner from "@src/components/Spinner";
 import { useAppDispatch, useAppSelector } from "@src/hooks/app";
 import { useBucket } from "@src/hooks/bucket";
-import { notifySuccess } from "@src/hooks/notifications";
+import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { canEditBucket } from "@src/permission";
 import { omit } from "@src/utils";
 import React, { useState } from "react";
@@ -100,7 +100,9 @@ export default function BucketForm() {
         await getClient().createBucket(id, { data: attributes, safe: true });
         navigate(`/buckets/${id}/attributes`);
         notifySuccess("Bucket created.");
-      } catch (ex) {}
+      } catch (ex) {
+        notifyError("Bucket creation failed.", ex);
+      }
     } else {
       try {
         await getClient()
@@ -111,7 +113,9 @@ export default function BucketForm() {
           );
         setCacheVal(cacheVal + 1);
         notifySuccess("Bucket attributes updated.");
-      } catch (ex) {}
+      } catch (ex) {
+        notifyError("Bucket attributes failed to update.", ex);
+      }
     }
     dispatch(listBuckets());
   };

@@ -1,12 +1,7 @@
 import CollectionTabs from "./GroupTabs";
 import HistoryTable from "@src/components/HistoryTable";
 import { useGroupHistory } from "@src/hooks/group";
-import type {
-  Capabilities,
-  GroupRouteMatch,
-  GroupState,
-  SessionState,
-} from "@src/types";
+import type { Capabilities, GroupRouteMatch } from "@src/types";
 import React from "react";
 import { useParams } from "react-router";
 

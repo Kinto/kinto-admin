@@ -1,10 +1,9 @@
-import { getClient } from "@src/client";
 import { isReviewer } from "../SignoffToolBar";
 import { isMember, toReviewEnabled } from "../utils";
 import PerRecordDiffView from "./PerRecordDiffView";
 import SimpleReviewButtons from "./SimpleReviewButtons";
 import SimpleReviewHeader from "./SimpleReviewHeader";
-import * as SignoffActions from "@src/actions/signoff";
+import { getClient } from "@src/client";
 import Spinner from "@src/components/Spinner";
 import CollectionTabs from "@src/components/collection/CollectionTabs";
 import { useAppSelector } from "@src/hooks/app";
@@ -65,28 +64,46 @@ export default function SimpleReview() {
   ) {
     return <Spinner />;
   }
-  const rollbackChanges = (text: string) => {
 
+  const reviewAction = async patchedFields => {
+    await getClient()
+      .bucket(sourceBid)
+      .collection(sourceCid)
+      .setData(patchedFields, {
+        safe: true,
+        patch: true,
+        last_modified: collection.last_modified,
+      });
     navigate(`/buckets/${bid}/collections/${cid}/records`);
   };
 
-  const approveChanges = async() => {
+  const rollbackChanges = async (text: string) => {
+    await reviewAction({
+      status: "to-rollback",
+      last_editor_comment: text,
+    });
+  };
 
-    navigate(`/buckets/${bid}/collections/${cid}/records`);
-  }
+  const approveChanges = async () => {
+    await reviewAction({
+      status: "to-sign",
+      last_reviewer_comment: "",
+    });
+  };
 
-  const declineChanges = async(text: string) => {
+  const declineChanges = async (text: string) => {
+    await reviewAction({
+      status: "work-in-progress",
+      last_reviewer_comment: text,
+    });
+  };
 
-    navigate(`/buckets/${bid}/collections/${cid}/records`);
-  }
-
-  const requestReview = async(text: string) => {
-    getClient().bucket(sourceBid).collection(sourceCid).setData({
+  const requestReview = async (text: string) => {
+    await reviewAction({
       status: "to-review",
-      last_re
-    })
-    navigate(`/buckets/${bid}/collections/${cid}/records`);
-  }
+      last_editor_comment: text,
+    });
+  };
 
   const SignoffContent = () => {
     if (!signoffSource || !signoffSource?.status) {

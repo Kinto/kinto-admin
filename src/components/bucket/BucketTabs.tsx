@@ -1,6 +1,5 @@
 import AdminLink from "@src/components/AdminLink";
 import { useAppSelector } from "@src/hooks/app";
-import type { Capabilities } from "@src/types";
 import React from "react";
 import {
   ClockHistory,

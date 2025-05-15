@@ -14,7 +14,7 @@ import { canCreateCollection, canEditCollection } from "@src/permission";
 import { validateSchema, validateUiSchema } from "@src/utils";
 import React, { useState } from "react";
 import { Check2 } from "react-bootstrap-icons";
-import { Link, redirect, useNavigate, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 
 const defaultSchema = JSON.stringify(
   {

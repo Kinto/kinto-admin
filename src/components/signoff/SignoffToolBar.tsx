@@ -6,15 +6,12 @@ import { ProgressBar, ProgressStep } from "./ProgressBar";
 import { DiffInfo, Review } from "./Review";
 import { Signed } from "./Signed";
 import { isMember, toReviewEnabled } from "./utils";
+import { getClient } from "@src/client";
+import { useAppSelector } from "@src/hooks/app";
 import { useCollection } from "@src/hooks/collection";
 import { useSignoff } from "@src/hooks/signoff";
 import { canEditCollection } from "@src/permission";
-import type {
-  ChangesList,
-  SessionState,
-  SignoffSourceInfo,
-  SignoffState,
-} from "@src/types";
+import type { ChangesList, SignoffSourceInfo } from "@src/types";
 import React, { useEffect, useState } from "react";
 import { ChatLeft, XCircleFill } from "react-bootstrap-icons";
 import { useParams } from "react-router";
@@ -39,41 +36,59 @@ function hasRequestedReview(source, sessionState) {
 }
 
 type SignoffToolBarProps = {
-  sessionState: SessionState;
-  signoff: SignoffState;
-  requestReview: (s: string) => void;
-  rollbackChanges: (s: string) => void;
-  confirmRollbackChanges: () => void;
-  confirmRequestReview: () => void;
-  approveChanges: () => void;
-  declineChanges: (s: string) => void;
-  confirmDeclineChanges: () => void;
-  cancelPendingConfirm: () => void;
+  callback: () => void;
 };
 
-export default function SignoffToolBar({
-  sessionState,
-  confirmRequestReview,
-  requestReview,
-  rollbackChanges,
-  confirmRollbackChanges,
-  approveChanges,
-  confirmDeclineChanges,
-  cancelPendingConfirm,
-  declineChanges,
-}: SignoffToolBarProps) {
+export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
   const { bid, cid } = useParams();
+  const [cacheVal, setCacheVal] = useState(0);
+  const session = useAppSelector(state => state.session);
   const [showSpinner, setShowSpinner] = useState(false);
-  const collection = useCollection(bid, cid);
+  const collection = useCollection(bid, cid, cacheVal);
   const signoff = useSignoff(
     bid,
     cid,
-    sessionState.serverInfo.capabilities.signer
+    session.serverInfo.capabilities.signer,
+    cacheVal
   );
+  const [pendingConfirm, setPendingConfirm] = useState("");
 
-  const handleApproveChanges = () => {
-    setShowSpinner(true);
-    approveChanges();
+  const reviewAction = async patchedFields => {
+    await getClient().bucket(bid).collection(cid).setData(patchedFields, {
+      safe: true,
+      patch: true,
+      last_modified: collection.last_modified,
+    });
+    setCacheVal(cacheVal + 1);
+    callback();
+  };
+
+  const rollbackChanges = async (text: string) => {
+    await reviewAction({
+      status: "to-rollback",
+      last_editor_comment: text,
+    });
+  };
+
+  const approveChanges = async () => {
+    await reviewAction({
+      status: "to-sign",
+      last_reviewer_comment: "",
+    });
+  };
+
+  const declineChanges = async (text: string) => {
+    await reviewAction({
+      status: "work-in-progress",
+      last_reviewer_comment: text,
+    });
+  };
+
+  const requestReview = async (text: string) => {
+    await reviewAction({
+      status: "to-review",
+      last_editor_comment: text,
+    });
   };
 
   useEffect(() => {
@@ -82,32 +97,23 @@ export default function SignoffToolBar({
     }
   }, [collection]);
 
-  const canEdit = canEditCollection(sessionState, bid, cid);
+  const canEdit = canEditCollection(session, bid, cid);
 
-  if (!signoff?.source || !sessionState.serverInfo.capabilities.signer) {
+  if (!signoff?.source || !session.serverInfo.capabilities.signer) {
     return null;
   }
 
-  const {
-    pendingConfirmReviewRequest,
-    pendingConfirmRollbackChanges,
-    pendingConfirmDeclineChanges,
-    source,
-    destination,
-    preview,
-    changesOnSource,
-    changesOnPreview,
-  } = signoff;
+  const { source, destination, preview, changesOnSource, changesOnPreview } =
+    signoff;
 
-  const canRequestReview = canEdit && isEditor(source, sessionState);
+  const canRequestReview = canEdit && isEditor(source, session);
 
   const canReview =
     canEdit &&
-    ((isReviewer(source, sessionState) &&
-      !hasRequestedReview(source, sessionState)) ||
-      !toReviewEnabled(sessionState, source, destination));
+    ((isReviewer(source, session) && !hasRequestedReview(source, session)) ||
+      !toReviewEnabled(session, source, destination));
   const canRollback = canEdit;
-  const hasHistory = "history" in sessionState.serverInfo.capabilities;
+  const hasHistory = "history" in session.serverInfo.capabilities;
 
   const isCurrentUrl = source.bucket == bid && source.collection == cid;
   const currentStep = Math.max(
@@ -136,7 +142,9 @@ export default function SignoffToolBar({
           isCurrentUrl={isCurrentUrl}
           canEdit={canRequestReview}
           hasHistory={hasHistory}
-          confirmRequestReview={confirmRequestReview}
+          confirmRequestReview={() => {
+            setPendingConfirm("review");
+          }}
           source={source}
           changes={changesOnSource}
         />
@@ -149,8 +157,10 @@ export default function SignoffToolBar({
           }
           canEdit={canReview}
           hasHistory={hasHistory}
-          approveChanges={handleApproveChanges}
-          confirmDeclineChanges={confirmDeclineChanges}
+          approveChanges={approveChanges}
+          confirmDeclineChanges={() => {
+            setPendingConfirm("decline");
+          }}
           source={source}
           preview={preview}
           changes={changesOnPreview}
@@ -167,31 +177,41 @@ export default function SignoffToolBar({
         />
       </ProgressBar>
 
-      {canRollback && status != "signed" && (
-        <RollbackChangesButton onClick={confirmRollbackChanges} />
+      {canRollback && source.status != "signed" && (
+        <RollbackChangesButton
+          onClick={() => {
+            setPendingConfirm("rollback");
+          }}
+        />
       )}
-      {pendingConfirmReviewRequest && (
+      {pendingConfirm == "review" && (
         <CommentDialog
           description="Leave some notes for the reviewer:"
           confirmLabel="Request review"
           onConfirm={requestReview}
-          onClose={cancelPendingConfirm}
+          onClose={() => {
+            setPendingConfirm("");
+          }}
         />
       )}
-      {pendingConfirmRollbackChanges && (
+      {pendingConfirm == "rollback" && (
         <CommentDialog
           description="This will reset the collection to the latest approved content. All pending changes will be lost. Are you sure?"
           confirmLabel="Rollback changes"
           onConfirm={rollbackChanges}
-          onClose={cancelPendingConfirm}
+          onClose={() => {
+            setPendingConfirm("");
+          }}
         />
       )}
-      {pendingConfirmDeclineChanges && (
+      {pendingConfirm == "decline" && (
         <CommentDialog
           description="Leave some notes for the editor:"
           confirmLabel="Decline changes"
           onConfirm={declineChanges}
-          onClose={cancelPendingConfirm}
+          onClose={() => {
+            setPendingConfirm("");
+          }}
         />
       )}
       {showSpinner && <Spinner />}

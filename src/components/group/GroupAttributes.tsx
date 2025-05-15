@@ -1,6 +1,6 @@
 import GroupForm from "./GroupForm";
 import GroupTabs from "./GroupTabs";
-import React, { useCallback } from "react";
+import React from "react";
 import { useParams } from "react-router";
 
 export default function GroupAttributes() {

@@ -3,7 +3,7 @@ import { CommonProps } from "./commonPropTypes";
 import { getClient } from "@src/client";
 import AdminLink from "@src/components/AdminLink";
 import PaginatedTable from "@src/components/PaginatedTable";
-import SignoffContainer from "@src/containers/signoff/SignoffToolBar";
+import SignoffToolbar from "@src/components/signoff/SignoffToolBar";
 import { canCreateRecord } from "@src/permission";
 import type { RecordData } from "@src/types";
 import { capitalize } from "@src/utils";
@@ -19,6 +19,7 @@ export function ListActions(props) {
   if (session.busy || !collection?.id) {
     return null;
   }
+
   return (
     <div className="list-actions">
       {canCreateRecord(session, bid, cid) && (
@@ -43,7 +44,7 @@ export function ListActions(props) {
       )}
       {/* won't render if the signer capability is not enabled on the server
          or collection not configured to be signed */}
-      <SignoffContainer key="request-signoff-toolbar" />
+      <SignoffToolbar key="request-signoff-toolbar" callback={props.callback} />
     </div>
   );
 }
