@@ -24,7 +24,6 @@ describe("RecordPermissions component", () => {
   it("renders a loading spinner when record is busy", async () => {
     const initialState = {
       session: sessionFactory(),
-      record: { busy: true },
     };
     renderWithProvider(<RecordPermissions />, {
       initialState,

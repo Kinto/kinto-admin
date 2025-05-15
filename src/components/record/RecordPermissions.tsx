@@ -34,13 +34,7 @@ export function RecordPermissions() {
         </b>{" "}
         record permissions
       </h1>
-      <RecordTabs
-        bid={bid}
-        cid={cid}
-        rid={rid}
-        capabilities={session.serverInfo.capabilities}
-        selected="permissions"
-      >
+      <RecordTabs bid={bid} cid={cid} rid={rid} selected="permissions">
         {!record?.permissions ? (
           <Spinner />
         ) : (
