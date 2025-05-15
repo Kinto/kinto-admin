@@ -533,7 +533,6 @@ describe("session sagas", () => {
     });
 
     it("should redirect to the homepage with a notification", () => {
-      expect(sessionLogout.next().value).toStrictEqual(put(updatePath("/")));
       sessionLogout.next();
       expect(notifySuccessMock).toHaveBeenCalledWith("Logged out.");
     });

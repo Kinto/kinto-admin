@@ -25,7 +25,6 @@ import type {
 } from "@src/types";
 import { clone, copyToClipboard, getAuthLabel } from "@src/utils";
 import { PermissionData } from "kinto/lib/http";
-import { redirect } from "react-router";
 import { call, put } from "redux-saga/effects";
 
 export function* serverChange(getState: GetStateFn): SagaGen {
@@ -164,7 +163,6 @@ export function* sessionLogout(
   action: ActionType<typeof actions.logout>
 ): SagaGen {
   resetClient();
-  redirect("/");
   notifySuccess("Logged out.");
   yield call(clearSession);
 }

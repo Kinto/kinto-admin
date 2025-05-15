@@ -1,7 +1,7 @@
 import HistoryTable from "@src/components/HistoryTable";
-import { render, screen } from "@testing-library/react";
+import { renderWithProvider } from "@test/testUtils";
+import { screen } from "@testing-library/react";
 import React from "react";
-import { Route, BrowserRouter as Router } from "react-router";
 
 const props = {
   bid: "test",
@@ -17,57 +17,53 @@ const props = {
 
 describe("HistoryTable component", () => {
   it("Should render a spinner when not yet loaded", async () => {
-    render(<HistoryTable {...props} historyLoaded={false} />);
+    renderWithProvider(<HistoryTable {...props} historyLoaded={false} />);
     expect(screen.queryByTestId("spinner")).toBeDefined();
   });
 
   it("Should render an empty table when history is loaded but there is no data", async () => {
-    render(<HistoryTable {...props} />);
+    renderWithProvider(<HistoryTable {...props} />);
     expect(screen.queryByTestId("spinner")).toBeNull();
     expect(screen.findByText("No history entry found.")).toBeDefined();
   });
 
   it("Should render our data when data is provided", async () => {
-    render(
-      <Router>
-        <Route path="/">
-          <HistoryTable
-            {...props}
-            history={[
-              {
-                uri: "/buckets/main-workspace/collections/test",
-                date: "2023-11-02T17:56:17.452727+00:00",
-                action: "update",
-                target: {
-                  data: {
-                    id: "test",
-                  },
-                },
-                user_id: "test-user",
-                collection_id: "test",
-                resource_name: "collection",
-                id: "test-hist-id1",
-                last_modified: 1698947777486,
+    renderWithProvider(
+      <HistoryTable
+        {...props}
+        history={[
+          {
+            uri: "/buckets/main-workspace/collections/test",
+            date: "2023-11-02T17:56:17.452727+00:00",
+            action: "update",
+            target: {
+              data: {
+                id: "test",
               },
-              {
-                uri: "/buckets/main-workspace/collections/test",
-                date: "2023-11-02T17:56:17.427881+00:00",
-                action: "update",
-                target: {
-                  data: {
-                    id: "test",
-                  },
-                },
-                user_id: "test-user",
-                collection_id: "test",
-                resource_name: "collection",
-                id: "test-hist-id2",
-                last_modified: 1698947777451,
+            },
+            user_id: "test-user",
+            collection_id: "test",
+            resource_name: "collection",
+            id: "test-hist-id1",
+            last_modified: 1698947777486,
+          },
+          {
+            uri: "/buckets/main-workspace/collections/test",
+            date: "2023-11-02T17:56:17.427881+00:00",
+            action: "update",
+            target: {
+              data: {
+                id: "test",
               },
-            ]}
-          />
-        </Route>
-      </Router>
+            },
+            user_id: "test-user",
+            collection_id: "test",
+            resource_name: "collection",
+            id: "test-hist-id2",
+            last_modified: 1698947777451,
+          },
+        ]}
+      />
     );
     expect(screen.queryByTestId("spinner")).toBeNull();
     expect(screen.queryByText("No history entry found.")).toBeNull();

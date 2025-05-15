@@ -4,7 +4,7 @@ import { configureAppStore } from "@src/store/configureStore";
 import { render } from "@testing-library/react";
 import React from "react";
 import { Provider } from "react-redux";
-import { BrowserRouter, Route } from "react-router";
+import { HashRouter, Route, Routes } from "react-router";
 
 export function mockNotifyError() {
   return vi
@@ -61,9 +61,11 @@ export function renderWithProvider(
   const { store } = configureAppStore(initialState);
   const Wrapper = ({ children }) => (
     <Provider store={store}>
-      <BrowserRouter>
-        <Route path={path}>{children}</Route>
-      </BrowserRouter>
+      <HashRouter>
+        <Routes>
+          <Route path={path} element={children} />
+        </Routes>
+      </HashRouter>
     </Provider>
   );
   return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) };
