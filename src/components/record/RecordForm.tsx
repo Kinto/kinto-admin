@@ -14,8 +14,7 @@ import { useCollection } from "@src/hooks/collection";
 import { useRecord } from "@src/hooks/record";
 import { canCreateRecord, canEditRecord } from "@src/permission";
 import React, { useState } from "react";
-import { Check2 } from "react-bootstrap-icons";
-import { Trash } from "react-bootstrap-icons";
+import { Check2, Trash } from "react-bootstrap-icons";
 import { useNavigate, useParams } from "react-router";
 
 export function extendUIWithKintoFields(uiSchema: any, isCreate: boolean): any {
@@ -42,8 +41,8 @@ export function extendUIWithKintoFields(uiSchema: any, isCreate: boolean): any {
 export default function RecordForm() {
   const { bid, cid, rid } = useParams();
   const [asJSON, setAsJSON] = useState(false);
-  const collection = useCollection(bid, cid);
   const [cacheVal, setCacheVal] = useState(0);
+  const collection = useCollection(bid, cid, cacheVal);
   const record = useRecord(bid, cid, rid, cacheVal);
   const session = useAppSelector(state => state.session);
   const navigate = useNavigate();

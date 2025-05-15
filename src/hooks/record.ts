@@ -98,6 +98,7 @@ export function useRecord(
       .collection(cid)
       .getRecord(rid)
       .then(result => {
+        console.log(result);
         setVal(result);
       })
       .catch(err => {

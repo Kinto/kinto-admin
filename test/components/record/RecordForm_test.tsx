@@ -1,4 +1,7 @@
+import * as client from "@src/client";
 import RecordForm from "@src/components/record/RecordForm";
+import * as collectionHooks from "@src/hooks/collection";
+import * as recordHooks from "@src/hooks/record";
 import { canCreateRecord, canEditRecord } from "@src/permission";
 import { renderWithProvider } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
@@ -13,64 +16,44 @@ vi.mock("../../../src/permission", () => {
 });
 
 describe("RecordForm", () => {
-  beforeEach(() => {
-    canCreateRecord.mockReturnValue(true);
-    canEditRecord.mockReturnValue(true);
-  });
-  let lastSubmittedData = null;
-
-  const submitMock = data => {
-    lastSubmittedData = data;
-  };
-
   const defaultProps = {
-    bid: "test",
-    cid: "test",
     bucket: { data: { id: "test" } },
     collection: {
-      data: {
-        schema: {
-          type: "object",
-          properties: {
-            title: {
-              type: "string",
-              title: "TestTitle",
-              description: "Title description...",
-            },
-            content: {
-              type: "string",
-              title: "TestContent",
-              description: "Content description...",
-            },
+      schema: {
+        type: "object",
+        properties: {
+          title: {
+            type: "string",
+            title: "TestTitle",
+            description: "Title description...",
           },
-        },
-        uiSchema: {
           content: {
-            "ui:widget": "textarea",
+            type: "string",
+            title: "TestContent",
+            description: "Content description...",
           },
-          "ui:order": ["title", "content"],
-        },
-        attachment: {
-          enabled: false,
-          required: false,
         },
       },
+      uiSchema: {
+        content: {
+          "ui:widget": "textarea",
+        },
+        "ui:order": ["title", "content"],
+      },
+      attachment: {
+        enabled: false,
+        required: false,
+      },
     },
-    deleteRecord: vi.fn(),
-    deleteAttachment: vi.fn(),
-    onSubmit: submitMock,
-    capabilities: {},
   };
 
   const attachProps = {
     ...defaultProps,
     collection: {
-      data: {
-        ...defaultProps.collection.data,
-        attachment: {
-          enabled: true,
-          required: true,
-        },
+      ...defaultProps.collection,
+      attachment: {
+        enabled: true,
+        required: true,
       },
     },
   };
@@ -83,8 +66,67 @@ describe("RecordForm", () => {
     mimetype: "image/jpeg",
   };
 
+  let lastSubmittedData = null;
+  const createRouteProps = {
+    route: "/test/test",
+    path: "/:bid/:cid",
+  };
+
+  const editRouteProps = {
+    route: "/test/test/test",
+    path: "/:bid/:cid/:rid",
+  };
+
+  beforeEach(() => {
+    canCreateRecord.mockReturnValue(true);
+    canEditRecord.mockReturnValue(true);
+    vi.spyOn(recordHooks, "useRecord").mockReturnValue(undefined);
+    vi.spyOn(collectionHooks, "useCollection").mockReturnValue(
+      defaultProps.collection
+    );
+    vi.spyOn(client, "getClient").mockReturnValue({
+      bucket: bid => {
+        return {
+          collection: cid => {
+            return {
+              deleteRecord: (rid, opts) => {
+                lastSubmittedData = {
+                  fn: "delete",
+                  rid,
+                  opts,
+                };
+              },
+              addAttachment: (attachment, data, opts) => {
+                lastSubmittedData = {
+                  fn: "addAttachment",
+                  attachment,
+                  data,
+                  opts,
+                };
+              },
+              updateRecord: (data, opts) => {
+                lastSubmittedData = {
+                  fn: "updateRecord",
+                  data,
+                  opts,
+                };
+              },
+              createRecord: (data, opts) => {
+                lastSubmittedData = {
+                  fn: "createRecord",
+                  data,
+                  opts,
+                };
+              },
+            };
+          },
+        };
+      },
+    });
+  });
+
   it("Renders an empty form for a new record (attachments disabled)", async () => {
-    renderWithProvider(<RecordForm {...defaultProps} />);
+    renderWithProvider(<RecordForm />, createRouteProps);
     fireEvent.change(screen.queryByLabelText("TestTitle"), {
       target: { value: "test title" },
     });
@@ -93,8 +135,12 @@ describe("RecordForm", () => {
     });
     fireEvent.click(screen.queryByText("Create record"));
     expect(lastSubmittedData).toStrictEqual({
-      title: "test title",
-      content: "test content",
+      fn: "createRecord",
+      data: {
+        title: "test title",
+        content: "test content",
+      },
+      opts: undefined,
     });
   });
 
@@ -106,34 +152,36 @@ describe("RecordForm", () => {
           data: {
             title: "test title",
             content: "test content",
+            id: "test",
           },
         }}
-      />
+      />,
+      editRouteProps
     );
     expect(screen.queryByLabelText("TestTitle").value).toBe("test title");
     expect(screen.queryByLabelText("TestContent").value).toBe("test content");
   });
 
   it("Renders an empty form for a new record (attachments enabled)", async () => {
-    renderWithProvider(<RecordForm {...attachProps} />);
+    renderWithProvider(<RecordForm />, createRouteProps);
     expect(screen.queryByLabelText("TestTitle").value).toBe("");
     expect(screen.queryByLabelText("TestContent").value).toBe("");
     expect(screen.findByLabelText("File attachment")).toBeDefined();
   });
 
   it("Renders the expected form for an existing record (attachments enabled) and allows user to save without updating attachment", async () => {
-    renderWithProvider(
-      <RecordForm
-        {...attachProps}
-        record={{
-          data: {
-            title: "test title",
-            content: "test content",
-            attachment: testAttachment,
-          },
-        }}
-      />
+    vi.spyOn(collectionHooks, "useCollection").mockReturnValueOnce(
+      attachProps.collection
     );
+    vi.spyOn(recordHooks, "useRecord").mockReturnValueOnce({
+      data: {
+        title: "test title",
+        content: "test content",
+        attachment: testAttachment,
+        id: "test",
+      },
+    });
+    renderWithProvider(<RecordForm />, editRouteProps);
     expect(screen.queryByLabelText("TestTitle").value).toBe("test title");
     expect(screen.queryByLabelText("TestContent").value).toBe("test content");
     expect(screen.findByLabelText("File attachment")).toBeDefined();
@@ -142,15 +190,25 @@ describe("RecordForm", () => {
     });
     fireEvent.click(screen.queryByText("Update record"));
     expect(lastSubmittedData).toStrictEqual({
-      title: "updated title",
-      content: "test content",
-      attachment: testAttachment,
+      fn: "updateRecord",
+      data: {
+        id: "test",
+        title: "updated title",
+        content: "test content",
+        attachment: testAttachment,
+      },
+      opts: {
+        safe: true,
+      },
     });
   });
 
   it("Requires an attachment to submit when it's a new record and attachments are required", async () => {
     lastSubmittedData = null;
-    renderWithProvider(<RecordForm {...attachProps} />);
+    vi.spyOn(collectionHooks, "useCollection").mockReturnValueOnce(
+      attachProps.collection
+    );
+    renderWithProvider(<RecordForm />, createRouteProps);
     fireEvent.change(screen.queryByLabelText("TestTitle"), {
       target: { value: "test title" },
     });
@@ -163,19 +221,19 @@ describe("RecordForm", () => {
 
   it("Disables the form when user cannot edit", async () => {
     canEditRecord.mockReturnValue(false);
-    renderWithProvider(
-      <RecordForm
-        {...attachProps}
-        record={{
-          data: {
-            title: "test title",
-            content: "test content",
-          },
-        }}
-      />
+    vi.spyOn(collectionHooks, "useCollection").mockReturnValueOnce(
+      attachProps.collection
     );
+    vi.spyOn(recordHooks, "useRecord").mockReturnValueOnce({
+      data: {
+        title: "test title",
+        content: "test content",
+        id: "test",
+      },
+    });
+    renderWithProvider(<RecordForm />, editRouteProps);
     expect(screen.queryByLabelText("TestTitle").disabled).toBe(true);
     expect(screen.queryByLabelText("TestContent").disabled).toBe(true);
-    expect(screen.queryByLabelText("File attachment*").disabled).toBe(true);
+    expect(screen.queryByLabelText("File attachment").disabled).toBe(true);
   });
 });
