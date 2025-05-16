@@ -51,7 +51,7 @@ export default function SimpleReview() {
     return <Navigate to={`/buckets/${bid}/collections/${cid}/records`} />;
   }
 
-  if (!session.authenticated) {
+  if (!session.authenticated && !session.authenticating) {
     return (
       <div className="simple-review-blocked-message list-page">
         Not authenticated
@@ -60,7 +60,10 @@ export default function SimpleReview() {
   } else if (
     session.authenticating ||
     session.busy ||
-    (signoff?.source && !signoff.source.status)
+    (signoff?.source &&
+      !signoff.source.status &&
+      !newRecords?.data &&
+      !oldRecords?.data)
   ) {
     return <Spinner />;
   }

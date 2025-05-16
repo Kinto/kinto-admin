@@ -1,15 +1,19 @@
+import * as client from "@src/client";
 import SimpleReview from "@src/components/signoff/SimpleReview";
 import { toReviewEnabled } from "@src/components/signoff/utils";
+import * as collectionHooks from "@src/hooks/collection";
+import * as recordHooks from "@src/hooks/record";
+import * as signoffHooks from "@src/hooks/signoff";
 import { renderWithProvider, sessionFactory } from "@test/testUtils";
 import {
   fireEvent,
   screen,
+  waitFor,
   waitForElementToBeRemoved,
 } from "@testing-library/react";
-import { createMemoryHistory } from "history/";
 import React from "react";
 
-vi.mock("../../../../src/permission", () => {
+vi.mock("@src/permission", () => {
   return {
     canEditCollection: () => {
       return true;
@@ -17,9 +21,7 @@ vi.mock("../../../../src/permission", () => {
   };
 });
 
-const rollbackChangesMock = vi.fn();
-
-vi.mock("../../../../src/components/signoff/utils", () => {
+vi.mock("@src/components/signoff/utils", () => {
   return {
     isMember: () => {
       return true;
@@ -30,70 +32,85 @@ vi.mock("../../../../src/components/signoff/utils", () => {
 
 function signoffFactory() {
   return {
-    collectionsInfo: {
-      source: {
-        bid: "main-workspace",
-        cid: "my-collection",
-        editors_group: "{collection_id}-editors",
-        reviewers_group: "{collection_id}-reviewers",
-        lastEditBy: "account:experimenter",
-        lastEditDate: 1622816256864,
-        lastEditorComment: undefined,
-        lastReviewBy: undefined,
-        lastReviewDate: 1622816256865,
-        lastReviewRequestBy: undefined,
-        lastReviewRequestDate: NaN,
-        lastReviewerComment: undefined,
-        lastSignatureBy: "account:admin",
-        lastSignatureDate: 1622816219752,
-        status: "work-in-progress",
-      },
-      destination: {
-        bid: "main",
-        cid: "my-collection",
-      },
-      preview: {
-        bid: "main-preview",
-        cid: "my-collection",
-      },
+    source: {
+      bucket: "main-workspace",
+      collection: "my-collection",
+      editors_group: "{collection_id}-editors",
+      reviewers_group: "{collection_id}-reviewers",
+      lastEditBy: "account:experimenter",
+      lastEditDate: 1622816256864,
+      lastEditorComment: undefined,
+      lastReviewBy: undefined,
+      lastReviewDate: 1622816256865,
+      lastReviewRequestBy: undefined,
+      lastReviewRequestDate: NaN,
+      lastReviewerComment: undefined,
+      lastSignatureBy: "account:admin",
+      lastSignatureDate: 1622816219752,
+      status: "work-in-progress",
     },
-    pendingConfirmReviewRequest: false,
-    pendingConfirmDeclineChanges: false,
-    pendingConfirmRollbackChanges: false,
-    capabilities: {},
-    collection: {
-      totalRecords: 3,
+    destination: {
+      bucket: "main",
+      collection: "my-collection",
+    },
+    preview: {
+      bucket: "main-preview",
+      collection: "my-collection",
     },
   };
 }
 
-function renderSimpleReview(props = null, renderProps = {}) {
-  const mergedProps = {
-    match: {
-      params: {
-        bid: "main-workspace",
-        cid: "my-collection",
-      },
+function renderSimpleReview({
+  session = sessionFactory(),
+  signoff = signoffFactory(),
+  newRecords = [],
+  oldRecords = [],
+  search = "",
+  setDataMock = vitest.fn(),
+}) {
+  // to mock
+  // useCollection
+  // useSignoff
+  // useNavigate
+  // useRecordList, both for new records and old records
+  // getClient
+  vi.spyOn(collectionHooks, "useCollection").mockReturnValue({
+    id: signoff.source.collection,
+    last_modified: 1,
+  });
+  vi.spyOn(signoffHooks, "useSignoff").mockReturnValue(signoff);
+  vi.spyOn(recordHooks, "useRecordList").mockImplementation((bid, cid) => {
+    let list = newRecords;
+    if (bid == signoff.destination.bucket) {
+      list = oldRecords;
+    }
+    return {
+      data: list,
+      hasNextPage: false,
+      lastModified: 0,
+      totalRecords: list.length,
+    };
+  });
+  vi.spyOn(client, "getClient").mockReturnValue({
+    bucket: bid => {
+      return {
+        collection: cid => {
+          return {
+            setData: setDataMock,
+          };
+        },
+      };
     },
-    listRecords() {},
-    session: sessionFactory(),
-    signoff: signoffFactory(),
-    async fetchRecords() {
-      return [];
+  });
+
+  return renderWithProvider(<SimpleReview />, {
+    initialState: {
+      session,
     },
-    ...props,
-    rollbackChanges: rollbackChangesMock,
-  };
-  return renderWithProvider(<SimpleReview {...mergedProps} />, {
-    ...renderProps,
+    route: `/main-workspace/my-collection${search}`,
+    path: "/:bid/:cid",
   });
 }
-
-const fakeLocation = {
-  pathname: "/buckets/main-workspace/collections/test/simple-review",
-  search: "",
-  hash: "",
-};
 
 describe("SimpleTest component", () => {
   beforeEach(async () => {
@@ -115,7 +132,12 @@ describe("SimpleTest component", () => {
   });
 
   it("should render not reviewable", async () => {
-    renderSimpleReview({ signoff: undefined });
+    renderSimpleReview({
+      signoff: {
+        source: {},
+        destination: {},
+      },
+    });
     expect(
       (await screen.findByText(/This collection does not support/)).textContent
     ).toBe(
@@ -129,7 +151,6 @@ describe("SimpleTest component", () => {
     renderSimpleReview({
       session,
     });
-    await waitForElementToBeRemoved(() => screen.queryByTestId("spinner"));
     expect(screen.getByText(/Status is/).textContent).toBe(
       "Status is work-in-progress. "
     );
@@ -140,65 +161,49 @@ describe("SimpleTest component", () => {
   });
 
   it("should render a review component after records are fetched and allow for a rollback", async () => {
-    const history = createMemoryHistory({ initialEntries: ["/"] });
-    renderSimpleReview(null, { initialHistory: history });
-    const historyPushSpy = vi.spyOn(history, "push");
-
-    await waitForElementToBeRemoved(() => screen.queryByTestId("spinner"));
+    const setDataMock = vitest.fn();
+    renderSimpleReview({
+      setDataMock,
+    });
     expect(await screen.findByTestId("simple-review-header")).toBeDefined();
 
     // also check rollback calls history.push while we're here
     fireEvent.click(screen.queryByText(/Rollback changes/));
     fireEvent.click(screen.queryByText("Rollback"));
-    expect(rollbackChangesMock).toHaveBeenCalled();
-    expect(historyPushSpy).toHaveBeenCalled();
+    expect(setDataMock).toHaveBeenCalledWith(
+      {
+        status: "to-rollback",
+        last_editor_comment: "",
+      },
+      {
+        safe: true,
+        patch: true,
+        last_modified: 1,
+      }
+    );
   });
 
   it("should hide the rollback button if the hideRollback query parameter is provided", async () => {
-    fakeLocation.search = "?hideRollback";
     renderSimpleReview({
-      async fetchRecords() {
-        return [];
-      },
+      search: "?hideRollback",
     });
-    await waitForElementToBeRemoved(() => screen.queryByTestId("spinner"));
-
     expect(screen.queryByText("Rollback")).toBeNull();
-    fakeLocation.search = "";
   });
 
   it("Should not get stuck showing a spinner if signoff source fails to load", async () => {
     renderSimpleReview({
-      async fetchRecords() {
-        return [];
-      },
       signoff: {
-        collectionsInfo: {
-          source: {
-            bid: "test",
-            cid: "test",
-          },
-          destination: {
-            bid: "test",
-            cid: "test",
-          },
+        source: {
+          bucket: "test",
+          collection: "test",
+        },
+        destination: {
+          bucket: "test",
+          collection: "test",
         },
       },
     });
-    await waitForElementToBeRemoved(() => screen.queryByTestId("spinner"));
-  });
-
-  it("Should not get stuck showing a spinner fetchRecords throws an error", async () => {
-    renderSimpleReview({
-      async fetchRecords() {
-        const err = new Error("Test error");
-        err.data = {
-          code: 401,
-        };
-        throw err;
-      },
-    });
-    await waitForElementToBeRemoved(() => screen.queryByTestId("spinner"));
+    expect(screen.queryByTestId("spinner")).toBeNull();
   });
 
   it("should redirect the user if the legacy review process is enabled", async () => {
@@ -213,21 +218,19 @@ describe("SimpleTest component", () => {
 
   describe("to_review_enabled checks", () => {
     const signoff = {
-      collectionsInfo: {
-        source: {
-          bid: "stage",
-          cid: "certs",
-          lastEditDate: 1524063083971,
-          lastReviewRequestBy: "user1",
-          changes: {
-            lastUpdated: 42,
-          },
-          status: "to-review",
+      source: {
+        bid: "stage",
+        cid: "certs",
+        lastEditDate: 1524063083971,
+        lastReviewRequestBy: "user1",
+        changes: {
+          lastUpdated: 42,
         },
-        destination: {
-          bid: "prod",
-          cid: "certs",
-        },
+        status: "to-review",
+      },
+      destination: {
+        bid: "prod",
+        cid: "certs",
       },
     };
 
@@ -237,7 +240,6 @@ describe("SimpleTest component", () => {
         signoff,
       });
       toReviewEnabled.mockReturnValue(false);
-      await waitForElementToBeRemoved(() => screen.queryByTestId("spinner"));
       expect(await screen.findByText(/Approve/)).toBeDefined();
     });
 
@@ -247,7 +249,6 @@ describe("SimpleTest component", () => {
         session: sessionFactory(),
         signoff,
       });
-      await waitForElementToBeRemoved(() => screen.queryByTestId("spinner"));
       expect(screen.queryByText(/Approve/)).toBeNull();
     });
   });

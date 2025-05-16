@@ -1,4 +1,6 @@
 import CollectionForm from "@src/components/collection/CollectionForm";
+import * as collectionHooks from "@src/hooks/collection";
+import { canCreateCollection, canEditCollection } from "@src/permission";
 import { renderWithProvider } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import React from "react";
@@ -6,35 +8,13 @@ import React from "react";
 const warningText =
   "You don't have the required permission to edit this collection.";
 
-const testProps = {
-  cid: null,
-  bid: "default",
-  session: {
-    permissions: [],
-    buckets: [
-      {
-        id: "default",
-      },
-    ],
-  },
-  bucket: {
-    busy: false,
-    data: {
-      id: "default",
-    },
-    permissions: {},
-    groups: [],
-  },
-  collection: {
-    busy: false,
-    data: {},
-    permissions: {},
-    records: [],
-  },
-  deleteCollection: vi.fn(),
-  onSubmit: vi.fn(),
-  formData: undefined,
-};
+vi.mock("@src/permission", () => {
+  return {
+    __esModule: true,
+    canCreateCollection: vi.fn(),
+    canEditCollection: vi.fn(),
+  };
+});
 
 describe("CollectionForm component", () => {
   beforeAll(() => {
@@ -55,18 +35,11 @@ describe("CollectionForm component", () => {
   });
 
   it("Should render an editable form for a user with permissions creating a new collection", async () => {
-    const localTestProps = JSON.parse(JSON.stringify(testProps));
-    localTestProps.session.permissions.push({
-      resource_name: "bucket",
-      permissions: [
-        "group:create",
-        "read",
-        "read:attributes",
-        "collection:create",
-      ],
-      bucket_id: "default",
+    canCreateCollection.mockReturnValue(true);
+    renderWithProvider(<CollectionForm />, {
+      route: "/default",
+      path: "/:bid",
     });
-    renderWithProvider(<CollectionForm {...localTestProps} />);
 
     const warning = screen.queryByText(warningText);
     expect(warning).toBeNull();
@@ -75,21 +48,15 @@ describe("CollectionForm component", () => {
   });
 
   it("Should render an editable form for a user with permissions editing a collection", async () => {
-    const localTestProps = JSON.parse(JSON.stringify(testProps));
-    localTestProps.session.permissions.push({
-      uri: "/buckets/default/test",
-      resource_name: "collection",
-      permissions: ["write"],
+    canEditCollection.mockReturnValue(true);
+    vi.spyOn(collectionHooks, "useCollection").mockReturnValue({
       id: "test",
-      bucket_id: "default",
-      collection_id: "test",
     });
-    localTestProps.cid = "test";
-    localTestProps.bid = "default";
-    localTestProps.collection.data.id = "test";
-    localTestProps.formData = {};
 
-    renderWithProvider(<CollectionForm {...localTestProps} />);
+    renderWithProvider(<CollectionForm />, {
+      route: "/default/test",
+      path: "/:bid/:cid",
+    });
 
     const warning = screen.queryByText(warningText);
     expect(warning).toBeNull();
@@ -98,17 +65,11 @@ describe("CollectionForm component", () => {
   });
 
   it("Should render an error for a user lacking permissions creating a collection", async () => {
-    const localTestProps = JSON.parse(JSON.stringify(testProps));
-    localTestProps.session.permissions = [
-      {
-        uri: "/buckets/default",
-        resource_name: "bucket",
-        permissions: ["group:create", "read", "read:attributes", "write"],
-        id: "default",
-        bucket_id: "default",
-      },
-    ];
-    renderWithProvider(<CollectionForm {...localTestProps} />);
+    canCreateCollection.mockReturnValue(false);
+    renderWithProvider(<CollectionForm />, {
+      route: "/default",
+      path: "/:bid",
+    });
 
     const warning = await screen.queryByText(warningText);
     expect(warning).toBeDefined();
@@ -117,23 +78,11 @@ describe("CollectionForm component", () => {
   });
 
   it("Should render as read-only for a user lacking permissions editing a collection", async () => {
-    const localTestProps = JSON.parse(JSON.stringify(testProps));
-    localTestProps.collection = {
-      busy: false,
-      data: {
-        id: "test",
-      },
-      permissions: {
-        read: [],
-        "record:create": [],
-      },
-      records: [],
-    };
-    localTestProps.cid = "test";
-    localTestProps.bid = "default";
-    localTestProps.formData = {};
-
-    renderWithProvider(<CollectionForm {...localTestProps} />);
+    canEditCollection.mockReturnValue(false);
+    renderWithProvider(<CollectionForm />, {
+      route: "/default/test",
+      path: "/:bid/:cid",
+    });
 
     const warning = await screen.queryByText(warningText);
     expect(warning).toBeDefined();

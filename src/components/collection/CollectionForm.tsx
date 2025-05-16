@@ -236,7 +236,7 @@ export default function CollectionForm() {
     return <Spinner />;
   }
 
-  const allowEditing = collection?.id
+  const allowEditing = cid
     ? canEditCollection(session, bid, cid)
     : canCreateCollection(session, bid);
 
@@ -272,7 +272,7 @@ export default function CollectionForm() {
       };
 
   const alert =
-    allowEditing || !collection?.id ? null : (
+    allowEditing || (cid && !collection?.id) ? null : (
       <div className="alert alert-warning">
         You don't have the required permission to{" "}
         {collection?.id
