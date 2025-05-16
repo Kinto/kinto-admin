@@ -7,7 +7,7 @@ import { renderWithProvider } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
 
-vi.mock("../../../src/permission", () => {
+vi.mock("@src/permission", () => {
   return {
     __esModule: true,
     canCreateRecord: vi.fn(),
@@ -16,45 +16,39 @@ vi.mock("../../../src/permission", () => {
 });
 
 describe("RecordForm", () => {
-  const defaultProps = {
-    bucket: { data: { id: "test" } },
-    collection: {
-      schema: {
-        type: "object",
-        properties: {
-          title: {
-            type: "string",
-            title: "TestTitle",
-            description: "Title description...",
-          },
-          content: {
-            type: "string",
-            title: "TestContent",
-            description: "Content description...",
-          },
+  const defaultCol = {
+    schema: {
+      type: "object",
+      properties: {
+        title: {
+          type: "string",
+          title: "TestTitle",
+          description: "Title description...",
         },
-      },
-      uiSchema: {
         content: {
-          "ui:widget": "textarea",
+          type: "string",
+          title: "TestContent",
+          description: "Content description...",
         },
-        "ui:order": ["title", "content"],
       },
-      attachment: {
-        enabled: false,
-        required: false,
+    },
+    uiSchema: {
+      content: {
+        "ui:widget": "textarea",
       },
+      "ui:order": ["title", "content"],
+    },
+    attachment: {
+      enabled: false,
+      required: false,
     },
   };
 
-  const attachProps = {
-    ...defaultProps,
-    collection: {
-      ...defaultProps.collection,
-      attachment: {
-        enabled: true,
-        required: true,
-      },
+  const attachCol = {
+    ...defaultCol,
+    attachment: {
+      enabled: true,
+      required: true,
     },
   };
 
@@ -81,9 +75,7 @@ describe("RecordForm", () => {
     canCreateRecord.mockReturnValue(true);
     canEditRecord.mockReturnValue(true);
     vi.spyOn(recordHooks, "useRecord").mockReturnValue(undefined);
-    vi.spyOn(collectionHooks, "useCollection").mockReturnValue(
-      defaultProps.collection
-    );
+    vi.spyOn(collectionHooks, "useCollection").mockReturnValue(defaultCol);
     vi.spyOn(client, "getClient").mockReturnValue({
       bucket: bid => {
         return {
@@ -145,19 +137,14 @@ describe("RecordForm", () => {
   });
 
   it("Renders the expected form for an existing record (attachments disabled)", async () => {
-    renderWithProvider(
-      <RecordForm
-        {...defaultProps}
-        record={{
-          data: {
-            title: "test title",
-            content: "test content",
-            id: "test",
-          },
-        }}
-      />,
-      editRouteProps
-    );
+    vi.spyOn(recordHooks, "useRecord").mockReturnValueOnce({
+      data: {
+        title: "test title",
+        content: "test content",
+        id: "test",
+      },
+    });
+    renderWithProvider(<RecordForm />, editRouteProps);
     expect(screen.queryByLabelText("TestTitle").value).toBe("test title");
     expect(screen.queryByLabelText("TestContent").value).toBe("test content");
   });
@@ -170,9 +157,7 @@ describe("RecordForm", () => {
   });
 
   it("Renders the expected form for an existing record (attachments enabled) and allows user to save without updating attachment", async () => {
-    vi.spyOn(collectionHooks, "useCollection").mockReturnValueOnce(
-      attachProps.collection
-    );
+    vi.spyOn(collectionHooks, "useCollection").mockReturnValueOnce(attachCol);
     vi.spyOn(recordHooks, "useRecord").mockReturnValueOnce({
       data: {
         title: "test title",
@@ -205,9 +190,7 @@ describe("RecordForm", () => {
 
   it("Requires an attachment to submit when it's a new record and attachments are required", async () => {
     lastSubmittedData = null;
-    vi.spyOn(collectionHooks, "useCollection").mockReturnValueOnce(
-      attachProps.collection
-    );
+    vi.spyOn(collectionHooks, "useCollection").mockReturnValueOnce(attachCol);
     renderWithProvider(<RecordForm />, createRouteProps);
     fireEvent.change(screen.queryByLabelText("TestTitle"), {
       target: { value: "test title" },
@@ -221,9 +204,7 @@ describe("RecordForm", () => {
 
   it("Disables the form when user cannot edit", async () => {
     canEditRecord.mockReturnValue(false);
-    vi.spyOn(collectionHooks, "useCollection").mockReturnValueOnce(
-      attachProps.collection
-    );
+    vi.spyOn(collectionHooks, "useCollection").mockReturnValueOnce(attachCol);
     vi.spyOn(recordHooks, "useRecord").mockReturnValueOnce({
       data: {
         title: "test title",

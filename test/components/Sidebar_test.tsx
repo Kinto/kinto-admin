@@ -5,13 +5,15 @@ import { screen } from "@testing-library/react";
 import React from "react";
 
 describe("Sidebar component", () => {
-  const params = { bid: "mybuck", cid: "mycoll" };
-  const location = { pathname: "" };
-  const capabilities = { history: {} };
+  const routeProps = {
+    route: "/mybuck/mycoll",
+    path: "/:bid/:cid",
+  };
   const session = {
     authenticated: true,
     serverInfo: {
       user: { bucket: "defaultBucket" },
+      capabilities: { history: {} },
     },
     buckets: [
       {
@@ -27,14 +29,10 @@ describe("Sidebar component", () => {
 
   describe("Not authenticated", () => {
     it("should not render any bucket menus", () => {
-      renderWithProvider(
-        <Sidebar
-          match={{ params: {} }}
-          location={{ pathname: "" }}
-          capabilities={{ history: {} }}
-        />,
-        { initialState: { session: { authenticated: false } } }
-      );
+      renderWithProvider(<Sidebar />, {
+        ...routeProps,
+        initialState: { session: { authenticated: false } },
+      });
 
       expect(screen.queryByTestId("sidebar-bucketMenu")).toBeNull();
     });
@@ -44,14 +42,10 @@ describe("Sidebar component", () => {
     let bucketMenus;
 
     beforeEach(() => {
-      renderWithProvider(
-        <Sidebar
-          match={{ params }}
-          location={location}
-          capabilities={capabilities}
-        />,
-        { initialState: { session } }
-      );
+      renderWithProvider(<Sidebar />, {
+        ...routeProps,
+        initialState: { session },
+      });
       bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
     });
 
@@ -95,31 +89,25 @@ describe("Sidebar component", () => {
     let bucketMenus;
 
     beforeEach(() => {
-      renderWithProvider(
-        <Sidebar
-          match={{ params }}
-          location={location}
-          capabilities={capabilities}
-        />,
-        {
-          initialState: {
-            session: {
-              ...session,
-              buckets: session.buckets.map(b => {
-                return {
-                  ...b,
-                  collections: b.collections.map(c => {
-                    return {
-                      ...c,
-                      readonly: true,
-                    };
-                  }),
-                };
-              }),
-            },
+      renderWithProvider(<Sidebar />, {
+        ...routeProps,
+        initialState: {
+          session: {
+            ...session,
+            buckets: session.buckets.map(b => {
+              return {
+                ...b,
+                collections: b.collections.map(c => {
+                  return {
+                    ...c,
+                    readonly: true,
+                  };
+                }),
+              };
+            }),
           },
-        }
-      );
+        },
+      });
       bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
     });
 
@@ -135,14 +123,10 @@ describe("Sidebar component", () => {
 
   describe("Create bucket", () => {
     it("should be shown by default", () => {
-      renderWithProvider(
-        <Sidebar
-          match={{ params }}
-          location={location}
-          capabilities={capabilities}
-        />,
-        { initialState: { session } }
-      );
+      renderWithProvider(<Sidebar />, {
+        ...routeProps,
+        initialState: { session },
+      });
       expect(screen.queryAllByText("Create bucket")).toHaveLength(1);
     });
 
@@ -150,14 +134,10 @@ describe("Sidebar component", () => {
       const notAllowed = clone(session);
       notAllowed.permissions = [{ resource_name: "root", permissions: [] }];
 
-      renderWithProvider(
-        <Sidebar
-          match={{ params }}
-          location={location}
-          capabilities={capabilities}
-        />,
-        { initialState: { session: notAllowed } }
-      );
+      renderWithProvider(<Sidebar />, {
+        ...routeProps,
+        initialState: { session: notAllowed },
+      });
       expect(screen.queryAllByText("Create bucket")).toHaveLength(0);
     });
   });
