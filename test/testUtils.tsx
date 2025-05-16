@@ -56,15 +56,24 @@ export function sessionFactory(props = {}, capabilities = {}) {
 
 export function renderWithProvider(
   ui,
-  { initialState, route = "/", path = "/", ...renderOptions } = {}
+  {
+    initialState,
+    route = "/",
+    path = "/",
+    createRoutes = true,
+    ...renderOptions
+  } = {}
 ) {
   const { store } = configureAppStore(initialState);
   const Wrapper = ({ children }) => (
     <Provider store={store}>
       <MemoryRouter initialEntries={[route]}>
-        <Routes>
-          <Route path={path} element={children} />
-        </Routes>
+        {createRoutes && (
+          <Routes>
+            <Route path={path} element={children} />
+          </Routes>
+        )}
+        {!createRoutes && children}
       </MemoryRouter>
     </Provider>
   );

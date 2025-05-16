@@ -1,90 +1,52 @@
 import CollectionRecords from "@src/components/collection/CollectionRecords";
+import * as collectionHooks from "@src/hooks/collection";
+import * as recordHooks from "@src/hooks/record";
+import {
+  canCreateRecord,
+  canEditCollection,
+  canEditRecord,
+} from "@src/permission";
 import { renderWithProvider } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
 
-describe("CollectionRecords component", () => {
-  const capabilities = {
-    history: {},
+vi.mock("@src/permission", () => {
+  return {
+    __esModule: true,
+    canCreateRecord: vi.fn(),
+    canEditRecord: vi.fn(),
+    canEditCollection: vi.fn(),
   };
+});
 
-  const bucket = {
-    id: "bucket",
-    data: {},
-    permissions: {
-      read: [],
-      write: [],
+describe("CollectionRecords component", () => {
+  const routeProps = {
+    route: "/bucket/collection",
+    path: "/:bid/:cid",
+    initialState: {
+      session: {
+        serverInfo: {
+          capabilities: {
+            history: {},
+          },
+        },
+      },
     },
   };
 
-  it("Calls listRecords every time bid or cid changes", async () => {
-    const listRecordsMock = vi.fn();
+  const useRecordList = vi.fn();
 
-    const props = {
-      session: { authenticated: true, permissions: ["foo"] },
-      bucket,
-      collection: {
-        busy: false,
-        data: {
-          schema: {
-            type: "object",
-            properties: {
-              foo: { type: "string" },
-            },
-          },
-          displayFields: ["foo"],
-          last_modified: 123,
-        },
-        permissions: {
-          write: ["basicauth:plop"],
-        },
-        recordsLoaded: true,
-        records: [],
-      },
-      capabilities,
-      listRecords: listRecordsMock,
-    };
-    const result = renderWithProvider(
-      <CollectionRecords
-        {...props}
-        match={{ params: { bid: "bucket1", cid: "collection1" } }}
-      />
-    );
-
-    expect(listRecordsMock).toHaveBeenCalledTimes(1);
-
-    result.rerender(
-      <CollectionRecords
-        {...props}
-        match={{ params: { bid: "bucket1", cid: "collection2" } }}
-      />
-    );
-
-    expect(listRecordsMock).toHaveBeenCalledTimes(2);
-
-    result.rerender(
-      <CollectionRecords
-        {...props}
-        match={{ params: { bid: "bucket2", cid: "collection2" } }}
-      />
-    );
-
-    expect(listRecordsMock).toHaveBeenCalledTimes(3);
-
-    result.rerender(
-      <CollectionRecords
-        {...props}
-        match={{ params: { bid: "bucket2", cid: "collection1" } }}
-      />
-    );
-
-    expect(listRecordsMock).toHaveBeenCalledTimes(4);
+  beforeEach(() => {
+    canCreateRecord.mockReturnValue(true);
+    canEditRecord.mockReturnValue(true);
+    canEditCollection.mockReturnValue(true);
+    vi.spyOn(recordHooks, "useRecordList").mockImplementation(useRecordList);
   });
 
   describe("Schema defined", () => {
-    const collection = {
-      busy: false,
-      data: {
+    beforeEach(() => {
+      vi.spyOn(collectionHooks, "useCollection").mockReturnValue({
+        id: "collection",
         schema: {
           type: "object",
           properties: {
@@ -92,31 +54,17 @@ describe("CollectionRecords component", () => {
           },
         },
         displayFields: ["foo"],
-      },
-      permissions: {
-        write: [],
-      },
-      records: [
-        { id: "id1", foo: "bar", last_modified: 2 },
-        { id: "id2", foo: "baz", last_modified: 1 },
-      ],
-      recordsLoaded: true,
-    };
-
-    beforeEach(() => {
-      renderWithProvider(
-        <CollectionRecords
-          match={{ params: { bid: "bucket", cid: "collection" } }}
-          session={{
-            authenticated: true,
-            serverInfo: { user: { id: "plop" } },
-          }}
-          bucket={bucket}
-          collection={collection}
-          capabilities={capabilities}
-          listRecords={() => {}}
-        />
-      );
+      });
+      useRecordList.mockReturnValue({
+        data: [
+          { id: "id1", foo: "bar", last_modified: 2 },
+          { id: "id2", foo: "baz", last_modified: 1 },
+        ],
+        hasNextPage: false,
+        lastModified: 0,
+        totalRecords: 2,
+      });
+      renderWithProvider(<CollectionRecords />, routeProps);
     });
 
     it("should render a table", () => {
@@ -153,40 +101,26 @@ describe("CollectionRecords component", () => {
   });
 
   describe("No schema defined", () => {
-    const collection = {
-      busy: false,
-      data: {
-        displayFields: [],
-      },
-      permissions: {
-        write: [],
-      },
-      recordsLoaded: true,
-      records: [
-        { id: "id1", foo: "bar", last_modified: 1 },
-        {
-          id: "id2",
-          foo: "baz",
-          last_modified: 2,
-          attachment: { location: "http://file" },
-        },
-      ],
-    };
-
     beforeEach(() => {
-      renderWithProvider(
-        <CollectionRecords
-          match={{ params: { bid: "bucket", cid: "collection" } }}
-          session={{
-            authenticated: true,
-            serverInfo: { user: { id: "plop" } },
-          }}
-          bucket={bucket}
-          collection={collection}
-          capabilities={capabilities}
-          listRecords={() => {}}
-        />
-      );
+      vi.spyOn(collectionHooks, "useCollection").mockReturnValue({
+        id: "collection",
+        displayFields: [],
+      });
+      useRecordList.mockReturnValue({
+        data: [
+          { id: "id1", foo: "bar", last_modified: 1 },
+          {
+            id: "id2",
+            foo: "baz",
+            last_modified: 2,
+            attachment: { location: "http://file" },
+          },
+        ],
+        hasNextPage: false,
+        lastModified: 0,
+        totalRecords: 2,
+      });
+      renderWithProvider(<CollectionRecords />, routeProps);
     });
 
     it("should render a table", () => {
@@ -206,26 +140,18 @@ describe("CollectionRecords component", () => {
   });
 
   describe("Tabs", () => {
-    const collection = {
-      busy: false,
-      data: {},
-      permissions: {},
-      recordsLoaded: true,
-      records: [],
-      totalRecords: 18,
-    };
-
     beforeEach(() => {
-      renderWithProvider(
-        <CollectionRecords
-          match={{ params: { bid: "bucket", cid: "collection" } }}
-          session={{}}
-          bucket={bucket}
-          collection={collection}
-          capabilities={capabilities}
-          listRecords={() => {}}
-        />
-      );
+      vi.spyOn(collectionHooks, "useCollection").mockReturnValue({
+        id: "collection",
+        displayFields: [],
+      });
+      useRecordList.mockReturnValue({
+        data: [],
+        hasNextPage: false,
+        lastModified: 0,
+        totalRecords: 18,
+      });
+      renderWithProvider(<CollectionRecords />, routeProps);
     });
 
     it("should show the total number of records", () => {
@@ -236,36 +162,25 @@ describe("CollectionRecords component", () => {
   });
 
   describe("List actions", () => {
-    const collection = {
-      busy: false,
-      data: {
-        schema: {
-          type: "object",
-          properties: {
-            foo: { type: "string" },
-          },
-        },
-        displayFields: ["foo"],
-      },
-      permissions: {
-        write: ["basicauth:plop"],
-      },
-      recordsLoaded: true,
-      records: [],
-    };
-
     describe("Collection write permission", () => {
       beforeEach(() => {
-        renderWithProvider(
-          <CollectionRecords
-            match={{ params: { bid: "bucket", cid: "collection" } }}
-            session={{ permissions: null }}
-            bucket={bucket}
-            collection={collection}
-            capabilities={capabilities}
-            listRecords={() => {}}
-          />
-        );
+        vi.spyOn(collectionHooks, "useCollection").mockReturnValue({
+          id: "collection",
+          schema: {
+            type: "object",
+            properties: {
+              foo: { type: "string" },
+            },
+          },
+          displayFields: ["foo"],
+        });
+        useRecordList.mockReturnValue({
+          data: [],
+          hasNextPage: false,
+          lastModified: 0,
+          totalRecords: 0,
+        });
+        renderWithProvider(<CollectionRecords />, routeProps);
       });
 
       it("should render list actions", () => {
@@ -276,36 +191,9 @@ describe("CollectionRecords component", () => {
 
     describe("No collection write permission", () => {
       beforeEach(() => {
-        renderWithProvider(
-          <CollectionRecords
-            match={{ params: { bid: "bucket", cid: "collection" } }}
-            session={{ permissions: [] }}
-            bucket={bucket}
-            collection={collection}
-            capabilities={capabilities}
-            listRecords={() => {}}
-          />
-        );
-      });
-
-      it("should not render list actions", () => {
-        expect(screen.queryByText("Bulk create")).toBeNull();
-      });
-    });
-  });
-
-  it("Does not crash when bucket.data is nullish", () => {
-    const listRecordsMock = vi.fn();
-
-    const props = {
-      session: { authenticated: true, permissions: ["foo"] },
-      bucket: {
-        ...bucket,
-        data: null,
-      },
-      collection: {
-        busy: false,
-        data: {
+        canCreateRecord.mockReturnValue(false);
+        vi.spyOn(collectionHooks, "useCollection").mockReturnValue({
+          id: "collection",
           schema: {
             type: "object",
             properties: {
@@ -313,22 +201,19 @@ describe("CollectionRecords component", () => {
             },
           },
           displayFields: ["foo"],
-          last_modified: 123,
-        },
-        permissions: {
-          write: ["basicauth:plop"],
-        },
-        recordsLoaded: true,
-        records: [],
-      },
-      capabilities,
-      listRecords: listRecordsMock,
-    };
-    renderWithProvider(
-      <CollectionRecords
-        {...props}
-        match={{ params: { bid: "bucket1", cid: "collection1" } }}
-      />
-    );
+        });
+        useRecordList.mockReturnValue({
+          data: [],
+          hasNextPage: false,
+          lastModified: 0,
+          totalRecords: 0,
+        });
+        renderWithProvider(<CollectionRecords />, routeProps);
+      });
+
+      it("should not render list actions", () => {
+        expect(screen.queryByText("Bulk create")).toBeNull();
+      });
+    });
   });
 });
