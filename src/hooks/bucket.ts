@@ -36,7 +36,7 @@ export function useBucketPermissions(bid: string, cacheBust?: number) {
         setVal(result);
       })
       .catch(err => {
-        notifyError("Unable to load bucket", err);
+        notifyError("Unable to load bucket permissions", err);
       });
   }, [bid, cacheBust]);
 
