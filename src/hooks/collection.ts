@@ -42,7 +42,7 @@ export function useCollectionPermissions(
         setVal(result);
       })
       .catch(err => {
-        notifyError("Unable to load collection", err);
+        notifyError("Unable to load collection permissions", err);
       });
   }, [bid, cid, cacheBust]);
 
