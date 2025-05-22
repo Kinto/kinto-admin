@@ -39,8 +39,7 @@ describe("group hooks", () => {
       expect(listHistoryMock).toHaveBeenCalledWith({
         limit: MAX_PER_PAGE,
         filters: {
-          collection_id: "cid",
-          record_id: "rid",
+          group_id: "gid",
         },
       });
     });
