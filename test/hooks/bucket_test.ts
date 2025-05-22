@@ -1,14 +1,18 @@
 import * as client from "@src/client";
-import { useBucket, useBucketHistory, useBucketPermissions } from "@src/hooks/bucket";
-import { renderHook } from "@testing-library/react";
+import {
+  useBucket,
+  useBucketHistory,
+  useBucketPermissions,
+} from "@src/hooks/bucket";
 import { mockNotifyError } from "@test/testUtils";
+import { renderHook } from "@testing-library/react";
 
 describe("bucket hooks", () => {
   describe("useBucket", () => {
     let getDataMock;
     const testBucket = {
       id: "foo",
-      name: "bar"
+      name: "bar",
     };
 
     beforeEach(() => {
@@ -22,17 +26,19 @@ describe("bucket hooks", () => {
       });
     });
 
-    it("returns the expected bucket", async() => {
+    it("returns the expected bucket", async () => {
       const { result } = renderHook(() => useBucket("bid"));
       expect(result.current).toBeUndefined();
       await vi.waitFor(() => {
-        expect(result.current).toStrictEqual(testBucket)
+        expect(result.current).toStrictEqual(testBucket);
       });
       expect(getDataMock).toHaveBeenCalled();
     });
 
-    it("calls the API again if the bid or cacheBust values change", async() => {
-      let rendered = renderHook(({ bid, cb }) => useBucket(bid, cb), { initialProps: { bid: "bid", cb: undefined } });
+    it("calls the API again if the bid or cacheBust values change", async () => {
+      let rendered = renderHook(({ bid, cb }) => useBucket(bid, cb), {
+        initialProps: { bid: "bid", cb: undefined },
+      });
       rendered.rerender({ bid: "bid" });
       rendered.rerender({ bid: "bid" });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
@@ -45,23 +51,25 @@ describe("bucket hooks", () => {
       rendered.rerender({ bid: "biz", cb: 1 });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(getDataMock).toHaveBeenCalledTimes(6);
-
     });
 
-    it("calls notifyError if there is a failure", async() => {
+    it("calls notifyError if there is a failure", async () => {
       const notifyErrorMock = mockNotifyError();
       getDataMock.mockRejectedValue(new Error("Test foo"));
       renderHook(() => useBucket("bid"));
       await vi.waitFor(() => {
-        expect(notifyErrorMock).toHaveBeenCalledWith("Unable to load bucket", expect.any(Error));
-      })
+        expect(notifyErrorMock).toHaveBeenCalledWith(
+          "Unable to load bucket",
+          expect.any(Error)
+        );
+      });
     });
   });
 
   describe("useBucketPermissions", () => {
     let getPermissionsMock;
     const testPermissions = {
-      write: [ "account:foo" ]
+      write: ["account:foo"],
     };
 
     beforeEach(() => {
@@ -75,17 +83,20 @@ describe("bucket hooks", () => {
       });
     });
 
-    it("returns the expected permissions", async() => {
+    it("returns the expected permissions", async () => {
       const { result } = renderHook(() => useBucketPermissions("bid"));
       expect(result.current).toBeUndefined();
       await vi.waitFor(() => {
-        expect(result.current).toStrictEqual(testPermissions)
+        expect(result.current).toStrictEqual(testPermissions);
       });
       expect(getPermissionsMock).toHaveBeenCalled();
     });
 
-    it("calls the API again if the bid or cacheBust values change", async() => {
-      let rendered = renderHook(({ bid, cb }) => useBucketPermissions(bid, cb), { initialProps: { bid: "bid", cb: undefined } });
+    it("calls the API again if the bid or cacheBust values change", async () => {
+      let rendered = renderHook(
+        ({ bid, cb }) => useBucketPermissions(bid, cb),
+        { initialProps: { bid: "bid", cb: undefined } }
+      );
       rendered.rerender({ bid: "bid" });
       rendered.rerender({ bid: "bid" });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
@@ -98,16 +109,18 @@ describe("bucket hooks", () => {
       rendered.rerender({ bid: "biz", cb: 1 });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(getPermissionsMock).toHaveBeenCalledTimes(6);
-
     });
 
-    it("calls notifyError if there is a failure", async() => {
+    it("calls notifyError if there is a failure", async () => {
       const notifyErrorMock = mockNotifyError();
       getPermissionsMock.mockRejectedValue(new Error("Test foo"));
       renderHook(() => useBucketPermissions("bid"));
       await vi.waitFor(() => {
-        expect(notifyErrorMock).toHaveBeenCalledWith("Unable to load bucket permissions", expect.any(Error));
-      })
+        expect(notifyErrorMock).toHaveBeenCalledWith(
+          "Unable to load bucket permissions",
+          expect.any(Error)
+        );
+      });
     });
   });
 

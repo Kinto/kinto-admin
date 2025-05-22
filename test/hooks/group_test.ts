@@ -1,4 +1,5 @@
 import * as client from "@src/client";
+import { MAX_PER_PAGE } from "@src/constants";
 import { useGroupHistory } from "@src/hooks/group";
 import { mockNotifyError } from "@test/testUtils";
 import { renderHook } from "@testing-library/react";
@@ -18,7 +19,7 @@ describe("group hooks", () => {
       });
     });
 
-    it("should call the history enpoint and return the expected results filtered on group id", async () => {
+    it("should call the history endpoint and return the expected results filtered on group id", async () => {
       listHistoryMock.mockReturnValue({
         data: [{ foo: "bar" }],
         hasNextPage: false,
@@ -35,7 +36,13 @@ describe("group hooks", () => {
         });
       });
 
-      expect(listHistoryMock).toHaveBeenCalled();
+      expect(listHistoryMock).toHaveBeenCalledWith({
+        limit: MAX_PER_PAGE,
+        filters: {
+          collection_id: "cid",
+          record_id: "rid",
+        },
+      });
     });
 
     it("should append the results when using the next function", async () => {

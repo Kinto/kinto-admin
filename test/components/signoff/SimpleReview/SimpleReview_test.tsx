@@ -5,12 +5,7 @@ import * as collectionHooks from "@src/hooks/collection";
 import * as recordHooks from "@src/hooks/record";
 import * as signoffHooks from "@src/hooks/signoff";
 import { renderWithProvider, sessionFactory } from "@test/testUtils";
-import {
-  fireEvent,
-  screen,
-  waitFor,
-  waitForElementToBeRemoved,
-} from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
 
 vi.mock("@src/permission", () => {
