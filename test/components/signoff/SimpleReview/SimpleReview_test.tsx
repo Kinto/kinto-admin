@@ -119,6 +119,21 @@ describe("SimpleTest component", () => {
     expect(screen.findByTestId("spinner")).toBeDefined();
   });
 
+  it("should render spinner when session is busy", async () => {
+    renderSimpleReview({
+      session: sessionFactory({ authenticated: true, authenticating: false, busy: true }),
+    });
+    expect(screen.findByTestId("spinner")).toBeDefined();
+  });
+
+  it("should render spinner when records are still loading", async () => {
+    vi.spyOn(recordHooks, "useRecordList").mockReturnValue({});
+    renderSimpleReview({
+      session: sessionFactory({ authenticated: true, authenticating: false }),
+    });
+    expect(screen.findByTestId("spinner")).toBeDefined();
+  });
+
   it("should render not authenticated", async () => {
     renderSimpleReview({
       session: sessionFactory({ authenticated: false, authenticating: false }),
