@@ -121,7 +121,11 @@ describe("SimpleTest component", () => {
 
   it("should render spinner when session is busy", async () => {
     renderSimpleReview({
-      session: sessionFactory({ authenticated: true, authenticating: false, busy: true }),
+      session: sessionFactory({
+        authenticated: true,
+        authenticating: false,
+        busy: true,
+      }),
     });
     expect(screen.findByTestId("spinner")).toBeDefined();
   });
