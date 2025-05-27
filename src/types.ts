@@ -1,4 +1,6 @@
 import { store } from "@src/store/configureStore";
+import { PaginationResult } from "kinto/lib/http/base";
+import { HistoryEntry } from "kinto/lib/types";
 
 export type ActionType<T extends (...args: any[]) => any> = ReturnType<T>;
 
@@ -26,6 +28,18 @@ export type BucketState = {
   history: Paginator<ResourceHistoryEntry>;
   collections: Paginator<CollectionData>;
   groups: GroupData[];
+};
+
+export type ListResult<T> = {
+  data?: T[];
+  hasNextPage?: boolean;
+  next?: Promise<PaginationResult<T>> | null;
+};
+
+export type ListHistoryResult = {
+  data?: HistoryEntry<any>[];
+  hasNextPage?: boolean;
+  next?: Promise<PaginationResult<HistoryEntry<any>>> | null;
 };
 
 export type BucketData = {
@@ -470,16 +484,16 @@ export type PermissionsListEntry = {
 };
 
 export type SignoffCollectionsInfo = {
-  source: SignoffSourceInfo;
-  destination: DestinationInfo;
-  preview: PreviewInfo | null | undefined;
+  source?: SignoffSourceInfo;
+  destination?: DestinationInfo;
+  preview?: PreviewInfo | null;
   // List of changes, present or absent depending on status.
   // If work-in-progress, show changes since the last review request. It will be
   // null if no changes were made.
-  changesOnSource?: ChangesList | null | undefined;
+  changesOnSource?: ChangesList | null;
   // If to-review, show changes since the last approval. It will be null if no
   // changes were made.
-  changesOnPreview?: ChangesList | null | undefined;
+  changesOnPreview?: ChangesList | null;
 };
 
 export type SignoffState = {

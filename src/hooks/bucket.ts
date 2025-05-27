@@ -1,9 +1,13 @@
 import { notifyError } from "./notifications";
 import { getClient } from "@src/client";
 import { DEFAULT_SORT, MAX_PER_PAGE } from "@src/constants";
+import { BucketData, BucketPermissions, ListHistoryResult } from "@src/types";
 import { useEffect, useState } from "react";
 
-export function useBucket(bid: string, cacheBust?: number) {
+export function useBucket(
+  bid: string,
+  cacheBust?: number
+): BucketData | undefined {
   const [val, setVal] = useState(undefined);
 
   useEffect(() => {
@@ -23,7 +27,10 @@ export function useBucket(bid: string, cacheBust?: number) {
   return val;
 }
 
-export function useBucketPermissions(bid: string, cacheBust?: number) {
+export function useBucketPermissions(
+  bid: string,
+  cacheBust?: number
+): BucketPermissions | undefined {
   const [val, setVal] = useState(undefined);
 
   useEffect(() => {
@@ -43,7 +50,10 @@ export function useBucketPermissions(bid: string, cacheBust?: number) {
   return val;
 }
 
-export function useBucketHistory(bid: string, cacheBust?: number) {
+export function useBucketHistory(
+  bid: string,
+  cacheBust?: number
+): ListHistoryResult {
   const [val, setVal] = useState({});
 
   useEffect(() => {

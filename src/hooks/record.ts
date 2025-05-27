@@ -1,17 +1,20 @@
 import { notifyError } from "./notifications";
 import { getClient } from "@src/client";
 import { MAX_PER_PAGE } from "@src/constants";
-import type { RecordData, RecordResource } from "@src/types";
-import { PaginationResult } from "kinto/lib/http/base";
+import type {
+  ListHistoryResult,
+  ListResult,
+  RecordData,
+  RecordResource,
+} from "@src/types";
 import { useEffect, useState } from "react";
 
-type RecordListResult = {
-  data?: PaginationResult<RecordData>;
-  hasNextPage?: boolean;
-  totalRecords?: number;
-  lastModified?: number;
-  next?: Promise<PaginationResult<RecordData>> | null;
-};
+type RecordListResult =
+  | ListResult<RecordData>
+  | {
+      totalRecords?: number;
+      lastModified?: number;
+    };
 
 export function useRecordList(
   bid: string,
@@ -113,7 +116,7 @@ export function useRecordHistory(
   cid: string,
   rid: string,
   cacheBust?: number
-) {
+): ListHistoryResult {
   const [val, setVal] = useState({});
 
   useEffect(() => {

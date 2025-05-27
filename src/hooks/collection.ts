@@ -1,9 +1,19 @@
 import { notifyError } from "./notifications";
 import { getClient } from "@src/client";
 import { MAX_PER_PAGE } from "@src/constants";
+import {
+  CollectionData,
+  CollectionPermissions,
+  ListHistoryResult,
+  ListResult,
+} from "@src/types";
 import { useEffect, useState } from "react";
 
-export function useCollection(bid: string, cid: string, cacheBust?: number) {
+export function useCollection(
+  bid: string,
+  cid: string,
+  cacheBust?: number
+): CollectionData | undefined {
   const [val, setVal] = useState(undefined);
 
   useEffect(() => {
@@ -28,7 +38,7 @@ export function useCollectionPermissions(
   bid: string,
   cid: string,
   cacheBust?: number
-) {
+): CollectionPermissions | undefined {
   const [val, setVal] = useState(undefined);
 
   useEffect(() => {
@@ -49,7 +59,10 @@ export function useCollectionPermissions(
   return val;
 }
 
-export function useCollectionList(bid: string, cacheBust?: number) {
+export function useCollectionList(
+  bid: string,
+  cacheBust?: number
+): ListResult<CollectionData> | undefined {
   const [val, setVal] = useState(undefined);
 
   useEffect(() => {
@@ -95,7 +108,7 @@ export function useCollectionHistory(
   cid: string,
   filters: any,
   cacheBust?: number
-) {
+): ListHistoryResult {
   const [val, setVal] = useState({});
 
   useEffect(() => {

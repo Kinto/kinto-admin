@@ -1,15 +1,8 @@
 import { notifyError } from "./notifications";
 import { getClient } from "@src/client";
 import { MAX_PER_PAGE } from "@src/constants";
-import { PaginationResult } from "kinto/lib/http/base";
-import { HistoryEntry } from "kinto/lib/types";
+import { ListHistoryResult } from "@src/types";
 import { useEffect, useState } from "react";
-
-type ListHistoryResult = {
-  data?: PaginationResult<HistoryEntry<any>>;
-  hasNextPage?: boolean;
-  next?: Promise<PaginationResult<HistoryEntry<any>>> | null;
-};
 
 export function useGroupHistory(bid: string, gid: string): ListHistoryResult {
   const [val, setVal] = useState({});
