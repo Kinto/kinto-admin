@@ -1,6 +1,6 @@
 import { UiSchema } from "@rjsf/utils";
 import { getClient } from "@src/client";
-import type { Capabilities, RecordData, RecordState } from "@src/types";
+import type { Capabilities, RecordData, RecordResource } from "@src/types";
 import { buildAttachmentUrl, omit } from "@src/utils";
 import { filesize } from "filesize";
 import React from "react";
@@ -80,7 +80,7 @@ function AttachmentPreview({ mimetype, location }) {
 }
 
 export type AttachmentInfoProps = {
-  record?: RecordState;
+  record?: RecordResource;
   allowEditing: boolean;
   attachmentRequired: boolean | null | undefined;
   capabilities: Capabilities;

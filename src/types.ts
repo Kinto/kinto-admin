@@ -21,15 +21,6 @@ export type Attachment = {
   };
 };
 
-export type BucketState = {
-  busy: boolean;
-  data: BucketData;
-  permissions: BucketPermissions;
-  history: Paginator<ResourceHistoryEntry>;
-  collections: Paginator<CollectionData>;
-  groups: GroupData[];
-};
-
 export type ListResult<T> = {
   data?: T[];
   hasNextPage?: boolean;
@@ -53,21 +44,6 @@ export type BucketPermissions = {
   "collection:create"?: string[];
   "group:create"?: string[];
 };
-
-export type BucketResource = {
-  data: BucketData;
-  permissions: BucketPermissions;
-};
-
-export type BucketUpdate =
-  | {
-      data: BucketData;
-      permissions?: BucketPermissions;
-    }
-  | {
-      data?: BucketData;
-      permissions: BucketPermissions;
-    };
 
 export type Capabilities = {
   attachments?: any;
@@ -107,19 +83,6 @@ export type HistoryFilters = {
   exclude_user_id?: string;
 };
 
-export type CollectionState = {
-  busy: boolean;
-  data: CollectionData;
-  permissions: CollectionPermissions;
-  currentSort: string;
-  records: RecordData[];
-  recordsLoaded: boolean;
-  hasNextRecords: boolean;
-  listNextRecords: (...args: any) => any | null | undefined;
-  totalRecords: number | null | undefined;
-  history: Paginator<ResourceHistoryEntry>;
-};
-
 export type CollectionData = {
   id?: string;
   last_modified?: number;
@@ -144,32 +107,7 @@ export type CollectionPermissions = {
   "record:create"?: string[];
 };
 
-export type CollectionResource = {
-  data: CollectionData;
-  permissions: CollectionPermissions;
-};
-
-export type CollectionUpdate =
-  | {
-      data: CollectionData;
-      permissions?: CollectionPermissions;
-    }
-  | {
-      data?: CollectionData;
-      permissions: CollectionPermissions;
-    };
-
 export type GetStateFn = typeof store.getState;
-
-export type GroupState = {
-  busy: boolean;
-  data: GroupData | null | undefined;
-  permissions: GroupPermissions;
-  history: Paginator<ResourceHistoryEntry>;
-  historyLoaded: boolean;
-  hasNextHistory: boolean;
-  listNextHistory: boolean;
-};
 
 export type GroupData = {
   id: string;
@@ -182,21 +120,6 @@ export type GroupPermissions = {
   write: string[];
   read?: string[];
 };
-
-export type GroupResource = {
-  data: GroupData;
-  permissions: GroupPermissions;
-};
-
-export type GroupUpdate =
-  | {
-      data: GroupData;
-      permissions?: GroupPermissions;
-    }
-  | {
-      data?: GroupData;
-      permissions: GroupPermissions;
-    };
 
 export type Notification = {
   type: string;
@@ -218,13 +141,6 @@ export type Permissions =
   | GroupPermissions
   | CollectionPermissions
   | RecordPermissions;
-
-export type RecordState = {
-  busy: boolean;
-  data: RecordData;
-  permissions: RecordPermissions;
-  history: Paginator<ResourceHistoryEntry>;
-};
 
 export type RecordData = {
   id?: string;
@@ -249,16 +165,6 @@ export type RecordResource = {
   permissions: RecordPermissions;
 };
 
-export type RecordUpdate =
-  | {
-      data: RecordData;
-      permissions?: RecordPermissions;
-    }
-  | {
-      data?: RecordData;
-      permissions: RecordPermissions;
-    };
-
 export type ResourceHistoryEntry = {
   action: "create" | "update" | "delete";
   collection_id?: string;
@@ -277,66 +183,6 @@ export type ResourceHistoryEntry = {
   user_id: string;
 };
 
-export type EmptyRouteParams = object;
-
-export type BucketRouteMatch = {
-  params: { bid: string };
-  isExact: boolean;
-  path: string;
-  url: string;
-};
-
-export type BucketRoute = {
-  match: BucketRouteMatch;
-};
-
-export type CollectionRouteParams = {
-  bid: string;
-  cid: string;
-};
-
-export type CollectionRouteMatch = {
-  params: CollectionRouteParams;
-  isExact: boolean;
-  path: string;
-  url: string;
-};
-
-export type CollectionRoute = {
-  params: CollectionRouteMatch;
-};
-
-export interface GroupPermissionsRouteMatchParams {
-  bid: string;
-  gid: string;
-}
-
-export type GroupRouteMatch = {
-  params: GroupPermissionsRouteMatchParams;
-  isExact: boolean;
-  path: string;
-  url: string;
-};
-
-export type GroupRoute = {
-  params: GroupRouteMatch;
-};
-
-export type RecordRouteMatch = {
-  params: {
-    bid: string;
-    cid: string;
-    rid: string;
-  };
-  isExact: boolean;
-  path: string;
-  url: string;
-};
-
-export type RecordRoute = {
-  params: RecordRouteMatch;
-};
-
 export type RouteParams = {
   bid?: string;
   cid?: string;
@@ -347,14 +193,6 @@ export type RouteParams = {
 export type RouteLocation = {
   pathname: string;
   query: HistoryFilters;
-};
-
-export type RouteResources = {
-  bucket: BucketResource;
-  groups: GroupData[];
-  collection: CollectionResource | null | undefined;
-  record: RecordResource | null | undefined;
-  group: GroupResource | null | undefined;
 };
 
 export type AuthMethod =

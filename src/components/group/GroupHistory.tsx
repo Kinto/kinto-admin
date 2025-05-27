@@ -1,21 +1,10 @@
 import CollectionTabs from "./GroupTabs";
 import HistoryTable from "@src/components/HistoryTable";
 import { useGroupHistory } from "@src/hooks/group";
-import type { Capabilities, GroupRouteMatch } from "@src/types";
 import React from "react";
 import { useParams } from "react-router";
 
-export type OwnProps = {
-  match: GroupRouteMatch;
-};
-
-export type StateProps = {
-  capabilities: Capabilities;
-};
-
-export type Props = OwnProps & StateProps;
-
-export default function GroupHistory({ capabilities }: Props) {
+export default function GroupHistory() {
   const { bid, gid } = useParams();
 
   const history = useGroupHistory(bid, gid);
