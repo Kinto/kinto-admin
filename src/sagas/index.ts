@@ -1,6 +1,5 @@
 import * as bucketSagas from "./bucket";
 import * as collectionSagas from "./collection";
-import * as heartbeatSagas from "./heartbeat";
 import * as recordSagas from "./record";
 import * as routeSagas from "./route";
 import * as sessionSagas from "./session";
@@ -137,8 +136,6 @@ export default function* rootSaga(getState: GetStateFn): SagaGen {
       signoffSagas.handleApproveChanges,
       getState
     ),
-    // heartbeat
-    takeEvery(c.HEARTBEAT_REQUEST, heartbeatSagas.heartbeatRequest, getState),
   ];
 
   yield all(sagas);
