@@ -56,7 +56,7 @@ export function* getServerInfo(
   // Set the client globally to the entire app, when the saga starts.
   // We'll compare the remote of this singleton when the server info will be received
   // to prevent race conditions.
-  const client = setupClient(processedAuth);
+  const client = setupClient(processedAuth || auth);
 
   try {
     // Fetch server information

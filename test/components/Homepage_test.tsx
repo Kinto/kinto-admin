@@ -13,6 +13,10 @@ describe("HomePage component", () => {
 
   describe("Authenticating", () => {
     it("loads a spinner when authenticating", async () => {
+      vi.spyOn(SessionActions, "setupSession").mockReturnValue({
+        type: "fake",
+        auth: null,
+      });
       renderWithProvider(<HomePage />, {
         initialState: {
           session: sessionFactory({ authenticating: true }),
@@ -99,7 +103,7 @@ describe("HomePage component", () => {
   });
 
   describe("Authenticated", () => {
-    it("should render server information heading with default info if it cannot be fetched", () => {
+    it("should render server information heading with default info if it cannot be fetched", async () => {
       renderWithProvider(<HomePage />, {
         initialState: {
           session: sessionFactory({
@@ -110,10 +114,16 @@ describe("HomePage component", () => {
       });
 
       expect(screen.getByText("Server information").textContent).toBeDefined();
-
-      expect(
-        [].map.call(screen.getAllByTestId("home-th"), x => x.textContent)
-      ).toStrictEqual(["url", "capabilities", "project_name", "project_docs"]);
+      vi.waitFor(() => {
+        expect(
+          [].map.call(screen.getAllByTestId("home-th"), x => x.textContent)
+        ).toStrictEqual([
+          "url",
+          "capabilities",
+          "project_name",
+          "project_docs",
+        ]);
+      });
     });
   });
 });

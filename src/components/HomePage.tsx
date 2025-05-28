@@ -66,14 +66,10 @@ export function HomePage() {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    const session = loadSession();
-
-    if (
-      session &&
-      session.auth &&
-      !(new Date().getTime() >= session.auth.expiresAt)
-    ) {
-      dispatch(SessionActions.setupSession(session.auth));
+    const savedSession = loadSession();
+    const auth = session?.auth || savedSession?.auth;
+    if (auth && !(new Date().getTime() >= auth?.expiresAt)) {
+      dispatch(SessionActions.setupSession(auth));
     } else {
       dispatch(
         SessionActions.getServerInfo({
