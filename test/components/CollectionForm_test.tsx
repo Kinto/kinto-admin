@@ -1,8 +1,9 @@
 import CollectionForm from "@src/components/collection/CollectionForm";
+import * as client from "@src/client";
 import * as collectionHooks from "@src/hooks/collection";
 import { canCreateCollection, canEditCollection } from "@src/permission";
-import { renderWithProvider } from "@test/testUtils";
-import { screen } from "@testing-library/react";
+import { mockNotifyError, mockNotifySuccess, renderWithProvider } from "@test/testUtils";
+import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
 
 const warningText =
@@ -34,7 +35,26 @@ describe("CollectionForm component", () => {
     });
   });
 
+  let clientMock;
+  beforeEach(() => {
+    clientMock = vi.fn();
+    vi.spyOn(client, "getClient").mockReturnValue({
+      bucket: bid => {
+        return {
+          collection: cid => {
+            return {
+              setData: clientMock,
+            }
+          },
+          createCollection: clientMock,
+        };
+      },
+      createBucket: clientMock,
+    });
+  });
+
   it("Should render an editable form for a user with permissions creating a new collection", async () => {
+    const notifySuccessMock = mockNotifySuccess();
     canCreateCollection.mockReturnValue(true);
     renderWithProvider(<CollectionForm />, {
       route: "/default",
@@ -45,13 +65,51 @@ describe("CollectionForm component", () => {
     expect(warning).toBeNull();
     const title = await screen.findByLabelText("Collection id*");
     expect(title.disabled).toBe(false);
+    fireEvent.change(title, {
+      target: { value: "foo" },
+    });
+
+    (await screen.findByText(/Create collection/)).click();
+    await vi.waitFor(() => {
+      expect(clientMock).toHaveBeenCalled();
+      expect(notifySuccessMock).toHaveBeenCalled();
+    });
+  });
+
+  it("Should show an error when failing to save a collection", async () => {
+    const notifyErrorMock = mockNotifyError();
+    clientMock.mockRejectedValue(new Error("test"));
+    canCreateCollection.mockReturnValue(true);
+    renderWithProvider(<CollectionForm />, {
+      route: "/default",
+      path: "/:bid",
+    });
+
+    const warning = screen.queryByText(warningText);
+    expect(warning).toBeNull();
+    const title = await screen.findByLabelText("Collection id*");
+    expect(title.disabled).toBe(false);
+    fireEvent.change(title, {
+      target: { value: "foo" },
+    });
+
+    (await screen.findByText(/Create collection/)).click();
+    await vi.waitFor(() => {
+      expect(clientMock).toHaveBeenCalled();
+      expect(notifyErrorMock).toHaveBeenCalled();
+    });
   });
 
   it("Should render an editable form for a user with permissions editing a collection", async () => {
     canEditCollection.mockReturnValue(true);
-    vi.spyOn(collectionHooks, "useCollection").mockReturnValue({
+    const notifySuccessMock = mockNotifySuccess();
+    const testCol = {
       id: "test",
-    });
+      schema: { type: "object", properties: { foo: "bar" } },
+      uiSchema: {},
+      last_modified: 2,
+    };
+    vi.spyOn(collectionHooks, "useCollection").mockReturnValue(testCol);
 
     renderWithProvider(<CollectionForm />, {
       route: "/default/test",
@@ -62,6 +120,12 @@ describe("CollectionForm component", () => {
     expect(warning).toBeNull();
     const title = await screen.findByLabelText("Collection id*");
     expect(title.disabled).toBe(false);
+
+    (await screen.findByText(/Update collection/)).click();
+    await vi.waitFor(() => {
+      expect(clientMock).toHaveBeenCalled();
+      expect(notifySuccessMock).toHaveBeenCalled();
+    });
   });
 
   it("Should render an error for a user lacking permissions creating a collection", async () => {
