@@ -1,6 +1,5 @@
 import CollectionTabs from "./CollectionTabs";
 import HistoryTable from "@src/components/HistoryTable";
-import { useAppSelector } from "@src/hooks/app";
 import { useCollectionHistory } from "@src/hooks/collection";
 import { parseHistoryFilters } from "@src/utils";
 import React from "react";
@@ -11,7 +10,6 @@ export default function CollectionHistory() {
   const [params, _] = useSearchParams();
   const filters = parseHistoryFilters(params);
   const history = useCollectionHistory(bid, cid, filters);
-  const session = useAppSelector(state => state.session);
 
   return (
     <div>

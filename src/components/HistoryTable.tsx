@@ -211,12 +211,8 @@ function FilterInfo(props: FilterInfoProps) {
     onDiffOverviewClick,
   } = props;
   const {
-    pathname,
-    query: { since, resource_name },
+    query: { since },
   } = location;
-
-  const listURL =
-    pathname + "?" + new URLSearchParams({ since, resource_name }).toString();
 
   return (
     <p>
