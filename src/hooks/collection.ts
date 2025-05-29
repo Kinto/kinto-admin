@@ -112,8 +112,9 @@ export function useCollectionHistory(
   const [val, setVal] = useState({});
 
   useEffect(() => {
+    setVal({});
     fetchHistory(bid, cid, filters, [], setVal);
-  }, [bid, cid, cacheBust]);
+  }, [bid, cid, ...Object.values(filters), cacheBust]);
 
   return val;
 }

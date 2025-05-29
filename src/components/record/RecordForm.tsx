@@ -11,6 +11,7 @@ import BaseForm from "@src/components/BaseForm";
 import Spinner from "@src/components/Spinner";
 import { useAppSelector } from "@src/hooks/app";
 import { useCollection } from "@src/hooks/collection";
+import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { useRecord } from "@src/hooks/record";
 import { canCreateRecord, canEditRecord } from "@src/permission";
 import React, { useState } from "react";
@@ -64,11 +65,16 @@ export default function RecordForm() {
 
   const handleDeleteRecord = async () => {
     if (rid && record && confirm("Are you sure?")) {
-      await getClient().bucket(bid).collection(cid).deleteRecord(rid, {
-        safe: true,
-        last_modified: record.data.last_modified,
-      });
-      navigate(`/buckets/${bid}/collections/${cid}/records/`);
+      try {
+        await getClient().bucket(bid).collection(cid).deleteRecord(rid, {
+          safe: true,
+          last_modified: record.data.last_modified,
+        });
+        notifySuccess("Record deleted.");
+        navigate(`/buckets/${bid}/collections/${cid}/records/`);
+      } catch (ex) {
+        notifyError("Couldn't delete record", ex);
+      }
     }
   };
 
@@ -83,25 +89,30 @@ export default function RecordForm() {
     const col = getClient().bucket(bid).collection(cid);
     const { __attachment__: attachment, ...updatedRecord } = formData;
 
-    if (session.serverInfo.capabilities.attachments && attachment) {
-      await col.addAttachment(
-        attachment,
-        { ...updatedRecord, id: rid },
-        {
-          safe: true,
-        }
-      );
-    } else if (isUpdate) {
-      await col.updateRecord(
-        { ...updatedRecord, id: rid },
-        {
-          safe: true,
-        }
-      );
-    } else {
-      col.createRecord(updatedRecord);
+    try {
+      if (session.serverInfo.capabilities.attachments && attachment) {
+        await col.addAttachment(
+          attachment,
+          { ...updatedRecord, id: rid },
+          {
+            safe: true,
+          }
+        );
+      } else if (isUpdate) {
+        await col.updateRecord(
+          { ...updatedRecord, id: rid },
+          {
+            safe: true,
+          }
+        );
+      } else {
+        await col.createRecord(updatedRecord);
+      }
+      notifySuccess(`Record ${isUpdate ? "updated" : "created"}`);
+      navigate(`/buckets/${bid}/collections/${cid}/records/`);
+    } catch (ex) {
+      notifyError(`Couldn't ${isUpdate ? "update" : "create"} record`, ex);
     }
-    navigate(`/buckets/${bid}/collections/${cid}/records/`);
   };
 
   const getForm = () => {

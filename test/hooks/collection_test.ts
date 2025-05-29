@@ -282,6 +282,29 @@ describe("collection hooks", () => {
       });
     });
 
+    it("calls the API again if the bid or cacheBust values change", async () => {
+      listHistoryMock.mockResolvedValue({ data: [] });
+      let rendered = renderHook(
+        ({ bid, cid, filters, cb }) =>
+          useCollectionHistory(bid, cid, filters, cb),
+        {
+          initialProps: { bid: "bid", cid: "cid", filters: {}, cb: undefined },
+        }
+      );
+      rendered.rerender({ bid: "bid", cid: "cid", filters: {} });
+      rendered.rerender({ bid: "bid", cid: "cid", filters: {} });
+      await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
+      expect(listHistoryMock).toHaveBeenCalledTimes(1);
+
+      rendered.rerender({ bid: "bid", cid: "cid1", filters: {} });
+      rendered.rerender({ bid: "bid", cid: "cid1", filters: { foo: "bar" } });
+      rendered.rerender({ bid: "bid", cid: "cid1", filters: { foo: "baz" } });
+      rendered.rerender({ bid: "bid1", cid: "cid1", filters: { foo: "baz" } });
+      rendered.rerender({ bid: "bid1", cid: "cid1", filters: {} });
+      await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
+      expect(listHistoryMock).toHaveBeenCalledTimes(6);
+    });
+
     it("should create an error message when an exception occurs", async () => {
       const notifyErrorMock = mockNotifyError();
       listHistoryMock.mockRejectedValue(new Error("Test foo"));

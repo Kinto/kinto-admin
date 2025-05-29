@@ -100,6 +100,7 @@ export default function BucketForm() {
         await getClient().createBucket(id, { data: attributes, safe: true });
         navigate(`/buckets/${id}/attributes`);
         notifySuccess("Bucket created.");
+        dispatch(listBuckets());
       } catch (ex) {
         notifyError("Bucket creation failed.", ex);
       }
@@ -113,11 +114,11 @@ export default function BucketForm() {
           );
         setCacheVal(cacheVal + 1);
         notifySuccess("Bucket attributes updated.");
+        dispatch(listBuckets());
       } catch (ex) {
         notifyError("Bucket attributes failed to update.", ex);
       }
     }
-    dispatch(listBuckets());
   };
 
   const handleDelete = async () => {

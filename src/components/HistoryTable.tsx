@@ -225,7 +225,6 @@ function FilterInfo(props: FilterInfoProps) {
         href="#"
         onClick={event => {
           event.preventDefault();
-          document.location.hash = listURL;
           onViewJournalClick();
         }}
       >

@@ -4,7 +4,7 @@ import { PermissionsForm } from "@src/components/PermissionsForm";
 import Spinner from "@src/components/Spinner";
 import { useAppSelector } from "@src/hooks/app";
 import { useBucket, useBucketPermissions } from "@src/hooks/bucket";
-import { notifySuccess } from "@src/hooks/notifications";
+import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { canEditBucket } from "@src/permission";
 import type { BucketPermissions as BucketPermissionsType } from "@src/types";
 import React, { useState } from "react";
@@ -22,12 +22,16 @@ export function BucketPermissions() {
   }: {
     formData: BucketPermissionsType;
   }) => {
-    await getClient().bucket(bid).setPermissions(formData, {
-      safe: true,
-      last_modified: bucket.last_modified,
-    });
-    notifySuccess("Bucket permissions updated.");
-    setCacheVal(cacheVal + 1);
+    try {
+      await getClient().bucket(bid).setPermissions(formData, {
+        safe: true,
+        last_modified: bucket.last_modified,
+      });
+      notifySuccess("Bucket permissions updated.");
+      setCacheVal(cacheVal + 1);
+    } catch (ex) {
+      notifyError("Couldn't save bucket permissions", ex);
+    }
   };
 
   const acls = ["read", "write", "collection:create", "group:create"];

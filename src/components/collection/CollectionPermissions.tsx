@@ -5,7 +5,7 @@ import { PermissionsForm } from "@src/components/PermissionsForm";
 import Spinner from "@src/components/Spinner";
 import { useAppDispatch, useAppSelector } from "@src/hooks/app";
 import { useCollection, useCollectionPermissions } from "@src/hooks/collection";
-import { notifySuccess } from "@src/hooks/notifications";
+import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { canEditCollection } from "@src/permission";
 import type { CollectionPermissions as CollectionPermissionsType } from "@src/types";
 import React, { useState } from "react";
@@ -25,13 +25,17 @@ export function CollectionPermissions() {
   }: {
     formData: CollectionPermissionsType;
   }) => {
-    await getClient().bucket(bid).collection(cid).setPermissions(formData, {
-      safe: true,
-      last_modified: collection.last_modified,
-    });
-    notifySuccess("Collection permissions updated.");
-    setCacheVal(cacheVal + 1);
-    dispatch(listBuckets());
+    try {
+      await getClient().bucket(bid).collection(cid).setPermissions(formData, {
+        safe: true,
+        last_modified: collection.last_modified,
+      });
+      notifySuccess("Collection permissions updated.");
+      setCacheVal(cacheVal + 1);
+      dispatch(listBuckets());
+    } catch (ex) {
+      notifyError("Couldn't update collection permissions", ex);
+    }
   };
 
   return (

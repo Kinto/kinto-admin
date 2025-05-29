@@ -36,6 +36,7 @@ export function Layout() {
   if (!authenticated) {
     return (
       <div className="container-fluid main">
+        <Notifications />
         <div className="row">
           <div className="col-sm-3 sidebar"></div>
           <div className={contentClasses}>

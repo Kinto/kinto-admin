@@ -9,7 +9,7 @@ import BaseForm from "@src/components/BaseForm";
 import JSONEditor from "@src/components/JSONEditor";
 import { useAppDispatch, useAppSelector } from "@src/hooks/app";
 import { useCollection } from "@src/hooks/collection";
-import { notifySuccess } from "@src/hooks/notifications";
+import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { canCreateCollection, canEditCollection } from "@src/permission";
 import { validateSchema, validateUiSchema } from "@src/utils";
 import React, { useState } from "react";
@@ -310,22 +310,26 @@ export default function CollectionForm() {
           uiSchema: JSON.parse(formData.uiSchema),
         };
 
-    if (creation) {
-      await getClient().bucket(bid).createCollection(collectionData.id, {
-        data: collectionData,
-        safe: true,
-      });
-      notifySuccess("Collection created.");
-      navigate(`/buckets/${bid}/collections/${formData.id}/records`);
-    } else {
-      await getClient().bucket(bid).collection(cid).setData(collectionData, {
-        safe: true,
-        last_modified: collection.last_modified,
-      });
-      notifySuccess("Collection attributes updated.");
-      setCacheVal(cacheVal + 1);
+    try {
+      if (creation) {
+        await getClient().bucket(bid).createCollection(collectionData.id, {
+          data: collectionData,
+          safe: true,
+        });
+        notifySuccess("Collection created.");
+        navigate(`/buckets/${bid}/collections/${formData.id}/records`);
+      } else {
+        await getClient().bucket(bid).collection(cid).setData(collectionData, {
+          safe: true,
+          last_modified: collection.last_modified,
+        });
+        notifySuccess("Collection attributes updated.");
+        setCacheVal(cacheVal + 1);
+      }
+      dispatch(listBuckets());
+    } catch (ex) {
+      notifyError(`Couldn't ${creation ? "create" : "update"} collection`, ex);
     }
-    dispatch(listBuckets());
   };
 
   const deleteCollection = async () => {

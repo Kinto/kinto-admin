@@ -9,6 +9,7 @@ import { isMember, toReviewEnabled } from "./utils";
 import { getClient } from "@src/client";
 import { useAppSelector } from "@src/hooks/app";
 import { useCollection } from "@src/hooks/collection";
+import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { useSignoff } from "@src/hooks/signoff";
 import { canEditCollection } from "@src/permission";
 import type { ChangesList, SignoffSourceInfo } from "@src/types";
@@ -64,31 +65,51 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
   };
 
   const rollbackChanges = async (text: string) => {
-    await reviewAction({
-      status: "to-rollback",
-      last_editor_comment: text,
-    });
+    try {
+      await reviewAction({
+        status: "to-rollback",
+        last_editor_comment: text,
+      });
+      notifySuccess("Changes rolled back.");
+    } catch (ex) {
+      notifyError("Couldn't rollback changes", ex);
+    }
   };
 
   const approveChanges = async () => {
-    await reviewAction({
-      status: "to-sign",
-      last_reviewer_comment: "",
-    });
+    try {
+      await reviewAction({
+        status: "to-sign",
+        last_reviewer_comment: "",
+      });
+      notifySuccess("Changes approved.");
+    } catch (ex) {
+      notifyError("Couldn't approve review", ex);
+    }
   };
 
   const declineChanges = async (text: string) => {
-    await reviewAction({
-      status: "work-in-progress",
-      last_reviewer_comment: text,
-    });
+    try {
+      await reviewAction({
+        status: "work-in-progress",
+        last_reviewer_comment: text,
+      });
+      notifySuccess("Changes declined.");
+    } catch (ex) {
+      notifyError("Couldn't decline changes", ex);
+    }
   };
 
   const requestReview = async (text: string) => {
-    await reviewAction({
-      status: "to-review",
-      last_editor_comment: text,
-    });
+    try {
+      await reviewAction({
+        status: "to-review",
+        last_editor_comment: text,
+      });
+      notifySuccess("Review requested.");
+    } catch (ex) {
+      notifyError("Couldn't request review", ex);
+    }
   };
 
   useEffect(() => {

@@ -3,7 +3,7 @@ import { getClient } from "@src/client";
 import { PermissionsForm } from "@src/components/PermissionsForm";
 import Spinner from "@src/components/Spinner";
 import { useAppSelector } from "@src/hooks/app";
-import { notifySuccess } from "@src/hooks/notifications";
+import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { useRecord } from "@src/hooks/record";
 import { canEditRecord } from "@src/permission";
 import React, { useState } from "react";
@@ -16,13 +16,17 @@ export function RecordPermissions() {
   const record = useRecord(bid, cid, rid, cacheVal);
 
   const onSubmit = async ({ formData }: { formData: any }) => {
-    await getClient().bucket(bid).collection(cid).updateRecord(record.data, {
-      permissions: formData,
-      safe: true,
-      last_modified: record.data.last_modified,
-    });
-    notifySuccess("Record permissions updated.");
-    setCacheVal(cacheVal + 1);
+    try {
+      await getClient().bucket(bid).collection(cid).updateRecord(record.data, {
+        permissions: formData,
+        safe: true,
+        last_modified: record.data.last_modified,
+      });
+      notifySuccess("Record permissions updated.");
+      setCacheVal(cacheVal + 1);
+    } catch (ex) {
+      notifyError("Couldn't update record permissions", ex);
+    }
   };
   const acls = ["read", "write"];
   return (

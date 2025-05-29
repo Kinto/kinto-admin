@@ -4,6 +4,7 @@ import { getClient } from "@src/client";
 import AdminLink from "@src/components/AdminLink";
 import PaginatedTable from "@src/components/PaginatedTable";
 import SignoffToolbar from "@src/components/signoff/SignoffToolBar";
+import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { canCreateRecord } from "@src/permission";
 import type { RecordData } from "@src/types";
 import { capitalize } from "@src/utils";
@@ -140,11 +141,16 @@ export default function RecordTable({
   };
 
   const deleteRecord = async (rid, last_modified) => {
-    await getClient().bucket(bid).collection(cid).deleteRecord(rid, {
-      safe: true,
-      last_modified,
-    });
-    callback();
+    try {
+      await getClient().bucket(bid).collection(cid).deleteRecord(rid, {
+        safe: true,
+        last_modified,
+      });
+      notifySuccess("Record deleted.");
+      callback();
+    } catch (ex) {
+      notifyError("Couldn't delete record", ex);
+    }
   };
 
   const getFieldTitle = displayField => {

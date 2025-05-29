@@ -21,12 +21,7 @@ export default function CollectionHistory() {
           {bid}/{cid}
         </b>
       </h1>
-      <CollectionTabs
-        bid={bid}
-        cid={cid}
-        selected="history"
-        capabilities={session.serverInfo.capabilities}
-      >
+      <CollectionTabs bid={bid} cid={cid} selected="history">
         <HistoryTable
           enableDiffOverview
           bid={bid}
