@@ -15,6 +15,7 @@
     "start": "npm run generate-version && vite",
     "tdd": "vitest",
     "test": "npm run generate-version && vitest --watch=false",
+    "test:coverage": "npm run generate-version && vitest --watch=false --coverage",
     "test:ci": "npm run test",
     "test-all": "npm run lint && npm run test",
     "test-all:ci": "npm run lint && npm run test:ci"
@@ -56,6 +57,7 @@
     "@typescript-eslint/eslint-plugin": "^8.22.0",
     "@typescript-eslint/parser": "^8.0.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-v8": "^3.1.2",
     "eslint": "^9.24.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-react": "^7.33.2",
