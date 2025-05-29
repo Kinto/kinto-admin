@@ -1,8 +1,12 @@
-import CollectionForm from "@src/components/collection/CollectionForm";
 import * as client from "@src/client";
+import CollectionForm from "@src/components/collection/CollectionForm";
 import * as collectionHooks from "@src/hooks/collection";
 import { canCreateCollection, canEditCollection } from "@src/permission";
-import { mockNotifyError, mockNotifySuccess, renderWithProvider } from "@test/testUtils";
+import {
+  mockNotifyError,
+  mockNotifySuccess,
+  renderWithProvider,
+} from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
 
@@ -44,7 +48,7 @@ describe("CollectionForm component", () => {
           collection: cid => {
             return {
               setData: clientMock,
-            }
+            };
           },
           createCollection: clientMock,
         };
