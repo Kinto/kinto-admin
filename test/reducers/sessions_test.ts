@@ -1,7 +1,5 @@
 import {
   SESSION_AUTHENTICATED,
-  SESSION_BUCKETS_REQUEST,
-  SESSION_BUCKETS_SUCCESS,
   SESSION_BUSY,
   SESSION_LOGOUT,
   SESSION_PERMISSIONS_SUCCESS,
@@ -94,26 +92,6 @@ describe("session reducer", () => {
     });
 
     expect(state).toHaveProperty("permissions", permissions);
-  });
-
-  it("SESSION_BUCKETS_REQUEST", () => {
-    const state = session(undefined, {
-      type: SESSION_BUCKETS_REQUEST,
-    });
-
-    expect(state).toHaveProperty("busy", true);
-  });
-
-  it("SESSION_BUCKETS_SUCCESS", () => {
-    const buckets = [];
-
-    const state = session(undefined, {
-      type: SESSION_BUCKETS_SUCCESS,
-      buckets,
-    });
-
-    expect(state).toHaveProperty("buckets", buckets);
-    expect(state).toHaveProperty("busy", false);
   });
 
   it("SESSION_AUTHENTICATED", () => {

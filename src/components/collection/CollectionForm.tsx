@@ -3,11 +3,11 @@ import DeleteForm from "./DeleteForm";
 import { FormInstructions } from "./FormInstructions";
 import JSONCollectionForm from "./JSONCollectionForm";
 import { RJSFSchema } from "@rjsf/utils";
-import { listBuckets } from "@src/actions/session";
 import { getClient } from "@src/client";
 import BaseForm from "@src/components/BaseForm";
 import JSONEditor from "@src/components/JSONEditor";
-import { useAppDispatch, useAppSelector } from "@src/hooks/app";
+import { useAppSelector } from "@src/hooks/app";
+import { reloadBuckets } from "@src/hooks/bucket";
 import { useCollection } from "@src/hooks/collection";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { canCreateCollection, canEditCollection } from "@src/permission";
@@ -230,7 +230,6 @@ export default function CollectionForm() {
   const [cacheVal, setCacheVal] = useState(0);
   const collection = useCollection(bid, cid, cacheVal);
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
   if (cid && !collection) {
     return <Spinner />;
@@ -326,7 +325,7 @@ export default function CollectionForm() {
         notifySuccess("Collection attributes updated.");
         setCacheVal(cacheVal + 1);
       }
-      dispatch(listBuckets());
+      reloadBuckets();
     } catch (ex) {
       notifyError(`Couldn't ${creation ? "create" : "update"} collection`, ex);
     }
@@ -334,7 +333,7 @@ export default function CollectionForm() {
 
   const deleteCollection = async () => {
     await getClient().bucket(bid).deleteCollection(cid);
-    dispatch(listBuckets());
+    reloadBuckets();
     navigate(`/buckets/${bid}/collections`);
   };
 

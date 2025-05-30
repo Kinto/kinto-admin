@@ -1,9 +1,9 @@
 import CollectionTabs from "./CollectionTabs";
-import { listBuckets } from "@src/actions/session";
 import { getClient } from "@src/client";
 import { PermissionsForm } from "@src/components/PermissionsForm";
 import Spinner from "@src/components/Spinner";
-import { useAppDispatch, useAppSelector } from "@src/hooks/app";
+import { useAppSelector } from "@src/hooks/app";
+import { reloadBuckets } from "@src/hooks/bucket";
 import { useCollection, useCollectionPermissions } from "@src/hooks/collection";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { canEditCollection } from "@src/permission";
@@ -18,7 +18,6 @@ export function CollectionPermissions() {
   const collection = useCollection(bid, cid, cacheVal);
   const permissions = useCollectionPermissions(bid, cid, cacheVal);
   const acls = ["read", "write", "record:create"];
-  const dispatch = useAppDispatch();
 
   const onSubmit = async ({
     formData,
@@ -32,7 +31,7 @@ export function CollectionPermissions() {
       });
       notifySuccess("Collection permissions updated.");
       setCacheVal(cacheVal + 1);
-      dispatch(listBuckets());
+      reloadBuckets();
     } catch (ex) {
       notifyError("Couldn't update collection permissions", ex);
     }
