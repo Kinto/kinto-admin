@@ -3,6 +3,7 @@ import Spinner from "./Spinner";
 import * as SessionActions from "@src/actions/session";
 import { SIDEBAR_MAX_LISTED_COLLECTIONS } from "@src/constants";
 import { useAppDispatch, useAppSelector } from "@src/hooks/app";
+import { useBucketList } from "@src/hooks/bucket";
 import { canCreateBucket } from "@src/permission";
 import type { BucketEntry, RouteParams } from "@src/types";
 import url from "@src/url";
@@ -152,6 +153,7 @@ type BucketsMenuProps = {
 };
 
 function filterBuckets(buckets, filters): BucketEntry[] {
+  if (!buckets) return [];
   const { showReadOnly, search, bid = null, cid = null } = filters;
   return buckets
     .slice(0)
@@ -192,7 +194,10 @@ const BucketsMenu = (props: BucketsMenuProps) => {
   const [showReadOnly, setShowReadOnly] = React.useState(false);
   const [search, setSearch] = React.useState(null);
   const session = useAppSelector(store => store.session);
-  const { busy, buckets = [] } = session;
+  const buckets = useBucketList(
+    !!session?.serverInfo?.capabilities?.permissions_endpoint,
+    session?.serverInfo?.user?.bucket
+  );
   const { currentPath, bid, cid } = props;
 
   const toggleReadOnly = () => {
@@ -270,7 +275,7 @@ const BucketsMenu = (props: BucketsMenuProps) => {
           </div>
         </form>
       </div>
-      {busy ? (
+      {!buckets ? (
         <Spinner />
       ) : (
         sortedBuckets.map((bucket, i) => {

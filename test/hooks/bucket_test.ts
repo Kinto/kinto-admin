@@ -1,5 +1,6 @@
 import * as client from "@src/client";
 import {
+  expandBucketsCollections,
   useBucket,
   useBucketHistory,
   useBucketPermissions,
@@ -202,6 +203,86 @@ describe("bucket hooks", () => {
           expect.any(Error)
         );
       });
+    });
+  });
+
+  describe("useBucketList", () => {
+    it("returns the expected list with permissions applied", async () => {
+      // TODO: write test
+    });
+
+    it("triggers an info notification if permissions endpoint isn't available", async () => {
+      // TODO: write test
+    });
+
+    it("triggers a notification error if the client throws an error", async () => {
+      // TODO: write test
+    });
+  });
+
+  describe("expandBucketsCollections", () => {
+    const buckets = [
+      { id: "b1", permissions: [], collections: [], readonly: undefined },
+      { id: "b2", permissions: [], collections: [], readonly: undefined },
+    ];
+
+    function bucketPerm(bucket_id, permissions) {
+      return { resource_name: "bucket", bucket_id, permissions };
+    }
+
+    function collectionPerm(bucket_id, collection_id, permissions) {
+      return {
+        resource_name: "collection",
+        bucket_id,
+        collection_id,
+        permissions,
+      };
+    }
+
+    const permissions = [
+      { resource_name: "root", permissions: ["bucket:create"] },
+      bucketPerm("b1", ["read"]),
+      bucketPerm("b2", ["read"]),
+      bucketPerm("b4", ["write"]),
+      collectionPerm("b1", "b1c1", ["read", "write"]),
+      collectionPerm("b2", "b2c1", ["read"]),
+      collectionPerm("b3", "b3c1", ["read", "write"]),
+      bucketPerm("foo", ["read"]),
+      collectionPerm("foo", "foo", ["read"]),
+    ];
+
+    const tree = expandBucketsCollections(buckets, permissions, 2);
+
+    it("should denote a bucket as writable", () => {
+      expect(tree.find(b => b.id === "b4").readonly).toBe(false);
+    });
+
+    it("should denote a bucket as readonly", () => {
+      expect(tree.find(b => b.id === "b2").readonly).toBe(true);
+    });
+
+    it("should denote a collection as writable", () => {
+      const b1c1 = tree
+        .find(b => b.id === "b1")
+        .collections.find(c => c.id === "b1c1");
+      expect(b1c1.readonly).toBe(false);
+    });
+
+    it("should denote a collection as readonly", () => {
+      const b2c1 = tree
+        .find(b => b.id === "b2")
+        .collections.find(c => c.id === "b2c1");
+      expect(b2c1.readonly).toBe(true);
+    });
+
+    it("should infer an implicit bucket", () => {
+      expect(tree.find(b => b.id === "b3").readonly).toBe(true);
+    });
+
+    it("should distinguish resource ids", () => {
+      const fooBucket = tree.find(b => b.id === "foo");
+      expect(fooBucket).toBeDefined();
+      expect(fooBucket.collections.find(c => c.id === "foo")).toBeDefined();
     });
   });
 });

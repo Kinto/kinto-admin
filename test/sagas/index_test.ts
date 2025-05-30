@@ -28,12 +28,5 @@ describe("root saga", () => {
 
       expectSagaCalled(saga, action);
     });
-
-    it("should watch for the listBuckets action", () => {
-      const saga = vi.spyOn(sessionSagas, "listBuckets");
-      const action = sessionActions.listBuckets();
-
-      expectSagaCalled(saga, action);
-    });
   });
 });

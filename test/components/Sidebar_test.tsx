@@ -1,4 +1,5 @@
 import { Sidebar } from "@src/components/Sidebar";
+import * as bucketHooks from "@src/hooks/bucket";
 import { clone } from "@src/utils";
 import { renderWithProvider } from "@test/testUtils";
 import { screen } from "@testing-library/react";
@@ -15,17 +16,22 @@ describe("Sidebar component", () => {
       user: { bucket: "defaultBucket" },
       capabilities: { history: {} },
     },
-    buckets: [
-      {
-        id: "mybuck",
-        collections: [{ id: "othercoll" }, { id: "mycoll" }],
-      },
-      {
-        id: "otherbuck",
-        collections: [{ id: "foo" }, { id: "bar" }, { id: "baz" }],
-      },
-    ],
   };
+
+  const buckets = [
+    {
+      id: "mybuck",
+      collections: [{ id: "othercoll" }, { id: "mycoll" }],
+    },
+    {
+      id: "otherbuck",
+      collections: [{ id: "foo" }, { id: "bar" }, { id: "baz" }],
+    },
+  ];
+
+  beforeEach(() => {
+    vi.spyOn(bucketHooks, "useBucketList").mockReturnValue(buckets);
+  });
 
   describe("Not authenticated", () => {
     it("should not render any bucket menus", () => {
@@ -89,22 +95,24 @@ describe("Sidebar component", () => {
     let bucketMenus;
 
     beforeEach(() => {
+      vi.spyOn(bucketHooks, "useBucketList").mockReturnValueOnce(
+        buckets.map(b => {
+          return {
+            ...b,
+            collections: b.collections.map(c => {
+              return {
+                ...c,
+                readonly: true,
+              };
+            }),
+          };
+        })
+      );
       renderWithProvider(<Sidebar />, {
         ...routeProps,
         initialState: {
           session: {
             ...session,
-            buckets: session.buckets.map(b => {
-              return {
-                ...b,
-                collections: b.collections.map(c => {
-                  return {
-                    ...c,
-                    readonly: true,
-                  };
-                }),
-              };
-            }),
           },
         },
       });

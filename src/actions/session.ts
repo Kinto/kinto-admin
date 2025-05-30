@@ -1,8 +1,6 @@
 import {
   SESSION_AUTHENTICATED,
   SESSION_AUTHENTICATION_FAILED,
-  SESSION_BUCKETS_REQUEST,
-  SESSION_BUCKETS_SUCCESS,
   SESSION_BUSY,
   SESSION_COPY_AUTHENTICATION_HEADER,
   SESSION_GET_SERVERINFO,
@@ -72,19 +70,6 @@ export function permissionsListSuccess(permissions: object[]): {
   permissions: object[];
 } {
   return { type: SESSION_PERMISSIONS_SUCCESS, permissions };
-}
-
-export function listBuckets(): {
-  type: "SESSION_BUCKETS_REQUEST";
-} {
-  return { type: SESSION_BUCKETS_REQUEST };
-}
-
-export function bucketsSuccess(buckets: object[]): {
-  type: "SESSION_BUCKETS_SUCCESS";
-  buckets: object[];
-} {
-  return { type: SESSION_BUCKETS_SUCCESS, buckets };
 }
 
 export function setAuthenticated(): {
