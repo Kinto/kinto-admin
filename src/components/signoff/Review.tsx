@@ -40,10 +40,13 @@ export function Review({
   // If preview disabled, the preview object is empty.
   let link: React.ReactNode = "disabled";
   if (preview) {
-    const { bid, cid } = preview;
+    const { bucket, collection } = preview;
     link = (
-      <AdminLink name="collection:records" params={{ bid, cid }}>
-        {`${bid}/${cid}`}
+      <AdminLink
+        name="collection:records"
+        params={{ bid: bucket, cid: collection }}
+      >
+        {`${bucket}/${collection}`}
       </AdminLink>
     );
   }
@@ -69,7 +72,7 @@ export function Review({
       {isCurrentStep && canEdit && useSimpleReview && (
         <AdminLink
           className="btn btn-info"
-          params={{ bid: source.bid, cid: source.cid }}
+          params={{ bid: source.bucket, cid: source.collection }}
           name="collection:simple-review"
         >
           <Braces className="icon" /> Review Changes
@@ -92,8 +95,8 @@ function ReviewInfos(props: ReviewInfosProps) {
   const { isCurrentStep, source, link, hasHistory, changes, isCurrentUrl } =
     props;
   const {
-    bid,
-    cid,
+    bucket,
+    collection,
     lastReviewRequestBy,
     lastReviewRequestDate,
     lastEditorComment,
@@ -120,8 +123,8 @@ function ReviewInfos(props: ReviewInfosProps) {
       {isCurrentStep && changes && (
         <DiffInfo
           hasHistory={hasHistory}
-          bid={bid}
-          cid={cid}
+          bid={bucket}
+          cid={collection}
           changes={changes}
         />
       )}

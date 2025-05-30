@@ -3,67 +3,39 @@ import { isMember, toReviewEnabled } from "../utils";
 import PerRecordDiffView from "./PerRecordDiffView";
 import SimpleReviewButtons from "./SimpleReviewButtons";
 import SimpleReviewHeader from "./SimpleReviewHeader";
-import * as CollectionActions from "@src/actions/collection";
-import * as SignoffActions from "@src/actions/signoff";
+import { getClient } from "@src/client";
 import Spinner from "@src/components/Spinner";
 import CollectionTabs from "@src/components/collection/CollectionTabs";
+import { useAppSelector } from "@src/hooks/app";
+import { useCollection } from "@src/hooks/collection";
+import { useRecordList } from "@src/hooks/record";
+import { useSignoff } from "@src/hooks/signoff";
 import { storageKeys, useLocalStorage } from "@src/hooks/storage";
 import { canEditCollection } from "@src/permission";
-import type {
-  Capabilities,
-  CollectionRouteMatch,
-  CollectionState,
-  SessionState,
-  SignoffState,
-  ValidRecord,
-} from "@src/types";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Shuffle } from "react-bootstrap-icons";
-import { Redirect, useHistory } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router";
 
-export type StateProps = {
-  signoff?: SignoffState;
-  session: SessionState;
-  capabilities: Capabilities;
-  collection: CollectionState;
-  fetchRecords(bid: string, cid: string): Promise<Array<ValidRecord>>;
-};
-
-export type SimpleReviewProps = StateProps & {
-  approveChanges: typeof SignoffActions.approveChanges;
-  declineChanges: typeof SignoffActions.declineChanges;
-  requestReview: typeof SignoffActions.requestReview;
-  rollbackChanges: typeof SignoffActions.rollbackChanges;
-  listRecords: typeof CollectionActions.listRecords;
-  match: CollectionRouteMatch;
-  location: Location;
-};
-
-export default function SimpleReview({
-  signoff,
-  session,
-  fetchRecords,
-  approveChanges,
-  declineChanges,
-  requestReview,
-  rollbackChanges,
-  listRecords,
-  match,
-  collection,
-  capabilities,
-}: SimpleReviewProps) {
+export default function SimpleReview() {
+  const { bid, cid } = useParams();
+  const collection = useCollection(bid, cid);
   const [useSimpleReview, setUseSimpleReview] = useLocalStorage(
     storageKeys.useSimpleReview,
     true
   );
-  const history = useHistory();
-  const signoffSource = signoff?.collectionsInfo?.source;
-  const sourceBid = signoffSource?.bid;
-  const sourceCid = signoffSource?.cid;
+  const session = useAppSelector(state => state.session);
+  const signoff = useSignoff(bid, cid, session.serverInfo.capabilities.signer);
+  const navigate = useNavigate();
+  const signoffSource = signoff?.source;
+  const sourceBid = signoffSource?.bucket;
+  const sourceCid = signoffSource?.collection;
 
-  const signoffDest = signoff?.collectionsInfo?.destination;
-  const destBid = signoffDest?.bid;
-  const destCid = signoffDest?.cid;
+  const signoffDest = signoff?.destination;
+  const destBid = signoffDest?.bucket;
+  const destCid = signoffDest?.collection;
+
+  const newRecords = useRecordList(sourceBid, sourceCid, "id", true);
+  const oldRecords = useRecordList(destBid, destCid, "id", true);
 
   const canReview = signoffSource
     ? (isReviewer(signoffSource, session) &&
@@ -71,80 +43,69 @@ export default function SimpleReview({
       !toReviewEnabled(session, signoffSource, signoffDest)
     : false;
 
-  const [records, setRecords] = useState<{
-    loading: boolean;
-    newRecords: ValidRecord[];
-    oldRecords: ValidRecord[];
-  }>({
-    loading: true,
-    newRecords: [],
-    oldRecords: [],
-  });
-
-  const {
-    params: { bid, cid },
-  } = match;
   const canRequestReview =
-    canEditCollection(session, bid, collection) &&
+    canEditCollection(session, bid, cid) &&
     isMember("editors_group", signoffSource, session);
 
-  useEffect(() => {
-    async function load() {
-      if (bid && cid) {
-        // For signoff
-        listRecords(bid, cid, "id");
-      }
-    }
-    load();
-  }, [bid, cid]);
-
-  useEffect(() => {
-    // get collection data
-    async function getRecords() {
-      if (destCid && destBid && sourceBid && sourceCid) {
-        try {
-          const newRecords = await fetchRecords(sourceBid, sourceCid);
-          const oldRecords = await fetchRecords(destBid, destCid);
-          setRecords({ oldRecords, newRecords, loading: false });
-        } catch (ex) {
-          if (ex.data?.code === 401) {
-            setRecords({
-              ...records,
-              loading: false,
-            });
-          } else {
-            console.error(ex);
-          }
-        }
-      } else {
-        setRecords({ oldRecords: [], newRecords: [], loading: false });
-      }
-    }
-    getRecords();
-  }, [destBid, destCid, sourceBid, sourceCid]);
-
   if (!useSimpleReview) {
-    return (
-      <Redirect
-        exact
-        from={`/buckets/${bid}/collections/${cid}/simple-review`}
-        to={`/buckets/${bid}/collections/${cid}/records`}
-      />
-    );
+    return <Navigate to={`/buckets/${bid}/collections/${cid}/records`} />;
   }
 
-  if (!session.authenticated) {
+  if (!session.authenticated && !session.authenticating) {
     return (
       <div className="simple-review-blocked-message list-page">
         Not authenticated
       </div>
     );
-  } else if (session.authenticating || session.busy) {
+  } else if (
+    session.authenticating ||
+    session.busy ||
+    (signoff?.source &&
+      !signoff.source.status &&
+      !newRecords?.data &&
+      !oldRecords?.data)
+  ) {
     return <Spinner />;
   }
-  const handleRollback = (text: string) => {
-    rollbackChanges(text);
-    history.push(`/buckets/${bid}/collections/${cid}/records`);
+
+  const reviewAction = async patchedFields => {
+    await getClient()
+      .bucket(sourceBid)
+      .collection(sourceCid)
+      .setData(patchedFields, {
+        safe: true,
+        patch: true,
+        last_modified: collection.last_modified,
+      });
+    navigate(`/buckets/${bid}/collections/${cid}/records`);
+  };
+
+  const rollbackChanges = async (text: string) => {
+    await reviewAction({
+      status: "to-rollback",
+      last_editor_comment: text,
+    });
+  };
+
+  const approveChanges = async () => {
+    await reviewAction({
+      status: "to-sign",
+      last_reviewer_comment: "",
+    });
+  };
+
+  const declineChanges = async (text: string) => {
+    await reviewAction({
+      status: "work-in-progress",
+      last_reviewer_comment: text,
+    });
+  };
+
+  const requestReview = async (text: string) => {
+    await reviewAction({
+      status: "to-review",
+      last_editor_comment: text,
+    });
   };
 
   const SignoffContent = () => {
@@ -166,17 +127,17 @@ export default function SimpleReview({
               approveChanges={approveChanges}
               declineChanges={declineChanges}
               requestReview={requestReview}
-              rollbackChanges={handleRollback}
+              rollbackChanges={rollbackChanges}
               canReview={canReview}
               canRequestReview={canRequestReview}
             />
           </SimpleReviewHeader>
         )}
         <PerRecordDiffView
-          oldRecords={records.oldRecords}
-          newRecords={records.newRecords}
+          oldRecords={oldRecords.data || []}
+          newRecords={newRecords.data || []}
           collectionData={signoffSource}
-          displayFields={collection?.data?.displayFields}
+          displayFields={collection?.displayFields}
         />
         <button
           type="button"
@@ -207,10 +168,13 @@ export default function SimpleReview({
         bid={bid}
         cid={cid}
         selected="simple-review"
-        capabilities={capabilities || {}}
         totalRecords={collection?.totalRecords || 0}
       >
-        {records.loading ? <Spinner /> : <SignoffContent />}
+        {!oldRecords.data || !newRecords.data ? (
+          <Spinner />
+        ) : (
+          <SignoffContent />
+        )}
       </CollectionTabs>
     </div>
   );

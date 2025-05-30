@@ -1,24 +1,29 @@
 import RecordRow from "./RecordRow";
 import { CommonProps } from "./commonPropTypes";
-import * as CollectionActions from "@src/actions/collection";
+import { getClient } from "@src/client";
 import AdminLink from "@src/components/AdminLink";
 import PaginatedTable from "@src/components/PaginatedTable";
-import SignoffContainer from "@src/containers/signoff/SignoffToolBar";
+import SignoffToolbar from "@src/components/signoff/SignoffToolBar";
+import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { canCreateRecord } from "@src/permission";
 import type { RecordData } from "@src/types";
 import { capitalize } from "@src/utils";
 import React, { useState } from "react";
 import { SortUp } from "react-bootstrap-icons";
 import { SortDown } from "react-bootstrap-icons";
+import { useParams } from "react-router";
 
 export function ListActions(props) {
-  const { bid, cid, session, collection, bucket } = props;
-  if (session.busy || collection.busy) {
+  const { session, collection } = props;
+  const { bid, cid } = useParams();
+
+  if (session.busy || !collection?.id) {
     return null;
   }
+
   return (
     <div className="list-actions">
-      {canCreateRecord(session, bucket.data?.id, collection) && (
+      {canCreateRecord(session, bid, cid) && (
         <>
           <AdminLink
             key="__1"
@@ -40,7 +45,7 @@ export function ListActions(props) {
       )}
       {/* won't render if the signer capability is not enabled on the server
          or collection not configured to be signed */}
-      <SignoffContainer key="request-signoff-toolbar" />
+      <SignoffToolbar key="request-signoff-toolbar" callback={props.callback} />
     </div>
   );
 }
@@ -108,10 +113,11 @@ type RecordsViewProps = CommonProps & {
 type TableProps = RecordsViewProps & {
   currentSort: string;
   hasNextRecords: boolean;
-  listNextRecords: typeof CollectionActions.listNextRecords;
+  listNextRecords: () => void;
   records: RecordData[];
   recordsLoaded: boolean;
   updateSort: (s: string) => void;
+  callback: () => void;
 };
 
 export default function RecordTable({
@@ -124,15 +130,27 @@ export default function RecordTable({
   currentSort,
   schema,
   displayFields,
-  deleteRecord,
   updateSort,
-  redirectTo,
   capabilities,
+  callback,
 }: TableProps) {
   const [filter, setFilter] = useState("");
 
   const onFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilter(e.target.value);
+  };
+
+  const deleteRecord = async (rid, last_modified) => {
+    try {
+      await getClient().bucket(bid).collection(cid).deleteRecord(rid, {
+        safe: true,
+        last_modified,
+      });
+      notifySuccess("Record deleted.");
+      callback();
+    } catch (ex) {
+      notifyError("Couldn't delete record", ex);
+    }
   };
 
   const getFieldTitle = displayField => {
@@ -205,7 +223,6 @@ export default function RecordTable({
           schema={schema}
           displayFields={displayFields}
           deleteRecord={deleteRecord}
-          redirectTo={redirectTo}
           capabilities={capabilities}
         />
       ))}

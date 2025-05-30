@@ -1,30 +1,33 @@
 import RecordTabs from "./RecordTabs";
-import * as CollectionActions from "@src/actions/collection";
+import { getClient } from "@src/client";
 import { PermissionsForm } from "@src/components/PermissionsForm";
 import Spinner from "@src/components/Spinner";
-import { useAppDispatch, useAppSelector } from "@src/hooks/app";
+import { useAppSelector } from "@src/hooks/app";
+import { notifyError, notifySuccess } from "@src/hooks/notifications";
+import { useRecord } from "@src/hooks/record";
 import { canEditRecord } from "@src/permission";
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router";
 
-interface RouteParams {
-  bid: string;
-  cid: string;
-  rid: string;
-}
 export function RecordPermissions() {
   const session = useAppSelector(state => state.session);
-  const collection = useAppSelector(state => state.collection);
-  const record = useAppSelector(state => state.record);
-  const dispatch = useAppDispatch();
-  const { bid, cid, rid } = useParams<RouteParams>();
+  const [cacheVal, setCacheVal] = useState(0);
+  const { bid, cid, rid } = useParams();
+  const record = useRecord(bid, cid, rid, cacheVal);
 
-  const onSubmit = ({ formData }: { formData: any }) => {
-    dispatch(
-      CollectionActions.updateRecord(bid, cid, rid, { permissions: formData })
-    );
+  const onSubmit = async ({ formData }: { formData: any }) => {
+    try {
+      await getClient().bucket(bid).collection(cid).updateRecord(record.data, {
+        permissions: formData,
+        safe: true,
+        last_modified: record.data.last_modified,
+      });
+      notifySuccess("Record permissions updated.");
+      setCacheVal(cacheVal + 1);
+    } catch (ex) {
+      notifyError("Couldn't update record permissions", ex);
+    }
   };
-  const { busy, permissions } = record;
   const acls = ["read", "write"];
   return (
     <div>
@@ -35,20 +38,14 @@ export function RecordPermissions() {
         </b>{" "}
         record permissions
       </h1>
-      <RecordTabs
-        bid={bid}
-        cid={cid}
-        rid={rid}
-        capabilities={session.serverInfo.capabilities}
-        selected="permissions"
-      >
-        {busy ? (
+      <RecordTabs bid={bid} cid={cid} rid={rid} selected="permissions">
+        {!record?.permissions ? (
           <Spinner />
         ) : (
           <PermissionsForm
-            permissions={permissions}
+            permissions={record.permissions}
             acls={acls}
-            readonly={!canEditRecord(session, bid, collection, record)}
+            readonly={!canEditRecord(session, bid, cid, rid)}
             onSubmit={onSubmit}
           />
         )}

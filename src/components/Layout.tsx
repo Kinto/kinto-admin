@@ -3,279 +3,151 @@ import { SessionInfoBar } from "./SessionInfoBar";
 import { HomePage } from "@src/components/HomePage";
 import Notifications from "@src/components/Notifications";
 import { Sidebar } from "@src/components/Sidebar";
+import BucketAttributes from "@src/components/bucket/BucketAttributes";
+import BucketCollections from "@src/components/bucket/BucketCollections";
+import BucketCreate from "@src/components/bucket/BucketCreate";
+import BucketGroups from "@src/components/bucket/BucketGroups";
+import BucketHistory from "@src/components/bucket/BucketHistory";
 import { BucketPermissions } from "@src/components/bucket/BucketPermissions";
+import CollectionAttributes from "@src/components/collection/CollectionAttributes";
+import CollectionCreate from "@src/components/collection/CollectionCreate";
+import CollectionHistory from "@src/components/collection/CollectionHistory";
 import { CollectionPermissions } from "@src/components/collection/CollectionPermissions";
+import CollectionRecords from "@src/components/collection/CollectionRecords";
+import GroupAttributes from "@src/components/group/GroupAttributes";
+import GroupCreate from "@src/components/group/GroupCreate";
+import GroupHistory from "@src/components/group/GroupHistory";
 import { GroupPermissions } from "@src/components/group/GroupPermissions";
+import RecordAttributes from "@src/components/record/RecordAttributes";
+import RecordBulk from "@src/components/record/RecordBulk";
+import RecordCreate from "@src/components/record/RecordCreate";
+import RecordHistory from "@src/components/record/RecordHistory";
 import { RecordPermissions } from "@src/components/record/RecordPermissions";
-import BucketAttributesPage from "@src/containers/bucket/BucketAttributesPage";
-import BucketCollectionsPage from "@src/containers/bucket/BucketCollectionsPage";
-import BucketCreatePage from "@src/containers/bucket/BucketCreatePage";
-import BucketGroupsPage from "@src/containers/bucket/BucketGroupsPage";
-import BucketHistoryPage from "@src/containers/bucket/BucketHistoryPage";
-import CollectionAttributesPage from "@src/containers/collection/CollectionAttributesPage";
-import CollectionCreatePage from "@src/containers/collection/CollectionCreatePage";
-import CollectionHistoryPage from "@src/containers/collection/CollectionHistoryPage";
-import CollectionRecordsPage from "@src/containers/collection/CollectionRecordsPage";
-import GroupAttributesPage from "@src/containers/group/GroupAttributesPage";
-import GroupCreatePage from "@src/containers/group/GroupCreatePage";
-import GroupHistoryPage from "@src/containers/group/GroupHistoryPage";
-import RecordAttributesPage from "@src/containers/record/RecordAttributesPage";
-import RecordBulkPage from "@src/containers/record/RecordBulkPage";
-import RecordCreatePage from "@src/containers/record/RecordCreatePage";
-import RecordHistoryPage from "@src/containers/record/RecordHistoryPage";
-import SimpleReviewPage from "@src/containers/signoff/SimpleReviewPage";
+import SimpleReview from "@src/components/signoff/SimpleReview";
 import { useAppSelector } from "@src/hooks/app";
-import { CreateRoute } from "@src/routes";
 import * as React from "react";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router";
 
 export function Layout() {
   const authenticated = useAppSelector(store => store.session.authenticated);
   const contentClasses = `col-sm-9 content`;
   const version = KINTO_ADMIN_VERSION;
+
+  if (!authenticated) {
+    return (
+      <div className="container-fluid main">
+        <Notifications />
+        <div className="row">
+          <div className="col-sm-3 sidebar"></div>
+          <div className={contentClasses}>
+            <Routes>
+              <Route path="/auth/:payload/:token" Component={HomePage} />
+              <Route path="/*" Component={HomePage} />
+            </Routes>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
-      {authenticated && <SessionInfoBar />}
+      <SessionInfoBar />
       <div className="container-fluid main">
         <div className="row">
           <div className="col-sm-3 sidebar">
-            {authenticated && (
-              <Switch>
-                {/* We need a "sidebar route" for each case where the sidebar
-                    needs the :gid or :cid to higlight the proper entry */}
-                <Route
-                  path="/buckets/:bid/collections/:cid"
-                  component={Sidebar}
-                />
-                <Route path="/buckets/:bid" component={Sidebar} />
-                <Route component={Sidebar} />
-              </Switch>
-            )}
+            <Routes>
+              <Route
+                path="/buckets?/:bid?/collections?/:cid?/*"
+                Component={Sidebar}
+              />
+            </Routes>
           </div>
           <div className={contentClasses}>
             <Notifications />
-            {authenticated && <Breadcrumbs separator=" / " />}
-            <Switch>
-              <CreateRoute exact title="home" path="/" component={HomePage} />
-              <CreateRoute
-                exact
-                title="auth"
-                path="/auth/:payload/:token"
-                component={HomePage}
-              />
+            <Breadcrumbs separator=" / " />
+            <Routes>
+              <Route path="/" Component={HomePage} />
+              <Route path="/auth/:payload/:token" Component={HomePage} />
               {/* /buckets */}
-              <Redirect exact from="/buckets" to="/" />
-              <CreateRoute title="home" path="/">
-                <Switch>
-                  <CreateRoute title="buckets" path="/buckets">
-                    <Switch>
-                      <CreateRoute
-                        exact
-                        title="create"
-                        path="/buckets/create"
-                        component={BucketCreatePage}
-                      />
-                      <Redirect
-                        exact
-                        from="/buckets/:bid"
-                        to="/buckets/:bid/collections"
-                      />
-                      <CreateRoute title=":bid" path="/buckets/:bid">
-                        <Switch>
-                          <CreateRoute
-                            exact
-                            title="groups"
-                            path="/buckets/:bid/groups"
-                            component={BucketGroupsPage}
-                          />
-                          <CreateRoute
-                            title="groups"
-                            path="/buckets/:bid/groups"
-                          >
-                            <Switch>
-                              <CreateRoute
-                                exact
-                                title="create"
-                                path="/buckets/:bid/groups/create"
-                                component={GroupCreatePage}
-                              />
-                              <Redirect
-                                exact
-                                from="/buckets/:bid/groups/:gid"
-                                to="/buckets/:bid/groups/:gid/attributes"
-                              />
-                              <CreateRoute
-                                title=":gid"
-                                path="/buckets/:bid/groups/:gid"
-                              >
-                                <Switch>
-                                  <CreateRoute
-                                    exact
-                                    title="attributes"
-                                    path="/buckets/:bid/groups/:gid/attributes"
-                                    component={GroupAttributesPage}
-                                  />
-                                  <CreateRoute
-                                    exact
-                                    title="permissions"
-                                    path="/buckets/:bid/groups/:gid/permissions"
-                                    component={GroupPermissions}
-                                  />
-                                  <CreateRoute
-                                    exact
-                                    title="history"
-                                    path="/buckets/:bid/groups/:gid/history"
-                                    component={GroupHistoryPage}
-                                  />
-                                </Switch>
-                              </CreateRoute>
-                            </Switch>
-                          </CreateRoute>
-                          <CreateRoute
-                            exact
-                            title="attributes"
-                            path="/buckets/:bid/attributes"
-                            component={BucketAttributesPage}
-                          />
-                          <CreateRoute
-                            exact
-                            title="permissions"
-                            path="/buckets/:bid/permissions"
-                            component={BucketPermissions}
-                          />
-                          <CreateRoute
-                            exact
-                            title="history"
-                            path="/buckets/:bid/history"
-                            component={BucketHistoryPage}
-                          />
-                          <CreateRoute
-                            exact
-                            title="collections"
-                            path="/buckets/:bid/collections"
-                            component={BucketCollectionsPage}
-                          />
-                          <CreateRoute
-                            title="collections"
-                            path="/buckets/:bid/collections"
-                          >
-                            <Switch>
-                              <CreateRoute
-                                exact
-                                title="create"
-                                path="/buckets/:bid/collections/create"
-                                component={CollectionCreatePage}
-                              />
-                              <Redirect
-                                exact
-                                from="/buckets/:bid/collections/:cid"
-                                to="/buckets/:bid/collections/:cid/records"
-                              />
-                              <CreateRoute
-                                title=":cid"
-                                path="/buckets/:bid/collections/:cid"
-                              >
-                                <Switch>
-                                  <CreateRoute
-                                    exact
-                                    title="attributes"
-                                    path="/buckets/:bid/collections/:cid/attributes"
-                                    component={CollectionAttributesPage}
-                                  />
-                                  <CreateRoute
-                                    exact
-                                    title="permissions"
-                                    path="/buckets/:bid/collections/:cid/permissions"
-                                    component={CollectionPermissions}
-                                  />
-                                  <CreateRoute
-                                    exact
-                                    title="history"
-                                    path="/buckets/:bid/collections/:cid/history"
-                                    component={CollectionHistoryPage}
-                                  />
-                                  <CreateRoute
-                                    exact
-                                    title="simple-review"
-                                    path="/buckets/:bid/collections/:cid/simple-review"
-                                    component={SimpleReviewPage}
-                                  />
-                                  <CreateRoute
-                                    exact
-                                    title="records"
-                                    path="/buckets/:bid/collections/:cid/records"
-                                    component={CollectionRecordsPage}
-                                  />
-                                  <CreateRoute
-                                    title="records"
-                                    path="/buckets/:bid/collections/:cid/records"
-                                  >
-                                    <Switch>
-                                      <CreateRoute
-                                        exact
-                                        title="create"
-                                        path="/buckets/:bid/collections/:cid/records/create"
-                                        component={RecordCreatePage}
-                                      />
-                                      <CreateRoute
-                                        exact
-                                        title="bulk create"
-                                        path="/buckets/:bid/collections/:cid/records/bulk"
-                                        component={RecordBulkPage}
-                                      />
-                                      <Redirect
-                                        exact
-                                        from="/buckets/:bid/collections/:cid/records/:rid"
-                                        to="/buckets/:bid/collections/:cid/records/:rid/attributes"
-                                      />
-                                      <CreateRoute
-                                        title=":rid"
-                                        path="/buckets/:bid/collections/:cid/records/:rid"
-                                      >
-                                        <Switch>
-                                          <CreateRoute
-                                            exact
-                                            title="attributes"
-                                            path="/buckets/:bid/collections/:cid/records/:rid/attributes"
-                                            component={RecordAttributesPage}
-                                          />
-                                          <CreateRoute
-                                            exact
-                                            title="permissions"
-                                            path={[
-                                              "permissions",
-                                              "/buckets/:bid/collections/:cid/records/:rid/permissions",
-                                            ]}
-                                            component={RecordPermissions}
-                                          />
-                                          <CreateRoute
-                                            exact
-                                            title="history"
-                                            path={[
-                                              "history",
-                                              "/buckets/:bid/collections/:cid/records/:rid/history",
-                                            ]}
-                                            component={RecordHistoryPage}
-                                          />
-                                        </Switch>
-                                      </CreateRoute>
-                                    </Switch>
-                                  </CreateRoute>
-                                </Switch>
-                              </CreateRoute>
-                            </Switch>
-                          </CreateRoute>
-                        </Switch>
-                      </CreateRoute>
-                    </Switch>
-                  </CreateRoute>
-                  <CreateRoute
-                    title="not found"
-                    component={_ => <h1>Page not found.</h1>}
-                  />
-                </Switch>
-              </CreateRoute>
-            </Switch>
+              <Route path="/buckets" element={<Navigate to="/" replace />} />
+              <Route path="/buckets/create" Component={BucketCreate} />
+              <Route path="/buckets/:bid/groups" Component={BucketGroups} />
+              <Route
+                path="/buckets/:bid/groups/create"
+                Component={GroupCreate}
+              />
+              <Route
+                path="/buckets/:bid/groups/:gid/attributes?"
+                Component={GroupAttributes}
+              />
+              <Route
+                path="/buckets/:bid/groups/:gid/permissions"
+                Component={GroupPermissions}
+              />
+              <Route
+                path="/buckets/:bid/groups/:gid/history"
+                Component={GroupHistory}
+              />
+              <Route
+                path="/buckets/:bid/attributes"
+                Component={BucketAttributes}
+              />
+              <Route
+                path="/buckets/:bid/permissions"
+                Component={BucketPermissions}
+              />
+              <Route path="/buckets/:bid/history" Component={BucketHistory} />
+              <Route
+                path="/buckets/:bid/collections?"
+                Component={BucketCollections}
+              />
+              <Route
+                path="/buckets/:bid/collections/create"
+                Component={CollectionCreate}
+              />
+              <Route
+                path="/buckets/:bid/collections/:cid/attributes"
+                Component={CollectionAttributes}
+              />
+              <Route
+                path="/buckets/:bid/collections/:cid/permissions"
+                Component={CollectionPermissions}
+              />
+              <Route
+                path="/buckets/:bid/collections/:cid/history"
+                Component={CollectionHistory}
+              />
+              <Route
+                path="/buckets/:bid/collections/:cid/simple-review"
+                Component={SimpleReview}
+              />
+              <Route
+                path="/buckets/:bid/collections/:cid/records?"
+                Component={CollectionRecords}
+              />
+              <Route
+                path="/buckets/:bid/collections/:cid/records/create"
+                Component={RecordCreate}
+              />
+              <Route
+                path="/buckets/:bid/collections/:cid/records/bulk"
+                Component={RecordBulk}
+              />
+              <Route
+                path="/buckets/:bid/collections/:cid/records/:rid/attributes?"
+                Component={RecordAttributes}
+              />
+              <Route
+                path="/buckets/:bid/collections/:cid/records/:rid/permissions"
+                Component={RecordPermissions}
+              />
+              <Route
+                path="/buckets/:bid/collections/:cid/records/:rid/history"
+                Component={RecordHistory}
+              />
+              <Route path="*" Component={_ => <h1>Page not found.</h1>} />
+            </Routes>
           </div>
         </div>
         <hr />

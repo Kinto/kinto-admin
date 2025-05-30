@@ -10,11 +10,11 @@ import type {
 } from "@src/types";
 import { diffJson, humanDate, parseHistoryFilters, timeago } from "@src/utils";
 import { omit, sortHistoryEntryPermissions } from "@src/utils";
-import type { Location } from "history";
 import React, { useState } from "react";
 import { Eye } from "react-bootstrap-icons";
 import { EyeSlash } from "react-bootstrap-icons";
 import { SkipStart } from "react-bootstrap-icons";
+import { useSearchParams } from "react-router";
 
 function Diff({ source, target }: { source: any; target: any }) {
   const diff = diffJson(source, target);
@@ -211,12 +211,8 @@ function FilterInfo(props: FilterInfoProps) {
     onDiffOverviewClick,
   } = props;
   const {
-    pathname,
-    query: { since, resource_name },
+    query: { since },
   } = location;
-
-  const listURL =
-    pathname + "?" + new URLSearchParams({ since, resource_name }).toString();
 
   return (
     <p>
@@ -225,7 +221,6 @@ function FilterInfo(props: FilterInfoProps) {
         href="#"
         onClick={event => {
           event.preventDefault();
-          document.location.hash = listURL;
           onViewJournalClick();
         }}
       >
@@ -283,7 +278,6 @@ function DiffOverview({ source, target, since }: DiffOverviewProps) {
 type HistoryTableProps = {
   bid: string;
   cid?: string;
-  location: Location;
   history: ResourceHistoryEntry[];
   historyLoaded: boolean;
   hasNextHistory: boolean;
@@ -294,7 +288,6 @@ type HistoryTableProps = {
 export default function HistoryTable({
   bid,
   cid,
-  location,
   history,
   historyLoaded,
   hasNextHistory,
@@ -302,9 +295,17 @@ export default function HistoryTable({
   enableDiffOverview = false,
 }: HistoryTableProps) {
   const [diffOverview, setDiffOverview] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [current, setCurrent] = useState(null);
   const [previous, setPrevious] = useState(null);
+  const [params, _] = useSearchParams();
+
+  const nextHistoryWrapper = async () => {
+    setLoading(true);
+    await listNextHistory();
+    setLoading(false);
+  };
 
   const onDiffOverviewClick = async since => {
     if (!enableDiffOverview || cid == null) {
@@ -333,7 +334,7 @@ export default function HistoryTable({
     setPrevious(null);
   };
 
-  const query = parseHistoryFilters(location.search);
+  const query = parseHistoryFilters(params);
   const routeLocation = { pathname: location.pathname, query };
   const { since } = query;
   const isFiltered = !!since;
@@ -352,7 +353,7 @@ export default function HistoryTable({
   );
 
   const tbody = (
-    <tbody className={!historyLoaded ? "loading" : ""}>
+    <tbody className={!historyLoaded || loading ? "loading" : ""}>
       {history.length === 0 ? (
         <tr>
           <td colSpan={6}>
@@ -396,7 +397,7 @@ export default function HistoryTable({
           tbody={tbody}
           dataLoaded={historyLoaded}
           hasNextPage={hasNextHistory}
-          listNextPage={listNextHistory}
+          listNextPage={nextHistoryWrapper}
         />
       )}
     </div>

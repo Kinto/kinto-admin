@@ -9,8 +9,10 @@ import {
   ExclamationCircleFill,
   QuestionCircleFill,
 } from "react-bootstrap-icons";
+import { useNavigate } from "react-router";
 
 export function SessionInfoBar() {
+  const navigate = useNavigate();
   const { heartbeat, url, project_name, project_docs, user } = useAppSelector(
     store => {
       return {
@@ -82,6 +84,7 @@ export function SessionInfoBar() {
           onClick={event => {
             event.preventDefault();
             dispatch(SessionActions.logout());
+            navigate("/");
           }}
         >
           <BoxArrowRight className="icon" /> Logout

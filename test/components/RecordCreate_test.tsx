@@ -1,69 +1,63 @@
+import * as client from "@src/client";
 import RecordCreate from "@src/components/record/RecordCreate";
+import * as collectionHooks from "@src/hooks/collection";
+import * as recordHooks from "@src/hooks/record";
+import { canCreateRecord } from "@src/permission";
 import { renderWithProvider } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
 
-describe("RecordCreate component", () => {
-  const bucket = {
-    id: "bucket",
-    data: {},
-    permissions: {
-      read: [],
-      write: [],
-    },
+vi.mock("@src/permission", () => {
+  return {
+    __esModule: true,
+    canCreateRecord: vi.fn(),
+    canEditRecord: vi.fn(),
   };
+});
 
-  describe("Schema defined", () => {
-    let createRecord;
-    const collection = {
-      data: {
-        schema: {
-          type: "object",
-          properties: {
-            foo: {
-              type: "string",
-            },
+describe("RecordCreate component", () => {
+  let createRecord = vi.fn();
+  beforeEach(() => {
+    canCreateRecord.mockReturnValue(true);
+    vi.spyOn(recordHooks, "useRecord").mockReturnValue(undefined);
+    vi.spyOn(collectionHooks, "useCollection").mockReturnValue({
+      schema: {
+        type: "object",
+        properties: {
+          foo: {
+            type: "string",
           },
         },
       },
-      permissions: {
-        write: [],
+    });
+    vi.spyOn(client, "getClient").mockReturnValue({
+      bucket: bid => {
+        return {
+          collection: cid => {
+            return {
+              createRecord,
+            };
+          },
+        };
       },
-    };
-    const record = { data: {}, permissions: {} };
-    const props = {
-      match: { params: { bid: "bucket", cid: "collection" } },
-      session: { authenticated: true, serverInfo: { user: "plop" } },
-      bucket,
-      collection,
-      record,
-      createRecord,
-    };
+    });
+    renderWithProvider(<RecordCreate />, {
+      route: "/bucket/collection",
+      path: "/:bid/:cid",
+    });
+  });
 
-    beforeEach(() => {
-      createRecord = vi.fn();
-      renderWithProvider(
-        <RecordCreate {...props} createRecord={createRecord} />
-      );
+  it("should render a form", () => {
+    expect(screen.getByTestId("formWrapper")).toBeDefined();
+  });
+
+  it("should submitted entered data", () => {
+    fireEvent.change(screen.getByLabelText("foo"), {
+      target: { value: "bar" },
     });
 
-    it("should render a form", () => {
-      expect(screen.getByTestId("formWrapper")).toBeDefined();
-    });
+    fireEvent.click(screen.getByText("Create record"));
 
-    it("should submitted entered data", () => {
-      fireEvent.change(screen.getByLabelText("foo"), {
-        target: { value: "bar" },
-      });
-
-      fireEvent.click(screen.getByText("Create record"));
-
-      expect(createRecord).toHaveBeenCalledWith(
-        "bucket",
-        "collection",
-        { foo: "bar" },
-        undefined
-      );
-    });
+    expect(createRecord).toHaveBeenCalledWith({ foo: "bar" });
   });
 });

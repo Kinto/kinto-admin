@@ -1,12 +1,10 @@
 /* Utils for tests. */
 import * as notificationsHooks from "@src/hooks/notifications";
-import { configureAppStoreAndHistory } from "@src/store/configureStore";
+import { configureAppStore } from "@src/store/configureStore";
 import { render } from "@testing-library/react";
-import { createMemoryHistory } from "history";
 import React from "react";
 import { Provider } from "react-redux";
-import { Router } from "react-router";
-import { Route } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router";
 
 export function mockNotifyError() {
   return vi
@@ -62,19 +60,21 @@ export function renderWithProvider(
     initialState,
     route = "/",
     path = "/",
-    initialHistory = createMemoryHistory({ initialEntries: [route] }),
+    createRoutes = true,
     ...renderOptions
   } = {}
 ) {
-  const { store, history } = configureAppStoreAndHistory(
-    initialState,
-    initialHistory
-  );
+  const { store } = configureAppStore(initialState);
   const Wrapper = ({ children }) => (
     <Provider store={store}>
-      <Router history={history}>
-        <Route path={path}>{children}</Route>
-      </Router>
+      <MemoryRouter initialEntries={[route]}>
+        {createRoutes && (
+          <Routes>
+            <Route path={path} element={children} />
+          </Routes>
+        )}
+        {!createRoutes && children}
+      </MemoryRouter>
     </Provider>
   );
   return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) };

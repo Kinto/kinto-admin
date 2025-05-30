@@ -1,62 +1,17 @@
 import BucketTabs from "./BucketTabs";
 import { DataList, ListActions } from "./CollectionDataList";
-import * as BucketActions from "@src/actions/bucket";
-import type {
-  BucketRouteMatch,
-  BucketState,
-  Capabilities,
-  SessionState,
-} from "@src/types";
-import type { Location } from "history";
-import React, { useEffect } from "react";
+import { useAppSelector } from "@src/hooks/app";
+import { useCollectionList } from "@src/hooks/collection";
+import React from "react";
+import { useParams } from "react-router";
 
-export type OwnProps = {
-  match: BucketRouteMatch;
-  location: Location;
-};
-
-export type StateProps = {
-  session: SessionState;
-  bucket: BucketState;
-  capabilities: Capabilities;
-};
-
-export type Props = OwnProps &
-  StateProps & {
-    listBucketCollections: typeof BucketActions.listBucketCollections;
-    listBucketNextCollections: typeof BucketActions.listBucketNextCollections;
-  };
-
-export default function BucketCollections({
-  match,
-  location,
-  session,
-  bucket,
-  capabilities,
-  listBucketCollections,
-  listBucketNextCollections,
-}) {
-  useEffect(() => {
-    const onBucketPageEnter = () => {
-      const { params } = match;
-      if (!session.authenticated) {
-        // We're not authenticated, skip requesting the list of records. This likely
-        // occurs when users refresh the page and lose their session.
-        return;
-      }
-      listBucketCollections(params.bid);
-    };
-
-    onBucketPageEnter();
-  }, [match, location, session, listBucketCollections]);
-
-  const {
-    params: { bid },
-  } = match;
-  const { collections } = bucket;
+export default function BucketCollections() {
+  const { bid } = useParams();
+  const collections = useCollectionList(bid);
+  const session = useAppSelector(state => state.session);
 
   const listActions = (
-    <ListActions bid={bid} session={session} bucket={bucket} />
+    <ListActions bid={bid} session={session} busy={!collections} />
   );
 
   return (
@@ -64,9 +19,9 @@ export default function BucketCollections({
       <h1>
         Collections of <b>{bid}</b>
       </h1>
-      <BucketTabs bid={bid} selected="collections" capabilities={capabilities}>
+      <BucketTabs bid={bid} selected="collections">
         {listActions}
-        {collections.loaded && collections.entries.length === 0 ? (
+        {collections && collections.length === 0 ? (
           <div className="alert alert-info">
             <p>This bucket has no collections.</p>
           </div>
@@ -74,9 +29,9 @@ export default function BucketCollections({
           <DataList
             bid={bid}
             collections={collections}
-            listBucketNextCollections={listBucketNextCollections}
-            capabilities={capabilities}
-            showSpinner={!collections.loaded}
+            listBucketNextCollections={collections?.next}
+            capabilities={session.serverInfo.capabilities}
+            showSpinner={!collections}
           />
         )}
         {listActions}

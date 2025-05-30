@@ -1,12 +1,12 @@
 import { isMember, toReviewEnabled } from "@src/components/signoff/utils";
 
 const source = {
-  bid: "sourceBucket",
-  cid: "sourceCol",
+  bucket: "sourceBucket",
+  collection: "sourceCol",
 };
 const destination = {
-  bid: "destBucket",
-  cid: "destCol",
+  bucket: "destBucket",
+  collection: "destCol",
 };
 const signerResource = {
   source: {

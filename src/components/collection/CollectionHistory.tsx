@@ -1,65 +1,15 @@
 import CollectionTabs from "./CollectionTabs";
-import * as CollectionActions from "@src/actions/collection";
 import HistoryTable from "@src/components/HistoryTable";
-import type {
-  Capabilities,
-  CollectionRouteMatch,
-  CollectionState,
-  SessionState,
-} from "@src/types";
+import { useCollectionHistory } from "@src/hooks/collection";
 import { parseHistoryFilters } from "@src/utils";
-import type { Location } from "history";
-import React, { useEffect } from "react";
+import React from "react";
+import { useParams, useSearchParams } from "react-router";
 
-export type OwnProps = {
-  match: CollectionRouteMatch;
-  location: Location;
-};
-
-export type StateProps = {
-  session: SessionState;
-  collection: CollectionState;
-  capabilities: Capabilities;
-};
-
-export type Props = OwnProps &
-  StateProps & {
-    listCollectionHistory: typeof CollectionActions.listCollectionHistory;
-    listCollectionNextHistory: typeof CollectionActions.listCollectionNextHistory;
-  };
-
-export const onCollectionHistoryEnter = (props: Props) => {
-  const { listCollectionHistory, match, session, location } = props;
-  const {
-    params: { bid, cid },
-  } = match;
-  const filters = parseHistoryFilters(location.search);
-  if (!session.authenticated) {
-    // We're not authenticated, skip requesting the list of records. This likely
-    // occurs when users refresh the page and lose their session.
-    return;
-  }
-  listCollectionHistory(bid, cid, filters);
-};
-
-export default function CollectionHistory(props: Props) {
-  const {
-    match,
-    collection,
-    capabilities,
-    location,
-    listCollectionNextHistory,
-  } = props;
-  const {
-    params: { bid, cid },
-  } = match;
-  const {
-    history: { entries, loaded, hasNextPage },
-  } = collection;
-
-  useEffect(() => {
-    onCollectionHistoryEnter(props);
-  }, [props.location]);
+export default function CollectionHistory() {
+  const { bid, cid } = useParams();
+  const [params, _] = useSearchParams();
+  const filters = parseHistoryFilters(params);
+  const history = useCollectionHistory(bid, cid, filters);
 
   return (
     <div>
@@ -69,21 +19,15 @@ export default function CollectionHistory(props: Props) {
           {bid}/{cid}
         </b>
       </h1>
-      <CollectionTabs
-        bid={bid}
-        cid={cid}
-        selected="history"
-        capabilities={capabilities}
-      >
+      <CollectionTabs bid={bid} cid={cid} selected="history">
         <HistoryTable
           enableDiffOverview
           bid={bid}
           cid={cid}
-          historyLoaded={loaded}
-          history={entries}
-          hasNextHistory={hasNextPage}
-          listNextHistory={listCollectionNextHistory}
-          location={location}
+          historyLoaded={history.data !== undefined}
+          history={history.data || []}
+          hasNextHistory={history.hasNextPage}
+          listNextHistory={history.next}
         />
       </CollectionTabs>
     </div>

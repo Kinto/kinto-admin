@@ -38,7 +38,7 @@ function SignedInfos(props: SignedInfosProps) {
   const { isCurrentUrl, source, destination } = props;
   const { lastReviewBy, lastReviewDate, lastSignatureBy, lastSignatureDate } =
     source;
-  const { bid, cid } = destination;
+  const { bucket, collection } = destination;
   return (
     <ul>
       <li>
@@ -64,8 +64,11 @@ function SignedInfos(props: SignedInfosProps) {
       {!isCurrentUrl && (
         <li>
           <strong>Destination: </strong>
-          <AdminLink name="collection:records" params={{ bid, cid }}>
-            {`${bid}/${cid}`}
+          <AdminLink
+            name="collection:records"
+            params={{ bid: bucket, cid: collection }}
+          >
+            {`${bucket}/${collection}`}
           </AdminLink>
         </li>
       )}

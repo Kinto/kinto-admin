@@ -1,67 +1,65 @@
+import * as client from "@src/client";
 import RecordAttributes from "@src/components/record/RecordAttributes";
+import * as collectionHooks from "@src/hooks/collection";
+import * as recordHooks from "@src/hooks/record";
+import { canEditRecord } from "@src/permission";
 import { clone } from "@src/utils";
 import { renderWithProvider } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
 
+vi.mock("@src/permission", () => {
+  return {
+    __esModule: true,
+    canEditRecord: vi.fn(),
+  };
+});
+
+const collection = {
+  schema: {
+    type: "object",
+    properties: {
+      foo: {
+        type: "string",
+      },
+    },
+  },
+  attachment: {
+    enabled: true,
+    required: false,
+  },
+};
+
 describe("RecordAttributes component", () => {
-  const bucket = {
-    id: "bucket",
-    data: {},
-    permissions: {
-      read: [],
-      write: [],
-    },
-  };
+  let updateRecord = vi.fn();
 
-  const collection = {
-    data: {
-      schema: {
-        type: "object",
-        properties: {
-          foo: {
-            type: "string",
+  beforeEach(() => {
+    canEditRecord.mockReturnValue(true);
+    vi.spyOn(recordHooks, "useRecord").mockReturnValue({
+      data: { id: "abc", last_modified: 123, foo: "bar" },
+    });
+    vi.spyOn(collectionHooks, "useCollection").mockReturnValue(collection);
+    vi.spyOn(client, "getClient").mockReturnValue({
+      bucket: bid => {
+        return {
+          collection: cid => {
+            return {
+              updateRecord,
+            };
           },
-        },
+        };
       },
-      attachment: {
-        enabled: true,
-        required: false,
-      },
-    },
-    permissions: {
-      write: [],
-    },
-  };
+    });
+  });
 
-  const record = {
-    data: { id: "abc", last_modified: 123, foo: "bar" },
-    permissions: {},
-  };
-
-  const match = { params: { bid: "bucket", cid: "collection", id: "abc" } };
-  const session = { authenticated: true, serverInfo: { user: "plop" } };
-  const capabilities = {};
-  const props = {
-    match,
-    session,
-    capabilities,
-    bucket,
-    collection,
-    record,
-    updateRecord: () => {},
-    deleteRecord: () => {},
-    deleteAttachment: () => {},
+  const routeProps = {
+    route: "/bucket/collection/abc",
+    path: "/:bid/:cid/:rid",
   };
 
   describe("Simple schema", () => {
-    let updateRecord;
-
     beforeEach(() => {
-      updateRecord = vi.fn();
-      renderWithProvider(
-        <RecordAttributes {...props} updateRecord={updateRecord} />
-      );
+      renderWithProvider(<RecordAttributes />, routeProps);
     });
 
     it("should render a form", () => {
@@ -76,11 +74,12 @@ describe("RecordAttributes component", () => {
       fireEvent.click(screen.getByText("Update record"));
 
       expect(updateRecord).toHaveBeenCalledWith(
-        "bucket",
-        "collection",
-        undefined,
-        { data: { id: "abc", foo: "baz", last_modified: 123 } },
-        undefined
+        {
+          id: "abc",
+          foo: "baz",
+          last_modified: 123,
+        },
+        { safe: true }
       );
     });
   });
@@ -96,17 +95,11 @@ describe("RecordAttributes component", () => {
           size: 12345,
         },
       },
-      permissions: {},
     };
 
     beforeEach(() => {
-      renderWithProvider(
-        <RecordAttributes
-          {...props}
-          capabilities={{ attachments: { base_url: "" } }}
-          record={record}
-        />
-      );
+      vi.spyOn(recordHooks, "useRecord").mockReturnValueOnce(record);
+      renderWithProvider(<RecordAttributes />, routeProps);
     });
 
     it("should render the attachment info", () => {
@@ -125,13 +118,9 @@ describe("RecordAttributes component", () => {
       };
 
       beforeEach(() => {
-        renderWithProvider(
-          <RecordAttributes
-            {...props}
-            capabilities={{ attachments: { base_url: "" } }}
-            record={gzipped}
-          />
-        );
+        vi.spyOn(recordHooks, "useRecord").mockReturnValueOnce(gzipped);
+
+        renderWithProvider(<RecordAttributes />, routeProps);
       });
 
       it("should show original file attributes", () => {
@@ -147,20 +136,21 @@ describe("RecordAttributes component", () => {
 
     describe("ID in schema", () => {
       const withID = clone(collection);
-      withID.data.schema.properties.id = { type: "string" };
+      withID.schema.properties.id = { type: "string" };
 
       describe("ID in UISchema", () => {
         const withUISchema = clone(withID);
-        withUISchema.data.uiSchema = {
+        withUISchema.uiSchema = {
           id: {
             "ui:widget": "textarea",
           },
         };
 
         beforeEach(() => {
-          renderWithProvider(
-            <RecordAttributes {...props} collection={withUISchema} />
+          vi.spyOn(collectionHooks, "useCollection").mockReturnValueOnce(
+            withUISchema
           );
+          renderWithProvider(<RecordAttributes />);
           field = screen.getByLabelText("id");
         });
 

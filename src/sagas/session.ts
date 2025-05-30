@@ -25,7 +25,6 @@ import type {
 } from "@src/types";
 import { clone, copyToClipboard, getAuthLabel } from "@src/utils";
 import { PermissionData } from "kinto/lib/http";
-import { push as updatePath } from "redux-first-history";
 import { call, put } from "redux-saga/effects";
 
 export function* serverChange(getState: GetStateFn): SagaGen {
@@ -57,7 +56,7 @@ export function* getServerInfo(
   // Set the client globally to the entire app, when the saga starts.
   // We'll compare the remote of this singleton when the server info will be received
   // to prevent race conditions.
-  const client = setupClient(processedAuth);
+  const client = setupClient(processedAuth || auth);
 
   try {
     // Fetch server information
@@ -164,11 +163,6 @@ export function* sessionLogout(
   action: ActionType<typeof actions.logout>
 ): SagaGen {
   resetClient();
-  const state = getState();
-  if (state.router.location.pathname !== "/") {
-    // We can't push twice the same path using hash history.
-    yield put(updatePath("/"));
-  }
   notifySuccess("Logged out.");
   yield call(clearSession);
 }

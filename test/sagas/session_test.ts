@@ -7,7 +7,6 @@ import { DEFAULT_SERVERINFO } from "@src/reducers/session";
 import * as saga from "@src/sagas/session";
 import { saveSession } from "@src/store/localStore";
 import { mockNotifyError, mockNotifySuccess } from "@test/testUtils";
-import { push as updatePath } from "redux-first-history";
 import { call, put } from "redux-saga/effects";
 
 const authData = {
@@ -534,7 +533,6 @@ describe("session sagas", () => {
     });
 
     it("should redirect to the homepage with a notification", () => {
-      expect(sessionLogout.next().value).toStrictEqual(put(updatePath("/")));
       sessionLogout.next();
       expect(notifySuccessMock).toHaveBeenCalledWith("Logged out.");
     });

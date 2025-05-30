@@ -1,7 +1,7 @@
 import "./style.css";
 import { breadcrumbifyPath } from "@src/locationUtils";
 import React from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router";
 
 interface BreadcrumbsProps {
   separator: string;
@@ -16,7 +16,6 @@ export default function Breadcrumbs({ separator }: BreadcrumbsProps) {
         {crumbs.map(([name, path], i) => (
           <span key={i}>
             <NavLink
-              exact
               to={{
                 pathname: path,
               }}

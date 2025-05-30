@@ -1,31 +1,41 @@
 import CollectionTabs from "./CollectionTabs";
-import * as BucketActions from "@src/actions/bucket";
+import { listBuckets } from "@src/actions/session";
+import { getClient } from "@src/client";
 import { PermissionsForm } from "@src/components/PermissionsForm";
 import Spinner from "@src/components/Spinner";
 import { useAppDispatch, useAppSelector } from "@src/hooks/app";
+import { useCollection, useCollectionPermissions } from "@src/hooks/collection";
+import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { canEditCollection } from "@src/permission";
 import type { CollectionPermissions as CollectionPermissionsType } from "@src/types";
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router";
 
-interface RouteParams {
-  bid: string;
-  cid: string;
-}
-
 export function CollectionPermissions() {
-  const { bid, cid } = useParams<RouteParams>();
+  const { bid, cid } = useParams();
+  const [cacheVal, setCacheVal] = useState(0);
   const session = useAppSelector(state => state.session);
-  const bucket = useAppSelector(state => state.bucket);
-  const collection = useAppSelector(state => state.collection);
-  const { busy, permissions } = collection;
+  const collection = useCollection(bid, cid, cacheVal);
+  const permissions = useCollectionPermissions(bid, cid, cacheVal);
   const acls = ["read", "write", "record:create"];
   const dispatch = useAppDispatch();
 
-  const onSubmit = ({ formData }: { formData: CollectionPermissionsType }) => {
-    dispatch(
-      BucketActions.updateCollection(bid, cid, { permissions: formData })
-    );
+  const onSubmit = async ({
+    formData,
+  }: {
+    formData: CollectionPermissionsType;
+  }) => {
+    try {
+      await getClient().bucket(bid).collection(cid).setPermissions(formData, {
+        safe: true,
+        last_modified: collection.last_modified,
+      });
+      notifySuccess("Collection permissions updated.");
+      setCacheVal(cacheVal + 1);
+      dispatch(listBuckets());
+    } catch (ex) {
+      notifyError("Couldn't update collection permissions", ex);
+    }
   };
 
   return (
@@ -37,19 +47,14 @@ export function CollectionPermissions() {
         </b>{" "}
         collection permissions
       </h1>
-      <CollectionTabs
-        bid={bid}
-        cid={cid}
-        capabilities={session.serverInfo.capabilities}
-        selected="permissions"
-      >
-        {busy ? (
+      <CollectionTabs bid={bid} cid={cid} selected="permissions">
+        {!permissions ? (
           <Spinner />
         ) : (
           <PermissionsForm
             permissions={permissions}
             acls={acls}
-            readonly={!canEditCollection(session, bucket.data.id, collection)}
+            readonly={!canEditCollection(session, bid, cid)}
             onSubmit={onSubmit}
           />
         )}

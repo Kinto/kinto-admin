@@ -1,38 +1,17 @@
 import BucketTabs from "./BucketTabs";
 import { DataList, ListActions } from "./GroupDataList";
-import type {
-  BucketRouteMatch,
-  BucketState,
-  Capabilities,
-  SessionState,
-} from "@src/types";
+import { useAppSelector } from "@src/hooks/app";
+import { useGroupList } from "@src/hooks/group";
 import React from "react";
+import { useParams } from "react-router";
 
-type OwnProps = {
-  match: BucketRouteMatch;
-};
-
-type StateProps = {
-  session: SessionState;
-  bucket: BucketState;
-  capabilities: Capabilities;
-};
-
-type Props = OwnProps & StateProps;
-
-export default function BucketCollections({
-  match,
-  session,
-  bucket,
-  capabilities,
-}: Props) {
-  const {
-    params: { bid },
-  } = match;
-  const { groups } = bucket;
+export default function BucketGroups() {
+  const { bid } = useParams();
+  const groups = useGroupList(bid);
+  const session = useAppSelector(state => state.session);
 
   const listActions = (
-    <ListActions bid={bid} session={session} bucket={bucket} />
+    <ListActions bid={bid} session={session} busy={!groups} />
   );
 
   return (
@@ -40,9 +19,9 @@ export default function BucketCollections({
       <h1>
         Groups of <b>{bid}</b>
       </h1>
-      <BucketTabs bid={bid} selected="groups" capabilities={capabilities}>
+      <BucketTabs bid={bid} selected="groups">
         {listActions}
-        {!bucket.busy && groups.length === 0 ? (
+        {groups && groups.length === 0 ? (
           <div className="alert alert-info">
             <p>This bucket has no groups.</p>
           </div>
@@ -50,8 +29,8 @@ export default function BucketCollections({
           <DataList
             bid={bid}
             groups={groups}
-            capabilities={capabilities}
-            showSpinner={bucket.busy}
+            capabilities={session.serverInfo.capabilities}
+            showSpinner={!groups}
           />
         )}
         {listActions}

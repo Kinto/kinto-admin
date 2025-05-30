@@ -1,5 +1,5 @@
 import AdminLink from "@src/components/AdminLink";
-import type { Capabilities } from "@src/types";
+import { useAppSelector } from "@src/hooks/app";
 import React from "react";
 import { Gear } from "react-bootstrap-icons";
 import { Lock } from "react-bootstrap-icons";
@@ -10,7 +10,6 @@ type Props = {
   cid: string;
   rid: string;
   selected: "attributes" | "permissions" | "history";
-  capabilities: Capabilities;
   children?: React.ReactNode;
 };
 
@@ -19,9 +18,10 @@ export default function RecordTabs({
   cid,
   rid,
   selected,
-  capabilities,
   children,
 }: Props) {
+  const session = useAppSelector(state => state.session);
+
   return (
     <div className="card">
       <div className="card-header">
@@ -50,7 +50,7 @@ export default function RecordTabs({
               Permissions
             </AdminLink>
           </li>
-          {"history" in capabilities && (
+          {"history" in session.serverInfo.capabilities && (
             <li className="nav-item" role="presentation">
               <AdminLink
                 name="record:history"

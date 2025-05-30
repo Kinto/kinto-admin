@@ -1,95 +1,44 @@
 import CollectionTabs from "./CollectionTabs";
 import RecordTable from "./RecordTable";
 import { ListActions } from "./RecordTable";
-import { CommonProps, CommonStateProps } from "./commonPropTypes";
-import * as CollectionActions from "@src/actions/collection";
-import * as RouteActions from "@src/actions/route";
 import AdminLink from "@src/components/AdminLink";
 import Spinner from "@src/components/Spinner";
+import { DEFAULT_SORT } from "@src/constants";
+import { useAppSelector } from "@src/hooks/app";
+import { useCollection } from "@src/hooks/collection";
+import { useRecordList } from "@src/hooks/record";
 import { storageKeys, useLocalStorage } from "@src/hooks/storage";
-import type {
-  BucketState,
-  CollectionRouteMatch,
-  CollectionState,
-  SessionState,
-} from "@src/types";
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Shuffle } from "react-bootstrap-icons";
+import { useParams } from "react-router";
 
-type OwnProps = {
-  match: CollectionRouteMatch;
-  location: Location;
-};
-
-export type StateProps = CommonStateProps & {
-  session: SessionState;
-  bucket: BucketState;
-  collection: CollectionState;
-};
-
-type Props = CommonProps &
-  OwnProps &
-  StateProps & {
-    deleteRecord: typeof CollectionActions.deleteRecord;
-    listRecords: typeof CollectionActions.listRecords;
-    listNextRecords: typeof CollectionActions.listNextRecords;
-    redirectTo: typeof RouteActions.redirectTo;
-  };
-
-export default function CollectionRecords(props: Props) {
-  const {
-    match,
-    session,
-    bucket,
-    collection,
-    deleteRecord,
-    listNextRecords,
-    redirectTo,
-    capabilities,
-    listRecords,
-  } = props;
-
-  const {
-    params: { bid, cid },
-  } = match;
-
-  const updateSort = useCallback(
-    sort => {
-      listRecords(bid, cid, sort);
-    },
-    [bid, cid, listRecords]
-  );
-
-  const {
-    busy,
-    data,
-    currentSort,
-    records,
-    recordsLoaded,
-    hasNextRecords,
-    totalRecords,
-  } = collection;
-  const { schema, displayFields } = data;
+export default function CollectionRecords() {
+  const session = useAppSelector(state => state.session);
+  const { bid, cid } = useParams();
+  const [sort, setSort] = useState(null);
+  const [cacheVal, setCacheVal] = useState(0);
+  const collection = useCollection(bid, cid, cacheVal);
+  const records = useRecordList(bid, cid, sort, false, cacheVal);
 
   const [useSimpleReview, setUseSimpleReview] = useLocalStorage(
     storageKeys.useSimpleReview,
     true
   );
+
   useEffect(() => {
-    if (!session.authenticated || !data?.last_modified) {
+    if (!session.authenticated || !collection?.last_modified) {
       return;
     }
-    const { currentSort } = collection;
-    listRecords(bid, cid, currentSort);
-  }, [bid, cid, data.last_modified || 0]);
+    setSort(collection.sort || DEFAULT_SORT);
+  }, [bid, cid, collection?.last_modified || 0]);
 
   const listActions = (
     <ListActions
-      bid={bid}
-      cid={cid}
-      bucket={bucket}
       session={session}
       collection={collection}
+      callback={() => {
+        setCacheVal(cacheVal + 1);
+      }}
     />
   );
 
@@ -105,10 +54,10 @@ export default function CollectionRecords(props: Props) {
         bid={bid}
         cid={cid}
         selected="records"
-        capabilities={capabilities}
-        totalRecords={totalRecords}
+        capabilities={session.serverInfo.capabilities}
+        totalRecords={records?.totalRecords}
       >
-        {capabilities.signer && !useSimpleReview && (
+        {session.serverInfo.capabilities.signer && !useSimpleReview && (
           <AdminLink
             className="btn btn-secondary"
             params={{ bid, cid }}
@@ -125,25 +74,28 @@ export default function CollectionRecords(props: Props) {
           </AdminLink>
         )}
         {listActions}
-        {busy ? (
+        {!collection?.id || !records.data ? (
           <Spinner />
         ) : (
           <RecordTable
             bid={bid}
             cid={cid}
-            records={records}
-            recordsLoaded={recordsLoaded}
-            hasNextRecords={hasNextRecords}
-            listNextRecords={listNextRecords}
-            currentSort={currentSort}
-            schema={schema || {}}
+            records={records.data || []}
+            recordsLoaded={!!records.data}
+            hasNextRecords={records.hasNextPage}
+            listNextRecords={records.next}
+            currentSort={sort}
+            schema={collection?.schema || {}}
             displayFields={
-              displayFields?.length ? displayFields : ["id", "__json"]
+              collection?.displayFields?.length
+                ? collection.displayFields
+                : ["id", "__json"]
             }
-            deleteRecord={deleteRecord}
-            updateSort={updateSort}
-            redirectTo={redirectTo}
-            capabilities={capabilities}
+            updateSort={setSort}
+            capabilities={session.serverInfo.capabilities}
+            callback={() => {
+              setCacheVal(cacheVal + 1);
+            }}
           />
         )}
         {listActions}

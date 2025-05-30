@@ -8,7 +8,7 @@ import { loadSession } from "@src/store/localStore";
 import type { OpenIDAuth, PortierAuth, TokenAuth } from "@src/types";
 import { getServerByPriority, isObject } from "@src/utils";
 import * as React from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 function ServerProps({ node }: { node: any }) {
   const nodes = Array.isArray(node)
@@ -62,17 +62,14 @@ export function HomePage() {
   const servers = useServers();
   const { authenticated, authenticating, serverInfo } = session;
   const { project_name } = serverInfo;
-  const params = useParams<{ payload?: string; token?: string }>();
+  const { payload, token } = useParams();
+  const navigate = useNavigate();
 
   React.useEffect(() => {
-    const session = loadSession();
-
-    if (
-      session &&
-      session.auth &&
-      !(new Date().getTime() >= session.auth.expiresAt)
-    ) {
-      dispatch(SessionActions.setupSession(session.auth));
+    const savedSession = loadSession();
+    const auth = session?.auth || savedSession?.auth;
+    if (auth && !(new Date().getTime() >= auth?.expiresAt)) {
+      dispatch(SessionActions.setupSession(auth));
     } else {
       dispatch(
         SessionActions.getServerInfo({
@@ -87,17 +84,20 @@ export function HomePage() {
   React.useEffect(() => {
     // Check if the home page URL contains some payload/token data
     // coming from an *OpenID Connect* redirection.
-    const { payload } = params;
-    let { token } = params;
 
     if (!payload || !token) {
       // No auth token found in URL.
       return;
     }
+
+    if (authenticated) {
+      navigate("/");
+    }
+
     // Check for an incoming authentication.
     try {
       let { server, authType } = JSON.parse(atob(payload));
-      token = decodeURIComponent(token);
+      let decodedToken = decodeURIComponent(token);
 
       let authData: OpenIDAuth | TokenAuth | PortierAuth;
 
@@ -109,17 +109,16 @@ export function HomePage() {
         let expiresAt;
         try {
           // Token is encoded in base64 for a safe path parsing.
-          parsedToken = JSON.parse(atob(token));
+          parsedToken = JSON.parse(atob(decodedToken));
         } catch (_e) {
           // Previous version of Kinto exposed the JSON directly in the URL.
           try {
-            parsedToken = JSON.parse(token);
+            parsedToken = JSON.parse(decodedToken);
           } catch (_ee) {
             throw new Error(`Token doesn't seems to be a valid JSON: {token}`);
           }
         }
 
-        token = parsedToken.access_token;
         tokenType = parsedToken.token_type;
         if (parsedToken.expires_in) {
           expiresAt = new Date().getTime() + parsedToken.expires_in * 1000;
@@ -130,7 +129,7 @@ export function HomePage() {
           server,
           provider,
           tokenType,
-          credentials: { token },
+          credentials: { token: parsedToken.access_token },
           expiresAt,
         };
       } else if (authType == "fxa") {
@@ -156,8 +155,7 @@ export function HomePage() {
       const message = "Couldn't proceed with authentication.";
       notifyError(message, error);
     }
-    // dependency array left empty so this behaves like `componentDidMount`
-  }, []);
+  }, [payload, token, authenticated]);
 
   return (
     <div>

@@ -1,6 +1,7 @@
 import BaseForm from "./BaseForm";
+import Spinner from "./Spinner";
 import { RJSFSchema } from "@rjsf/utils";
-import { useAppSelector } from "@src/hooks/app";
+import { useGroupList } from "@src/hooks/group";
 import {
   formDataToPermissions,
   permissionsToFormData,
@@ -27,7 +28,10 @@ export function PermissionsForm({
     onSubmit_({ formData: formDataToPermissions(bid, formData) });
   };
   const { bid } = useParams<{ bid: string }>();
-  const groups = useAppSelector(store => store.bucket.groups);
+  const groups = useGroupList(bid);
+  if (!groups) {
+    return <Spinner />;
+  }
   if (readonly) {
     return (
       <div className="alert alert-warning">

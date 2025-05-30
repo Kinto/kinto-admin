@@ -1,5 +1,5 @@
 import AdminLink from "@src/components/AdminLink";
-import type { Capabilities } from "@src/types";
+import { useAppSelector } from "@src/hooks/app";
 import React from "react";
 import { Gear } from "react-bootstrap-icons";
 import { Lock } from "react-bootstrap-icons";
@@ -9,12 +9,12 @@ type Props = {
   bid: string;
   gid: string;
   selected: "attributes" | "permissions" | "history";
-  capabilities: Capabilities;
   children?: any;
 };
 
 export default function GroupTabs(props: Props) {
-  const { bid, gid, selected, capabilities, children } = props;
+  const session = useAppSelector(state => state.session);
+  const { bid, gid, selected, children } = props;
 
   return (
     <div className="card">
@@ -44,7 +44,7 @@ export default function GroupTabs(props: Props) {
               Permissions
             </AdminLink>
           </li>
-          {"history" in capabilities && (
+          {"history" in session.serverInfo.capabilities && (
             <li className="nav-item" role="presentation">
               <AdminLink
                 name="group:history"

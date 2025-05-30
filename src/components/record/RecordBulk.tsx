@@ -2,82 +2,67 @@ import {
   extendSchemaWithAttachment,
   extendUiSchemaWithAttachment,
 } from "./AttachmentInfo";
-import * as CollectionActions from "@src/actions/collection";
+import { getClient } from "@src/client";
 import AdminLink from "@src/components/AdminLink";
 import BaseForm from "@src/components/BaseForm";
 import JSONEditor from "@src/components/JSONEditor";
 import Spinner from "@src/components/Spinner";
-import { notifyError } from "@src/hooks/notifications";
-import type { CollectionRouteMatch, CollectionState } from "@src/types";
-import React, { useCallback } from "react";
+import { useAppSelector } from "@src/hooks/app";
+import { useCollection } from "@src/hooks/collection";
+import { notifyError, notifySuccess } from "@src/hooks/notifications";
+import React from "react";
+import { useNavigate, useParams } from "react-router";
 
-export type OwnProps = {
-  match: CollectionRouteMatch;
-};
+export default function RecordBulk() {
+  const { bid, cid } = useParams();
+  const collection = useCollection(bid, cid);
+  const navigate = useNavigate();
+  const session = useAppSelector(state => state.session);
 
-export type StateProps = {
-  collection: CollectionState;
-};
+  const onSubmit = async ({ formData }) => {
+    if (formData.length === 0) {
+      notifyError("The form is empty.");
+      return;
+    }
 
-export type Props = OwnProps &
-  StateProps & {
-    bulkCreateRecords: typeof CollectionActions.bulkCreateRecords;
+    const col = getClient().bucket(bid).collection(cid);
+
+    try {
+      for (const rawRecord of formData) {
+        if (
+          rawRecord.__attachment__ &&
+          "attachments" in session.serverInfo.capabilities
+        ) {
+          const { __attachment__: attachment, ...record } = rawRecord;
+          await col.addAttachment(attachment, record);
+        } else {
+          await col.createRecord(rawRecord);
+        }
+      }
+      notifySuccess(`All ${formData.length} records created.`);
+    } catch (ex) {
+      notifyError("Unable to create some records.", ex);
+    }
+    navigate(`/buckets/${bid}/collections/${cid}/records/`);
   };
-
-export default function RecordBulk({
-  match,
-  collection,
-  bulkCreateRecords,
-}: Props) {
-  const onSubmit = useCallback(
-    ({ formData }) => {
-      const {
-        params: { bid, cid },
-      } = match;
-      const {
-        data: { schema = {} },
-      } = collection;
-
-      if (formData.length === 0) {
-        notifyError("The form is empty.");
-        return { type: "noop" };
-      }
-
-      if (Object.keys(schema).length === 0) {
-        return bulkCreateRecords(
-          bid,
-          cid,
-          formData.map(json => JSON.parse(json))
-        );
-      }
-
-      bulkCreateRecords(bid, cid, formData);
-    },
-    [match, collection, bulkCreateRecords]
-  );
-
-  const {
-    busy,
-    data: { schema = {}, uiSchema = {}, attachment },
-  } = collection;
-  const {
-    params: { bid, cid },
-  } = match;
 
   let bulkSchema, bulkUiSchema, bulkFormData;
 
-  if (Object.keys(schema).length !== 0) {
+  if (collection && Object.keys(collection.schema).length !== 0) {
     bulkSchema = {
       type: "array",
-      definitions: schema.definitions,
+      definitions: collection?.schema?.definitions,
       items: extendSchemaWithAttachment(
-        schema,
-        attachment,
+        collection?.schema,
+        collection?.attachment,
         {} /* as for create record */
       ),
     };
     bulkUiSchema = {
-      items: extendUiSchemaWithAttachment(uiSchema, attachment),
+      items: extendUiSchemaWithAttachment(
+        collection.uiSchema,
+        collection.attachment
+      ),
     };
     bulkFormData = [{}, {}];
   } else {
@@ -116,7 +101,7 @@ export default function RecordBulk({
         </b>{" "}
         creation
       </h1>
-      {busy ? (
+      {!collection ? (
         <Spinner />
       ) : (
         <div className="card">

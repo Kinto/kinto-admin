@@ -1,20 +1,20 @@
+import Spinner from "../Spinner";
 import DeleteForm from "./DeleteForm";
 import { FormInstructions } from "./FormInstructions";
 import JSONCollectionForm from "./JSONCollectionForm";
 import { RJSFSchema } from "@rjsf/utils";
+import { listBuckets } from "@src/actions/session";
+import { getClient } from "@src/client";
 import BaseForm from "@src/components/BaseForm";
 import JSONEditor from "@src/components/JSONEditor";
+import { useAppDispatch, useAppSelector } from "@src/hooks/app";
+import { useCollection } from "@src/hooks/collection";
+import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { canCreateCollection, canEditCollection } from "@src/permission";
-import type {
-  BucketState,
-  CollectionData,
-  CollectionState,
-  SessionState,
-} from "@src/types";
 import { validateSchema, validateUiSchema } from "@src/utils";
 import React, { useState } from "react";
 import { Check2 } from "react-bootstrap-icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router";
 
 const defaultSchema = JSON.stringify(
   {
@@ -223,29 +223,22 @@ function validate({ schema, uiSchema, displayFields }, errors) {
   return errors;
 }
 
-type Props = {
-  cid?: string;
-  session: SessionState;
-  bucket: BucketState;
-  collection: CollectionState;
-  deleteCollection?: (cid: string) => any;
-  onSubmit: (formData: CollectionData) => any;
-  formData?: CollectionData;
-};
-
-export default function CollectionForm({
-  cid,
-  session,
-  bucket,
-  collection,
-  deleteCollection,
-  onSubmit,
-  formData: propFormData = undefined,
-}: Props) {
+export default function CollectionForm() {
+  const session = useAppSelector(state => state.session);
   const [asJSON, setAsJSON] = useState(false);
-  const allowEditing = propFormData
-    ? canEditCollection(session, bucket?.data?.id, collection)
-    : canCreateCollection(session, bucket?.data?.id);
+  const { bid, cid } = useParams();
+  const [cacheVal, setCacheVal] = useState(0);
+  const collection = useCollection(bid, cid, cacheVal);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  if (cid && !collection) {
+    return <Spinner />;
+  }
+
+  const allowEditing = cid
+    ? canEditCollection(session, bid, cid)
+    : canCreateCollection(session, bid);
 
   const toggleJSON = event => {
     event.preventDefault();
@@ -258,26 +251,15 @@ export default function CollectionForm({
     setAsJSON(true);
   };
 
-  const handleOnSubmit = ({ formData }) => {
-    const collectionData = asJSON
-      ? formData
-      : {
-          ...formData,
-          schema: JSON.parse(formData.schema),
-          uiSchema: JSON.parse(formData.uiSchema),
-        };
-    onSubmit(collectionData);
-  };
-
-  const creation = !propFormData?.id;
+  const creation = !collection?.id;
   const showDeleteForm = !creation && allowEditing;
   const formDataSerialized = creation
-    ? propFormData
+    ? undefined
     : {
-        displayFields: propFormData.displayFields || [],
-        ...propFormData,
-        schema: JSON.stringify(propFormData.schema || {}, null, 2),
-        uiSchema: JSON.stringify(propFormData.uiSchema || {}, null, 2),
+        displayFields: collection?.displayFields || [],
+        ...collection,
+        schema: JSON.stringify(collection.schema || {}, null, 2),
+        uiSchema: JSON.stringify(collection.uiSchema || {}, null, 2),
       };
 
   const _uiSchema = creation
@@ -290,10 +272,10 @@ export default function CollectionForm({
       };
 
   const alert =
-    allowEditing || bucket.busy || collection.busy ? null : (
+    allowEditing || (cid && !collection?.id) ? null : (
       <div className="alert alert-warning">
         You don't have the required permission to{" "}
-        {collection.data?.id
+        {collection?.id
           ? "edit this collection"
           : "create a collection in this bucket"}
         .
@@ -319,13 +301,50 @@ export default function CollectionForm({
     </div>
   );
 
+  const handleOnSubmit = async ({ formData }) => {
+    const collectionData = asJSON
+      ? formData
+      : {
+          ...formData,
+          schema: JSON.parse(formData.schema),
+          uiSchema: JSON.parse(formData.uiSchema),
+        };
+
+    try {
+      if (creation) {
+        await getClient().bucket(bid).createCollection(collectionData.id, {
+          data: collectionData,
+          safe: true,
+        });
+        notifySuccess("Collection created.");
+        navigate(`/buckets/${bid}/collections/${formData.id}/records`);
+      } else {
+        await getClient().bucket(bid).collection(cid).setData(collectionData, {
+          safe: true,
+          last_modified: collection.last_modified,
+        });
+        notifySuccess("Collection attributes updated.");
+        setCacheVal(cacheVal + 1);
+      }
+      dispatch(listBuckets());
+    } catch (ex) {
+      notifyError(`Couldn't ${creation ? "create" : "update"} collection`, ex);
+    }
+  };
+
+  const deleteCollection = async () => {
+    await getClient().bucket(bid).deleteCollection(cid);
+    dispatch(listBuckets());
+    navigate(`/buckets/${bid}/collections`);
+  };
+
   return (
     <div>
       {alert}
       {asJSON ? (
         <JSONCollectionForm
           cid={cid}
-          formData={collection.data}
+          formData={collection}
           onSubmit={handleOnSubmit}
         >
           {buttons}

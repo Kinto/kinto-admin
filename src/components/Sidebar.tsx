@@ -16,7 +16,7 @@ import { Lock } from "react-bootstrap-icons";
 import { Justify } from "react-bootstrap-icons";
 import { ThreeDots } from "react-bootstrap-icons";
 import { ArrowRepeat } from "react-bootstrap-icons";
-import type { RouteComponentProps } from "react-router-dom";
+import { useLocation, useParams } from "react-router";
 
 type SideBarLinkProps = {
   currentPath: string;
@@ -319,20 +319,16 @@ const BucketsMenu = (props: BucketsMenuProps) => {
   );
 };
 
-export type SidebarProps = RouteComponentProps<{ cid: string; bid: string }>;
-
-export const Sidebar = (props: SidebarProps) => {
+export const Sidebar = () => {
   const session = useAppSelector(store => store.session);
-  const { match, location } = props;
-  const { params } = match;
-  const { pathname: currentPath } = location;
-  const { bid, cid } = params;
+  const { bid, cid } = useParams();
+  const { pathname } = useLocation();
   const { authenticated } = session;
   return (
     <div>
-      <HomeMenu currentPath={currentPath} />
+      <HomeMenu currentPath={pathname} />
       {authenticated && (
-        <BucketsMenu currentPath={currentPath} bid={bid} cid={cid} />
+        <BucketsMenu currentPath={pathname} bid={bid} cid={cid} />
       )}
     </div>
   );

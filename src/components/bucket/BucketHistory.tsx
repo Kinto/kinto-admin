@@ -1,73 +1,25 @@
 import BucketTabs from "./BucketTabs";
-import * as BucketActions from "@src/actions/bucket";
 import HistoryTable from "@src/components/HistoryTable";
-import type {
-  BucketRouteMatch,
-  BucketState,
-  Capabilities,
-  SessionState,
-} from "@src/types";
-import { parseHistoryFilters } from "@src/utils";
-import type { Location } from "history";
-import React, { useEffect } from "react";
+import { useBucketHistory } from "@src/hooks/bucket";
+import React from "react";
+import { useParams } from "react-router";
 
-type OwnProps = {
-  match: BucketRouteMatch;
-  location: Location;
-};
-
-export type StateProps = {
-  bucket: BucketState;
-  capabilities: Capabilities;
-  session: SessionState;
-};
-
-type Props = OwnProps &
-  StateProps & {
-    listBucketHistory: typeof BucketActions.listBucketHistory;
-    listBucketNextHistory: typeof BucketActions.listBucketNextHistory;
-  };
-
-export const onBucketHistoryEnter = (props: Props) => {
-  const { listBucketHistory, match, session, location } = props;
-  const {
-    params: { bid },
-  } = match;
-  const filters = parseHistoryFilters(location.search);
-  if (!session.authenticated) {
-    return;
-  }
-  listBucketHistory(bid, filters);
-};
-
-export default function BucketHistory(props: Props) {
-  const { match, bucket, capabilities, location, listBucketNextHistory } =
-    props;
-
-  useEffect(() => {
-    onBucketHistoryEnter(props);
-  }, [props.location]);
-
-  const {
-    params: { bid },
-  } = match;
-  const {
-    history: { entries, loaded, hasNextPage: hasNextHistoryPage },
-  } = bucket;
+export default function BucketHistory() {
+  const { bid } = useParams();
+  const history = useBucketHistory(bid);
 
   return (
     <div>
       <h1>
         History for <b>{bid}</b>
       </h1>
-      <BucketTabs bid={bid} selected="history" capabilities={capabilities}>
+      <BucketTabs bid={bid} selected="history">
         <HistoryTable
           bid={bid}
-          historyLoaded={loaded}
-          history={entries}
-          hasNextHistory={hasNextHistoryPage}
-          listNextHistory={listBucketNextHistory}
-          location={location}
+          historyLoaded={!!history.data}
+          history={history.data || []}
+          hasNextHistory={history.hasNextPage}
+          listNextHistory={history.next}
         />
       </BucketTabs>
     </div>
