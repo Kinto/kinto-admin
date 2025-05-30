@@ -16,8 +16,9 @@ export default function CollectionRecords() {
   const session = useAppSelector(state => state.session);
   const { bid, cid } = useParams();
   const [sort, setSort] = useState(null);
-  const collection = useCollection(bid, cid);
   const [cacheVal, setCacheVal] = useState(0);
+  const collection = useCollection(bid, cid, cacheVal);
+  const records = useRecordList(bid, cid, sort, false, cacheVal);
 
   const [useSimpleReview, setUseSimpleReview] = useLocalStorage(
     storageKeys.useSimpleReview,
@@ -30,8 +31,6 @@ export default function CollectionRecords() {
     }
     setSort(collection.sort || DEFAULT_SORT);
   }, [bid, cid, collection?.last_modified || 0]);
-
-  const records = useRecordList(bid, cid, sort, false, cacheVal);
 
   const listActions = (
     <ListActions

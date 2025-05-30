@@ -55,6 +55,7 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
   const [pendingConfirm, setPendingConfirm] = useState("");
 
   const reviewAction = async patchedFields => {
+    setShowSpinner(true);
     await getClient().bucket(bid).collection(cid).setData(patchedFields, {
       safe: true,
       patch: true,
@@ -235,7 +236,7 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
           }}
         />
       )}
-      {showSpinner && <Spinner />}
+      {(showSpinner || !signoff?.source?.status) && <Spinner />}
     </div>
   );
 }
