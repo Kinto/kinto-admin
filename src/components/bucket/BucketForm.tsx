@@ -1,12 +1,11 @@
 import DeleteForm from "./DeleteForm";
 import { RJSFSchema } from "@rjsf/utils";
-import { listBuckets } from "@src/actions/session";
 import { getClient } from "@src/client";
 import BaseForm from "@src/components/BaseForm";
 import JSONEditor from "@src/components/JSONEditor";
 import Spinner from "@src/components/Spinner";
-import { useAppDispatch, useAppSelector } from "@src/hooks/app";
-import { useBucket } from "@src/hooks/bucket";
+import { useAppSelector } from "@src/hooks/app";
+import { reloadBuckets, useBucket } from "@src/hooks/bucket";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { canEditBucket } from "@src/permission";
 import { omit } from "@src/utils";
@@ -43,7 +42,6 @@ export default function BucketForm() {
   const bucket = useBucket(bid, cacheVal);
   const session = useAppSelector(state => state.session);
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
   const creation = !bid;
   const hasWriteAccess = canEditBucket(session, bid);
@@ -100,7 +98,7 @@ export default function BucketForm() {
         await getClient().createBucket(id, { data: attributes, safe: true });
         navigate(`/buckets/${id}/attributes`);
         notifySuccess("Bucket created.");
-        dispatch(listBuckets());
+        reloadBuckets();
       } catch (ex) {
         notifyError("Bucket creation failed.", ex);
       }
@@ -114,7 +112,7 @@ export default function BucketForm() {
           );
         setCacheVal(cacheVal + 1);
         notifySuccess("Bucket attributes updated.");
-        dispatch(listBuckets());
+        reloadBuckets();
       } catch (ex) {
         notifyError("Bucket attributes failed to update.", ex);
       }

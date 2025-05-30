@@ -1,8 +1,6 @@
 import {
   SESSION_AUTHENTICATED,
   SESSION_AUTHENTICATION_FAILED,
-  SESSION_BUCKETS_REQUEST,
-  SESSION_BUCKETS_SUCCESS,
   SESSION_BUSY,
   SESSION_LOGOUT,
   SESSION_PERMISSIONS_SUCCESS,
@@ -50,23 +48,6 @@ export default function session(
     case SESSION_STORE_REDIRECT_URL: {
       const { redirectURL }: { redirectURL: string } = action;
       return { ...state, redirectURL };
-    }
-    case SESSION_BUCKETS_REQUEST: {
-      return { ...state, busy: true };
-    }
-    case SESSION_BUCKETS_SUCCESS: {
-      const { serverInfo } = state;
-      const userBucket = serverInfo.user && serverInfo.user.bucket;
-      return {
-        ...state,
-        busy: false,
-        buckets: action.buckets.map(bucket => {
-          return {
-            ...bucket,
-            id: bucket.id === userBucket ? "default" : bucket.id,
-          };
-        }),
-      };
     }
     case SESSION_SERVERINFO_SUCCESS: {
       const { serverInfo } = action;

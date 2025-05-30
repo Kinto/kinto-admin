@@ -7,6 +7,7 @@ import {
   BucketPermissions,
   ListHistoryResult,
 } from "@src/types";
+import { makeObservable } from "@src/utils";
 import { useEffect, useState } from "react";
 
 export function useBucket(
@@ -32,17 +33,24 @@ export function useBucket(
   return val;
 }
 
+let bucketListCacheVal = makeObservable(0);
+
+export function reloadBuckets() {
+  bucketListCacheVal.set(bucketListCacheVal.get() + 1);
+}
+
 export function useBucketList(
   hasPermissionsEndpoint: boolean,
-  userBucket?: string,
-  cacheBust?: number
+  userBucket?: string
 ): BucketEntry[] | undefined {
+  const [cacheVal, setCacheVal] = useState(0);
   const [val, setVal] = useState(undefined);
 
   useEffect(() => {
     setVal(undefined);
     fetchBuckets(hasPermissionsEndpoint, userBucket, setVal);
-  }, [hasPermissionsEndpoint, userBucket, cacheBust]);
+    return bucketListCacheVal.subscribe(setCacheVal);
+  }, [hasPermissionsEndpoint, userBucket, cacheVal]);
 
   return val;
 }
