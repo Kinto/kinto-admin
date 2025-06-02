@@ -14,10 +14,10 @@ import { SortDown } from "react-bootstrap-icons";
 import { useParams } from "react-router";
 
 export function ListActions(props) {
-  const { session, collection } = props;
+  const { serverInfo, collection } = props;
   const { bid, cid } = useParams();
 
-  if (session.busy || !collection?.id) {
+  if (!serverInfo || !collection?.id) {
     return null;
   }
 

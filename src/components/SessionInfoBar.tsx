@@ -1,6 +1,8 @@
-import * as SessionActions from "@src/actions/session";
-import { useAppDispatch, useAppSelector } from "@src/hooks/app";
+import { getAuthHeader } from "@src/client";
 import { useHeartbeat } from "@src/hooks/heartbeat";
+import { notifySuccess } from "@src/hooks/notifications";
+import { logout, useAuth, useServerInfo } from "@src/hooks/session";
+import { copyToClipboard } from "@src/utils";
 import {
   BoxArrowRight,
   CircleFill,
@@ -12,13 +14,18 @@ import { useNavigate } from "react-router";
 
 export function SessionInfoBar() {
   const navigate = useNavigate();
+  const auth = useAuth();
   const heartbeat = useHeartbeat();
-  const { url, project_name, project_docs, user } = useAppSelector(store => {
-    return {
-      ...store.session.serverInfo,
-    };
-  });
-  const dispatch = useAppDispatch();
+  const { url, project_name, project_docs, user } = useServerInfo();
+
+  const copyAuthenticationHeader = async() => {
+    if (!auth) {
+      return;
+    }
+    const authHeader = getAuthHeader(auth);
+    await copyToClipboard(authHeader);
+    notifySuccess("Header copied to clipboard");
+  }
 
   return (
     <div className="session-info-bar" data-testid="sessionInfo-bar">
@@ -40,7 +47,7 @@ export function SessionInfoBar() {
             title="Copy authentication header"
             onClick={event => {
               event.preventDefault();
-              dispatch(SessionActions.copyAuthenticationHeader());
+              copyAuthenticationHeader();
             }}
           >
             <Clipboard className="icon" />
@@ -71,7 +78,7 @@ export function SessionInfoBar() {
           className="spaced btn btn-sm btn-success btn-logout"
           onClick={event => {
             event.preventDefault();
-            dispatch(SessionActions.logout());
+            logout();
             navigate("/");
           }}
         >

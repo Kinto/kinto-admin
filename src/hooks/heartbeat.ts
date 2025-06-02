@@ -34,10 +34,6 @@ async function queryHeartbeat(
       success: false,
       details: ex,
     });
-    console.log({
-      success: false,
-      details: ex,
-    });
   }
   setTimeout(() => {
     queryHeartbeat(setVal);

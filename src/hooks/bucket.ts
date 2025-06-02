@@ -1,4 +1,4 @@
-import { notifyError, notifyInfo } from "./notifications";
+import { notifyError } from "./notifications";
 import { getClient } from "@src/client";
 import { DEFAULT_SORT, MAX_PER_PAGE } from "@src/constants";
 import {
@@ -6,6 +6,7 @@ import {
   BucketEntry,
   BucketPermissions,
   ListHistoryResult,
+  PermissionsListEntry,
 } from "@src/types";
 import { makeObservable } from "@src/utils";
 import { useEffect, useState } from "react";
@@ -40,7 +41,7 @@ export function reloadBuckets() {
 }
 
 export function useBucketList(
-  hasPermissionsEndpoint: boolean,
+  permissions?: PermissionsListEntry[],
   userBucket?: string
 ): BucketEntry[] | undefined {
   const [cacheVal, setCacheVal] = useState(0);
@@ -48,14 +49,14 @@ export function useBucketList(
 
   useEffect(() => {
     setVal(undefined);
-    fetchBuckets(hasPermissionsEndpoint, userBucket, setVal);
+    fetchBuckets(permissions, userBucket, setVal);
     return bucketListCacheVal.subscribe(setCacheVal);
-  }, [hasPermissionsEndpoint, userBucket, cacheVal]);
+  }, [permissions !== undefined, userBucket, cacheVal]);
 
   return val;
 }
 
-async function fetchBuckets(hasPermissionsEndpoint, userBucket, setVal) {
+async function fetchBuckets(permissions, userBucket, setVal) {
   const client = getClient();
 
   try {
@@ -90,19 +91,8 @@ async function fetchBuckets(hasPermissionsEndpoint, userBucket, setVal) {
       };
     });
 
-    if (hasPermissionsEndpoint) {
-      const { data: permissions } = await client.listPermissions({
-        pages: Infinity,
-        filters: { exclude_resource_name: "record,group" },
-      });
+    if (permissions) {
       expandBucketsCollections(buckets, permissions);
-    } else {
-      notifyInfo(
-        [
-          "Permissions endpoint is not enabled on server, ",
-          "listed resources in the sidebar might be incomplete.",
-        ].join("")
-      );
     }
 
     setVal(buckets);

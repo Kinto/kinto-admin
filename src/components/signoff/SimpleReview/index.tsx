@@ -6,9 +6,9 @@ import SimpleReviewHeader from "./SimpleReviewHeader";
 import { getClient } from "@src/client";
 import Spinner from "@src/components/Spinner";
 import CollectionTabs from "@src/components/collection/CollectionTabs";
-import { useAppSelector } from "@src/hooks/app";
 import { useCollection } from "@src/hooks/collection";
 import { useRecordList } from "@src/hooks/record";
+import { useAuth, usePermissions, useServerInfo } from "@src/hooks/session";
 import { useSignoff } from "@src/hooks/signoff";
 import { storageKeys, useLocalStorage } from "@src/hooks/storage";
 import { canEditCollection } from "@src/permission";
@@ -23,8 +23,11 @@ export default function SimpleReview() {
     storageKeys.useSimpleReview,
     true
   );
-  const session = useAppSelector(state => state.session);
-  const signoff = useSignoff(bid, cid, session.serverInfo.capabilities.signer);
+  const serverInfo = useServerInfo();
+  const auth = useAuth();
+  const permissions = usePermissions();
+
+  const signoff = useSignoff(bid, cid, serverInfo?.capabilities?.signer);
   const navigate = useNavigate();
   const signoffSource = signoff?.source;
   const sourceBid = signoffSource?.bucket;
@@ -38,28 +41,26 @@ export default function SimpleReview() {
   const oldRecords = useRecordList(destBid, destCid, "id", true);
 
   const canReview = signoffSource
-    ? (isReviewer(signoffSource, session) &&
-        session.serverInfo?.user?.id !== signoffSource.lastReviewRequestBy) ||
-      !toReviewEnabled(session, signoffSource, signoffDest)
+    ? (isReviewer(signoffSource, serverInfo) &&
+        serverInfo?.user?.id !== signoffSource.lastReviewRequestBy) ||
+      !toReviewEnabled(serverInfo, signoffSource, signoffDest)
     : false;
 
   const canRequestReview =
-    canEditCollection(session, bid, cid) &&
-    isMember("editors_group", signoffSource, session);
+    canEditCollection(permissions, bid, cid) &&
+    isMember("editors_group", signoffSource, serverInfo);
 
   if (!useSimpleReview) {
     return <Navigate to={`/buckets/${bid}/collections/${cid}/records`} />;
   }
 
-  if (!session.authenticated && !session.authenticating) {
+  if (!auth) {
     return (
       <div className="simple-review-blocked-message list-page">
         Not authenticated
       </div>
     );
   } else if (
-    session.authenticating ||
-    session.busy ||
     (signoff?.source &&
       !signoff.source.status &&
       !newRecords?.data &&

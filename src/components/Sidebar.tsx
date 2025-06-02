@@ -1,9 +1,8 @@
 import AdminLink from "./AdminLink";
 import Spinner from "./Spinner";
-import * as SessionActions from "@src/actions/session";
 import { SIDEBAR_MAX_LISTED_COLLECTIONS } from "@src/constants";
-import { useAppDispatch, useAppSelector } from "@src/hooks/app";
-import { useBucketList } from "@src/hooks/bucket";
+import { reloadBuckets, useBucketList } from "@src/hooks/bucket";
+import { useAuth, usePermissions, useServerInfo } from "@src/hooks/session";
 import { canCreateBucket } from "@src/permission";
 import type { BucketEntry, RouteParams } from "@src/types";
 import url from "@src/url";
@@ -46,14 +45,13 @@ function SideBarLink(props: SideBarLinkProps) {
 }
 
 const HomeMenu = ({ currentPath }) => {
-  const dispatch = useAppDispatch();
   return (
     <div className="card home-menu">
       <div className="list-group list-group-flush">
         <SideBarLink name="home" currentPath={currentPath} params={{}}>
           Home
           <ArrowRepeat
-            onClick={() => dispatch(SessionActions.listBuckets())}
+            onClick={() => reloadBuckets()}
             className="icon"
           />
         </SideBarLink>
@@ -193,11 +191,9 @@ function filterBuckets(buckets, filters): BucketEntry[] {
 const BucketsMenu = (props: BucketsMenuProps) => {
   const [showReadOnly, setShowReadOnly] = React.useState(false);
   const [search, setSearch] = React.useState(null);
-  const session = useAppSelector(store => store.session);
-  const buckets = useBucketList(
-    !!session?.serverInfo?.capabilities?.permissions_endpoint,
-    session?.serverInfo?.user?.bucket
-  );
+  const serverInfo = useServerInfo();
+  const permissions = usePermissions();
+  const buckets = useBucketList(permissions, serverInfo?.user?.bucket);
   const { currentPath, bid, cid } = props;
 
   const toggleReadOnly = () => {
@@ -223,7 +219,7 @@ const BucketsMenu = (props: BucketsMenuProps) => {
   const sortedBuckets = filteredBuckets.sort((a, b) => (a.id > b.id ? 1 : -1));
   return (
     <div>
-      {canCreateBucket(session) && (
+      {canCreateBucket(permissions) && (
         <div className="card bucket-create">
           <div className="list-group list-group-flush">
             <SideBarLink
@@ -325,14 +321,13 @@ const BucketsMenu = (props: BucketsMenuProps) => {
 };
 
 export const Sidebar = () => {
-  const session = useAppSelector(store => store.session);
+  const auth = useAuth();
   const { bid, cid } = useParams();
   const { pathname } = useLocation();
-  const { authenticated } = session;
   return (
     <div>
       <HomeMenu currentPath={pathname} />
-      {authenticated && (
+      {auth !== undefined && (
         <BucketsMenu currentPath={pathname} bid={bid} cid={cid} />
       )}
     </div>

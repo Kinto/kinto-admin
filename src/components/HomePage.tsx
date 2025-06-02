@@ -1,12 +1,9 @@
 import AuthForm from "./AuthForm";
 import Spinner from "./Spinner";
-import * as SessionActions from "@src/actions/session";
-import { useAppDispatch, useAppSelector } from "@src/hooks/app";
 import { notifyError } from "@src/hooks/notifications";
-import { useServers } from "@src/hooks/servers";
-import { loadSession } from "@src/store/localStore";
+import { useAuth, useServerInfo } from "@src/hooks/session";
 import type { OpenIDAuth, PortierAuth, TokenAuth } from "@src/types";
-import { getServerByPriority, isObject } from "@src/utils";
+import { isObject } from "@src/utils";
 import * as React from "react";
 import { useNavigate, useParams } from "react-router";
 
@@ -41,7 +38,11 @@ function ServerProps({ node }: { node: any }) {
   );
 }
 
-function SessionInfo({ session: { serverInfo } }) {
+function SessionInfo() {
+  const serverInfo = useServerInfo();
+  if (!serverInfo) {
+    return <Spinner />;
+  }
   return (
     <div>
       <div className="card server-info-panel">
@@ -57,29 +58,10 @@ function SessionInfo({ session: { serverInfo } }) {
 }
 
 export function HomePage() {
-  const dispatch = useAppDispatch();
-  const session = useAppSelector(state => state.session);
-  const servers = useServers();
-  const { authenticated, authenticating, serverInfo } = session;
-  const { project_name } = serverInfo;
+  const auth = useAuth();
+  const serverInfo = useServerInfo();
   const { payload, token } = useParams();
   const navigate = useNavigate();
-
-  React.useEffect(() => {
-    const savedSession = loadSession();
-    const auth = session?.auth || savedSession?.auth;
-    if (auth && !(new Date().getTime() >= auth?.expiresAt)) {
-      dispatch(SessionActions.setupSession(auth));
-    } else {
-      dispatch(
-        SessionActions.getServerInfo({
-          authType: "anonymous",
-          server: getServerByPriority(servers),
-        })
-      );
-    }
-    // dependency array left empty so this behaves like `componentDidMount`
-  }, []);
 
   React.useEffect(() => {
     // Check if the home page URL contains some payload/token data
@@ -90,7 +72,7 @@ export function HomePage() {
       return;
     }
 
-    if (authenticated) {
+    if (!auth) {
       navigate("/");
     }
 
@@ -147,38 +129,20 @@ export function HomePage() {
       } else {
         throw new Error(`Unsupported token authentication "${authType}"`);
       }
-      // This action is bound with the setupSession() saga, which will
-      // eventually lead to a call to setupClient() that globally sets
-      // the headers of the API client.
-      dispatch(SessionActions.setupSession(authData));
     } catch (error) {
       const message = "Couldn't proceed with authentication.";
       notifyError(message, error);
     }
-  }, [payload, token, authenticated]);
+  }, [payload, token, !!auth]);
+
+  if (!auth) {
+    return <AuthForm />;
+  }
 
   return (
     <div>
-      <h1>{`${project_name} Administration`}</h1>
-      {authenticating ? (
-        <Spinner />
-      ) : authenticated ? (
-        <SessionInfo session={session} />
-      ) : (
-        <AuthForm
-          setupSession={auth => dispatch(SessionActions.setupSession(auth))}
-          serverChange={() => dispatch(SessionActions.serverChange())}
-          getServerInfo={auth => dispatch(SessionActions.getServerInfo(auth))}
-          session={session}
-          servers={servers}
-          navigateToExternalAuth={authFormData =>
-            dispatch(SessionActions.navigateToExternalAuth(authFormData))
-          }
-          navigateToOpenID={(authFormData, provider) =>
-            dispatch(SessionActions.navigateToOpenID(authFormData, provider))
-          }
-        />
-      )}
+      <h1>{`${serverInfo?.project_name || "Kinto"} Administration`}</h1>
+      <SessionInfo />
     </div>
   );
 }

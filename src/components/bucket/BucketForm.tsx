@@ -4,9 +4,9 @@ import { getClient } from "@src/client";
 import BaseForm from "@src/components/BaseForm";
 import JSONEditor from "@src/components/JSONEditor";
 import Spinner from "@src/components/Spinner";
-import { useAppSelector } from "@src/hooks/app";
 import { reloadBuckets, useBucket } from "@src/hooks/bucket";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
+import { usePermissions } from "@src/hooks/session";
 import { canEditBucket } from "@src/permission";
 import { omit } from "@src/utils";
 import React, { useState } from "react";
@@ -40,11 +40,11 @@ export default function BucketForm() {
   const { bid } = useParams();
   const [cacheVal, setCacheVal] = useState(0);
   const bucket = useBucket(bid, cacheVal);
-  const session = useAppSelector(state => state.session);
+  const permissions = usePermissions();
   const navigate = useNavigate();
 
   const creation = !bid;
-  const hasWriteAccess = canEditBucket(session, bid);
+  const hasWriteAccess = canEditBucket(permissions, bid);
   const formIsEditable = creation || hasWriteAccess;
   const showDeleteForm = !creation && hasWriteAccess;
 

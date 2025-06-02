@@ -2,8 +2,8 @@ import GroupTabs from "./GroupTabs";
 import { getClient } from "@src/client";
 import { PermissionsForm } from "@src/components/PermissionsForm";
 import Spinner from "@src/components/Spinner";
-import { useAppSelector } from "@src/hooks/app";
 import { useGroup } from "@src/hooks/group";
+import { usePermissions } from "@src/hooks/session";
 import { canEditGroup } from "@src/permission";
 import type { GroupPermissions as GroupPermissionsType } from "@src/types";
 import React, { useState } from "react";
@@ -13,7 +13,7 @@ export function GroupPermissions() {
   const { bid, gid } = useParams();
   const [cacheVal, setCacheVal] = useState(0);
   const group = useGroup(bid, gid, cacheVal);
-  const session = useAppSelector(state => state.session);
+  const userPermissions = usePermissions();
 
   const onSubmit = async ({ formData }: { formData: GroupPermissionsType }) => {
     await getClient().bucket(bid).updateGroup(group.data, {
@@ -40,7 +40,7 @@ export function GroupPermissions() {
           <PermissionsForm
             permissions={group.permissions}
             acls={["read", "write"]}
-            readonly={!canEditGroup(session, bid, gid)}
+            readonly={!canEditGroup(userPermissions, bid, gid)}
             onSubmit={onSubmit}
           />
         )}

@@ -1,14 +1,14 @@
 import GroupForm from "./GroupForm";
 import Spinner from "@src/components/Spinner";
-import { useAppSelector } from "@src/hooks/app";
+import { useServerInfo } from "@src/hooks/session";
 import React from "react";
 import { useParams } from "react-router";
 
 export default function GroupCreate() {
   const { bid } = useParams();
-  const session = useAppSelector(state => state.session);
+  const serverInfo = useServerInfo();
 
-  if (session.busy) {
+  if (!serverInfo) {
     return <Spinner />;
   }
 

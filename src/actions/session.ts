@@ -1,7 +1,6 @@
 import {
   SESSION_AUTHENTICATED,
   SESSION_AUTHENTICATION_FAILED,
-  SESSION_BUSY,
   SESSION_COPY_AUTHENTICATION_HEADER,
   SESSION_GET_SERVERINFO,
   SESSION_LOGOUT,
@@ -16,13 +15,6 @@ import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import type { AuthData, ServerInfo } from "@src/types";
 
 const noop_action = { type: "noop" };
-
-export function sessionBusy(busy: boolean): {
-  type: "SESSION_BUSY";
-  busy: boolean;
-} {
-  return { type: SESSION_BUSY, busy };
-}
 
 export function setupSession(auth: AuthData): {
   type: "SESSION_SETUP";

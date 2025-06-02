@@ -6,10 +6,10 @@ import { RJSFSchema } from "@rjsf/utils";
 import { getClient } from "@src/client";
 import BaseForm from "@src/components/BaseForm";
 import JSONEditor from "@src/components/JSONEditor";
-import { useAppSelector } from "@src/hooks/app";
 import { reloadBuckets } from "@src/hooks/bucket";
 import { useCollection } from "@src/hooks/collection";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
+import { usePermissions } from "@src/hooks/session";
 import { canCreateCollection, canEditCollection } from "@src/permission";
 import { validateSchema, validateUiSchema } from "@src/utils";
 import React, { useState } from "react";
@@ -224,7 +224,7 @@ function validate({ schema, uiSchema, displayFields }, errors) {
 }
 
 export default function CollectionForm() {
-  const session = useAppSelector(state => state.session);
+  const permissions = usePermissions();
   const [asJSON, setAsJSON] = useState(false);
   const { bid, cid } = useParams();
   const [cacheVal, setCacheVal] = useState(0);
@@ -236,8 +236,8 @@ export default function CollectionForm() {
   }
 
   const allowEditing = cid
-    ? canEditCollection(session, bid, cid)
-    : canCreateCollection(session, bid);
+    ? canEditCollection(permissions, bid, cid)
+    : canCreateCollection(permissions, bid);
 
   const toggleJSON = event => {
     event.preventDefault();

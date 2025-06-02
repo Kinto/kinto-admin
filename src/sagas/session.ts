@@ -11,7 +11,7 @@ import {
   notifySuccess,
 } from "@src/hooks/notifications";
 import { addServer } from "@src/hooks/servers";
-import { DEFAULT_SERVERINFO } from "@src/reducers/session";
+// import { DEFAULT_SERVERINFO } from "@src/reducers/session";
 import { clearSession } from "@src/store/localStore";
 import type {
   ActionType,
@@ -33,8 +33,6 @@ export function* getServerInfo(
   action: ActionType<typeof actions.getServerInfo>
 ): SagaGen {
   const { auth } = action;
-  yield put(actions.sessionBusy(true));
-
   let processedAuth: AuthData = auth;
   if (auth.authType.startsWith("openid-")) {
     const openIDAuth: OpenIDAuth = {
@@ -88,7 +86,6 @@ export function* getServerInfo(
 
     notifyError(`Could not reach server ${auth.server}`, error);
   }
-  yield put(actions.sessionBusy(false));
 }
 
 export function* setupSession(
