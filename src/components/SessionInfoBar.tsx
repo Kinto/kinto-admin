@@ -1,7 +1,6 @@
-import * as HeartbeatActions from "@src/actions/heartbeat";
 import * as SessionActions from "@src/actions/session";
 import { useAppDispatch, useAppSelector } from "@src/hooks/app";
-import React, { useEffect } from "react";
+import { useHeartbeat } from "@src/hooks/heartbeat";
 import {
   BoxArrowRight,
   CircleFill,
@@ -13,24 +12,13 @@ import { useNavigate } from "react-router";
 
 export function SessionInfoBar() {
   const navigate = useNavigate();
-  const { heartbeat, url, project_name, project_docs, user } = useAppSelector(
-    store => {
-      return {
-        ...store.session.serverInfo,
-        heartbeat: store.heartbeat,
-      };
-    }
-  );
+  const heartbeat = useHeartbeat();
+  const { url, project_name, project_docs, user } = useAppSelector(store => {
+    return {
+      ...store.session.serverInfo,
+    };
+  });
   const dispatch = useAppDispatch();
-
-  const checkHeartbeat = async () => {
-    dispatch(HeartbeatActions.heartbeatRequest());
-    setTimeout(checkHeartbeat, 60000);
-  };
-
-  useEffect(() => {
-    checkHeartbeat();
-  }, []);
 
   return (
     <div className="session-info-bar" data-testid="sessionInfo-bar">

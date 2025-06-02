@@ -1,7 +1,7 @@
 import { setClient } from "@src/client";
 import { SessionInfoBar } from "@src/components/SessionInfoBar";
 import { renderWithProvider } from "@test/testUtils";
-import { act, screen, waitFor } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
 
 describe("SessionInfoBar component", () => {
   const client = {
@@ -28,7 +28,7 @@ describe("SessionInfoBar component", () => {
     expect(client.execute).toHaveBeenCalledTimes(0);
     renderWithProvider(<SessionInfoBar />);
     await vi.waitFor(() => {
-      expect(client.execute).toHaveBeenCalledTimes(2); // 2 due to provider causing re-render in tests
+      expect(client.execute).toHaveBeenCalledTimes(1);
     });
 
     expect(screen.getByTitle(healthyStr)).toBeDefined();
@@ -37,16 +37,6 @@ describe("SessionInfoBar component", () => {
     expect(screen.getByText("Anonymous")).toBeDefined();
     // Copy auth header should not render for anonymous logins
     expect(screen.queryByTitle("Copy authentication header")).toBeNull();
-
-    // ensure execute is called every minute for 5 minutes
-    for (let i = 1; i < 5; i++) {
-      await vi.advanceTimersByTimeAsync(60100);
-      await act(async () => {
-        await vi.waitFor(() => {
-          expect(client.execute).toHaveBeenCalledTimes(2 + i * 2);
-        });
-      });
-    }
   });
 
   it("Should show copy authentication header when a user is logged in", async () => {
@@ -69,7 +59,11 @@ describe("SessionInfoBar component", () => {
       bar: true,
     });
     renderWithProvider(<SessionInfoBar />);
-    await waitFor(() => new Promise(resolve => setTimeout(resolve, 100))); // debounce wait
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
     expect(screen.getByTitle(healthyStr)).toBeDefined();
   });
 
@@ -79,7 +73,11 @@ describe("SessionInfoBar component", () => {
       bar: true,
     });
     renderWithProvider(<SessionInfoBar />);
-    await waitFor(() => new Promise(resolve => setTimeout(resolve, 100))); // debounce wait
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
     expect(client.execute).toHaveBeenCalled();
     expect(screen.getByTitle(unhealthyStr)).toBeDefined();
   });
@@ -89,7 +87,12 @@ describe("SessionInfoBar component", () => {
       throw new Error("Test error");
     });
     renderWithProvider(<SessionInfoBar />);
-    await waitFor(() => new Promise(resolve => setTimeout(resolve, 100))); // debounce wait
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(client.execute).toHaveBeenCalled();
     expect(screen.getByTitle(unhealthyStr)).toBeDefined();
   });
 });
