@@ -268,7 +268,7 @@ const BucketsMenu = (props: BucketsMenuProps) => {
           </div>
         </form>
       </div>
-      {!buckets ? (
+      {!permissions || !buckets ? (
         <Spinner />
       ) : (
         sortedBuckets.map((bucket, i) => {

@@ -31,8 +31,8 @@ export default function RecordBulk() {
       for (const rawRecord of formData) {
         if (
           rawRecord.__attachment__ &&
-          serverInfo?.capabilities &&
-          "attachments" in serverInfo?.capabilities
+          serverInfo &&
+          "attachments" in serverInfo.capabilities
         ) {
           const { __attachment__: attachment, ...record } = rawRecord;
           await col.addAttachment(attachment, record);

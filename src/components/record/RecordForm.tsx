@@ -91,7 +91,7 @@ export default function RecordForm() {
     const { __attachment__: attachment, ...updatedRecord } = formData;
 
     try {
-      if (serverInfo?.capabilities.attachments && attachment) {
+      if (serverInfo.capabilities.attachments && attachment) {
         await col.addAttachment(
           attachment,
           { ...updatedRecord, id: rid },

@@ -1,7 +1,7 @@
 import AuthForm from "./AuthForm";
 import Spinner from "./Spinner";
 import { notifyError } from "@src/hooks/notifications";
-import { useAuth, useServerInfo } from "@src/hooks/session";
+import { setAuth, useAuth, useServerInfo } from "@src/hooks/session";
 import type { OpenIDAuth, PortierAuth, TokenAuth } from "@src/types";
 import { isObject } from "@src/utils";
 import * as React from "react";
@@ -66,14 +66,8 @@ export function HomePage() {
   React.useEffect(() => {
     // Check if the home page URL contains some payload/token data
     // coming from an *OpenID Connect* redirection.
-
     if (!payload || !token) {
-      // No auth token found in URL.
       return;
-    }
-
-    if (!auth) {
-      navigate("/");
     }
 
     // Check for an incoming authentication.
@@ -129,14 +123,20 @@ export function HomePage() {
       } else {
         throw new Error(`Unsupported token authentication "${authType}"`);
       }
+      setAuth(authData);
+      navigate("/");
     } catch (error) {
       const message = "Couldn't proceed with authentication.";
       notifyError(message, error);
     }
-  }, [payload, token, !!auth]);
+  }, []);
 
-  if (!auth) {
+  if (!auth && !payload && !token) {
     return <AuthForm />;
+  }
+
+  if (payload || token) {
+    return <Spinner />;
   }
 
   return (

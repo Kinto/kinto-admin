@@ -132,8 +132,7 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
       !hasRequestedReview(source, serverInfo)) ||
       !toReviewEnabled(serverInfo, source, destination));
   const canRollback = canEdit;
-  const hasHistory =
-    serverInfo?.capabilities && "history" in serverInfo?.capabilities;
+  const hasHistory = serverInfo && "history" in serverInfo.capabilities;
 
   const isCurrentUrl = source.bucket == bid && source.collection == cid;
   const currentStep = Math.max(

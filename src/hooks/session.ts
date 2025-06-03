@@ -1,4 +1,5 @@
 import { notifyError, notifyInfo } from "./notifications";
+import { addServer } from "./servers";
 import { useLocalStorage } from "./storage";
 import { getClient, setupClient } from "@src/client";
 import {
@@ -17,8 +18,29 @@ let permissionState = makeObservable(undefined);
 let serverState = makeObservable(undefined);
 
 export function setAuth(auth: AuthData) {
-  setupClient(auth);
-  authState.set(auth);
+  addServer(
+    auth.server,
+    auth.authType === "openid"
+      ? `${auth.authType}-${auth.provider}`
+      : auth.authType
+  );
+
+  let processedAuth: AuthData = auth;
+  if (auth.authType.startsWith("openid-")) {
+    const openIDAuth: OpenIDAuth = {
+      authType: "openid",
+      provider: auth.authType.replace("openid-", ""),
+      server: auth.server,
+      // $FlowFixMe we know we are dealing with openid, Flow does not.
+      tokenType: (auth as { tokenType: string }).tokenType,
+      // $FlowFixMe
+      credentials: (auth as { credentials: { token: string } }).credentials,
+    };
+    processedAuth = openIDAuth;
+  }
+
+  setupClient(processedAuth);
+  authState.set(processedAuth);
 }
 
 export function logout() {
@@ -86,7 +108,7 @@ export function useServerInfo(): ServerInfo | undefined {
   useEffect(() => {
     const unsub = serverState.subscribe(setVal);
     if (authState.get() !== undefined && val === undefined) {
-      getServerInfo(authState.get());
+      getServerInfo();
     }
     return unsub;
   }, [authState.get() !== undefined]);
@@ -94,29 +116,12 @@ export function useServerInfo(): ServerInfo | undefined {
   return val;
 }
 
-async function getServerInfo(auth: AuthData) {
+async function getServerInfo() {
   if (openPromises["getServerInfo"]) {
     return;
   }
-
   openPromises["getServerInfo"] = true;
-  let processedAuth: AuthData = auth;
-  if (auth.authType.startsWith("openid-")) {
-    const openIDAuth: OpenIDAuth = {
-      authType: "openid",
-      provider: auth.authType.replace("openid-", ""),
-      server: auth.server,
-      // $FlowFixMe we know we are dealing with openid, Flow does not.
-      tokenType: (auth as { tokenType: string }).tokenType,
-      // $FlowFixMe
-      credentials: (auth as { credentials: { token: string } }).credentials,
-    };
-    processedAuth = openIDAuth;
-  }
 
-  // Set the client globally to the entire app, when the saga starts.
-  // We'll compare the remote of this singleton when the server info will be received
-  // to prevent race conditions.
   const client = getClient();
 
   try {
@@ -130,24 +135,9 @@ async function getServerInfo(auth: AuthData) {
     // Side effect: change window title with project name.
     document.title = project_name + " Administration";
 
-    // Check that the client was not changed in the mean time. This could happen if a request to
-    // another server was sent after the current one, but took less time to answer.
-    // In such a case, this means this saga/server request should be discarded in favor of the other one
-    // which was sent later.
-    const currentClient = getClient();
-    if (client.remote != currentClient.remote) {
-      return;
-    }
-
     serverState.set(serverInfo);
   } catch (error) {
-    // As above, we want to ignore this result, if another request was sent in the mean time.
-    const currentClient = getClient();
-    if (client.remote != currentClient.remote) {
-      return;
-    }
-
-    notifyError(`Could not reach server ${auth.server}`, error);
+    notifyError(`Could not reach server ${client.remote}`, error);
   } finally {
     delete openPromises["getServerInfo"];
   }

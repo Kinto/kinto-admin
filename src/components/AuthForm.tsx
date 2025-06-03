@@ -5,8 +5,8 @@ import { resetClient, setupClient } from "@src/client";
 import { ANONYMOUS_AUTH, SINGLE_SERVER } from "@src/constants";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { clearServersHistory, useServers } from "@src/hooks/servers";
-import { setAuth, useServerInfo } from "@src/hooks/session";
-import type { ServerEntry, ServerInfo, SessionState } from "@src/types";
+import { setAuth } from "@src/hooks/session";
+import type { ServerInfo } from "@src/types";
 import { getAuthLabel, getServerByPriority, omit } from "@src/utils";
 import React, { useEffect, useState } from "react";
 
@@ -436,8 +436,7 @@ export default function AuthForm() {
       authType = "openid";
     }
 
-    const { redirectURL } = { redirectURL: "foo" }; // TODO
-    const extendedFormData = { ...formData, redirectURL };
+    const extendedFormData = { ...formData, redirectURL: location.pathname };
     switch (authType) {
       case "fxa":
       case "portier": {

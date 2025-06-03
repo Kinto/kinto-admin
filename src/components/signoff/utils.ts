@@ -1,9 +1,4 @@
-import {
-  DestinationInfo,
-  ServerInfo,
-  SessionState,
-  SignoffSourceInfo,
-} from "@src/types";
+import { DestinationInfo, ServerInfo, SignoffSourceInfo } from "@src/types";
 
 export function isMember(
   groupKey: string,

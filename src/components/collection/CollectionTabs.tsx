@@ -103,25 +103,24 @@ export default function CollectionTabs({
               Permissions
             </AdminLink>
           </li>
-          {serverInfo?.capabilities &&
-            "history" in serverInfo?.capabilities && (
-              <li
-                className="nav-item"
-                role="presentation"
-                data-testid="nav-history"
+          {serverInfo && "history" in serverInfo.capabilities && (
+            <li
+              className="nav-item"
+              role="presentation"
+              data-testid="nav-history"
+            >
+              <AdminLink
+                name="collection:history"
+                params={{ bid, cid }}
+                className={
+                  selected === "history" ? "nav-link active" : "nav-link"
+                }
               >
-                <AdminLink
-                  name="collection:history"
-                  params={{ bid, cid }}
-                  className={
-                    selected === "history" ? "nav-link active" : "nav-link"
-                  }
-                >
-                  <ClockHistory className="icon" />
-                  History
-                </AdminLink>
-              </li>
-            )}
+                <ClockHistory className="icon" />
+                History
+              </AdminLink>
+            </li>
+          )}
         </ul>
       </div>
       <div className="card-body">{children}</div>

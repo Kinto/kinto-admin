@@ -1,7 +1,7 @@
 import { ANONYMOUS_AUTH } from "@src/constants";
 import { clearServersHistory } from "@src/hooks/servers";
 import { debounce } from "@src/utils";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import FormControl from "react-bootstrap/FormControl";
