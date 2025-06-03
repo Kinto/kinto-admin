@@ -21,15 +21,12 @@ function isEditor(source, serverInfo) {
   return isMember("editors_group", source, serverInfo);
 }
 
-export function isReviewer(
-  source: SignoffSourceInfo,
-  serverInfo: ServerInfo
-) {
+export function isReviewer(source: SignoffSourceInfo, serverInfo: ServerInfo) {
   return isMember("reviewers_group", source, serverInfo);
 }
 
 function hasRequestedReview(source, serverInfo) {
-  const { user = {} }  = serverInfo;
+  const { user = {} } = serverInfo;
   const { lastReviewRequestBy } = source;
   return user.id === lastReviewRequestBy;
 }
@@ -131,10 +128,12 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
 
   const canReview =
     canEdit &&
-    ((isReviewer(source, serverInfo) && !hasRequestedReview(source, serverInfo)) ||
+    ((isReviewer(source, serverInfo) &&
+      !hasRequestedReview(source, serverInfo)) ||
       !toReviewEnabled(serverInfo, source, destination));
   const canRollback = canEdit;
-  const hasHistory = "history" in serverInfo?.capabilities;
+  const hasHistory =
+    serverInfo?.capabilities && "history" in serverInfo?.capabilities;
 
   const isCurrentUrl = source.bucket == bid && source.collection == cid;
   const currentStep = Math.max(

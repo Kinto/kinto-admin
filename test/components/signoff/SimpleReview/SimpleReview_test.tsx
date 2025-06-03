@@ -4,7 +4,7 @@ import { toReviewEnabled } from "@src/components/signoff/utils";
 import * as collectionHooks from "@src/hooks/collection";
 import * as recordHooks from "@src/hooks/record";
 import * as signoffHooks from "@src/hooks/signoff";
-import { renderWithProvider, sessionFactory } from "@test/testUtils";
+import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
 
@@ -98,10 +98,7 @@ function renderSimpleReview({
     },
   });
 
-  return renderWithProvider(<SimpleReview />, {
-    initialState: {
-      session,
-    },
+  return renderWithRouter(<SimpleReview />, {
     route: `/main-workspace/my-collection${search}`,
     path: "/:bid/:cid",
   });

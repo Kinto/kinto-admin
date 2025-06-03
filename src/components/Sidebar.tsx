@@ -50,10 +50,7 @@ const HomeMenu = ({ currentPath }) => {
       <div className="list-group list-group-flush">
         <SideBarLink name="home" currentPath={currentPath} params={{}}>
           Home
-          <ArrowRepeat
-            onClick={() => reloadBuckets()}
-            className="icon"
-          />
+          <ArrowRepeat onClick={() => reloadBuckets()} className="icon" />
         </SideBarLink>
       </div>
     </div>

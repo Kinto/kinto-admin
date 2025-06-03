@@ -1,9 +1,14 @@
-import { DestinationInfo, ServerInfo, SessionState, SignoffSourceInfo } from "@src/types";
+import {
+  DestinationInfo,
+  ServerInfo,
+  SessionState,
+  SignoffSourceInfo,
+} from "@src/types";
 
 export function isMember(
   groupKey: string,
   source: SignoffSourceInfo,
-  serverInfo: ServerInfo,
+  serverInfo: ServerInfo
 ) {
   const { user, capabilities } = serverInfo;
   if (!source || !user?.principals) {
@@ -27,18 +32,16 @@ export function toReviewEnabled(
   source: SignoffSourceInfo,
   destination: DestinationInfo
 ) {
-  let enabled =
-    serverInfo?.capabilities?.signer?.to_review_enabled === true;
+  let enabled = serverInfo?.capabilities?.signer?.to_review_enabled === true;
 
   if (enabled) {
-    const resourceMatch =
-      serverInfo?.capabilities?.signer?.resources?.find(
-        x =>
-          x.source.bucket === source.bid &&
-          x.source.collection === source.cid &&
-          x.destination.bucket === destination.bid &&
-          x.destination.collection === destination.cid
-      );
+    const resourceMatch = serverInfo?.capabilities?.signer?.resources?.find(
+      x =>
+        x.source.bucket === source.bid &&
+        x.source.collection === source.cid &&
+        x.destination.bucket === destination.bid &&
+        x.destination.collection === destination.cid
+    );
     if (resourceMatch && "to_review_enabled" in resourceMatch) {
       enabled = resourceMatch.to_review_enabled;
     }

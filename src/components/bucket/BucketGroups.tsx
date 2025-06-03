@@ -8,9 +8,7 @@ export default function BucketGroups() {
   const { bid } = useParams();
   const groups = useGroupList(bid);
 
-  const listActions = (
-    <ListActions bid={bid} busy={!groups} />
-  );
+  const listActions = <ListActions bid={bid} busy={!groups} />;
 
   return (
     <div className="list-page">
@@ -24,11 +22,7 @@ export default function BucketGroups() {
             <p>This bucket has no groups.</p>
           </div>
         ) : (
-          <DataList
-            bid={bid}
-            groups={groups}
-            showSpinner={!groups}
-          />
+          <DataList bid={bid} groups={groups} showSpinner={!groups} />
         )}
         {listActions}
       </BucketTabs>

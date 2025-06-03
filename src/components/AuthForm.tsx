@@ -1,6 +1,7 @@
 import BaseForm from "./BaseForm";
 import ServerHistory from "./ServerHistory";
 import { RJSFSchema } from "@rjsf/utils";
+import { resetClient, setupClient } from "@src/client";
 import { ANONYMOUS_AUTH, SINGLE_SERVER } from "@src/constants";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { clearServersHistory, useServers } from "@src/hooks/servers";
@@ -348,9 +349,17 @@ function navigateToOpenID(authFormData: any, provider: any) {
   notifySuccess("Redirecting to auth provider...");
 }
 
+const defaultServerInfo = {
+  url: "",
+  capabilities: {},
+  project_name: "Kinto",
+  project_docs: "",
+};
+
 export default function AuthForm() {
+  const [showSpinner, setShowSpinner] = useState(false);
   const servers = useServers();
-  const serverInfo = useServerInfo(); // need to optionally pass in auth
+  const [serverInfo, setServerInfo] = useState(defaultServerInfo); // need to optionally pass in auth
   const authType = (servers.length && servers[0].authType) || ANONYMOUS_AUTH;
   const { schema: currentSchema, uiSchema: curentUiSchema } =
     authSchemas(authType);
@@ -362,13 +371,21 @@ export default function AuthForm() {
     server: getServerByPriority(servers),
   });
 
-  const serverChangeCallback = () => {
-    // clear current server information
+  const serverChangeCallback = async () => {
+    setShowSpinner(true);
+    setServerInfo(defaultServerInfo);
   };
 
   const serverInfoCallback = async auth => {
-    // get new server information?
-    // is this actually login?
+    try {
+      setShowSpinner(true);
+      const newInfo = await setupClient(auth).fetchServerInfo();
+      setServerInfo(newInfo);
+    } catch (ex) {
+      notifyError("Unable to retrieve server information", ex);
+    }
+    resetClient();
+    setShowSpinner(false);
   };
 
   const authMethods = getSupportedAuthMethods(serverInfo);
@@ -418,8 +435,8 @@ export default function AuthForm() {
       }
       case "openid": {
         const {
-            capabilities: { openid: { providers } = { providers: [] } },
-          } = serverInfo;
+          capabilities: { openid: { providers } = { providers: [] } },
+        } = serverInfo;
         const providerData = providers.find(p => p.name === openidProvider);
         if (!providerData) {
           throw new Error("Couldn't find provider data in the state. Bad.");
@@ -441,7 +458,7 @@ export default function AuthForm() {
           formData={formData}
           onChange={onChange}
           onSubmit={onSubmit}
-          showSpinner={!serverInfo}
+          showSpinner={showSpinner}
         >
           <button type="submit" className="btn btn-info">
             {"Sign in using "}

@@ -5,7 +5,7 @@ import { canCreateCollection, canEditCollection } from "@src/permission";
 import {
   mockNotifyError,
   mockNotifySuccess,
-  renderWithProvider,
+  renderWithRouter,
 } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
@@ -60,7 +60,7 @@ describe("CollectionForm component", () => {
   it("Should render an editable form for a user with permissions creating a new collection", async () => {
     const notifySuccessMock = mockNotifySuccess();
     canCreateCollection.mockReturnValue(true);
-    renderWithProvider(<CollectionForm />, {
+    renderWithRouter(<CollectionForm />, {
       route: "/default",
       path: "/:bid",
     });
@@ -84,7 +84,7 @@ describe("CollectionForm component", () => {
     const notifyErrorMock = mockNotifyError();
     clientMock.mockRejectedValue(new Error("test"));
     canCreateCollection.mockReturnValue(true);
-    renderWithProvider(<CollectionForm />, {
+    renderWithRouter(<CollectionForm />, {
       route: "/default",
       path: "/:bid",
     });
@@ -115,7 +115,7 @@ describe("CollectionForm component", () => {
     };
     vi.spyOn(collectionHooks, "useCollection").mockReturnValue(testCol);
 
-    renderWithProvider(<CollectionForm />, {
+    renderWithRouter(<CollectionForm />, {
       route: "/default/test",
       path: "/:bid/:cid",
     });
@@ -134,7 +134,7 @@ describe("CollectionForm component", () => {
 
   it("Should render an error for a user lacking permissions creating a collection", async () => {
     canCreateCollection.mockReturnValue(false);
-    renderWithProvider(<CollectionForm />, {
+    renderWithRouter(<CollectionForm />, {
       route: "/default",
       path: "/:bid",
     });
@@ -147,7 +147,7 @@ describe("CollectionForm component", () => {
 
   it("Should render as read-only for a user lacking permissions editing a collection", async () => {
     canEditCollection.mockReturnValue(false);
-    renderWithProvider(<CollectionForm />, {
+    renderWithRouter(<CollectionForm />, {
       route: "/default/test",
       path: "/:bid/:cid",
     });

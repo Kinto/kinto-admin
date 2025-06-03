@@ -4,7 +4,7 @@ import * as collectionHooks from "@src/hooks/collection";
 import * as recordHooks from "@src/hooks/record";
 import { canEditRecord } from "@src/permission";
 import { clone } from "@src/utils";
-import { renderWithProvider } from "@test/testUtils";
+import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
 
@@ -59,7 +59,7 @@ describe("RecordAttributes component", () => {
 
   describe("Simple schema", () => {
     beforeEach(() => {
-      renderWithProvider(<RecordAttributes />, routeProps);
+      renderWithRouter(<RecordAttributes />, routeProps);
     });
 
     it("should render a form", () => {
@@ -99,7 +99,7 @@ describe("RecordAttributes component", () => {
 
     beforeEach(() => {
       vi.spyOn(recordHooks, "useRecord").mockReturnValueOnce(record);
-      renderWithProvider(<RecordAttributes />, routeProps);
+      renderWithRouter(<RecordAttributes />, routeProps);
     });
 
     it("should render the attachment info", () => {
@@ -120,7 +120,7 @@ describe("RecordAttributes component", () => {
       beforeEach(() => {
         vi.spyOn(recordHooks, "useRecord").mockReturnValueOnce(gzipped);
 
-        renderWithProvider(<RecordAttributes />, routeProps);
+        renderWithRouter(<RecordAttributes />, routeProps);
       });
 
       it("should show original file attributes", () => {
@@ -150,7 +150,7 @@ describe("RecordAttributes component", () => {
           vi.spyOn(collectionHooks, "useCollection").mockReturnValueOnce(
             withUISchema
           );
-          renderWithProvider(<RecordAttributes />);
+          renderWithRouter(<RecordAttributes />);
           field = screen.getByLabelText("id");
         });
 

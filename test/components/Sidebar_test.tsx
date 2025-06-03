@@ -1,7 +1,7 @@
 import { Sidebar } from "@src/components/Sidebar";
 import * as bucketHooks from "@src/hooks/bucket";
 import { clone } from "@src/utils";
-import { renderWithProvider } from "@test/testUtils";
+import { renderWithRouter } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import React from "react";
 
@@ -35,9 +35,8 @@ describe("Sidebar component", () => {
 
   describe("Not authenticated", () => {
     it("should not render any bucket menus", () => {
-      renderWithProvider(<Sidebar />, {
+      renderWithRouter(<Sidebar />, {
         ...routeProps,
-        initialState: { session: { authenticated: false } },
       });
 
       expect(screen.queryByTestId("sidebar-bucketMenu")).toBeNull();
@@ -48,9 +47,8 @@ describe("Sidebar component", () => {
     let bucketMenus;
 
     beforeEach(() => {
-      renderWithProvider(<Sidebar />, {
+      renderWithRouter(<Sidebar />, {
         ...routeProps,
-        initialState: { session },
       });
       bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
     });
@@ -108,13 +106,8 @@ describe("Sidebar component", () => {
           };
         })
       );
-      renderWithProvider(<Sidebar />, {
+      renderWithRouter(<Sidebar />, {
         ...routeProps,
-        initialState: {
-          session: {
-            ...session,
-          },
-        },
       });
       bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
     });
@@ -131,9 +124,8 @@ describe("Sidebar component", () => {
 
   describe("Create bucket", () => {
     it("should be shown by default", () => {
-      renderWithProvider(<Sidebar />, {
+      renderWithRouter(<Sidebar />, {
         ...routeProps,
-        initialState: { session },
       });
       expect(screen.queryAllByText("Create bucket")).toHaveLength(1);
     });
@@ -142,9 +134,8 @@ describe("Sidebar component", () => {
       const notAllowed = clone(session);
       notAllowed.permissions = [{ resource_name: "root", permissions: [] }];
 
-      renderWithProvider(<Sidebar />, {
+      renderWithRouter(<Sidebar />, {
         ...routeProps,
-        initialState: { session: notAllowed },
       });
       expect(screen.queryAllByText("Create bucket")).toHaveLength(0);
     });

@@ -1,3 +1,4 @@
+import Spinner from "./Spinner";
 import { getAuthHeader } from "@src/client";
 import { useHeartbeat } from "@src/hooks/heartbeat";
 import { notifySuccess } from "@src/hooks/notifications";
@@ -16,16 +17,21 @@ export function SessionInfoBar() {
   const navigate = useNavigate();
   const auth = useAuth();
   const heartbeat = useHeartbeat();
-  const { url, project_name, project_docs, user } = useServerInfo();
+  const serverInfo = useServerInfo();
 
-  const copyAuthenticationHeader = async() => {
+  if (!serverInfo) {
+    return <Spinner />;
+  }
+  const { url, project_name, project_docs, user } = serverInfo;
+
+  const copyAuthenticationHeader = async () => {
     if (!auth) {
       return;
     }
     const authHeader = getAuthHeader(auth);
     await copyToClipboard(authHeader);
     notifySuccess("Header copied to clipboard");
-  }
+  };
 
   return (
     <div className="session-info-bar" data-testid="sessionInfo-bar">

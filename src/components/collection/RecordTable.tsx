@@ -5,6 +5,7 @@ import AdminLink from "@src/components/AdminLink";
 import PaginatedTable from "@src/components/PaginatedTable";
 import SignoffToolbar from "@src/components/signoff/SignoffToolBar";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
+import { usePermissions } from "@src/hooks/session";
 import { canCreateRecord } from "@src/permission";
 import type { RecordData } from "@src/types";
 import { capitalize } from "@src/utils";
@@ -16,6 +17,7 @@ import { useParams } from "react-router";
 export function ListActions(props) {
   const { serverInfo, collection } = props;
   const { bid, cid } = useParams();
+  const permissions = usePermissions();
 
   if (!serverInfo || !collection?.id) {
     return null;
@@ -23,7 +25,7 @@ export function ListActions(props) {
 
   return (
     <div className="list-actions">
-      {canCreateRecord(session, bid, cid) && (
+      {canCreateRecord(permissions, bid, cid) && (
         <>
           <AdminLink
             key="__1"

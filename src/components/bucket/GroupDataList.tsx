@@ -47,16 +47,17 @@ export function DataList(props) {
                 </td>
                 <td className="actions">
                   <div className="btn-group">
-                    {"history" in serverInfo?.capabilities && (
-                      <AdminLink
-                        name="group:history"
-                        params={{ bid, gid }}
-                        className="btn btn-sm btn-secondary"
-                        title="View group history"
-                      >
-                        <ClockHistory className="icon" />
-                      </AdminLink>
-                    )}
+                    {serverInfo?.capabilities &&
+                      "history" in serverInfo?.capabilities && (
+                        <AdminLink
+                          name="group:history"
+                          params={{ bid, gid }}
+                          className="btn btn-sm btn-secondary"
+                          title="View group history"
+                        >
+                          <ClockHistory className="icon" />
+                        </AdminLink>
+                      )}
                     <AdminLink
                       name="group:attributes"
                       params={{ bid, gid }}

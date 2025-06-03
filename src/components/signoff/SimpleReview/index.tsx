@@ -61,10 +61,10 @@ export default function SimpleReview() {
       </div>
     );
   } else if (
-    (signoff?.source &&
-      !signoff.source.status &&
-      !newRecords?.data &&
-      !oldRecords?.data)
+    signoff?.source &&
+    !signoff.source.status &&
+    !newRecords?.data &&
+    !oldRecords?.data
   ) {
     return <Spinner />;
   }

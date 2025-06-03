@@ -3,7 +3,7 @@ import RecordForm from "@src/components/record/RecordForm";
 import * as collectionHooks from "@src/hooks/collection";
 import * as recordHooks from "@src/hooks/record";
 import { canCreateRecord, canEditRecord } from "@src/permission";
-import { renderWithProvider } from "@test/testUtils";
+import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
 
@@ -118,7 +118,7 @@ describe("RecordForm", () => {
   });
 
   it("Renders an empty form for a new record (attachments disabled)", async () => {
-    renderWithProvider(<RecordForm />, createRouteProps);
+    renderWithRouter(<RecordForm />, createRouteProps);
     fireEvent.change(screen.queryByLabelText("TestTitle"), {
       target: { value: "test title" },
     });
@@ -144,13 +144,13 @@ describe("RecordForm", () => {
         id: "test",
       },
     });
-    renderWithProvider(<RecordForm />, editRouteProps);
+    renderWithRouter(<RecordForm />, editRouteProps);
     expect(screen.queryByLabelText("TestTitle").value).toBe("test title");
     expect(screen.queryByLabelText("TestContent").value).toBe("test content");
   });
 
   it("Renders an empty form for a new record (attachments enabled)", async () => {
-    renderWithProvider(<RecordForm />, createRouteProps);
+    renderWithRouter(<RecordForm />, createRouteProps);
     expect(screen.queryByLabelText("TestTitle").value).toBe("");
     expect(screen.queryByLabelText("TestContent").value).toBe("");
     expect(screen.findByLabelText("File attachment")).toBeDefined();
@@ -166,7 +166,7 @@ describe("RecordForm", () => {
         id: "test",
       },
     });
-    renderWithProvider(<RecordForm />, editRouteProps);
+    renderWithRouter(<RecordForm />, editRouteProps);
     expect(screen.queryByLabelText("TestTitle").value).toBe("test title");
     expect(screen.queryByLabelText("TestContent").value).toBe("test content");
     expect(screen.findByLabelText("File attachment")).toBeDefined();
@@ -191,7 +191,7 @@ describe("RecordForm", () => {
   it("Requires an attachment to submit when it's a new record and attachments are required", async () => {
     lastSubmittedData = null;
     vi.spyOn(collectionHooks, "useCollection").mockReturnValueOnce(attachCol);
-    renderWithProvider(<RecordForm />, createRouteProps);
+    renderWithRouter(<RecordForm />, createRouteProps);
     fireEvent.change(screen.queryByLabelText("TestTitle"), {
       target: { value: "test title" },
     });
@@ -212,7 +212,7 @@ describe("RecordForm", () => {
         id: "test",
       },
     });
-    renderWithProvider(<RecordForm />, editRouteProps);
+    renderWithRouter(<RecordForm />, editRouteProps);
     expect(screen.queryByLabelText("TestTitle").disabled).toBe(true);
     expect(screen.queryByLabelText("TestContent").disabled).toBe(true);
     expect(screen.queryByLabelText("File attachment").disabled).toBe(true);

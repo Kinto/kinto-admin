@@ -16,7 +16,11 @@ export function useLocalStorage(key: string, initialValue: any) {
 
   const setStoredVal = val => {
     try {
-      localStorage[key] = JSON.stringify(val);
+      if (val === undefined) {
+        delete localStorage[key];
+      } else {
+        localStorage[key] = JSON.stringify(val);
+      }
       setVal(val);
     } catch (ex) {
       console.error("Error setting value in localStorage", ex);

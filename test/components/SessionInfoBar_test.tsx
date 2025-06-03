@@ -1,6 +1,6 @@
 import { setClient } from "@src/client";
 import { SessionInfoBar } from "@src/components/SessionInfoBar";
-import { renderWithProvider } from "@test/testUtils";
+import { renderWithRouter } from "@test/testUtils";
 import { act, screen } from "@testing-library/react";
 
 describe("SessionInfoBar component", () => {
@@ -26,7 +26,7 @@ describe("SessionInfoBar component", () => {
 
     client.execute.mockResolvedValue({});
     expect(client.execute).toHaveBeenCalledTimes(0);
-    renderWithProvider(<SessionInfoBar />);
+    renderWithRouter(<SessionInfoBar />);
     await vi.waitFor(() => {
       expect(client.execute).toHaveBeenCalledTimes(1);
     });
@@ -40,14 +40,7 @@ describe("SessionInfoBar component", () => {
   });
 
   it("Should show copy authentication header when a user is logged in", async () => {
-    renderWithProvider(<SessionInfoBar />, {
-      initialState: {
-        session: {
-          authenticated: true,
-          serverInfo: { user: { id: "foo" } },
-        },
-      },
-    });
+    renderWithRouter(<SessionInfoBar />);
     expect(screen.getByText("Logout")).toBeDefined();
     expect(screen.getByText("foo")).toBeDefined();
     expect(screen.getByTitle("Copy authentication header")).toBeDefined();
@@ -58,7 +51,7 @@ describe("SessionInfoBar component", () => {
       foo: true,
       bar: true,
     });
-    renderWithProvider(<SessionInfoBar />);
+    renderWithRouter(<SessionInfoBar />);
 
     await act(async () => {
       await Promise.resolve();
@@ -72,7 +65,7 @@ describe("SessionInfoBar component", () => {
       foo: false,
       bar: true,
     });
-    renderWithProvider(<SessionInfoBar />);
+    renderWithRouter(<SessionInfoBar />);
 
     await act(async () => {
       await Promise.resolve();
@@ -86,7 +79,7 @@ describe("SessionInfoBar component", () => {
     client.execute.mockImplementation(() => {
       throw new Error("Test error");
     });
-    renderWithProvider(<SessionInfoBar />);
+    renderWithRouter(<SessionInfoBar />);
 
     await act(async () => {
       await Promise.resolve();

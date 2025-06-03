@@ -1,4 +1,5 @@
 import "../css/styles.css";
+import { useAuth } from "./hooks/session";
 import { Layout } from "@src/components/Layout";
 import "bootstrap/dist/css/bootstrap.css";
 import * as React from "react";

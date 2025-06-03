@@ -44,20 +44,21 @@ export default function GroupTabs(props: Props) {
               Permissions
             </AdminLink>
           </li>
-          {"history" in serverInfo?.capabilities && (
-            <li className="nav-item" role="presentation">
-              <AdminLink
-                name="group:history"
-                params={{ bid, gid }}
-                className={
-                  selected === "history" ? "nav-link active" : "nav-link"
-                }
-              >
-                <ClockHistory className="icon" />
-                History
-              </AdminLink>
-            </li>
-          )}
+          {serverInfo?.capabilities &&
+            "history" in serverInfo?.capabilities && (
+              <li className="nav-item" role="presentation">
+                <AdminLink
+                  name="group:history"
+                  params={{ bid, gid }}
+                  className={
+                    selected === "history" ? "nav-link active" : "nav-link"
+                  }
+                >
+                  <ClockHistory className="icon" />
+                  History
+                </AdminLink>
+              </li>
+            )}
         </ul>
       </div>
       <div className="card-body">{children}</div>

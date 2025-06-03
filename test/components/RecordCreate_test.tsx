@@ -3,7 +3,7 @@ import RecordCreate from "@src/components/record/RecordCreate";
 import * as collectionHooks from "@src/hooks/collection";
 import * as recordHooks from "@src/hooks/record";
 import { canCreateRecord } from "@src/permission";
-import { renderWithProvider } from "@test/testUtils";
+import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
 
@@ -41,7 +41,7 @@ describe("RecordCreate component", () => {
         };
       },
     });
-    renderWithProvider(<RecordCreate />, {
+    renderWithRouter(<RecordCreate />, {
       route: "/bucket/collection",
       path: "/:bid/:cid",
     });

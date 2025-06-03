@@ -1,7 +1,6 @@
 import AuthForm from "@src/components/AuthForm";
 import { DEFAULT_KINTO_SERVER } from "@src/constants";
-import { DEFAULT_SERVERINFO } from "@src/reducers/session";
-import { renderWithProvider } from "@test/testUtils";
+import { renderWithRouter } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import React from "react";
@@ -13,11 +12,7 @@ describe("AuthForm component", () => {
 
   describe("Single server config option", () => {
     it("should set the default server url in a visible field", () => {
-      renderWithProvider(
-        <AuthForm
-          session={{ authenticated: false, serverInfo: DEFAULT_SERVERINFO }}
-        />
-      );
+      renderWithRouter(<AuthForm />);
 
       const element = screen.queryByLabelText("Server*");
       expect(element.type).toBe("text");
@@ -65,7 +60,7 @@ describe("AuthForm component", () => {
           },
         },
       };
-      renderWithProvider(<AuthForm {...props} />);
+      renderWithRouter(<AuthForm />);
     });
 
     it("should render a setup form", () => {
@@ -171,7 +166,7 @@ describe("AuthForm component", () => {
         servers: [],
         session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
       };
-      renderWithProvider(<AuthForm {...props} />);
+      renderWithRouter(<AuthForm />);
 
       expect(screen.queryByLabelText("Server*").value).toBe(
         "https://demo.kinto-storage.org/v1/"
@@ -186,7 +181,7 @@ describe("AuthForm component", () => {
         servers: [{ server: "http://server.test/v1", authType: "anonymous" }],
         session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
       };
-      renderWithProvider(<AuthForm {...props} />);
+      renderWithRouter(<AuthForm />);
 
       expect(screen.queryByLabelText("Server*").value).toBe(
         "http://server.test/v1"
@@ -205,7 +200,7 @@ describe("AuthForm component", () => {
         session: { authenticated: false, serverInfo: DEFAULT_SERVERINFO },
       };
 
-      const form = render(<AuthForm {...props} />);
+      const form = render(<AuthForm />);
       const serverField = form.getByLabelText("Server*");
 
       expect(serverField.value).toBe("http://server.test/v1");

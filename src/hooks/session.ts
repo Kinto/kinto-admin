@@ -1,4 +1,5 @@
 import { notifyError, notifyInfo } from "./notifications";
+import { useLocalStorage } from "./storage";
 import { getClient, setupClient } from "@src/client";
 import {
   AuthData,
@@ -8,13 +9,13 @@ import {
 } from "@src/types";
 import { makeObservable } from "@src/utils";
 import { useEffect, useState } from "react";
-import { useLocalStorage } from "./storage";
 
 let authState = makeObservable(undefined);
 let permissionState = makeObservable(undefined);
 let serverState = makeObservable(undefined);
 
 export function setAuth(auth: AuthData) {
+  setupClient(auth);
   authState.set(auth);
 }
 
@@ -24,17 +25,21 @@ export function logout() {
   serverState.set(undefined);
 }
 
-export function useAuth() : AuthData | undefined {
+export function useAuth(): AuthData | undefined {
   const [val, setVal] = useLocalStorage("kinto-admin-auth", authState.get());
 
   useEffect(() => {
+    if (authState.get() === undefined && val !== undefined) {
+      authState.set(val);
+      setupClient(val);
+    }
     return authState.subscribe(setVal);
   }, []);
 
   return val;
 }
 
-export function usePermissions() : PermissionsListEntry[] | undefined {
+export function usePermissions(): PermissionsListEntry[] | undefined {
   const [val, setVal] = useState(permissionState.get());
 
   useEffect(() => {
@@ -50,7 +55,9 @@ export function usePermissions() : PermissionsListEntry[] | undefined {
 
 async function getPermissions(server: ServerInfo) {
   if (!server.capabilities?.permissions_endpoint) {
-    notifyInfo("Permissions endpoint is not enabled on server, listed resources in the sidebar might be incomplete.");
+    notifyInfo(
+      "Permissions endpoint is not enabled on server, listed resources in the sidebar might be incomplete."
+    );
     permissionState.set([]);
   }
   const { data: permissions } = await getClient().listPermissions({
@@ -92,7 +99,7 @@ async function getServerInfo(auth: AuthData) {
   // Set the client globally to the entire app, when the saga starts.
   // We'll compare the remote of this singleton when the server info will be received
   // to prevent race conditions.
-  const client = setupClient(processedAuth || auth);
+  const client = getClient();
 
   try {
     // Fetch server information

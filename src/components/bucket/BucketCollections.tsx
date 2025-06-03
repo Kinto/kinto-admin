@@ -10,9 +10,7 @@ export default function BucketCollections() {
   const collections = useCollectionList(bid);
   const serverInfo = useServerInfo();
 
-  const listActions = (
-    <ListActions bid={bid} busy={!collections} />
-  );
+  const listActions = <ListActions bid={bid} busy={!collections} />;
 
   return (
     <div className="list-page">
