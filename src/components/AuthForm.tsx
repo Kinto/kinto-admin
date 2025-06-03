@@ -8,7 +8,7 @@ import { clearServersHistory, useServers } from "@src/hooks/servers";
 import { setAuth, useServerInfo } from "@src/hooks/session";
 import type { ServerEntry, ServerInfo, SessionState } from "@src/types";
 import { getAuthLabel, getServerByPriority, omit } from "@src/utils";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const KNOWN_AUTH_METHODS = [
   "basicauth",
@@ -387,6 +387,16 @@ export default function AuthForm() {
     resetClient();
     setShowSpinner(false);
   };
+
+  useEffect(() => {
+    // load last used server by default
+    if (servers && servers.length) {
+      serverInfoCallback({
+        authType: ANONYMOUS_AUTH,
+        server: servers[0].server,
+      });
+    }
+  }, []);
 
   const authMethods = getSupportedAuthMethods(serverInfo);
   const singleAuthMethod = authMethods.length === 1;

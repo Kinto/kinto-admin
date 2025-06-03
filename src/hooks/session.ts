@@ -10,6 +10,8 @@ import {
 import { makeObservable } from "@src/utils";
 import { useEffect, useState } from "react";
 
+const openPromises = {};
+
 let authState = makeObservable(undefined);
 let permissionState = makeObservable(undefined);
 let serverState = makeObservable(undefined);
@@ -54,17 +56,28 @@ export function usePermissions(): PermissionsListEntry[] | undefined {
 }
 
 async function getPermissions(server: ServerInfo) {
-  if (!server.capabilities?.permissions_endpoint) {
-    notifyInfo(
-      "Permissions endpoint is not enabled on server, listed resources in the sidebar might be incomplete."
-    );
-    permissionState.set([]);
+  if (openPromises["getPermissions"]) {
+    return;
   }
-  const { data: permissions } = await getClient().listPermissions({
-    pages: Infinity,
-    filters: { exclude_resource_name: "record,group" },
-  });
-  permissionState.set(permissions);
+
+  openPromises["getPermissions"] = true;
+  try {
+    if (!server.capabilities?.permissions_endpoint) {
+      notifyInfo(
+        "Permissions endpoint is not enabled on server, listed resources in the sidebar might be incomplete."
+      );
+      permissionState.set([]);
+    }
+    const { data: permissions } = await getClient().listPermissions({
+      pages: Infinity,
+      filters: { exclude_resource_name: "record,group" },
+    });
+    permissionState.set(permissions);
+  } catch (ex) {
+    notifyError("Unable to load permissions", ex);
+  } finally {
+    delete openPromises["getPermissions"];
+  }
 }
 
 export function useServerInfo(): ServerInfo | undefined {
@@ -82,6 +95,11 @@ export function useServerInfo(): ServerInfo | undefined {
 }
 
 async function getServerInfo(auth: AuthData) {
+  if (openPromises["getServerInfo"]) {
+    return;
+  }
+
+  openPromises["getServerInfo"] = true;
   let processedAuth: AuthData = auth;
   if (auth.authType.startsWith("openid-")) {
     const openIDAuth: OpenIDAuth = {
@@ -130,5 +148,7 @@ async function getServerInfo(auth: AuthData) {
     }
 
     notifyError(`Could not reach server ${auth.server}`, error);
+  } finally {
+    delete openPromises["getServerInfo"];
   }
 }
