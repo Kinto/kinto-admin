@@ -356,7 +356,7 @@ function navigateToOpenID(authFormData: any, provider: any) {
 export default function AuthForm() {
   const [showSpinner, setShowSpinner] = useState(false);
   const servers = useServers();
-  const [serverInfo, setServerInfo] = useState(DEFAULT_SERVERINFO); // need to optionally pass in auth
+  const [serverInfo, setServerInfo] = useState(DEFAULT_SERVERINFO);
   const authType = (servers.length && servers[0].authType) || ANONYMOUS_AUTH;
   const { schema: currentSchema, uiSchema: curentUiSchema } =
     authSchemas(authType);

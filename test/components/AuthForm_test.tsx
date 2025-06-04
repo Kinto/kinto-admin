@@ -3,6 +3,10 @@ import { DEFAULT_KINTO_SERVER, DEFAULT_SERVERINFO } from "@src/constants";
 import { renderWithRouter } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import { fireEvent, render, waitFor } from "@testing-library/react";
+import * as serverHooks from "@src/hooks/servers";
+import * as sessionHooks from "@src/hooks/session";
+import * as client from "@src/client";
+
 import React from "react";
 
 describe("AuthForm component", () => {
@@ -20,46 +24,36 @@ describe("AuthForm component", () => {
     });
   });
   describe("Authentication types", () => {
-    let setupSession,
-      getServerInfo,
-      navigateToExternalAuth,
-      navigateToOpenID,
-      serverChange;
+    const mockClearServersHistory = vi.fn();
+    const mockUseServers = vi.fn();
+    const mockSetAuth = vi.fn();
+    const mockFetchServerInfo = vi.fn();
 
     beforeEach(() => {
-      setupSession = vi.fn();
-      serverChange = vi.fn();
-      getServerInfo = async () => {
-        return new Promise(resolve => setTimeout(resolve, 100)); // simulate server response taking 100ms
-      };
-      navigateToExternalAuth = vi.fn();
-      navigateToOpenID = vi.fn();
-      const props = {
-        match: {},
-        setupSession,
-        serverChange,
-        getServerInfo,
-        servers: ["http://server.test/v1"],
-        navigateToExternalAuth,
-        navigateToOpenID,
-        session: {
-          authenticated: false,
-          serverInfo: {
-            capabilities: {
-              basicauth: "some basic auth info",
-              ldap: "some ldap auth info",
-              fxa: "some fxa auth info",
-              openid: {
-                providers: [
-                  {
-                    name: "google",
-                  },
-                ],
+      vi.spyOn(serverHooks, "useServers").mockImplementation(mockUseServers);
+      vi.spyOn(serverHooks, "clearServersHistory").mockImplementation(mockClearServersHistory);
+      vi.spyOn(sessionHooks, "setAuth").mockImplementation(mockSetAuth);
+
+      vi.spyOn(client, "setupClient").mockReturnValue({
+        fetchServerInfo: mockFetchServerInfo
+      });
+
+      mockFetchServerInfo.mockResolvedValue({
+        ...DEFAULT_SERVERINFO,
+        capabilities: {
+          basicauth: "some basic auth info",
+          ldap: "some ldap auth info",
+          fxa: "some fxa auth info",
+          openid: {
+            providers: [
+              {
+                name: "google",
               },
-            },
+            ],
           },
-        },
-      };
+        }
+      });
+      mockUseServers.mockReturnValue([{ server: "http://server.test/v1", authType: "accounts" }]);
       renderWithRouter(<AuthForm />);
     });
 
@@ -83,14 +77,14 @@ describe("AuthForm component", () => {
         });
 
         fireEvent.click(screen.getByText(/Sign in using/));
-        expect(setupSession).toHaveBeenCalledWith({
+        expect(mockSetAuth).toHaveBeenCalledWith({
           server: "http://test.server/v1",
           authType: "basicauth",
           credentials: {
             username: "user",
             password: "pass",
           },
-          redirectURL: undefined,
+          redirectURL: "/",
         });
       });
     });
