@@ -1,5 +1,7 @@
 import { setClient } from "@src/client";
 import { SessionInfoBar } from "@src/components/SessionInfoBar";
+import { DEFAULT_SERVERINFO } from "@src/constants";
+import * as sessionHooks from "@src/hooks/session";
 import { renderWithRouter } from "@test/testUtils";
 import { act, screen } from "@testing-library/react";
 
@@ -12,6 +14,10 @@ describe("SessionInfoBar component", () => {
 
   beforeAll(() => {
     setClient(client);
+  });
+
+  beforeEach(() => {
+    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(DEFAULT_SERVERINFO);
   });
 
   afterEach(() => {
@@ -40,6 +46,10 @@ describe("SessionInfoBar component", () => {
   });
 
   it("Should show copy authentication header when a user is logged in", async () => {
+    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue({
+      ...DEFAULT_SERVERINFO,
+      user: { id: "foo" },
+    });
     renderWithRouter(<SessionInfoBar />);
     expect(screen.getByText("Logout")).toBeDefined();
     expect(screen.getByText("foo")).toBeDefined();

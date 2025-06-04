@@ -4,8 +4,8 @@ import { toReviewEnabled } from "@src/components/signoff/utils";
 import { DEFAULT_SERVERINFO } from "@src/constants";
 import * as collectionHooks from "@src/hooks/collection";
 import * as recordHooks from "@src/hooks/record";
-import * as signoffHooks from "@src/hooks/signoff";
 import * as sessionHooks from "@src/hooks/session";
+import * as signoffHooks from "@src/hooks/signoff";
 import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
@@ -130,9 +130,9 @@ describe("SimpleTest component", () => {
 
   it("should render spinner when session is busy", async () => {
     renderSimpleReview({
-      serverInfo: null
+      serverInfo: null,
     }),
-    expect(screen.findByTestId("spinner")).toBeDefined();
+      expect(screen.findByTestId("spinner")).toBeDefined();
   });
 
   it("should render spinner when records are still loading", async () => {
@@ -170,7 +170,7 @@ describe("SimpleTest component", () => {
         },
         user: {
           principals: [],
-        }
+        },
       },
     });
     expect(screen.getByText(/Status is/).textContent).toBe(
@@ -237,7 +237,7 @@ describe("SimpleTest component", () => {
         },
         user: {
           principals: [],
-        }
+        },
       },
     });
 
@@ -276,13 +276,13 @@ describe("SimpleTest component", () => {
       renderSimpleReview({
         signoff,
         serverInfo: {
-        capabilities: {
-          signer: true,
+          capabilities: {
+            signer: true,
+          },
+          user: {
+            id: "user1",
+          },
         },
-        user: {
-          id: "user1",
-        }
-      }
       });
       expect(screen.queryByText(/Approve/)).toBeNull();
     });

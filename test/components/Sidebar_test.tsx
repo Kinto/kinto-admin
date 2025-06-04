@@ -2,7 +2,6 @@ import { Sidebar } from "@src/components/Sidebar";
 import { DEFAULT_SERVERINFO } from "@src/constants";
 import * as bucketHooks from "@src/hooks/bucket";
 import * as sessionHooks from "@src/hooks/session";
-import { clone } from "@src/utils";
 import { renderWithRouter } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import React from "react";
@@ -131,7 +130,9 @@ describe("Sidebar component", () => {
     });
 
     it("should be hidden if not allowed", () => {
-      vi.spyOn(sessionHooks, "usePermissions").mockReturnValue([{ resource_name: "root", permissions: [] }]);
+      vi.spyOn(sessionHooks, "usePermissions").mockReturnValue([
+        { resource_name: "root", permissions: [] },
+      ]);
 
       renderWithRouter(<Sidebar />, {
         ...routeProps,
