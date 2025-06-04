@@ -1,7 +1,9 @@
 import * as client from "@src/client";
 import RecordForm from "@src/components/record/RecordForm";
+import { DEFAULT_SERVERINFO } from "@src/constants";
 import * as collectionHooks from "@src/hooks/collection";
 import * as recordHooks from "@src/hooks/record";
+import * as sessionHooks from "@src/hooks/session";
 import { canCreateRecord, canEditRecord } from "@src/permission";
 import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
@@ -76,6 +78,7 @@ describe("RecordForm", () => {
     canEditRecord.mockReturnValue(true);
     vi.spyOn(recordHooks, "useRecord").mockReturnValue(undefined);
     vi.spyOn(collectionHooks, "useCollection").mockReturnValue(defaultCol);
+    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(DEFAULT_SERVERINFO);
     vi.spyOn(client, "getClient").mockReturnValue({
       bucket: bid => {
         return {
