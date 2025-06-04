@@ -1,6 +1,8 @@
 import CollectionRecords from "@src/components/collection/CollectionRecords";
+import { DEFAULT_SERVERINFO } from "@src/constants";
 import * as collectionHooks from "@src/hooks/collection";
 import * as recordHooks from "@src/hooks/record";
+import * as sessionHooks from "@src/hooks/session";
 import {
   canCreateRecord,
   canEditCollection,
@@ -41,6 +43,7 @@ describe("CollectionRecords component", () => {
     canEditRecord.mockReturnValue(true);
     canEditCollection.mockReturnValue(true);
     vi.spyOn(recordHooks, "useRecordList").mockImplementation(useRecordList);
+    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(DEFAULT_SERVERINFO);
   });
 
   describe("Schema defined", () => {
