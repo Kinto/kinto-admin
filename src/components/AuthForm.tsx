@@ -2,7 +2,11 @@ import BaseForm from "./BaseForm";
 import ServerHistory from "./ServerHistory";
 import { RJSFSchema } from "@rjsf/utils";
 import { resetClient, setupClient } from "@src/client";
-import { ANONYMOUS_AUTH, SINGLE_SERVER } from "@src/constants";
+import {
+  ANONYMOUS_AUTH,
+  DEFAULT_SERVERINFO,
+  SINGLE_SERVER,
+} from "@src/constants";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { clearServersHistory, useServers } from "@src/hooks/servers";
 import { setAuth } from "@src/hooks/session";
@@ -349,17 +353,10 @@ function navigateToOpenID(authFormData: any, provider: any) {
   notifySuccess("Redirecting to auth provider...");
 }
 
-const defaultServerInfo = {
-  url: "",
-  capabilities: {},
-  project_name: "Kinto",
-  project_docs: "",
-};
-
 export default function AuthForm() {
   const [showSpinner, setShowSpinner] = useState(false);
   const servers = useServers();
-  const [serverInfo, setServerInfo] = useState(defaultServerInfo); // need to optionally pass in auth
+  const [serverInfo, setServerInfo] = useState(DEFAULT_SERVERINFO); // need to optionally pass in auth
   const authType = (servers.length && servers[0].authType) || ANONYMOUS_AUTH;
   const { schema: currentSchema, uiSchema: curentUiSchema } =
     authSchemas(authType);
@@ -373,7 +370,7 @@ export default function AuthForm() {
 
   const serverChangeCallback = async () => {
     setShowSpinner(true);
-    setServerInfo(defaultServerInfo);
+    setServerInfo(DEFAULT_SERVERINFO);
   };
 
   const serverInfoCallback = async auth => {

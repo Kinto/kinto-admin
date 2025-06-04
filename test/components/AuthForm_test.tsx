@@ -1,5 +1,5 @@
 import AuthForm from "@src/components/AuthForm";
-import { DEFAULT_KINTO_SERVER } from "@src/constants";
+import { DEFAULT_KINTO_SERVER, DEFAULT_SERVERINFO } from "@src/constants";
 import { renderWithRouter } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import { fireEvent, render, waitFor } from "@testing-library/react";
