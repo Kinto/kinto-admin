@@ -1,5 +1,7 @@
 import { Sidebar } from "@src/components/Sidebar";
+import { DEFAULT_SERVERINFO } from "@src/constants";
 import * as bucketHooks from "@src/hooks/bucket";
+import * as sessionHooks from "@src/hooks/session";
 import { clone } from "@src/utils";
 import { renderWithRouter } from "@test/testUtils";
 import { screen } from "@testing-library/react";
@@ -9,13 +11,6 @@ describe("Sidebar component", () => {
   const routeProps = {
     route: "/mybuck/mycoll",
     path: "/:bid/:cid",
-  };
-  const session = {
-    authenticated: true,
-    serverInfo: {
-      user: { bucket: "defaultBucket" },
-      capabilities: { history: {} },
-    },
   };
 
   const buckets = [
@@ -31,10 +26,14 @@ describe("Sidebar component", () => {
 
   beforeEach(() => {
     vi.spyOn(bucketHooks, "useBucketList").mockReturnValue(buckets);
+    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(DEFAULT_SERVERINFO);
+    vi.spyOn(sessionHooks, "usePermissions").mockReturnValue([]);
+    vi.spyOn(sessionHooks, "useAuth").mockReturnValue({});
   });
 
   describe("Not authenticated", () => {
     it("should not render any bucket menus", () => {
+      vi.spyOn(sessionHooks, "useAuth").mockReturnValue(undefined);
       renderWithRouter(<Sidebar />, {
         ...routeProps,
       });
@@ -124,6 +123,7 @@ describe("Sidebar component", () => {
 
   describe("Create bucket", () => {
     it("should be shown by default", () => {
+      vi.spyOn(sessionHooks, "usePermissions").mockReturnValue(undefined);
       renderWithRouter(<Sidebar />, {
         ...routeProps,
       });
@@ -131,8 +131,7 @@ describe("Sidebar component", () => {
     });
 
     it("should be hidden if not allowed", () => {
-      const notAllowed = clone(session);
-      notAllowed.permissions = [{ resource_name: "root", permissions: [] }];
+      vi.spyOn(sessionHooks, "usePermissions").mockReturnValue([{ resource_name: "root", permissions: [] }]);
 
       renderWithRouter(<Sidebar />, {
         ...routeProps,
