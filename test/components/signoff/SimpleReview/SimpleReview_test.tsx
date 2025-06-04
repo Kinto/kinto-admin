@@ -1,9 +1,11 @@
 import * as client from "@src/client";
 import SimpleReview from "@src/components/signoff/SimpleReview";
 import { toReviewEnabled } from "@src/components/signoff/utils";
+import { DEFAULT_SERVERINFO } from "@src/constants";
 import * as collectionHooks from "@src/hooks/collection";
 import * as recordHooks from "@src/hooks/record";
 import * as signoffHooks from "@src/hooks/signoff";
+import * as sessionHooks from "@src/hooks/session";
 import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
@@ -56,7 +58,15 @@ function signoffFactory() {
 }
 
 function renderSimpleReview({
-  session = sessionFactory(),
+  serverInfo = DEFAULT_SERVERINFO,
+  auth = {
+    authtYPE: "basicauth",
+    server: "server",
+    credentials: {
+      username: "user",
+      password: "123",
+    },
+  },
   signoff = signoffFactory(),
   newRecords = [],
   oldRecords = [],
@@ -86,6 +96,8 @@ function renderSimpleReview({
       totalRecords: list.length,
     };
   });
+  vi.spyOn(sessionHooks, "useAuth").mockReturnValue(auth);
+  vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(serverInfo);
   vi.spyOn(client, "getClient").mockReturnValue({
     bucket: bid => {
       return {
@@ -111,33 +123,27 @@ describe("SimpleTest component", () => {
 
   it("should render spinner when authenticating", async () => {
     renderSimpleReview({
-      session: sessionFactory({ authenticated: false, authenticating: true }),
+      auth: null,
     });
     expect(screen.findByTestId("spinner")).toBeDefined();
   });
 
   it("should render spinner when session is busy", async () => {
     renderSimpleReview({
-      session: sessionFactory({
-        authenticated: true,
-        authenticating: false,
-        busy: true,
-      }),
-    });
+      serverInfo: null
+    }),
     expect(screen.findByTestId("spinner")).toBeDefined();
   });
 
   it("should render spinner when records are still loading", async () => {
     vi.spyOn(recordHooks, "useRecordList").mockReturnValue({});
-    renderSimpleReview({
-      session: sessionFactory({ authenticated: true, authenticating: false }),
-    });
+    renderSimpleReview({});
     expect(screen.findByTestId("spinner")).toBeDefined();
   });
 
   it("should render not authenticated", async () => {
     renderSimpleReview({
-      session: sessionFactory({ authenticated: false, authenticating: false }),
+      auth: null,
     });
     expect(await screen.findByText("Not authenticated")).toBeVisible();
   });
@@ -157,10 +163,15 @@ describe("SimpleTest component", () => {
   });
 
   it("should render a diff form for not a reviewer", async () => {
-    const session = sessionFactory();
-    session.serverInfo.user.principals = [];
     renderSimpleReview({
-      session,
+      serverInfo: {
+        capabilities: {
+          signer: true,
+        },
+        user: {
+          principals: [],
+        }
+      },
     });
     expect(screen.getByText(/Status is/).textContent).toBe(
       "Status is work-in-progress. "
@@ -219,9 +230,16 @@ describe("SimpleTest component", () => {
 
   it("should redirect the user if the legacy review process is enabled", async () => {
     localStorage.setItem("useSimpleReview", false);
-    const session = sessionFactory();
-    session.serverInfo.user.principals = [];
-    renderSimpleReview({ session });
+    renderSimpleReview({
+      serverInfo: {
+        capabilities: {
+          signer: true,
+        },
+        user: {
+          principals: [],
+        }
+      },
+    });
 
     // Since Simple Review is the default, this means we're in the legacy UI
     expect(screen.findByText("Switch to Default Review UI")).toBeDefined();
@@ -247,7 +265,6 @@ describe("SimpleTest component", () => {
 
     it("should show the review buttons if to_review_enabled is false", async () => {
       renderSimpleReview({
-        session: sessionFactory(),
         signoff,
       });
       toReviewEnabled.mockReturnValue(false);
@@ -257,8 +274,15 @@ describe("SimpleTest component", () => {
     it("should not show the review buttons if signer.to_review_enabled is true and the current user requested review", async () => {
       toReviewEnabled.mockReturnValue(true);
       renderSimpleReview({
-        session: sessionFactory(),
         signoff,
+        serverInfo: {
+        capabilities: {
+          signer: true,
+        },
+        user: {
+          id: "user1",
+        }
+      }
       });
       expect(screen.queryByText(/Approve/)).toBeNull();
     });
