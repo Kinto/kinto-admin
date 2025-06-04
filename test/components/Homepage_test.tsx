@@ -1,5 +1,6 @@
-import * as SessionActions from "@src/actions/session";
 import { HomePage } from "@src/components/HomePage";
+import { DEFAULT_SERVERINFO } from "@src/constants";
+import * as sessionHooks from "@src/hooks/session";
 import * as localStore from "@src/store/localStore";
 import { renderWithRouter } from "@test/testUtils";
 import { screen } from "@testing-library/react";
@@ -9,64 +10,30 @@ describe("HomePage component", () => {
   afterEach(() => {
     localStore.clearSession();
   });
+  const mockUseAuth = vi.fn();
+  const mockUseServerInfo = vi.fn();
+  const mockSetAuth = vi.fn();
+
+  beforeEach(() => {
+    vi.spyOn(sessionHooks, "useAuth").mockImplementation(mockUseAuth);
+    vi.spyOn(sessionHooks, "useServerInfo").mockImplementation(
+      mockUseServerInfo
+    );
+    vi.spyOn(sessionHooks, "setAuth").mockImplementation(mockSetAuth);
+  });
 
   describe("Authenticating", () => {
     it("loads a spinner when authenticating", async () => {
-      vi.spyOn(SessionActions, "setupSession").mockReturnValue({
-        type: "fake",
-        auth: null,
-      });
+      mockUseAuth.mockReturnValue({});
+      mockUseServerInfo.mockReturnValue(undefined);
       renderWithRouter(<HomePage />);
       expect(await screen.findByTestId("spinner")).toBeDefined();
     });
   });
 
   describe("Not authenticated", () => {
-    describe("Session setup", () => {
-      it("should call setupSession if localStorage session available", () => {
-        const auth = {
-          authType: "anonymous",
-          server: "http://server.test/v1",
-        };
-        const setupSession = vi.spyOn(SessionActions, "setupSession");
-        localStore.saveSession({ auth });
-        renderWithRouter(<HomePage />);
-        expect(setupSession).toHaveBeenCalledWith(auth);
-      });
-
-      it("should call getServerInfo if no localStorage session", () => {
-        const getServerInfo = vi.spyOn(SessionActions, "getServerInfo");
-        renderWithRouter(<HomePage />);
-        expect(getServerInfo).toHaveBeenCalledWith({
-          authType: "anonymous",
-          server: expect.stringMatching(/./),
-        });
-      });
-
-      it("should call getServerInfo if expiresAt is in the past", () => {
-        vi.useFakeTimers();
-        let fakeDate = new Date(2024, 1, 2, 3, 4, 5, 6);
-        vi.setSystemTime(fakeDate);
-
-        const auth = {
-          authType: "anonymous",
-          server: "http://server.test/v1",
-          expiresAt: new Date(2024, 1, 2, 3, 4, 5, 0).getTime(),
-        };
-        const getServerInfo = vi.spyOn(SessionActions, "getServerInfo");
-        localStore.saveSession({ auth });
-        renderWithRouter(<HomePage />);
-
-        expect(getServerInfo).toHaveBeenCalled();
-
-        vi.useRealTimers();
-      });
-    });
-
     describe("After OpenID redirection", () => {
       it("should setup session when component is mounted", () => {
-        const setupSession = vi.spyOn(SessionActions, "setupSession");
-
         vi.useFakeTimers();
         let fakeDate = new Date(2024, 1, 2, 3, 4, 5, 6);
         vi.setSystemTime(fakeDate);
@@ -80,7 +47,7 @@ describe("HomePage component", () => {
           path: "/auth/:payload/:token",
         });
 
-        expect(setupSession).toHaveBeenCalledWith({
+        expect(mockSetAuth).toHaveBeenCalledWith({
           authType: "openid",
           provider: "auth0",
           tokenType: "Bearer",
@@ -96,6 +63,7 @@ describe("HomePage component", () => {
 
   describe("Authenticated", () => {
     it("should render server information heading with default info if it cannot be fetched", async () => {
+      mockUseServerInfo.mockReturnValue(DEFAULT_SERVERINFO);
       renderWithRouter(<HomePage />);
 
       expect(screen.getByText("Server information").textContent).toBeDefined();
