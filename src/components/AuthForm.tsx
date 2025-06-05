@@ -276,7 +276,7 @@ function getSupportedAuthMethods(serverInfo: ServerInfo): string[] {
 }
 
 function navigateToFxA(server: string, redirect: string) {
-  document.location.href = `${server}/fxa-oauth/login?redirect=${encodeURIComponent(
+  window.location.href = `${server}/fxa-oauth/login?redirect=${encodeURIComponent(
     redirect
   )}`;
 }
@@ -349,7 +349,7 @@ function navigateToOpenID(authFormData: any, provider: any) {
   const strippedAuthPath = authPath.replace(/^\//, "");
   const payload = btoa(JSON.stringify(authFormData));
   const redirect = encodeURIComponent(`${origin}${pathname}#/auth/${payload}/`);
-  document.location.href = `${strippedServer}/${strippedAuthPath}?callback=${redirect}&scope=openid email`;
+  window.location.href = `${strippedServer}/${strippedAuthPath}?callback=${redirect}&scope=openid email`;
   notifySuccess("Redirecting to auth provider...");
 }
 
