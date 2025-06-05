@@ -131,8 +131,8 @@ describe("SimpleTest component", () => {
   it("should render spinner when session is busy", async () => {
     renderSimpleReview({
       serverInfo: null,
-    }),
-      expect(screen.findByTestId("spinner")).toBeDefined();
+    });
+    expect(screen.findByTestId("spinner")).toBeDefined();
   });
 
   it("should render spinner when records are still loading", async () => {

@@ -4,7 +4,7 @@ import * as bucketHooks from "@src/hooks/bucket";
 import * as heartbeatHooks from "@src/hooks/heartbeat";
 import * as sessionHooks from "@src/hooks/session";
 import { renderWithRouter } from "@test/testUtils";
-import { act, fireEvent, screen } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
 
 describe("App component", () => {
