@@ -3,6 +3,7 @@ import {
   expandBucketsCollections,
   useBucket,
   useBucketHistory,
+  useBucketList,
   useBucketPermissions,
 } from "@src/hooks/bucket";
 import { mockNotifyError } from "@test/testUtils";
@@ -207,16 +208,141 @@ describe("bucket hooks", () => {
   });
 
   describe("useBucketList", () => {
-    it("returns the expected list with permissions applied", async () => {
-      // TODO: write test
+    let listBucketsMock, batchMock;
+    const testBuckets = [
+      {
+        id: "test1",
+        name: "test1",
+      },
+      {
+        id: "test2",
+        name: "test2",
+      },
+      {
+        id: "user-bucket",
+        name: "user-bucket",
+      },
+    ];
+    const testBatchResult = testBuckets.map(x => {
+      return {
+        status: 200,
+        body: {
+          data: [{ id: "test1" }, { id: "test2" }],
+        },
+      };
     });
 
-    it("triggers an info notification if permissions endpoint isn't available", async () => {
-      // TODO: write test
+    beforeEach(() => {
+      listBucketsMock = vi.fn().mockResolvedValue({ data: testBuckets });
+      batchMock = vi.fn().mockResolvedValue(testBatchResult);
+      vi.spyOn(client, "getClient").mockReturnValue({
+        listBuckets: listBucketsMock,
+        batch: batchMock,
+      });
+    });
+
+    it("returns the expected list with permissions applied", async () => {
+      const permissions = [
+        {
+          resource_name: "bucket",
+          bucket_id: "test1",
+          permissions: ["foo1", "foo2"],
+        },
+        {
+          resource_name: "collection",
+          bucket_id: "test2",
+          collection_id: "test2",
+          permissions: ["foo3", "foo4"],
+        },
+      ];
+      const expectedResult = [
+        {
+          canCreateCollection: false, // cannot create as bucket permissions are defined
+          collections: [
+            {
+              id: "test1",
+              permissions: [],
+              readonly: true,
+            },
+            {
+              id: "test2",
+              permissions: [],
+              readonly: true,
+            },
+          ],
+          id: "test1",
+          name: "test1",
+          permissions: [
+            // test permisisons
+            "foo1",
+            "foo2",
+          ],
+          readonly: true,
+        },
+        {
+          canCreateCollection: true, // can create as bucket permissions are NOT defined
+          collections: [
+            {
+              id: "test1",
+              permissions: [],
+              readonly: true,
+            },
+            {
+              id: "test2",
+              permissions: [
+                // test permisisons
+                "foo3",
+                "foo4",
+              ],
+              readonly: true,
+            },
+          ],
+          id: "test2",
+          name: "test2",
+          permissions: [],
+          readonly: true,
+        },
+        {
+          canCreateCollection: true, // can create as personal bucket
+          collections: [
+            {
+              id: "test1",
+              permissions: [],
+              readonly: true,
+            },
+            {
+              id: "test2",
+              permissions: [],
+              readonly: true,
+            },
+          ],
+          id: "user-bucket",
+          name: "user-bucket",
+          permissions: [],
+          readonly: true,
+        },
+      ];
+      const { result } = renderHook(() =>
+        useBucketList(permissions, "user-bucket")
+      );
+      expect(result.current).toBeUndefined();
+      await vi.waitFor(() => {
+        expect(result.current).toMatchObject(expectedResult);
+      });
+      expect(listBucketsMock).toHaveBeenCalled();
+      expect(batchMock).toHaveBeenCalled();
     });
 
     it("triggers a notification error if the client throws an error", async () => {
-      // TODO: write test
+      const notifyErrorMock = mockNotifyError();
+      listBucketsMock.mockRejectedValue(new Error("Test foo"));
+      renderHook(() => useBucketList());
+      await vi.waitFor(() => {
+        expect(notifyErrorMock).toHaveBeenCalledWith(
+          "Unable to load buckets",
+          expect.any(Error)
+        );
+      });
     });
   });
 
