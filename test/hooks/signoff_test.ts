@@ -121,7 +121,7 @@ describe("signoff hooks", () => {
       });
     });
 
-    it.only("Calculates changes for the destination collection if status is not signed signed", async () => {
+    it("Calculates changes for the destination collection if status is not signed signed", async () => {
       const { result } = renderHook(() => useSignoff("source", "cid", signer));
       await vi.waitFor(() => {
         expect(result.current).toMatchObject({
