@@ -51,11 +51,16 @@ async function calculateChangesInfo(resource: SignerResource, setVal) {
   let changesOnPreview = null;
 
   if (collection.status === "work-in-progress") {
-    changesOnSource = await fetchChangesInfo(resource.source, resource.preview);
+    changesOnSource = await fetchChangesInfo(
+      resource.source,
+      resource.preview,
+      collection.last_modified
+    );
   } else if (collection.status !== "signed") {
     changesOnPreview = await fetchChangesInfo(
       resource.source,
-      resource.destination
+      resource.destination,
+      collection.last_modified
     );
   }
 
@@ -134,7 +139,8 @@ function _pickSignoffResource(
 
 async function fetchChangesInfo(
   source: CapabilityResource,
-  other: CapabilityResource
+  other: CapabilityResource,
+  collectionLastModified: number
 ): Promise<ChangesList> {
   const client = getClient();
 
@@ -146,11 +152,7 @@ async function fetchChangesInfo(
     .getRecordsTimestamp();
 
   if (!sinceETag) {
-    const data = await client
-      .bucket(other.bucket)
-      .collection(other.collection)
-      .getData<{ last_modified: number }>();
-    sinceETag = `${data.last_modified}`;
+    sinceETag = `${collectionLastModified}`;
   }
 
   // Look up changes since ETag.
@@ -161,6 +163,7 @@ async function fetchChangesInfo(
       since: sinceETag,
       fields: ["deleted"], // limit amount of data to fetch.
     });
+
   const since: number = parseInt(sinceETag.replace('"', ""), 10);
   return {
     since,
