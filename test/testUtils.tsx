@@ -12,6 +12,14 @@ export function mockNotifyError() {
     });
 }
 
+export function mockNotifyInfo() {
+  return vi
+    .spyOn(notificationsHooks, "notifyInfo")
+    .mockImplementation((...args) => {
+      return args;
+    });
+}
+
 export function mockNotifySuccess() {
   return vi
     .spyOn(notificationsHooks, "notifySuccess")
