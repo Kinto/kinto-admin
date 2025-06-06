@@ -1,11 +1,11 @@
 import CollectionTabs from "./CollectionTabs";
-import { listBuckets } from "@src/actions/session";
 import { getClient } from "@src/client";
 import { PermissionsForm } from "@src/components/PermissionsForm";
 import Spinner from "@src/components/Spinner";
-import { useAppDispatch, useAppSelector } from "@src/hooks/app";
+import { reloadBuckets } from "@src/hooks/bucket";
 import { useCollection, useCollectionPermissions } from "@src/hooks/collection";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
+import { usePermissions } from "@src/hooks/session";
 import { canEditCollection } from "@src/permission";
 import type { CollectionPermissions as CollectionPermissionsType } from "@src/types";
 import React, { useState } from "react";
@@ -14,11 +14,10 @@ import { useParams } from "react-router";
 export function CollectionPermissions() {
   const { bid, cid } = useParams();
   const [cacheVal, setCacheVal] = useState(0);
-  const session = useAppSelector(state => state.session);
   const collection = useCollection(bid, cid, cacheVal);
-  const permissions = useCollectionPermissions(bid, cid, cacheVal);
+  const userPermissions = usePermissions();
+  const collectionPermissions = useCollectionPermissions(bid, cid, cacheVal);
   const acls = ["read", "write", "record:create"];
-  const dispatch = useAppDispatch();
 
   const onSubmit = async ({
     formData,
@@ -32,7 +31,7 @@ export function CollectionPermissions() {
       });
       notifySuccess("Collection permissions updated.");
       setCacheVal(cacheVal + 1);
-      dispatch(listBuckets());
+      reloadBuckets();
     } catch (ex) {
       notifyError("Couldn't update collection permissions", ex);
     }
@@ -48,13 +47,13 @@ export function CollectionPermissions() {
         collection permissions
       </h1>
       <CollectionTabs bid={bid} cid={cid} selected="permissions">
-        {!permissions ? (
+        {!collectionPermissions ? (
           <Spinner />
         ) : (
           <PermissionsForm
-            permissions={permissions}
+            permissions={collectionPermissions}
             acls={acls}
-            readonly={!canEditCollection(session, bid, cid)}
+            readonly={!canEditCollection(userPermissions, bid, cid)}
             onSubmit={onSubmit}
           />
         )}

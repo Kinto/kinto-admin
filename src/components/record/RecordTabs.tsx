@@ -1,5 +1,5 @@
 import AdminLink from "@src/components/AdminLink";
-import { useAppSelector } from "@src/hooks/app";
+import { useServerInfo } from "@src/hooks/session";
 import React from "react";
 import { Gear } from "react-bootstrap-icons";
 import { Lock } from "react-bootstrap-icons";
@@ -20,7 +20,7 @@ export default function RecordTabs({
   selected,
   children,
 }: Props) {
-  const session = useAppSelector(state => state.session);
+  const serverInfo = useServerInfo();
 
   return (
     <div className="card">
@@ -50,7 +50,7 @@ export default function RecordTabs({
               Permissions
             </AdminLink>
           </li>
-          {"history" in session.serverInfo.capabilities && (
+          {serverInfo && "history" in serverInfo.capabilities && (
             <li className="nav-item" role="presentation">
               <AdminLink
                 name="record:history"

@@ -402,8 +402,8 @@ export function diffJson(
   });
 }
 
-// allows us to share something between components outside of providers
-// we could also use a context provider, but theat could cause confusion
+// Allows us to share or expose data between components outside of poviders.
+// We could also use a context provider, but that could cause confusion
 // while redux is still in place.
 export function makeObservable(target) {
   let listeners = [];

@@ -2,17 +2,17 @@ import RecordTabs from "./RecordTabs";
 import { getClient } from "@src/client";
 import { PermissionsForm } from "@src/components/PermissionsForm";
 import Spinner from "@src/components/Spinner";
-import { useAppSelector } from "@src/hooks/app";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { useRecord } from "@src/hooks/record";
+import { usePermissions } from "@src/hooks/session";
 import { canEditRecord } from "@src/permission";
 import React, { useState } from "react";
 import { useParams } from "react-router";
 
 export function RecordPermissions() {
-  const session = useAppSelector(state => state.session);
   const [cacheVal, setCacheVal] = useState(0);
   const { bid, cid, rid } = useParams();
+  const userPermissions = usePermissions();
   const record = useRecord(bid, cid, rid, cacheVal);
 
   const onSubmit = async ({ formData }: { formData: any }) => {
@@ -45,7 +45,7 @@ export function RecordPermissions() {
           <PermissionsForm
             permissions={record.permissions}
             acls={acls}
-            readonly={!canEditRecord(session, bid, cid, rid)}
+            readonly={!canEditRecord(userPermissions, bid, cid, rid)}
             onSubmit={onSubmit}
           />
         )}

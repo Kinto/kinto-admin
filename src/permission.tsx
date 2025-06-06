@@ -1,14 +1,13 @@
 import { RJSFSchema, UiSchema } from "@rjsf/utils";
-import type { GroupData, PermissionsListEntry, SessionState } from "@src/types";
+import type { GroupData, PermissionsListEntry } from "@src/types";
 
 export const EVERYONE = "system.Everyone";
 export const AUTHENTICATED = "system.Authenticated";
 
 function can(
-  session: SessionState,
+  permissionsList: PermissionsListEntry[],
   filter: (perm: PermissionsListEntry) => boolean
 ): boolean {
-  const { permissions: permissionsList } = session;
   // The permissions endpoint is not enabled.
   // Do not try to guess.
   if (!permissionsList) {
@@ -18,8 +17,8 @@ function can(
   return permEntries.length > 0;
 }
 
-export function canCreateBucket(session: SessionState): boolean {
-  return can(session, (perm: PermissionsListEntry) => {
+export function canCreateBucket(permissions: PermissionsListEntry[]): boolean {
+  return can(permissions, (perm: PermissionsListEntry) => {
     return (
       perm.resource_name == "root" && perm.permissions.includes("bucket:create")
     );
@@ -27,10 +26,10 @@ export function canCreateBucket(session: SessionState): boolean {
 }
 
 export function canEditBucket(
-  session: SessionState,
+  permissions: PermissionsListEntry[],
   bucketId: string
 ): boolean {
-  return can(session, (perm: PermissionsListEntry) => {
+  return can(permissions, (perm: PermissionsListEntry) => {
     return (
       perm.resource_name == "bucket" &&
       perm.bucket_id == bucketId &&
@@ -40,10 +39,10 @@ export function canEditBucket(
 }
 
 export function canCreateCollection(
-  session: SessionState,
+  permissions: PermissionsListEntry[],
   bucketId: string
 ): boolean {
-  return can(session, (perm: PermissionsListEntry) => {
+  return can(permissions, (perm: PermissionsListEntry) => {
     return (
       perm.resource_name == "bucket" &&
       perm.bucket_id == bucketId &&
@@ -53,11 +52,11 @@ export function canCreateCollection(
 }
 
 export function canEditCollection(
-  session: SessionState,
+  permissions: PermissionsListEntry[],
   bucketId: string,
   collectionId: string
 ): boolean {
-  return can(session, (perm: PermissionsListEntry) => {
+  return can(permissions, (perm: PermissionsListEntry) => {
     return (
       (perm.resource_name == "bucket" ||
         (perm.resource_name == "collection" &&
@@ -69,10 +68,10 @@ export function canEditCollection(
 }
 
 export function canCreateGroup(
-  session: SessionState,
+  permissions: PermissionsListEntry[],
   bucketId: string
 ): boolean {
-  return can(session, (perm: PermissionsListEntry) => {
+  return can(permissions, (perm: PermissionsListEntry) => {
     return (
       perm.resource_name == "bucket" &&
       perm.bucket_id == bucketId &&
@@ -82,11 +81,11 @@ export function canCreateGroup(
 }
 
 export function canEditGroup(
-  session: SessionState,
+  permissions: PermissionsListEntry[],
   bucketId: string,
   groupId: string
 ): boolean {
-  return can(session, (perm: PermissionsListEntry) => {
+  return can(permissions, (perm: PermissionsListEntry) => {
     if (!groupId) {
       return false;
     }
@@ -100,11 +99,11 @@ export function canEditGroup(
 }
 
 export function canCreateRecord(
-  session: SessionState,
+  permissions: PermissionsListEntry[],
   bucketId: string,
   collectionId: string
 ): boolean {
-  return can(session, (perm: PermissionsListEntry) => {
+  return can(permissions, (perm: PermissionsListEntry) => {
     return (
       ((perm.resource_name == "bucket" && perm.permissions.includes("write")) ||
         (perm.resource_name == "collection" &&
@@ -116,12 +115,12 @@ export function canCreateRecord(
 }
 
 export function canEditRecord(
-  session: SessionState,
+  permissions: PermissionsListEntry[],
   bucketId: string,
   collectionId: string,
   recordId: string
 ): boolean {
-  return can(session, (perm: PermissionsListEntry) => {
+  return can(permissions, (perm: PermissionsListEntry) => {
     return (
       (perm.resource_name == "bucket" ||
         (perm.resource_name == "collection" &&

@@ -208,6 +208,7 @@ export type AuthData = {
   authType: AuthMethod;
   server: string;
   expiresAt?: number;
+  redirectURL?: string;
 };
 
 export type AnonymousAuth = {

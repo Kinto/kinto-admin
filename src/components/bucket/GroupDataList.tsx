@@ -1,5 +1,6 @@
 import Spinner from "../Spinner";
 import AdminLink from "@src/components/AdminLink";
+import { usePermissions, useServerInfo } from "@src/hooks/session";
 import { canCreateGroup } from "@src/permission";
 import { timeago } from "@src/utils";
 import React from "react";
@@ -7,7 +8,8 @@ import { Gear } from "react-bootstrap-icons";
 import { ClockHistory } from "react-bootstrap-icons";
 
 export function DataList(props) {
-  const { bid, groups, capabilities, showSpinner } = props;
+  const serverInfo = useServerInfo();
+  const { bid, groups, showSpinner } = props;
   return (
     <table className="table table-striped table-bordered record-list">
       <thead>
@@ -45,7 +47,7 @@ export function DataList(props) {
                 </td>
                 <td className="actions">
                   <div className="btn-group">
-                    {"history" in capabilities && (
+                    {serverInfo && "history" in serverInfo.capabilities && (
                       <AdminLink
                         name="group:history"
                         params={{ bid, gid }}
@@ -73,8 +75,9 @@ export function DataList(props) {
   );
 }
 
-export function ListActions({ bid, session, busy }) {
-  if (busy || !canCreateGroup(session, bid)) {
+export function ListActions({ bid, busy }) {
+  const permissions = usePermissions();
+  if (busy || !canCreateGroup(permissions, bid)) {
     return null;
   }
   return (

@@ -2,9 +2,9 @@ import BucketTabs from "./BucketTabs";
 import { getClient } from "@src/client";
 import { PermissionsForm } from "@src/components/PermissionsForm";
 import Spinner from "@src/components/Spinner";
-import { useAppSelector } from "@src/hooks/app";
 import { useBucket, useBucketPermissions } from "@src/hooks/bucket";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
+import { usePermissions } from "@src/hooks/session";
 import { canEditBucket } from "@src/permission";
 import type { BucketPermissions as BucketPermissionsType } from "@src/types";
 import React, { useState } from "react";
@@ -13,9 +13,9 @@ import { useParams } from "react-router";
 export function BucketPermissions() {
   const { bid } = useParams();
   const [cacheVal, setCacheVal] = useState(0);
-  const session = useAppSelector(store => store.session);
+  const userPermissions = usePermissions();
   const bucket = useBucket(bid, cacheVal);
-  const permissions = useBucketPermissions(bid, cacheVal);
+  const bucketPermissions = useBucketPermissions(bid, cacheVal);
 
   const onSubmit = async ({
     formData,
@@ -41,13 +41,13 @@ export function BucketPermissions() {
         Edit <b>{bid}</b> bucket permissions
       </h1>
       <BucketTabs bid={bid} selected="permissions">
-        {!permissions ? (
+        {!bucketPermissions ? (
           <Spinner />
         ) : (
           <PermissionsForm
-            permissions={permissions}
+            permissions={bucketPermissions}
             acls={acls}
-            readonly={!canEditBucket(session, bid)}
+            readonly={!canEditBucket(userPermissions, bid)}
             onSubmit={onSubmit}
           />
         )}

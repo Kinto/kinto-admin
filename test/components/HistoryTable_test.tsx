@@ -1,5 +1,5 @@
 import HistoryTable from "@src/components/HistoryTable";
-import { renderWithProvider } from "@test/testUtils";
+import { renderWithRouter } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import React from "react";
 
@@ -17,18 +17,18 @@ const props = {
 
 describe("HistoryTable component", () => {
   it("Should render a spinner when not yet loaded", async () => {
-    renderWithProvider(<HistoryTable {...props} historyLoaded={false} />);
+    renderWithRouter(<HistoryTable {...props} historyLoaded={false} />);
     expect(screen.queryByTestId("spinner")).toBeDefined();
   });
 
   it("Should render an empty table when history is loaded but there is no data", async () => {
-    renderWithProvider(<HistoryTable {...props} />);
+    renderWithRouter(<HistoryTable {...props} />);
     expect(screen.queryByTestId("spinner")).toBeNull();
     expect(screen.findByText("No history entry found.")).toBeDefined();
   });
 
   it("Should render our data when data is provided", async () => {
-    renderWithProvider(
+    renderWithRouter(
       <HistoryTable
         {...props}
         history={[

@@ -9,10 +9,10 @@ import { getClient } from "@src/client";
 import AdminLink from "@src/components/AdminLink";
 import BaseForm from "@src/components/BaseForm";
 import Spinner from "@src/components/Spinner";
-import { useAppSelector } from "@src/hooks/app";
 import { useCollection } from "@src/hooks/collection";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { useRecord } from "@src/hooks/record";
+import { usePermissions, useServerInfo } from "@src/hooks/session";
 import { canCreateRecord, canEditRecord } from "@src/permission";
 import React, { useState } from "react";
 import { Check2, Trash } from "react-bootstrap-icons";
@@ -45,7 +45,8 @@ export default function RecordForm() {
   const [cacheVal, setCacheVal] = useState(0);
   const collection = useCollection(bid, cid, cacheVal);
   const record = useRecord(bid, cid, rid, cacheVal);
-  const session = useAppSelector(state => state.session);
+  const permissions = usePermissions();
+  const serverInfo = useServerInfo();
   const navigate = useNavigate();
   const isUpdate = !!record;
 
@@ -60,8 +61,8 @@ export default function RecordForm() {
   };
 
   const allowEditing = record
-    ? canEditRecord(session, bid, cid, rid)
-    : canCreateRecord(session, bid, cid);
+    ? canEditRecord(permissions, bid, cid, rid)
+    : canCreateRecord(permissions, bid, cid);
 
   const handleDeleteRecord = async () => {
     if (rid && record && confirm("Are you sure?")) {
@@ -90,7 +91,7 @@ export default function RecordForm() {
     const { __attachment__: attachment, ...updatedRecord } = formData;
 
     try {
-      if (session.serverInfo.capabilities.attachments && attachment) {
+      if (serverInfo.capabilities.attachments && attachment) {
         await col.addAttachment(
           attachment,
           { ...updatedRecord, id: rid },
@@ -226,7 +227,7 @@ export default function RecordForm() {
       {isUpdate && attachmentConfig.enabled && (
         <AttachmentInfo
           allowEditing={allowEditing}
-          capabilities={session.serverInfo.capabilities}
+          capabilities={serverInfo?.capabilities}
           record={record}
           attachmentRequired={attachment?.required}
           callback={() => {

@@ -1,5 +1,5 @@
 import AdminLink from "@src/components/AdminLink";
-import { useAppSelector } from "@src/hooks/app";
+import { useServerInfo } from "@src/hooks/session";
 import React from "react";
 import {
   ClockHistory,
@@ -16,7 +16,7 @@ type Props = {
 };
 
 export default function BucketTabs({ bid, selected, children }: Props) {
-  const session = useAppSelector(state => state.session);
+  const serverInfo = useServerInfo();
   return (
     <div className="card">
       <div className="card-header">
@@ -58,7 +58,7 @@ export default function BucketTabs({ bid, selected, children }: Props) {
               </AdminLink>
             </li>
           ))}
-          {"history" in session.serverInfo.capabilities && (
+          {serverInfo && "history" in serverInfo.capabilities && (
             <li className="nav-item" role="presentation">
               <AdminLink
                 name="bucket:history"

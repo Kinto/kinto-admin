@@ -1,18 +1,16 @@
 import BucketTabs from "./BucketTabs";
 import { DataList, ListActions } from "./CollectionDataList";
-import { useAppSelector } from "@src/hooks/app";
 import { useCollectionList } from "@src/hooks/collection";
+import { useServerInfo } from "@src/hooks/session";
 import React from "react";
 import { useParams } from "react-router";
 
 export default function BucketCollections() {
   const { bid } = useParams();
   const collections = useCollectionList(bid);
-  const session = useAppSelector(state => state.session);
+  const serverInfo = useServerInfo();
 
-  const listActions = (
-    <ListActions bid={bid} session={session} busy={!collections} />
-  );
+  const listActions = <ListActions bid={bid} busy={!collections} />;
 
   return (
     <div className="list-page">
@@ -21,7 +19,7 @@ export default function BucketCollections() {
       </h1>
       <BucketTabs bid={bid} selected="collections">
         {listActions}
-        {collections && collections.length === 0 ? (
+        {collections && collections.data.length === 0 ? (
           <div className="alert alert-info">
             <p>This bucket has no collections.</p>
           </div>
@@ -30,7 +28,7 @@ export default function BucketCollections() {
             bid={bid}
             collections={collections}
             listBucketNextCollections={collections?.next}
-            capabilities={session.serverInfo.capabilities}
+            capabilities={serverInfo?.capabilities}
             showSpinner={!collections}
           />
         )}

@@ -1,6 +1,6 @@
 import { DataList, ListActions } from "@src/components/bucket/GroupDataList";
 import { canCreateGroup } from "@src/permission";
-import { renderWithProvider } from "@test/testUtils";
+import { renderWithRouter } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import React from "react";
 
@@ -30,7 +30,7 @@ describe("Bucket GroupDataList", () => {
   };
 
   it("Should render a list of groups as expected", () => {
-    renderWithProvider(<DataList {...props} />);
+    renderWithRouter(<DataList {...props} />);
     expect(screen.queryByText("groupA")).toBeDefined();
     expect(screen.queryByText("groupB")).toBeDefined();
     expect(screen.queryByText("memberA-1, memberA-2")).toBeDefined();
@@ -38,7 +38,7 @@ describe("Bucket GroupDataList", () => {
   });
 
   it("Should render a spinner when showSpinner is true", () => {
-    renderWithProvider(<DataList {...props} showSpinner={true} />);
+    renderWithRouter(<DataList {...props} showSpinner={true} />);
     expect(screen.queryByTestId("spinner")).toBeDefined();
   });
 });
@@ -59,13 +59,13 @@ describe("Bucket GroupListActions", () => {
 
   it("Should render a Create Group button when the user has permission", () => {
     canCreateGroup.mockReturnValue(true);
-    renderWithProvider(<ListActions {...props} />);
+    renderWithRouter(<ListActions {...props} />);
     expect(screen.queryByText("Create group")).toBeDefined();
   });
 
   it("Should render no Create Group button when the user lacks permission", () => {
     canCreateGroup.mockReturnValue(false);
-    renderWithProvider(<ListActions {...props} />);
+    renderWithRouter(<ListActions {...props} />);
     expect(screen.queryByText("Create group")).toBeNull();
   });
 });

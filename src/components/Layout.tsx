@@ -24,16 +24,16 @@ import RecordCreate from "@src/components/record/RecordCreate";
 import RecordHistory from "@src/components/record/RecordHistory";
 import { RecordPermissions } from "@src/components/record/RecordPermissions";
 import SimpleReview from "@src/components/signoff/SimpleReview";
-import { useAppSelector } from "@src/hooks/app";
+import { useServerInfo } from "@src/hooks/session";
 import * as React from "react";
 import { Navigate, Route, Routes } from "react-router";
 
 export function Layout() {
-  const authenticated = useAppSelector(store => store.session.authenticated);
+  const serverInfo = useServerInfo();
   const contentClasses = `col-sm-9 content`;
   const version = KINTO_ADMIN_VERSION;
 
-  if (!authenticated) {
+  if (!serverInfo) {
     return (
       <div className="container-fluid main">
         <Notifications />

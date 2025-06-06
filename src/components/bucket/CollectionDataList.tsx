@@ -1,14 +1,16 @@
 import Spinner from "../Spinner";
 import AdminLink from "@src/components/AdminLink";
 import PaginatedTable from "@src/components/PaginatedTable";
+import { usePermissions } from "@src/hooks/session";
 import { canCreateCollection } from "@src/permission";
 import { timeago } from "@src/utils";
 import React, { useState } from "react";
 import { ClockHistory, Gear, Justify } from "react-bootstrap-icons";
 
 export function ListActions(props) {
-  const { bid, session, busy } = props;
-  if (busy || !canCreateCollection(session, bid)) {
+  const permissions = usePermissions();
+  const { bid, busy } = props;
+  if (busy || !canCreateCollection(permissions, bid)) {
     return null;
   }
   return (

@@ -15,384 +15,326 @@ import {
 
 describe("canCreateBucket", () => {
   it("should always return true if no permissions list", () => {
-    const session = { permissions: null };
-    expect(canCreateBucket(session)).toBe(true);
+    expect(canCreateBucket(null)).toBe(true);
   });
 
   it("should return false if root perm is not listed", () => {
-    const session = { permissions: [{ bucket_id: "xyz" }] };
-    expect(canCreateBucket(session)).toBe(false);
+    expect(canCreateBucket([{ bucket_id: "xyz" }])).toBe(false);
   });
 
   it("should return false if perm is not listed", () => {
-    const session = {
-      permissions: [{ resource_name: "root", permissions: [] }],
-    };
-    expect(canCreateBucket(session)).toBe(false);
+    const permissions = [{ resource_name: "root", permissions: [] }];
+    expect(canCreateBucket(permissions)).toBe(false);
   });
 
   it("should return true if perm is listed", () => {
-    const session = {
-      permissions: [{ resource_name: "root", permissions: ["bucket:create"] }],
-    };
-    expect(canCreateBucket(session)).toBe(true);
+    const permissions = [
+      { resource_name: "root", permissions: ["bucket:create"] },
+    ];
+    expect(canCreateBucket(permissions)).toBe(true);
   });
 });
 
 describe("canEditBucket", () => {
   it("should always return true if no permissions list", () => {
-    const session = { permissions: null };
-    expect(canEditBucket(session, "")).toBe(true);
+    expect(canEditBucket(null, "")).toBe(true);
   });
 
   it("should return false if object is not listed", () => {
-    const session = { permissions: [{ bucket_id: "xyz" }] };
-    expect(canEditBucket(session, "abc")).toBe(false);
+    expect(canEditBucket([{ bucket_id: "xyz" }], "abc")).toBe(false);
   });
 
   it("should return false if permission is not listed", () => {
-    const session = {
-      permissions: [
-        {
-          resource_name: "bucket",
-          bucket_id: "xyz",
-          permissions: ["read"],
-        },
-      ],
-    };
-    expect(canEditBucket(session, "xyz")).toBe(false);
+    const permissions = [
+      {
+        resource_name: "bucket",
+        bucket_id: "xyz",
+        permissions: ["read"],
+      },
+    ];
+    expect(canEditBucket(permissions, "xyz")).toBe(false);
   });
 
   it("should return true if permission is listed", () => {
-    const session = {
-      permissions: [
-        {
-          resource_name: "bucket",
-          bucket_id: "xyz",
-          permissions: ["write"],
-        },
-      ],
-    };
-    expect(canEditBucket(session, "xyz")).toBe(true);
+    const permissions = [
+      {
+        resource_name: "bucket",
+        bucket_id: "xyz",
+        permissions: ["write"],
+      },
+    ];
+    expect(canEditBucket(permissions, "xyz")).toBe(true);
   });
 });
 
 describe("canCreateCollection", () => {
   it("should always return true if no permisssions list", () => {
-    const session = { permissions: null };
-    expect(canCreateCollection(session, "")).toBe(true);
+    expect(canCreateCollection(null, "")).toBe(true);
   });
 
   it("should return false if object is not listed", () => {
-    const session = { permissions: [{ bucket_id: "xyz" }] };
-    expect(canCreateCollection(session, "abc")).toBe(false);
+    const permissions = [{ bucket_id: "xyz" }];
+    expect(canCreateCollection(permissions, "abc")).toBe(false);
   });
 
   it("should return false if permission is not listed", () => {
-    const session = {
-      permissions: [
-        {
-          resource_name: "bucket",
-          bucket_id: "xyz",
-          permissions: ["read"],
-        },
-      ],
-    };
-    expect(canCreateCollection(session, "xyz")).toBe(false);
+    const permissions = [
+      {
+        resource_name: "bucket",
+        bucket_id: "xyz",
+        permissions: ["read"],
+      },
+    ];
+    expect(canCreateCollection(permissions, "xyz")).toBe(false);
   });
 
   it("should return true if permission is listed", () => {
-    const session = {
-      permissions: [
-        {
-          resource_name: "bucket",
-          bucket_id: "xyz",
-          permissions: ["collection:create"],
-        },
-      ],
-    };
-    expect(canCreateCollection(session, "xyz")).toBe(true);
+    const permissions = [
+      {
+        resource_name: "bucket",
+        bucket_id: "xyz",
+        permissions: ["collection:create"],
+      },
+    ];
+    expect(canCreateCollection(permissions, "xyz")).toBe(true);
   });
 });
 
 describe("canCreateGroup", () => {
   it("should always return true if no permisssions list", () => {
-    const session = { permissions: null };
-    expect(canCreateGroup(session, "")).toBe(true);
+    expect(canCreateGroup(null, "")).toBe(true);
   });
 
   it("should return false if object is not listed", () => {
-    const session = { permissions: [{ bucket_id: "xyz" }] };
-    expect(canCreateGroup(session, "abc")).toBe(false);
+    expect(canCreateGroup([{ bucket_id: "xyz" }], "abc")).toBe(false);
   });
 
   it("should return false if permission is not listed", () => {
-    const session = {
-      permissions: [
-        {
-          resource_name: "bucket",
-          bucket_id: "xyz",
-          permissions: ["read"],
-        },
-      ],
-    };
-    expect(canCreateGroup(session, "xyz")).toBe(false);
+    const permissions = [
+      {
+        resource_name: "bucket",
+        bucket_id: "xyz",
+        permissions: ["read"],
+      },
+    ];
+    expect(canCreateGroup(permissions, "xyz")).toBe(false);
   });
 
   it("should return true if permission is listed", () => {
-    const session = {
-      permissions: [
-        {
-          resource_name: "bucket",
-          bucket_id: "xyz",
-          permissions: ["group:create"],
-        },
-      ],
-    };
-    expect(canCreateGroup(session, "xyz")).toBe(true);
+    const permissions = [
+      {
+        resource_name: "bucket",
+        bucket_id: "xyz",
+        permissions: ["group:create"],
+      },
+    ];
+    expect(canCreateGroup(permissions, "xyz")).toBe(true);
   });
 });
 
 describe("canEditCollection", () => {
   it("should always return true if no permisssions list", () => {
-    const session = { permissions: null };
-    expect(canEditCollection(session, "", null)).toBe(true);
+    expect(canEditCollection(null, "", null)).toBe(true);
   });
 
   it("should return false if object is not listed", () => {
-    const session = {
-      permissions: [{ bucket_id: "abc", collection_id: "foo" }],
-    };
-    expect(canEditCollection(session, "abc", "bar")).toBe(false);
+    const permissions = [{ bucket_id: "abc", collection_id: "foo" }];
+    expect(canEditCollection(permissions, "abc", "bar")).toBe(false);
   });
 
   it("should return false if permission is not listed", () => {
-    const session = {
-      permissions: [
-        {
-          resource_name: "collection",
-          bucket_id: "xyz",
-          collection_id: "foo",
-          permissions: ["read"],
-        },
-      ],
-    };
-    expect(canEditCollection(session, "xyz", "foo")).toBe(false);
+    const permissions = [
+      {
+        resource_name: "collection",
+        bucket_id: "xyz",
+        collection_id: "foo",
+        permissions: ["read"],
+      },
+    ];
+    expect(canEditCollection(permissions, "xyz", "foo")).toBe(false);
   });
 
   it("should return true if permission is listed", () => {
-    const session = {
-      permissions: [
-        {
-          resource_name: "collection",
-          bucket_id: "xyz",
-          collection_id: "foo",
-          permissions: ["write"],
-        },
-      ],
-    };
-    expect(canEditCollection(session, "xyz", "foo")).toBe(true);
+    const permissions = [
+      {
+        resource_name: "collection",
+        bucket_id: "xyz",
+        collection_id: "foo",
+        permissions: ["write"],
+      },
+    ];
+    expect(canEditCollection(permissions, "xyz", "foo")).toBe(true);
   });
 
   it("should return true if permission on bucket is listed", () => {
-    const session = {
-      permissions: [
-        {
-          resource_name: "bucket",
-          bucket_id: "xyz",
-          permissions: ["write"],
-        },
-      ],
-    };
-    expect(canEditCollection(session, "xyz", "foo")).toBe(true);
+    const permissions = [
+      {
+        resource_name: "bucket",
+        bucket_id: "xyz",
+        permissions: ["write"],
+      },
+    ];
+    expect(canEditCollection(permissions, "xyz", "foo")).toBe(true);
   });
 });
 
 describe("canEditGroup", () => {
   it("should always return true if no permisssions list", () => {
-    const session = { permissions: null };
-    expect(canEditGroup(session, "", "")).toBe(true);
-    expect(canEditGroup(session, "", null)).toBe(true);
-    expect(canEditGroup(session, "", undefined)).toBe(true);
+    expect(canEditGroup(null, "", "")).toBe(true);
+    expect(canEditGroup(null, "", null)).toBe(true);
+    expect(canEditGroup(null, "", undefined)).toBe(true);
   });
 
   it("should return false if object is not listed", () => {
-    const session = { permissions: [{ bucket_id: "abc", group_id: "foo" }] };
-    expect(canEditGroup(session, "abc", "bar")).toBe(false);
+    const permissions = [{ bucket_id: "abc", group_id: "foo" }];
+    expect(canEditGroup(permissions, "abc", "bar")).toBe(false);
   });
 
   it("should return false if permission is not listed", () => {
-    const session = {
-      permissions: [
-        {
-          resource_name: "group",
-          bucket_id: "xyz",
-          group_id: "foo",
-          permissions: ["read"],
-        },
-      ],
-    };
-    expect(canEditGroup(session, "xyz", "foo")).toBe(false);
+    const permissions = [
+      {
+        resource_name: "group",
+        bucket_id: "xyz",
+        group_id: "foo",
+        permissions: ["read"],
+      },
+    ];
+    expect(canEditGroup(permissions, "xyz", "foo")).toBe(false);
   });
 
   it("should return true if permission is listed", () => {
-    const session = {
-      permissions: [
-        {
-          resource_name: "group",
-          bucket_id: "xyz",
-          group_id: "foo",
-          permissions: ["write"],
-        },
-      ],
-    };
-    expect(canEditGroup(session, "xyz", "foo")).toBe(true);
+    const permissions = [
+      {
+        resource_name: "group",
+        bucket_id: "xyz",
+        group_id: "foo",
+        permissions: ["write"],
+      },
+    ];
+    expect(canEditGroup(permissions, "xyz", "foo")).toBe(true);
   });
 
   it("should return true if permission on bucket is listed", () => {
-    const session = {
-      permissions: [
-        {
-          resource_name: "bucket",
-          bucket_id: "xyz",
-          permissions: ["write"],
-        },
-      ],
-    };
-    expect(canEditGroup(session, "xyz", "foo")).toBe(true);
+    const permissions = [
+      {
+        resource_name: "bucket",
+        bucket_id: "xyz",
+        permissions: ["write"],
+      },
+    ];
+    expect(canEditGroup(permissions, "xyz", "foo")).toBe(true);
   });
 });
 
 describe("canCreateRecord", () => {
   it("should always return true if no permisssions list", () => {
-    const session = { permissions: null };
-    expect(canCreateRecord(session, "", "")).toBe(true);
+    expect(canCreateRecord(null, "", "")).toBe(true);
   });
 
   it("should return false if object is not listed", () => {
-    const session = {
-      permissions: [{ bucket_id: "abc", collection_id: "foo" }],
-    };
-    expect(canCreateRecord(session, "abc", "bar")).toBe(false);
+    const permissions = [{ bucket_id: "abc", collection_id: "foo" }];
+    expect(canCreateRecord(permissions, "abc", "bar")).toBe(false);
   });
 
   it("should return false if permission is not listed", () => {
-    const session = {
-      permissions: [
-        {
-          resource_name: "collection",
-          bucket_id: "xyz",
-          collection_id: "foo",
-          permissions: ["read"],
-        },
-      ],
-    };
-    expect(canCreateRecord(session, "xyz", "foo")).toBe(false);
+    const permissions = [
+      {
+        resource_name: "collection",
+        bucket_id: "xyz",
+        collection_id: "foo",
+        permissions: ["read"],
+      },
+    ];
+    expect(canCreateRecord(permissions, "xyz", "foo")).toBe(false);
   });
 
   it("should return true if permission is listed", () => {
-    const session = {
-      permissions: [
-        {
-          resource_name: "collection",
-          bucket_id: "xyz",
-          collection_id: "foo",
-          permissions: ["record:create"],
-        },
-      ],
-    };
-    expect(canCreateRecord(session, "xyz", "foo")).toBe(true);
+    const permissions = [
+      {
+        resource_name: "collection",
+        bucket_id: "xyz",
+        collection_id: "foo",
+        permissions: ["record:create"],
+      },
+    ];
+    expect(canCreateRecord(permissions, "xyz", "foo")).toBe(true);
   });
 
   it("should return true if permission on bucket is listed", () => {
-    const session = {
-      permissions: [
-        {
-          resource_name: "bucket",
-          bucket_id: "xyz",
-          permissions: ["write"],
-        },
-      ],
-    };
-    expect(canCreateRecord(session, "xyz", "foo")).toBe(true);
+    const permissions = [
+      {
+        resource_name: "bucket",
+        bucket_id: "xyz",
+        permissions: ["write"],
+      },
+    ];
+    expect(canCreateRecord(permissions, "xyz", "foo")).toBe(true);
   });
 });
 
 describe("canEditRecord", () => {
   it("should always return true if no permisssions list", () => {
-    const session = { permissions: null };
-    const record = {};
-    expect(canEditRecord(session, "", "", record)).toBe(true);
+    expect(canEditRecord(null, "", "", "")).toBe(true);
   });
 
   it("should return false if object is not listed", () => {
-    const session = {
-      permissions: [
-        {
-          bucket_id: "abc",
-          collection_id: "foo",
-          record_id: "pim",
-        },
-      ],
-    };
-    expect(canEditRecord(session, "abc", "bar", "blah")).toBe(false);
+    const permissions = [
+      {
+        bucket_id: "abc",
+        collection_id: "foo",
+        record_id: "pim",
+      },
+    ];
+    expect(canEditRecord(permissions, "abc", "bar", "blah")).toBe(false);
   });
 
   it("should return false if permission is not listed", () => {
-    const session = {
-      permissions: [
-        {
-          resource_name: "record",
-          bucket_id: "xyz",
-          collection_id: "foo",
-          record_id: "blah",
-          permissions: ["read"],
-        },
-      ],
-    };
-    expect(canEditRecord(session, "xyz", "foo", "blah")).toBe(false);
+    const permissions = [
+      {
+        resource_name: "record",
+        bucket_id: "xyz",
+        collection_id: "foo",
+        record_id: "blah",
+        permissions: ["read"],
+      },
+    ];
+    expect(canEditRecord(permissions, "xyz", "foo", "blah")).toBe(false);
   });
 
   it("should return true if permission is listed", () => {
-    const session = {
-      permissions: [
-        {
-          resource_name: "record",
-          bucket_id: "xyz",
-          collection_id: "foo",
-          record_id: "blah",
-          permissions: ["write"],
-        },
-      ],
-    };
-    expect(canEditRecord(session, "xyz", "foo", "blah")).toBe(true);
+    const permissions = [
+      {
+        resource_name: "record",
+        bucket_id: "xyz",
+        collection_id: "foo",
+        record_id: "blah",
+        permissions: ["write"],
+      },
+    ];
+    expect(canEditRecord(permissions, "xyz", "foo", "blah")).toBe(true);
   });
 
   it("should return true if permission on bucket is listed", () => {
-    const session = {
-      permissions: [
-        {
-          resource_name: "bucket",
-          bucket_id: "xyz",
-          permissions: ["write"],
-        },
-      ],
-    };
-    expect(canEditRecord(session, "xyz", "foo", "blah")).toBe(true);
+    const permissions = [
+      {
+        resource_name: "bucket",
+        bucket_id: "xyz",
+        permissions: ["write"],
+      },
+    ];
+    expect(canEditRecord(permissions, "xyz", "foo", "blah")).toBe(true);
   });
 
   it("should return true if permission on collection is listed", () => {
-    const session = {
-      permissions: [
-        {
-          resource_name: "collection",
-          bucket_id: "xyz",
-          collection_id: "foo",
-          permissions: ["write"],
-        },
-      ],
-    };
-    expect(canEditRecord(session, "xyz", "foo", "blah")).toBe(true);
+    const permissions = [
+      {
+        resource_name: "collection",
+        bucket_id: "xyz",
+        collection_id: "foo",
+        permissions: ["write"],
+      },
+    ];
+    expect(canEditRecord(permissions, "xyz", "foo", "blah")).toBe(true);
   });
 });
 

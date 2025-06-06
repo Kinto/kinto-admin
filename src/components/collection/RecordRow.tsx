@@ -1,6 +1,6 @@
 import { CommonProps } from "./commonPropTypes";
 import AdminLink from "@src/components/AdminLink";
-import { useAppSelector } from "@src/hooks/app";
+import { useAuth } from "@src/hooks/session";
 import type { RecordData } from "@src/types";
 import { buildAttachmentUrl, renderDisplayField, timeago } from "@src/utils";
 import React from "react";
@@ -34,7 +34,7 @@ export default function RecordRow({
   deleteRecord,
 }: RowProps) {
   const navigate = useNavigate();
-  const session = useAppSelector(state => state.session);
+  const auth = useAuth();
 
   const lastModified = () => {
     const lastModified = record.last_modified;
@@ -132,7 +132,7 @@ export default function RecordRow({
             <Dropdown.Item
               onClick={() => {
                 navigator.clipboard.writeText(
-                  `${session.auth.server}/buckets/${bid}/collections/${cid}/records/${record.id}`
+                  `${auth.server}/buckets/${bid}/collections/${cid}/records/${record.id}`
                 );
               }}
             >
