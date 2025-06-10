@@ -1,7 +1,7 @@
 import * as client from "@src/client";
 import RecordBulk from "@src/components/record/RecordBulk";
 import * as collectionHooks from "@src/hooks/collection";
-import { renderWithProvider } from "@test/testUtils";
+import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import React from "react";
 
@@ -33,7 +33,7 @@ describe("RecordBulk component", () => {
         },
       });
 
-      renderWithProvider(<RecordBulk />, {
+      renderWithRouter(<RecordBulk />, {
         route: "/bucket/collection",
         path: "/:bid/:cid",
       });

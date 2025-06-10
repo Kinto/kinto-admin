@@ -7,9 +7,9 @@ import AdminLink from "@src/components/AdminLink";
 import BaseForm from "@src/components/BaseForm";
 import JSONEditor from "@src/components/JSONEditor";
 import Spinner from "@src/components/Spinner";
-import { useAppSelector } from "@src/hooks/app";
 import { useCollection } from "@src/hooks/collection";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
+import { useServerInfo } from "@src/hooks/session";
 import React from "react";
 import { useNavigate, useParams } from "react-router";
 
@@ -17,7 +17,7 @@ export default function RecordBulk() {
   const { bid, cid } = useParams();
   const collection = useCollection(bid, cid);
   const navigate = useNavigate();
-  const session = useAppSelector(state => state.session);
+  const serverInfo = useServerInfo();
 
   const onSubmit = async ({ formData }) => {
     if (formData.length === 0) {
@@ -31,7 +31,8 @@ export default function RecordBulk() {
       for (const rawRecord of formData) {
         if (
           rawRecord.__attachment__ &&
-          "attachments" in session.serverInfo.capabilities
+          serverInfo &&
+          "attachments" in serverInfo.capabilities
         ) {
           const { __attachment__: attachment, ...record } = rawRecord;
           await col.addAttachment(attachment, record);

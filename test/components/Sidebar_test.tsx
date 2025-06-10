@@ -1,6 +1,8 @@
 import { Sidebar } from "@src/components/Sidebar";
-import { clone } from "@src/utils";
-import { renderWithProvider } from "@test/testUtils";
+import { DEFAULT_SERVERINFO } from "@src/constants";
+import * as bucketHooks from "@src/hooks/bucket";
+import * as sessionHooks from "@src/hooks/session";
+import { renderWithRouter } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import React from "react";
 
@@ -9,29 +11,30 @@ describe("Sidebar component", () => {
     route: "/mybuck/mycoll",
     path: "/:bid/:cid",
   };
-  const session = {
-    authenticated: true,
-    serverInfo: {
-      user: { bucket: "defaultBucket" },
-      capabilities: { history: {} },
+
+  const buckets = [
+    {
+      id: "mybuck",
+      collections: [{ id: "othercoll" }, { id: "mycoll" }],
     },
-    buckets: [
-      {
-        id: "mybuck",
-        collections: [{ id: "othercoll" }, { id: "mycoll" }],
-      },
-      {
-        id: "otherbuck",
-        collections: [{ id: "foo" }, { id: "bar" }, { id: "baz" }],
-      },
-    ],
-  };
+    {
+      id: "otherbuck",
+      collections: [{ id: "foo" }, { id: "bar" }, { id: "baz" }],
+    },
+  ];
+
+  beforeEach(() => {
+    vi.spyOn(bucketHooks, "useBucketList").mockReturnValue(buckets);
+    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(DEFAULT_SERVERINFO);
+    vi.spyOn(sessionHooks, "usePermissions").mockReturnValue([]);
+    vi.spyOn(sessionHooks, "useAuth").mockReturnValue({});
+  });
 
   describe("Not authenticated", () => {
     it("should not render any bucket menus", () => {
-      renderWithProvider(<Sidebar />, {
+      vi.spyOn(sessionHooks, "useAuth").mockReturnValue(undefined);
+      renderWithRouter(<Sidebar />, {
         ...routeProps,
-        initialState: { session: { authenticated: false } },
       });
 
       expect(screen.queryByTestId("sidebar-bucketMenu")).toBeNull();
@@ -42,9 +45,8 @@ describe("Sidebar component", () => {
     let bucketMenus;
 
     beforeEach(() => {
-      renderWithProvider(<Sidebar />, {
+      renderWithRouter(<Sidebar />, {
         ...routeProps,
-        initialState: { session },
       });
       bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
     });
@@ -89,24 +91,21 @@ describe("Sidebar component", () => {
     let bucketMenus;
 
     beforeEach(() => {
-      renderWithProvider(<Sidebar />, {
-        ...routeProps,
-        initialState: {
-          session: {
-            ...session,
-            buckets: session.buckets.map(b => {
+      vi.spyOn(bucketHooks, "useBucketList").mockReturnValueOnce(
+        buckets.map(b => {
+          return {
+            ...b,
+            collections: b.collections.map(c => {
               return {
-                ...b,
-                collections: b.collections.map(c => {
-                  return {
-                    ...c,
-                    readonly: true,
-                  };
-                }),
+                ...c,
+                readonly: true,
               };
             }),
-          },
-        },
+          };
+        })
+      );
+      renderWithRouter(<Sidebar />, {
+        ...routeProps,
       });
       bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
     });
@@ -123,20 +122,20 @@ describe("Sidebar component", () => {
 
   describe("Create bucket", () => {
     it("should be shown by default", () => {
-      renderWithProvider(<Sidebar />, {
+      vi.spyOn(sessionHooks, "usePermissions").mockReturnValue(undefined);
+      renderWithRouter(<Sidebar />, {
         ...routeProps,
-        initialState: { session },
       });
       expect(screen.queryAllByText("Create bucket")).toHaveLength(1);
     });
 
     it("should be hidden if not allowed", () => {
-      const notAllowed = clone(session);
-      notAllowed.permissions = [{ resource_name: "root", permissions: [] }];
+      vi.spyOn(sessionHooks, "usePermissions").mockReturnValue([
+        { resource_name: "root", permissions: [] },
+      ]);
 
-      renderWithProvider(<Sidebar />, {
+      renderWithRouter(<Sidebar />, {
         ...routeProps,
-        initialState: { session: notAllowed },
       });
       expect(screen.queryAllByText("Create bucket")).toHaveLength(0);
     });

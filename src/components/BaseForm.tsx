@@ -30,9 +30,10 @@ export default function BaseForm(props: BaseFormProps) {
   const formRef = useRef(null);
   const { className, disabled, showSpinner, onSubmit, ...restProps } = props;
 
-  const handleOnSubmit = form => {
+  const handleOnSubmit = async form => {
     setIsSubmitting(true);
-    onSubmit(form);
+    await onSubmit(form);
+    setIsSubmitting(false);
   };
 
   const errorFocus = (err: RJSFValidationError) => {

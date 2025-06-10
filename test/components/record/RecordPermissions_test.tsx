@@ -1,6 +1,6 @@
 import { RecordPermissions } from "@src/components/record/RecordPermissions";
 import * as recordHooks from "@src/hooks/record";
-import { renderWithProvider, sessionFactory } from "@test/testUtils";
+import { renderWithRouter } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import React from "react";
 
@@ -13,12 +13,7 @@ describe("RecordPermissions component", () => {
     "/buckets/test-bucket/collections/test-collection/records/test-record/permissions";
   const path = "/buckets/:bid/collections/:cid/records/:rid/permissions";
   it("renders", () => {
-    const initialState = {
-      session: sessionFactory(),
-      record: { busy: false },
-    };
-    renderWithProvider(<RecordPermissions />, {
-      initialState,
+    renderWithRouter(<RecordPermissions />, {
       route: route,
       path: path,
     });
@@ -28,11 +23,7 @@ describe("RecordPermissions component", () => {
   });
 
   it("renders a loading spinner when record is busy", async () => {
-    const initialState = {
-      session: sessionFactory(),
-    };
-    renderWithProvider(<RecordPermissions />, {
-      initialState,
+    renderWithRouter(<RecordPermissions />, {
       route: route,
       path: path,
     });

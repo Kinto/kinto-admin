@@ -1,12 +1,22 @@
 import BaseForm from "./BaseForm";
 import ServerHistory from "./ServerHistory";
 import { RJSFSchema } from "@rjsf/utils";
-import * as SessionActions from "@src/actions/session";
-import { ANONYMOUS_AUTH, SINGLE_SERVER } from "@src/constants";
-import { clearServersHistory } from "@src/hooks/servers";
-import type { ServerEntry, SessionState } from "@src/types";
+import { resetClient, setupClient } from "@src/client";
+import {
+  ANONYMOUS_AUTH,
+  DEFAULT_SERVERINFO,
+  SINGLE_SERVER,
+} from "@src/constants";
+import {
+  clearNotifications,
+  notifyError,
+  notifySuccess,
+} from "@src/hooks/notifications";
+import { clearServersHistory, useServers } from "@src/hooks/servers";
+import { setAuth } from "@src/hooks/session";
+import type { ServerInfo } from "@src/types";
 import { getAuthLabel, getServerByPriority, omit } from "@src/utils";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const KNOWN_AUTH_METHODS = [
   "basicauth",
@@ -256,10 +266,9 @@ function extendUiSchemaWithHistory(
   };
 }
 
-function getSupportedAuthMethods(session: SessionState): string[] {
-  const {
-    serverInfo: { capabilities },
-  } = session;
+function getSupportedAuthMethods(serverInfo: ServerInfo): string[] {
+  if (!serverInfo) return [];
+  const { capabilities } = serverInfo;
   const { openid: { providers } = { providers: [] } } = capabilities;
   // Check which of our known auth implementations are supported by the server.
   const supportedAuthMethods = KNOWN_AUTH_METHODS.filter(
@@ -270,25 +279,88 @@ function getSupportedAuthMethods(session: SessionState): string[] {
   return [ANONYMOUS_AUTH].concat(supportedAuthMethods).concat(openIdMethods);
 }
 
-type AuthFormProps = {
-  session: SessionState;
-  servers: ServerEntry[];
-  setupSession: typeof SessionActions.setupSession;
-  serverChange: typeof SessionActions.serverChange;
-  getServerInfo: typeof SessionActions.getServerInfo;
-  navigateToExternalAuth: typeof SessionActions.navigateToExternalAuth;
-  navigateToOpenID: typeof SessionActions.navigateToOpenID;
-};
+function navigateToFxA(server: string, redirect: string) {
+  window.location.href = `${server}/fxa-oauth/login?redirect=${encodeURIComponent(
+    redirect
+  )}`;
+}
 
-export default function AuthForm({
-  session,
-  servers = [],
-  setupSession,
-  serverChange,
-  getServerInfo,
-  navigateToExternalAuth,
-  navigateToOpenID,
-}: AuthFormProps) {
+function postToPortier(server: string, redirect: string) {
+  // Alter the AuthForm to make it posting Portier auth information to the
+  // dedicated Kinto server endpoint. This is definitely one of the ugliest
+  // part of this project, but it works :)
+  try {
+    const portierUrl = `${server}/portier/login`.replace(
+      "//portier",
+      "/portier"
+    );
+    const form = document.querySelector("form.rjsf");
+    if (!(form instanceof HTMLFormElement)) {
+      notifyError("Missing authentication form.");
+      return noop_action;
+    }
+    form.setAttribute("method", "post");
+    form.setAttribute("action", portierUrl);
+    const emailInput = form.querySelector("#root_email");
+    if (!emailInput) {
+      notifyError("Couldn't find email input widget in form.");
+      return noop_action;
+    }
+    emailInput.setAttribute("name", "email");
+    const hiddenRedirect = document.createElement("input");
+    hiddenRedirect.setAttribute("type", "hidden");
+    hiddenRedirect.setAttribute("name", "redirect");
+    hiddenRedirect.setAttribute("value", redirect);
+    form.appendChild(hiddenRedirect);
+    form.submit();
+    notifySuccess("Redirecting to auth provider...");
+    return noop_action;
+  } catch (error) {
+    notifyError("Couldn't redirect to authentication endpoint.", error);
+    return noop_action;
+  }
+}
+
+/**
+ * Massive side effect: this will navigate away from the current page to perform
+ * authentication to a third-party service, like FxA.
+ */
+function navigateToExternalAuth(authFormData: any) {
+  const { origin, pathname } = document.location;
+  const { server, authType } = authFormData;
+
+  try {
+    const payload = btoa(JSON.stringify(authFormData));
+    const redirect = `${origin}${pathname}#/auth/${payload}/`;
+    if (authType === "fxa") {
+      navigateToFxA(server, redirect);
+    } else if (authType === "portier") {
+      postToPortier(server, redirect);
+    } else {
+      notifyError(`Unsupported auth navigation type "${authType}".`);
+    }
+    notifySuccess("Redirecting to auth provider...");
+  } catch (error) {
+    notifyError("Couldn't redirect to authentication endpoint.", error);
+  }
+}
+
+function navigateToOpenID(authFormData: any, provider: any) {
+  const { origin, pathname } = document.location;
+  const { server } = authFormData;
+  const strippedServer = server.replace(/\/$/, "");
+  const { auth_path: authPath } = provider;
+  const strippedAuthPath = authPath.replace(/^\//, "");
+  const payload = btoa(JSON.stringify(authFormData));
+  const redirect = encodeURIComponent(`${origin}${pathname}#/auth/${payload}/`);
+  window.location.href = `${strippedServer}/${strippedAuthPath}?callback=${redirect}&scope=openid email`;
+  notifySuccess("Redirecting to auth provider...");
+}
+
+export default function AuthForm() {
+  const [showSpinner, setShowSpinner] = useState(false);
+  const servers = useServers();
+  const [serverInfo, setServerInfo] = useState(DEFAULT_SERVERINFO);
   const authType = (servers.length && servers[0].authType) || ANONYMOUS_AUTH;
   const { schema: currentSchema, uiSchema: curentUiSchema } =
     authSchemas(authType);
@@ -300,15 +372,35 @@ export default function AuthForm({
     server: getServerByPriority(servers),
   });
 
-  const serverChangeCallback = () => {
-    serverChange();
+  const serverChangeCallback = async () => {
+    setShowSpinner(true);
+    setServerInfo(DEFAULT_SERVERINFO);
   };
 
   const serverInfoCallback = async auth => {
-    await getServerInfo(auth);
+    try {
+      setShowSpinner(true);
+      const newInfo = await setupClient(auth).fetchServerInfo();
+      setServerInfo(newInfo);
+      clearNotifications();
+    } catch (ex) {
+      notifyError("Unable to retrieve server information", ex);
+    }
+    resetClient();
+    setShowSpinner(false);
   };
 
-  const authMethods = getSupportedAuthMethods(session);
+  useEffect(() => {
+    // load last used server by default
+    if (servers && servers.length) {
+      serverInfoCallback({
+        authType: ANONYMOUS_AUTH,
+        server: servers[0].server,
+      });
+    }
+  }, []);
+
+  const authMethods = getSupportedAuthMethods(serverInfo);
   const singleAuthMethod = authMethods.length === 1;
   const finalSchema = extendSchemaWithHistory(schema, servers, authMethods);
   const finalUiSchema = extendUiSchemaWithHistory(
@@ -338,7 +430,7 @@ export default function AuthForm({
     setFormData(specificFormData);
   };
 
-  const onSubmit = ({ formData }: RJSFSchema) => {
+  const onSubmit = async ({ formData }: RJSFSchema) => {
     let { authType } = formData;
     let openidProvider = null;
     if (authType.startsWith("openid-")) {
@@ -346,8 +438,7 @@ export default function AuthForm({
       authType = "openid";
     }
 
-    const { redirectURL } = session;
-    const extendedFormData = { ...formData, redirectURL };
+    const extendedFormData = { ...formData, redirectURL: location.pathname };
     switch (authType) {
       case "fxa":
       case "portier": {
@@ -355,18 +446,35 @@ export default function AuthForm({
       }
       case "openid": {
         const {
-          serverInfo: {
-            capabilities: { openid: { providers } = { providers: [] } },
-          },
-        } = session;
+          capabilities: { openid: { providers } = { providers: [] } },
+        } = serverInfo;
         const providerData = providers.find(p => p.name === openidProvider);
         if (!providerData) {
           throw new Error("Couldn't find provider data in the state. Bad.");
         }
         return navigateToOpenID(extendedFormData, providerData);
       }
+      case "anonymous": {
+        setAuth(extendedFormData);
+        break;
+      }
       default: {
-        return setupSession(extendedFormData);
+        try {
+          setShowSpinner(true);
+          const serverInfoWithAuth =
+            await setupClient(extendedFormData).fetchServerInfo();
+          if (!serverInfoWithAuth.user) {
+            notifyError("Authentication failed.", {
+              message: `Could not auethenticate with ${getAuthLabel(authType)}`,
+            });
+            setShowSpinner(false);
+            return;
+          }
+          setAuth(extendedFormData);
+        } catch (ex) {
+          notifyError("Couldn't complete login.", ex);
+          setShowSpinner(false);
+        }
       }
     }
   };
@@ -380,7 +488,7 @@ export default function AuthForm({
           formData={formData}
           onChange={onChange}
           onSubmit={onSubmit}
-          showSpinner={session.busy}
+          showSpinner={showSpinner}
         >
           <button type="submit" className="btn btn-info">
             {"Sign in using "}

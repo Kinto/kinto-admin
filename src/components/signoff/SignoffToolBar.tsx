@@ -7,31 +7,26 @@ import { DiffInfo, Review } from "./Review";
 import { Signed } from "./Signed";
 import { isMember, toReviewEnabled } from "./utils";
 import { getClient } from "@src/client";
-import { useAppSelector } from "@src/hooks/app";
 import { useCollection } from "@src/hooks/collection";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
+import { usePermissions, useServerInfo } from "@src/hooks/session";
 import { useSignoff } from "@src/hooks/signoff";
 import { canEditCollection } from "@src/permission";
-import type { ChangesList, SignoffSourceInfo } from "@src/types";
+import type { ChangesList, ServerInfo, SignoffSourceInfo } from "@src/types";
 import React, { useEffect, useState } from "react";
 import { ChatLeft, XCircleFill } from "react-bootstrap-icons";
 import { useParams } from "react-router";
 
-function isEditor(source, sessionState) {
-  return isMember("editors_group", source, sessionState);
+function isEditor(source, serverInfo) {
+  return isMember("editors_group", source, serverInfo);
 }
 
-export function isReviewer(
-  source: SignoffSourceInfo,
-  sessionState: SessionState
-) {
-  return isMember("reviewers_group", source, sessionState);
+export function isReviewer(source: SignoffSourceInfo, serverInfo: ServerInfo) {
+  return isMember("reviewers_group", source, serverInfo);
 }
 
-function hasRequestedReview(source, sessionState) {
-  const {
-    serverInfo: { user = {} },
-  } = sessionState;
+function hasRequestedReview(source, serverInfo) {
+  const { user = {} } = serverInfo;
   const { lastReviewRequestBy } = source;
   return user.id === lastReviewRequestBy;
 }
@@ -43,13 +38,14 @@ type SignoffToolBarProps = {
 export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
   const { bid, cid } = useParams();
   const [cacheVal, setCacheVal] = useState(0);
-  const session = useAppSelector(state => state.session);
+  const serverInfo = useServerInfo();
+  const permissions = usePermissions();
   const [showSpinner, setShowSpinner] = useState(false);
   const collection = useCollection(bid, cid, cacheVal);
   const signoff = useSignoff(
     bid,
     cid,
-    session.serverInfo.capabilities.signer,
+    serverInfo?.capabilities?.signer,
     cacheVal
   );
   const [pendingConfirm, setPendingConfirm] = useState("");
@@ -119,23 +115,24 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
     }
   }, [collection]);
 
-  const canEdit = canEditCollection(session, bid, cid);
+  const canEdit = canEditCollection(permissions, bid, cid);
 
-  if (!signoff?.source || !session.serverInfo.capabilities.signer) {
+  if (!signoff?.source || !serverInfo?.capabilities?.signer) {
     return null;
   }
 
   const { source, destination, preview, changesOnSource, changesOnPreview } =
     signoff;
 
-  const canRequestReview = canEdit && isEditor(source, session);
+  const canRequestReview = canEdit && isEditor(source, serverInfo);
 
   const canReview =
     canEdit &&
-    ((isReviewer(source, session) && !hasRequestedReview(source, session)) ||
-      !toReviewEnabled(session, source, destination));
+    ((isReviewer(source, serverInfo) &&
+      !hasRequestedReview(source, serverInfo)) ||
+      !toReviewEnabled(serverInfo, source, destination));
   const canRollback = canEdit;
-  const hasHistory = "history" in session.serverInfo.capabilities;
+  const hasHistory = serverInfo && "history" in serverInfo.capabilities;
 
   const isCurrentUrl = source.bucket == bid && source.collection == cid;
   const currentStep = Math.max(

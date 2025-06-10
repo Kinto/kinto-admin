@@ -1,5 +1,5 @@
 import AdminLink from "@src/components/AdminLink";
-import { useAppSelector } from "@src/hooks/app";
+import { useServerInfo } from "@src/hooks/session";
 import { storageKeys, useLocalStorage } from "@src/hooks/storage";
 import React from "react";
 import {
@@ -31,7 +31,7 @@ export default function CollectionTabs({
   totalRecords,
 }: Props) {
   const [useSimpleReview] = useLocalStorage(storageKeys.useSimpleReview, true);
-  const session = useAppSelector(state => state.session);
+  const serverInfo = useServerInfo();
 
   return (
     <div className="card">
@@ -53,7 +53,7 @@ export default function CollectionTabs({
               Records {totalRecords ? `(${totalRecords})` : null}
             </AdminLink>
           </li>
-          {session.serverInfo.capabilities.signer && useSimpleReview && (
+          {serverInfo?.capabilities.signer && useSimpleReview && (
             <li
               className="nav-item"
               role="presentation"
@@ -103,7 +103,7 @@ export default function CollectionTabs({
               Permissions
             </AdminLink>
           </li>
-          {"history" in session.serverInfo.capabilities && (
+          {serverInfo && "history" in serverInfo.capabilities && (
             <li
               className="nav-item"
               role="presentation"

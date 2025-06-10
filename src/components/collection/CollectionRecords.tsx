@@ -4,16 +4,16 @@ import { ListActions } from "./RecordTable";
 import AdminLink from "@src/components/AdminLink";
 import Spinner from "@src/components/Spinner";
 import { DEFAULT_SORT } from "@src/constants";
-import { useAppSelector } from "@src/hooks/app";
 import { useCollection } from "@src/hooks/collection";
 import { useRecordList } from "@src/hooks/record";
+import { useServerInfo } from "@src/hooks/session";
 import { storageKeys, useLocalStorage } from "@src/hooks/storage";
 import React, { useEffect, useState } from "react";
 import { Shuffle } from "react-bootstrap-icons";
 import { useParams } from "react-router";
 
 export default function CollectionRecords() {
-  const session = useAppSelector(state => state.session);
+  const serverInfo = useServerInfo();
   const { bid, cid } = useParams();
   const [sort, setSort] = useState(null);
   const [cacheVal, setCacheVal] = useState(0);
@@ -26,7 +26,7 @@ export default function CollectionRecords() {
   );
 
   useEffect(() => {
-    if (!session.authenticated || !collection?.last_modified) {
+    if (!serverInfo || !collection?.last_modified) {
       return;
     }
     setSort(collection.sort || DEFAULT_SORT);
@@ -34,7 +34,7 @@ export default function CollectionRecords() {
 
   const listActions = (
     <ListActions
-      session={session}
+      serverInfo={serverInfo}
       collection={collection}
       callback={() => {
         setCacheVal(cacheVal + 1);
@@ -54,10 +54,9 @@ export default function CollectionRecords() {
         bid={bid}
         cid={cid}
         selected="records"
-        capabilities={session.serverInfo.capabilities}
         totalRecords={records?.totalRecords}
       >
-        {session.serverInfo.capabilities.signer && !useSimpleReview && (
+        {serverInfo?.capabilities.signer && !useSimpleReview && (
           <AdminLink
             className="btn btn-secondary"
             params={{ bid, cid }}
@@ -92,7 +91,7 @@ export default function CollectionRecords() {
                 : ["id", "__json"]
             }
             updateSort={setSort}
-            capabilities={session.serverInfo.capabilities}
+            capabilities={serverInfo?.capabilities}
             callback={() => {
               setCacheVal(cacheVal + 1);
             }}

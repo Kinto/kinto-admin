@@ -5,8 +5,8 @@ import AdminLink from "@src/components/AdminLink";
 import BaseForm from "@src/components/BaseForm";
 import JSONEditor from "@src/components/JSONEditor";
 import Spinner from "@src/components/Spinner";
-import { useAppSelector } from "@src/hooks/app";
 import { useGroup } from "@src/hooks/group";
+import { usePermissions } from "@src/hooks/session";
 import { canCreateGroup, canEditGroup } from "@src/permission";
 import { omit } from "@src/utils";
 import React, { useState } from "react";
@@ -50,7 +50,7 @@ export default function GroupForm() {
   const [cacheVal, setCacheVal] = useState(0);
   const group = useGroup(bid, gid, cacheVal);
   const navigate = useNavigate();
-  const session = useAppSelector(state => state.session);
+  const permissions = usePermissions();
 
   const onSubmit = async ({ formData }) => {
     const { data } = formData;
@@ -83,8 +83,8 @@ export default function GroupForm() {
 
   const creation = !gid;
   const hasWriteAccess = creation
-    ? canCreateGroup(session, bid)
-    : canEditGroup(session, bid, gid);
+    ? canCreateGroup(permissions, bid)
+    : canEditGroup(permissions, bid, gid);
   const formIsEditable = creation || hasWriteAccess;
   const showDeleteForm = !creation && hasWriteAccess;
 

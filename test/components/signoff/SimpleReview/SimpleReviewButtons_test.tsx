@@ -1,5 +1,5 @@
 import SimpleReviewButtons from "@src/components/signoff/SimpleReview/SimpleReviewButtons";
-import { renderWithProvider } from "@test/testUtils";
+import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
 
@@ -16,7 +16,7 @@ function renderButtons(props = null) {
     ...props,
   };
 
-  renderWithProvider(<SimpleReviewButtons {...mergedProps} />);
+  renderWithRouter(<SimpleReviewButtons {...mergedProps} />);
   return { approveChanges, declineChanges, rollbackChanges };
 }
 

@@ -28,11 +28,9 @@ describe("toReviewEnabled", () => {
     expect(
       toReviewEnabled(
         {
-          serverInfo: {
-            capabilities: {
-              signer: {
-                to_review_enabled: true,
-              },
+          capabilities: {
+            signer: {
+              to_review_enabled: true,
             },
           },
         },
@@ -46,17 +44,15 @@ describe("toReviewEnabled", () => {
     expect(
       toReviewEnabled(
         {
-          serverInfo: {
-            capabilities: {
-              signer: {
-                to_review_enabled: true,
-                resources: [
-                  {
-                    ...signerResource,
-                    to_review_enabled: true,
-                  },
-                ],
-              },
+          capabilities: {
+            signer: {
+              to_review_enabled: true,
+              resources: [
+                {
+                  ...signerResource,
+                  to_review_enabled: true,
+                },
+              ],
             },
           },
         },
@@ -70,17 +66,15 @@ describe("toReviewEnabled", () => {
     expect(
       toReviewEnabled(
         {
-          serverInfo: {
-            capabilities: {
-              signer: {
-                to_review_enabled: false,
-                resources: [
-                  {
-                    ...signerResource,
-                    to_review_enabled: true,
-                  },
-                ],
-              },
+          capabilities: {
+            signer: {
+              to_review_enabled: false,
+              resources: [
+                {
+                  ...signerResource,
+                  to_review_enabled: true,
+                },
+              ],
             },
           },
         },
@@ -92,12 +86,10 @@ describe("toReviewEnabled", () => {
     expect(
       toReviewEnabled(
         {
-          serverInfo: {
-            capabilities: {
-              signer: {
-                to_review_enabled: false,
-                resources: [signerResource],
-              },
+          capabilities: {
+            signer: {
+              to_review_enabled: false,
+              resources: [signerResource],
             },
           },
         },
@@ -111,17 +103,15 @@ describe("toReviewEnabled", () => {
     expect(
       toReviewEnabled(
         {
-          serverInfo: {
-            capabilities: {
-              signer: {
-                to_review_enabled: true,
-                resources: [
-                  {
-                    ...signerResource,
-                    to_review_enabled: false,
-                  },
-                ],
-              },
+          capabilities: {
+            signer: {
+              to_review_enabled: true,
+              resources: [
+                {
+                  ...signerResource,
+                  to_review_enabled: false,
+                },
+              ],
             },
           },
         },
@@ -133,25 +123,23 @@ describe("toReviewEnabled", () => {
 });
 
 describe("isMember", () => {
-  const testSession = {
-    serverInfo: {
-      user: {
-        principals: ["/buckets/sourceBucket/groups/sourceCol-editors"],
-      },
-      capabilities: {
-        signer: {
-          editors_group: "{collection_id}-editors",
-          reviewers_group: "{collection_id}-reviewers",
-        },
+  const testServerInfo = {
+    user: {
+      principals: ["/buckets/sourceBucket/groups/sourceCol-editors"],
+    },
+    capabilities: {
+      signer: {
+        editors_group: "{collection_id}-editors",
+        reviewers_group: "{collection_id}-reviewers",
       },
     },
   };
 
   it("Returns true if user is a member of the group", () => {
-    expect(isMember("editors_group", source, testSession)).toBe(true);
+    expect(isMember("editors_group", source, testServerInfo)).toBe(true);
   });
 
   it("Returns false if user is not a member of the group", () => {
-    expect(isMember("reviewers_group", source, testSession)).toBe(false);
+    expect(isMember("reviewers_group", source, testServerInfo)).toBe(false);
   });
 });

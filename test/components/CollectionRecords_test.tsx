@@ -1,12 +1,14 @@
 import CollectionRecords from "@src/components/collection/CollectionRecords";
+import { DEFAULT_SERVERINFO } from "@src/constants";
 import * as collectionHooks from "@src/hooks/collection";
 import * as recordHooks from "@src/hooks/record";
+import * as sessionHooks from "@src/hooks/session";
 import {
   canCreateRecord,
   canEditCollection,
   canEditRecord,
 } from "@src/permission";
-import { renderWithProvider } from "@test/testUtils";
+import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
 
@@ -41,6 +43,7 @@ describe("CollectionRecords component", () => {
     canEditRecord.mockReturnValue(true);
     canEditCollection.mockReturnValue(true);
     vi.spyOn(recordHooks, "useRecordList").mockImplementation(useRecordList);
+    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(DEFAULT_SERVERINFO);
   });
 
   describe("Schema defined", () => {
@@ -64,7 +67,7 @@ describe("CollectionRecords component", () => {
         lastModified: 0,
         totalRecords: 2,
       });
-      renderWithProvider(<CollectionRecords />, routeProps);
+      renderWithRouter(<CollectionRecords />, routeProps);
     });
 
     it("should render a table", () => {
@@ -120,7 +123,7 @@ describe("CollectionRecords component", () => {
         lastModified: 0,
         totalRecords: 2,
       });
-      renderWithProvider(<CollectionRecords />, routeProps);
+      renderWithRouter(<CollectionRecords />, routeProps);
     });
 
     it("should render a table", () => {
@@ -151,7 +154,7 @@ describe("CollectionRecords component", () => {
         lastModified: 0,
         totalRecords: 18,
       });
-      renderWithProvider(<CollectionRecords />, routeProps);
+      renderWithRouter(<CollectionRecords />, routeProps);
     });
 
     it("should show the total number of records", () => {
@@ -180,7 +183,7 @@ describe("CollectionRecords component", () => {
           lastModified: 0,
           totalRecords: 0,
         });
-        renderWithProvider(<CollectionRecords />, routeProps);
+        renderWithRouter(<CollectionRecords />, routeProps);
       });
 
       it("should render list actions", () => {
@@ -208,7 +211,7 @@ describe("CollectionRecords component", () => {
           lastModified: 0,
           totalRecords: 0,
         });
-        renderWithProvider(<CollectionRecords />, routeProps);
+        renderWithRouter(<CollectionRecords />, routeProps);
       });
 
       it("should not render list actions", () => {

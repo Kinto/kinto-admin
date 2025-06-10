@@ -1,9 +1,11 @@
 import * as client from "@src/client";
 import RecordCreate from "@src/components/record/RecordCreate";
+import { DEFAULT_SERVERINFO } from "@src/constants";
 import * as collectionHooks from "@src/hooks/collection";
 import * as recordHooks from "@src/hooks/record";
+import * as sessionHooks from "@src/hooks/session";
 import { canCreateRecord } from "@src/permission";
-import { renderWithProvider } from "@test/testUtils";
+import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
 
@@ -41,7 +43,8 @@ describe("RecordCreate component", () => {
         };
       },
     });
-    renderWithProvider(<RecordCreate />, {
+    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(DEFAULT_SERVERINFO);
+    renderWithRouter(<RecordCreate />, {
       route: "/bucket/collection",
       path: "/:bid/:cid",
     });

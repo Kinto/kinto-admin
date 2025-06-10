@@ -1,12 +1,12 @@
 import BucketForm from "./BucketForm";
 import Spinner from "@src/components/Spinner";
-import { useAppSelector } from "@src/hooks/app";
+import { useServerInfo } from "@src/hooks/session";
 import React from "react";
 
 export default function BucketCreate() {
-  const session = useAppSelector(state => state.session);
+  const serverInfo = useServerInfo();
 
-  if (session.busy || session.authenticating) {
+  if (!serverInfo) {
     return <Spinner />;
   }
 

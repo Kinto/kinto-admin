@@ -1,43 +1,54 @@
-import * as sessionActions from "@src/actions/session";
 import { Layout } from "@src/components/Layout";
-import * as sessionSagas from "@src/sagas/session";
-import { renderWithProvider } from "@test/testUtils";
-import { act, fireEvent, screen } from "@testing-library/react";
+import { ANONYMOUS_AUTH, DEFAULT_SERVERINFO } from "@src/constants";
+import * as bucketHooks from "@src/hooks/bucket";
+import * as heartbeatHooks from "@src/hooks/heartbeat";
+import * as sessionHooks from "@src/hooks/session";
+import { renderWithRouter } from "@test/testUtils";
+import { fireEvent, screen } from "@testing-library/react";
 import React from "react";
 
 describe("App component", () => {
   const routeProps = { createRoutes: false, route: "/", path: "/" };
   const testServer = "http://test.server/v1/";
+  const useServerInfoMock = vi.fn();
+  const useAuthMock = vi.fn();
+  const useHeartbeatMock = vi.fn();
+  const useBucketListMock = vi.fn();
 
   beforeEach(() => {
-    vitest.spyOn(sessionSagas, "getServerInfo").mockImplementation(vi.fn());
-    vitest.spyOn(sessionSagas, "setupSession").mockImplementation(vi.fn());
+    vitest
+      .spyOn(sessionHooks, "useServerInfo")
+      .mockImplementation(useServerInfoMock);
+    useServerInfoMock.mockReturnValue({
+      ...DEFAULT_SERVERINFO,
+      url: testServer,
+    });
+    vitest.spyOn(sessionHooks, "useAuth").mockImplementation(useAuthMock);
+    vitest
+      .spyOn(heartbeatHooks, "useHeartbeat")
+      .mockImplementation(useHeartbeatMock);
+    useHeartbeatMock.mockReturnValue({ success: true });
+    vitest
+      .spyOn(bucketHooks, "useBucketList")
+      .mockImplementation(useBucketListMock);
+    useBucketListMock.mockReturnValue(undefined);
   });
 
   describe("Session top bar", () => {
     it("should not render a session top bar when not authenticated", () => {
-      renderWithProvider(<Layout />, routeProps);
+      useAuthMock.mockReturnValueOnce(undefined);
+      useServerInfoMock.mockReturnValueOnce(undefined);
+      renderWithRouter(<Layout />, routeProps);
       expect(screen.queryByTestId("sessionInfo-bar")).toBeNull();
     });
 
     it("should render a session top bar when anonymous", async () => {
-      const { container } = renderWithProvider(<Layout />, {
-        ...routeProps,
-        initialState: {
-          session: {
-            auth: {
-              authType: "Anonymous",
-              server: testServer,
-            },
-            authenticated: true,
-            authenticating: false,
-            serverInfo: {
-              url: testServer,
-              capabilities: {},
-            },
-          },
-        },
+      useAuthMock.mockReturnValueOnce({
+        authType: ANONYMOUS_AUTH,
+        server: testServer,
       });
+
+      const { container } = renderWithRouter(<Layout />, routeProps);
       const content = container.textContent;
 
       expect(content).toContain("Anonymous");
@@ -45,27 +56,12 @@ describe("App component", () => {
     });
 
     it("should display a link to the server docs", async () => {
-      renderWithProvider(<Layout />, {
-        ...routeProps,
-        initialState: {
-          session: {
-            auth: {
-              authType: "accounts",
-              server: testServer,
-            },
-            authenticated: true,
-            authenticating: false,
-            serverInfo: {
-              url: testServer,
-              project_docs: "https://remote-settings.readthedocs.io/",
-              capabilities: {},
-              user: {
-                id: "fxa:abc",
-              },
-            },
-          },
-        },
+      useAuthMock.mockReturnValueOnce({
+        authType: ANONYMOUS_AUTH,
+        server: testServer,
       });
+
+      renderWithRouter(<Layout />, routeProps);
       expect(screen.getByText(/Documentation/)).toHaveAttribute(
         "href",
         "https://remote-settings.readthedocs.io/"
@@ -73,8 +69,7 @@ describe("App component", () => {
     });
 
     it("should render a session top bar when authenticated", async () => {
-      const { store } = renderWithProvider(<Layout />, routeProps);
-      const spy = vi.spyOn(sessionActions, "logout");
+      const spy = vi.spyOn(sessionHooks, "logout");
       const serverInfo = {
         url: "http://test.server/v1/",
         capabilities: {},
@@ -86,12 +81,13 @@ describe("App component", () => {
         username: "user",
         password: "pass",
       };
-      act(() => {
-        store.dispatch(sessionActions.serverInfoSuccess(serverInfo));
-        store.dispatch(sessionActions.setupComplete());
-        store.dispatch(sessionActions.setAuthenticated(credentials));
+      useServerInfoMock.mockReturnValue(serverInfo);
+      useAuthMock.mockReturnValue({
+        server: serverInfo.url,
+        authType: "fxa",
+        credentials,
       });
-
+      renderWithRouter(<Layout />, routeProps);
       const infoBar = screen.getByTestId("sessionInfo-bar");
       expect(infoBar).toBeDefined();
 
@@ -101,7 +97,7 @@ describe("App component", () => {
       expect(content).not.toContain(credentials.password);
 
       fireEvent.click(screen.getByText(/Logout/));
-      expect(sessionActions.logout).toHaveBeenCalled();
+      expect(spy).toHaveBeenCalled();
 
       spy.mockClear();
     });
