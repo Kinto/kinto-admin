@@ -452,6 +452,7 @@ export default function AuthForm() {
       }
       case "anonymous": {
         setAuth(extendedFormData);
+        break;
       }
       default: {
         try {
