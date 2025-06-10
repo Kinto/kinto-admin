@@ -25,7 +25,6 @@ describe("AuthForm component", () => {
   describe("Authentication types", () => {
     const mockClearServersHistory = vi.fn();
     const mockUseServers = vi.fn();
-    const mockSetAuth = vi.fn();
     const mockFetchServerInfo = vi.fn();
     let mockLocation = {
       href: "",
@@ -37,7 +36,7 @@ describe("AuthForm component", () => {
       vi.spyOn(serverHooks, "clearServersHistory").mockImplementation(
         mockClearServersHistory
       );
-      vi.spyOn(sessionHooks, "setAuth").mockImplementation(mockSetAuth);
+      vi.spyOn(sessionHooks, "setAuth");
       vi.stubGlobal("location", mockLocation);
 
       vi.spyOn(client, "setupClient").mockReturnValue({
@@ -59,6 +58,7 @@ describe("AuthForm component", () => {
             ],
           },
         },
+        user: {},
       });
       mockUseServers.mockReturnValue([
         { server: "http://server.test/v1", authType: "accounts" },
@@ -86,14 +86,16 @@ describe("AuthForm component", () => {
         });
 
         fireEvent.click(screen.getByText(/Sign in using/));
-        expect(mockSetAuth).toHaveBeenCalledWith({
-          server: "http://test.server/v1",
-          authType: "basicauth",
-          credentials: {
-            username: "user",
-            password: "pass",
-          },
-          redirectURL: undefined,
+        await vi.waitFor(() => {
+          expect(sessionHooks.setAuth).toHaveBeenCalledWith({
+            server: "http://test.server/v1",
+            authType: "basicauth",
+            credentials: {
+              username: "user",
+              password: "pass",
+            },
+            redirectURL: undefined,
+          });
         });
       });
     });
@@ -112,14 +114,16 @@ describe("AuthForm component", () => {
           target: { value: "pass" },
         });
         fireEvent.click(screen.getByText(/Sign in using/));
-        expect(mockSetAuth).toHaveBeenCalledWith({
-          server: "http://test.server/v1",
-          authType: "ldap",
-          credentials: {
-            username: "you@email.com",
-            password: "pass",
-          },
-          redirectURL: undefined,
+        await vi.waitFor(() => {
+          expect(sessionHooks.setAuth).toHaveBeenCalledWith({
+            server: "http://test.server/v1",
+            authType: "ldap",
+            credentials: {
+              username: "you@email.com",
+              password: "pass",
+            },
+            redirectURL: undefined,
+          });
         });
       });
     });
@@ -132,7 +136,6 @@ describe("AuthForm component", () => {
         await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
         fireEvent.click(screen.getByLabelText("Firefox Account"));
         fireEvent.click(screen.getByText(/Sign in using/));
-
         expect(window.location.href).toBe(
           "http://test.server/v1/fxa-oauth/login?redirect=http%3A%2F%2Flocalhost%3A3000%2F%23%2Fauth%2FeyJzZXJ2ZXIiOiJodHRwOi8vdGVzdC5zZXJ2ZXIvdjEiLCJhdXRoVHlwZSI6ImZ4YSJ9%2F"
         );

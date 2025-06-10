@@ -425,7 +425,7 @@ export default function AuthForm() {
     setFormData(specificFormData);
   };
 
-  const onSubmit = ({ formData }: RJSFSchema) => {
+  const onSubmit = async ({ formData }: RJSFSchema) => {
     let { authType } = formData;
     let openidProvider = null;
     if (authType.startsWith("openid-")) {
@@ -449,8 +449,26 @@ export default function AuthForm() {
         }
         return navigateToOpenID(extendedFormData, providerData);
       }
-      default: {
+      case "anonymous": {
         setAuth(extendedFormData);
+      }
+      default: {
+        try {
+          setShowSpinner(true);
+          const serverInfoWithAuth =
+            await setupClient(extendedFormData).fetchServerInfo();
+          if (!serverInfoWithAuth.user) {
+            notifyError("Authentication failed.", {
+              message: `Could not auethenticate with ${getAuthLabel(authType)}`,
+            });
+            setShowSpinner(false);
+            return;
+          }
+          setAuth(extendedFormData);
+        } catch (ex) {
+          notifyError("Couldn't complete login.", ex);
+          setShowSpinner(false);
+        }
       }
     }
   };
