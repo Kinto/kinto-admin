@@ -7,7 +7,7 @@ import {
   DEFAULT_SERVERINFO,
   SINGLE_SERVER,
 } from "@src/constants";
-import { notifyError, notifySuccess } from "@src/hooks/notifications";
+import { clearNotifications, notifyError, notifySuccess } from "@src/hooks/notifications";
 import { clearServersHistory, useServers } from "@src/hooks/servers";
 import { setAuth } from "@src/hooks/session";
 import type { ServerInfo } from "@src/types";
@@ -378,6 +378,7 @@ export default function AuthForm() {
       setShowSpinner(true);
       const newInfo = await setupClient(auth).fetchServerInfo();
       setServerInfo(newInfo);
+      clearNotifications();
     } catch (ex) {
       notifyError("Unable to retrieve server information", ex);
     }
