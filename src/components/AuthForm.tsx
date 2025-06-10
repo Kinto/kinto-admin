@@ -7,7 +7,11 @@ import {
   DEFAULT_SERVERINFO,
   SINGLE_SERVER,
 } from "@src/constants";
-import { clearNotifications, notifyError, notifySuccess } from "@src/hooks/notifications";
+import {
+  clearNotifications,
+  notifyError,
+  notifySuccess,
+} from "@src/hooks/notifications";
 import { clearServersHistory, useServers } from "@src/hooks/servers";
 import { setAuth } from "@src/hooks/session";
 import type { ServerInfo } from "@src/types";
