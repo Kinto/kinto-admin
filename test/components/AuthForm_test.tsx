@@ -201,15 +201,14 @@ describe("AuthForm component", () => {
       vi.spyOn(client, "setupClient").mockReturnValue({
         fetchServerInfo: mockFetchServerInfo,
       });
-      mockFetchServerInfo.mockReturnValueOnce({
-        ...DEFAULT_SERVERINFO,
-      });
 
       const form = render(<AuthForm />);
       const serverField = form.getByLabelText("Server*");
 
-      expect(serverField.value).toBe("http://server.test/v1");
-      expect(form.getByText("BasicAuth credentials")).toBeDefined();
+      await waitFor(() => {
+        expect(serverField.value).toBe("http://server.test/v1");
+        expect(form.getByText("BasicAuth credentials")).toBeDefined();
+      });
 
       fireEvent.change(serverField, {
         target: { value: "http://test.server/v1" },

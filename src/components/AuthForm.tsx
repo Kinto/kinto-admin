@@ -384,8 +384,20 @@ export default function AuthForm() {
   const serverInfoCallback = async auth => {
     try {
       setShowSpinner(true);
+
       const newInfo = await setupClient(auth).fetchServerInfo();
       setServerInfo(newInfo);
+      setFormData({
+        server: auth.server,
+        authType:
+          servers.find(x => x.server === auth.server)?.authType ||
+          ANONYMOUS_AUTH,
+      });
+
+      const { schema, uiSchema } = authSchemas(authType);
+      setSchema(schema);
+      setUiSchema(uiSchema);
+
       document.title = newInfo.project_name + " Administration";
       clearNotifications();
     } catch (ex) {
@@ -416,11 +428,8 @@ export default function AuthForm() {
     singleAuthMethod
   );
 
-  const onChange = ({ formData: updatedData }: RJSFSchema) => {
-    if (formData.server !== updatedData.server) {
-      const newServer = servers.find(x => x.server === updatedData.server);
-      updatedData.authType = newServer?.authType || ANONYMOUS_AUTH;
-    }
+  const onChange = props => {
+    const updatedData = props.formData;
     const { authType } = updatedData;
     const { schema, uiSchema } = authSchemas(authType);
     const omitCredentials =
