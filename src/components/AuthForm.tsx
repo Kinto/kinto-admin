@@ -397,7 +397,7 @@ export default function AuthForm() {
 
   useEffect(() => {
     // load last used server by default
-    if (SINGLE_SERVER || servers && servers.length) {
+    if (SINGLE_SERVER || (servers && servers.length)) {
       serverInfoCallback({
         authType: ANONYMOUS_AUTH,
         server: SINGLE_SERVER || servers[0].server,
