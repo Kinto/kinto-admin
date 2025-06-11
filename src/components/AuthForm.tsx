@@ -389,7 +389,9 @@ export default function AuthForm() {
       setServerInfo(newInfo);
       setFormData({
         server: auth.server,
-        authType: servers.find(x => x.server === auth.server)?.authType || ANONYMOUS_AUTH,
+        authType:
+          servers.find(x => x.server === auth.server)?.authType ||
+          ANONYMOUS_AUTH,
       });
 
       const { schema, uiSchema } = authSchemas(authType);
@@ -426,7 +428,7 @@ export default function AuthForm() {
     singleAuthMethod
   );
 
-  const onChange = (props) => {
+  const onChange = props => {
     const updatedData = props.formData;
     const { authType } = updatedData;
     const { schema, uiSchema } = authSchemas(authType);
