@@ -248,6 +248,10 @@ function extendUiSchemaWithHistory(
       server: {
         "ui:widget": "hidden",
       },
+      "ui:options": {
+        servers,
+        getServerInfo,
+      },
     };
   }
   return {
@@ -382,6 +386,7 @@ export default function AuthForm() {
       setShowSpinner(true);
       const newInfo = await setupClient(auth).fetchServerInfo();
       setServerInfo(newInfo);
+      document.title = newInfo.project_name + " Administration";
       clearNotifications();
     } catch (ex) {
       notifyError("Unable to retrieve server information", ex);
@@ -392,10 +397,10 @@ export default function AuthForm() {
 
   useEffect(() => {
     // load last used server by default
-    if (servers && servers.length) {
+    if (SINGLE_SERVER || servers && servers.length) {
       serverInfoCallback({
         authType: ANONYMOUS_AUTH,
-        server: servers[0].server,
+        server: SINGLE_SERVER || servers[0].server,
       });
     }
   }, []);
