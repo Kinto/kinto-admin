@@ -94,7 +94,7 @@ describe("AuthForm component", () => {
               username: "user",
               password: "pass",
             },
-            redirectURL: undefined,
+            redirectURL: "/",
           });
         });
       });
@@ -122,14 +122,14 @@ describe("AuthForm component", () => {
               username: "you@email.com",
               password: "pass",
             },
-            redirectURL: undefined,
+            redirectURL: "/",
           });
         });
       });
     });
 
     describe("FxA", () => {
-      it("should navigate to external auth URL", async () => {
+      it("should navigate to external auth URL with our redirect URL", async () => {
         fireEvent.change(screen.queryByLabelText("Server*"), {
           target: { value: "http://test.server/v1" },
         });
@@ -137,13 +137,13 @@ describe("AuthForm component", () => {
         fireEvent.click(screen.getByLabelText("Firefox Account"));
         fireEvent.click(screen.getByText(/Sign in using/));
         expect(window.location.href).toBe(
-          "http://test.server/v1/fxa-oauth/login?redirect=http%3A%2F%2Flocalhost%3A3000%2F%23%2Fauth%2FeyJzZXJ2ZXIiOiJodHRwOi8vdGVzdC5zZXJ2ZXIvdjEiLCJhdXRoVHlwZSI6ImZ4YSJ9%2F"
+          "http://test.server/v1/fxa-oauth/login?redirect=http%3A%2F%2Flocalhost%3A3000%2F%23%2Fauth%2FeyJzZXJ2ZXIiOiJodHRwOi8vdGVzdC5zZXJ2ZXIvdjEiLCJhdXRoVHlwZSI6ImZ4YSIsInJlZGlyZWN0VVJMIjoiLyJ9%2F"
         );
       });
     });
 
     describe("OpenID", () => {
-      it("should navigate to external auth URL", async () => {
+      it("should navigate to external auth URL with our redirect URL", async () => {
         fireEvent.change(screen.queryByLabelText("Server*"), {
           target: { value: "http://test.server/v1" },
         });
@@ -151,7 +151,7 @@ describe("AuthForm component", () => {
         fireEvent.click(screen.getByLabelText("OpenID Connect (Google)"));
         fireEvent.click(screen.getByText(/Sign in using/));
         expect(window.location.href).toBe(
-          "http://test.server/v1/auth_path?callback=http%3A%2F%2Flocalhost%3A3000%2F%23%2Fauth%2FeyJzZXJ2ZXIiOiJodHRwOi8vdGVzdC5zZXJ2ZXIvdjEiLCJhdXRoVHlwZSI6Im9wZW5pZC1nb29nbGUifQ%3D%3D%2F&scope=openid email"
+          "http://test.server/v1/auth_path?callback=http%3A%2F%2Flocalhost%3A3000%2F%23%2Fauth%2FeyJzZXJ2ZXIiOiJodHRwOi8vdGVzdC5zZXJ2ZXIvdjEiLCJhdXRoVHlwZSI6Im9wZW5pZC1nb29nbGUiLCJyZWRpcmVjdFVSTCI6Ii8ifQ%3D%3D%2F&scope=openid email"
         );
       });
     });

@@ -452,7 +452,10 @@ export default function AuthForm() {
       authType = "openid";
     }
 
-    const extendedFormData = { ...formData, redirectURL: location.pathname };
+    const extendedFormData = {
+      ...formData,
+      redirectURL: `${location.pathname || "/"}${location.hash || ""}`,
+    };
     switch (authType) {
       case "fxa":
       case "portier": {
