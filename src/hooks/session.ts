@@ -52,6 +52,10 @@ export function logout() {
 export function useAuth(): AuthData | undefined {
   const [val, setVal] = useLocalStorage("kinto-admin-auth", authState.get());
 
+  if (val && val.expiresAt && val.expiresAt < new Date().getTime()) {
+    setVal(undefined);
+  }
+
   useEffect(() => {
     if (authState.get() === undefined && val !== undefined) {
       authState.set(val);

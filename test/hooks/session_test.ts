@@ -108,6 +108,23 @@ describe("session hooks", () => {
     });
   });
 
+  it("useAuth should wipe stored state if the expiresAt timestamp has elapsed", async () => {
+    const testVal = {
+      foo: "bar",
+      credentials: {},
+      expiresAt: 42,
+    };
+    const setMock = vi.fn();
+    vi.spyOn(storageHooks, "useLocalStorage").mockReturnValue([
+      testVal,
+      setMock,
+    ]);
+    renderHook(() => useAuth());
+    await vi.waitFor(() => {
+      expect(setMock).toHaveBeenCalledWith(undefined);
+    });
+  });
+
   describe("usePermissions", () => {
     beforeEach(async () => {
       const { result: auth } = renderHook(() => useAuth());

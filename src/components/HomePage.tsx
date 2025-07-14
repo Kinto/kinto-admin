@@ -72,7 +72,7 @@ export function HomePage() {
 
     // Check for an incoming authentication.
     try {
-      let { server, authType } = JSON.parse(atob(payload));
+      let { server, authType, redirectURL } = JSON.parse(atob(payload));
       let decodedToken = decodeURIComponent(token);
 
       let authData: OpenIDAuth | TokenAuth | PortierAuth;
@@ -124,7 +124,7 @@ export function HomePage() {
         throw new Error(`Unsupported token authentication "${authType}"`);
       }
       setAuth(authData);
-      navigate("/");
+      navigate(redirectURL || "/");
     } catch (error) {
       const message = "Couldn't proceed with authentication.";
       notifyError(message, error);
