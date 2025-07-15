@@ -132,9 +132,9 @@ async function getServerInfo() {
     // Fetch server information
     let serverInfo = await client.fetchServerInfo();
 
-    // Take the project name from the server. Use "Kinto" if default ("kinto") is used.
     const { project_name: rawProjectName } = serverInfo;
-    const project_name = rawProjectName == "kinto" ? "Kinto" : rawProjectName;
+    const project_name =
+      rawProjectName[0].toUpperCase() + rawProjectName.substring(1);
     serverInfo = { ...serverInfo, project_name };
     // Side effect: change window title with project name.
     document.title = project_name + " Administration";
