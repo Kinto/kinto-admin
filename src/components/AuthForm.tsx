@@ -398,7 +398,11 @@ export default function AuthForm() {
       setSchema(schema);
       setUiSchema(uiSchema);
 
-      document.title = newInfo.project_name + " Administration";
+      const { project_name: rawProjectName } = serverInfo;
+      const projectName =
+        rawProjectName[0].toUpperCase() + rawProjectName.substring(1);
+      document.title = projectName + " Administration";
+
       clearNotifications();
     } catch (ex) {
       notifyError("Unable to retrieve server information", ex);
