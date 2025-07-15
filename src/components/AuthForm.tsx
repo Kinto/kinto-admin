@@ -486,7 +486,7 @@ export default function AuthForm() {
             await setupClient(extendedFormData).fetchServerInfo();
           if (!serverInfoWithAuth.user) {
             notifyError("Authentication failed.", {
-              message: `Could not auethenticate with ${getAuthLabel(authType)}`,
+              message: `Could not authenticate with ${getAuthLabel(authType)}`,
             });
             setShowSpinner(false);
             return;
