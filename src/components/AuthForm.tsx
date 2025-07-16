@@ -399,8 +399,7 @@ export default function AuthForm() {
       setUiSchema(uiSchema);
 
       const { project_name: rawProjectName } = serverInfo;
-      const projectName =
-        rawProjectName[0].toUpperCase() + rawProjectName.substring(1);
+      const projectName = rawProjectName == "kinto" ? "Kinto" : rawProjectName;
       document.title = projectName + " Administration";
 
       clearNotifications();
