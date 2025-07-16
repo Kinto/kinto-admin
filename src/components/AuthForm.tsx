@@ -398,7 +398,10 @@ export default function AuthForm() {
       setSchema(schema);
       setUiSchema(uiSchema);
 
-      document.title = newInfo.project_name + " Administration";
+      const { project_name: rawProjectName } = serverInfo;
+      const projectName = rawProjectName == "kinto" ? "Kinto" : rawProjectName;
+      document.title = projectName + " Administration";
+
       clearNotifications();
     } catch (ex) {
       notifyError("Unable to retrieve server information", ex);
@@ -482,7 +485,7 @@ export default function AuthForm() {
             await setupClient(extendedFormData).fetchServerInfo();
           if (!serverInfoWithAuth.user) {
             notifyError("Authentication failed.", {
-              message: `Could not auethenticate with ${getAuthLabel(authType)}`,
+              message: `Could not authenticate with ${getAuthLabel(authType)}`,
             });
             setShowSpinner(false);
             return;
