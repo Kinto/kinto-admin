@@ -49,7 +49,6 @@ export type Capabilities = {
   attachments?: any;
   changes?: any;
   default_bucket?: any;
-  fxa?: any;
   openid?: any;
   history?: any;
   permissions_endpoint?: any;
@@ -198,10 +197,8 @@ export type RouteLocation = {
 export type AuthMethod =
   | "anonymous"
   | "accounts"
-  | "fxa"
   | "ldap"
   | "basicauth"
-  | "portier"
   | "openid";
 
 export type AuthData = {
@@ -236,20 +233,6 @@ export type BasicAuth = {
   credentials: {
     username: string;
     password: string;
-  };
-} & AuthData;
-
-export type PortierAuth = {
-  authType: "portier";
-  credentials: {
-    token: string;
-  };
-} & AuthData;
-
-export type TokenAuth = {
-  authType: "fxa";
-  credentials: {
-    token: string;
   };
 } & AuthData;
 

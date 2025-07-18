@@ -74,7 +74,7 @@ describe("App component", () => {
         url: "http://test.server/v1/",
         capabilities: {},
         user: {
-          id: "fxa:1234",
+          id: "ldap:1234",
         },
       };
       const credentials = {
@@ -84,7 +84,7 @@ describe("App component", () => {
       useServerInfoMock.mockReturnValue(serverInfo);
       useAuthMock.mockReturnValue({
         server: serverInfo.url,
-        authType: "fxa",
+        authType: "ldap",
         credentials,
       });
       renderWithRouter(<Layout />, routeProps);

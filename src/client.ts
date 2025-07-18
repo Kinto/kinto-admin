@@ -5,18 +5,10 @@ let client: KintoClient;
 
 export function getAuthHeader(auth: AuthData): string | undefined {
   switch (auth.authType) {
-    case "fxa": {
-      const { token } = auth.credentials;
-      return `Bearer ${token}`;
-    }
     case "openid": {
       const { tokenType, credentials } = auth;
       const { token } = credentials;
       return `${tokenType} ${token}`;
-    }
-    case "portier": {
-      const { token } = auth.credentials;
-      return "Portier " + token;
     }
     case "anonymous": {
       return undefined;
