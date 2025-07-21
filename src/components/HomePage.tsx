@@ -72,15 +72,16 @@ export function HomePage() {
 
     // Check for an incoming authentication.
     try {
-      let { server, authType, redirectURL } = JSON.parse(atob(payload));
-      let decodedToken = decodeURIComponent(token);
+      const authInfo = JSON.parse(atob(payload));
+      const { server, redirectURL } = authInfo;
+      let { authType } = authInfo;
+      const decodedToken = decodeURIComponent(token);
 
       let authData: OpenIDAuth | TokenAuth | PortierAuth;
 
       if (authType.startsWith("openid-")) {
         const provider = authType.split("-")[1]; // eg. `"openid-auth0"`.
         authType = "openid";
-        let tokenType;
         let parsedToken;
         let expiresAt;
         try {
@@ -95,7 +96,7 @@ export function HomePage() {
           }
         }
 
-        tokenType = parsedToken.token_type;
+        const tokenType = parsedToken.token_type;
         if (parsedToken.expires_in) {
           expiresAt = new Date().getTime() + parsedToken.expires_in * 1000;
         }

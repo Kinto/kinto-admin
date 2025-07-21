@@ -33,7 +33,7 @@ const collection = {
 };
 
 describe("RecordAttributes component", () => {
-  let updateRecord = vi.fn();
+  const updateRecord = vi.fn();
 
   beforeEach(() => {
     canEditRecord.mockReturnValue(true);

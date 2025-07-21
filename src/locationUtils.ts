@@ -26,7 +26,7 @@ export function parseSearchString(search?: string): Record<string, any> {
   }
   const params = {};
   const keyVals = search.substring(1).split("&");
-  for (let kv of keyVals) {
+  for (const kv of keyVals) {
     const [key, val] = kv.split("=");
     if (key) {
       params[decodeURIComponent(key)] = val ? decodeURIComponent(val) : true;

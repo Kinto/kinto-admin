@@ -18,7 +18,7 @@ vi.mock("@src/permission", () => {
 });
 
 describe("RecordCreate component", () => {
-  let createRecord = vi.fn();
+  const createRecord = vi.fn();
   beforeEach(() => {
     canCreateRecord.mockReturnValue(true);
     vi.spyOn(recordHooks, "useRecord").mockReturnValue(undefined);

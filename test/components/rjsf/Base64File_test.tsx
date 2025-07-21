@@ -25,7 +25,7 @@ class fileReaderMock {
 
 describe("Base64File rjsf component", () => {
   beforeAll(() => {
-    let fileReader = new fileReaderMock();
+    const fileReader = new fileReaderMock();
     vitest.spyOn(global, "FileReader").mockImplementation(() => fileReader);
     fileReader.addEventListener.mockImplementation((_, fn) => fn());
     fileReader.readAsDataURL.mockImplementation(file => {

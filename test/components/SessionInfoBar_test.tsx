@@ -28,7 +28,7 @@ describe("SessionInfoBar component", () => {
 
   it("Should show green server status by default and render user/server info as expected, and render again every minute", async () => {
     vi.useFakeTimers();
-    let fakeDate = new Date(2024, 0, 1);
+    const fakeDate = new Date(2024, 0, 1);
     vi.setSystemTime(fakeDate);
 
     client.execute.mockResolvedValue({});

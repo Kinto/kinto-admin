@@ -78,7 +78,7 @@ async function onChange(evt, changeCallback) {
   });
 
   try {
-    let str = await readPromise;
+    const str = await readPromise;
     changeCallback(
       str,
       str.length > 1024 * 1024

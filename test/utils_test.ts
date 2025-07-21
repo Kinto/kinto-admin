@@ -449,7 +449,7 @@ describe("makeObservable", () => {
 
     testObj.subscribe(testFn1);
     testObj.subscribe(testFn2);
-    let testFn3Unsub = testObj.subscribe(testFn3);
+    const testFn3Unsub = testObj.subscribe(testFn3);
 
     testObj.set("string2");
     testObj.set("string3");

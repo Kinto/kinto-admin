@@ -91,8 +91,8 @@ export function validateSchema(jsonSchema: string) {
 }
 
 export function validateUiSchema(jsonUiSchema: string, jsonSchema: string) {
-  let uiSchema: any,
-    schema: any = JSON.parse(jsonSchema);
+  const schema: any = JSON.parse(jsonSchema);
+  let uiSchema: any;
   try {
     uiSchema = JSON.parse(jsonUiSchema);
   } catch (_err) {
@@ -150,17 +150,17 @@ function handleNestedDisplayField(
   // In case we have properties containing dots,
   // we look for other candidates in the record attributes.
   let biggestCandidate = [];
-  let candidates = Object.keys(record).filter(key => {
+  const candidates = Object.keys(record).filter(key => {
     return key.indexOf(fields[0] + ".") === 0;
   });
 
   // For all the properties candidates
   for (const key of candidates) {
-    let nextCandidate = [];
+    const nextCandidate = [];
     // For all parts of the displayField
     for (const part of fields) {
       // If the candidate matches the key we try a longer one.
-      let candidate = nextCandidate.concat([part]).join(".");
+      const candidate = nextCandidate.concat([part]).join(".");
       if (key.indexOf(candidate) !== -1) {
         nextCandidate.push(part);
       }
@@ -281,7 +281,7 @@ export function sortHistoryEntryPermissions(
 }
 
 export function debounce(fn: any, delay: number) {
-  var timer = null;
+  let timer = null;
   return (...args: any) => {
     if (timer) {
       clearTimeout(timer);

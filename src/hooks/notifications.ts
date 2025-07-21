@@ -11,7 +11,7 @@ type NotificationOptions = {
   timeout?: null;
 };
 
-let state = makeObservable([]);
+const state = makeObservable([]);
 
 export function useNotifications(): Notification[] {
   const [val, setVal] = useState(state.get());
@@ -38,7 +38,7 @@ function notify(type: Levels, message: string, options: NotificationOptions) {
 }
 
 export function removeNotification(index: number) {
-  let notifications = [...state.get()];
+  const notifications = [...state.get()];
   notifications.splice(index, 1);
   state.set(notifications);
 }
@@ -94,7 +94,7 @@ function getErrorDetails(error: ClientError | null | undefined): string[] {
     data: { code, message: errorMessage, details: errorDetails } = {},
     message,
   } = error;
-  let details = [message];
+  const details = [message];
   if (!code) {
     return details;
   }

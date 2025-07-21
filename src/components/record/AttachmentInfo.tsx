@@ -32,7 +32,7 @@ export function extendSchemaWithAttachment(
   // On forms, there is no need to have the "attachment" attribute fields. They
   // are shown in the attachment infos, and all assigned by the server automatically
   // on file upload.
-  let schemaProperties = omit(schema.properties, ["attachment"]);
+  const schemaProperties = omit(schema.properties, ["attachment"]);
 
   return {
     ...schema,

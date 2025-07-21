@@ -26,7 +26,7 @@ describe("AuthForm component", () => {
     const mockClearServersHistory = vi.fn();
     const mockUseServers = vi.fn();
     const mockFetchServerInfo = vi.fn();
-    let mockLocation = {
+    const mockLocation = {
       href: "",
     };
 
