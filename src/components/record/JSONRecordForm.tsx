@@ -29,6 +29,7 @@ const schemaWithUpload: RJSFSchema = {
 
 const uiSchemaWithUpload: UiSchema = {
   jsonContent: {
+    "ui:widget": JSONEditor,
     "ui:help": "This must be valid JSON.",
   },
   "ui:order": ["jsonContent", "__attachment__"],
@@ -57,7 +58,7 @@ function splitAttachment(record: string) {
   jsRecord = omit(jsRecord, ["attachment"]);
   return {
     attachment: attachment,
-    jsonContent: JSON.stringify(jsRecord),
+    jsonContent: JSON.stringify(jsRecord, null, 2),
   };
 }
 
