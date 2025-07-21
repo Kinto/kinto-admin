@@ -1,6 +1,6 @@
 import * as client from "@src/client";
 import RecordForm from "@src/components/record/RecordForm";
-import { DEFAULT_SERVERINFO } from "@src/constants";
+import { SERVERINFO_WITH_ATTACHMENTS_CAPABILITY } from "@src/constants";
 import * as collectionHooks from "@src/hooks/collection";
 import * as recordHooks from "@src/hooks/record";
 import * as sessionHooks from "@src/hooks/session";
@@ -78,7 +78,7 @@ describe("RecordForm", () => {
     canEditRecord.mockReturnValue(true);
     vi.spyOn(recordHooks, "useRecord").mockReturnValue(undefined);
     vi.spyOn(collectionHooks, "useCollection").mockReturnValue(defaultCol);
-    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(DEFAULT_SERVERINFO);
+    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(SERVERINFO_WITH_ATTACHMENTS_CAPABILITY);
     vi.spyOn(client, "getClient").mockReturnValue({
       bucket: bid => {
         return {

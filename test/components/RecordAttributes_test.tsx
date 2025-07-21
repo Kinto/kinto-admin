@@ -1,6 +1,6 @@
 import * as client from "@src/client";
 import RecordAttributes from "@src/components/record/RecordAttributes";
-import { DEFAULT_SERVERINFO } from "@src/constants";
+import { SERVERINFO_WITH_ATTACHMENTS_CAPABILITY } from "@src/constants";
 import * as collectionHooks from "@src/hooks/collection";
 import * as recordHooks from "@src/hooks/record";
 import * as sessionHooks from "@src/hooks/session";
@@ -37,7 +37,7 @@ describe("RecordAttributes component", () => {
 
   beforeEach(() => {
     canEditRecord.mockReturnValue(true);
-    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(DEFAULT_SERVERINFO);
+    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(SERVERINFO_WITH_ATTACHMENTS_CAPABILITY);
     vi.spyOn(recordHooks, "useRecord").mockReturnValue({
       data: { id: "abc", last_modified: 123, foo: "bar" },
     });

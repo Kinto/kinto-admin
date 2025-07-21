@@ -55,8 +55,11 @@ export default function RecordForm() {
   }
 
   const { schema = {}, uiSchema = {}, attachment } = collection;
+  const collectionAttachmentEnabled = attachment?.enabled;
+  const serverAttachmentEnabled = !!serverInfo?.capabilities.attachments;
+
   const attachmentConfig = {
-    enabled: attachment?.enabled,
+    enabled: collectionAttachmentEnabled && serverAttachmentEnabled,
     required: attachment?.required && !record?.data?.attachment, // allows records to be edited without requiring a new attachment to be uploaded
   };
 
