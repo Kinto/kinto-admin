@@ -36,10 +36,8 @@ const uiSchemaWithUpload: UiSchema = {
 };
 
 const uiSchema: UiSchema = {
-  data: {
-    "ui:widget": JSONEditor,
-    "ui:help": "This must be valid JSON.",
-  },
+  "ui:widget": JSONEditor,
+  "ui:help": "This must be valid JSON.",
   "ui:order": [],
 };
 
