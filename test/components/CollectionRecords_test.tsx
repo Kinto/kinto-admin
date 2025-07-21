@@ -177,6 +177,9 @@ describe("CollectionRecords component", () => {
           },
           displayFields: ["foo"],
         });
+      });
+
+      it("should render list actions", () => {
         useRecordList.mockReturnValue({
           data: [],
           hasNextPage: false,
@@ -184,9 +187,24 @@ describe("CollectionRecords component", () => {
           totalRecords: 0,
         });
         renderWithRouter(<CollectionRecords />, routeProps);
+
+        expect(screen.getAllByText("Create record").length).toBe(1);
+        expect(screen.getAllByText("Bulk create").length).toBe(1);
       });
 
-      it("should render list actions", () => {
+      it("should render list actions twice if list is long", () => {
+        useRecordList.mockReturnValue({
+          data: Array.from({ length: 11 }, (_, i) => ({
+            id: `id${i}`,
+            foo: `value${i}`,
+            last_modified: i,
+          })),
+          hasNextPage: false,
+          lastModified: 0,
+          totalRecords: 0,
+        });
+        renderWithRouter(<CollectionRecords />, routeProps);
+
         expect(screen.getAllByText("Create record").length).toBe(2);
         expect(screen.getAllByText("Bulk create").length).toBe(2);
       });
