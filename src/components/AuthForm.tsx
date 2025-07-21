@@ -332,8 +332,7 @@ export default function AuthForm() {
     const { authType } = updatedData;
     const { schema, uiSchema } = authSchemas(authType);
     const omitCredentials =
-      [ANONYMOUS_AUTH].includes(authType) ||
-      authType.startsWith("openid-");
+      [ANONYMOUS_AUTH].includes(authType) || authType.startsWith("openid-");
     const specificFormData = omitCredentials
       ? omit(updatedData, ["credentials"])
       : { credentials: {}, ...updatedData, authType };

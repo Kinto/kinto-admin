@@ -75,7 +75,7 @@ export function HomePage() {
       let { server, authType, redirectURL } = JSON.parse(atob(payload));
       let decodedToken = decodeURIComponent(token);
 
-      let authData: OpenIDAuth // | OtherAuthType;
+      let authData: OpenIDAuth; // | OtherAuthType;
 
       if (authType.startsWith("openid-")) {
         const provider = authType.split("-")[1]; // eg. `"openid-auth0"`.
