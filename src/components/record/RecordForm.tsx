@@ -224,20 +224,35 @@ export default function RecordForm() {
       </div>
     );
 
+  let attachmentInfo = null;
+  if (collectionAttachmentEnabled) {
+    if (serverAttachmentEnabled) {
+      if (isUpdate) {
+        attachmentInfo = (
+          <AttachmentInfo
+            allowEditing={allowEditing}
+            capabilities={serverInfo?.capabilities}
+            record={record}
+            attachmentRequired={attachment?.required}
+            callback={() => {
+              setCacheVal(cacheVal + 1);
+            }}
+          />
+        );
+      }
+    } else {
+      attachmentInfo = (
+        <div className="alert alert-warning">
+          Attachments are not enabled on this server.
+        </div>
+      );
+    }
+  }
+
   return (
     <div>
       {alert}
-      {isUpdate && attachmentConfig.enabled && (
-        <AttachmentInfo
-          allowEditing={allowEditing}
-          capabilities={serverInfo?.capabilities}
-          record={record}
-          attachmentRequired={attachment?.required}
-          callback={() => {
-            setCacheVal(cacheVal + 1);
-          }}
-        />
-      )}
+      {attachmentInfo}
       {getForm()}
     </div>
   );

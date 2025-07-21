@@ -14,7 +14,6 @@ export const DEFAULT_SERVERINFO = {
   project_docs: "https://remote-settings.readthedocs.io/",
 };
 
-
 export const SERVERINFO_WITH_ATTACHMENTS_CAPABILITY = {
   ...DEFAULT_SERVERINFO,
   capabilities: {

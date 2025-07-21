@@ -78,7 +78,9 @@ describe("RecordForm", () => {
     canEditRecord.mockReturnValue(true);
     vi.spyOn(recordHooks, "useRecord").mockReturnValue(undefined);
     vi.spyOn(collectionHooks, "useCollection").mockReturnValue(defaultCol);
-    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(SERVERINFO_WITH_ATTACHMENTS_CAPABILITY);
+    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(
+      SERVERINFO_WITH_ATTACHMENTS_CAPABILITY
+    );
     vi.spyOn(client, "getClient").mockReturnValue({
       bucket: bid => {
         return {
