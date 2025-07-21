@@ -20,6 +20,7 @@ export default defineConfig([globalIgnores(["**/dist", "**/eslint.config.mjs", "
   extends: fixupConfigRules(compat.extends(
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:react/jsx-runtime",
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "prettier",
