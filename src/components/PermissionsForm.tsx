@@ -35,8 +35,8 @@ export function PermissionsForm({
   if (readonly) {
     return (
       <div className="alert alert-warning">
-        You don't have the required permission to edit the permissions for this
-        resource.
+        You don&apos;t have the required permission to edit the permissions for
+        this resource.
       </div>
     );
   }

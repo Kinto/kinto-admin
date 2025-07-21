@@ -185,7 +185,7 @@ function handleNestedDisplayField(
 export function linkify(string: string): any {
   if (/https?:\/\//.test(string)) {
     return (
-      <a href={string} title={string} target="_blank">
+      <a href={string} title={string} target="_blank" rel="noreferrer">
         {string}
       </a>
     );

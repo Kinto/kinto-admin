@@ -4,6 +4,7 @@ import { DEFAULT_SERVERINFO } from "@src/constants";
 import * as sessionHooks from "@src/hooks/session";
 import { renderWithRouter } from "@test/testUtils";
 import { act, screen } from "@testing-library/react";
+import React from "react";
 
 describe("SessionInfoBar component", () => {
   const client = {

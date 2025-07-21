@@ -1,4 +1,5 @@
 import { WidgetProps } from "@rjsf/utils";
+import React from "react";
 import { Dash, Download } from "react-bootstrap-icons";
 
 export default function Base64File({
@@ -42,7 +43,13 @@ function CurrentValDisplay({ val }) {
 
   // images render a thumbnail, everything else shows a download icon
   return (
-    <a href={val} download={true} target="_blank" data-testid="b64-download">
+    <a
+      href={val}
+      download={true}
+      target="_blank"
+      rel="noreferrer"
+      data-testid="b64-download"
+    >
       {val.match(/^data:image\//) ? (
         <img
           src={val}

@@ -123,13 +123,13 @@ const uiSchema = {
     "ui:help": (
       <p>
         This must be a valid
-        <a href="http://json-schema.org/" target="_blank">
+        <a href="http://json-schema.org/" target="_blank" rel="noreferrer">
           {" "}
           JSON schema{" "}
         </a>
         defining an object representing the structure of your collection
         records. You may find this
-        <a href="http://jsonschema.net/" target="_blank">
+        <a href="http://jsonschema.net/" target="_blank" rel="noreferrer">
           {" online schema builder "}
         </a>
         useful to create your own.
@@ -156,7 +156,7 @@ const uiSchema = {
     "ui:help": (
       <p>
         Learn more about
-        <a href="https://git.io/vrbKn" target="_blank">
+        <a href="https://git.io/vrbKn" target="_blank" rel="noreferrer">
           {" "}
           what a uiSchema is{" "}
         </a>{" "}
@@ -273,7 +273,7 @@ export default function CollectionForm() {
   const alert =
     allowEditing || (cid && !collection?.id) ? null : (
       <div className="alert alert-warning">
-        You don't have the required permission to{" "}
+        You don&apos;t have the required permission to{" "}
         {collection?.id
           ? "edit this collection"
           : "create a collection in this bucket"}

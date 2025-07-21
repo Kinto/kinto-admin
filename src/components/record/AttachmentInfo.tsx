@@ -71,7 +71,7 @@ function AttachmentPreview({ mimetype, location }) {
   } else {
     return (
       <div className="attachment-img">
-        <a href={location} target="_blank">
+        <a href={location} target="_blank" rel="noreferrer">
           <img src={location} />
         </a>
       </div>
@@ -138,7 +138,7 @@ export function AttachmentInfo(props: AttachmentInfoProps) {
               <tr>
                 <th>Location</th>
                 <td>
-                  <a href={attachmentURL} target="_blank">
+                  <a href={attachmentURL} target="_blank" rel="noreferrer">
                     {attachment.location}
                   </a>
                 </td>

@@ -4,6 +4,7 @@ import { useHeartbeat } from "@src/hooks/heartbeat";
 import { notifySuccess } from "@src/hooks/notifications";
 import { logout, useAuth, useServerInfo } from "@src/hooks/session";
 import { copyToClipboard } from "@src/utils";
+import React from "react";
 import {
   BoxArrowRight,
   CircleFill,
@@ -59,7 +60,7 @@ export function SessionInfoBar() {
             <Clipboard className="icon" />
           </a>
         )}
-        <a href={`${url}__heartbeat__`} target="_blank">
+        <a href={`${url}__heartbeat__`} target="_blank" rel="noreferrer">
           {heartbeat.success !== false ? (
             <CircleFill
               color="green"
@@ -75,6 +76,7 @@ export function SessionInfoBar() {
         <a
           href={project_docs}
           target="_blank"
+          rel="noreferrer"
           className="spaced btn btn-sm btn-secondary project-docs"
         >
           <QuestionCircleFill className="icon" /> Documentation

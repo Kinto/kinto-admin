@@ -87,7 +87,7 @@ export default function RecordBulk() {
     <div>
       This is likely caused by a bad <code>ui:widget</code> value in this{" "}
       <AdminLink name="collection:attributes" params={{ bid, cid }}>
-        collection's UI schema
+        collection&apos;s UI schema
       </AdminLink>
       .
     </div>

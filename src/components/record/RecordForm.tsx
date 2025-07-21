@@ -163,8 +163,8 @@ export default function RecordForm() {
         <div>
           {emptySchema && (
             <div className="alert alert-warning">
-              This collection doesn't have any JSON schema defined, though you
-              can create free-form records entering raw JSON.
+              This collection doesn&apos;t have any JSON schema defined, though
+              you can create free-form records entering raw JSON.
             </div>
           )}
           <JSONRecordForm
@@ -193,7 +193,7 @@ export default function RecordForm() {
       <div>
         This is likely caused by a bad <code>ui:widget</code> value in this{" "}
         <AdminLink name="collection:attributes" params={{ bid, cid }}>
-          collection's UI schema
+          collection&apos;s UI schema
         </AdminLink>
         .
       </div>
@@ -216,7 +216,7 @@ export default function RecordForm() {
   const alert =
     allowEditing || collection.busy ? null : (
       <div className="alert alert-warning">
-        You don't have the required permission to
+        You don&apos;t have the required permission to
         {isUpdate ? " edit this" : " create a"} record.
       </div>
     );
