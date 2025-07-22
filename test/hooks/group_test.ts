@@ -30,9 +30,12 @@ describe("group hooks", () => {
     });
 
     it("calls the API again if the bid, gid, or cacheBust values change", async () => {
-      const rendered = renderHook(({ bid, gid, cb }) => useGroup(bid, gid, cb), {
-        initialProps: { bid: "bid", gid: "gid", cb: undefined },
-      });
+      const rendered = renderHook(
+        ({ bid, gid, cb }) => useGroup(bid, gid, cb),
+        {
+          initialProps: { bid: "bid", gid: "gid", cb: undefined },
+        }
+      );
       rendered.rerender({ bid: "bid", gid: "gid" });
       rendered.rerender({ bid: "bid", gid: "gid" });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
