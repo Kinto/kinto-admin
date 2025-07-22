@@ -47,7 +47,7 @@ export function DataList(props) {
         <th>Schema</th>
         <th>Attachments</th>
         <th>Cache Expires</th>
-        <th>Last mod.</th>
+        <th>Last modified</th>
         <th>Actions</th>
       </tr>
     </thead>
