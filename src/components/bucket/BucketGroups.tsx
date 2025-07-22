@@ -17,7 +17,7 @@ export default function BucketGroups() {
       </h1>
       <BucketTabs bid={bid} selected="groups">
         {listActions}
-        {groups && groups.length === 0 ? (
+        {groups && groups.data.length === 0 ? (
           <div className="alert alert-info">
             <p>This bucket has no groups.</p>
           </div>
