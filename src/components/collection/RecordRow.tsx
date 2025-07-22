@@ -75,7 +75,7 @@ export default function RecordRow({
         </td>
       ))}
       <td className="lastmod">{lastModified()}</td>
-      <td className="actions text-right" data-testid={`${rid}-actions`}>
+      <td className="actions" data-testid={`${rid}-actions`}>
         <AdminLink
           name="record:attributes"
           params={{ bid, cid, rid }}
