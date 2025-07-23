@@ -294,7 +294,7 @@ export default function AuthForm() {
       setSchema(schema);
       setUiSchema(uiSchema);
 
-      const { project_name: rawProjectName } = serverInfo;
+      const { project_name: rawProjectName } = newInfo;
       const projectName = rawProjectName == "kinto" ? "Kinto" : rawProjectName;
       document.title = projectName + " Administration";
 
