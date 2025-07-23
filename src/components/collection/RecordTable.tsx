@@ -202,7 +202,7 @@ export default function RecordTable({
           </th>
         ))}
         <th>
-          Last mod.
+          Last modified
           <ColumnSortLink
             currentSort={currentSort}
             column="last_modified"

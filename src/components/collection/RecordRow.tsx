@@ -7,6 +7,7 @@ import React from "react";
 import { Dropdown } from "react-bootstrap";
 import {
   ClipboardCheck,
+  ClockHistory,
   Lock,
   Paperclip,
   Pencil,
@@ -75,7 +76,7 @@ export default function RecordRow({
         </td>
       ))}
       <td className="lastmod">{lastModified()}</td>
-      <td className="actions text-right" data-testid={`${rid}-actions`}>
+      <td className="actions" data-testid={`${rid}-actions`}>
         <AdminLink
           name="record:attributes"
           params={{ bid, cid, rid }}
@@ -122,6 +123,13 @@ export default function RecordRow({
                 <Paperclip className="icon" /> View Attachment
               </a>
             )}
+            <AdminLink
+              name="record:history"
+              params={{ bid, cid, rid }}
+              className="dropdown-item"
+            >
+              <ClockHistory className="icon" /> History
+            </AdminLink>
             <AdminLink
               name="record:permissions"
               params={{ bid, cid, rid }}
