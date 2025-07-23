@@ -21,10 +21,8 @@ import React, { useEffect, useState } from "react";
 const KNOWN_AUTH_METHODS = [
   "basicauth",
   "accounts",
-  "fxa",
   "ldap",
-  "portier",
-  // "openid", // Special cased as we need one auth method per openid provider.
+  // "openid", // Special case as we need one auth method per openid provider.
 ];
 
 const baseAuthSchema = {
@@ -117,25 +115,6 @@ const authSchemas = authType => {
         ...loginPasswordUiSchema,
       },
     },
-    fxa: {
-      schema: {
-        ...baseAuthSchema,
-      },
-      uiSchema: {
-        authType: {
-          ...baseUISchema.authType,
-          "ui:help": (
-            <span>
-              <b>Note:</b> The
-              <a href="https://github.com/mozilla-services/kinto-fxa">
-                {" kinto-fxa "}
-              </a>
-              plugin must be installed on the target server.
-            </span>
-          ),
-        },
-      },
-    },
     ldap: {
       schema: {
         ...baseAuthSchema,
@@ -165,23 +144,6 @@ const authSchemas = authType => {
         credentials: {
           password: { "ui:widget": "password" },
         },
-      },
-    },
-    portier: {
-      schema: {
-        ...baseAuthSchema,
-        required: [...baseAuthSchema.required, "email"],
-        properties: {
-          ...baseAuthSchema.properties,
-          email: {
-            title: "Email address",
-            type: "string",
-            format: "email",
-          },
-        },
-      },
-      uiSchema: {
-        ...baseUISchema,
       },
     },
   };
@@ -283,72 +245,6 @@ function getSupportedAuthMethods(serverInfo: ServerInfo): string[] {
   return [ANONYMOUS_AUTH].concat(supportedAuthMethods).concat(openIdMethods);
 }
 
-function navigateToFxA(server: string, redirect: string) {
-  window.location.href = `${server}/fxa-oauth/login?redirect=${encodeURIComponent(
-    redirect
-  )}`;
-}
-
-function postToPortier(server: string, redirect: string) {
-  // Alter the AuthForm to make it posting Portier auth information to the
-  // dedicated Kinto server endpoint. This is definitely one of the ugliest
-  // part of this project, but it works :)
-  try {
-    const portierUrl = `${server}/portier/login`.replace(
-      "//portier",
-      "/portier"
-    );
-    const form = document.querySelector("form.rjsf");
-    if (!(form instanceof HTMLFormElement)) {
-      notifyError("Missing authentication form.");
-      return noop_action;
-    }
-    form.setAttribute("method", "post");
-    form.setAttribute("action", portierUrl);
-    const emailInput = form.querySelector("#root_email");
-    if (!emailInput) {
-      notifyError("Couldn't find email input widget in form.");
-      return noop_action;
-    }
-    emailInput.setAttribute("name", "email");
-    const hiddenRedirect = document.createElement("input");
-    hiddenRedirect.setAttribute("type", "hidden");
-    hiddenRedirect.setAttribute("name", "redirect");
-    hiddenRedirect.setAttribute("value", redirect);
-    form.appendChild(hiddenRedirect);
-    form.submit();
-    notifySuccess("Redirecting to auth provider...");
-    return noop_action;
-  } catch (error) {
-    notifyError("Couldn't redirect to authentication endpoint.", error);
-    return noop_action;
-  }
-}
-
-/**
- * Massive side effect: this will navigate away from the current page to perform
- * authentication to a third-party service, like FxA.
- */
-function navigateToExternalAuth(authFormData: any) {
-  const { origin, pathname } = document.location;
-  const { server, authType } = authFormData;
-
-  try {
-    const payload = btoa(JSON.stringify(authFormData));
-    const redirect = `${origin}${pathname}#/auth/${payload}/`;
-    if (authType === "fxa") {
-      navigateToFxA(server, redirect);
-    } else if (authType === "portier") {
-      postToPortier(server, redirect);
-    } else {
-      notifyError(`Unsupported auth navigation type "${authType}".`);
-    }
-    notifySuccess("Redirecting to auth provider...");
-  } catch (error) {
-    notifyError("Couldn't redirect to authentication endpoint.", error);
-  }
-}
-
 function navigateToOpenID(authFormData: any, provider: any) {
   const { origin, pathname } = document.location;
   const { server } = authFormData;
@@ -436,8 +332,7 @@ export default function AuthForm() {
     const { authType } = updatedData;
     const { schema, uiSchema } = authSchemas(authType);
     const omitCredentials =
-      [ANONYMOUS_AUTH, "fxa", "portier"].includes(authType) ||
-      authType.startsWith("openid-");
+      [ANONYMOUS_AUTH].includes(authType) || authType.startsWith("openid-");
     const specificFormData = omitCredentials
       ? omit(updatedData, ["credentials"])
       : { credentials: {}, ...updatedData, authType };
@@ -460,10 +355,6 @@ export default function AuthForm() {
       redirectURL: `${location.pathname || "/"}${location.hash || ""}`,
     };
     switch (authType) {
-      case "fxa":
-      case "portier": {
-        return navigateToExternalAuth(extendedFormData);
-      }
       case "openid": {
         const {
           capabilities: { openid: { providers } = { providers: [] } },

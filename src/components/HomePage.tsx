@@ -2,7 +2,7 @@ import AuthForm from "./AuthForm";
 import Spinner from "./Spinner";
 import { notifyError } from "@src/hooks/notifications";
 import { setAuth, useAuth, useServerInfo } from "@src/hooks/session";
-import type { OpenIDAuth, PortierAuth, TokenAuth } from "@src/types";
+import type { OpenIDAuth } from "@src/types";
 import { isObject } from "@src/utils";
 import * as React from "react";
 import { useNavigate, useParams } from "react-router";
@@ -72,16 +72,17 @@ export function HomePage() {
 
     // Check for an incoming authentication.
     try {
-      const authInfo = JSON.parse(atob(payload));
-      const { server, redirectURL } = authInfo;
-      let { authType } = authInfo;
+      const {
+        server,
+        authType,
+        redirectURL: redirectURLRaw,
+      } = JSON.parse(atob(payload));
       const decodedToken = decodeURIComponent(token);
 
-      let authData: OpenIDAuth | TokenAuth | PortierAuth;
+      let authData: OpenIDAuth; // | OtherAuthType;
 
       if (authType.startsWith("openid-")) {
         const provider = authType.split("-")[1]; // eg. `"openid-auth0"`.
-        authType = "openid";
         let parsedToken;
         let expiresAt;
         try {
@@ -102,30 +103,20 @@ export function HomePage() {
         }
 
         authData = {
-          authType,
+          authType: "openid",
           server,
           provider,
           tokenType,
           credentials: { token: parsedToken.access_token },
           expiresAt,
         };
-      } else if (authType == "fxa") {
-        authData = {
-          authType: "fxa",
-          server,
-          credentials: { token },
-        };
-      } else if (authType == "portier") {
-        authData = {
-          authType: "portier",
-          server,
-          credentials: { token },
-        };
       } else {
         throw new Error(`Unsupported token authentication "${authType}"`);
       }
       setAuth(authData);
-      navigate(redirectURL || "/");
+      // Extract hash part of the redirect URL to navigate to.
+      const redirectURL = redirectURLRaw.split("#")[1] || "/";
+      navigate(redirectURL);
     } catch (error) {
       const message = "Couldn't proceed with authentication.";
       notifyError(message, error);

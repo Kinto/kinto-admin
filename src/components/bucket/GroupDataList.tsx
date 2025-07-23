@@ -11,67 +11,69 @@ export function DataList(props) {
   const serverInfo = useServerInfo();
   const { bid, groups, showSpinner } = props;
   return (
-    <table className="table table-striped table-bordered record-list">
-      <thead>
-        <tr>
-          <th>Id</th>
-          <th>Members</th>
-          <th>Last mod.</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {showSpinner && (
+    <div className="table-wrapper">
+      <table className="table table-striped table-bordered record-list">
+        <thead>
           <tr>
-            <td colSpan={4}>
-              <Spinner />
-            </td>
+            <th>Id</th>
+            <th>Members</th>
+            <th>Last modified</th>
+            <th>Actions</th>
           </tr>
-        )}
-        {groups &&
-          groups.map((group, index) => {
-            const { id: gid, members, last_modified } = group;
-            const date = new Date(last_modified);
-            return (
-              <tr key={index}>
-                <td>
-                  <AdminLink name="group:attributes" params={{ bid, gid }}>
-                    {gid}
-                  </AdminLink>
-                </td>
-                <td>{members.join(", ")}</td>
-                <td>
-                  <span title={date.toISOString()}>
-                    {timeago(date.getTime())}
-                  </span>
-                </td>
-                <td className="actions">
-                  <div className="btn-group">
-                    {serverInfo && "history" in serverInfo.capabilities && (
+        </thead>
+        <tbody>
+          {showSpinner && (
+            <tr>
+              <td colSpan={4}>
+                <Spinner />
+              </td>
+            </tr>
+          )}
+          {groups &&
+            groups.map((group, index) => {
+              const { id: gid, members, last_modified } = group;
+              const date = new Date(last_modified);
+              return (
+                <tr key={index}>
+                  <td>
+                    <AdminLink name="group:attributes" params={{ bid, gid }}>
+                      {gid}
+                    </AdminLink>
+                  </td>
+                  <td>{members.join(", ")}</td>
+                  <td>
+                    <span title={date.toISOString()}>
+                      {timeago(date.getTime())}
+                    </span>
+                  </td>
+                  <td className="actions">
+                    <div className="btn-group">
+                      {serverInfo && "history" in serverInfo.capabilities && (
+                        <AdminLink
+                          name="group:history"
+                          params={{ bid, gid }}
+                          className="btn btn-sm btn-secondary"
+                          title="View group history"
+                        >
+                          <ClockHistory className="icon" />
+                        </AdminLink>
+                      )}
                       <AdminLink
-                        name="group:history"
+                        name="group:attributes"
                         params={{ bid, gid }}
                         className="btn btn-sm btn-secondary"
-                        title="View group history"
+                        title="Edit groups attributes"
                       >
-                        <ClockHistory className="icon" />
+                        <Gear className="icon" />
                       </AdminLink>
-                    )}
-                    <AdminLink
-                      name="group:attributes"
-                      params={{ bid, gid }}
-                      className="btn btn-sm btn-secondary"
-                      title="Edit groups attributes"
-                    >
-                      <Gear className="icon" />
-                    </AdminLink>
-                  </div>
-                </td>
-              </tr>
-            );
-          })}
-      </tbody>
-    </table>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+        </tbody>
+      </table>
+    </div>
   );
 }
 

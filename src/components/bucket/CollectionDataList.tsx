@@ -47,7 +47,7 @@ export function DataList(props) {
         <th>Schema</th>
         <th>Attachments</th>
         <th>Cache Expires</th>
-        <th>Last mod.</th>
+        <th>Last modified</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -70,7 +70,11 @@ export function DataList(props) {
           const ageString = date && timeago(date.getTime());
           return (
             <tr key={index}>
-              <td>{cid}</td>
+              <td>
+                <AdminLink name="collection:records" params={{ bid, cid }}>
+                  {cid}
+                </AdminLink>
+              </td>
               <td>{schema ? "Yes" : "No"}</td>
               <td>
                 {attachment ? (attachment.required ? "Required" : "Yes") : "No"}

@@ -48,7 +48,6 @@ describe("AuthForm component", () => {
         capabilities: {
           basicauth: "some basic auth info",
           ldap: "some ldap auth info",
-          fxa: "some fxa auth info",
           openid: {
             providers: [
               {
@@ -128,20 +127,6 @@ describe("AuthForm component", () => {
       });
     });
 
-    describe("FxA", () => {
-      it("should navigate to external auth URL with our redirect URL", async () => {
-        fireEvent.change(screen.queryByLabelText("Server*"), {
-          target: { value: "http://test.server/v1" },
-        });
-        await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
-        fireEvent.click(screen.getByLabelText("Firefox Account"));
-        fireEvent.click(screen.getByText(/Sign in using/));
-        expect(window.location.href).toBe(
-          "http://test.server/v1/fxa-oauth/login?redirect=http%3A%2F%2Flocalhost%3A3000%2F%23%2Fauth%2FeyJzZXJ2ZXIiOiJodHRwOi8vdGVzdC5zZXJ2ZXIvdjEiLCJhdXRoVHlwZSI6ImZ4YSIsInJlZGlyZWN0VVJMIjoiLyJ9%2F"
-        );
-      });
-    });
-
     describe("OpenID", () => {
       it("should navigate to external auth URL with our redirect URL", async () => {
         fireEvent.change(screen.queryByLabelText("Server*"), {
@@ -187,7 +172,6 @@ describe("AuthForm component", () => {
         capabilities: {
           basicauth: "some basic auth info",
           ldap: "some ldap auth info",
-          fxa: "some fxa auth info",
           openid: {
             providers: [
               {
