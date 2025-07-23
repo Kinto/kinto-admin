@@ -1,7 +1,7 @@
 import { notifyError } from "./notifications";
 import { getClient } from "@src/client";
 import { MAX_PER_PAGE } from "@src/constants";
-import { ListHistoryResult } from "@src/types";
+import { GroupData, ListHistoryResult, ListResult } from "@src/types";
 import { useEffect, useState } from "react";
 
 export function useGroupHistory(bid: string, gid: string): ListHistoryResult {
@@ -74,20 +74,43 @@ export function useGroup(bid: string, gid: string, cacheBust?: number) {
   return val;
 }
 
-export function useGroupList(bid: string) {
+export function useGroupList(bid: string): ListResult<GroupData> | undefined {
   const [val, setVal] = useState(undefined);
 
   useEffect(() => {
-    getClient()
-      .bucket(bid)
-      .listGroups()
-      .then(result => {
-        setVal(result.data || []);
-      })
-      .catch(err => {
-        notifyError("Unable to load group list", err);
-      });
+    setVal(undefined);
+    fetchGroups(bid, [], setVal);
   }, [bid]);
 
   return val;
+}
+
+async function fetchGroups(bid: string, curData, setVal, nextPageFn?) {
+  let result;
+
+  try {
+    if (nextPageFn) {
+      result = await nextPageFn();
+    } else {
+      result = await getClient().bucket(bid).listGroups({
+        limit: MAX_PER_PAGE,
+      });
+    }
+  } catch (err) {
+    notifyError("Error fetching group list", err);
+    return;
+  }
+
+  const data = curData.concat(result.data);
+
+  setVal({
+    data,
+    hasNextPage: result.hasNextPage,
+    lastModified: result.last_modified,
+    next: () => {
+      if (result.hasNextPage && result.next) {
+        return fetchGroups(bid, data, setVal, result.next);
+      }
+    },
+  });
 }

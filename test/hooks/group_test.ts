@@ -80,7 +80,7 @@ describe("group hooks", () => {
       const { result } = renderHook(() => useGroupList("bid", "cid", "sort"));
       expect(result.current).toBeUndefined();
       await vi.waitFor(() => {
-        expect(result.current).toMatchObject(testGroups);
+        expect(result.current).toMatchObject({ data: testGroups });
       });
       expect(listGroupsMock).toHaveBeenCalled();
     });
@@ -107,7 +107,7 @@ describe("group hooks", () => {
       renderHook(() => useGroupList("bid"));
       await vi.waitFor(() => {
         expect(notifyErrorMock).toHaveBeenCalledWith(
-          "Unable to load group list",
+          "Error fetching group list",
           expect.any(Error)
         );
       });
