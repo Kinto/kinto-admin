@@ -30,9 +30,12 @@ describe("group hooks", () => {
     });
 
     it("calls the API again if the bid, gid, or cacheBust values change", async () => {
-      let rendered = renderHook(({ bid, gid, cb }) => useGroup(bid, gid, cb), {
-        initialProps: { bid: "bid", gid: "gid", cb: undefined },
-      });
+      const rendered = renderHook(
+        ({ bid, gid, cb }) => useGroup(bid, gid, cb),
+        {
+          initialProps: { bid: "bid", gid: "gid", cb: undefined },
+        }
+      );
       rendered.rerender({ bid: "bid", gid: "gid" });
       rendered.rerender({ bid: "bid", gid: "gid" });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
@@ -61,7 +64,7 @@ describe("group hooks", () => {
 
   describe("useGroupList", () => {
     let listGroupsMock;
-    let testGroups = [{ id: "foo" }, { id: "bar" }];
+    const testGroups = [{ id: "foo" }, { id: "bar" }];
 
     beforeEach(() => {
       listGroupsMock = vi.fn().mockResolvedValue({
@@ -86,7 +89,7 @@ describe("group hooks", () => {
     });
 
     it("calls the API again if bid changes", async () => {
-      let rendered = renderHook(({ bid }) => useGroupList(bid), {
+      const rendered = renderHook(({ bid }) => useGroupList(bid), {
         initialProps: { bid: "bid" },
       });
       rendered.rerender({ bid: "bid" });
@@ -184,7 +187,7 @@ describe("group hooks", () => {
     });
 
     it("should create an error message when an exception occurs", async () => {
-      let notifyErrorMock = mockNotifyError();
+      const notifyErrorMock = mockNotifyError();
       listHistoryMock.mockImplementation(() => {
         throw new Error("test error");
       });

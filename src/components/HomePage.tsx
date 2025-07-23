@@ -23,7 +23,7 @@ function ServerProps({ node }: { node: any }) {
                   <ServerProps node={childNode} />
                 ) : typeof childNode === "string" &&
                   childNode.startsWith("http") ? (
-                  <a href={childNode} target="_blank">
+                  <a href={childNode} target="_blank" rel="noreferrer">
                     {childNode}
                   </a>
                 ) : (
@@ -72,19 +72,17 @@ export function HomePage() {
 
     // Check for an incoming authentication.
     try {
-      let {
+      const {
         server,
         authType,
         redirectURL: redirectURLRaw,
       } = JSON.parse(atob(payload));
-      let decodedToken = decodeURIComponent(token);
+      const decodedToken = decodeURIComponent(token);
 
       let authData: OpenIDAuth; // | OtherAuthType;
 
       if (authType.startsWith("openid-")) {
         const provider = authType.split("-")[1]; // eg. `"openid-auth0"`.
-        authType = "openid";
-        let tokenType;
         let parsedToken;
         let expiresAt;
         try {
@@ -99,13 +97,13 @@ export function HomePage() {
           }
         }
 
-        tokenType = parsedToken.token_type;
+        const tokenType = parsedToken.token_type;
         if (parsedToken.expires_in) {
           expiresAt = new Date().getTime() + parsedToken.expires_in * 1000;
         }
 
         authData = {
-          authType,
+          authType: "openid",
           server,
           provider,
           tokenType,

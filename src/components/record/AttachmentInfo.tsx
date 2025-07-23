@@ -32,7 +32,7 @@ export function extendSchemaWithAttachment(
   // On forms, there is no need to have the "attachment" attribute fields. They
   // are shown in the attachment infos, and all assigned by the server automatically
   // on file upload.
-  let schemaProperties = omit(schema.properties, ["attachment"]);
+  const schemaProperties = omit(schema.properties, ["attachment"]);
 
   return {
     ...schema,
@@ -71,7 +71,7 @@ function AttachmentPreview({ mimetype, location }) {
   } else {
     return (
       <div className="attachment-img">
-        <a href={location} target="_blank">
+        <a href={location} target="_blank" rel="noreferrer">
           <img src={location} />
         </a>
       </div>
@@ -138,7 +138,7 @@ export function AttachmentInfo(props: AttachmentInfoProps) {
               <tr>
                 <th>Location</th>
                 <td>
-                  <a href={attachmentURL} target="_blank">
+                  <a href={attachmentURL} target="_blank" rel="noreferrer">
                     {attachment.location}
                   </a>
                 </td>

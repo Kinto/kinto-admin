@@ -35,7 +35,7 @@ describe("HomePage component", () => {
     describe("After OpenID redirection", () => {
       it("should setup session when component is mounted", () => {
         vi.useFakeTimers();
-        let fakeDate = new Date(2024, 1, 2, 3, 4, 5, 6);
+        const fakeDate = new Date(2024, 1, 2, 3, 4, 5, 6);
         vi.setSystemTime(fakeDate);
 
         const payload =

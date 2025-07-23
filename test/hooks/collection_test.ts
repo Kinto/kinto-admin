@@ -41,7 +41,7 @@ describe("collection hooks", () => {
     });
 
     it("calls the API again if the bid, cid, or cacheBust values change", async () => {
-      let rendered = renderHook(
+      const rendered = renderHook(
         ({ bid, cid, cb }) => useCollection(bid, cid, cb),
         {
           initialProps: { bid: "bid", cid: "cid", cb: undefined },
@@ -107,7 +107,7 @@ describe("collection hooks", () => {
     });
 
     it("calls the API again if the bid, cid, or cacheBust values change", async () => {
-      let rendered = renderHook(
+      const rendered = renderHook(
         ({ bid, cid, cb }) => useCollectionPermissions(bid, cid, cb),
         {
           initialProps: { bid: "bid", cid: "cid", cb: undefined },
@@ -173,7 +173,7 @@ describe("collection hooks", () => {
     });
 
     it("calls the API again if the bid or cacheBust values change", async () => {
-      let rendered = renderHook(({ bid, cb }) => useCollectionList(bid, cb), {
+      const rendered = renderHook(({ bid, cb }) => useCollectionList(bid, cb), {
         initialProps: { bid: "bid", cb: undefined },
       });
       rendered.rerender({ bid: "bid" });
@@ -284,7 +284,7 @@ describe("collection hooks", () => {
 
     it("calls the API again if the bid or cacheBust values change", async () => {
       listHistoryMock.mockResolvedValue({ data: [] });
-      let rendered = renderHook(
+      const rendered = renderHook(
         ({ bid, cid, filters, cb }) =>
           useCollectionHistory(bid, cid, filters, cb),
         {

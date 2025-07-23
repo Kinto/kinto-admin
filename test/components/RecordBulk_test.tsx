@@ -7,7 +7,7 @@ import React from "react";
 
 describe("RecordBulk component", () => {
   describe("Schema defined", () => {
-    let createRecord = vi.fn();
+    const createRecord = vi.fn();
 
     beforeEach(() => {
       vi.spyOn(collectionHooks, "useCollection").mockReturnValue({

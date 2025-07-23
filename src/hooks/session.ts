@@ -13,9 +13,9 @@ import { useEffect, useState } from "react";
 
 const openPromises = {};
 
-let authState = makeObservable(undefined);
-let permissionState = makeObservable(undefined);
-let serverState = makeObservable(undefined);
+const authState = makeObservable(undefined);
+const permissionState = makeObservable(undefined);
+const serverState = makeObservable(undefined);
 
 export function setAuth(auth: AuthData) {
   addServer(

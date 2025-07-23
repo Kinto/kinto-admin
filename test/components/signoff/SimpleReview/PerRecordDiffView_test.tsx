@@ -139,7 +139,7 @@ describe("findChangeTypes", () => {
 
 describe("formatDiffHeader", () => {
   it("returns expected header based on provided records and displayFields", () => {
-    let getTextContent = props => {
+    const getTextContent = props => {
       return render(formatDiffHeader(props)).container.textContent;
     };
 

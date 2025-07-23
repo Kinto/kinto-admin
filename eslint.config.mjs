@@ -20,6 +20,8 @@ export default defineConfig([globalIgnores(["**/dist", "**/eslint.config.mjs", "
   extends: fixupConfigRules(compat.extends(
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:react/jsx-runtime",
+    "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "prettier",
   )),
@@ -44,13 +46,10 @@ export default defineConfig([globalIgnores(["**/dist", "**/eslint.config.mjs", "
   },
 
   rules: {
-    "prefer-const": "off",
-    "no-var": "off",
     "react-hooks/exhaustive-deps": "off",
-    "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/ban-ts-comment": "off",
-    "no-unused-vars": "off",
+    "react/prop-types": "off",
 
     "@typescript-eslint/no-unused-vars": ["error", {
       vars: "all",
@@ -58,7 +57,5 @@ export default defineConfig([globalIgnores(["**/dist", "**/eslint.config.mjs", "
       varsIgnorePattern: "^_",
       caughtErrorsIgnorePattern: "^_",
     }],
-
-    "no-console": "off",
   },
 }]);

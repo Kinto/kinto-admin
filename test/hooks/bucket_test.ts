@@ -38,7 +38,7 @@ describe("bucket hooks", () => {
     });
 
     it("calls the API again if the bid or cacheBust values change", async () => {
-      let rendered = renderHook(({ bid, cb }) => useBucket(bid, cb), {
+      const rendered = renderHook(({ bid, cb }) => useBucket(bid, cb), {
         initialProps: { bid: "bid", cb: undefined },
       });
       rendered.rerender({ bid: "bid" });
@@ -95,7 +95,7 @@ describe("bucket hooks", () => {
     });
 
     it("calls the API again if the bid or cacheBust values change", async () => {
-      let rendered = renderHook(
+      const rendered = renderHook(
         ({ bid, cb }) => useBucketPermissions(bid, cb),
         { initialProps: { bid: "bid", cb: undefined } }
       );
@@ -191,7 +191,7 @@ describe("bucket hooks", () => {
     });
 
     it("should create an error message when an exception occurs", async () => {
-      let notifyErrorMock = mockNotifyError();
+      const notifyErrorMock = mockNotifyError();
       listHistoryMock.mockImplementation(() => {
         throw new Error("test error");
       });

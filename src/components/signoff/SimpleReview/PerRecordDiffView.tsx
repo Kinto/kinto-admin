@@ -175,9 +175,9 @@ export function formatDiffHeader({
   target: ValidRecord;
   displayFields: string[];
 }) {
-  let fields = [];
+  const fields = [];
 
-  for (let f of displayFields) {
+  for (const f of displayFields) {
     fields.push(
       <span>
         <label>{f}:</label> {renderDisplayField(target || source, f)}
@@ -215,16 +215,16 @@ export function findChangeTypes(
     newItems = newItems.map(r => omit(r, fieldsToOmit));
   }
 
-  let result: Array<RecordChange> = [];
+  const result: Array<RecordChange> = [];
 
   const differences = diffArrays(
     oldItems.map(r => r.id).sort(),
     newItems.map(r => r.id).sort()
   );
 
-  for (let d of differences) {
+  for (const d of differences) {
     if (d.added) {
-      for (let id of d.value) {
+      for (const id of d.value) {
         result.push({
           id,
           target: newItems.find(r => r.id === id),
@@ -232,7 +232,7 @@ export function findChangeTypes(
         });
       }
     } else if (d.removed) {
-      for (let id of d.value) {
+      for (const id of d.value) {
         result.push({
           id,
           source: oldItems.find(r => r.id === id),

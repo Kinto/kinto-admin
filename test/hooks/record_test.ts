@@ -37,7 +37,7 @@ describe("record hooks", () => {
     });
 
     it("calls the API again if the bid, cid, rid, or cacheBust values change", async () => {
-      let rendered = renderHook(
+      const rendered = renderHook(
         ({ bid, cid, rid, cb }) => useRecord(bid, cid, rid, cb),
         { initialProps: { bid: "bid", cid: "cid", rid: "rid", cb: undefined } }
       );
@@ -134,7 +134,7 @@ describe("record hooks", () => {
     });
 
     it("calls the API again if any parameters change", async () => {
-      let rendered = renderHook(
+      const rendered = renderHook(
         ({ bid, cid, sort, cb }) => useRecordList(bid, cid, sort, false, cb),
         {
           initialProps: { bid: "bid", cid: "cid", sort: "sort", cb: undefined },

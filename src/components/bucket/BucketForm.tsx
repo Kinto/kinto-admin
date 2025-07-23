@@ -70,7 +70,7 @@ export default function BucketForm() {
   const alert =
     formIsEditable || !bucket ? null : (
       <div className="alert alert-warning">
-        You don't have the required permission to edit this bucket.
+        You don&apos;t have the required permission to edit this bucket.
       </div>
     );
 

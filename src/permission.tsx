@@ -316,7 +316,7 @@ export function preparePermissionsForm(
   const groupSchema = {
     "ui:classNames": "field-groups",
   };
-  for (let group of groups) {
+  for (const group of groups) {
     groupSchema[group.id] = { "ui:widget": "checkboxes" };
   }
 

@@ -34,7 +34,7 @@ export function useBucket(
   return val;
 }
 
-let bucketListCacheVal = makeObservable(0);
+const bucketListCacheVal = makeObservable(0);
 
 export function reloadBuckets() {
   bucketListCacheVal.set(bucketListCacheVal.get() + 1);
@@ -62,13 +62,13 @@ async function fetchBuckets(permissions, userBucket, setVal) {
   try {
     const bucketData = (await client.listBuckets()).data;
     const collectionData = await client.batch(batch => {
-      for (let { id } of bucketData) {
+      for (const { id } of bucketData) {
         batch.bucket(id == userBucket ? "default" : id).listCollections();
       }
     });
 
     // BucketEntry[]
-    let buckets = bucketData.map((bucket, index) => {
+    const buckets = bucketData.map((bucket, index) => {
       // Initialize received collections with default permissions and readonly
       // information.
       const { data: rawCollections } = collectionData[index].body;

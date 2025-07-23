@@ -82,7 +82,7 @@ describe("CollectionRecords component", () => {
     });
 
     it("should apply live filtering", () => {
-      let quickFilter = screen.getByTestId("quickFilter");
+      const quickFilter = screen.getByTestId("quickFilter");
       fireEvent.change(quickFilter, {
         target: { value: "bar" },
       });

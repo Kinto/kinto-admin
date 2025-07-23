@@ -135,7 +135,7 @@ describe("notifications hooks", () => {
     notifyError("Test error");
 
     await vi.waitFor(() => {
-      let match = [
+      const match = [
         { message: "Test info" },
         { message: "Test warn" },
         { message: "Test error" },
@@ -148,7 +148,7 @@ describe("notifications hooks", () => {
     removeNotification(1);
 
     await vi.waitFor(() => {
-      let match = [{ message: "Test info" }, { message: "Test error" }];
+      const match = [{ message: "Test info" }, { message: "Test error" }];
       expect(result1.current).toMatchObject(match);
       expect(result2.current).toMatchObject(match);
       expect(result3.current).toMatchObject(match);

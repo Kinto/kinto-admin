@@ -108,7 +108,7 @@ export default function GroupForm() {
   const alert =
     formIsEditable || !group ? null : (
       <div className="alert alert-warning">
-        You don't have the required permission to edit this group.
+        You don&apos;t have the required permission to edit this group.
       </div>
     );
 

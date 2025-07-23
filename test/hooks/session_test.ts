@@ -134,7 +134,7 @@ describe("session hooks", () => {
     });
 
     it("should return undefined if serverInfo isn't loaded yet", async () => {
-      let { result } = renderHook(() => usePermissions());
+      const { result } = renderHook(() => usePermissions());
       expect(result.current).toBeUndefined();
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 10)));
       expect(result.current).toBeUndefined();
@@ -144,11 +144,11 @@ describe("session hooks", () => {
       serverInfoResult.capabilities = {
         permissions_endpoint: true,
       };
-      let { result: serverInfo } = renderHook(() => useServerInfo());
+      const { result: serverInfo } = renderHook(() => useServerInfo());
       await vi.waitFor(() => {
         expect(serverInfo.current).not.toBeUndefined();
       });
-      let { result } = renderHook(() => usePermissions());
+      const { result } = renderHook(() => usePermissions());
       renderHook(() => usePermissions());
       renderHook(() => usePermissions());
       renderHook(() => usePermissions());
@@ -160,12 +160,12 @@ describe("session hooks", () => {
     });
 
     it("should call notifyInfo if the permissions endpoint is not enabled", async () => {
-      let { result: serverInfo } = renderHook(() => useServerInfo());
+      const { result: serverInfo } = renderHook(() => useServerInfo());
       await vi.waitFor(() => {
         expect(serverInfo.current).not.toBeUndefined();
       });
       const notifyInfoMock = mockNotifyInfo();
-      let { result } = renderHook(() => usePermissions());
+      const { result } = renderHook(() => usePermissions());
       await vi.waitFor(() => {
         expect(result.current).toStrictEqual([]);
       });
@@ -173,13 +173,13 @@ describe("session hooks", () => {
     });
 
     it("should call notifyError if a client error is thrown", async () => {
-      let { result: serverInfo } = renderHook(() => useServerInfo());
+      const { result: serverInfo } = renderHook(() => useServerInfo());
       await vi.waitFor(() => {
         expect(serverInfo.current).not.toBeUndefined();
       });
       const notifyErrorMock = mockNotifyError();
       listPermissionsMock.mockRejectedValue(new Error("Test foo"));
-      let { result } = renderHook(() => usePermissions());
+      const { result } = renderHook(() => usePermissions());
       await vi.waitFor(() => {
         expect(result.current).toStrictEqual([]);
       });
@@ -199,7 +199,7 @@ describe("session hooks", () => {
     });
 
     it("should call the server info endpoint once for all components and return the expected result", async () => {
-      let { result } = renderHook(() => useServerInfo());
+      const { result } = renderHook(() => useServerInfo());
       renderHook(() => useServerInfo());
       renderHook(() => useServerInfo());
       renderHook(() => useServerInfo());
