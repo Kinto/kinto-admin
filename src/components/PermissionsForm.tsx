@@ -41,7 +41,7 @@ export function PermissionsForm({
     );
   }
   const formData = permissionsToFormData(bid, permissions);
-  const { schema, uiSchema } = preparePermissionsForm(acls, groups);
+  const { schema, uiSchema } = preparePermissionsForm(acls, groups.data);
   return (
     <BaseForm
       className="permissions-form"
