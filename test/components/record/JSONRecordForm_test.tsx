@@ -10,6 +10,13 @@ const testAttachment = {
   mimetype: "image/jpeg",
 };
 
+function getCodeMirrorValue(container) {
+  const lines = Array.from(container.querySelectorAll(".cm-line"))
+    .map(el => el.textContent)
+    .filter(Boolean);
+  return lines.join("\n");
+}
+
 describe("JSONRecordForm", () => {
   let lastSubmittedData = null;
   const submitMock = data => {
@@ -17,31 +24,33 @@ describe("JSONRecordForm", () => {
   };
 
   it("Renders an empty form for a new record (attachments disabled)", async () => {
-    render(
+    const { container } = render(
       <JSONRecordForm disabled={false} record="{}" onSubmit={submitMock} />
     );
-    expect(screen.queryByLabelText("JSON record").value).toBe("{}");
+    const value = getCodeMirrorValue(container);
+
+    expect(value).toBe("{}");
     fireEvent.click(screen.queryByText("Submit"));
     expect(lastSubmittedData.formData).toStrictEqual({});
   });
 
   it("Renders the expected form for an existing record (attachments disabled)", async () => {
-    render(
+    const { container } = render(
       <JSONRecordForm
         disabled={false}
         record='{ "foo": "bar" }'
         onSubmit={submitMock}
       />
     );
-    expect(screen.queryByLabelText("JSON record").value).toBe(
-      '{ "foo": "bar" }'
-    );
+    const value = getCodeMirrorValue(container);
+
+    expect(value).toBe('{ "foo": "bar" }');
     fireEvent.click(screen.queryByText("Submit"));
     expect(lastSubmittedData.formData).toStrictEqual({ foo: "bar" });
   });
 
   it("Renders an empty form for a new record (attachments enabled)", async () => {
-    render(
+    const { container } = render(
       <JSONRecordForm
         disabled={false}
         record="{}"
@@ -49,7 +58,9 @@ describe("JSONRecordForm", () => {
         attachmentEnabled={true}
       />
     );
-    expect(screen.queryByLabelText("JSON record*").value).toBe("{}");
+    const value = getCodeMirrorValue(container);
+
+    expect(value).toBe("{}");
     expect(screen.queryByLabelText("File attachment")).toBeDefined();
     fireEvent.click(screen.queryByText("Submit"));
     expect(lastSubmittedData.formData).toStrictEqual({
@@ -59,7 +70,7 @@ describe("JSONRecordForm", () => {
   });
 
   it("Renders the expected form for an existing record (attachments enabled)", async () => {
-    render(
+    const { container } = render(
       <JSONRecordForm
         disabled={false}
         record='{ "foo": "bar" }'
@@ -67,7 +78,9 @@ describe("JSONRecordForm", () => {
         attachmentEnabled={true}
       />
     );
-    expect(screen.queryByLabelText("JSON record*").value).toBe('{"foo":"bar"}');
+    const value = getCodeMirrorValue(container);
+
+    expect(value).toBe('{\n  "foo": "bar"\n}');
     expect(screen.queryByLabelText("File attachment")).toBeDefined();
     fireEvent.click(screen.queryByText("Submit"));
     expect(lastSubmittedData.formData).toStrictEqual({
@@ -78,7 +91,7 @@ describe("JSONRecordForm", () => {
   });
 
   it("Returns the previous attachment data when updating an existing record and not changing the attachment", async () => {
-    render(
+    const { container } = render(
       <JSONRecordForm
         disabled={false}
         record={JSON.stringify({
@@ -89,7 +102,9 @@ describe("JSONRecordForm", () => {
         attachmentEnabled={true}
       />
     );
-    expect(screen.queryByLabelText("JSON record*").value).toBe('{"foo":"bar"}');
+    const value = getCodeMirrorValue(container);
+
+    expect(value).toBe('{\n  "foo": "bar"\n}');
     expect(screen.queryByLabelText("File attachment")).toBeDefined();
     fireEvent.click(screen.queryByText("Submit"));
     expect(lastSubmittedData.formData).toStrictEqual({
@@ -101,7 +116,7 @@ describe("JSONRecordForm", () => {
 
   it("Requires an attachment to submit when told attachmentRequired and attachmentEnabled are true", async () => {
     lastSubmittedData = null;
-    render(
+    const { container } = render(
       <JSONRecordForm
         disabled={false}
         record='{ "foo": "bar" }'
@@ -110,23 +125,24 @@ describe("JSONRecordForm", () => {
         attachmentRequired={true}
       />
     );
-    expect(screen.queryByLabelText("JSON record*").value).toBe('{"foo":"bar"}');
+    const value = getCodeMirrorValue(container);
+
+    expect(value).toBe('{\n  "foo": "bar"\n}');
     expect(screen.queryByLabelText("File attachment")).toBeDefined();
     fireEvent.click(screen.queryByText("Submit"));
     expect(lastSubmittedData).toBeNull();
   });
 
   it("Disables the form when disabled is true", async () => {
-    render(
+    const { container } = render(
       <JSONRecordForm
         disabled={true}
         record='{ "foo": "bar" }'
         onSubmit={submitMock}
       />
     );
-    const input = screen.queryByLabelText("JSON record");
-    expect(input.value).toBe('{ "foo": "bar" }');
-    expect(input.disabled).toBe(true);
+    const value = container.querySelector("pre").textContent;
+    expect(value).toBe('{ "foo": "bar" }');
     expect(screen.queryByText("Submit").disabled).toBe(true);
   });
 });
