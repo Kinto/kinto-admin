@@ -55,8 +55,11 @@ export default function RecordForm() {
   }
 
   const { schema = {}, uiSchema = {}, attachment } = collection;
+  const collectionAttachmentEnabled = attachment?.enabled;
+  const serverAttachmentEnabled = !!serverInfo?.capabilities.attachments;
+
   const attachmentConfig = {
-    enabled: attachment?.enabled,
+    enabled: collectionAttachmentEnabled && serverAttachmentEnabled,
     required: attachment?.required && !record?.data?.attachment, // allows records to be edited without requiring a new attachment to be uploaded
   };
 
@@ -221,20 +224,35 @@ export default function RecordForm() {
       </div>
     );
 
+  let attachmentInfo = null;
+  if (collectionAttachmentEnabled) {
+    if (serverAttachmentEnabled) {
+      if (isUpdate) {
+        attachmentInfo = (
+          <AttachmentInfo
+            allowEditing={allowEditing}
+            capabilities={serverInfo?.capabilities}
+            record={record}
+            attachmentRequired={attachment?.required}
+            callback={() => {
+              setCacheVal(cacheVal + 1);
+            }}
+          />
+        );
+      }
+    } else {
+      attachmentInfo = (
+        <div className="alert alert-warning">
+          Attachments are not enabled on this server.
+        </div>
+      );
+    }
+  }
+
   return (
     <div>
       {alert}
-      {isUpdate && attachmentConfig.enabled && (
-        <AttachmentInfo
-          allowEditing={allowEditing}
-          capabilities={serverInfo?.capabilities}
-          record={record}
-          attachmentRequired={attachment?.required}
-          callback={() => {
-            setCacheVal(cacheVal + 1);
-          }}
-        />
-      )}
+      {attachmentInfo}
       {getForm()}
     </div>
   );

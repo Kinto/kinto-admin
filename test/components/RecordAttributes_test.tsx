@@ -1,6 +1,9 @@
 import * as client from "@src/client";
 import RecordAttributes from "@src/components/record/RecordAttributes";
-import { DEFAULT_SERVERINFO } from "@src/constants";
+import {
+  DEFAULT_SERVERINFO,
+  SERVERINFO_WITH_ATTACHMENTS_CAPABILITY,
+} from "@src/constants";
 import * as collectionHooks from "@src/hooks/collection";
 import * as recordHooks from "@src/hooks/record";
 import * as sessionHooks from "@src/hooks/session";
@@ -37,7 +40,9 @@ describe("RecordAttributes component", () => {
 
   beforeEach(() => {
     canEditRecord.mockReturnValue(true);
-    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(DEFAULT_SERVERINFO);
+    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(
+      SERVERINFO_WITH_ATTACHMENTS_CAPABILITY
+    );
     vi.spyOn(recordHooks, "useRecord").mockReturnValue({
       data: { id: "abc", last_modified: 123, foo: "bar" },
     });
@@ -131,6 +136,34 @@ describe("RecordAttributes component", () => {
           screen.getByTestId("attachmentInfo-currentSize").textContent
         ).toBe("100 kB");
       });
+    });
+  });
+
+  describe("Attachment warning shown", () => {
+    const record = {
+      data: {
+        id: "abc",
+        foo: "bar",
+        attachment: {
+          location: "path/file.png",
+          mimetype: "image/png",
+          size: 12345,
+        },
+      },
+    };
+
+    beforeEach(() => {
+      vi.spyOn(recordHooks, "useRecord").mockReturnValueOnce(record);
+      vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(
+        DEFAULT_SERVERINFO
+      );
+      renderWithRouter(<RecordAttributes />, routeProps);
+    });
+
+    it("should show a warning that server does not support attachments", () => {
+      expect(
+        screen.getByText("Attachments are not enabled on this server.")
+      ).toBeDefined();
     });
   });
 
