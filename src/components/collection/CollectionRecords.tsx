@@ -97,7 +97,11 @@ export default function CollectionRecords() {
             }}
           />
         )}
-        {listActions}
+        {
+          records.data?.length > 10
+            ? listActions
+            : null /* Show actions in bottom only if there are more than 10 records */
+        }
       </CollectionTabs>
     </div>
   );
