@@ -32,6 +32,22 @@ h1 {
   margin-bottom: 20px;
 }
 
+.btn.toggle-sidebar {
+  padding-left: 0px;
+  padding-top: 0px;
+  padding-right: 0.2rem;
+  vertical-align: unset;
+  font-size: 1.2em;
+}
+
+.btn.toggle-sidebar:focus {
+  box-shadow: none;
+}
+
+nav.breadcrumbs {
+  display: inline-block;
+}
+
 .card.panel-info .card-header {
   background-color: #cce5ff;
   border-color: #b8daff;

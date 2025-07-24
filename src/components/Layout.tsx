@@ -24,13 +24,23 @@ import RecordCreate from "@src/components/record/RecordCreate";
 import RecordHistory from "@src/components/record/RecordHistory";
 import { RecordPermissions } from "@src/components/record/RecordPermissions";
 import SimpleReview from "@src/components/signoff/SimpleReview";
+import { usePreferences } from "@src/hooks/preferences";
 import { useServerInfo } from "@src/hooks/session";
 import * as React from "react";
+import { LayoutSidebar, LayoutSidebarInset } from "react-bootstrap-icons";
 import { Navigate, Route, Routes } from "react-router";
 
 export function Layout() {
   const serverInfo = useServerInfo();
-  const contentClasses = `col-sm-9 content`;
+
+  const [preferences, setPreferences] = usePreferences();
+  const { showSidebar } = preferences;
+
+  const toggleSideBar = () => {
+    setPreferences({ ...preferences, showSidebar: !preferences.showSidebar });
+  };
+
+  const contentClasses = `col-sm-${showSidebar ? 9 : 12} content`;
   const version = KINTO_ADMIN_VERSION;
 
   if (!serverInfo) {
@@ -55,16 +65,25 @@ export function Layout() {
       <SessionInfoBar />
       <div className="container-fluid main">
         <div className="row">
-          <div className="col-sm-3 sidebar">
-            <Routes>
-              <Route
-                path="/buckets?/:bid?/collections?/:cid?/*"
-                Component={Sidebar}
-              />
-            </Routes>
-          </div>
+          {showSidebar ? (
+            <div className="col-sm-3 sidebar">
+              <Routes>
+                <Route
+                  path="/buckets?/:bid?/collections?/:cid?/*"
+                  Component={Sidebar}
+                />
+              </Routes>
+            </div>
+          ) : null}
           <div className={contentClasses}>
             <Notifications />
+            <button className={"btn toggle-sidebar"} onClick={toggleSideBar}>
+              {showSidebar ? (
+                <LayoutSidebar className="icon" />
+              ) : (
+                <LayoutSidebarInset className="icon" />
+              )}
+            </button>
             <Breadcrumbs separator=" / " />
             <Routes>
               <Route path="/" Component={HomePage} />
