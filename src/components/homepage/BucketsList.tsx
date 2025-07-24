@@ -15,7 +15,7 @@ import {
   PersonFill,
 } from "react-bootstrap-icons";
 
-function ListActions({ busy }) {
+export function ListActions({ busy }) {
   const permissions = usePermissions();
   if (busy || !canCreateBucket(permissions)) {
     return null;
