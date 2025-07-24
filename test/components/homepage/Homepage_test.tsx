@@ -1,4 +1,4 @@
-import { HomePage } from "@src/components/HomePage";
+import { HomePage } from "@src/components/homepage/HomePage";
 import { DEFAULT_SERVERINFO } from "@src/constants";
 import * as sessionHooks from "@src/hooks/session";
 import * as localStore from "@src/store/localStore";

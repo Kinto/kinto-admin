@@ -1,6 +1,6 @@
+import Spinner from "../Spinner";
 import AuthForm from "./AuthForm";
 import HomePageTabs from "./HomePageTabs";
-import Spinner from "./Spinner";
 import { notifyError } from "@src/hooks/notifications";
 import { setAuth, useAuth, useServerInfo } from "@src/hooks/session";
 import type { OpenIDAuth } from "@src/types";

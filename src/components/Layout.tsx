@@ -1,7 +1,6 @@
 import Breadcrumbs from "./Breadcrumbs";
 import { SessionInfoBar } from "./SessionInfoBar";
-import BucketsList from "@src/components/BucketsList";
-import { HomePage } from "@src/components/HomePage";
+import { HomePage } from "@src/components/homepage/HomePage";
 import Notifications from "@src/components/Notifications";
 import { Sidebar } from "@src/components/Sidebar";
 import BucketAttributes from "@src/components/bucket/BucketAttributes";
@@ -19,6 +18,7 @@ import GroupAttributes from "@src/components/group/GroupAttributes";
 import GroupCreate from "@src/components/group/GroupCreate";
 import GroupHistory from "@src/components/group/GroupHistory";
 import { GroupPermissions } from "@src/components/group/GroupPermissions";
+import BucketsList from "@src/components/homepage/BucketsList";
 import RecordAttributes from "@src/components/record/RecordAttributes";
 import RecordBulk from "@src/components/record/RecordBulk";
 import RecordCreate from "@src/components/record/RecordCreate";

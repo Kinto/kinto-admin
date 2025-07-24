@@ -1,5 +1,5 @@
+import Spinner from "../Spinner";
 import HomePageTabs from "./HomePageTabs";
-import Spinner from "./Spinner";
 import AdminLink from "@src/components/AdminLink";
 import PaginatedTable from "@src/components/PaginatedTable";
 import { useBucketList } from "@src/hooks/bucket";
