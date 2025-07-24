@@ -202,7 +202,6 @@ table.record-list td.lastmod {
 table.record-list td.actions {
   min-width: 110px;
   width: 110px;
-  max-width: 110px;
   padding: 0.5em 0;
   text-align: center;
 }

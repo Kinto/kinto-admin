@@ -66,7 +66,7 @@ describe("HomePage component", () => {
       mockUseServerInfo.mockReturnValue(DEFAULT_SERVERINFO);
       renderWithRouter(<HomePage />);
 
-      expect(screen.getByText("Server information").textContent).toBeDefined();
+      expect(screen.getByText("Properties").textContent).toBeDefined();
       vi.waitFor(() => {
         expect(
           [].map.call(screen.getAllByTestId("home-th"), x => x.textContent)

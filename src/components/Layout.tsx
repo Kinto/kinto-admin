@@ -1,5 +1,6 @@
 import Breadcrumbs from "./Breadcrumbs";
 import { SessionInfoBar } from "./SessionInfoBar";
+import BucketsList from "@src/components/BucketsList";
 import { HomePage } from "@src/components/HomePage";
 import Notifications from "@src/components/Notifications";
 import { Sidebar } from "@src/components/Sidebar";
@@ -68,6 +69,7 @@ export function Layout() {
             <Breadcrumbs separator=" / " />
             <Routes>
               <Route path="/" Component={HomePage} />
+              <Route path="/buckets" Component={BucketsList} />
               <Route path="/auth/:payload/:token" Component={HomePage} />
               {/* /buckets */}
               <Route path="/buckets" element={<Navigate to="/" replace />} />
