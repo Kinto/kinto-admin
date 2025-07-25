@@ -66,7 +66,7 @@ export function Layout() {
       <div className="container-fluid main">
         <div className="row">
           {showSidebar ? (
-            <div className="col-sm-3 sidebar">
+            <div className="col-sm-3 sidebar" data-testid="sidebar-panel">
               <Routes>
                 <Route
                   path="/buckets?/:bid?/collections?/:cid?/*"
@@ -77,7 +77,11 @@ export function Layout() {
           ) : null}
           <div className={contentClasses}>
             <Notifications />
-            <button className={"btn toggle-sidebar"} onClick={toggleSideBar}>
+            <button
+              data-testid="sidebar-toggle"
+              className={"btn toggle-sidebar"}
+              onClick={toggleSideBar}
+            >
               {showSidebar ? (
                 <LayoutSidebar className="icon" />
               ) : (

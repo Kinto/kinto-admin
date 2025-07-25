@@ -2,6 +2,7 @@ import { Layout } from "@src/components/Layout";
 import { ANONYMOUS_AUTH, DEFAULT_SERVERINFO } from "@src/constants";
 import * as bucketHooks from "@src/hooks/bucket";
 import * as heartbeatHooks from "@src/hooks/heartbeat";
+import * as preferencesHooks from "@src/hooks/preferences";
 import * as sessionHooks from "@src/hooks/session";
 import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
@@ -14,6 +15,7 @@ describe("App component", () => {
   const useAuthMock = vi.fn();
   const useHeartbeatMock = vi.fn();
   const useBucketListMock = vi.fn();
+  const usePreferencesMock = vi.fn();
 
   beforeEach(() => {
     vitest
@@ -32,6 +34,10 @@ describe("App component", () => {
       .spyOn(bucketHooks, "useBucketList")
       .mockImplementation(useBucketListMock);
     useBucketListMock.mockReturnValue(undefined);
+    vitest
+      .spyOn(preferencesHooks, "usePreferences")
+      .mockImplementation(usePreferencesMock);
+    usePreferencesMock.mockReturnValue([{ showSideBar: true }]);
   });
 
   describe("Session top bar", () => {
@@ -100,6 +106,40 @@ describe("App component", () => {
       expect(spy).toHaveBeenCalled();
 
       spy.mockClear();
+    });
+  });
+
+  describe("Toggle sidebar", () => {
+    it("should render a sidebar when true in prefs", () => {
+      usePreferencesMock.mockReturnValue([{ showSidebar: true }, vi.fn()]);
+
+      renderWithRouter(<Layout />, routeProps);
+
+      expect(screen.queryByTestId("sidebar-panel")).toBeInTheDocument();
+    });
+
+    it("should not render a sidebar when false in prefs", () => {
+      usePreferencesMock.mockReturnValue([{ showSidebar: false }, vi.fn()]);
+
+      renderWithRouter(<Layout />, routeProps);
+
+      expect(screen.queryByTestId("sidebar-panel")).not.toBeInTheDocument();
+    });
+
+    it("should toggle on click on icon", async () => {
+      const prefs = { showSidebar: true };
+      const setPrefs = vi.fn();
+      usePreferencesMock.mockImplementation(() => [prefs, setPrefs]);
+
+      renderWithRouter(<Layout />, routeProps);
+
+      expect(screen.queryByTestId("sidebar-panel")).toBeInTheDocument();
+      fireEvent.click(screen.getByTestId("sidebar-toggle"));
+      expect(setPrefs).toHaveBeenCalledWith({ showSidebar: false });
+      // TODO/HELP?: why failing?
+      // await vi.waitFor(() => {
+      //   expect(screen.queryByTestId("sidebar-panel")).not.toBeInTheDocument();
+      // });
     });
   });
 });

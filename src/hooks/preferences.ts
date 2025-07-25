@@ -2,9 +2,8 @@ import { loadPreferences, savePreferences } from "@src/store/localStore";
 import { Preferences } from "@src/types";
 import { useCallback, useEffect, useState } from "react";
 
-
 const DEFAULT_PREFERENCES: Preferences = {
-    showSidebar: true,
+  showSidebar: true,
 };
 
 export function usePreferences(): [
@@ -15,9 +14,10 @@ export function usePreferences(): [
 
   useEffect(() => {
     loadPreferences().then(prefs => {
-        if (prefs) {  // Only if loaded successfully.
-            setVal(prefs);
-        };
+      if (prefs) {
+        // Only if loaded successfully.
+        setVal(prefs);
+      }
     });
   }, []);
 
