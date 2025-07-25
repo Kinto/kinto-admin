@@ -1,11 +1,8 @@
-  {
-    "compilerOptions": {
-      "sourceMap": true,
-      "composite": true,
-      "skipLibCheck": true,
-      "module": "ESNext",
-      "moduleResolution": "bundler",
-      "allowSyntheticDefaultImports": true
-    },
-    "include": ["vite.config.ts"]
-  }
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "sourceMap": true
+  },
+  "include": ["vite.config.ts"]
+}
