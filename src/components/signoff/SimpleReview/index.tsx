@@ -12,10 +12,10 @@ import { useAuth, usePermissions, useServerInfo } from "@src/hooks/session";
 import { useSignoff } from "@src/hooks/signoff";
 import { storageKeys, useLocalStorage } from "@src/hooks/storage";
 import { canEditCollection } from "@src/permission";
+import type { ValidRecord } from "@src/types";
 import React from "react";
 import { Shuffle } from "react-bootstrap-icons";
 import { Navigate, useNavigate, useParams } from "react-router";
-import type { ValidRecord } from "@src/types";
 
 export default function SimpleReview() {
   const { bid, cid } = useParams();
@@ -166,11 +166,7 @@ export default function SimpleReview() {
         </b>{" "}
         Changes
       </h1>
-      <CollectionTabs
-        bid={bid}
-        cid={cid}
-        selected="simple-review"
-      >
+      <CollectionTabs bid={bid} cid={cid} selected="simple-review">
         {!oldRecords.data || !newRecords.data ? (
           <Spinner />
         ) : (
