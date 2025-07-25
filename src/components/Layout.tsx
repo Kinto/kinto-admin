@@ -1,6 +1,5 @@
 import Breadcrumbs from "./Breadcrumbs";
 import { SessionInfoBar } from "./SessionInfoBar";
-import { HomePage } from "@src/components/HomePage";
 import Notifications from "@src/components/Notifications";
 import { Sidebar } from "@src/components/Sidebar";
 import BucketAttributes from "@src/components/bucket/BucketAttributes";
@@ -18,6 +17,8 @@ import GroupAttributes from "@src/components/group/GroupAttributes";
 import GroupCreate from "@src/components/group/GroupCreate";
 import GroupHistory from "@src/components/group/GroupHistory";
 import { GroupPermissions } from "@src/components/group/GroupPermissions";
+import BucketsList from "@src/components/homepage/BucketsList";
+import { HomePage } from "@src/components/homepage/HomePage";
 import RecordAttributes from "@src/components/record/RecordAttributes";
 import RecordBulk from "@src/components/record/RecordBulk";
 import RecordCreate from "@src/components/record/RecordCreate";
@@ -68,6 +69,7 @@ export function Layout() {
             <Breadcrumbs separator=" / " />
             <Routes>
               <Route path="/" Component={HomePage} />
+              <Route path="/buckets" Component={BucketsList} />
               <Route path="/auth/:payload/:token" Component={HomePage} />
               {/* /buckets */}
               <Route path="/buckets" element={<Navigate to="/" replace />} />

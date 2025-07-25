@@ -1,4 +1,4 @@
-import { HomePage } from "@src/components/HomePage";
+import { HomePage } from "@src/components/homepage/HomePage";
 import { DEFAULT_SERVERINFO } from "@src/constants";
 import * as sessionHooks from "@src/hooks/session";
 import * as localStore from "@src/store/localStore";
@@ -66,7 +66,7 @@ describe("HomePage component", () => {
       mockUseServerInfo.mockReturnValue(DEFAULT_SERVERINFO);
       renderWithRouter(<HomePage />);
 
-      expect(screen.getByText("Server information").textContent).toBeDefined();
+      expect(screen.getByText("Properties").textContent).toBeDefined();
       vi.waitFor(() => {
         expect(
           [].map.call(screen.getAllByTestId("home-th"), x => x.textContent)

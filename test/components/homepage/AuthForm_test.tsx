@@ -1,5 +1,5 @@
 import * as client from "@src/client";
-import AuthForm from "@src/components/AuthForm";
+import AuthForm from "@src/components/homepage/AuthForm";
 import { DEFAULT_KINTO_SERVER, DEFAULT_SERVERINFO } from "@src/constants";
 import * as serverHooks from "@src/hooks/servers";
 import * as sessionHooks from "@src/hooks/session";
