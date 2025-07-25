@@ -20,7 +20,7 @@ export type Attachment = {
 export type ListResult<T> = {
   data?: T[];
   hasNextPage?: boolean;
-  next?: Promise<PaginationResult<T>> | null;
+  next?: () => Promise<PaginationResult<T>> | null;
 };
 
 export type ListHistoryResult = {
