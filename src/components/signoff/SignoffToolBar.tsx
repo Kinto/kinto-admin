@@ -320,7 +320,10 @@ function WorkInProgressInfos(props: WorkInProgressInfosProps) {
       {!isCurrentUrl && (
         <li>
           <strong>Source: </strong>
-          <AdminLink name="collection:records" params={{ bucket, collection }}>
+          <AdminLink
+            name="collection:records"
+            params={{ bid: bucket, cid: collection }}
+          >
             {`${bucket}/${collection}`}
           </AdminLink>
         </li>
