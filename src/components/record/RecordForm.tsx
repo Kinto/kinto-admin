@@ -14,6 +14,7 @@ import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { useRecord } from "@src/hooks/record";
 import { usePermissions, useServerInfo } from "@src/hooks/session";
 import { canCreateRecord, canEditRecord } from "@src/permission";
+import { LocalRecordData, RecordData } from "@src/types";
 import React, { useState } from "react";
 import { Check2, Trash } from "react-bootstrap-icons";
 import { useNavigate, useParams } from "react-router";
@@ -121,7 +122,9 @@ export default function RecordForm() {
 
   const getForm = () => {
     const emptySchema = Object.keys(schema).length === 0;
-    const recordData = record ? record.data : {};
+    const recordData = record
+      ? (record.data as RecordData)
+      : ({} as LocalRecordData);
 
     const buttons = (
       <div className="row record-form-buttons">

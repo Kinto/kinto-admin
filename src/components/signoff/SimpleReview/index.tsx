@@ -12,7 +12,7 @@ import { useAuth, usePermissions, useServerInfo } from "@src/hooks/session";
 import { useSignoff } from "@src/hooks/signoff";
 import { storageKeys, useLocalStorage } from "@src/hooks/storage";
 import { canEditCollection } from "@src/permission";
-import type { SignoffSourceInfo, ValidRecord } from "@src/types";
+import type { SignoffSourceInfo } from "@src/types";
 import React from "react";
 import { Shuffle } from "react-bootstrap-icons";
 import { Navigate, useNavigate, useParams } from "react-router";
@@ -142,8 +142,8 @@ export default function SimpleReview() {
           </SimpleReviewHeader>
         )}
         <PerRecordDiffView
-          oldRecords={(oldRecords.data || []) as ValidRecord[]}
-          newRecords={(newRecords.data || []) as ValidRecord[]}
+          oldRecords={oldRecords.data || []}
+          newRecords={newRecords.data || []}
           collectionData={signoffSource}
           displayFields={collection?.displayFields}
         />

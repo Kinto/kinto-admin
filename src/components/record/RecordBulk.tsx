@@ -11,6 +11,7 @@ import Spinner from "@src/components/Spinner";
 import { useCollection } from "@src/hooks/collection";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { useServerInfo } from "@src/hooks/session";
+import { LocalRecordData } from "@src/types";
 import React from "react";
 import { useNavigate, useParams } from "react-router";
 
@@ -58,7 +59,7 @@ export default function RecordBulk() {
       items: extendSchemaWithAttachment(
         collection?.schema,
         collection?.attachment,
-        {} /* as for create record */
+        {} as LocalRecordData /* as for create record */
       ),
     };
     bulkUiSchema = {

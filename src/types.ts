@@ -146,17 +146,19 @@ export type Permissions =
   | RecordPermissions;
 
 export type RecordData = {
-  id?: string;
-  last_modified?: number;
+  id: string;
+  last_modified: number;
   schema?: number;
   attachment?: Attachment;
   __attachment__?: string;
+  [key: string]: any;
 };
 
-export interface ValidRecord extends RecordData {
-  id: string;
-  [key: string]: any;
-}
+export type LocalRecordData = RecordData & {
+  // Local records don't have server fields yet.
+  id?: string;
+  last_modified?: number;
+};
 
 export type RecordPermissions = {
   write: string[];
