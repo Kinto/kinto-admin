@@ -30,7 +30,7 @@ jobs:
         run: npm run cs-check
 
       - name: Lint
-        run: npm run lint    
+        run: npm run eslint
   
   test:
     runs-on: ${{ matrix.os }}
