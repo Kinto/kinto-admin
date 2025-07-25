@@ -12,7 +12,12 @@ import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { usePermissions, useServerInfo } from "@src/hooks/session";
 import { useSignoff } from "@src/hooks/signoff";
 import { canEditCollection } from "@src/permission";
-import type { ChangesList, ServerInfo, SignoffSourceInfo } from "@src/types";
+import type {
+  ChangesList,
+  ServerInfo,
+  SignoffCollectionsInfo,
+  SignoffSourceInfo,
+} from "@src/types";
 import React, { useEffect, useState } from "react";
 import { ChatLeft, XCircleFill } from "react-bootstrap-icons";
 import { useParams } from "react-router";
@@ -117,12 +122,17 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
 
   const canEdit = canEditCollection(permissions, bid, cid);
 
-  if (!signoff?.source || !serverInfo?.capabilities?.signer) {
+  if (!serverInfo?.capabilities?.signer || !signoff) {
     return null;
   }
 
+  if (!("status" in signoff.source)) {
+    return <Spinner />;
+  }
+
+  // At this point, signoff is loaded (not null and with `status` field)
   const { source, destination, preview, changesOnSource, changesOnPreview } =
-    signoff;
+    signoff as SignoffCollectionsInfo;
 
   const canRequestReview = canEdit && isEditor(source, serverInfo);
 

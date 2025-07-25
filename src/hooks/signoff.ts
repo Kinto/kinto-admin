@@ -14,14 +14,16 @@ export function useSignoff(
   cid: string,
   signer: any,
   cacheBust?: number
-): SignoffCollectionsInfo {
+): SignerCapabilityResource | SignoffCollectionsInfo {
   const resource = _pickSignoffResource(signer, bid, cid);
-  const [val, setVal] = useState({});
+  const [val, setVal] = useState(null);
 
   useEffect(() => {
-    setVal(resource);
+    setVal(resource); // `null` or `SignerCapabilityResource`
     if (resource && resource.source) {
-      setVal(calculateChangesInfo(resource));
+      calculateChangesInfo(resource).then((infos: SignoffCollectionsInfo) =>
+        setVal(infos)
+      );
     }
   }, [resource?.source?.bucket, resource?.source?.collection, cacheBust]);
 
@@ -101,6 +103,11 @@ function _pickSignoffResource(
         (!destination.collection || destination.collection == cid))
     );
   })[0];
+  if (!resource) {
+    // No resource matching. Current collection is not concerned with signoff.
+    // Return explicit null instead of implicit undefined.
+    return null;
+  }
   // The whole UI expects to have collection information for source/preview/destination.
   // If configured by bucket, fill-up the missing attribute as if it would be configured
   // explicitly for this collection.

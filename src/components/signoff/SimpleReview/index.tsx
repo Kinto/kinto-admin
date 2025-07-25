@@ -12,7 +12,7 @@ import { useAuth, usePermissions, useServerInfo } from "@src/hooks/session";
 import { useSignoff } from "@src/hooks/signoff";
 import { storageKeys, useLocalStorage } from "@src/hooks/storage";
 import { canEditCollection } from "@src/permission";
-import type { ValidRecord } from "@src/types";
+import type { SignoffSourceInfo, ValidRecord } from "@src/types";
 import React from "react";
 import { Shuffle } from "react-bootstrap-icons";
 import { Navigate, useNavigate, useParams } from "react-router";
@@ -30,9 +30,8 @@ export default function SimpleReview() {
 
   const signoff = useSignoff(bid, cid, serverInfo?.capabilities?.signer);
   const navigate = useNavigate();
-  const signoffSource = signoff?.source;
-  const sourceBid = signoffSource?.bucket;
-  const sourceCid = signoffSource?.collection;
+  const sourceBid = signoff?.source?.bucket;
+  const sourceCid = signoff?.source?.collection;
 
   const signoffDest = signoff?.destination;
   const destBid = signoffDest?.bucket;
@@ -41,15 +40,9 @@ export default function SimpleReview() {
   const newRecords = useRecordList(sourceBid, sourceCid, "id", true);
   const oldRecords = useRecordList(destBid, destCid, "id", true);
 
-  const canReview = signoffSource
-    ? (isReviewer(signoffSource, serverInfo) &&
-        serverInfo?.user?.id !== signoffSource.lastReviewRequestBy) ||
-      !toReviewEnabled(serverInfo, signoffSource, signoffDest)
-    : false;
-
-  const canRequestReview =
-    canEditCollection(permissions, bid, cid) &&
-    isMember("editors_group", signoffSource, serverInfo);
+  if (!signoff) {
+    return null;
+  }
 
   if (!useSimpleReview) {
     return <Navigate to={`/buckets/${bid}/collections/${cid}/records`} />;
@@ -62,13 +55,26 @@ export default function SimpleReview() {
       </div>
     );
   } else if (
-    signoff?.source &&
-    !signoff.source.status &&
+    signoff?.source && // Always true
+    !("status" in signoff.source) && // "status" is set after loading.
     !newRecords?.data &&
     !oldRecords?.data
   ) {
     return <Spinner />;
   }
+
+  // At this point, signoff is loaded (not null and with `status` field)
+  const signoffSource = signoff.source as SignoffSourceInfo;
+
+  const canReview = signoffSource
+    ? (isReviewer(signoffSource, serverInfo) &&
+        serverInfo?.user?.id !== signoffSource.lastReviewRequestBy) ||
+      !toReviewEnabled(serverInfo, signoffSource, signoffDest)
+    : false;
+
+  const canRequestReview =
+    canEditCollection(permissions, bid, cid) &&
+    isMember("editors_group", signoffSource, serverInfo);
 
   const reviewAction = async patchedFields => {
     await getClient()
