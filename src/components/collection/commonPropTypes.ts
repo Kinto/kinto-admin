@@ -1,9 +1,5 @@
 import type { Capabilities } from "@src/types";
 
-export type CommonStateProps = {
+export type CommonProps = {
   capabilities: Capabilities;
-};
-
-export type CommonProps = CommonStateProps & {
-  deleteRecord: (rid: string, last_modified: number) => void;
 };

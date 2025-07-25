@@ -1,7 +1,10 @@
 import AdminLink from "../AdminLink";
 import HumanDate from "./HumanDate";
 import { ProgressStep } from "./ProgressBar";
-import type { DestinationInfo, SignoffSourceInfo } from "@src/types";
+import type {
+  SignerCapabilityResourceEntry,
+  SignoffSourceInfo,
+} from "@src/types";
 import React from "react";
 
 type SignedProps = {
@@ -10,7 +13,7 @@ type SignedProps = {
   step: number;
   isCurrentUrl: boolean;
   source: SignoffSourceInfo;
-  destination: DestinationInfo | null;
+  destination: SignerCapabilityResourceEntry | null;
 };
 
 export function Signed(props: SignedProps) {
@@ -31,7 +34,7 @@ export function Signed(props: SignedProps) {
 type SignedInfosProps = {
   isCurrentUrl: boolean;
   source: SignoffSourceInfo;
-  destination: DestinationInfo;
+  destination: SignerCapabilityResourceEntry;
 };
 
 function SignedInfos(props: SignedInfosProps) {

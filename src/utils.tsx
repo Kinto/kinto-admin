@@ -212,9 +212,9 @@ export function renderDisplayField(record: object, displayField: string): any {
       return String(field);
     }
   } else if (displayField === "__json") {
-    return <code>{JSON.stringify(cleanRecord(record))}</code>;
+    return <code>{JSON.stringify(cleanRecord(record as RecordData))}</code>;
   } else if (displayField.indexOf(".") !== -1) {
-    return handleNestedDisplayField(record, displayField);
+    return handleNestedDisplayField(record as RecordData, displayField);
   }
   return "<unknown>";
 }

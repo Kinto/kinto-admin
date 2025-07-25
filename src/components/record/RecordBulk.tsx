@@ -2,6 +2,7 @@ import {
   extendSchemaWithAttachment,
   extendUiSchemaWithAttachment,
 } from "./AttachmentInfo";
+import { IChangeEvent } from "@rjsf/core";
 import { getClient } from "@src/client";
 import AdminLink from "@src/components/AdminLink";
 import BaseForm from "@src/components/BaseForm";
@@ -10,6 +11,7 @@ import Spinner from "@src/components/Spinner";
 import { useCollection } from "@src/hooks/collection";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { useServerInfo } from "@src/hooks/session";
+import { LocalRecordData } from "@src/types";
 import React from "react";
 import { useNavigate, useParams } from "react-router";
 
@@ -19,7 +21,8 @@ export default function RecordBulk() {
   const navigate = useNavigate();
   const serverInfo = useServerInfo();
 
-  const onSubmit = async ({ formData }) => {
+  const onSubmit = async (evt: IChangeEvent<any>) => {
+    const { formData } = evt;
     if (formData.length === 0) {
       notifyError("The form is empty.");
       return;
@@ -56,7 +59,7 @@ export default function RecordBulk() {
       items: extendSchemaWithAttachment(
         collection?.schema,
         collection?.attachment,
-        {} /* as for create record */
+        {} as LocalRecordData /* as for create record */
       ),
     };
     bulkUiSchema = {

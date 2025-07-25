@@ -17,7 +17,7 @@
     "forceConsistentCasingInFileNames": true,
     "experimentalDecorators": true,
     "declaration": true,
-    "allowJs": false, 
+    "allowJs": false,
     "paths": {
       "@src/*": ["./src/*"],
       "@test/*": ["./test/*"],
