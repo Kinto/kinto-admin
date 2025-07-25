@@ -15,6 +15,7 @@ import { canEditCollection } from "@src/permission";
 import React from "react";
 import { Shuffle } from "react-bootstrap-icons";
 import { Navigate, useNavigate, useParams } from "react-router";
+import type { ValidRecord } from "@src/types";
 
 export default function SimpleReview() {
   const { bid, cid } = useParams();
@@ -135,8 +136,8 @@ export default function SimpleReview() {
           </SimpleReviewHeader>
         )}
         <PerRecordDiffView
-          oldRecords={oldRecords.data || []}
-          newRecords={newRecords.data || []}
+          oldRecords={(oldRecords.data || []) as ValidRecord[]}
+          newRecords={(newRecords.data || []) as ValidRecord[]}
           collectionData={signoffSource}
           displayFields={collection?.displayFields}
         />
@@ -169,7 +170,6 @@ export default function SimpleReview() {
         bid={bid}
         cid={cid}
         selected="simple-review"
-        totalRecords={collection?.totalRecords || 0}
       >
         {!oldRecords.data || !newRecords.data ? (
           <Spinner />
