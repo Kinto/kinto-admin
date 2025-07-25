@@ -1,11 +1,7 @@
-import { store } from "@src/store/configureStore";
 import { PaginationResult } from "kinto/lib/http/base";
 import { HistoryEntry } from "kinto/lib/types";
 
 export type ActionType<T extends (...args: any[]) => any> = ReturnType<T>;
-
-export type AppDispatch = typeof store.dispatch;
-export type AppState = ReturnType<typeof store.getState>;
 
 export type Attachment = {
   location: string;
@@ -105,8 +101,6 @@ export type CollectionPermissions = {
   read?: string[];
   "record:create"?: string[];
 };
-
-export type GetStateFn = typeof store.getState;
 
 export type GroupData = {
   id: string;
