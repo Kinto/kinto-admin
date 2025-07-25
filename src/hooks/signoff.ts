@@ -1,30 +1,13 @@
 import { getClient } from "@src/client";
 import type {
   ChangesList,
-  CollectionData,
+  SignedCollectionData,
+  SignerCapabilityResource,
+  SignerCapabilityResourceEntry,
+  SignoffCollectionStatus,
   SignoffCollectionsInfo,
 } from "@src/types";
 import { useEffect, useState } from "react";
-
-type CapabilityResource = {
-  bucket: string;
-  collection: string;
-};
-
-type SignerResource = {
-  source: CapabilityResource;
-  preview?: CapabilityResource;
-  destination: CapabilityResource;
-  // List of changes, present or absent depending on status.
-  // If work-in-progress, show changes since the last review request. It will be
-  // null if no changes were made.
-  changesOnSource?: ChangesList | null | undefined;
-  // If to-review, show changes since the last approval. It will be null if no
-  // changes were made.
-  changesOnPreview?: ChangesList | null | undefined;
-  editors_group: string;
-  reviewers_group: string;
-};
 
 export function useSignoff(
   bid: string,
@@ -38,15 +21,17 @@ export function useSignoff(
   useEffect(() => {
     setVal(resource);
     if (resource && resource.source) {
-      calculateChangesInfo(resource, setVal);
+      setVal(calculateChangesInfo(resource));
     }
   }, [resource?.source?.bucket, resource?.source?.collection, cacheBust]);
 
   return val;
 }
 
-async function calculateChangesInfo(resource: SignerResource, setVal) {
-  const collection: CollectionData = await getClient()
+async function calculateChangesInfo(
+  resource: SignerCapabilityResource
+): Promise<SignoffCollectionsInfo> {
+  const collection: SignedCollectionData = await getClient()
     .bucket(resource.source.bucket)
     .collection(resource.source.collection)
     .getData();
@@ -67,12 +52,11 @@ async function calculateChangesInfo(resource: SignerResource, setVal) {
       collection.last_modified
     );
   }
-
-  setVal({
+  return {
     ...resource,
     source: {
       ...resource.source,
-      status: collection.status,
+      status: collection.status as SignoffCollectionStatus,
       lastEditBy: collection.last_edit_by,
       lastEditDate: new Date(collection.last_edit_date).getTime() || null,
       lastEditorComment: collection.last_editor_comment,
@@ -85,19 +69,17 @@ async function calculateChangesInfo(resource: SignerResource, setVal) {
       lastSignatureBy: collection.last_signature_by,
       lastSignatureDate:
         new Date(collection.last_signature_date).getTime() || null,
-      editors_group: collection.editors_group,
-      reviewers_group: collection.reviewers_group,
     },
     changesOnPreview,
     changesOnSource,
-  });
+  };
 }
 
 function _pickSignoffResource(
   signer: any,
   bid: string,
   cid: string
-): SignoffCollectionsInfo | null {
+): SignerCapabilityResource | null {
   if (!signer) {
     console.log("kinto-remote-settings signer is not enabled.");
     return null;
@@ -142,8 +124,8 @@ function _pickSignoffResource(
 }
 
 async function fetchChangesInfo(
-  source: CapabilityResource,
-  other: CapabilityResource,
+  source: SignerCapabilityResourceEntry,
+  other: SignerCapabilityResourceEntry,
   collectionLastModified: number
 ): Promise<ChangesList> {
   const client = getClient();
