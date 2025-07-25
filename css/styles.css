@@ -449,6 +449,13 @@ form button[type="submit"].btn-primary {
   padding-left: 1em;
   margin-top: -60px; /* \o/ */
 }
+
+.permissions-form .form-group.field-groups .container-fluid {
+  max-height: 600px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
 .permissions-form .field-groups fieldset {
   clear: left;
 }
