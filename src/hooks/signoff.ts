@@ -1,5 +1,9 @@
 import { getClient } from "@src/client";
-import type { ChangesList, SignoffCollectionsInfo } from "@src/types";
+import type {
+  ChangesList,
+  CollectionData,
+  SignoffCollectionsInfo,
+} from "@src/types";
 import { useEffect, useState } from "react";
 
 type CapabilityResource = {
@@ -42,7 +46,7 @@ export function useSignoff(
 }
 
 async function calculateChangesInfo(resource: SignerResource, setVal) {
-  const collection = await getClient()
+  const collection: CollectionData = await getClient()
     .bucket(resource.source.bucket)
     .collection(resource.source.collection)
     .getData();

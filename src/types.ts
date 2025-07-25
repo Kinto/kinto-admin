@@ -94,6 +94,13 @@ export type CollectionData = {
   last_review_request_by?: string;
   last_editor_comment?: string;
   last_reviewer_comment?: string;
+  last_edit_by?: string;
+  last_edit_date?: string;
+  last_review_by?: string;
+  last_review_date?: string;
+  last_review_request_date?: string;
+  last_signature_by?: string;
+  last_signature_date?: string;
 };
 
 export type CollectionPermissions = {
