@@ -1,6 +1,6 @@
 import { DataList, ListActions } from "@src/components/homepage/BucketsList";
-import { renderWithRouter } from "@test/testUtils";
 import { canCreateBucket } from "@src/permission";
+import { renderWithRouter } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import React from "react";
 
@@ -22,7 +22,7 @@ describe("BucketsList", () => {
         id: "main-preview",
         last_modified: 1699997106916,
       },
-    ]
+    ],
   };
 
   it("Should render a list of groups as expected", () => {
