@@ -220,7 +220,7 @@ export default function RecordForm() {
   };
 
   const alert =
-    allowEditing || collection.busy ? null : (
+    allowEditing ? null : (
       <div className="alert alert-warning">
         You don&apos;t have the required permission to
         {isUpdate ? " edit this" : " create a"} record.
