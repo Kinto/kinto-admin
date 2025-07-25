@@ -378,4 +378,5 @@ export type Preferences = {
   showSidebar: boolean;
   // TODO: add `useSimpleReview`
   // TODO: add sideBarFilter and sideBarShowReadonly (Kinto/kinto-admin#383)
+  // TODO: add showExtraFields and showAllLines from simple review
 };
