@@ -216,29 +216,24 @@ export type AnonymousAuth = {
   authType: "anonymous";
 } & AuthData;
 
-export type LDAPAuth = {
-  authType: "ldap";
+export type CredentialsAuth = {
   credentials: {
     username: string;
     password: string;
   };
 } & AuthData;
+
+export type LDAPAuth = {
+  authType: "ldap";
+} & CredentialsAuth;
 
 export type AccountAuth = {
   authType: "account";
-  credentials: {
-    username: string;
-    password: string;
-  };
-} & AuthData;
+} & CredentialsAuth;
 
 export type BasicAuth = {
   authType: "basicauth";
-  credentials: {
-    username: string;
-    password: string;
-  };
-} & AuthData;
+} & CredentialsAuth;
 
 export type OpenIDAuth = {
   authType: "openid";
