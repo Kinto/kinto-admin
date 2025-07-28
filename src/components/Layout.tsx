@@ -24,7 +24,7 @@ import RecordCreate from "@src/components/record/RecordCreate";
 import RecordHistory from "@src/components/record/RecordHistory";
 import { RecordPermissions } from "@src/components/record/RecordPermissions";
 import SimpleReview from "@src/components/signoff/SimpleReview";
-import { usePreferences } from "@src/hooks/preferences";
+import { useShowSidebar } from "@src/hooks/preferences";
 import { useServerInfo } from "@src/hooks/session";
 import * as React from "react";
 import { LayoutSidebar, LayoutSidebarInset } from "react-bootstrap-icons";
@@ -33,11 +33,10 @@ import { Navigate, Route, Routes } from "react-router";
 export function Layout() {
   const serverInfo = useServerInfo();
 
-  const [preferences, setPreferences] = usePreferences();
-  const { showSidebar } = preferences;
+  const [showSidebar, setShowSidebar] = useShowSidebar();
 
   const toggleSideBar = () => {
-    setPreferences({ ...preferences, showSidebar: !preferences.showSidebar });
+    setShowSidebar(!showSidebar);
   };
 
   const contentClasses = `col-sm-${showSidebar ? 9 : 12} content`;

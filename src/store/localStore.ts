@@ -1,9 +1,8 @@
 import { ANONYMOUS_AUTH } from "@src/constants";
-import type { Preferences, ServerEntry, SessionState } from "@src/types";
+import type { ServerEntry, SessionState } from "@src/types";
 
 const HISTORY_KEY = "kinto-admin-server-history";
 const SESSION_KEY = "kinto-admin-session";
-const PREFERENCES_KEY = "kinto-admin-preferences";
 
 export function loadServers(): ServerEntry[] {
   const jsonHistory = localStorage.getItem(HISTORY_KEY);
@@ -60,19 +59,4 @@ export function saveSession(sessionState: SessionState): Promise<any> {
 export function clearSession(): Promise<any> {
   localStorage.removeItem(SESSION_KEY);
   return Promise.resolve();
-}
-
-export function savePreferences(prefs: Preferences): Promise<any> {
-  localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ ...prefs }));
-  return Promise.resolve();
-}
-
-export function loadPreferences(): Promise<Preferences | null> {
-  let result = null;
-  try {
-    result = JSON.parse(localStorage.getItem(PREFERENCES_KEY) || "null");
-  } catch (err) {
-    console.error(err);
-  }
-  return Promise.resolve(result);
 }

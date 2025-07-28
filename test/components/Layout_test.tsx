@@ -15,7 +15,7 @@ describe("App component", () => {
   const useAuthMock = vi.fn();
   const useHeartbeatMock = vi.fn();
   const useBucketListMock = vi.fn();
-  const usePreferencesMock = vi.fn();
+  const useShowSidebarMock = vi.fn();
 
   beforeEach(() => {
     vitest
@@ -35,9 +35,9 @@ describe("App component", () => {
       .mockImplementation(useBucketListMock);
     useBucketListMock.mockReturnValue(undefined);
     vitest
-      .spyOn(preferencesHooks, "usePreferences")
-      .mockImplementation(usePreferencesMock);
-    usePreferencesMock.mockReturnValue([{ showSideBar: true }]);
+      .spyOn(preferencesHooks, "useShowSidebar")
+      .mockImplementation(useShowSidebarMock);
+    useShowSidebarMock.mockReturnValue([true]);
   });
 
   describe("Session top bar", () => {
@@ -111,7 +111,7 @@ describe("App component", () => {
 
   describe("Toggle sidebar", () => {
     it("should render a sidebar when true in prefs", () => {
-      usePreferencesMock.mockReturnValue([{ showSidebar: true }, vi.fn()]);
+      useShowSidebarMock.mockReturnValue([true, vi.fn()]);
 
       renderWithRouter(<Layout />, routeProps);
 
@@ -119,7 +119,7 @@ describe("App component", () => {
     });
 
     it("should not render a sidebar when false in prefs", () => {
-      usePreferencesMock.mockReturnValue([{ showSidebar: false }, vi.fn()]);
+      useShowSidebarMock.mockReturnValue([false, vi.fn()]);
 
       renderWithRouter(<Layout />, routeProps);
 
@@ -127,15 +127,17 @@ describe("App component", () => {
     });
 
     it("should toggle on click on icon", async () => {
-      const prefs = { showSidebar: true };
-      const setPrefs = vi.fn();
-      usePreferencesMock.mockImplementation(() => [prefs, setPrefs]);
+      const setShowSidebar = vi.fn();
+      useShowSidebarMock.mockImplementation(() => [true, setShowSidebar]);
 
       renderWithRouter(<Layout />, routeProps);
 
       expect(screen.queryByTestId("sidebar-panel")).toBeInTheDocument();
       fireEvent.click(screen.getByTestId("sidebar-toggle"));
-      expect(setPrefs).toHaveBeenCalledWith({ showSidebar: false });
+      expect(setShowSidebar).toHaveBeenCalledWith(false);
+
+
+
       // TODO/HELP?: why failing?
       // await vi.waitFor(() => {
       //   expect(screen.queryByTestId("sidebar-panel")).not.toBeInTheDocument();

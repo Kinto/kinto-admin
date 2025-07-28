@@ -1,30 +1,10 @@
-import { loadPreferences, savePreferences } from "@src/store/localStore";
-import { Preferences } from "@src/types";
-import { useCallback, useEffect, useState } from "react";
+import { useLocalStorage } from "./storage";
 
-const DEFAULT_PREFERENCES: Preferences = {
-  showSidebar: true,
-};
-
-export function usePreferences(): [
-  Preferences,
-  (prefs: Preferences) => Promise<void>,
-] {
-  const [val, setVal] = useState<Preferences>(DEFAULT_PREFERENCES);
-
-  useEffect(() => {
-    loadPreferences().then(prefs => {
-      if (prefs) {
-        // Only if loaded successfully.
-        setVal(prefs);
-      }
-    });
-  }, []);
-
-  const storePreferences = useCallback(async (prefs: Preferences) => {
-    setVal(prefs);
-    await savePreferences(prefs);
-  }, []);
-
-  return [val, storePreferences];
+export function useShowSidebar(): [boolean, (boolean) => void] {
+  const [val, setVal] = useLocalStorage("showSidebar", true);
+  return [val, setVal] as [boolean, (boolean) => void];
 }
+
+// TODO: add `useSimpleReview`
+// TODO: add sideBarFilter and sideBarShowReadonly (Kinto/kinto-admin#383)
+// TODO: add showExtraFields and showAllLines from simple review
