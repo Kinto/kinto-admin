@@ -451,7 +451,12 @@ form button[type="submit"].btn-primary {
 }
 
 .permissions-form .form-group.field-groups .container-fluid {
-  max-height: 600px;
+  /* Since there can be many groups, we want to limit the field's
+     height in permissions forms. */
+  min-height: 150px;
+  height: 50vh;
+  max-height: max-content;
+
   overflow-y: scroll;
   overflow-x: hidden;
 }
