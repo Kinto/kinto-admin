@@ -84,25 +84,39 @@ h1 {
   margin-left: 0.3em;
 }
 
-.kinto-admin-title {
-  display: inline-block;
-  font-size: 2em;
-  margin-top: 0;
-  margin-bottom: 0;
-  padding-left: 100px;
 
-  background: transparent url("../images/logo.png") no-repeat left;
+.kinto-admin-title {
+  margin: 0;
+  font-size: 2em;
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  background: transparent url("../images/logo.png") no-repeat left center;
   background-size: contain;
+  padding-left: 3.5em;
+  min-width: 0;
 }
 
 .user-info {
-  float: right;
-  padding-top: 0.3em;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  flex: 0 1 auto;
+  overflow: hidden;
+  min-width: 0;
   font-size: 14px;
 }
 
-.user-info a.spaced {
-  margin-left: 1em;
+.user-info > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1 1 auto;
+}
+
+.user-info a {
+  flex-shrink: 0;
 }
 
 .server-url input:invalid,
@@ -110,7 +124,14 @@ h1 {
   box-shadow: 0 0 5px 1px red;
 }
 
-.session-info-bar {
+.info-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  flex-shrink: 0;
+}
+
+.top-info-bar {
   position: fixed;
   top: 0;
   left: 0;
@@ -119,10 +140,11 @@ h1 {
   color: white;
   padding: 0.2em 1.15em;
   z-index: 999;
-}
-
-.session-info-bar > a {
-  margin-left: 0.5em;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .server-info-panel table {
