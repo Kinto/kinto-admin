@@ -9,12 +9,10 @@ import type {
 } from "@src/types";
 import { useEffect, useState } from "react";
 
-type RecordListResult =
-  | ListResult<RecordData>
-  | {
-      totalRecords?: number;
-      lastModified?: number;
-    };
+export type RecordListResult = ListResult<RecordData> & {
+  totalRecords?: number;
+  lastModified?: number;
+};
 
 export function useRecordList(
   bid: string,

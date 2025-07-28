@@ -358,7 +358,7 @@ export default function AuthForm() {
       case "openid": {
         const {
           capabilities: { openid: { providers } = { providers: [] } },
-        } = serverInfo;
+        } = serverInfo as ServerInfo; // As this point, server info is populated.
         const providerData = providers.find(p => p.name === openidProvider);
         if (!providerData) {
           throw new Error("Couldn't find provider data in the state. Bad.");

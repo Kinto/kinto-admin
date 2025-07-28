@@ -1,4 +1,4 @@
-import type { SignoffSourceInfo, ValidRecord } from "@src/types";
+import type { RecordData, SignoffSourceInfo } from "@src/types";
 import { diffJson, omit, renderDisplayField } from "@src/utils";
 import { diffJson as diff, diffArrays } from "diff";
 import React, { useState } from "react";
@@ -13,8 +13,8 @@ export enum ChangeType {
 export const EXTRA_FIELDS = ["last_modified", "schema"];
 
 export interface PerRecordDiffViewProps {
-  oldRecords: ValidRecord[];
-  newRecords: ValidRecord[];
+  oldRecords: RecordData[];
+  newRecords: RecordData[];
   collectionData: SignoffSourceInfo;
   displayFields?: string[];
 }
@@ -98,8 +98,8 @@ function Diff({
 }: {
   id: string;
   changeType: ChangeType;
-  source?: ValidRecord;
-  target?: ValidRecord;
+  source?: RecordData;
+  target?: RecordData;
   className?: string;
   allLines?: boolean;
   displayFields?: string[];
@@ -171,8 +171,8 @@ export function formatDiffHeader({
   target,
   displayFields = [],
 }: {
-  source: ValidRecord;
-  target: ValidRecord;
+  source: RecordData;
+  target: RecordData;
   displayFields: string[];
 }) {
   const fields = [];
@@ -194,20 +194,20 @@ export function formatDiffHeader({
   return <>{fields}</>;
 }
 
-function recordsAreDifferent(a: ValidRecord, b: ValidRecord): boolean {
+function recordsAreDifferent(a: RecordData, b: RecordData): boolean {
   return diff(a, b).filter(chunk => chunk.added || chunk.removed).length > 0;
 }
 
 interface RecordChange {
   id: string;
-  source?: ValidRecord;
-  target?: ValidRecord;
+  source?: RecordData;
+  target?: RecordData;
   changeType: ChangeType;
 }
 
 export function findChangeTypes(
-  oldItems: Array<ValidRecord>,
-  newItems: Array<ValidRecord>,
+  oldItems: Array<RecordData>,
+  newItems: Array<RecordData>,
   fieldsToOmit?: Array<string>
 ): Array<RecordChange> {
   if (fieldsToOmit) {

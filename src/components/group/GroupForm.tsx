@@ -1,4 +1,5 @@
 import DeleteForm from "./DeleteForm";
+import { IChangeEvent } from "@rjsf/core";
 import { RJSFSchema, UiSchema } from "@rjsf/utils";
 import { getClient } from "@src/client";
 import AdminLink from "@src/components/AdminLink";
@@ -52,7 +53,8 @@ export default function GroupForm() {
   const navigate = useNavigate();
   const permissions = usePermissions();
 
-  const onSubmit = async ({ formData }) => {
+  const onSubmit = async (evt: IChangeEvent<any>) => {
+    const { formData } = evt;
     const { data } = formData;
     const attributes = JSON.parse(data);
     const toSave = {

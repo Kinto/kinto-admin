@@ -26,11 +26,8 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
 
-      - name: Code Style
-        run: npm run cs-check
-
-      - name: Lint
-        run: npm run eslint
+      - name: Code Style, Lint, Type Check
+        run: npm run lint
   
   test:
     runs-on: ${{ matrix.os }}

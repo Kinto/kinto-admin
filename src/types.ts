@@ -1,11 +1,7 @@
-import { store } from "@src/store/configureStore";
 import { PaginationResult } from "kinto/lib/http/base";
 import { HistoryEntry } from "kinto/lib/types";
 
 export type ActionType<T extends (...args: any[]) => any> = ReturnType<T>;
-
-export type AppDispatch = typeof store.dispatch;
-export type AppState = ReturnType<typeof store.getState>;
 
 export type Attachment = {
   location: string;
@@ -24,7 +20,7 @@ export type Attachment = {
 export type ListResult<T> = {
   data?: T[];
   hasNextPage?: boolean;
-  next?: Promise<PaginationResult<T>> | null;
+  next?: () => Promise<PaginationResult<T>> | null;
 };
 
 export type ListHistoryResult = {
@@ -45,6 +41,20 @@ export type BucketPermissions = {
   "group:create"?: string[];
 };
 
+export type SignerCapabilityResource = {
+  source: SignerCapabilityResourceEntry;
+  destination: SignerCapabilityResourceEntry;
+  preview?: SignerCapabilityResourceEntry;
+  editors_group?: string;
+  reviewers_group?: string;
+  to_review_enabled?: boolean;
+};
+
+export type SignerCapabilityResourceEntry = {
+  bucket: string | null;
+  collection: string;
+};
+
 export type Capabilities = {
   attachments?: any;
   changes?: any;
@@ -54,7 +64,7 @@ export type Capabilities = {
   permissions_endpoint?: any;
   schema?: any;
   signer?: {
-    resources: any[];
+    resources: SignerCapabilityResource[];
     editors_group: string;
     reviewers_group: string;
     to_review_enabled: boolean;
@@ -94,10 +104,6 @@ export type CollectionData = {
   displayFields?: string[] | null | undefined;
   sort?: string;
   cache_expires?: number;
-  status?: string;
-  last_review_request_by?: string;
-  last_editor_comment?: string;
-  last_reviewer_comment?: string;
 };
 
 export type CollectionPermissions = {
@@ -105,8 +111,6 @@ export type CollectionPermissions = {
   read?: string[];
   "record:create"?: string[];
 };
-
-export type GetStateFn = typeof store.getState;
 
 export type GroupData = {
   id: string;
@@ -142,17 +146,19 @@ export type Permissions =
   | RecordPermissions;
 
 export type RecordData = {
-  id?: string;
-  last_modified?: number;
+  id: string;
+  last_modified: number;
   schema?: number;
   attachment?: Attachment;
   __attachment__?: string;
+  [key: string]: any;
 };
 
-export interface ValidRecord extends RecordData {
-  id: string;
-  [key: string]: any;
-}
+export type LocalRecordData = RecordData & {
+  // Local records don't have server fields yet.
+  id?: string;
+  last_modified?: number;
+};
 
 export type RecordPermissions = {
   write: string[];
@@ -212,29 +218,24 @@ export type AnonymousAuth = {
   authType: "anonymous";
 } & AuthData;
 
-export type LDAPAuth = {
-  authType: "ldap";
+export type CredentialsAuth = {
   credentials: {
     username: string;
     password: string;
   };
 } & AuthData;
+
+export type LDAPAuth = {
+  authType: "ldap";
+} & CredentialsAuth;
 
 export type AccountAuth = {
   authType: "account";
-  credentials: {
-    username: string;
-    password: string;
-  };
-} & AuthData;
+} & CredentialsAuth;
 
 export type BasicAuth = {
   authType: "basicauth";
-  credentials: {
-    username: string;
-    password: string;
-  };
-} & AuthData;
+} & CredentialsAuth;
 
 export type OpenIDAuth = {
   authType: "openid";
@@ -305,10 +306,24 @@ export type PermissionsListEntry = {
   uri: string;
 };
 
+export type SignedCollectionData = CollectionData & {
+  status?: string;
+  last_review_request_by?: string;
+  last_editor_comment?: string;
+  last_reviewer_comment?: string;
+  last_edit_by?: string;
+  last_edit_date?: string;
+  last_review_by?: string;
+  last_review_date?: string;
+  last_review_request_date?: string;
+  last_signature_by?: string;
+  last_signature_date?: string;
+};
+
 export type SignoffCollectionsInfo = {
-  source?: SignoffSourceInfo;
-  destination?: DestinationInfo;
-  preview?: PreviewInfo | null;
+  source: SignoffSourceInfo;
+  destination: SignerCapabilityResourceEntry;
+  preview?: SignerCapabilityResourceEntry;
   // List of changes, present or absent depending on status.
   // If work-in-progress, show changes since the last review request. It will be
   // null if no changes were made.
@@ -338,11 +353,8 @@ export type SignoffCollectionStatus =
   | "to-sign"
   | "work-in-progress";
 
-export type SignoffSourceInfo = {
-  // Basic Info (before loading from info server)
-  bucket: string;
-  collection: string;
-  // Full info.
+export type SignoffSourceInfo = SignerCapabilityResourceEntry & {
+  // Full info once we fetch attributes from server
   status?: SignoffCollectionStatus;
   lastEditBy?: string;
   lastEditDate?: number;
@@ -354,18 +366,6 @@ export type SignoffSourceInfo = {
   lastReviewerComment?: string;
   lastSignatureBy?: string;
   lastSignatureDate?: number;
-  editors_group?: string;
-  reviewers_group?: string;
-};
-
-export type PreviewInfo = {
-  bucket: string;
-  collection: string;
-};
-
-export type DestinationInfo = {
-  bucket: string;
-  collection: string;
 };
 
 export type HeartbeatState = {

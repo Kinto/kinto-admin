@@ -21,20 +21,19 @@ export function setAuth(auth: AuthData) {
   addServer(
     auth.server,
     auth.authType === "openid"
-      ? `${auth.authType}-${auth.provider}`
+      ? `${auth.authType}-${(auth as OpenIDAuth).provider}`
       : auth.authType
   );
 
   let processedAuth: AuthData = auth;
   if (auth.authType.startsWith("openid-")) {
+    const castedAuth = auth as OpenIDAuth;
     const openIDAuth: OpenIDAuth = {
       authType: "openid",
-      provider: auth.authType.replace("openid-", ""),
-      server: auth.server,
-      // $FlowFixMe we know we are dealing with openid, Flow does not.
-      tokenType: (auth as { tokenType: string }).tokenType,
-      // $FlowFixMe
-      credentials: (auth as { credentials: { token: string } }).credentials,
+      provider: castedAuth.authType.replace("openid-", ""),
+      server: castedAuth.server,
+      tokenType: castedAuth.tokenType,
+      credentials: castedAuth.credentials,
     };
     processedAuth = openIDAuth;
   }
