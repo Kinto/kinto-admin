@@ -72,7 +72,12 @@ async function onChange(evt, changeCallback) {
 
   const readPromise = new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result);
+    reader.onloadend = () => {
+      if (reader.result === null) {
+        reject(new Error("File content is null"));
+      }
+      resolve(reader.result as string); // readAsDataURL() is always string
+    };
     reader.onerror = reject;
     reader.readAsDataURL(files[0]);
   });

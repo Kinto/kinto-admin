@@ -1,3 +1,4 @@
+import { IChangeEvent } from "@rjsf/core";
 import { RJSFSchema } from "@rjsf/utils";
 import BaseForm from "@src/components/BaseForm";
 import React from "react";
@@ -27,8 +28,9 @@ export default function DeleteForm({ gid, onSubmit }) {
         <BaseForm
           schema={deleteSchema}
           customValidate={validate}
-          onSubmit={({ formData }) => {
+          onSubmit={(evt: IChangeEvent<any>) => {
             if (typeof onSubmit === "function") {
+              const { formData } = evt;
               onSubmit(formData);
             }
           }}

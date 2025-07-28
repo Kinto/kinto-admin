@@ -20,6 +20,7 @@ type RecordsViewProps = CommonProps & {
   cid: string;
   displayFields: string[];
   schema: any;
+  deleteRecord: (rid: string, last_modified: number) => void;
 };
 
 type RowProps = RecordsViewProps & {
