@@ -10,12 +10,12 @@ const destination = {
 };
 const signerResource = {
   source: {
-    bucket: source.bid,
-    collection: source.cid,
+    bucket: source.bucket,
+    collection: source.collection,
   },
   destination: {
-    bucket: destination.bid,
-    collection: destination.cid,
+    bucket: destination.bucket,
+    collection: destination.collection,
   },
 };
 

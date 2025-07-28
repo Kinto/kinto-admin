@@ -1,4 +1,4 @@
-import type { AuthData } from "@src/types";
+import type { AuthData, CredentialsAuth, OpenIDAuth } from "@src/types";
 import { KintoClient } from "kinto";
 
 let client: KintoClient;
@@ -6,7 +6,7 @@ let client: KintoClient;
 export function getAuthHeader(auth: AuthData): string | undefined {
   switch (auth.authType) {
     case "openid": {
-      const { tokenType, credentials } = auth;
+      const { tokenType, credentials } = auth as OpenIDAuth;
       const { token } = credentials;
       return `${tokenType} ${token}`;
     }
@@ -15,8 +15,12 @@ export function getAuthHeader(auth: AuthData): string | undefined {
     }
     case "ldap":
     case "basicauth":
+    case "accounts":
     default: {
-      const { username, password } = auth.credentials;
+      if (!("credentials" in auth)) {
+        return undefined;
+      }
+      const { username, password } = (auth as CredentialsAuth).credentials;
       return "Basic " + btoa([username, password].join(":"));
     }
   }

@@ -1,48 +1,39 @@
 import { getClient } from "@src/client";
-import type { ChangesList, SignoffCollectionsInfo } from "@src/types";
+import type {
+  ChangesList,
+  SignedCollectionData,
+  SignerCapabilityResource,
+  SignerCapabilityResourceEntry,
+  SignoffCollectionStatus,
+  SignoffCollectionsInfo,
+} from "@src/types";
 import { useEffect, useState } from "react";
-
-type CapabilityResource = {
-  bucket: string;
-  collection: string;
-};
-
-type SignerResource = {
-  source: CapabilityResource;
-  preview?: CapabilityResource;
-  destination: CapabilityResource;
-  // List of changes, present or absent depending on status.
-  // If work-in-progress, show changes since the last review request. It will be
-  // null if no changes were made.
-  changesOnSource?: ChangesList | null | undefined;
-  // If to-review, show changes since the last approval. It will be null if no
-  // changes were made.
-  changesOnPreview?: ChangesList | null | undefined;
-  editors_group: string;
-  reviewers_group: string;
-};
 
 export function useSignoff(
   bid: string,
   cid: string,
   signer: any,
   cacheBust?: number
-): SignoffCollectionsInfo {
+): SignerCapabilityResource | SignoffCollectionsInfo {
   const resource = _pickSignoffResource(signer, bid, cid);
-  const [val, setVal] = useState({});
+  const [val, setVal] = useState(null);
 
   useEffect(() => {
-    setVal(resource);
+    setVal(resource); // `null` or `SignerCapabilityResource`
     if (resource && resource.source) {
-      calculateChangesInfo(resource, setVal);
+      calculateChangesInfo(resource).then((infos: SignoffCollectionsInfo) =>
+        setVal(infos)
+      );
     }
   }, [resource?.source?.bucket, resource?.source?.collection, cacheBust]);
 
   return val;
 }
 
-async function calculateChangesInfo(resource: SignerResource, setVal) {
-  const collection = await getClient()
+async function calculateChangesInfo(
+  resource: SignerCapabilityResource
+): Promise<SignoffCollectionsInfo> {
+  const collection: SignedCollectionData = await getClient()
     .bucket(resource.source.bucket)
     .collection(resource.source.collection)
     .getData();
@@ -63,12 +54,11 @@ async function calculateChangesInfo(resource: SignerResource, setVal) {
       collection.last_modified
     );
   }
-
-  setVal({
+  return {
     ...resource,
     source: {
       ...resource.source,
-      status: collection.status,
+      status: collection.status as SignoffCollectionStatus,
       lastEditBy: collection.last_edit_by,
       lastEditDate: new Date(collection.last_edit_date).getTime() || null,
       lastEditorComment: collection.last_editor_comment,
@@ -81,19 +71,17 @@ async function calculateChangesInfo(resource: SignerResource, setVal) {
       lastSignatureBy: collection.last_signature_by,
       lastSignatureDate:
         new Date(collection.last_signature_date).getTime() || null,
-      editors_group: collection.editors_group,
-      reviewers_group: collection.reviewers_group,
     },
     changesOnPreview,
     changesOnSource,
-  });
+  };
 }
 
 function _pickSignoffResource(
   signer: any,
   bid: string,
   cid: string
-): SignoffCollectionsInfo | null {
+): SignerCapabilityResource | null {
   if (!signer) {
     console.log("kinto-remote-settings signer is not enabled.");
     return null;
@@ -115,6 +103,11 @@ function _pickSignoffResource(
         (!destination.collection || destination.collection == cid))
     );
   })[0];
+  if (!resource) {
+    // No resource matching. Current collection is not concerned with signoff.
+    // Return explicit null instead of implicit undefined.
+    return null;
+  }
   // The whole UI expects to have collection information for source/preview/destination.
   // If configured by bucket, fill-up the missing attribute as if it would be configured
   // explicitly for this collection.
@@ -138,8 +131,8 @@ function _pickSignoffResource(
 }
 
 async function fetchChangesInfo(
-  source: CapabilityResource,
-  other: CapabilityResource,
+  source: SignerCapabilityResourceEntry,
+  other: SignerCapabilityResourceEntry,
   collectionLastModified: number
 ): Promise<ChangesList> {
   const client = getClient();

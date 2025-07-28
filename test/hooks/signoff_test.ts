@@ -68,7 +68,7 @@ describe("signoff hooks", () => {
     it("Defaults to undefined if no signer resources are found", async () => {
       const { result } = renderHook(() => useSignoff("bid", "cid", signer));
       await vi.waitFor(() => {
-        expect(result.current).toBeUndefined();
+        expect(result.current).toBeNull();
       });
     });
 

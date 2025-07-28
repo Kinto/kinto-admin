@@ -8,7 +8,7 @@ type Levels = "info" | "success" | "warning" | "danger";
 
 type NotificationOptions = {
   details?: string[];
-  timeout?: null;
+  timeout?: number | null;
 };
 
 const state = makeObservable([]);

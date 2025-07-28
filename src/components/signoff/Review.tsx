@@ -3,7 +3,11 @@ import { Comment } from "./Comment";
 import HumanDate from "./HumanDate";
 import { ProgressStep } from "./ProgressBar";
 import { useSimpleReview } from "@src/hooks/preferences";
-import type { ChangesList, PreviewInfo, SignoffSourceInfo } from "@src/types";
+import type {
+  ChangesList,
+  SignerCapabilityResourceEntry,
+  SignoffSourceInfo,
+} from "@src/types";
 import React from "react";
 import { Braces, ChatLeft, Check2 } from "react-bootstrap-icons";
 
@@ -17,7 +21,7 @@ type ReviewProps = {
   approveChanges: () => void;
   confirmDeclineChanges: () => void;
   source: SignoffSourceInfo;
-  preview: PreviewInfo | null;
+  preview: SignerCapabilityResourceEntry | null;
   changes: ChangesList | null;
 };
 
