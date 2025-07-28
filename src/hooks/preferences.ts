@@ -5,6 +5,10 @@ export function useShowSidebar(): [boolean, (boolean) => void] {
   return [val, setVal] as [boolean, (boolean) => void];
 }
 
-// TODO: add `useSimpleReview`
+export function useSimpleReview(): [boolean, (boolean) => void] {
+  const [val, setVal] = useLocalStorage("useSimpleReview", true);
+  return [val, setVal] as [boolean, (boolean) => void];
+}
+
 // TODO: add sideBarFilter and sideBarShowReadonly (Kinto/kinto-admin#383)
 // TODO: add showExtraFields and showAllLines from simple review

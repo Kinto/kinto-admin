@@ -7,10 +7,10 @@ import { getClient } from "@src/client";
 import Spinner from "@src/components/Spinner";
 import CollectionTabs from "@src/components/collection/CollectionTabs";
 import { useCollection } from "@src/hooks/collection";
+import { useSimpleReview } from "@src/hooks/preferences";
 import { useRecordList } from "@src/hooks/record";
 import { useAuth, usePermissions, useServerInfo } from "@src/hooks/session";
 import { useSignoff } from "@src/hooks/signoff";
-import { storageKeys, useLocalStorage } from "@src/hooks/storage";
 import { canEditCollection } from "@src/permission";
 import React from "react";
 import { Shuffle } from "react-bootstrap-icons";
@@ -19,10 +19,7 @@ import { Navigate, useNavigate, useParams } from "react-router";
 export default function SimpleReview() {
   const { bid, cid } = useParams();
   const collection = useCollection(bid, cid);
-  const [useSimpleReview, setUseSimpleReview] = useLocalStorage(
-    storageKeys.useSimpleReview,
-    true
-  );
+  const [simpleReview, setSimpleReview] = useSimpleReview();
   const serverInfo = useServerInfo();
   const auth = useAuth();
   const permissions = usePermissions();
@@ -50,7 +47,7 @@ export default function SimpleReview() {
     canEditCollection(permissions, bid, cid) &&
     isMember("editors_group", signoffSource, serverInfo);
 
-  if (!useSimpleReview) {
+  if (!simpleReview) {
     return <Navigate to={`/buckets/${bid}/collections/${cid}/records`} />;
   }
 
@@ -144,7 +141,7 @@ export default function SimpleReview() {
           type="button"
           className="btn btn-secondary"
           onClick={() => {
-            setUseSimpleReview(false);
+            setSimpleReview(false);
           }}
           style={{
             float: "right",
