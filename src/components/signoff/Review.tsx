@@ -2,7 +2,7 @@ import AdminLink from "../AdminLink";
 import { Comment } from "./Comment";
 import HumanDate from "./HumanDate";
 import { ProgressStep } from "./ProgressBar";
-import { storageKeys, useLocalStorage } from "@src/hooks/storage";
+import { useSimpleReview } from "@src/hooks/preferences";
 import type {
   ChangesList,
   SignerCapabilityResourceEntry,
@@ -38,7 +38,7 @@ export function Review({
   preview,
   changes,
 }: ReviewProps) {
-  const [useSimpleReview] = useLocalStorage(storageKeys.useSimpleReview, true);
+  const [simpleReview] = useSimpleReview();
   const isCurrentStep = step == currentStep;
 
   // If preview disabled, the preview object is empty.
@@ -67,13 +67,13 @@ export function Review({
           changes={changes}
         />
       )}
-      {isCurrentStep && canEdit && !useSimpleReview && (
+      {isCurrentStep && canEdit && !simpleReview && (
         <ReviewButtons
           onApprove={approveChanges}
           onDecline={confirmDeclineChanges}
         />
       )}
-      {isCurrentStep && canEdit && useSimpleReview && (
+      {isCurrentStep && canEdit && simpleReview && (
         <AdminLink
           className="btn btn-info"
           params={{ bid: source.bucket, cid: source.collection }}

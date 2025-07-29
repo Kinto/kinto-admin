@@ -5,9 +5,9 @@ import AdminLink from "@src/components/AdminLink";
 import Spinner from "@src/components/Spinner";
 import { DEFAULT_SORT } from "@src/constants";
 import { useCollection } from "@src/hooks/collection";
+import { useSimpleReview } from "@src/hooks/preferences";
 import { useRecordList } from "@src/hooks/record";
 import { useServerInfo } from "@src/hooks/session";
-import { storageKeys, useLocalStorage } from "@src/hooks/storage";
 import React, { useEffect, useState } from "react";
 import { Shuffle } from "react-bootstrap-icons";
 import { useParams } from "react-router";
@@ -20,10 +20,7 @@ export default function CollectionRecords() {
   const collection = useCollection(bid, cid, cacheVal);
   const records = useRecordList(bid, cid, sort, false, cacheVal);
 
-  const [useSimpleReview, setUseSimpleReview] = useLocalStorage(
-    storageKeys.useSimpleReview,
-    true
-  );
+  const [simpleReview, setSimpleReview] = useSimpleReview();
 
   useEffect(() => {
     if (!serverInfo || !collection?.last_modified) {
@@ -56,13 +53,13 @@ export default function CollectionRecords() {
         selected="records"
         totalRecords={records?.totalRecords}
       >
-        {serverInfo?.capabilities.signer && !useSimpleReview && (
+        {serverInfo?.capabilities.signer && !simpleReview && (
           <AdminLink
             className="btn btn-secondary"
             params={{ bid, cid }}
             name="collection:simple-review"
             onClick={() => {
-              setUseSimpleReview(true);
+              setSimpleReview(true);
             }}
             style={{
               float: "right",

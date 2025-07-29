@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
 
-export const storageKeys = {
-  useSimpleReview: "useSimpleReview",
-};
-
 export function useLocalStorage(key: string, initialValue: any) {
   const [val, setVal] = useState(() => {
     try {

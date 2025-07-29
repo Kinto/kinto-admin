@@ -1,6 +1,6 @@
 import AdminLink from "@src/components/AdminLink";
+import { useSimpleReview } from "@src/hooks/preferences";
 import { useServerInfo } from "@src/hooks/session";
-import { storageKeys, useLocalStorage } from "@src/hooks/storage";
 import React from "react";
 import {
   Braces,
@@ -30,7 +30,7 @@ export default function CollectionTabs({
   children,
   totalRecords,
 }: Props) {
-  const [useSimpleReview] = useLocalStorage(storageKeys.useSimpleReview, true);
+  const [simpleReview] = useSimpleReview();
   const serverInfo = useServerInfo();
 
   return (
@@ -53,7 +53,7 @@ export default function CollectionTabs({
               Records {totalRecords ? `(${totalRecords})` : null}
             </AdminLink>
           </li>
-          {serverInfo?.capabilities.signer && useSimpleReview && (
+          {serverInfo?.capabilities.signer && simpleReview && (
             <li
               className="nav-item"
               role="presentation"
