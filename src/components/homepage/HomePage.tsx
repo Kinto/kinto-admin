@@ -1,5 +1,6 @@
+import Spinner from "../Spinner";
 import AuthForm from "./AuthForm";
-import Spinner from "./Spinner";
+import HomePageTabs from "./HomePageTabs";
 import { notifyError } from "@src/hooks/notifications";
 import { setAuth, useAuth, useServerInfo } from "@src/hooks/session";
 import type { OpenIDAuth } from "@src/types";
@@ -47,7 +48,7 @@ function SessionInfo() {
     <div>
       <div className="card server-info-panel">
         <div className="card-header">
-          <b>Server information</b>
+          <b>Properties</b>
         </div>
         <div className="card-body">
           <ServerProps node={serverInfo} />
@@ -134,7 +135,9 @@ export function HomePage() {
   return (
     <div>
       <h1>{`${serverInfo?.project_name || "Kinto"} Administration`}</h1>
-      <SessionInfo />
+      <HomePageTabs selected="serverinfo">
+        <SessionInfo />
+      </HomePageTabs>
     </div>
   );
 }

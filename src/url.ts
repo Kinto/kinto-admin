@@ -6,6 +6,7 @@ const URLS = {
   home: () => "/",
 
   // Bucket urls
+  buckets: () => "/buckets",
   "bucket:create": () => "/buckets/create",
   "bucket:attributes": ({ bid }) => `/buckets/${bid}/attributes`,
   "bucket:collections": ({ bid }) => `/buckets/${bid}/collections`,

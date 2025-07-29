@@ -35,18 +35,20 @@ export function SessionInfoBar() {
   };
 
   return (
-    <div className="session-info-bar" data-testid="sessionInfo-bar">
-      <h1 className="kinto-admin-title">{project_name}</h1>
+    <div className="top-info-bar" data-testid="sessionInfo-bar">
+      <h1 className="kinto-admin-title" title={project_name}>
+        {project_name}
+      </h1>
       <span className="user-info">
         {!user?.id ? (
           <strong>Anonymous</strong>
         ) : (
-          <span>
+          <span title={user.id}>
             Connected as <strong>{user.id}</strong>
           </span>
         )}
         {" on "}
-        <strong>{url}</strong>{" "}
+        <strong title={url}>{url}</strong>{" "}
         {user?.id && (
           <a
             href=""
@@ -60,6 +62,8 @@ export function SessionInfoBar() {
             <Clipboard className="icon" />
           </a>
         )}
+      </span>
+      <span className="info-actions">
         <a href={`${url}__heartbeat__`} target="_blank" rel="noreferrer">
           {heartbeat.success !== false ? (
             <CircleFill
@@ -77,13 +81,13 @@ export function SessionInfoBar() {
           href={project_docs}
           target="_blank"
           rel="noreferrer"
-          className="spaced btn btn-sm btn-secondary project-docs"
+          className="btn btn-sm btn-secondary project-docs"
         >
           <QuestionCircleFill className="icon" /> Documentation
         </a>
         <a
           href=""
-          className="spaced btn btn-sm btn-success btn-logout"
+          className="btn btn-sm btn-success btn-logout"
           onClick={event => {
             event.preventDefault();
             logout();

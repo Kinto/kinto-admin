@@ -45,10 +45,16 @@ function SideBarLink(props: SideBarLinkProps) {
 }
 
 const HomeMenu = ({ currentPath }) => {
+  const { bid } = useParams();
+  const onHomePage = !bid; // if we do not have a bucket id, we are on the home page
   return (
     <div className="card home-menu">
       <div className="list-group list-group-flush">
-        <SideBarLink name="home" currentPath={currentPath} params={{}}>
+        <SideBarLink
+          name="home"
+          currentPath={onHomePage ? "/" : currentPath}
+          params={{}}
+        >
           Home
           <ArrowRepeat onClick={() => reloadBuckets()} className="icon" />
         </SideBarLink>

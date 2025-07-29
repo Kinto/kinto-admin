@@ -100,25 +100,39 @@ nav.breadcrumbs {
   margin-left: 0.3em;
 }
 
-.kinto-admin-title {
-  display: inline-block;
-  font-size: 2em;
-  margin-top: 0;
-  margin-bottom: 0;
-  padding-left: 100px;
 
-  background: transparent url("../images/logo.png") no-repeat left;
+.kinto-admin-title {
+  margin: 0;
+  font-size: 2em;
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  background: transparent url("../images/logo.png") no-repeat left center;
   background-size: contain;
+  padding-left: 3.5em;
+  min-width: 0;
 }
 
 .user-info {
-  float: right;
-  padding-top: 0.3em;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  flex: 0 1 auto;
+  overflow: hidden;
+  min-width: 0;
   font-size: 14px;
 }
 
-.user-info a.spaced {
-  margin-left: 1em;
+.user-info > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1 1 auto;
+}
+
+.user-info a {
+  flex-shrink: 0;
 }
 
 .server-url input:invalid,
@@ -126,7 +140,14 @@ nav.breadcrumbs {
   box-shadow: 0 0 5px 1px red;
 }
 
-.session-info-bar {
+.info-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  flex-shrink: 0;
+}
+
+.top-info-bar {
   position: fixed;
   top: 0;
   left: 0;
@@ -135,10 +156,11 @@ nav.breadcrumbs {
   color: white;
   padding: 0.2em 1.15em;
   z-index: 999;
-}
-
-.session-info-bar > a {
-  margin-left: 0.5em;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .server-info-panel table {
@@ -218,7 +240,6 @@ table.record-list td.lastmod {
 table.record-list td.actions {
   min-width: 110px;
   width: 110px;
-  max-width: 110px;
   padding: 0.5em 0;
   text-align: center;
 }
@@ -465,6 +486,18 @@ form button[type="submit"].btn-primary {
   padding-left: 1em;
   margin-top: -60px; /* \o/ */
 }
+
+.permissions-form .form-group.field-groups .container-fluid {
+  /* Since there can be many groups, we want to limit the field's
+     height in permissions forms. */
+  min-height: 150px;
+  height: 50vh;
+  max-height: max-content;
+
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
 .permissions-form .field-groups fieldset {
   clear: left;
 }
