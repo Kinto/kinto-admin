@@ -27,7 +27,7 @@ import { RecordPermissions } from "@src/components/record/RecordPermissions";
 import SimpleReview from "@src/components/signoff/SimpleReview";
 import { useServerInfo } from "@src/hooks/session";
 import * as React from "react";
-import { Navigate, Route, Routes } from "react-router";
+import { Route, Routes } from "react-router";
 
 export function Layout() {
   const serverInfo = useServerInfo();
@@ -72,7 +72,6 @@ export function Layout() {
               <Route path="/buckets" Component={BucketsList} />
               <Route path="/auth/:payload/:token" Component={HomePage} />
               {/* /buckets */}
-              <Route path="/buckets" element={<Navigate to="/" replace />} />
               <Route path="/buckets/create" Component={BucketCreate} />
               <Route path="/buckets/:bid/groups" Component={BucketGroups} />
               <Route
