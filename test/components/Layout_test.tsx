@@ -135,11 +135,6 @@ describe("App component", () => {
       expect(screen.queryByTestId("sidebar-panel")).toBeInTheDocument();
       fireEvent.click(screen.getByTestId("sidebar-toggle"));
       expect(setShowSidebar).toHaveBeenCalledWith(false);
-
-      // TODO/HELP?: why failing?
-      // await vi.waitFor(() => {
-      //   expect(screen.queryByTestId("sidebar-panel")).not.toBeInTheDocument();
-      // });
     });
   });
 });
