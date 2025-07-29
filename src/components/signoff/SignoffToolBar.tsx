@@ -9,6 +9,7 @@ import { isMember, toReviewEnabled } from "./utils";
 import { getClient } from "@src/client";
 import { useCollection } from "@src/hooks/collection";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
+import { useSimpleReview } from "@src/hooks/preferences";
 import { usePermissions, useServerInfo } from "@src/hooks/session";
 import { useSignoff } from "@src/hooks/signoff";
 import { canEditCollection } from "@src/permission";
@@ -54,6 +55,7 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
     cacheVal
   );
   const [pendingConfirm, setPendingConfirm] = useState("");
+  const [simpleReview] = useSimpleReview();
 
   const reviewAction = async patchedFields => {
     setShowSpinner(true);
@@ -160,6 +162,16 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
               server.
             </b>
             Please reach to the server administrator.
+          </p>
+        </div>
+      )}
+      {!simpleReview && (
+        <div className="alert alert-warning">
+          <p>⚠️ This legacy review UI will be removed in the next versions.</p>
+          <p>
+            If you still rely on it actively, please contact the development
+            team to make sure your workflows will be well supported in the
+            future design.
           </p>
         </div>
       )}
