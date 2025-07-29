@@ -1,4 +1,4 @@
-import BaseForm from "./BaseForm";
+import BaseForm from "../BaseForm";
 import ServerHistory from "./ServerHistory";
 import { RJSFSchema } from "@rjsf/utils";
 import { resetClient, setupClient } from "@src/client";

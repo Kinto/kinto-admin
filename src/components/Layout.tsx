@@ -1,6 +1,5 @@
 import Breadcrumbs from "./Breadcrumbs";
 import { SessionInfoBar } from "./SessionInfoBar";
-import { HomePage } from "@src/components/HomePage";
 import Notifications from "@src/components/Notifications";
 import { Sidebar } from "@src/components/Sidebar";
 import BucketAttributes from "@src/components/bucket/BucketAttributes";
@@ -18,6 +17,8 @@ import GroupAttributes from "@src/components/group/GroupAttributes";
 import GroupCreate from "@src/components/group/GroupCreate";
 import GroupHistory from "@src/components/group/GroupHistory";
 import { GroupPermissions } from "@src/components/group/GroupPermissions";
+import BucketsList from "@src/components/homepage/BucketsList";
+import { HomePage } from "@src/components/homepage/HomePage";
 import RecordAttributes from "@src/components/record/RecordAttributes";
 import RecordBulk from "@src/components/record/RecordBulk";
 import RecordCreate from "@src/components/record/RecordCreate";
@@ -26,7 +27,7 @@ import { RecordPermissions } from "@src/components/record/RecordPermissions";
 import SimpleReview from "@src/components/signoff/SimpleReview";
 import { useServerInfo } from "@src/hooks/session";
 import * as React from "react";
-import { Navigate, Route, Routes } from "react-router";
+import { Route, Routes } from "react-router";
 
 export function Layout() {
   const serverInfo = useServerInfo();
@@ -68,9 +69,9 @@ export function Layout() {
             <Breadcrumbs separator=" / " />
             <Routes>
               <Route path="/" Component={HomePage} />
+              <Route path="/buckets" Component={BucketsList} />
               <Route path="/auth/:payload/:token" Component={HomePage} />
               {/* /buckets */}
-              <Route path="/buckets" element={<Navigate to="/" replace />} />
               <Route path="/buckets/create" Component={BucketCreate} />
               <Route path="/buckets/:bid/groups" Component={BucketGroups} />
               <Route
