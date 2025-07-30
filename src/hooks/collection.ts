@@ -1,9 +1,11 @@
 import { notifyError } from "./notifications";
+import { useServerInfo } from "./session";
 import { getClient } from "@src/client";
 import { MAX_PER_PAGE } from "@src/constants";
 import {
   CollectionData,
   CollectionPermissions,
+  HistoryFilters,
   ListHistoryResult,
   ListResult,
 } from "@src/types";
@@ -106,14 +108,36 @@ async function fetchCollections(bid: string, curData, setVal, nextPageFn?) {
 export function useCollectionHistory(
   bid: string,
   cid: string,
-  filters: any,
+  filters: HistoryFilters,
   cacheBust?: number
 ): ListHistoryResult {
   const [val, setVal] = useState({});
 
+  const serverInfo = useServerInfo();
+  // Turn the HistoryFilters into server filters.
+  const serverFilters: { [key: string]: string } = {
+    resource_name: filters.resource_name,
+    "gt_target.data.last_modified": filters.since,
+  };
+  if (filters.exclude_user_id) {
+    serverFilters.exclude_user_id = filters.exclude_user_id;
+  }
+  if (filters.exclude_signer_plugin) {
+    const pluginUserId =
+      serverInfo.capabilities.signer.plugin_user_id || "plugin:remote-settings";
+    serverFilters.exclude_user_id = serverFilters.exclude_user_id
+      ? `${serverFilters.exclude_user_id},${pluginUserId}`
+      : pluginUserId;
+  }
+  if (filters.exclude_non_humans && "openid" in serverInfo.capabilities) {
+    // Human authType is openid for now. Become smart when needed.
+    const authType = serverInfo.capabilities.openid.providers[0].name;
+    serverFilters.like_user_id = `${authType}:*`;
+  }
+
   useEffect(() => {
     setVal({});
-    fetchHistory(bid, cid, filters, [], setVal);
+    fetchHistory(bid, cid, serverFilters, [], setVal);
   }, [bid, cid, ...Object.values(filters), cacheBust]);
 
   return val;
@@ -122,7 +146,7 @@ export function useCollectionHistory(
 async function fetchHistory(
   bid: string,
   cid: string,
-  filters: any,
+  filters: { [key: string]: string },
   curData,
   setVal,
   nextPageFn?
@@ -133,16 +157,13 @@ async function fetchHistory(
     if (nextPageFn) {
       result = await nextPageFn();
     } else {
-      const { resource_name, exclude_user_id, since } = filters;
       result = await getClient()
         .bucket(bid)
         .listHistory({
           limit: MAX_PER_PAGE,
           filters: {
-            resource_name,
-            exclude_user_id,
             collection_id: cid,
-            "gt_target.data.last_modified": since,
+            ...filters,
           },
         });
     }

@@ -29,3 +29,17 @@ export function useShowDiffAllLines(): [boolean, (boolean) => void] {
   const [val, setVal] = useLocalStorage("showDiffAllLines", false);
   return [val, setVal] as [boolean, (boolean) => void];
 }
+
+export function useExcludeNonHumans(
+  byDefault: boolean
+): [boolean, (boolean) => void] {
+  const [val, setVal] = useLocalStorage("excludeNonHumans", byDefault);
+  return [val, setVal] as [boolean, (boolean) => void];
+}
+
+export function useExcludeSignerPlugin(
+  byDefault: boolean
+): [boolean, (boolean) => void] {
+  const [val, setVal] = useLocalStorage("excludeSignerPlugin", byDefault);
+  return [val, setVal] as [boolean, (boolean) => void];
+}

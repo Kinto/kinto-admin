@@ -18,5 +18,15 @@ export const SERVERINFO_WITH_ATTACHMENTS_CAPABILITY = {
   ...DEFAULT_SERVERINFO,
   capabilities: {
     attachments: {},
+    ...DEFAULT_SERVERINFO.capabilities,
+  },
+};
+
+export const SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES = {
+  ...DEFAULT_SERVERINFO,
+  capabilities: {
+    signer: {},
+    openid: {},
+    ...DEFAULT_SERVERINFO.capabilities,
   },
 };
