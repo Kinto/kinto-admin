@@ -320,19 +320,17 @@ export const getAuthLabel = (authType: string) => {
 };
 
 export function parseHistoryFilters(params: URLSearchParams): HistoryFilters {
-  const ret: HistoryFilters = {};
-  const since = params.get("since");
-  if (since) {
-    ret.since = since;
-  }
-  const resourceName = params.get("resource_name");
-  if (resourceName) {
-    ret.resource_name = resourceName;
-  }
-  const excludeUserId = params.get("exclude_user_id");
-  if (excludeUserId) {
-    ret.exclude_user_id = excludeUserId;
-  }
+  const ret: HistoryFilters = [
+    "since",
+    "resource_name",
+    "exclude_user_id",
+    "exclude_signer_plugin",
+    "exclude_non_humans",
+  ].reduce((acc, field) => {
+    const val = params.get(field);
+    if (val) acc[field] = val == "true" ? true : val;
+    return acc;
+  }, {});
   return ret;
 }
 

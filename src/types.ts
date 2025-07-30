@@ -55,11 +55,17 @@ export type SignerCapabilityResourceEntry = {
   collection: string;
 };
 
+export type OpenIDProvider = {
+  name: string;
+};
+
 export type Capabilities = {
   attachments?: any;
   changes?: any;
   default_bucket?: any;
-  openid?: any;
+  openid?: {
+    providers: OpenIDProvider[];
+  };
   history?: any;
   permissions_endpoint?: any;
   schema?: any;
@@ -68,6 +74,7 @@ export type Capabilities = {
     editors_group: string;
     reviewers_group: string;
     to_review_enabled: boolean;
+    plugin_user_id?: string;
   };
 };
 
@@ -90,6 +97,8 @@ export type HistoryFilters = {
   since?: string;
   resource_name?: string;
   exclude_user_id?: string;
+  exclude_signer_plugin?: boolean;
+  exclude_non_humans?: boolean;
 };
 
 export type CollectionData = {
