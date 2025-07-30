@@ -48,4 +48,26 @@ describe("preferences hooks", () => {
       expect(setValMock).toHaveBeenCalledWith(true);
     });
   });
+
+  describe("useShowDiffExtraFields", () => {
+    it("returns storage val and setVal", async () => {
+      const setValMock = vi.fn();
+      mock.mockReturnValue([false, setValMock]);
+      const [val, setVal] = preferencesHooks.useShowDiffExtraFields();
+      setVal(true);
+      expect(val).toBe(false);
+      expect(setValMock).toHaveBeenCalledWith(true);
+    });
+  });
+
+  describe("useShowDiffAllLines", () => {
+    it("returns storage val and setVal", async () => {
+      const setValMock = vi.fn();
+      mock.mockReturnValue([false, setValMock]);
+      const [val, setVal] = preferencesHooks.useShowDiffAllLines();
+      setVal(true);
+      expect(val).toBe(false);
+      expect(setValMock).toHaveBeenCalledWith(true);
+    });
+  });
 });

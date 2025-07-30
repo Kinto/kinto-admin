@@ -20,4 +20,12 @@ export function useSidebarShowReadonly(): [boolean, (boolean) => void] {
   return [val, setVal] as [boolean, (boolean) => void];
 }
 
-// TODO: add showExtraFields and showAllLines from simple review
+export function useShowDiffExtraFields(): [boolean, (boolean) => void] {
+  const [val, setVal] = useLocalStorage("showDiffExtraFields", false);
+  return [val, setVal] as [boolean, (boolean) => void];
+}
+
+export function useShowDiffAllLines(): [boolean, (boolean) => void] {
+  const [val, setVal] = useLocalStorage("showDiffAllLines", false);
+  return [val, setVal] as [boolean, (boolean) => void];
+}

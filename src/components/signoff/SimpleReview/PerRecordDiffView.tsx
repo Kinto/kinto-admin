@@ -1,7 +1,11 @@
+import {
+  useShowDiffAllLines,
+  useShowDiffExtraFields,
+} from "@src/hooks/preferences";
 import type { RecordData, SignoffSourceInfo } from "@src/types";
 import { diffJson, omit, renderDisplayField } from "@src/utils";
 import { diffJson as diff, diffArrays } from "diff";
-import React, { useState } from "react";
+import React from "react";
 
 export enum ChangeType {
   ADD = "add",
@@ -25,8 +29,9 @@ export default function PerRecordDiffView({
   collectionData,
   displayFields,
 }: PerRecordDiffViewProps) {
-  const [showExtraFields, setShowExtraFields] = useState(false);
-  const [showAllLines, setShowAllLines] = useState(false);
+  const [showExtraFields, setShowExtraFields] = useShowDiffExtraFields();
+  const [showAllLines, setShowAllLines] = useShowDiffAllLines();
+
   const changes = findChangeTypes(
     oldRecords,
     newRecords,
