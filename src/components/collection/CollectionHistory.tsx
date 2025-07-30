@@ -28,6 +28,7 @@ export default function CollectionHistory() {
           history={history.data || []}
           hasNextHistory={history.hasNextPage}
           listNextHistory={history.next}
+          sinceFilter={filters.since}
         />
       </CollectionTabs>
     </div>

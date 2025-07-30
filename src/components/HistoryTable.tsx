@@ -3,18 +3,13 @@ import PaginatedTable from "./PaginatedTable";
 import Spinner from "./Spinner";
 import { getClient } from "@src/client";
 import { notifyError } from "@src/hooks/notifications";
-import type {
-  RecordData,
-  ResourceHistoryEntry,
-  RouteLocation,
-} from "@src/types";
-import { diffJson, humanDate, parseHistoryFilters, timeago } from "@src/utils";
+import type { RecordData, ResourceHistoryEntry } from "@src/types";
+import { diffJson, humanDate, timeago } from "@src/utils";
 import { omit, sortHistoryEntryPermissions } from "@src/utils";
 import React, { useState } from "react";
 import { Eye } from "react-bootstrap-icons";
 import { EyeSlash } from "react-bootstrap-icons";
 import { SkipStart } from "react-bootstrap-icons";
-import { useSearchParams } from "react-router";
 
 function Diff({ source, target }: { source: any; target: any }) {
   const diff = diffJson(source, target);
@@ -197,22 +192,15 @@ function HistoryRow({
 }
 
 type FilterInfoProps = {
-  location: RouteLocation;
+  since: string;
   enableDiffOverview: boolean;
   onViewJournalClick: () => void;
   onDiffOverviewClick: (timestamp: string) => void;
 };
 
 function FilterInfo(props: FilterInfoProps) {
-  const {
-    location,
-    enableDiffOverview,
-    onViewJournalClick,
-    onDiffOverviewClick,
-  } = props;
-  const {
-    query: { since },
-  } = location;
+  const { since, enableDiffOverview, onViewJournalClick, onDiffOverviewClick } =
+    props;
 
   return (
     <p>
@@ -283,6 +271,7 @@ type HistoryTableProps = {
   hasNextHistory: boolean;
   listNextHistory?;
   enableDiffOverview?: boolean;
+  sinceFilter?: string;
 };
 
 export default function HistoryTable({
@@ -293,13 +282,13 @@ export default function HistoryTable({
   hasNextHistory,
   listNextHistory,
   enableDiffOverview = false,
+  sinceFilter = "",
 }: HistoryTableProps) {
   const [diffOverview, setDiffOverview] = useState(false);
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [current, setCurrent] = useState(null);
   const [previous, setPrevious] = useState(null);
-  const [params, _] = useSearchParams();
 
   const nextHistoryWrapper = async () => {
     setLoading(true);
@@ -333,11 +322,6 @@ export default function HistoryTable({
     setCurrent(null);
     setPrevious(null);
   };
-
-  const query = parseHistoryFilters(params);
-  const routeLocation = { pathname: location.pathname, query };
-  const { since } = query;
-  const isFiltered = !!since;
 
   const thead = (
     <thead>
@@ -378,9 +362,9 @@ export default function HistoryTable({
 
   return (
     <div>
-      {isFiltered && (
+      {!!sinceFilter && (
         <FilterInfo
-          location={routeLocation}
+          since={sinceFilter}
           enableDiffOverview={enableDiffOverview}
           onDiffOverviewClick={onDiffOverviewClick}
           onViewJournalClick={onViewJournalClick}
@@ -389,7 +373,7 @@ export default function HistoryTable({
       {busy ? (
         <Spinner />
       ) : diffOverview ? (
-        <DiffOverview since={since} source={previous} target={current} />
+        <DiffOverview since={sinceFilter} source={previous} target={current} />
       ) : (
         <PaginatedTable
           colSpan={6}
