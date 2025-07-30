@@ -125,11 +125,9 @@ export function useCollectionHistory(
   if (filters.exclude_signer_plugin) {
     const pluginUserId =
       serverInfo.capabilities.signer.plugin_user_id || "plugin:remote-settings";
-    if (serverFilters.exclude_user_id) {
-      serverFilters.exclude_user_id += `,${pluginUserId}`;
-    } else {
-      serverFilters.exclude_user_id = pluginUserId;
-    }
+    serverFilters.exclude_user_id = serverFilters.exclude_user_id
+      ? `${serverFilters.exclude_user_id},${pluginUserId}`
+      : pluginUserId;
   }
   if (filters.exclude_non_humans && "openid" in serverInfo.capabilities) {
     // Human authType is openid for now. Become smart when needed.
