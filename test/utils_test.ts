@@ -7,6 +7,7 @@ import {
   getServerByPriority,
   humanDate,
   makeObservable,
+  parseHistoryFilters,
   renderDisplayField,
   sortHistoryEntryPermissions,
   timeago,
@@ -469,5 +470,18 @@ describe("makeObservable", () => {
     expect(testFn3).toHaveBeenCalledWith("string2");
     expect(testFn3).toHaveBeenCalledWith("string3");
     expect(testFn3).not.toHaveBeenCalledWith("string4");
+  });
+});
+
+describe("parseHistoryFilters", () => {
+  it("should parse querystrings", async () => {
+    expect(
+      parseHistoryFilters(
+        new URLSearchParams("?resource_name=record&exclude_signer_plugin=true")
+      )
+    ).toEqual({
+      resource_name: "record",
+      exclude_signer_plugin: true,
+    });
   });
 });

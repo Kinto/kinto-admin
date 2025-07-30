@@ -70,4 +70,26 @@ describe("preferences hooks", () => {
       expect(setValMock).toHaveBeenCalledWith(true);
     });
   });
+
+  describe("useExcludeNonHumans", () => {
+    it("returns storage val and setVal", async () => {
+      const setValMock = vi.fn();
+      mock.mockReturnValue([false, setValMock]);
+      const [val, setVal] = preferencesHooks.useExcludeNonHumans(false);
+      setVal(true);
+      expect(val).toBe(false);
+      expect(setValMock).toHaveBeenCalledWith(true);
+    });
+  });
+
+  describe("useExcludeSignerPlugin", () => {
+    it("returns storage val and setVal", async () => {
+      const setValMock = vi.fn();
+      mock.mockReturnValue([false, setValMock]);
+      const [val, setVal] = preferencesHooks.useExcludeSignerPlugin(false);
+      setVal(true);
+      expect(val).toBe(false);
+      expect(setValMock).toHaveBeenCalledWith(true);
+    });
+  });
 });

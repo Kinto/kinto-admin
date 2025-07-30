@@ -32,8 +32,8 @@ export default function CollectionHistory() {
 
   // Hide the non human filters if the server does not support openid or signer
   const serverInfo = useServerInfo();
-  const hasOpenID = "openid" in serverInfo.capabilities;
-  const hasSigner = "signer" in serverInfo.capabilities;
+  const hasOpenID = serverInfo && "openid" in serverInfo.capabilities;
+  const hasSigner = serverInfo && "signer" in serverInfo.capabilities;
 
   return (
     <div>
@@ -52,6 +52,7 @@ export default function CollectionHistory() {
               checked={excludeNonHumans}
               onChange={e => setExcludeNonHumans(e.currentTarget.checked)}
               id="excludeNonHumans"
+              data-testid="excludeNonHumans"
             />
             <label className="form-check-label" htmlFor="excludeNonHumans">
               Exclude non humans
@@ -66,6 +67,7 @@ export default function CollectionHistory() {
               checked={excludeNonHumans || excludeSignerPlugin}
               onChange={e => setExcludeSignerPlugin(e.currentTarget.checked)}
               id="excludeSignerPlugin"
+              data-testid="excludeSignerPlugin"
               disabled={excludeNonHumans}
             />
             <label className="form-check-label" htmlFor="excludeSignerPlugin">

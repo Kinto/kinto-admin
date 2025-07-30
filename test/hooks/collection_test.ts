@@ -6,6 +6,7 @@ import {
   useCollectionList,
   useCollectionPermissions,
 } from "@src/hooks/collection";
+import * as sessionHooks from "@src/hooks/session";
 import { mockNotifyError } from "@test/testUtils";
 import { renderHook } from "@testing-library/react";
 
@@ -227,7 +228,7 @@ describe("collection hooks", () => {
         useCollectionHistory("bid", "cid", {
           resource_name: "resource",
           exclude_user_id: "user",
-          since: 1,
+          since: "1",
         })
       );
       expect(result.current).toEqual({});
@@ -245,7 +246,52 @@ describe("collection hooks", () => {
           resource_name: "resource",
           exclude_user_id: "user",
           collection_id: "cid",
-          "gt_target.data.last_modified": 1,
+          "gt_target.data.last_modified": "1",
+        },
+      });
+    });
+
+    it("should call the history endpoint with transformed filters", async () => {
+      vi.spyOn(sessionHooks, "useServerInfo").mockImplementation(() => ({
+        project_name: "",
+        url: "",
+        project_docs: "",
+        capabilities: {
+          openid: {
+            providers: [{ name: "oauth" }],
+          },
+          signer: {
+            resources: [],
+            editors_group: "",
+            reviewers_group: "",
+            plugin_user_id: "plugin:signer",
+            to_review_enabled: true,
+          },
+        },
+      }));
+
+      listHistoryMock.mockResolvedValue({
+        data: [{ foo: "bar" }],
+        hasNextPage: false,
+        next: null,
+      });
+
+      renderHook(() =>
+        useCollectionHistory("bid", "cid", {
+          resource_name: "resource",
+          exclude_user_id: "user",
+          exclude_non_humans: true,
+          exclude_signer_plugin: true,
+        })
+      );
+
+      expect(listHistoryMock).toHaveBeenCalledWith({
+        limit: MAX_PER_PAGE,
+        filters: {
+          collection_id: "cid",
+          resource_name: "resource",
+          exclude_user_id: "user,plugin:signer",
+          like_user_id: "oauth:*",
         },
       });
     });
