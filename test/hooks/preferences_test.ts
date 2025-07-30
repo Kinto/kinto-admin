@@ -26,4 +26,26 @@ describe("preferences hooks", () => {
       expect(setValMock).toHaveBeenCalledWith(true);
     });
   });
+
+  describe("useSidebarFilter", () => {
+    it("returns storage val and setVal", async () => {
+      const setValMock = vi.fn();
+      mock.mockReturnValue(["workspace", setValMock]);
+      const [val, setVal] = preferencesHooks.useSidebarFilter();
+      setVal("main");
+      expect(val).toBe("workspace");
+      expect(setValMock).toHaveBeenCalledWith("main");
+    });
+  });
+
+  describe("useSidebarShowReadonly", () => {
+    it("returns storage val and setVal", async () => {
+      const setValMock = vi.fn();
+      mock.mockReturnValue([false, setValMock]);
+      const [val, setVal] = preferencesHooks.useSidebarShowReadonly();
+      setVal(true);
+      expect(val).toBe(false);
+      expect(setValMock).toHaveBeenCalledWith(true);
+    });
+  });
 });

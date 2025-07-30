@@ -2,6 +2,10 @@ import AdminLink from "./AdminLink";
 import Spinner from "./Spinner";
 import { SIDEBAR_MAX_LISTED_COLLECTIONS } from "@src/constants";
 import { reloadBuckets, useBucketList } from "@src/hooks/bucket";
+import {
+  useSidebarFilter,
+  useSidebarShowReadonly,
+} from "@src/hooks/preferences";
 import { useAuth, usePermissions, useServerInfo } from "@src/hooks/session";
 import { canCreateBucket } from "@src/permission";
 import type { BucketEntry, RouteParams } from "@src/types";
@@ -192,8 +196,8 @@ function filterBuckets(buckets, filters): BucketEntry[] {
 }
 
 const BucketsMenu = (props: BucketsMenuProps) => {
-  const [showReadOnly, setShowReadOnly] = React.useState(false);
-  const [search, setSearch] = React.useState(null);
+  const [showReadOnly, setShowReadOnly] = useSidebarShowReadonly();
+  const [search, setSearch] = useSidebarFilter();
   const serverInfo = useServerInfo();
   const permissions = usePermissions();
   const buckets = useBucketList(permissions, serverInfo?.user?.bucket);
