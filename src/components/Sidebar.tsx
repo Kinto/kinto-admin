@@ -8,7 +8,7 @@ import {
 } from "@src/hooks/preferences";
 import { useAuth, usePermissions, useServerInfo } from "@src/hooks/session";
 import { canCreateBucket } from "@src/permission";
-import type { BucketEntry, RouteParams } from "@src/types";
+import type { BucketEntry, CollectionEntry, RouteParams } from "@src/types";
 import url from "@src/url";
 import * as React from "react";
 import { Plus } from "react-bootstrap-icons";
@@ -46,7 +46,10 @@ function SideBarLink(props: SideBarLinkProps) {
   );
 }
 
-const HomeMenu = ({ currentPath }) => {
+interface HomeMenuProps {
+  currentPath: string;
+}
+const HomeMenu = ({ currentPath }: HomeMenuProps) => {
   const { bid } = useParams();
   const onHomePage = !bid; // if we do not have a bucket id, we are on the home page
   return (
@@ -65,7 +68,13 @@ const HomeMenu = ({ currentPath }) => {
   );
 };
 
-function CollectionMenuEntry(props) {
+interface CollectionMenuEntryProps {
+  bucket: BucketEntry;
+  collection: CollectionEntry;
+  currentPath: string;
+  active: boolean;
+}
+function CollectionMenuEntry(props: CollectionMenuEntryProps) {
   const {
     bucket: { id: bid },
     collection,
@@ -106,7 +115,15 @@ function CollectionMenuEntry(props) {
   );
 }
 
-function BucketCollectionsMenu(props) {
+interface BucketCollectionsMenuProps {
+  bucket: BucketEntry;
+  collections: CollectionEntry[];
+  currentPath: string;
+  bid: string;
+  cid: string;
+  canCreateCollection: boolean;
+}
+function BucketCollectionsMenu(props: BucketCollectionsMenuProps) {
   const { currentPath, bucket, collections, bid, cid, canCreateCollection } =
     props;
   return (

@@ -3,12 +3,17 @@ import AdminLink from "@src/components/AdminLink";
 import PaginatedTable from "@src/components/PaginatedTable";
 import { usePermissions, useServerInfo } from "@src/hooks/session";
 import { canCreateGroup } from "@src/permission";
+import { GroupData, ListResult } from "@src/types";
 import { timeago } from "@src/utils";
 import React, { useState } from "react";
 import { Gear } from "react-bootstrap-icons";
 import { ClockHistory } from "react-bootstrap-icons";
 
-export function ListActions({ bid, busy }) {
+interface ListActionsProps {
+  bid: string;
+  busy: boolean;
+}
+export function ListActions({ bid, busy }: ListActionsProps) {
   const permissions = usePermissions();
   if (busy || !canCreateGroup(permissions, bid)) {
     return null;
@@ -25,8 +30,12 @@ export function ListActions({ bid, busy }) {
     </div>
   );
 }
-
-export function DataList(props) {
+interface DataListProps {
+  bid: string;
+  groups: ListResult<GroupData>;
+  showSpinner: boolean;
+}
+export function DataList(props: DataListProps) {
   const [loading, setLoading] = useState(false);
   const serverInfo = useServerInfo();
   const { bid, groups, showSpinner } = props;

@@ -36,7 +36,7 @@ export default function Base64File({
   );
 }
 
-function CurrentValDisplay({ val }) {
+function CurrentValDisplay({ val }: { val: string | undefined }) {
   if (!val) {
     return null;
   }
@@ -50,7 +50,7 @@ function CurrentValDisplay({ val }) {
       rel="noreferrer"
       data-testid="b64-download"
     >
-      {val.match(/^data:image\//) ? (
+      {/^data:image\//.exec(val) ? (
         <img
           src={val}
           className="b64-thumb"

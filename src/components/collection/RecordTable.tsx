@@ -7,15 +7,20 @@ import SignoffToolbar from "@src/components/signoff/SignoffToolBar";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { usePermissions } from "@src/hooks/session";
 import { canCreateRecord } from "@src/permission";
-import type { RecordData } from "@src/types";
+import type { CollectionData, RecordData, ServerInfo } from "@src/types";
 import { capitalize } from "@src/utils";
 import React, { useState } from "react";
 import { SortUp } from "react-bootstrap-icons";
 import { SortDown } from "react-bootstrap-icons";
 import { useParams } from "react-router";
 
-export function ListActions(props) {
-  const { serverInfo, collection } = props;
+interface ListActionsProps {
+  serverInfo: ServerInfo;
+  collection: CollectionData;
+  callback: () => void;
+}
+export function ListActions(props: ListActionsProps) {
+  const { serverInfo, collection, callback } = props;
   const { bid, cid } = useParams();
   const permissions = usePermissions();
 
@@ -47,12 +52,17 @@ export function ListActions(props) {
       )}
       {/* won't render if the signer capability is not enabled on the server
          or collection not configured to be signed */}
-      <SignoffToolbar key="request-signoff-toolbar" callback={props.callback} />
+      <SignoffToolbar key="request-signoff-toolbar" callback={callback} />
     </div>
   );
 }
-
-export function SortLink(props) {
+interface SortLinkProps {
+  dir: string;
+  active: boolean;
+  column: string;
+  updateSort: (string) => void;
+}
+export function SortLink(props: SortLinkProps) {
   const { dir, active, column, updateSort } = props;
   return (
     <a
@@ -78,8 +88,12 @@ export function SortLink(props) {
     </a>
   );
 }
-
-export function ColumnSortLink(props) {
+interface ColumnSortLinkProps {
+  column: string;
+  currentSort: string;
+  updateSort: (string) => void;
+}
+export function ColumnSortLink(props: ColumnSortLinkProps) {
   const { column, currentSort, updateSort } = props;
   if (!currentSort || column === "__json") {
     return null;

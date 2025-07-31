@@ -9,7 +9,11 @@ const deleteSchema: RJSFSchema = {
   title: "Please enter the bucket id to delete as a confirmation",
 };
 
-export default function DeleteForm({ bid, onSubmit }) {
+interface DeleteFormProps {
+  bid: string;
+  onSubmit: (data: RJSFSchema) => void;
+}
+export default function DeleteForm({ bid, onSubmit }: DeleteFormProps) {
   const validate = (formData, errors) => {
     if (formData !== bid) {
       errors.addError("The bucket id does not match.");

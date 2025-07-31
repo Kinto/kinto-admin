@@ -5,6 +5,7 @@ import PaginatedTable from "@src/components/PaginatedTable";
 import { useBucketList } from "@src/hooks/bucket";
 import { usePermissions, useServerInfo } from "@src/hooks/session";
 import { canCreateBucket } from "@src/permission";
+import { BucketData, ServerInfo } from "@src/types";
 import { timeago } from "@src/utils";
 import React from "react";
 import {
@@ -15,7 +16,10 @@ import {
   PersonFill,
 } from "react-bootstrap-icons";
 
-export function ListActions({ busy }) {
+interface ListActionsProps {
+  busy: boolean;
+}
+export function ListActions({ busy }: ListActionsProps) {
   const permissions = usePermissions();
   if (busy || !canCreateBucket(permissions)) {
     return null;
@@ -33,7 +37,12 @@ export function ListActions({ busy }) {
   );
 }
 
-export function DataList(props) {
+interface DataListProps {
+  serverInfo: ServerInfo;
+  buckets: BucketData[];
+  showSpinner: boolean;
+}
+export function DataList(props: DataListProps) {
   const { serverInfo, buckets, showSpinner } = props;
 
   if (showSpinner) {

@@ -3,11 +3,16 @@ import AdminLink from "@src/components/AdminLink";
 import PaginatedTable from "@src/components/PaginatedTable";
 import { usePermissions } from "@src/hooks/session";
 import { canCreateCollection } from "@src/permission";
+import { Capabilities, CollectionData, ListResult } from "@src/types";
 import { timeago } from "@src/utils";
 import React, { useState } from "react";
 import { ClockHistory, Gear, Justify } from "react-bootstrap-icons";
 
-export function ListActions(props) {
+interface ListActionsProps {
+  bid: string;
+  busy: boolean;
+}
+export function ListActions(props: ListActionsProps) {
   const permissions = usePermissions();
   const { bid, busy } = props;
   if (busy || !canCreateCollection(permissions, bid)) {
@@ -26,7 +31,13 @@ export function ListActions(props) {
   );
 }
 
-export function DataList(props) {
+interface DataListProps {
+  bid: string;
+  collections: ListResult<CollectionData>;
+  capabilities: Capabilities;
+  showSpinner: boolean;
+}
+export function DataList(props: DataListProps) {
   const [loading, setLoading] = useState(false);
   const { bid, collections, capabilities, showSpinner } = props;
 

@@ -1,5 +1,6 @@
 import BaseForm from "../BaseForm";
 import ServerHistory from "./ServerHistory";
+import { IChangeEvent } from "@rjsf/core";
 import { RJSFSchema } from "@rjsf/utils";
 import { resetClient, setupClient } from "@src/client";
 import {
@@ -327,15 +328,15 @@ export default function AuthForm() {
     singleAuthMethod
   );
 
-  const onChange = props => {
-    const updatedData = props.formData;
-    const { authType } = updatedData;
+  const onChange = (evt: IChangeEvent<any>) => {
+    const { formData } = evt;
+    const { authType } = formData;
     const { schema, uiSchema } = authSchemas(authType);
     const omitCredentials =
       [ANONYMOUS_AUTH].includes(authType) || authType.startsWith("openid-");
     const specificFormData = omitCredentials
-      ? omit(updatedData, ["credentials"])
-      : { credentials: {}, ...updatedData, authType };
+      ? omit(formData, ["credentials"])
+      : { credentials: {}, ...formData, authType };
 
     setSchema(schema);
     setUiSchema(uiSchema);

@@ -65,7 +65,11 @@ export function extendUiSchemaWithAttachment(
   };
 }
 
-function AttachmentPreview({ mimetype, location }) {
+interface AttachmentPreviewProps {
+  mimetype: string;
+  location: string;
+}
+function AttachmentPreview({ mimetype, location }: AttachmentPreviewProps) {
   if (!mimetype.startsWith("image/")) {
     return null;
   } else {
