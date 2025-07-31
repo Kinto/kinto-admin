@@ -34,13 +34,13 @@ const uiSchema: UiSchema = {
   },
 };
 
-type Props = {
+interface Props {
   children?: React.ReactNode;
   cid?: string | null;
   disabled?: boolean;
   formData: CollectionData;
   onSubmit: (data: { formData: CollectionData }) => void;
-};
+}
 
 export default function JSONCollectionForm({
   children,
@@ -89,7 +89,7 @@ export default function JSONCollectionForm({
         validator={validator}
         // @ts-ignore
         onSubmit={handleSubmit}
-        disabled={disabled || isSubmitting}
+        disabled={disabled ?? isSubmitting}
       >
         {children}
       </FormWithTheme>

@@ -5,13 +5,13 @@ import { Gear } from "react-bootstrap-icons";
 import { Lock } from "react-bootstrap-icons";
 import { ClockHistory } from "react-bootstrap-icons";
 
-type Props = {
+interface Props {
   bid: string;
   cid: string;
   rid: string;
   selected: "attributes" | "permissions" | "history";
   children?: React.ReactNode;
-};
+}
 
 export default function RecordTabs({
   bid,

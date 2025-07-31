@@ -12,18 +12,18 @@ export function extendSchemaWithAttachment(
   attachmentConfig: { enabled: boolean; required: boolean } | null | undefined,
   record: RecordData
 ): any {
-  if (!attachmentConfig || !attachmentConfig.enabled) {
+  if (!attachmentConfig?.enabled) {
     return schema;
   }
   const isCreate = !record.id;
-  const attachmentMissing = record.attachment && record.attachment.location;
+  const attachmentMissing = record.attachment?.location;
 
   // We add a fake schema field ``__attachment__`` for the file input.
   // It will be required if the
   // Attachment form field is only required to receive a file
   // required, when creating a record, or updating it if it does not have any.
   // (required setting changed in the mean time).
-  const schemaRequired = schema.required || [];
+  const schemaRequired = schema.required ?? [];
   const required =
     attachmentConfig.required && (isCreate || attachmentMissing)
       ? schemaRequired.concat("__attachment__")
@@ -79,13 +79,13 @@ function AttachmentPreview({ mimetype, location }) {
   }
 }
 
-export type AttachmentInfoProps = {
+export interface AttachmentInfoProps {
   record?: RecordResource;
   allowEditing: boolean;
   attachmentRequired: boolean | null | undefined;
   capabilities: Capabilities;
   callback: () => void;
-};
+}
 
 export function AttachmentInfo(props: AttachmentInfoProps) {
   const { bid, cid } = useParams();

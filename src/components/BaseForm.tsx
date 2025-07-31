@@ -52,12 +52,12 @@ export default function BaseForm(props: BaseFormProps) {
         <FormWithTheme
           {...restProps}
           focusOnFirstError={errorFocus}
-          className={`rjsf ${className ? className : ""}`}
+          className={`rjsf ${className ?? ""}`}
           validator={validator}
           onSubmit={handleOnSubmit}
           // @ts-ignore
           fields={adminFields}
-          disabled={disabled || showSpinner || isSubmitting}
+          disabled={disabled ?? showSpinner ?? isSubmitting}
           widgets={customWidgets}
         />
         {(isSubmitting || showSpinner) && <Spinner />}
@@ -98,7 +98,7 @@ class ErrorBoundary extends Component {
       return (
         <>
           <h2>Error rendering form</h2>
-          {this.props.formCrashMsg || <></>}
+          {this.props.formCrashMsg ?? <></>}
           <code>
             {this.state.thrown.name}: {this.state.thrown.message}
           </code>

@@ -54,48 +54,45 @@ export function DataList(props) {
 
   const tbody = (
     <tbody className={""}>
-      {data &&
-        data.map((group, index) => {
-          const { id: gid, members, last_modified } = group;
-          const date = new Date(last_modified);
-          return (
-            <tr key={index}>
-              <td>
-                <AdminLink name="group:attributes" params={{ bid, gid }}>
-                  {gid}
-                </AdminLink>
-              </td>
-              <td>{members.join(", ")}</td>
-              <td>
-                <span title={date.toISOString()}>
-                  {timeago(date.getTime())}
-                </span>
-              </td>
-              <td className="actions">
-                <div className="btn-group">
-                  {serverInfo && "history" in serverInfo.capabilities && (
-                    <AdminLink
-                      name="group:history"
-                      params={{ bid, gid }}
-                      className="btn btn-sm btn-secondary"
-                      title="View group history"
-                    >
-                      <ClockHistory className="icon" />
-                    </AdminLink>
-                  )}
+      {data?.map((group, index) => {
+        const { id: gid, members, last_modified } = group;
+        const date = new Date(last_modified);
+        return (
+          <tr key={index}>
+            <td>
+              <AdminLink name="group:attributes" params={{ bid, gid }}>
+                {gid}
+              </AdminLink>
+            </td>
+            <td>{members.join(", ")}</td>
+            <td>
+              <span title={date.toISOString()}>{timeago(date.getTime())}</span>
+            </td>
+            <td className="actions">
+              <div className="btn-group">
+                {serverInfo && "history" in serverInfo.capabilities && (
                   <AdminLink
-                    name="group:attributes"
+                    name="group:history"
                     params={{ bid, gid }}
                     className="btn btn-sm btn-secondary"
-                    title="Edit groups attributes"
+                    title="View group history"
                   >
-                    <Gear className="icon" />
+                    <ClockHistory className="icon" />
                   </AdminLink>
-                </div>
-              </td>
-            </tr>
-          );
-        })}
+                )}
+                <AdminLink
+                  name="group:attributes"
+                  params={{ bid, gid }}
+                  className="btn btn-sm btn-secondary"
+                  title="Edit groups attributes"
+                >
+                  <Gear className="icon" />
+                </AdminLink>
+              </div>
+            </td>
+          </tr>
+        );
+      })}
     </tbody>
   );
   return (

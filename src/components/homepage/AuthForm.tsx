@@ -286,7 +286,7 @@ export default function AuthForm() {
       setFormData({
         server: auth.server,
         authType:
-          servers.find(x => x.server === auth.server)?.authType ||
+          servers.find(x => x.server === auth.server)?.authType ??
           ANONYMOUS_AUTH,
       });
 
@@ -308,10 +308,10 @@ export default function AuthForm() {
 
   useEffect(() => {
     // load last used server by default
-    if (SINGLE_SERVER || (servers && servers.length)) {
+    if (SINGLE_SERVER || servers?.length > 0) {
       serverInfoCallback({
         authType: ANONYMOUS_AUTH,
-        server: SINGLE_SERVER || servers[0].server,
+        server: SINGLE_SERVER ?? servers[0].server,
       });
     }
   }, []);

@@ -37,9 +37,9 @@ function hasRequestedReview(source, serverInfo) {
   return user.id === lastReviewRequestBy;
 }
 
-type SignoffToolBarProps = {
+interface SignoffToolBarProps {
   callback: () => void;
-};
+}
 
 export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
   const { bid, cid } = useParams();
@@ -264,7 +264,7 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
 // Work in progress
 //
 
-type WorkInProgressProps = {
+interface WorkInProgressProps {
   label: string;
   canEdit: boolean;
   currentStep: number;
@@ -274,7 +274,7 @@ type WorkInProgressProps = {
   source: SignoffSourceInfo;
   hasHistory: boolean;
   changes: ChangesList | null;
-};
+}
 
 function WorkInProgress(props: WorkInProgressProps) {
   const {
@@ -307,13 +307,13 @@ function WorkInProgress(props: WorkInProgressProps) {
   );
 }
 
-type WorkInProgressInfosProps = {
+interface WorkInProgressInfosProps {
   isCurrentStep: boolean;
   isCurrentUrl: boolean;
   source: SignoffSourceInfo;
   hasHistory: boolean;
   changes: ChangesList | null;
-};
+}
 function WorkInProgressInfos(props: WorkInProgressInfosProps) {
   const { isCurrentStep, isCurrentUrl, source, hasHistory, changes } = props;
   const { bucket, collection, lastEditBy, lastEditDate, lastReviewerComment } =

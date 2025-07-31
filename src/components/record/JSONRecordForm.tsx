@@ -41,14 +41,14 @@ const uiSchema: UiSchema = {
   "ui:order": [],
 };
 
-type Props = {
+interface Props {
   disabled: boolean;
   record: string; // JSON string representation of a record data
   attachmentEnabled?: boolean;
   attachmentRequired?: boolean;
   onSubmit: (data: object) => void;
   children?: React.ReactNode;
-};
+}
 
 function splitAttachment(record: string) {
   let jsRecord = JSON.parse(record);

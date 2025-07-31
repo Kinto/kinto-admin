@@ -11,12 +11,12 @@ import type { Permissions } from "@src/types";
 import React from "react";
 import { useParams } from "react-router";
 
-type Props = {
+interface Props {
   readonly: boolean;
   permissions: Permissions;
   acls: string[];
   onSubmit: (data: RJSFSchema) => void;
-};
+}
 
 export function PermissionsForm({
   readonly,

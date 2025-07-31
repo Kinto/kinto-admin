@@ -255,10 +255,10 @@ export default function CollectionForm() {
   const formDataSerialized = creation
     ? undefined
     : {
-        displayFields: collection?.displayFields || [],
+        displayFields: collection?.displayFields ?? [],
         ...collection,
-        schema: JSON.stringify(collection.schema || {}, null, 2),
-        uiSchema: JSON.stringify(collection.uiSchema || {}, null, 2),
+        schema: JSON.stringify(collection.schema ?? {}, null, 2),
+        uiSchema: JSON.stringify(collection.uiSchema ?? {}, null, 2),
       };
 
   const _uiSchema = creation

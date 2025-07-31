@@ -169,7 +169,7 @@ export default function RecordTable({
   };
 
   const isSchemaProperty = displayField => {
-    return schema && schema.properties && displayField in schema.properties;
+    return schema?.properties && displayField in schema.properties;
   };
 
   if (recordsLoaded && records.length === 0) {
@@ -182,7 +182,7 @@ export default function RecordTable({
 
   if (filter && records.length) {
     records = records.filter(x =>
-      JSON.stringify(x).match(new RegExp(filter, "i"))
+      new RegExp(filter, "i").exec(JSON.stringify(x))
     );
   }
 

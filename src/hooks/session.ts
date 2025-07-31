@@ -11,7 +11,7 @@ import {
 import { makeObservable } from "@src/utils";
 import { useEffect, useState } from "react";
 
-const openPromises = {};
+const openPromises: Record<string, boolean> = {};
 
 const authState = makeObservable(undefined);
 const permissionState = makeObservable(undefined);
@@ -51,7 +51,7 @@ export function logout() {
 export function useAuth(): AuthData | undefined {
   const [val, setVal] = useLocalStorage("kinto-admin-auth", authState.get());
 
-  if (val && val.expiresAt && val.expiresAt < new Date().getTime()) {
+  if (val?.expiresAt && val.expiresAt < new Date().getTime()) {
     setVal(undefined);
   }
 
@@ -81,11 +81,11 @@ export function usePermissions(): PermissionsListEntry[] | undefined {
 }
 
 async function getPermissions(server: ServerInfo) {
-  if (openPromises["getPermissions"]) {
+  if (openPromises.getPermissions) {
     return;
   }
 
-  openPromises["getPermissions"] = true;
+  openPromises.getPermissions = true;
   try {
     if (!server.capabilities?.permissions_endpoint) {
       notifyInfo(
@@ -101,7 +101,7 @@ async function getPermissions(server: ServerInfo) {
   } catch (ex) {
     notifyError("Unable to load permissions", ex);
   } finally {
-    delete openPromises["getPermissions"];
+    delete openPromises.getPermissions;
   }
 }
 
@@ -120,10 +120,10 @@ export function useServerInfo(): ServerInfo | undefined {
 }
 
 async function getServerInfo() {
-  if (openPromises["getServerInfo"]) {
+  if (openPromises.getServerInfo) {
     return;
   }
-  openPromises["getServerInfo"] = true;
+  openPromises.getServerInfo = true;
 
   const client = getClient();
 
@@ -142,6 +142,6 @@ async function getServerInfo() {
   } catch (error) {
     notifyError(`Could not reach server ${client.remote}`, error);
   } finally {
-    delete openPromises["getServerInfo"];
+    delete openPromises.getServerInfo;
   }
 }

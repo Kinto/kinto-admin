@@ -61,12 +61,12 @@ function fetchCollectionStateAt(
   });
 }
 
-type HistoryRowProps = {
+interface HistoryRowProps {
   bid: string;
   entry: ResourceHistoryEntry;
   pos: number;
   enableDiffOverview: boolean;
-};
+}
 
 function HistoryRow({
   bid,
@@ -191,12 +191,12 @@ function HistoryRow({
   );
 }
 
-type FilterInfoProps = {
+interface FilterInfoProps {
   since: string;
   enableDiffOverview: boolean;
   onViewJournalClick: () => void;
   onDiffOverviewClick: (timestamp: string) => void;
-};
+}
 
 function FilterInfo(props: FilterInfoProps) {
   const { since, enableDiffOverview, onViewJournalClick, onDiffOverviewClick } =
@@ -232,11 +232,11 @@ function FilterInfo(props: FilterInfoProps) {
   );
 }
 
-type DiffOverviewProps = {
+interface DiffOverviewProps {
   source: RecordData[];
   target: RecordData[];
   since: string;
-};
+}
 
 function DiffOverview({ source, target, since }: DiffOverviewProps) {
   if (!source || !target) {
@@ -263,7 +263,7 @@ function DiffOverview({ source, target, since }: DiffOverviewProps) {
   );
 }
 
-type HistoryTableProps = {
+interface HistoryTableProps {
   bid: string;
   cid?: string;
   history: ResourceHistoryEntry[];
@@ -272,7 +272,7 @@ type HistoryTableProps = {
   listNextHistory?;
   enableDiffOverview?: boolean;
   sinceFilter?: string;
-};
+}
 
 export default function HistoryTable({
   bid,

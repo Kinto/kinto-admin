@@ -10,7 +10,7 @@ import {
   Lock,
 } from "react-bootstrap-icons";
 
-type Props = {
+interface Props {
   bid: string;
   cid: string;
   selected:
@@ -21,7 +21,7 @@ type Props = {
     | "simple-review";
   children?: React.ReactNode;
   totalRecords?: number | null;
-};
+}
 
 export default function CollectionTabs({
   bid,

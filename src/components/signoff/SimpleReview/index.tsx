@@ -139,8 +139,8 @@ export default function SimpleReview() {
           </SimpleReviewHeader>
         )}
         <PerRecordDiffView
-          oldRecords={oldRecords.data || []}
-          newRecords={newRecords.data || []}
+          oldRecords={oldRecords.data ?? []}
+          newRecords={newRecords.data ?? []}
           collectionData={signoffSource}
           displayFields={collection?.displayFields}
         />

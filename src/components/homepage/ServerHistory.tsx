@@ -12,14 +12,14 @@ const anonymousAuthData = server => ({
   server: server,
 });
 
-type ServerHistoryProps = {
+interface ServerHistoryProps {
   disabled?: boolean;
   id: string;
   value: string;
   placeholder: string;
   options: any;
   onChange: (s: string) => void;
-};
+}
 
 const debounceMillis = 400;
 
@@ -50,7 +50,7 @@ export default function ServerHistory(props: ServerHistoryProps) {
       setValue(server);
 
       // Do not try to fetch server info if the field value is invalid.
-      if (server && event.target.validity && event.target.validity.valid) {
+      if (server && event.target.validity?.valid) {
         debouncedFetchServerInfo(server);
       }
     },

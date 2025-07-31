@@ -22,14 +22,14 @@ import { ThreeDots } from "react-bootstrap-icons";
 import { ArrowRepeat } from "react-bootstrap-icons";
 import { useLocation, useParams } from "react-router";
 
-type SideBarLinkProps = {
+interface SideBarLinkProps {
   currentPath: string;
   name: string;
   params: RouteParams;
   children: React.ReactNode;
   className?: string;
   title?: string;
-};
+}
 
 function SideBarLink(props: SideBarLinkProps) {
   const { currentPath, name, params, children, className, ...otherProps } =
@@ -37,9 +37,7 @@ function SideBarLink(props: SideBarLinkProps) {
   const targetUrl = url(name, params);
   const active = currentPath === targetUrl ? "active" : "";
   const classes =
-    className !== undefined
-      ? className
-      : `list-group-item list-group-item-action ${active}`;
+    className ?? `list-group-item list-group-item-action ${active}`;
 
   return (
     <AdminLink {...otherProps} name={name} params={params} className={classes}>
@@ -151,11 +149,11 @@ function BucketCollectionsMenu(props) {
   );
 }
 
-type BucketsMenuProps = {
+interface BucketsMenuProps {
   currentPath: string;
   bid: string | null | undefined;
   cid: string | null | undefined;
-};
+}
 
 function filterBuckets(buckets, filters): BucketEntry[] {
   if (!buckets) return [];
@@ -213,7 +211,7 @@ const BucketsMenu = (props: BucketsMenuProps) => {
   };
 
   const updateSearch = event => {
-    setSearch(event.target.value || null);
+    setSearch(event.target.value ?? null);
   };
 
   const filteredBuckets = filterBuckets(buckets, {

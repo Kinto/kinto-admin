@@ -5,7 +5,7 @@ const DEFAULT_SEPARATOR = ",";
 function toTagList(
   tagsString: string,
   separator: string = DEFAULT_SEPARATOR,
-  unique: boolean = false
+  unique = false
 ): string[] {
   const list = tagsString
     .split(separator)
@@ -14,11 +14,11 @@ function toTagList(
   return unique ? Array.from(new Set(list)) : list;
 }
 
-function toTagsString(tags: string[], separator: string = ","): string {
+function toTagsString(tags: string[], separator = ","): string {
   return tags.join((separator += separator !== " " ? " " : ""));
 }
 
-type Props = {
+interface Props {
   schema: any;
   uiSchema: any;
   name: string;
@@ -26,7 +26,7 @@ type Props = {
   onChange: (tags: string[]) => void;
   required?: boolean;
   readonly?: boolean;
-};
+}
 
 export default function TagsField({
   schema,
@@ -37,7 +37,7 @@ export default function TagsField({
   required = false,
   readonly = false,
 }: Props) {
-  const separator = uiSchema["ui:options"]?.separator || DEFAULT_SEPARATOR;
+  const separator = uiSchema["ui:options"]?.separator ?? DEFAULT_SEPARATOR;
 
   const [tagsString, setTagsString] = useState(
     toTagsString(formData, separator)
@@ -49,7 +49,7 @@ export default function TagsField({
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const tagsStr = e.target.value;
-    const uniqueItems = schema.uniqueItems || false;
+    const uniqueItems = schema.uniqueItems ?? false;
     const tags = toTagList(tagsStr, separator, uniqueItems);
     setTagsString(tagsStr);
     onChange(tags);
@@ -58,7 +58,7 @@ export default function TagsField({
   return (
     <div className="form-group field field-string">
       <label className="control-label" htmlFor="txtTags">
-        {schema.title || name}
+        {schema.title ?? name}
         {required ? "*" : ""}
       </label>
       <input
@@ -66,7 +66,7 @@ export default function TagsField({
         className="form-control"
         value={tagsString}
         placeholder={
-          uiSchema["ui:placeholder"] ||
+          uiSchema["ui:placeholder"] ??
           toTagsString(["tag1", "tag2", "tag3"], separator)
         }
         onChange={handleOnChange}
@@ -75,7 +75,7 @@ export default function TagsField({
         id="txtTags"
       />
       <div className="help-block">
-        {uiSchema["ui:help"] || (
+        {uiSchema["ui:help"] ?? (
           <span>
             Entries must be separated with{" "}
             {separator === " " ? "spaces" : <code>{separator}</code>}.

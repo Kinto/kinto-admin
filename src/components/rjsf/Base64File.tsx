@@ -65,7 +65,7 @@ function CurrentValDisplay({ val }) {
 
 async function onChange(evt, changeCallback) {
   const files = evt.target.files;
-  if (!files || !files.length) {
+  if (!files?.length) {
     changeCallback(null);
     return;
   }

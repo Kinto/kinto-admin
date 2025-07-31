@@ -20,7 +20,7 @@ export function useSignoff(
 
   useEffect(() => {
     setVal(resource); // `null` or `SignerCapabilityResource`
-    if (resource && resource.source) {
+    if (resource?.source) {
       calculateChangesInfo(resource).then((infos: SignoffCollectionsInfo) =>
         setVal(infos)
       );
@@ -93,11 +93,11 @@ function _pickSignoffResource(
     return (
       // We are viewing the source.
       (source.bucket == bid &&
-        (!source.collection || source.collection == cid)) ||
+        (!source.collection || source.collection == cid)) ??
       // Preview is enabled and we are viewing it.
       (preview &&
         preview.bucket == bid &&
-        (!preview.collection || preview.collection == cid)) ||
+        (!preview.collection || preview.collection == cid)) ??
       // We are viewing the destination.
       (destination.bucket == bid &&
         (!destination.collection || destination.collection == cid))
@@ -144,9 +144,7 @@ async function fetchChangesInfo(
     .collection(other.collection)
     .getRecordsTimestamp();
 
-  if (!sinceETag) {
-    sinceETag = `${collectionLastModified}`;
-  }
+  sinceETag ??= `${collectionLastModified}`;
 
   // Look up changes since ETag.
   const { data: changes } = await client
