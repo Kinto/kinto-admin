@@ -1,3 +1,4 @@
+import { FieldProps } from "@rjsf/utils";
 import React, { useEffect, useState } from "react";
 
 const DEFAULT_SEPARATOR = ",";
@@ -18,17 +19,7 @@ function toTagsString(tags: string[], separator = ","): string {
   return tags.join((separator += separator !== " " ? " " : ""));
 }
 
-interface Props {
-  schema: any;
-  uiSchema: any;
-  name: string;
-  formData: string[];
-  onChange: (tags: string[]) => void;
-  required?: boolean;
-  readonly?: boolean;
-}
-
-export default function TagsField({
+const TagsField: React.FC<FieldProps<string[]>> = ({
   schema,
   uiSchema = {},
   name,
@@ -36,8 +27,9 @@ export default function TagsField({
   onChange,
   required = false,
   readonly = false,
-}: Props) {
-  const separator = uiSchema["ui:options"]?.separator ?? DEFAULT_SEPARATOR;
+}) => {
+  const separator =
+    uiSchema["ui:options"]?.separator?.toString() ?? DEFAULT_SEPARATOR;
 
   const [tagsString, setTagsString] = useState(
     toTagsString(formData, separator)
@@ -84,4 +76,5 @@ export default function TagsField({
       </div>
     </div>
   );
-}
+};
+export default TagsField;

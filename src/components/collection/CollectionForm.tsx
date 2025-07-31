@@ -2,6 +2,7 @@ import Spinner from "../Spinner";
 import DeleteForm from "./DeleteForm";
 import { FormInstructions } from "./FormInstructions";
 import JSONCollectionForm from "./JSONCollectionForm";
+import { IChangeEvent } from "@rjsf/core";
 import { RJSFSchema } from "@rjsf/utils";
 import { getClient } from "@src/client";
 import BaseForm from "@src/components/BaseForm";
@@ -11,6 +12,7 @@ import { useCollection } from "@src/hooks/collection";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { usePermissions } from "@src/hooks/session";
 import { canCreateCollection, canEditCollection } from "@src/permission";
+import { CollectionData } from "@src/types";
 import { validateSchema, validateUiSchema } from "@src/utils";
 import React, { useState } from "react";
 import { Check2 } from "react-bootstrap-icons";
@@ -300,7 +302,10 @@ export default function CollectionForm() {
     </div>
   );
 
-  const handleOnSubmit = async ({ formData }) => {
+  const handleOnSubmit = async (
+    data: IChangeEvent<CollectionData> | { formData: CollectionData }
+  ) => {
+    const { formData } = data;
     const collectionData = asJSON
       ? formData
       : {
@@ -318,10 +323,13 @@ export default function CollectionForm() {
         notifySuccess("Collection created.");
         navigate(`/buckets/${bid}/collections/${formData.id}/records`);
       } else {
-        await getClient().bucket(bid).collection(cid).setData(collectionData, {
-          safe: true,
-          last_modified: collection.last_modified,
-        });
+        await getClient()
+          .bucket(bid)
+          .collection(cid)
+          .setData(collectionData as Record<string, any>, {
+            safe: true,
+            last_modified: collection.last_modified,
+          });
         notifySuccess("Collection attributes updated.");
         setCacheVal(cacheVal + 1);
       }
@@ -358,7 +366,6 @@ export default function CollectionForm() {
               allowEditing ? _uiSchema : { ..._uiSchema, "ui:disabled": true }
             }
             customValidate={validate}
-            // @ts-ignore
             onSubmit={handleOnSubmit}
           >
             {buttons}

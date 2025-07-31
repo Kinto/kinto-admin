@@ -49,7 +49,6 @@ export default defineConfig([globalIgnores(["**/dist", "**/eslint.config.mjs", "
   rules: {
     "react-hooks/exhaustive-deps": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/prefer-nullish-coalescing": "off", // requires Typescript `strictNullChecks`
 
     "@typescript-eslint/no-unused-vars": ["error", {

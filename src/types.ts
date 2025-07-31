@@ -53,6 +53,8 @@ export interface SignerCapabilityResource {
 export interface SignerCapabilityResourceEntry {
   bucket: string | null;
   collection: string;
+  editors_group?: string;
+  reviewers_group?: string;
 }
 
 export interface OpenIDProvider {

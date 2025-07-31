@@ -55,7 +55,6 @@ export default function BaseForm(props: BaseFormProps) {
           className={`rjsf ${className ?? ""}`}
           validator={validator}
           onSubmit={handleOnSubmit}
-          // @ts-ignore
           fields={adminFields}
           disabled={disabled ?? showSpinner ?? isSubmitting}
           widgets={customWidgets}
