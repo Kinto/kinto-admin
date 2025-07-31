@@ -120,7 +120,7 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
     if (showSpinner) {
       setShowSpinner(false);
     }
-  }, [collection]);
+  }, [collection, showSpinner]);
 
   const canEdit = canEditCollection(permissions, bid, cid);
 
