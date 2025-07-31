@@ -112,7 +112,11 @@ export default function RecordRow({
               margin: "1pt",
             }}
           />
-          <Dropdown.Menu>
+          <Dropdown.Menu
+            style={{
+              margin: "0px 1.7em 0px 0px",
+            }}
+          >
             {attachmentUrl && (
               <a
                 href={attachmentUrl}
