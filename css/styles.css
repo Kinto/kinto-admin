@@ -242,6 +242,7 @@ table.record-list td.actions {
   width: 110px;
   padding: 0.5em 0;
   text-align: center;
+  overflow: visible;
 }
 
 table.record-list td.actions .btn-group {
