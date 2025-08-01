@@ -46,6 +46,7 @@ export default function BaseForm(props: BaseFormProps) {
     }
   };
 
+  const formDisabled = disabled || showSpinner || isSubmitting;
   return (
     <div className="formWrapper" ref={formRef} data-testid="formWrapper">
       <ErrorBoundary formCrashMsg={props.formCrashMsg}>
@@ -56,7 +57,7 @@ export default function BaseForm(props: BaseFormProps) {
           validator={validator}
           onSubmit={handleOnSubmit}
           fields={adminFields}
-          disabled={disabled ?? showSpinner ?? isSubmitting}
+          disabled={formDisabled}
           widgets={customWidgets}
         />
         {(isSubmitting || showSpinner) && <Spinner />}
