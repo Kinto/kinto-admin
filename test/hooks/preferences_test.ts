@@ -71,22 +71,22 @@ describe("preferences hooks", () => {
     });
   });
 
-  describe("useExcludeNonHumans", () => {
+  describe("useShowNonHumans", () => {
     it("returns storage val and setVal", async () => {
       const setValMock = vi.fn();
       mock.mockReturnValue([false, setValMock]);
-      const [val, setVal] = preferencesHooks.useExcludeNonHumans(false);
+      const [val, setVal] = preferencesHooks.useShowNonHumans(false);
       setVal(true);
       expect(val).toBe(false);
       expect(setValMock).toHaveBeenCalledWith(true);
     });
   });
 
-  describe("useExcludeSignerPlugin", () => {
+  describe("useShowSignerPlugin", () => {
     it("returns storage val and setVal", async () => {
       const setValMock = vi.fn();
       mock.mockReturnValue([false, setValMock]);
-      const [val, setVal] = preferencesHooks.useExcludeSignerPlugin(false);
+      const [val, setVal] = preferencesHooks.useShowSignerPlugin(false);
       setVal(true);
       expect(val).toBe(false);
       expect(setValMock).toHaveBeenCalledWith(true);

@@ -97,8 +97,8 @@ export type HistoryFilters = {
   since?: string;
   resource_name?: string;
   exclude_user_id?: string;
-  exclude_signer_plugin?: boolean;
-  exclude_non_humans?: boolean;
+  show_signer_plugin?: boolean;
+  show_non_humans?: boolean;
 };
 
 export type CollectionData = {

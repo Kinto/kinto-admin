@@ -154,7 +154,7 @@ export function DiffInfo(props: {
       query={{
         since,
         resource_name: "record",
-        exclude_signer_plugin: true,
+        show_signer_plugin: false,
       }}
     >
       details...

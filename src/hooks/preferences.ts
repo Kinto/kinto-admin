@@ -30,16 +30,16 @@ export function useShowDiffAllLines(): [boolean, (boolean) => void] {
   return [val, setVal] as [boolean, (boolean) => void];
 }
 
-export function useExcludeNonHumans(
+export function useShowNonHumans(
   byDefault: boolean
 ): [boolean, (boolean) => void] {
-  const [val, setVal] = useLocalStorage("excludeNonHumans", byDefault);
+  const [val, setVal] = useLocalStorage("showNonHumans", byDefault);
   return [val, setVal] as [boolean, (boolean) => void];
 }
 
-export function useExcludeSignerPlugin(
+export function useShowSignerPlugin(
   byDefault: boolean
 ): [boolean, (boolean) => void] {
-  const [val, setVal] = useLocalStorage("excludeSignerPlugin", byDefault);
+  const [val, setVal] = useLocalStorage("showSignerPlugin", byDefault);
   return [val, setVal] as [boolean, (boolean) => void];
 }
