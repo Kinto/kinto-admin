@@ -122,7 +122,7 @@ export function HomePage() {
       const message = "Couldn't proceed with authentication.";
       notifyError(message, error);
     }
-  }, []);
+  }, [navigate, payload, token]);
 
   if (!auth && !payload && !token) {
     return <AuthForm />;

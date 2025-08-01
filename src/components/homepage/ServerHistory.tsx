@@ -1,7 +1,7 @@
 import { ANONYMOUS_AUTH } from "@src/constants";
 import { clearServersHistory } from "@src/hooks/servers";
 import { debounce } from "@src/utils";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import FormControl from "react-bootstrap/FormControl";
@@ -26,6 +26,21 @@ const debounceMillis = 400;
 export default function ServerHistory(props: ServerHistoryProps) {
   const [value, setValue] = useState(props.value);
 
+  const fetchServerInfo = useCallback(
+    server => {
+      // Server changed, request its capabilities to check what auth methods it supports.
+      const { getServerInfo, serverChange } = props.options;
+      props.onChange(server);
+      serverChange();
+      getServerInfo(anonymousAuthData(server));
+    },
+    [props]
+  );
+  const debouncedFetchServerInfo = useMemo(
+    () => debounce(fetchServerInfo, debounceMillis),
+    [fetchServerInfo]
+  );
+
   const select = useCallback(
     server => event => {
       event.preventDefault();
@@ -33,16 +48,13 @@ export default function ServerHistory(props: ServerHistoryProps) {
       debouncedFetchServerInfo(server);
       setValue(server);
     },
-    [props]
+    [props, debouncedFetchServerInfo]
   );
 
-  const clear = useCallback(
-    event => {
-      event.preventDefault();
-      clearServersHistory();
-    },
-    [props]
-  );
+  const clear = useCallback(event => {
+    event.preventDefault();
+    clearServersHistory();
+  }, []);
 
   const onServerChange = useCallback(
     event => {
@@ -54,23 +66,7 @@ export default function ServerHistory(props: ServerHistoryProps) {
         debouncedFetchServerInfo(server);
       }
     },
-    [props]
-  );
-
-  const fetchServerInfo = useCallback(
-    server => {
-      // Server changed, request its capabilities to check what auth methods it supports.
-      const { getServerInfo, serverChange } = props.options;
-      props.onChange(server);
-      serverChange();
-      getServerInfo(anonymousAuthData(server));
-    },
-    [props]
-  );
-
-  const debouncedFetchServerInfo = useCallback(
-    debounce(fetchServerInfo, debounceMillis),
-    [fetchServerInfo]
+    [debouncedFetchServerInfo]
   );
 
   const { id, placeholder, options, disabled = false } = props;

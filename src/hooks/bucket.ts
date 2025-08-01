@@ -46,12 +46,12 @@ export function useBucketList(
 ): BucketEntry[] | undefined {
   const [cacheVal, setCacheVal] = useState(0);
   const [val, setVal] = useState(undefined);
-
+  const hasPerms = permissions !== undefined;
   useEffect(() => {
     setVal(undefined);
     fetchBuckets(permissions, userBucket, setVal);
     return bucketListCacheVal.subscribe(setCacheVal);
-  }, [permissions !== undefined, userBucket, cacheVal]);
+  }, [hasPerms, userBucket, cacheVal, permissions]);
 
   return val;
 }

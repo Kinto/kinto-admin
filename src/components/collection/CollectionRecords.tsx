@@ -27,7 +27,7 @@ export default function CollectionRecords() {
       return;
     }
     setSort(collection.sort ?? DEFAULT_SORT);
-  }, [bid, cid, collection?.last_modified ?? 0]);
+  }, [serverInfo, bid, cid, collection?.last_modified, collection.sort]);
 
   const listActions = (
     <ListActions
