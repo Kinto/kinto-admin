@@ -1,5 +1,5 @@
 import { Theme as Bootstrap4Theme } from "@rjsf/bootstrap-4";
-import { withTheme } from "@rjsf/core";
+import { IChangeEvent, withTheme } from "@rjsf/core";
 import { RJSFSchema, UiSchema } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv8";
 import JSONEditor from "@src/components/JSONEditor";
@@ -34,13 +34,13 @@ const uiSchema: UiSchema = {
   },
 };
 
-type Props = {
+interface Props {
   children?: React.ReactNode;
   cid?: string | null;
   disabled?: boolean;
   formData: CollectionData;
   onSubmit: (data: { formData: CollectionData }) => void;
-};
+}
 
 export default function JSONCollectionForm({
   children,
@@ -51,13 +51,10 @@ export default function JSONCollectionForm({
 }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = ({
-    formData: formInput,
-  }: {
-    formData: { id: string; data: string };
-  }) => {
+  const handleSubmit = (data: IChangeEvent<any>) => {
     setIsSubmitting(true);
-    const collectionData = { ...JSON.parse(formInput.data), id: formInput.id };
+    const { id, data: rawData } = data.formData;
+    const collectionData = { ...JSON.parse(rawData), id };
     onSubmit({ formData: collectionData });
   };
 
@@ -87,9 +84,8 @@ export default function JSONCollectionForm({
         uiSchema={_uiSchema}
         formData={formDataSerialized}
         validator={validator}
-        // @ts-ignore
         onSubmit={handleSubmit}
-        disabled={disabled || isSubmitting}
+        disabled={disabled ?? isSubmitting}
       >
         {children}
       </FormWithTheme>

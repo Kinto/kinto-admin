@@ -185,14 +185,14 @@ export function formatDiffHeader({
   for (const f of displayFields) {
     fields.push(
       <span>
-        <label>{f}:</label> {renderDisplayField(target || source, f)}
+        <label>{f}:</label> {renderDisplayField(target ?? source, f)}
       </span>
     );
   }
 
   fields.push(
     <span>
-      <label>id:</label> {(target || source).id}
+      <label>id:</label> {(target ?? source).id}
     </span>
   );
 
@@ -211,16 +211,16 @@ interface RecordChange {
 }
 
 export function findChangeTypes(
-  oldItems: Array<RecordData>,
-  newItems: Array<RecordData>,
-  fieldsToOmit?: Array<string>
-): Array<RecordChange> {
+  oldItems: RecordData[],
+  newItems: RecordData[],
+  fieldsToOmit?: string[]
+): RecordChange[] {
   if (fieldsToOmit) {
     oldItems = oldItems.map(r => omit(r, fieldsToOmit));
     newItems = newItems.map(r => omit(r, fieldsToOmit));
   }
 
-  const result: Array<RecordChange> = [];
+  const result: RecordChange[] = [];
 
   const differences = diffArrays(
     oldItems.map(r => r.id).sort(),

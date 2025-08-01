@@ -6,10 +6,10 @@ const DEFAULT_NOTIFICATIONS_TIMEOUT = 4000; // in milliseconds
 
 type Levels = "info" | "success" | "warning" | "danger";
 
-type NotificationOptions = {
+interface NotificationOptions {
   details?: string[];
   timeout?: number | null;
-};
+}
 
 const state = makeObservable([]);
 
@@ -30,7 +30,7 @@ function notify(type: Levels, message: string, options: NotificationOptions) {
     {
       type: type,
       message: message,
-      details: options?.details || [],
+      details: options?.details ?? [],
       timeout: options?.timeout,
     },
   ];
@@ -50,7 +50,7 @@ export function clearNotifications() {
 export function notifyInfo(message: string, options: NotificationOptions = {}) {
   notify("info", message, {
     ...options,
-    timeout: options.timeout || DEFAULT_NOTIFICATIONS_TIMEOUT,
+    timeout: options.timeout ?? DEFAULT_NOTIFICATIONS_TIMEOUT,
   });
 }
 
@@ -60,7 +60,7 @@ export function notifySuccess(
 ) {
   notify("success", message, {
     ...options,
-    timeout: options.timeout || DEFAULT_NOTIFICATIONS_TIMEOUT,
+    timeout: options.timeout ?? DEFAULT_NOTIFICATIONS_TIMEOUT,
   });
 }
 
@@ -70,7 +70,7 @@ export function notifyWarning(
 ) {
   notify("warning", message, {
     ...options,
-    timeout: options.timeout || DEFAULT_NOTIFICATIONS_TIMEOUT,
+    timeout: options.timeout ?? DEFAULT_NOTIFICATIONS_TIMEOUT,
   });
 }
 
@@ -82,7 +82,7 @@ export function notifyError(
   console.error(error);
   notify("danger", message, {
     timeout: null, // Do not auto-hide errors.
-    details: options.details || getErrorDetails(error),
+    details: options.details ?? getErrorDetails(error),
   });
 }
 
@@ -100,7 +100,7 @@ function getErrorDetails(error: ClientError | null | undefined): string[] {
   }
   switch (code) {
     case 412: {
-      if (errorDetails && errorDetails.existing && errorDetails.existing.id) {
+      if (errorDetails?.existing?.id) {
         const id = errorDetails.existing.id;
         return [
           `Resource ${id} already exists or has been modified meanwhile.`,
@@ -110,6 +110,6 @@ function getErrorDetails(error: ClientError | null | undefined): string[] {
       return details;
     }
     default:
-      return [errorMessage || "Unspecified error.", ...details];
+      return [errorMessage ?? "Unspecified error.", ...details];
   }
 }

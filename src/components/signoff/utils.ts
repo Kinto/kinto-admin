@@ -5,8 +5,10 @@ import {
   SignoffSourceInfo,
 } from "@src/types";
 
+type GroupKey = "editors_group" | "reviewers_group";
+
 export function isMember(
-  groupKey: string,
+  groupKey: GroupKey,
   source: SignoffSourceInfo,
   serverInfo: ServerInfo
 ) {
@@ -14,12 +16,12 @@ export function isMember(
   if (!source || !user?.principals) {
     return false;
   }
+  if (!("signer" in capabilities)) {
+    return false;
+  }
   const { principals } = user;
   const { bucket, collection } = source;
-  const { signer = {} } = capabilities;
-  // @ts-ignore
-  const { [groupKey]: defaultGroupName } = signer;
-  // @ts-ignore
+  const { [groupKey]: defaultGroupName } = capabilities.signer;
   const { [groupKey]: groupName = defaultGroupName } = source;
   const expectedGroup = groupName.replace("{collection_id}", collection);
   const expectedPrincipal = `/buckets/${bucket}/groups/${expectedGroup}`;

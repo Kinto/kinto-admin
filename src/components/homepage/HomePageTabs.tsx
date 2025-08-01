@@ -2,10 +2,10 @@ import AdminLink from "@src/components/AdminLink";
 import React from "react";
 import { Folder, InfoCircle } from "react-bootstrap-icons";
 
-type Props = {
+interface Props {
   selected: "serverinfo" | "buckets";
   children?: any;
-};
+}
 
 export default function HomePageTabs(props: Props) {
   const { selected, children } = props;

@@ -21,7 +21,7 @@ export default function GroupHistory() {
         <HistoryTable
           bid={bid}
           historyLoaded={history.data !== undefined}
-          history={history.data || []}
+          history={history.data ?? []}
           hasNextHistory={history.hasNextPage}
           listNextHistory={history.next}
         />

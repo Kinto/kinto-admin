@@ -1,6 +1,11 @@
 import React from "react";
 
-export function FormInstructions({ onSchemalessLinkClick }) {
+interface FormInstructionsProps {
+  onSchemalessLinkClick: (event: any) => void;
+}
+export function FormInstructions({
+  onSchemalessLinkClick,
+}: FormInstructionsProps) {
   return (
     <div className="alert alert-info">
       <ol>

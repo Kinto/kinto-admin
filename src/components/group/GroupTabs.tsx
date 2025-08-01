@@ -5,12 +5,12 @@ import { Gear } from "react-bootstrap-icons";
 import { Lock } from "react-bootstrap-icons";
 import { ClockHistory } from "react-bootstrap-icons";
 
-type Props = {
+interface Props {
   bid: string;
   gid: string;
   selected: "attributes" | "permissions" | "history";
   children?: any;
-};
+}
 
 export default function GroupTabs(props: Props) {
   const serverInfo = useServerInfo();

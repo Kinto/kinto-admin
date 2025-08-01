@@ -8,8 +8,11 @@ const deleteSchema: RJSFSchema = {
   type: "string",
   title: "Please enter the group id to delete as a confirmation",
 };
-
-export default function DeleteForm({ gid, onSubmit }) {
+interface DeleteFormProps {
+  gid: string;
+  onSubmit: (data: RJSFSchema) => void;
+}
+export default function DeleteForm({ gid, onSubmit }: DeleteFormProps) {
   const validate = (formData, errors) => {
     if (formData !== gid) {
       errors.addError("The group id does not match.");

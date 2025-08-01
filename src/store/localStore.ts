@@ -39,7 +39,7 @@ export function clearServers(): ServerEntry[] {
 
 export function loadSession(): SessionState | null {
   try {
-    return JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
+    return JSON.parse(localStorage.getItem(SESSION_KEY) ?? "null");
   } catch (_err) {
     return null;
   }

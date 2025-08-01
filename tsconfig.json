@@ -21,7 +21,8 @@
     "paths": {
       "@src/*": ["./src/*"],
       "@test/*": ["./test/*"],
-    }
+    },
+    // "strictNullChecks": true,
   },
   "include": ["src", "test", "__mocks__"],
   "references": [{ "path": "./tsconfig.node.json" }]

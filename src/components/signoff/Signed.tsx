@@ -7,14 +7,14 @@ import type {
 } from "@src/types";
 import React from "react";
 
-type SignedProps = {
+interface SignedProps {
   label: string;
   currentStep: number;
   step: number;
   isCurrentUrl: boolean;
   source: SignoffSourceInfo;
   destination: SignerCapabilityResourceEntry | null;
-};
+}
 
 export function Signed(props: SignedProps) {
   const { label, currentStep, step, isCurrentUrl, source, destination } = props;
@@ -31,11 +31,11 @@ export function Signed(props: SignedProps) {
   );
 }
 
-type SignedInfosProps = {
+interface SignedInfosProps {
   isCurrentUrl: boolean;
   source: SignoffSourceInfo;
   destination: SignerCapabilityResourceEntry;
-};
+}
 
 function SignedInfos(props: SignedInfosProps) {
   const { isCurrentUrl, source, destination } = props;

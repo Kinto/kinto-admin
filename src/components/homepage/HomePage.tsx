@@ -116,7 +116,7 @@ export function HomePage() {
       }
       setAuth(authData);
       // Extract hash part of the redirect URL to navigate to.
-      const redirectURL = redirectURLRaw.split("#")[1] || "/";
+      const redirectURL = redirectURLRaw.split("#")[1] ?? "/";
       navigate(redirectURL);
     } catch (error) {
       const message = "Couldn't proceed with authentication.";
@@ -134,7 +134,7 @@ export function HomePage() {
 
   return (
     <div>
-      <h1>{`${serverInfo?.project_name || "Kinto"} Administration`}</h1>
+      <h1>{`${serverInfo?.project_name ?? "Kinto"} Administration`}</h1>
       <HomePageTabs selected="serverinfo">
         <SessionInfo />
       </HomePageTabs>

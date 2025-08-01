@@ -3,11 +3,16 @@ import AdminLink from "@src/components/AdminLink";
 import PaginatedTable from "@src/components/PaginatedTable";
 import { usePermissions } from "@src/hooks/session";
 import { canCreateCollection } from "@src/permission";
+import { Capabilities, CollectionData, ListResult } from "@src/types";
 import { timeago } from "@src/utils";
 import React, { useState } from "react";
 import { ClockHistory, Gear, Justify } from "react-bootstrap-icons";
 
-export function ListActions(props) {
+interface ListActionsProps {
+  bid: string;
+  busy: boolean;
+}
+export function ListActions(props: ListActionsProps) {
   const permissions = usePermissions();
   const { bid, busy } = props;
   if (busy || !canCreateCollection(permissions, bid)) {
@@ -26,7 +31,13 @@ export function ListActions(props) {
   );
 }
 
-export function DataList(props) {
+interface DataListProps {
+  bid: string;
+  collections: ListResult<CollectionData>;
+  capabilities: Capabilities;
+  showSpinner: boolean;
+}
+export function DataList(props: DataListProps) {
   const [loading, setLoading] = useState(false);
   const { bid, collections, capabilities, showSpinner } = props;
 
@@ -55,67 +66,66 @@ export function DataList(props) {
 
   const tbody = (
     <tbody className={""}>
-      {data &&
-        data.map((collection, index) => {
-          const {
-            id: cid,
-            schema,
-            cache_expires,
-            last_modified,
-            attachment,
-          } = collection;
-          // FIXME: last_modified should always be here, but the types
-          // don't express that
-          const date = last_modified && new Date(last_modified);
-          const ageString = date && timeago(date.getTime());
-          return (
-            <tr key={index}>
-              <td>
-                <AdminLink name="collection:records" params={{ bid, cid }}>
-                  {cid}
+      {data?.map((collection, index) => {
+        const {
+          id: cid,
+          schema,
+          cache_expires,
+          last_modified,
+          attachment,
+        } = collection;
+        // FIXME: last_modified should always be here, but the types
+        // don't express that
+        const date = last_modified && new Date(last_modified);
+        const ageString = date && timeago(date.getTime());
+        return (
+          <tr key={index}>
+            <td>
+              <AdminLink name="collection:records" params={{ bid, cid }}>
+                {cid}
+              </AdminLink>
+            </td>
+            <td>{schema ? "Yes" : "No"}</td>
+            <td>
+              {attachment ? (attachment.required ? "Required" : "Yes") : "No"}
+            </td>
+            <td>{cache_expires ? `${cache_expires} seconds` : "No"}</td>
+            <td>
+              <span title={date ? date.toISOString() : ""}>{ageString}</span>
+            </td>
+            <td className="actions">
+              <div className="btn-group">
+                <AdminLink
+                  name="collection:records"
+                  params={{ bid, cid }}
+                  className="btn btn-sm btn-secondary"
+                  title="Browse collection"
+                >
+                  <Justify className="icon" />
                 </AdminLink>
-              </td>
-              <td>{schema ? "Yes" : "No"}</td>
-              <td>
-                {attachment ? (attachment.required ? "Required" : "Yes") : "No"}
-              </td>
-              <td>{cache_expires ? `${cache_expires} seconds` : "No"}</td>
-              <td>
-                <span title={date ? date.toISOString() : ""}>{ageString}</span>
-              </td>
-              <td className="actions">
-                <div className="btn-group">
+                {"history" in capabilities && (
                   <AdminLink
-                    name="collection:records"
+                    name="collection:history"
                     params={{ bid, cid }}
                     className="btn btn-sm btn-secondary"
-                    title="Browse collection"
+                    title="View collection history"
                   >
-                    <Justify className="icon" />
+                    <ClockHistory className="icon" />
                   </AdminLink>
-                  {"history" in capabilities && (
-                    <AdminLink
-                      name="collection:history"
-                      params={{ bid, cid }}
-                      className="btn btn-sm btn-secondary"
-                      title="View collection history"
-                    >
-                      <ClockHistory className="icon" />
-                    </AdminLink>
-                  )}
-                  <AdminLink
-                    name="collection:attributes"
-                    params={{ bid, cid }}
-                    className="btn btn-sm btn-secondary"
-                    title="Edit collection attributes"
-                  >
-                    <Gear className="icon" />
-                  </AdminLink>
-                </div>
-              </td>
-            </tr>
-          );
-        })}
+                )}
+                <AdminLink
+                  name="collection:attributes"
+                  params={{ bid, cid }}
+                  className="btn btn-sm btn-secondary"
+                  title="Edit collection attributes"
+                >
+                  <Gear className="icon" />
+                </AdminLink>
+              </div>
+            </td>
+          </tr>
+        );
+      })}
     </tbody>
   );
 

@@ -20,6 +20,7 @@ export default defineConfig([globalIgnores(["**/dist", "**/eslint.config.mjs", "
   extends: fixupConfigRules(compat.extends(
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/stylistic-type-checked",
     "plugin:react/jsx-runtime",
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
@@ -48,8 +49,7 @@ export default defineConfig([globalIgnores(["**/dist", "**/eslint.config.mjs", "
   rules: {
     "react-hooks/exhaustive-deps": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/ban-ts-comment": "off",
-    "react/prop-types": "off",
+    "@typescript-eslint/prefer-nullish-coalescing": "off", // requires Typescript `strictNullChecks`
 
     "@typescript-eslint/no-unused-vars": ["error", {
       vars: "all",

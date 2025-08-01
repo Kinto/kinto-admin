@@ -3,7 +3,7 @@ import type { Notifications } from "@src/types";
 import React from "react";
 import { AlertList } from "react-bs-notifier";
 
-function NotificationDetails({ details }: { details: Array<string> }) {
+function NotificationDetails({ details }: { details: string[] }) {
   if (details.length === 0) {
     return null;
   }

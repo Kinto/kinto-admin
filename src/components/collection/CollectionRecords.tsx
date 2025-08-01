@@ -26,8 +26,8 @@ export default function CollectionRecords() {
     if (!serverInfo || !collection?.last_modified) {
       return;
     }
-    setSort(collection.sort || DEFAULT_SORT);
-  }, [bid, cid, collection?.last_modified || 0]);
+    setSort(collection.sort ?? DEFAULT_SORT);
+  }, [bid, cid, collection?.last_modified ?? 0]);
 
   const listActions = (
     <ListActions
@@ -76,12 +76,12 @@ export default function CollectionRecords() {
           <RecordTable
             bid={bid}
             cid={cid}
-            records={records.data || []}
+            records={records.data ?? []}
             recordsLoaded={!!records.data}
             hasNextRecords={records.hasNextPage}
             listNextRecords={records.next}
             currentSort={sort}
-            schema={collection?.schema || {}}
+            schema={collection?.schema ?? {}}
             displayFields={
               collection?.displayFields?.length
                 ? collection.displayFields

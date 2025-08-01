@@ -32,7 +32,10 @@ export function renderWithRouter(
   ui,
   { route = "/", path = "/", createRoutes = true, ...renderOptions } = {}
 ) {
-  const Wrapper = ({ children }) => (
+  interface Props {
+    children: JSX.Element[];
+  }
+  const Wrapper = ({ children }: Props) => (
     <MemoryRouter initialEntries={[route]}>
       {createRoutes && (
         <Routes>

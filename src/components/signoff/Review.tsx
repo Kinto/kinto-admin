@@ -11,7 +11,7 @@ import type {
 import React from "react";
 import { Braces, ChatLeft, Check2 } from "react-bootstrap-icons";
 
-type ReviewProps = {
+interface ReviewProps {
   label: string;
   canEdit: boolean;
   hasHistory: boolean;
@@ -23,7 +23,7 @@ type ReviewProps = {
   source: SignoffSourceInfo;
   preview: SignerCapabilityResourceEntry | null;
   changes: ChangesList | null;
-};
+}
 
 export function Review({
   label,
@@ -86,14 +86,14 @@ export function Review({
   );
 }
 
-type ReviewInfosProps = {
+interface ReviewInfosProps {
   isCurrentStep: boolean;
   source: SignoffSourceInfo;
   link: React.ReactNode;
   isCurrentUrl: boolean;
   hasHistory: boolean;
   changes: ChangesList | null;
-};
+}
 
 function ReviewInfos(props: ReviewInfosProps) {
   const { isCurrentStep, source, link, hasHistory, changes, isCurrentUrl } =
