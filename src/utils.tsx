@@ -328,7 +328,7 @@ export function parseHistoryFilters(params: URLSearchParams): HistoryFilters {
     "exclude_non_humans",
   ].reduce((acc, field) => {
     const val = params.get(field);
-    if (val) acc[field] = val == "true" ? true : val;
+    if (val) acc[field] = val == "true" ? true : val == "false" ? false : val;
     return acc;
   }, {});
   return ret;

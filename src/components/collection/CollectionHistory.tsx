@@ -1,10 +1,7 @@
 import CollectionTabs from "./CollectionTabs";
 import HistoryTable from "@src/components/HistoryTable";
 import { useCollectionHistory } from "@src/hooks/collection";
-import {
-  useExcludeNonHumans,
-  useExcludeSignerPlugin,
-} from "@src/hooks/preferences";
+import { useShowNonHumans, useShowSignerPlugin } from "@src/hooks/preferences";
 import { useServerInfo } from "@src/hooks/session";
 import { parseHistoryFilters } from "@src/utils";
 import React from "react";
@@ -18,14 +15,14 @@ export default function CollectionHistory() {
   const filters = parseHistoryFilters(params);
 
   // But users can toggle them, and their choice is persisted
-  const [excludeSignerPlugin, setExcludeSignerPlugin] = useExcludeSignerPlugin(
-    filters.exclude_signer_plugin
+  const [showSignerPlugin, setShowSignerPluging] = useShowSignerPlugin(
+    filters.show_signer_plugin ?? true
   );
-  const [excludeNonHumans, setExcludeNonHumans] = useExcludeNonHumans(
-    filters.exclude_non_humans
+  const [showNonHumans, setShowNonHumans] = useShowNonHumans(
+    filters.show_non_humans ?? true
   );
-  filters.exclude_signer_plugin = excludeSignerPlugin;
-  filters.exclude_non_humans = excludeNonHumans;
+  filters.show_signer_plugin = showSignerPlugin;
+  filters.show_non_humans = showNonHumans;
 
   // Refetch from the server when filters change.
   const history = useCollectionHistory(bid, cid, filters);
@@ -49,13 +46,13 @@ export default function CollectionHistory() {
             <input
               className="form-check-input"
               type="checkbox"
-              checked={excludeNonHumans}
-              onChange={e => setExcludeNonHumans(e.currentTarget.checked)}
-              id="excludeNonHumans"
-              data-testid="excludeNonHumans"
+              checked={showNonHumans}
+              onChange={e => setShowNonHumans(e.currentTarget.checked)}
+              id="showNonHumans"
+              data-testid="showNonHumans"
             />
-            <label className="form-check-label" htmlFor="excludeNonHumans">
-              Exclude non humans
+            <label className="form-check-label" htmlFor="showNonHumans">
+              Show non humans entries
             </label>
           </div>
         )}
@@ -64,14 +61,14 @@ export default function CollectionHistory() {
             <input
               className="form-check-input"
               type="checkbox"
-              checked={excludeNonHumans || excludeSignerPlugin}
-              onChange={e => setExcludeSignerPlugin(e.currentTarget.checked)}
-              id="excludeSignerPlugin"
-              data-testid="excludeSignerPlugin"
-              disabled={excludeNonHumans}
+              checked={showSignerPlugin && showNonHumans}
+              onChange={e => setShowSignerPluging(e.currentTarget.checked)}
+              id="showSignerPlugin"
+              data-testid="showSignerPlugin"
+              disabled={!showNonHumans}
             />
-            <label className="form-check-label" htmlFor="excludeSignerPlugin">
-              Exclude signer plugin
+            <label className="form-check-label" htmlFor="showSignerPlugin">
+              Show plugin entries
             </label>
           </div>
         )}

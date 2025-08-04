@@ -280,8 +280,8 @@ describe("collection hooks", () => {
         useCollectionHistory("bid", "cid", {
           resource_name: "resource",
           exclude_user_id: "user",
-          exclude_non_humans: true,
-          exclude_signer_plugin: true,
+          show_non_humans: false,
+          show_signer_plugin: false,
         })
       );
 

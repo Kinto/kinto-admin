@@ -41,8 +41,8 @@ describe("CollectionHistory component", () => {
   };
 
   const useCollectionHistoryMock = vi.fn();
-  const useExcludeSignerPluginMock = vi.fn();
-  const useExcludeNonHumansMock = vi.fn();
+  const useShowSignerPluginMock = vi.fn();
+  const useShowNonHumansMock = vi.fn();
 
   beforeEach(() => {
     canCreateRecord.mockReturnValue(true);
@@ -55,12 +55,13 @@ describe("CollectionHistory component", () => {
     vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(
       SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES
     );
-    vi.spyOn(preferenceHooks, "useExcludeSignerPlugin").mockImplementation(
-      () => [false, useExcludeSignerPluginMock]
-    );
-    vi.spyOn(preferenceHooks, "useExcludeNonHumans").mockImplementation(() => [
-      false,
-      useExcludeNonHumansMock,
+    vi.spyOn(preferenceHooks, "useShowSignerPlugin").mockImplementation(() => [
+      true,
+      useShowSignerPluginMock,
+    ]);
+    vi.spyOn(preferenceHooks, "useShowNonHumans").mockImplementation(() => [
+      true,
+      useShowNonHumansMock,
     ]);
 
     useCollectionHistoryMock.mockReturnValue({
@@ -79,10 +80,8 @@ describe("CollectionHistory component", () => {
     });
 
     it("should hide filters when capabilities are missing", () => {
-      expect(screen.queryByTestId("excludeNonHumans")).not.toBeInTheDocument();
-      expect(
-        screen.queryByTestId("excludeSignerPlugin")
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId("showNonHumans")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("showSignerPlugin")).not.toBeInTheDocument();
     });
   });
 
@@ -97,35 +96,35 @@ describe("CollectionHistory component", () => {
     });
 
     it("should render both filters when supported", () => {
-      expect(screen.getByTestId("excludeNonHumans")).toBeInTheDocument();
-      expect(screen.getByTestId("excludeSignerPlugin")).toBeInTheDocument();
+      expect(screen.getByTestId("showNonHumans")).toBeInTheDocument();
+      expect(screen.getByTestId("showSignerPlugin")).toBeInTheDocument();
     });
 
-    it("should have no filter checked by default", () => {
-      expect(screen.getByTestId("excludeNonHumans")).not.toBeChecked();
-      expect(screen.getByTestId("excludeSignerPlugin")).not.toBeChecked();
+    it("should have both filters checked by default", () => {
+      expect(screen.getByTestId("showNonHumans")).toBeChecked();
+      expect(screen.getByTestId("showSignerPlugin")).toBeChecked();
     });
 
-    it("should disable signer plugin filter if excludeNonHumans is checked", () => {
-      vi.spyOn(preferenceHooks, "useExcludeNonHumans").mockReturnValue([
-        true,
-        useExcludeNonHumansMock,
+    it("should disable signer plugin filter if showNonHumans is unchecked", () => {
+      vi.spyOn(preferenceHooks, "useShowNonHumans").mockReturnValue([
+        false,
+        useShowNonHumansMock,
       ]);
       rendered.rerender(<CollectionHistory />);
-      const signerCheckbox = screen.getByTestId("excludeSignerPlugin");
+      const signerCheckbox = screen.getByTestId("showSignerPlugin");
       expect(signerCheckbox).toBeDisabled();
     });
 
-    it("should update excludeNonHumans filter when toggled", () => {
-      const checkbox = screen.getByTestId("excludeNonHumans");
+    it("should update showNonHumans filter when toggled", () => {
+      const checkbox = screen.getByTestId("showNonHumans");
       fireEvent.click(checkbox);
-      expect(useExcludeNonHumansMock).toHaveBeenCalledWith(true);
+      expect(useShowNonHumansMock).toHaveBeenCalledWith(false);
     });
 
-    it("should update excludeSignerPlugin filter when toggled", () => {
-      const checkbox = screen.getByTestId("excludeSignerPlugin");
+    it("should update showSignerPlugin filter when toggled", () => {
+      const checkbox = screen.getByTestId("showSignerPlugin");
       fireEvent.click(checkbox);
-      expect(useExcludeSignerPluginMock).toHaveBeenCalledWith(true);
+      expect(useShowSignerPluginMock).toHaveBeenCalledWith(false);
     });
   });
 });
