@@ -9,7 +9,11 @@ const deleteSchema: RJSFSchema = {
   title: "Please enter the collection name to delete as a confirmation",
 };
 
-export default function DeleteForm({ cid, onSubmit }) {
+interface DeleteFormProps {
+  cid: string;
+  onSubmit: (data: RJSFSchema) => void;
+}
+export default function DeleteForm({ cid, onSubmit }: DeleteFormProps) {
   const validate = (formData, errors) => {
     if (formData !== cid) {
       errors.addError("The collection name does not match.");

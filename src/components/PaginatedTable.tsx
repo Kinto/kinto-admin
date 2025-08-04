@@ -1,14 +1,14 @@
 import Spinner from "./Spinner";
 import React from "react";
 
-type Props = {
+interface Props {
   thead: React.ReactNode;
   tbody: React.ReactNode;
   dataLoaded: boolean;
   colSpan: number;
   hasNextPage: boolean;
   listNextPage?: () => any;
-};
+}
 
 export default function PaginatedTable({
   thead,

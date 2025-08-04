@@ -3,7 +3,7 @@ import { HistoryEntry } from "kinto/lib/types";
 
 export type ActionType<T extends (...args: any[]) => any> = ReturnType<T>;
 
-export type Attachment = {
+export interface Attachment {
   location: string;
   filename: string;
   size: number;
@@ -15,51 +15,53 @@ export type Attachment = {
     hash: string;
     mimetype: string;
   };
-};
+}
 
-export type ListResult<T> = {
+export interface ListResult<T> {
   data?: T[];
   hasNextPage?: boolean;
   next?: () => Promise<PaginationResult<T>> | null;
-};
+}
 
-export type ListHistoryResult = {
+export interface ListHistoryResult {
   data?: HistoryEntry<any>[];
   hasNextPage?: boolean;
   next?: Promise<PaginationResult<HistoryEntry<any>>> | null;
-};
+}
 
-export type BucketData = {
+export interface BucketData {
   id?: string;
   last_modified?: number;
-};
+}
 
-export type BucketPermissions = {
+export interface BucketPermissions {
   write: string[];
   read?: string[];
   "collection:create"?: string[];
   "group:create"?: string[];
-};
+}
 
-export type SignerCapabilityResource = {
+export interface SignerCapabilityResource {
   source: SignerCapabilityResourceEntry;
   destination: SignerCapabilityResourceEntry;
   preview?: SignerCapabilityResourceEntry;
   editors_group?: string;
   reviewers_group?: string;
   to_review_enabled?: boolean;
-};
+}
 
-export type SignerCapabilityResourceEntry = {
+export interface SignerCapabilityResourceEntry {
   bucket: string | null;
   collection: string;
-};
+  editors_group?: string;
+  reviewers_group?: string;
+}
 
-export type OpenIDProvider = {
+export interface OpenIDProvider {
   name: string;
-};
+}
 
-export type Capabilities = {
+export interface Capabilities {
   attachments?: any;
   changes?: any;
   default_bucket?: any;
@@ -76,9 +78,9 @@ export type Capabilities = {
     to_review_enabled: boolean;
     plugin_user_id?: string;
   };
-};
+}
 
-export type ClientErrorData = {
+export interface ClientErrorData {
   code: number;
   message: string;
   details: {
@@ -86,22 +88,22 @@ export type ClientErrorData = {
       id: string;
     };
   };
-};
+}
 
-export type ClientError = {
+export interface ClientError {
   message: string;
   data?: ClientErrorData;
-};
+}
 
-export type HistoryFilters = {
+export interface HistoryFilters {
   since?: string;
   resource_name?: string;
   exclude_user_id?: string;
   show_signer_plugin?: boolean;
   show_non_humans?: boolean;
-};
+}
 
-export type CollectionData = {
+export interface CollectionData {
   id?: string;
   last_modified?: number;
   schema?: any;
@@ -113,40 +115,40 @@ export type CollectionData = {
   displayFields?: string[] | null | undefined;
   sort?: string;
   cache_expires?: number;
-};
+}
 
-export type CollectionPermissions = {
+export interface CollectionPermissions {
   write: string[];
   read?: string[];
   "record:create"?: string[];
-};
+}
 
-export type GroupData = {
+export interface GroupData {
   id: string;
   last_modified: number;
   members: string[];
   [key: string]: any;
-};
+}
 
-export type GroupPermissions = {
+export interface GroupPermissions {
   write: string[];
   read?: string[];
-};
+}
 
-export type Notification = {
+export interface Notification {
   type: string;
   message: string;
   details: string[];
-};
+}
 
 export type Notifications = Notification[];
 
-export type Paginator<T> = {
+export interface Paginator<T> {
   entries: T[];
   loaded: boolean;
   hasNextPage: boolean;
   next: (...args: any) => any | null | undefined;
-};
+}
 
 export type Permissions =
   | BucketPermissions
@@ -154,14 +156,14 @@ export type Permissions =
   | CollectionPermissions
   | RecordPermissions;
 
-export type RecordData = {
+export interface RecordData {
   id: string;
   last_modified: number;
   schema?: number;
   attachment?: Attachment;
   __attachment__?: string;
   [key: string]: any;
-};
+}
 
 export type LocalRecordData = RecordData & {
   // Local records don't have server fields yet.
@@ -169,17 +171,17 @@ export type LocalRecordData = RecordData & {
   last_modified?: number;
 };
 
-export type RecordPermissions = {
+export interface RecordPermissions {
   write: string[];
   read?: string[];
-};
+}
 
-export type RecordResource = {
+export interface RecordResource {
   data: RecordData;
   permissions: RecordPermissions;
-};
+}
 
-export type ResourceHistoryEntry = {
+export interface ResourceHistoryEntry {
   action: "create" | "update" | "delete";
   collection_id?: string;
   group_id?: string;
@@ -195,19 +197,19 @@ export type ResourceHistoryEntry = {
   timestamp: number;
   uri: string;
   user_id: string;
-};
+}
 
-export type RouteParams = {
+export interface RouteParams {
   bid?: string;
   cid?: string;
   gid?: string;
   rid?: string;
-};
+}
 
-export type RouteLocation = {
+export interface RouteLocation {
   pathname: string;
   query: HistoryFilters;
-};
+}
 
 export type AuthMethod =
   | "anonymous"
@@ -216,12 +218,12 @@ export type AuthMethod =
   | "basicauth"
   | "openid";
 
-export type AuthData = {
+export interface AuthData {
   authType: AuthMethod;
   server: string;
   expiresAt?: number;
   redirectURL?: string;
-};
+}
 
 export type AnonymousAuth = {
   authType: "anonymous";
@@ -260,23 +262,23 @@ export type SagaGen = Generator<any, void, any>;
 
 export type SagaNextFunction = (...args: any[]) => any;
 
-export type CollectionEntry = {
+export interface CollectionEntry {
   id: string;
   permissions: string[];
   readonly: boolean;
   last_modified: number;
-};
+}
 
-export type BucketEntry = {
+export interface BucketEntry {
   id: string;
   permissions: string[];
   collections: CollectionEntry[];
   readonly: boolean;
   canCreateCollection: boolean;
   last_modified: number;
-};
+}
 
-export type SessionState = {
+export interface SessionState {
   busy: boolean;
   authenticating: boolean;
   auth: AuthData | null | undefined;
@@ -285,14 +287,14 @@ export type SessionState = {
   buckets: BucketEntry[];
   serverInfo: ServerInfo;
   redirectURL: string | null | undefined;
-};
+}
 
-export type ServerEntry = {
+export interface ServerEntry {
   server: string;
   authType: string;
-};
+}
 
-export type ServerInfo = {
+export interface ServerInfo {
   url: string;
   project_name: string;
   project_docs: string;
@@ -302,9 +304,9 @@ export type ServerInfo = {
     principals: string[];
     bucket?: string;
   };
-};
+}
 
-export type PermissionsListEntry = {
+export interface PermissionsListEntry {
   bucket_id: string;
   collection_id?: string;
   group_id?: string;
@@ -313,7 +315,7 @@ export type PermissionsListEntry = {
   permissions: string[];
   resource_name: string;
   uri: string;
-};
+}
 
 export type SignedCollectionData = CollectionData & {
   status?: string;
@@ -329,7 +331,7 @@ export type SignedCollectionData = CollectionData & {
   last_signature_date?: string;
 };
 
-export type SignoffCollectionsInfo = {
+export interface SignoffCollectionsInfo {
   source: SignoffSourceInfo;
   destination: SignerCapabilityResourceEntry;
   preview?: SignerCapabilityResourceEntry;
@@ -340,20 +342,20 @@ export type SignoffCollectionsInfo = {
   // If to-review, show changes since the last approval. It will be null if no
   // changes were made.
   changesOnPreview?: ChangesList | null;
-};
+}
 
-export type SignoffState = {
+export interface SignoffState {
   collectionsInfo: SignoffCollectionsInfo | null | undefined;
   pendingConfirmReviewRequest: boolean;
   pendingConfirmDeclineChanges: boolean;
   pendingConfirmRollbackChanges: boolean;
-};
+}
 
-export type ChangesList = {
+export interface ChangesList {
   since: number;
   deleted: number;
   updated: number;
-};
+}
 
 export type SignoffCollectionStatus =
   | "signed"
@@ -377,8 +379,8 @@ export type SignoffSourceInfo = SignerCapabilityResourceEntry & {
   lastSignatureDate?: number;
 };
 
-export type HeartbeatState = {
+export interface HeartbeatState {
   success: boolean;
   response?: Record<string, any>;
   details?: any;
-};
+}

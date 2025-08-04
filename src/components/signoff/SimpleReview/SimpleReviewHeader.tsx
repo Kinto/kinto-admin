@@ -30,12 +30,12 @@ export default function SimpleReviewHeader({
         <div className="card-body">
           {status === "to-review" && (
             <p className="card-text">
-              {lastEditorComment || "(No comment was left by the author)"}
+              {lastEditorComment ?? "(No comment was left by the author)"}
             </p>
           )}
           {status === "work-in-progress" && lastEditDate < lastReviewDate && (
             <p className="card-text">
-              {lastReviewerComment || "(No comment was left by a reviewer)"}
+              {lastReviewerComment ?? "(No comment was left by a reviewer)"}
             </p>
           )}
           {children}

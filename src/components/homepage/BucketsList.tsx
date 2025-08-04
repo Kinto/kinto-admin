@@ -5,6 +5,7 @@ import PaginatedTable from "@src/components/PaginatedTable";
 import { useBucketList } from "@src/hooks/bucket";
 import { usePermissions, useServerInfo } from "@src/hooks/session";
 import { canCreateBucket } from "@src/permission";
+import { BucketData, ServerInfo } from "@src/types";
 import { timeago } from "@src/utils";
 import React from "react";
 import {
@@ -15,7 +16,10 @@ import {
   PersonFill,
 } from "react-bootstrap-icons";
 
-export function ListActions({ busy }) {
+interface ListActionsProps {
+  busy: boolean;
+}
+export function ListActions({ busy }: ListActionsProps) {
   const permissions = usePermissions();
   if (busy || !canCreateBucket(permissions)) {
     return null;
@@ -33,7 +37,12 @@ export function ListActions({ busy }) {
   );
 }
 
-export function DataList(props) {
+interface DataListProps {
+  serverInfo: ServerInfo;
+  buckets: BucketData[];
+  showSpinner: boolean;
+}
+export function DataList(props: DataListProps) {
   const { serverInfo, buckets, showSpinner } = props;
 
   if (showSpinner) {
@@ -52,75 +61,72 @@ export function DataList(props) {
 
   const tbody = (
     <tbody className={""}>
-      {buckets &&
-        buckets.map((bucket, index) => {
-          const { id: bid, last_modified } = bucket;
-          const date = new Date(last_modified);
-          return (
-            <tr key={index}>
-              <td>
-                <AdminLink name="bucket:collections" params={{ bid }}>
-                  {bid}
-                </AdminLink>
-              </td>
-              <td>
-                <span title={date.toISOString()}>
-                  {timeago(date.getTime())}
-                </span>
-              </td>
-              <td className="actions">
-                <div className="btn-group">
-                  {[
-                    {
-                      name: "bucket:collections",
-                      icon: Justify,
-                      label: "Collections",
-                      key: "collections",
-                    },
-                    {
-                      name: "bucket:groups",
-                      icon: PersonFill,
-                      label: "Groups",
-                      key: "groups",
-                    },
-                    {
-                      name: "bucket:attributes",
-                      icon: Gear,
-                      label: "Attributes",
-                      key: "attributes",
-                    },
-                    {
-                      name: "bucket:permissions",
-                      icon: Lock,
-                      label: "Permissions",
-                      key: "permissions",
-                    },
-                  ].map(({ name, icon: Icon, label, key }) => (
-                    <AdminLink
-                      key={key}
-                      name={name}
-                      params={{ bid }}
-                      className="btn btn-sm btn-secondary"
-                      title={label}
-                    >
-                      <Icon className="icon" />
-                    </AdminLink>
-                  ))}
-                  {serverInfo && "history" in serverInfo.capabilities && (
-                    <AdminLink
-                      name="bucket:history"
-                      params={{ bid }}
-                      className="btn btn-sm btn-secondary"
-                      title="View bucket history"
-                    >
-                      <ClockHistory className="icon" />
-                    </AdminLink>
-                  )}
-                </div>
-              </td>
-            </tr>
-          );
-        })}
+      {buckets?.map((bucket, index) => {
+        const { id: bid, last_modified } = bucket;
+        const date = new Date(last_modified);
+        return (
+          <tr key={index}>
+            <td>
+              <AdminLink name="bucket:collections" params={{ bid }}>
+                {bid}
+              </AdminLink>
+            </td>
+            <td>
+              <span title={date.toISOString()}>{timeago(date.getTime())}</span>
+            </td>
+            <td className="actions">
+              <div className="btn-group">
+                {[
+                  {
+                    name: "bucket:collections",
+                    icon: Justify,
+                    label: "Collections",
+                    key: "collections",
+                  },
+                  {
+                    name: "bucket:groups",
+                    icon: PersonFill,
+                    label: "Groups",
+                    key: "groups",
+                  },
+                  {
+                    name: "bucket:attributes",
+                    icon: Gear,
+                    label: "Attributes",
+                    key: "attributes",
+                  },
+                  {
+                    name: "bucket:permissions",
+                    icon: Lock,
+                    label: "Permissions",
+                    key: "permissions",
+                  },
+                ].map(({ name, icon: Icon, label, key }) => (
+                  <AdminLink
+                    key={key}
+                    name={name}
+                    params={{ bid }}
+                    className="btn btn-sm btn-secondary"
+                    title={label}
+                  >
+                    <Icon className="icon" />
+                  </AdminLink>
+                ))}
+                {serverInfo && "history" in serverInfo.capabilities && (
+                  <AdminLink
+                    name="bucket:history"
+                    params={{ bid }}
+                    className="btn btn-sm btn-secondary"
+                    title="View bucket history"
+                  >
+                    <ClockHistory className="icon" />
+                  </AdminLink>
+                )}
+              </div>
+            </td>
+          </tr>
+        );
+      })}
     </tbody>
   );
   return (

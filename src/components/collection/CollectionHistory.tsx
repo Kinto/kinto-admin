@@ -77,7 +77,7 @@ export default function CollectionHistory() {
           bid={bid}
           cid={cid}
           historyLoaded={history.data !== undefined}
-          history={history.data || []}
+          history={history.data ?? []}
           hasNextHistory={history.hasNextPage}
           listNextHistory={history.next}
           sinceFilter={filters.since}

@@ -174,7 +174,7 @@ export function permissionsToFormData(
           acc.authenticated = [...acc.authenticated, permissionName];
         } else if (groupRegexp.test(principal)) {
           const gid = principal.match(groupRegexp)[1];
-          acc.groups[gid] = (acc.groups[gid] || []).concat(permissionName);
+          acc.groups[gid] = (acc.groups[gid] ?? []).concat(permissionName);
         } else {
           let { principals: principalsList } = acc;
           const existing = principalsList.find(x => x.principal === principal);

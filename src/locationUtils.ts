@@ -21,7 +21,7 @@ export function breadcrumbifyPath(path: string) {
 // This may become obsolete when upgrading or switching router packages. Functionality
 // is not built in to react-router v5, useSearchParams exists in v6 though.
 export function parseSearchString(search?: string): Record<string, any> {
-  if (!search || !search.startsWith("?")) {
+  if (!search?.startsWith("?")) {
     return {};
   }
   const params = {};

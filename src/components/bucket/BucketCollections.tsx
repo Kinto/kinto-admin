@@ -27,7 +27,6 @@ export default function BucketCollections() {
           <DataList
             bid={bid}
             collections={collections}
-            listBucketNextCollections={collections?.next}
             capabilities={serverInfo?.capabilities}
             showSpinner={!collections}
           />

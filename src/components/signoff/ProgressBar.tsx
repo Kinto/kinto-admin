@@ -1,8 +1,8 @@
 import React from "react";
 
-type Props = {
+interface Props {
   children?: React.ReactNode;
-};
+}
 
 export function ProgressBar({ children }: Props) {
   return (
@@ -12,12 +12,12 @@ export function ProgressBar({ children }: Props) {
   );
 }
 
-type ProgressStepProps = {
+interface ProgressStepProps {
   label: string;
   currentStep: number;
   step: number;
   children?: React.ReactNode;
-};
+}
 
 export function ProgressStep({
   label,
