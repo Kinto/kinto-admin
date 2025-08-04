@@ -115,7 +115,7 @@ export function useCollectionHistory(
 
   const serverInfo = useServerInfo();
   // Turn the HistoryFilters into server filters.
-  const serverFilters: { [key: string]: string } = {
+  const serverFilters: Record<string, string> = {
     resource_name: filters.resource_name,
     "gt_target.data.last_modified": filters.since,
   };
@@ -124,7 +124,7 @@ export function useCollectionHistory(
   }
   if (filters.exclude_signer_plugin) {
     const pluginUserId =
-      serverInfo.capabilities.signer.plugin_user_id || "plugin:remote-settings";
+      serverInfo.capabilities.signer.plugin_user_id ?? "plugin:remote-settings";
     serverFilters.exclude_user_id = serverFilters.exclude_user_id
       ? `${serverFilters.exclude_user_id},${pluginUserId}`
       : pluginUserId;
@@ -146,7 +146,7 @@ export function useCollectionHistory(
 async function fetchHistory(
   bid: string,
   cid: string,
-  filters: { [key: string]: string },
+  filters: Record<string, string>,
   curData,
   setVal,
   nextPageFn?

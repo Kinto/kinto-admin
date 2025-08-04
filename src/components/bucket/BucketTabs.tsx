@@ -9,11 +9,11 @@ import {
   PersonFill,
 } from "react-bootstrap-icons";
 
-type Props = {
+interface Props {
   bid: string;
   selected: "collections" | "groups" | "attributes" | "permissions" | "history";
   children?: React.ReactNode;
-};
+}
 
 export default function BucketTabs({ bid, selected, children }: Props) {
   const serverInfo = useServerInfo();

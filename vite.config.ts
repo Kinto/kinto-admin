@@ -11,7 +11,7 @@ import path from 'path'
  *    GH Pages:     /kinto-admin/
  *    Kinto plugin: /v1/admin/
  */
-const ASSET_PATH = process.env.ASSET_PATH || "/";
+const ASSET_PATH = process.env.ASSET_PATH ?? "/";
 
 const KINTO_ADMIN_VERSION = readFileSync('./public/VERSION').toString();
 

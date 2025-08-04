@@ -17,7 +17,7 @@ export default function BucketHistory() {
         <HistoryTable
           bid={bid}
           historyLoaded={!!history.data}
-          history={history.data || []}
+          history={history.data ?? []}
           hasNextHistory={history.hasNextPage}
           listNextHistory={history.next}
         />

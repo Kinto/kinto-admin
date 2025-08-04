@@ -27,7 +27,7 @@ export function isObject(thing: any): boolean {
 export function timeago(timestamp: number, now?: number | null): string {
   // Show relative time according to current timezone. The now value is used
   // for testing.
-  const nowUTC = now || new Date().getTime();
+  const nowUTC = now ?? new Date().getTime();
   // In our use case, we should never show relative time in the future.
   // For example, if local computer is late, the server timestamp will appear
   // to be in the future. Hence use "now" as a maximum.
@@ -56,7 +56,7 @@ export function validateSchema(jsonSchema: string) {
   } catch (_err) {
     throw "The schema is not valid JSON";
   }
-  const checks: Array<{ test: () => boolean; error: string }> = [
+  const checks: { test: () => boolean; error: string }[] = [
     {
       test: () => isObject(schema),
       error: "The schema is not an object",
@@ -102,7 +102,7 @@ export function validateUiSchema(jsonUiSchema: string, jsonSchema: string) {
     uiSchema,
     "ui:order"
   );
-  let checks: Array<{ test: () => boolean; error: string }> = [
+  let checks: { test: () => boolean; error: string }[] = [
     {
       test: () => isObject(uiSchema),
       error: "The uiSchema is not an object",
@@ -151,7 +151,7 @@ function handleNestedDisplayField(
   // we look for other candidates in the record attributes.
   let biggestCandidate = [];
   const candidates = Object.keys(record).filter(key => {
-    return key.indexOf(fields[0] + ".") === 0;
+    return key.startsWith(fields[0] + ".");
   });
 
   // For all the properties candidates
@@ -161,7 +161,7 @@ function handleNestedDisplayField(
     for (const part of fields) {
       // If the candidate matches the key we try a longer one.
       const candidate = nextCandidate.concat([part]).join(".");
-      if (key.indexOf(candidate) !== -1) {
+      if (key.includes(candidate)) {
         nextCandidate.push(part);
       }
     }
@@ -213,7 +213,7 @@ export function renderDisplayField(record: object, displayField: string): any {
     }
   } else if (displayField === "__json") {
     return <code>{JSON.stringify(cleanRecord(record as RecordData))}</code>;
-  } else if (displayField.indexOf(".") !== -1) {
+  } else if (displayField.includes(".")) {
     return handleNestedDisplayField(record as RecordData, displayField);
   }
   return "<unknown>";
@@ -295,7 +295,7 @@ export function getServerByPriority(servers: ServerEntry[] | null | undefined) {
   // - single server mode
   // - most recently used
   // - default
-  return SINGLE_SERVER || servers?.[0]?.server || DEFAULT_KINTO_SERVER;
+  return SINGLE_SERVER ?? servers?.[0]?.server ?? DEFAULT_KINTO_SERVER;
 }
 
 export function isObjectEmpty(obj: object) {
@@ -313,7 +313,7 @@ export const getAuthLabel = (authType: string) => {
     // The authType openid-<provider> is constructed in getSupportedAuthMethods.
     const provider = authType.replace("openid-", "");
     const prettyProvider =
-      labels[provider] || provider.charAt(0).toUpperCase() + provider.slice(1);
+      labels[provider] ?? provider.charAt(0).toUpperCase() + provider.slice(1);
     return `OpenID Connect (${prettyProvider})`;
   }
   return labels[authType];
@@ -349,7 +349,7 @@ export async function copyToClipboard(s: string | null | undefined) {
     state = "firefox";
   }
   if (["granted", "prompt", "firefox"].includes(state)) {
-    await navigator.clipboard.writeText(s || "");
+    await navigator.clipboard.writeText(s ?? "");
   }
 }
 

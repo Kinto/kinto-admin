@@ -1,5 +1,5 @@
 import type { Capabilities } from "@src/types";
 
-export type CommonProps = {
+export interface CommonProps {
   capabilities: Capabilities;
-};
+}

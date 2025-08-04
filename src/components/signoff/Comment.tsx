@@ -14,13 +14,13 @@ export function Comment({ text }: { text: string }) {
   );
 }
 
-type CommentDialogProps = {
+interface CommentDialogProps {
   title?: string;
   description: string;
   confirmLabel: string;
   onConfirm: (comment: string) => void;
   onClose: () => void;
-};
+}
 
 export function CommentDialog({
   title = "Confirmation",
