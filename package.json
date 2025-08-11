@@ -44,7 +44,7 @@
     "react-bootstrap": "^1.6.7",
     "react-bootstrap-icons": "^1.11.3",
     "react-bs-notifier": "^7.0.0",
-    "react-dom": "^18.2.0",
+    "react-dom": "^19.1.1",
     "react-router": "^7.6.0",
     "timeago.js": "^4.0.2"
   },
