@@ -137,7 +137,7 @@ describe("group hooks", () => {
         hasNextPage: false,
         next: null,
       });
-      const { result } = renderHook(() => useGroupHistory("bid", "gid"));
+      const { result } = renderHook(() => useGroupHistory("bid", "gid", {}));
 
       expect(result.current).toEqual({});
 
@@ -168,7 +168,7 @@ describe("group hooks", () => {
           };
         },
       });
-      const { result } = renderHook(() => useGroupHistory("bid", "gid"));
+      const { result } = renderHook(() => useGroupHistory("bid", "gid", {}));
 
       expect(result.current).toEqual({});
 
@@ -192,7 +192,7 @@ describe("group hooks", () => {
         throw new Error("test error");
       });
 
-      renderHook(() => useGroupHistory("bid", "gid"));
+      renderHook(() => useGroupHistory("bid", "gid", {}));
 
       await vi.waitFor(() => {
         expect(notifyErrorMock).toHaveBeenCalledWith(

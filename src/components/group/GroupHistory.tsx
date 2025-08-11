@@ -1,13 +1,27 @@
 import CollectionTabs from "./GroupTabs";
 import HistoryTable from "@src/components/HistoryTable";
 import { useGroupHistory } from "@src/hooks/group";
-import React from "react";
+import { useShowNonHumans, useShowSignerPlugin } from "@src/hooks/preferences";
+import React, { useMemo } from "react";
 import { useParams } from "react-router";
 
 export default function GroupHistory() {
   const { bid, gid } = useParams();
 
-  const history = useGroupHistory(bid, gid);
+  // Restore preferences
+  const [showSignerPlugin, setShowSignerPlugin] = useShowSignerPlugin(true);
+  const [showNonHumans, setShowNonHumans] = useShowNonHumans(true);
+
+  // Create filters object from current state
+  const filters = useMemo(
+    () => ({
+      show_signer_plugin: showSignerPlugin,
+      show_non_humans: showNonHumans,
+    }),
+    [showSignerPlugin, showNonHumans]
+  );
+
+  const history = useGroupHistory(bid, gid, filters);
 
   return (
     <div>
@@ -24,6 +38,11 @@ export default function GroupHistory() {
           history={history.data ?? []}
           hasNextHistory={history.hasNextPage}
           listNextHistory={history.next}
+          showNonHumans={showNonHumans}
+          showSignerPlugin={showSignerPlugin}
+          // Persist filter changes and reload table (memo dependencies)
+          onShowSignerPluginChange={setShowSignerPlugin}
+          onShowNonHumansChange={setShowNonHumans}
         />
       </CollectionTabs>
     </div>
