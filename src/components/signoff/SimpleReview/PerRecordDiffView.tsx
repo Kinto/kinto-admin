@@ -2,7 +2,7 @@ import {
   useShowDiffAllLines,
   useShowDiffExtraFields,
 } from "@src/hooks/preferences";
-import type { RecordData, SignoffSourceInfo } from "@src/types";
+import type { RecordData } from "@src/types";
 import { diffJson, omit, renderDisplayField } from "@src/utils";
 import { diffJson as diff, diffArrays } from "diff";
 import React from "react";
@@ -19,14 +19,12 @@ export const EXTRA_FIELDS = ["last_modified", "schema"];
 export interface PerRecordDiffViewProps {
   oldRecords: RecordData[];
   newRecords: RecordData[];
-  collectionData: SignoffSourceInfo;
   displayFields?: string[];
 }
 
 export default function PerRecordDiffView({
   oldRecords,
   newRecords,
-  collectionData,
   displayFields,
 }: PerRecordDiffViewProps) {
   const [showExtraFields, setShowExtraFields] = useShowDiffExtraFields();
@@ -38,58 +36,47 @@ export default function PerRecordDiffView({
     showExtraFields ? undefined : EXTRA_FIELDS
   );
 
-  switch (collectionData.status) {
-    case "to-review":
-    case "work-in-progress":
-      return (
-        <div>
-          <div className="form-check form-check-inline mb-3">
-            <input
-              className="form-check-input"
-              type="checkbox"
-              checked={showExtraFields}
-              onChange={e => setShowExtraFields(e.currentTarget.checked)}
-              id="showExtraFields"
-            />
-            <label className="form-check-label" htmlFor="showExtraFields">
-              Show record timestamps
-            </label>
-          </div>
+  return (
+    <div>
+      <div className="form-check form-check-inline mb-3">
+        <input
+          className="form-check-input"
+          type="checkbox"
+          checked={showExtraFields}
+          onChange={e => setShowExtraFields(e.currentTarget.checked)}
+          id="showExtraFields"
+        />
+        <label className="form-check-label" htmlFor="showExtraFields">
+          Show record timestamps
+        </label>
+      </div>
 
-          <div className="form-check form-check-inline mb-3">
-            <input
-              className="form-check-input"
-              type="checkbox"
-              checked={showAllLines}
-              onChange={e => setShowAllLines(e.currentTarget.checked)}
-              id="showAllLines"
-            />
-            <label className="form-check-label" htmlFor="showAllLines">
-              Show all lines
-            </label>
-          </div>
+      <div className="form-check form-check-inline mb-3">
+        <input
+          className="form-check-input"
+          type="checkbox"
+          checked={showAllLines}
+          onChange={e => setShowAllLines(e.currentTarget.checked)}
+          id="showAllLines"
+        />
+        <label className="form-check-label" htmlFor="showAllLines">
+          Show all lines
+        </label>
+      </div>
 
-          {changes.map(({ id, changeType, source, target }) => (
-            <Diff
-              key={id}
-              id={id}
-              changeType={changeType}
-              source={source}
-              target={target}
-              allLines={showAllLines}
-              displayFields={displayFields}
-            />
-          ))}
-        </div>
-      );
-    default:
-      return (
-        <div>
-          No changes to review, collection status is{" "}
-          <code>{collectionData.status}</code>.
-        </div>
-      );
-  }
+      {changes.map(({ id, changeType, source, target }) => (
+        <Diff
+          key={id}
+          id={id}
+          changeType={changeType}
+          source={source}
+          target={target}
+          allLines={showAllLines}
+          displayFields={displayFields}
+        />
+      ))}
+    </div>
+  );
 }
 
 function Diff({

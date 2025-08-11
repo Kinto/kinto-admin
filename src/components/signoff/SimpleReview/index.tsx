@@ -12,10 +12,41 @@ import { useRecordList } from "@src/hooks/record";
 import { useAuth, usePermissions, useServerInfo } from "@src/hooks/session";
 import { useSignoff } from "@src/hooks/signoff";
 import { canEditCollection } from "@src/permission";
-import type { SignoffSourceInfo } from "@src/types";
+import type { RecordData, SignoffSourceInfo } from "@src/types";
 import React from "react";
 import { Shuffle } from "react-bootstrap-icons";
 import { Navigate, useNavigate, useParams } from "react-router";
+
+interface SignedCollectionRecordDiffViewProps {
+  collectionData: SignoffSourceInfo;
+  oldRecords: RecordData[];
+  newRecords: RecordData[];
+  displayFields: string[];
+}
+
+function SignedCollectionRecordDiffView({
+  collectionData,
+  oldRecords,
+  newRecords,
+  displayFields,
+}: SignedCollectionRecordDiffViewProps) {
+  const status = collectionData?.status;
+  if (["to-review", "work-in-progress"].includes(status)) {
+    return (
+      <PerRecordDiffView
+        oldRecords={oldRecords}
+        newRecords={newRecords}
+        displayFields={displayFields}
+      />
+    );
+  }
+  return (
+    <div>
+      No changes to review, collection status is{" "}
+      <code>{collectionData.status}</code>.
+    </div>
+  );
+}
 
 export default function SimpleReview() {
   const { bid, cid } = useParams();
@@ -138,11 +169,11 @@ export default function SimpleReview() {
             />
           </SimpleReviewHeader>
         )}
-        <PerRecordDiffView
+        <SignedCollectionRecordDiffView
+          collectionData={signoffSource}
           oldRecords={oldRecords.data ?? []}
           newRecords={newRecords.data ?? []}
-          collectionData={signoffSource}
-          displayFields={collection?.displayFields}
+          displayFields={collection?.displayFields || []}
         />
         <button
           type="button"
