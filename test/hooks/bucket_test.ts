@@ -146,7 +146,7 @@ describe("bucket hooks", () => {
         hasNextPage: false,
         next: null,
       });
-      const { result } = renderHook(() => useBucketHistory("bid"));
+      const { result } = renderHook(() => useBucketHistory("bid", {}));
 
       expect(result.current).toEqual({});
 
@@ -172,7 +172,7 @@ describe("bucket hooks", () => {
           };
         },
       });
-      const { result } = renderHook(() => useBucketHistory("bid"));
+      const { result } = renderHook(() => useBucketHistory("bid", {}));
 
       expect(result.current).toEqual({});
 
@@ -196,7 +196,7 @@ describe("bucket hooks", () => {
         throw new Error("test error");
       });
 
-      renderHook(() => useBucketHistory("bid"));
+      renderHook(() => useBucketHistory("bid", {}));
 
       await vi.waitFor(() => {
         expect(notifyErrorMock).toHaveBeenCalledWith(
