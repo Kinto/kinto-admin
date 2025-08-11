@@ -3,6 +3,7 @@ import PaginatedTable from "./PaginatedTable";
 import Spinner from "./Spinner";
 import { getClient } from "@src/client";
 import { notifyError } from "@src/hooks/notifications";
+import { useServerInfo } from "@src/hooks/session";
 import type { RecordData, ResourceHistoryEntry } from "@src/types";
 import { diffJson, humanDate, timeago } from "@src/utils";
 import { omit, sortHistoryEntryPermissions } from "@src/utils";
@@ -289,6 +290,22 @@ export default function HistoryTable({
   const [busy, setBusy] = useState(false);
   const [current, setCurrent] = useState(null);
   const [previous, setPrevious] = useState(null);
+
+  const serverInfo = useServerInfo();
+  const wasDisabled = (
+    serverInfo.capabilities.history?.excluded_resources || []
+  ).some(
+    resource =>
+      resource.bucket == bid &&
+      (resource.collection == cid || !resource.collection)
+  );
+  if (wasDisabled) {
+    return (
+      <div className="alert alert-warning" data-testid="warning">
+        <p>History was disabled for this collection in server configuration.</p>
+      </div>
+    );
+  }
 
   const nextHistoryWrapper = async () => {
     setLoading(true);
