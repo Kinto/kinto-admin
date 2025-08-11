@@ -1,0 +1,133 @@
+import { CollectionCompare } from "@src/components/collection/CollectionCompare";
+import { useBucketList } from "@src/hooks/bucket";
+import { useRecordList } from "@src/hooks/record";
+import { renderWithRouter } from "@test/testUtils";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
+import React from "react";
+
+vi.mock("@src/hooks/bucket", () => ({
+  useBucketList: vi.fn(),
+}));
+
+vi.mock("@src/hooks/record", () => ({
+  useRecordList: vi.fn(),
+}));
+
+vi.mock("../Spinner", () => ({
+  __esModule: true,
+  default: () => <div data-testid="spinner">Loading...</div>,
+}));
+
+vi.mock("./CollectionTabs", () => ({
+  __esModule: true,
+  default: ({ children }) => <div>{children}</div>,
+}));
+
+describe("CollectionCompare", () => {
+  const mockBuckets = [
+    {
+      id: "other-bucket",
+      collections: [{ id: "col1" }, { id: "col2" }],
+    },
+    {
+      id: "main-bucket",
+      collections: [{ id: "main-collection" }],
+    },
+  ];
+
+  beforeEach(() => {
+    useBucketList.mockReturnValue(mockBuckets);
+    useRecordList.mockImplementation((bid, cid) => {
+      if (bid && cid) {
+        return {
+          data: [
+            { id: `${bid}-${cid}-record-1` },
+            { id: `${bid}-${cid}-record-2` },
+          ],
+        };
+      }
+      return { data: [] };
+    });
+  });
+
+  it("should render loading spinner initially", () => {
+    useBucketList.mockReturnValue(undefined);
+    renderWithRouter(<CollectionCompare />, {
+      route: "/buckets/main-bucket/collections/main-collection/compare",
+      path: "/buckets/:bid/collections/:cid/compare",
+    });
+
+    expect(screen.getByTestId("spinner")).toBeDefined();
+  });
+
+  it("should render bucket list after loading", async () => {
+    renderWithRouter(<CollectionCompare />, {
+      route: "/buckets/main-bucket/collections/main-collection/compare",
+      path: "/buckets/:bid/collections/:cid/compare",
+    });
+
+    await waitFor(() =>
+      expect(screen.getByLabelText("Bucket")).toBeInTheDocument()
+    );
+
+    expect(screen.getByText("other-bucket")).toBeDefined();
+    expect(screen.getByText("main-bucket")).toBeDefined();
+  });
+
+  it("should allow selecting a different bucket and collection", async () => {
+    renderWithRouter(<CollectionCompare />, {
+      route: "/buckets/main-bucket/collections/main-collection/compare",
+      path: "/buckets/:bid/collections/:cid/compare",
+    });
+
+    const bucketSelect = await screen.findByLabelText("Bucket");
+    fireEvent.change(bucketSelect, { target: { value: "other-bucket" } });
+
+    const collectionSelect = await screen.findByLabelText("Collection");
+    fireEvent.change(collectionSelect, { target: { value: "col2" } });
+
+    await waitFor(() =>
+      expect(screen.queryByTestId("spinner")).not.toBeInTheDocument()
+    );
+
+    expect(screen.queryAllByTestId("record-diff")).toBeDefined();
+    expect(screen.getByText("other-bucket-col2-record-2")).toBeDefined();
+  });
+
+  it("should disable selection of same bucket/collection", async () => {
+    renderWithRouter(<CollectionCompare />, {
+      route: "/buckets/main-bucket/collections/main-collection/compare",
+      path: "/buckets/:bid/collections/:cid/compare",
+    });
+
+    const bucketSelect = await screen.findByLabelText("Bucket");
+    fireEvent.change(bucketSelect, { target: { value: "main-bucket" } });
+
+    await screen.findByLabelText("Collection");
+
+    // The same collection should be disabled
+    expect(
+      screen.getByRole("option", { name: "main-collection" })
+    ).toBeDisabled();
+  });
+
+  it("should show diff when both bucket and collection are selected", async () => {
+    renderWithRouter(<CollectionCompare />, {
+      route: "/buckets/main-bucket/collections/main-collection/compare",
+      path: "/buckets/:bid/collections/:cid/compare",
+    });
+
+    const bucketSelect = await screen.findByLabelText("Bucket");
+    fireEvent.change(bucketSelect, { target: { value: "other-bucket" } });
+
+    const collectionSelect = await screen.findByLabelText("Collection");
+    fireEvent.change(collectionSelect, { target: { value: "col1" } });
+
+    await waitFor(() =>
+      expect(screen.queryByTestId("spinner")).not.toBeInTheDocument()
+    );
+
+    expect(screen.queryAllByTestId("record-diff")).toBeDefined();
+    expect(screen.getByText("other-bucket-col1-record-2")).toBeDefined();
+  });
+});

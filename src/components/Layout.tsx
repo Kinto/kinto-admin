@@ -1,5 +1,6 @@
 import Breadcrumbs from "./Breadcrumbs";
 import { SessionInfoBar } from "./SessionInfoBar";
+import { CollectionCompare } from "./collection/CollectionCompare";
 import Notifications from "@src/components/Notifications";
 import { Sidebar } from "@src/components/Sidebar";
 import BucketAttributes from "@src/components/bucket/BucketAttributes";
@@ -144,6 +145,10 @@ export function Layout() {
               <Route
                 path="/buckets/:bid/collections/:cid/simple-review"
                 Component={SimpleReview}
+              />
+              <Route
+                path="/buckets/:bid/collections/:cid/compare"
+                Component={CollectionCompare}
               />
               <Route
                 path="/buckets/:bid/collections/:cid/records?"

@@ -5,6 +5,7 @@ import React from "react";
 import {
   Braces,
   ClockHistory,
+  FileDiff,
   Gear,
   Justify,
   Lock,
@@ -18,6 +19,7 @@ interface Props {
     | "attributes"
     | "permissions"
     | "history"
+    | "compare"
     | "simple-review";
   children?: React.ReactNode;
   totalRecords?: number | null;
@@ -121,6 +123,22 @@ export default function CollectionTabs({
               </AdminLink>
             </li>
           )}
+          <li
+            className="nav-item"
+            role="presentation"
+            data-testid="nav-compare"
+          >
+            <AdminLink
+              name="collection:compare"
+              params={{ bid, cid }}
+              className={
+                selected === "compare" ? "nav-link active" : "nav-link"
+              }
+            >
+              <FileDiff className="icon" />
+              Compare
+            </AdminLink>
+          </li>
         </ul>
       </div>
       <div className="card-body">{children}</div>
