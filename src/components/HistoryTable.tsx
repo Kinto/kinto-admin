@@ -273,6 +273,10 @@ interface HistoryTableProps {
   listNextHistory?;
   enableDiffOverview?: boolean;
   sinceFilter?: string;
+  showNonHumans: boolean;
+  showSignerPlugin: boolean;
+  onShowSignerPluginChange: (boolean) => void;
+  onShowNonHumansChange: (boolean) => void;
 }
 
 export default function HistoryTable({
@@ -282,6 +286,10 @@ export default function HistoryTable({
   historyLoaded,
   hasNextHistory,
   listNextHistory,
+  showNonHumans,
+  showSignerPlugin,
+  onShowSignerPluginChange,
+  onShowNonHumansChange,
   enableDiffOverview = false,
   sinceFilter = "",
 }: HistoryTableProps) {
@@ -306,6 +314,10 @@ export default function HistoryTable({
       </div>
     );
   }
+
+  // Hide the non human filters if the server does not support openid or signer
+  const hasOpenID = serverInfo && "openid" in serverInfo.capabilities;
+  const hasSigner = serverInfo && "signer" in serverInfo.capabilities;
 
   const nextHistoryWrapper = async () => {
     setLoading(true);
@@ -379,6 +391,37 @@ export default function HistoryTable({
 
   return (
     <div>
+      {hasOpenID && (
+        <div className="form-check form-check-inline mb-3">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            checked={showNonHumans}
+            onChange={e => onShowNonHumansChange(e.currentTarget.checked)}
+            id="showNonHumans"
+            data-testid="showNonHumans"
+          />
+          <label className="form-check-label" htmlFor="showNonHumans">
+            Show non humans entries
+          </label>
+        </div>
+      )}
+      {hasSigner && (
+        <div className="form-check form-check-inline mb-3">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            checked={showSignerPlugin && showNonHumans}
+            onChange={e => onShowSignerPluginChange(e.currentTarget.checked)}
+            id="showSignerPlugin"
+            data-testid="showSignerPlugin"
+            disabled={!showNonHumans}
+          />
+          <label className="form-check-label" htmlFor="showSignerPlugin">
+            Show plugin entries
+          </label>
+        </div>
+      )}
       {!!sinceFilter && (
         <FilterInfo
           since={sinceFilter}
