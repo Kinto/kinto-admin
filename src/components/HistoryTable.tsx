@@ -12,7 +12,7 @@ import type {
 } from "@src/types";
 import { diffJson, humanDate, timeago } from "@src/utils";
 import { omit, sortHistoryEntryPermissions } from "@src/utils";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useState } from "react";
 import { Eye } from "react-bootstrap-icons";
 import { EyeSlash } from "react-bootstrap-icons";
 import { SkipStart } from "react-bootstrap-icons";
