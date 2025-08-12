@@ -1,26 +1,14 @@
 import RecordTabs from "./RecordTabs";
 import HistoryTable from "@src/components/HistoryTable";
-import { useShowNonHumans, useShowSignerPlugin } from "@src/hooks/preferences";
 import { useRecordHistory } from "@src/hooks/record";
-import React, { useMemo } from "react";
+import React from "react";
 import { useParams } from "react-router";
 
 export default function RecordHistory() {
   const { bid, cid, rid } = useParams();
 
-  // Restore preferences
-  const [showSignerPlugin, setShowSignerPlugin] = useShowSignerPlugin(true);
-  const [showNonHumans, setShowNonHumans] = useShowNonHumans(true);
-
-  // Create filters object from current state
-  const filters = useMemo(
-    () => ({
-      show_signer_plugin: showSignerPlugin,
-      show_non_humans: showNonHumans,
-    }),
-    [showSignerPlugin, showNonHumans]
-  );
-
+  const [filters, setFilters] = React.useState(undefined);
+  // Refetch from the server when filters change.
   const history = useRecordHistory(bid, cid, rid, filters);
 
   return (
@@ -38,11 +26,7 @@ export default function RecordHistory() {
           history={history.data ?? []}
           hasNextHistory={history.hasNextPage}
           listNextHistory={history.next}
-          showNonHumans={showNonHumans}
-          showSignerPlugin={showSignerPlugin}
-          // Persist filter changes and reload table (memo dependencies)
-          onShowSignerPluginChange={setShowSignerPlugin}
-          onShowNonHumansChange={setShowNonHumans}
+          onFiltersChange={setFilters}
         />
       </RecordTabs>
     </div>

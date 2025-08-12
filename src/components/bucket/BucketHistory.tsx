@@ -1,26 +1,14 @@
 import BucketTabs from "./BucketTabs";
 import HistoryTable from "@src/components/HistoryTable";
 import { useBucketHistory } from "@src/hooks/bucket";
-import { useShowNonHumans, useShowSignerPlugin } from "@src/hooks/preferences";
-import React, { useMemo } from "react";
+import React from "react";
 import { useParams } from "react-router";
 
 export default function BucketHistory() {
   const { bid } = useParams();
 
-  // Restore preferences
-  const [showSignerPlugin, setShowSignerPlugin] = useShowSignerPlugin(true);
-  const [showNonHumans, setShowNonHumans] = useShowNonHumans(true);
-
-  // Create filters object from current state
-  const filters = useMemo(
-    () => ({
-      show_signer_plugin: showSignerPlugin,
-      show_non_humans: showNonHumans,
-    }),
-    [showSignerPlugin, showNonHumans]
-  );
-
+  const [filters, setFilters] = React.useState(undefined);
+  // Refetch from the server when filters change.
   const history = useBucketHistory(bid, filters);
 
   return (
@@ -35,11 +23,7 @@ export default function BucketHistory() {
           history={history.data ?? []}
           hasNextHistory={history.hasNextPage}
           listNextHistory={history.next}
-          showNonHumans={showNonHumans}
-          showSignerPlugin={showSignerPlugin}
-          // Persist filter changes and reload table (memo dependencies)
-          onShowSignerPluginChange={setShowSignerPlugin}
-          onShowNonHumansChange={setShowNonHumans}
+          onFiltersChange={setFilters}
         />
       </BucketTabs>
     </div>

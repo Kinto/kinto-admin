@@ -1,35 +1,24 @@
 import CollectionTabs from "./CollectionTabs";
 import HistoryTable from "@src/components/HistoryTable";
 import { useCollectionHistory } from "@src/hooks/collection";
-import { useShowNonHumans, useShowSignerPlugin } from "@src/hooks/preferences";
 import { parseHistoryFilters } from "@src/utils";
-import React, { useMemo } from "react";
+import React from "react";
 import { useParams, useSearchParams } from "react-router";
 
 export default function CollectionHistory() {
   const { bid, cid } = useParams();
 
-  // History filters can be passed from URL
+  // History filters can be passed from URL in the collection history only.
+  // Officially it's only used in the `DiffInfo` component in `SignoffToolbar`.
+  // (ex. `?since=42&resource_name=record&show_signer_plugin:false`)
   const [params, _] = useSearchParams();
   const initialFilters = parseHistoryFilters(params);
+  const [filters, setFilters] = React.useState(initialFilters);
 
-  // Restore preferences (use querystring by default)
-  const [showSignerPlugin, setShowSignerPlugin] = useShowSignerPlugin(
-    initialFilters.show_signer_plugin ?? true
-  );
-  const [showNonHumans, setShowNonHumans] = useShowNonHumans(
-    initialFilters.show_non_humans ?? true
-  );
-
-  // Create filters object from current state
-  const filters = useMemo(
-    () => ({
-      ...initialFilters,
-      show_signer_plugin: showSignerPlugin,
-      show_non_humans: showNonHumans,
-    }),
-    [initialFilters, showSignerPlugin, showNonHumans]
-  );
+  // User changed history filters, refresh list.
+  function onFiltersChange(filters) {
+    setFilters(filters);
+  }
 
   // Refetch from the server when filters change.
   const history = useCollectionHistory(bid, cid, filters);
@@ -51,12 +40,8 @@ export default function CollectionHistory() {
           history={history.data ?? []}
           hasNextHistory={history.hasNextPage}
           listNextHistory={history.next}
-          sinceFilter={filters.since}
-          showNonHumans={showNonHumans}
-          showSignerPlugin={showSignerPlugin}
-          // Persist filter changes and reload table (memo dependencies)
-          onShowSignerPluginChange={setShowSignerPlugin}
-          onShowNonHumansChange={setShowNonHumans}
+          initialFilters={initialFilters}
+          onFiltersChange={onFiltersChange}
         />
       </CollectionTabs>
     </div>

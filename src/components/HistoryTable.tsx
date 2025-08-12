@@ -3,11 +3,16 @@ import PaginatedTable from "./PaginatedTable";
 import Spinner from "./Spinner";
 import { getClient } from "@src/client";
 import { notifyError } from "@src/hooks/notifications";
+import { useShowNonHumans, useShowSignerPlugin } from "@src/hooks/preferences";
 import { useServerInfo } from "@src/hooks/session";
-import type { RecordData, ResourceHistoryEntry } from "@src/types";
+import type {
+  HistoryFilters,
+  RecordData,
+  ResourceHistoryEntry,
+} from "@src/types";
 import { diffJson, humanDate, timeago } from "@src/utils";
 import { omit, sortHistoryEntryPermissions } from "@src/utils";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Eye } from "react-bootstrap-icons";
 import { EyeSlash } from "react-bootstrap-icons";
 import { SkipStart } from "react-bootstrap-icons";
@@ -272,11 +277,8 @@ interface HistoryTableProps {
   hasNextHistory: boolean;
   listNextHistory?;
   enableDiffOverview?: boolean;
-  sinceFilter?: string;
-  showNonHumans: boolean;
-  showSignerPlugin: boolean;
-  onShowSignerPluginChange: (boolean) => void;
-  onShowNonHumansChange: (boolean) => void;
+  initialFilters?: HistoryFilters;
+  onFiltersChange: (filters: HistoryFilters) => void;
 }
 
 export default function HistoryTable({
@@ -286,12 +288,9 @@ export default function HistoryTable({
   historyLoaded,
   hasNextHistory,
   listNextHistory,
-  showNonHumans,
-  showSignerPlugin,
-  onShowSignerPluginChange,
-  onShowNonHumansChange,
+  onFiltersChange,
+  initialFilters = undefined,
   enableDiffOverview = false,
-  sinceFilter = "",
 }: HistoryTableProps) {
   const [diffOverview, setDiffOverview] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -300,6 +299,28 @@ export default function HistoryTable({
   const [previous, setPrevious] = useState(null);
 
   const serverInfo = useServerInfo();
+
+  // Show all entries by default
+  const [showSignerPlugin, setShowSignerPlugin] = useShowSignerPlugin(
+    initialFilters?.show_signer_plugin ?? true
+  );
+  const [showNonHumans, setShowNonHumans] = useShowNonHumans(
+    initialFilters?.show_non_humans ?? true
+  );
+
+  useEffect(() => {
+    onFiltersChange({
+      ...initialFilters,
+      show_signer_plugin: showSignerPlugin,
+      show_non_humans: showNonHumans,
+    });
+  }, [initialFilters, showSignerPlugin, showNonHumans]);
+
+  // Hide the non human filters if the server does not support openid or signer
+  const hasOpenID = serverInfo && "openid" in serverInfo.capabilities;
+  const hasSigner = serverInfo && "signer" in serverInfo.capabilities;
+
+  // If collection history was disabled from server configuration, just show a warning.
   const wasDisabled = (
     serverInfo.capabilities.history?.excluded_resources || []
   ).some(
@@ -314,10 +335,6 @@ export default function HistoryTable({
       </div>
     );
   }
-
-  // Hide the non human filters if the server does not support openid or signer
-  const hasOpenID = serverInfo && "openid" in serverInfo.capabilities;
-  const hasSigner = serverInfo && "signer" in serverInfo.capabilities;
 
   const nextHistoryWrapper = async () => {
     setLoading(true);
@@ -397,7 +414,7 @@ export default function HistoryTable({
             className="form-check-input"
             type="checkbox"
             checked={showNonHumans}
-            onChange={e => onShowNonHumansChange(e.currentTarget.checked)}
+            onChange={e => setShowNonHumans(e.currentTarget.checked)}
             id="showNonHumans"
             data-testid="showNonHumans"
           />
@@ -412,7 +429,7 @@ export default function HistoryTable({
             className="form-check-input"
             type="checkbox"
             checked={showSignerPlugin && showNonHumans}
-            onChange={e => onShowSignerPluginChange(e.currentTarget.checked)}
+            onChange={e => setShowSignerPlugin(e.currentTarget.checked)}
             id="showSignerPlugin"
             data-testid="showSignerPlugin"
             disabled={!showNonHumans}
@@ -422,9 +439,9 @@ export default function HistoryTable({
           </label>
         </div>
       )}
-      {!!sinceFilter && (
+      {!!initialFilters?.since && (
         <FilterInfo
-          since={sinceFilter}
+          since={initialFilters?.since}
           enableDiffOverview={enableDiffOverview}
           onDiffOverviewClick={onDiffOverviewClick}
           onViewJournalClick={onViewJournalClick}
@@ -433,7 +450,11 @@ export default function HistoryTable({
       {busy ? (
         <Spinner />
       ) : diffOverview ? (
-        <DiffOverview since={sinceFilter} source={previous} target={current} />
+        <DiffOverview
+          since={initialFilters?.since}
+          source={previous}
+          target={current}
+        />
       ) : (
         <PaginatedTable
           colSpan={6}
