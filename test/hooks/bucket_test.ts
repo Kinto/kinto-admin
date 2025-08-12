@@ -3,6 +3,7 @@ import {
   expandBucketsCollections,
   useBucket,
   useBucketHistory,
+  useBucketList,
   useBucketPermissions,
   useBucketsCollectionsList,
 } from "@src/hooks/bucket";
@@ -201,6 +202,41 @@ describe("bucket hooks", () => {
       await vi.waitFor(() => {
         expect(notifyErrorMock).toHaveBeenCalledWith(
           "Error fetching bucket history",
+          expect.any(Error)
+        );
+      });
+    });
+  });
+
+  describe("useBucketList", () => {
+    let listBucketsMock;
+
+    beforeEach(() => {
+      listBucketsMock = vi.fn().mockResolvedValue({ data: [{ id: "main" }] });
+      vi.spyOn(client, "getClient").mockReturnValue({
+        listBuckets: listBucketsMock,
+      });
+    });
+
+    it("returns the expected bucket list", async () => {
+      const { result } = renderHook(() => useBucketList());
+
+      expect(result.current).toBeUndefined();
+
+      await vi.waitFor(() => {
+        expect(result.current).toMatchObject([{ id: "main" }]);
+      });
+      expect(listBucketsMock).toHaveBeenCalled();
+    });
+
+    it("triggers a notification error if the client throws an error", async () => {
+      const notifyErrorMock = mockNotifyError();
+      listBucketsMock.mockRejectedValue(new Error("Test error"));
+      renderHook(() => useBucketList());
+
+      await vi.waitFor(() => {
+        expect(notifyErrorMock).toHaveBeenCalledWith(
+          "Unable to load buckets list",
           expect.any(Error)
         );
       });

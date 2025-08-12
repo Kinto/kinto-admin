@@ -9,7 +9,7 @@ import {
   PermissionsListEntry,
 } from "@src/types";
 import { makeObservable } from "@src/utils";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export function useBucket(
   bid: string,
@@ -53,6 +53,22 @@ export function useBucketsCollectionsList(
     return bucketListCacheVal.subscribe(setCacheVal);
   }, [permissions !== undefined, userBucket, cacheVal]);
 
+  return val;
+}
+
+export function useBucketList(): BucketData[] | undefined {
+  const [val, setVal] = useState(undefined);
+
+  useMemo(async () => {
+    setVal(undefined);
+    const client = getClient();
+    try {
+      const buckets = (await client.listBuckets()).data;
+      setVal(buckets);
+    } catch (ex) {
+      notifyError("Unable to load buckets list", ex);
+    }
+  }, []);
   return val;
 }
 

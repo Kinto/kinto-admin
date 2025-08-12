@@ -32,6 +32,7 @@ export interface ListHistoryResult {
 export interface BucketData {
   id?: string;
   last_modified?: number;
+  [key: string]: any;
 }
 
 export interface BucketPermissions {
