@@ -321,18 +321,18 @@ export const getAuthLabel = (authType: string) => {
 };
 
 export function parseHistoryFilters(params: URLSearchParams): HistoryFilters {
-  const ret: HistoryFilters = [
-    "since",
-    "resource_name",
-    "exclude_user_id",
-    "exclude_signer_plugin",
-    "exclude_non_humans",
-  ].reduce((acc, field) => {
-    const val = params.get(field);
-    if (val) acc[field] = val == "true" ? true : val == "false" ? false : val;
-    return acc;
-  }, {});
+  const ret: HistoryFilters = {
+    since: params.get("since") ?? undefined,
+    resource_name: params.get("resource_name") ?? undefined,
+    exclude_user_id: params.get("exclude_user_id") ?? undefined,
+    show_signer_plugin: parseBool(params.get("show_signer_plugin")),
+    show_non_humans: parseBool(params.get("show_non_humans")),
+  };
   return ret;
+}
+
+function parseBool(val: string | null): boolean {
+  return val === "true" ? true : false;
 }
 
 export function historyFiltersToServerFilters(
