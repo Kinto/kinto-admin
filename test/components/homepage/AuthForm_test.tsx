@@ -167,20 +167,23 @@ describe("AuthForm component", () => {
         { server: "http://server.test/v1", authType: "basicauth" },
         { server: "http://test.server/v1", authType: "openid-google" },
       ]);
-      const mockFetchServerInfo = vi.fn().mockResolvedValue({
-        ...DEFAULT_SERVERINFO,
-        capabilities: {
-          basicauth: "some basic auth info",
-          ldap: "some ldap auth info",
-          openid: {
-            providers: [
-              {
-                name: "google",
-                auth_path: "auth_path",
-              },
-            ],
+      const mockFetchServerInfo = vi.fn().mockImplementation(async () => {
+        await waitFor(() => new Promise(resolve => setTimeout(resolve, 10))); // latency
+        return {
+          ...DEFAULT_SERVERINFO,
+          capabilities: {
+            basicauth: "some basic auth info",
+            ldap: "some ldap auth info",
+            openid: {
+              providers: [
+                {
+                  name: "google",
+                  auth_path: "auth_path",
+                },
+              ],
+            },
           },
-        },
+        };
       });
       vi.spyOn(client, "setupClient").mockReturnValue({
         fetchServerInfo: mockFetchServerInfo,
