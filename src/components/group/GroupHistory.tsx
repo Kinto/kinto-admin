@@ -7,7 +7,7 @@ import { useParams } from "react-router";
 export default function GroupHistory() {
   const { bid, gid } = useParams();
 
-  const [filters, setFilters] = React.useState(undefined);
+  const [filters, setFilters] = React.useState({});
   // Refetch from the server when filters change.
   const history = useGroupHistory(bid, gid, filters);
 

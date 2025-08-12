@@ -7,7 +7,7 @@ import { useParams } from "react-router";
 export default function BucketHistory() {
   const { bid } = useParams();
 
-  const [filters, setFilters] = React.useState(undefined);
+  const [filters, setFilters] = React.useState({});
   // Refetch from the server when filters change.
   const history = useBucketHistory(bid, filters);
 

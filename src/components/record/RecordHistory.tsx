@@ -7,7 +7,7 @@ import { useParams } from "react-router";
 export default function RecordHistory() {
   const { bid, cid, rid } = useParams();
 
-  const [filters, setFilters] = React.useState(undefined);
+  const [filters, setFilters] = React.useState({});
   // Refetch from the server when filters change.
   const history = useRecordHistory(bid, cid, rid, filters);
 
