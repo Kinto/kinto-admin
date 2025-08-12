@@ -1,7 +1,7 @@
 import AdminLink from "./AdminLink";
 import Spinner from "./Spinner";
 import { SIDEBAR_MAX_LISTED_COLLECTIONS } from "@src/constants";
-import { reloadBuckets, useBucketList } from "@src/hooks/bucket";
+import { reloadBuckets, useBucketsCollectionsList } from "@src/hooks/bucket";
 import {
   useSidebarFilter,
   useSidebarShowReadonly,
@@ -215,7 +215,10 @@ const BucketsMenu = (props: BucketsMenuProps) => {
   const [search, setSearch] = useSidebarFilter();
   const serverInfo = useServerInfo();
   const permissions = usePermissions();
-  const buckets = useBucketList(permissions, serverInfo?.user?.bucket);
+  const buckets = useBucketsCollectionsList(
+    permissions,
+    serverInfo?.user?.bucket
+  );
   const { currentPath, bid, cid } = props;
 
   const toggleReadOnly = () => {

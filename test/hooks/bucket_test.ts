@@ -3,8 +3,8 @@ import {
   expandBucketsCollections,
   useBucket,
   useBucketHistory,
-  useBucketList,
   useBucketPermissions,
+  useBucketsCollectionsList,
 } from "@src/hooks/bucket";
 import { mockNotifyError } from "@test/testUtils";
 import { renderHook } from "@testing-library/react";
@@ -207,7 +207,7 @@ describe("bucket hooks", () => {
     });
   });
 
-  describe("useBucketList", () => {
+  describe("useBucketsCollectionsList", () => {
     let listBucketsMock, batchMock;
     const testBuckets = [
       {
@@ -323,7 +323,7 @@ describe("bucket hooks", () => {
         },
       ];
       const { result } = renderHook(() =>
-        useBucketList(permissions, "user-bucket")
+        useBucketsCollectionsList(permissions, "user-bucket")
       );
       expect(result.current).toBeUndefined();
       await vi.waitFor(() => {
@@ -336,7 +336,7 @@ describe("bucket hooks", () => {
     it("triggers a notification error if the client throws an error", async () => {
       const notifyErrorMock = mockNotifyError();
       listBucketsMock.mockRejectedValue(new Error("Test foo"));
-      renderHook(() => useBucketList());
+      renderHook(() => useBucketsCollectionsList());
       await vi.waitFor(() => {
         expect(notifyErrorMock).toHaveBeenCalledWith(
           "Unable to load buckets",

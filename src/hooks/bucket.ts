@@ -40,7 +40,7 @@ export function reloadBuckets() {
   bucketListCacheVal.set(bucketListCacheVal.get() + 1);
 }
 
-export function useBucketList(
+export function useBucketsCollectionsList(
   permissions?: PermissionsListEntry[],
   userBucket?: string
 ): BucketEntry[] | undefined {

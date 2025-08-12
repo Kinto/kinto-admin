@@ -24,7 +24,7 @@ describe("Sidebar component", () => {
   ];
 
   beforeEach(() => {
-    vi.spyOn(bucketHooks, "useBucketList").mockReturnValue(buckets);
+    vi.spyOn(bucketHooks, "useBucketsCollectionsList").mockReturnValue(buckets);
     vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(DEFAULT_SERVERINFO);
     vi.spyOn(sessionHooks, "usePermissions").mockReturnValue([]);
     vi.spyOn(sessionHooks, "useAuth").mockReturnValue({});
@@ -91,7 +91,7 @@ describe("Sidebar component", () => {
     let bucketMenus;
 
     beforeEach(() => {
-      vi.spyOn(bucketHooks, "useBucketList").mockReturnValueOnce(
+      vi.spyOn(bucketHooks, "useBucketsCollectionsList").mockReturnValueOnce(
         buckets.map(b => {
           return {
             ...b,

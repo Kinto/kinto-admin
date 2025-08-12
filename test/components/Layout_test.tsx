@@ -14,7 +14,7 @@ describe("App component", () => {
   const useServerInfoMock = vi.fn();
   const useAuthMock = vi.fn();
   const useHeartbeatMock = vi.fn();
-  const useBucketListMock = vi.fn();
+  const useBucketsCollectionsListMock = vi.fn();
   const useShowSidebarMock = vi.fn();
 
   beforeEach(() => {
@@ -31,9 +31,9 @@ describe("App component", () => {
       .mockImplementation(useHeartbeatMock);
     useHeartbeatMock.mockReturnValue({ success: true });
     vitest
-      .spyOn(bucketHooks, "useBucketList")
-      .mockImplementation(useBucketListMock);
-    useBucketListMock.mockReturnValue(undefined);
+      .spyOn(bucketHooks, "useBucketsCollectionsList")
+      .mockImplementation(useBucketsCollectionsListMock);
+    useBucketsCollectionsListMock.mockReturnValue(undefined);
     vitest
       .spyOn(preferencesHooks, "useShowSidebar")
       .mockImplementation(useShowSidebarMock);
