@@ -1,13 +1,13 @@
-import React from "react";
-import { screen, fireEvent } from "@testing-library/react";
-import { renderWithRouter } from "@test/testUtils";
 import HistoryTable from "@src/components/HistoryTable";
-import * as sessionHooks from "@src/hooks/session";
-import * as preferenceHooks from "@src/hooks/preferences";
 import {
-  SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES,
   DEFAULT_SERVERINFO,
+  SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES,
 } from "@src/constants";
+import * as preferenceHooks from "@src/hooks/preferences";
+import * as sessionHooks from "@src/hooks/session";
+import { renderWithRouter } from "@test/testUtils";
+import { fireEvent, screen } from "@testing-library/react";
+import React from "react";
 
 // Mocks
 const useShowNonHumansMock = vi.fn();
@@ -56,7 +56,9 @@ describe("HistoryTable component", () => {
 
   it("should render empty state when history is loaded but empty", async () => {
     renderWithRouter(<HistoryTable {...baseProps} />);
-    expect(await screen.findByText("No history entry found.")).toBeInTheDocument();
+    expect(
+      await screen.findByText("No history entry found.")
+    ).toBeInTheDocument();
   });
 
   it("should render table rows when history data is provided", async () => {

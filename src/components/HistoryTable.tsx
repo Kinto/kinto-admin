@@ -12,7 +12,7 @@ import type {
 } from "@src/types";
 import { diffJson, humanDate, timeago } from "@src/utils";
 import { omit, sortHistoryEntryPermissions } from "@src/utils";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Eye } from "react-bootstrap-icons";
 import { EyeSlash } from "react-bootstrap-icons";
 import { SkipStart } from "react-bootstrap-icons";
@@ -300,21 +300,29 @@ export default function HistoryTable({
 
   const serverInfo = useServerInfo();
 
-  // Show all entries by default
+  // GroupHistory, BucketHistory, and RecordHistory don't take filter
+  // from URL and do not provide `initialFilters`.
+  // CollectionHistory provide it and can pass `initialFilters.show_signer_plugin: false`.
   const [showSignerPlugin, setShowSignerPlugin] = useShowSignerPlugin(
-    initialFilters?.show_signer_plugin ?? true
+    initialFilters?.show_signer_plugin !== undefined
+      ? initialFilters.show_signer_plugin
+      : true
   );
   const [showNonHumans, setShowNonHumans] = useShowNonHumans(
-    initialFilters?.show_non_humans ?? true
+    initialFilters?.show_non_humans !== undefined
+      ? initialFilters.show_non_humans
+      : true
   );
 
-  useEffect(() => {
-    onFiltersChange({
-      ...initialFilters,
-      show_signer_plugin: showSignerPlugin,
-      show_non_humans: showNonHumans,
-    });
-  }, [initialFilters, showSignerPlugin, showNonHumans]);
+  const handleNonHumanToggle = value => {
+    setShowNonHumans(value);
+    onFiltersChange({ ...initialFilters, show_non_humans: value });
+  };
+
+  const handleSignerToggle = value => {
+    setShowSignerPlugin(value);
+    onFiltersChange({ ...initialFilters, show_signer_plugin: value });
+  };
 
   // Hide the non human filters if the server does not support openid or signer
   const hasOpenID = serverInfo && "openid" in serverInfo.capabilities;
@@ -414,7 +422,7 @@ export default function HistoryTable({
             className="form-check-input"
             type="checkbox"
             checked={showNonHumans}
-            onChange={e => setShowNonHumans(e.currentTarget.checked)}
+            onChange={e => handleNonHumanToggle(e.currentTarget.checked)}
             id="showNonHumans"
             data-testid="showNonHumans"
           />
@@ -429,7 +437,7 @@ export default function HistoryTable({
             className="form-check-input"
             type="checkbox"
             checked={showSignerPlugin && showNonHumans}
-            onChange={e => setShowSignerPlugin(e.currentTarget.checked)}
+            onChange={e => handleSignerToggle(e.currentTarget.checked)}
             id="showSignerPlugin"
             data-testid="showSignerPlugin"
             disabled={!showNonHumans}

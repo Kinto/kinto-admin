@@ -332,7 +332,7 @@ export function parseHistoryFilters(params: URLSearchParams): HistoryFilters {
 }
 
 function parseBool(val: string | null): boolean {
-  return val === "true" ? true : false;
+  return val === "true" ? true : val === "false" ? false : undefined;
 }
 
 export function historyFiltersToServerFilters(

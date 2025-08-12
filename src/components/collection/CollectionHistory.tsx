@@ -12,12 +12,12 @@ export default function CollectionHistory() {
   // Officially it's only used in the `DiffInfo` component in `SignoffToolbar`.
   // (ex. `?since=42&resource_name=record&show_signer_plugin:false`)
   const [params, _] = useSearchParams();
-  const initialFilters = parseHistoryFilters(params);
-  const [filters, setFilters] = React.useState(initialFilters);
+  const parsedFilters = parseHistoryFilters(params);
+  const [filters, setFilters] = React.useState(parsedFilters);
 
-  // User changed history filters, refresh list.
-  function onFiltersChange(filters) {
-    setFilters(filters);
+  // Update filter handler
+  function onFiltersChange(updated) {
+    setFilters(prev => ({ ...prev, ...updated }));
   }
 
   // Refetch from the server when filters change.
@@ -40,7 +40,7 @@ export default function CollectionHistory() {
           history={history.data ?? []}
           hasNextHistory={history.hasNextPage}
           listNextHistory={history.next}
-          initialFilters={initialFilters}
+          initialFilters={filters}
           onFiltersChange={onFiltersChange}
         />
       </CollectionTabs>
