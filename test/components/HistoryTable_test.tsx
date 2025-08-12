@@ -1,4 +1,6 @@
 import HistoryTable from "@src/components/HistoryTable";
+import { SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES } from "@src/constants";
+import * as sessionHooks from "@src/hooks/session";
 import { renderWithRouter } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import React from "react";
@@ -16,6 +18,26 @@ const props = {
 };
 
 describe("HistoryTable component", () => {
+  beforeAll(() => {
+    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(
+      SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES
+    );
+  });
+
+  it("Should show banner if collection is excluded", async () => {
+    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue({
+      capabilities: {
+        history: {
+          excluded_resources: [{ bucket: "test" }],
+        },
+        ...SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES.capabilities,
+      },
+      ...SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES,
+    });
+    renderWithRouter(<HistoryTable {...props} historyLoaded={false} />);
+    expect(screen.queryByTestId("warning")).toBeDefined();
+  });
+
   it("Should render a spinner when not yet loaded", async () => {
     renderWithRouter(<HistoryTable {...props} historyLoaded={false} />);
     expect(screen.queryByTestId("spinner")).toBeDefined();
