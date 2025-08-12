@@ -4,7 +4,7 @@ import CollectionTabs from "./CollectionTabs";
 import { useBucketList } from "@src/hooks/bucket";
 import { useCollectionList } from "@src/hooks/collection";
 import { useRecordList } from "@src/hooks/record";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
 
 export function CollectionCompare() {
@@ -14,6 +14,7 @@ export function CollectionCompare() {
   const [loadingCollections, setLoadingCollections] = useState(true);
   const [selectedBucket, setSelectedBucket] = useState("");
   const [selectedCollection, setSelectedCollection] = useState("");
+  const hasAutoSelected = useRef(false);
 
   const bucketsList = useBucketList();
   useEffect(() => {
@@ -47,14 +48,16 @@ export function CollectionCompare() {
   // Auto-select same collection if bucket is different than current.
   useEffect(() => {
     if (
+      !hasAutoSelected.current &&
       !selectedCollection &&
       foundBucket &&
       foundBucket.id !== bid &&
       collectionsList?.data.find(c => c.id === cid)
     ) {
       setSelectedCollection(cid);
+      hasAutoSelected.current = true;
     }
-  }, [foundBucket, collectionsList, selectedCollection]);
+  }, [foundBucket, collectionsList, selectedCollection, cid, bid]);
 
   // Fetch record lists for comparison
   const leftRecords = useRecordList(bid, cid, "id");
@@ -158,10 +161,18 @@ export function CollectionCompare() {
               <Spinner />
             </div>
           ) : (
-            <PerRecordDiffView
-              newRecords={leftRecords.data || []}
-              oldRecords={rightRecords.data || []}
-            />
+            <>
+              {!leftRecords.data?.length && !rightRecords.data?.length ? (
+                <div className="text-center my-4 text-muted">
+                  No records to compare.
+                </div>
+              ) : (
+                <PerRecordDiffView
+                  newRecords={leftRecords.data || []}
+                  oldRecords={rightRecords.data || []}
+                />
+              )}
+            </>
           ))}
       </CollectionTabs>
     </div>

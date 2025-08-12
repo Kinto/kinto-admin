@@ -64,6 +64,10 @@ export default function PerRecordDiffView({
         </label>
       </div>
 
+      {changes.length === 0 && (
+        <div className="text-center my-4 text-muted">No differences found.</div>
+      )}
+
       {changes.map(({ id, changeType, source, target }) => (
         <Diff
           key={id}
