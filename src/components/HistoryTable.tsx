@@ -10,6 +10,7 @@ import { omit, sortHistoryEntryPermissions } from "@src/utils";
 import React, { useState } from "react";
 import {
   ArrowClockwise,
+  Check2Circle,
   CheckCircleFill,
   CheckSquare,
   Eye,
@@ -154,17 +155,17 @@ function HistoryRow({
     {
       create: (
         <>
-          <Plus /> created
+          <Plus /> create
         </>
       ),
       update: (
         <>
-          <Pencil /> updated
+          <Pencil /> update
         </>
       ),
       delete: (
         <>
-          <Trash /> deleted
+          <Trash /> delete
         </>
       ),
       "to-sign": (
@@ -180,6 +181,16 @@ function HistoryRow({
       "to-rollback": (
         <>
           <ArrowClockwise /> rollback
+        </>
+      ),
+      "to-resign": (
+        <>
+          <ArrowClockwise /> resign
+        </>
+      ),
+      signed: (
+        <>
+          <Check2Circle /> sign
         </>
       ),
     }[shownAction] || shownAction;
