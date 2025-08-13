@@ -8,7 +8,19 @@ import type { RecordData, ResourceHistoryEntry } from "@src/types";
 import { diffJson, humanDate, timeago } from "@src/utils";
 import { omit, sortHistoryEntryPermissions } from "@src/utils";
 import React, { useState } from "react";
-import { Eye } from "react-bootstrap-icons";
+import {
+  ArrowClockwise,
+  CheckCircleFill,
+  CheckSquare,
+  Eye,
+  FileEarmark,
+  Folder2,
+  Justify,
+  Pencil,
+  People,
+  Plus,
+  Trash,
+} from "react-bootstrap-icons";
 import { EyeSlash } from "react-bootstrap-icons";
 import { SkipStart } from "react-bootstrap-icons";
 
@@ -129,14 +141,81 @@ function HistoryRow({
     data: { id: objectId },
   } = target;
 
+  // We turn sign-off operations into real verbs.
+  let shownAction =
+    resource_name === "collection" &&
+    action === "update" &&
+    // Note: we don't do reject here since we can distinguish it from
+    // a collection metadata change without querying the previous state.
+    target.data.status != "work-in-progress"
+      ? target.data.status
+      : action;
+  shownAction =
+    {
+      create: (
+        <>
+          <Plus /> created
+        </>
+      ),
+      update: (
+        <>
+          <Pencil /> updated
+        </>
+      ),
+      delete: (
+        <>
+          <Trash /> deleted
+        </>
+      ),
+      "to-sign": (
+        <>
+          <CheckCircleFill /> approve
+        </>
+      ),
+      "to-review": (
+        <>
+          <CheckSquare /> request
+        </>
+      ),
+      "to-rollback": (
+        <>
+          <ArrowClockwise /> rollback
+        </>
+      ),
+    }[shownAction] || shownAction;
+
+  const shownResource =
+    {
+      bucket: (
+        <>
+          <Folder2 /> collection
+        </>
+      ),
+      group: (
+        <>
+          <People /> collection
+        </>
+      ),
+      collection: (
+        <>
+          <Justify /> collection
+        </>
+      ),
+      record: (
+        <>
+          <FileEarmark /> record
+        </>
+      ),
+    }[resource_name] || resource_name;
+
   return (
     <React.Fragment>
       <tr>
         <td>
           <span title={humanDate(last_modified)}>{timeago(last_modified)}</span>
         </td>
-        <td>{action}</td>
-        <td>{resource_name}</td>
+        <td>{shownAction}</td>
+        <td>{shownResource}</td>
         <td>
           <AdminLink
             name={`${resource_name}:attributes`}
