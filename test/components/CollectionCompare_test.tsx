@@ -1,5 +1,6 @@
 import { CollectionCompare } from "@src/components/collection/CollectionCompare";
 import { useBucketList } from "@src/hooks/bucket";
+import { useCollectionList } from "@src/hooks/collection";
 import { useRecordList } from "@src/hooks/record";
 import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen, waitFor } from "@testing-library/react";
@@ -7,6 +8,10 @@ import React from "react";
 
 vi.mock("@src/hooks/bucket", () => ({
   useBucketList: vi.fn(),
+}));
+
+vi.mock("@src/hooks/collection", () => ({
+  useCollectionList: vi.fn(),
 }));
 
 vi.mock("@src/hooks/record", () => ({
@@ -27,16 +32,26 @@ describe("CollectionCompare", () => {
   const mockBuckets = [
     {
       id: "other-bucket",
-      collections: [{ id: "col1" }, { id: "col2" }],
     },
     {
       id: "main-bucket",
-      collections: [{ id: "main-collection" }],
     },
   ];
 
+  const mockCollections = {
+    data: [
+      {
+        id: "col1",
+      },
+      {
+        id: "col2",
+      },
+    ],
+  };
+
   beforeEach(() => {
     useBucketList.mockReturnValue(mockBuckets);
+    useCollectionList.mockReturnValue(mockCollections);
     useRecordList.mockImplementation((bid, cid) => {
       if (bid && cid) {
         return {
@@ -52,12 +67,15 @@ describe("CollectionCompare", () => {
 
   it("should render loading spinner initially", () => {
     useBucketList.mockReturnValue(undefined);
+    useCollectionList.mockReturnValue(mockCollections);
     renderWithRouter(<CollectionCompare />, {
       route: "/buckets/main-bucket/collections/main-collection/compare",
       path: "/buckets/:bid/collections/:cid/compare",
     });
 
-    expect(screen.getByTestId("spinner")).toBeDefined();
+    const bucket = screen.getByLabelText("Bucket");
+    expect(bucket).toBeDisabled();
+    expect(screen.getByText("⏳ Loading...")).toBeInTheDocument();
   });
 
   it("should render bucket list after loading", async () => {
@@ -98,6 +116,11 @@ describe("CollectionCompare", () => {
     renderWithRouter(<CollectionCompare />, {
       route: "/buckets/main-bucket/collections/main-collection/compare",
       path: "/buckets/:bid/collections/:cid/compare",
+    });
+
+    // Ensure the current route collection exists in the list so it can be disabled.
+    useCollectionList.mockReturnValue({
+      data: [{ id: "main-collection" }, { id: "col1" }],
     });
 
     const bucketSelect = await screen.findByLabelText("Bucket");
