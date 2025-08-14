@@ -26,13 +26,38 @@ export function useRecordList(
 ): RecordListResult {
   const [val, setVal] = useState({});
 
+  const args = { sort };
+
   useEffect(() => {
     setVal({});
     if (!bid || !cid) return;
     if (sort) {
-      fetchRecords(bid, cid, sort, fetchAll, [], setVal);
+      fetchRecords(bid, cid, args, fetchAll, [], setVal);
     }
   }, [bid, cid, sort, cacheBust]);
+
+  return val;
+}
+
+export function useRecordListAt(
+  bid: string,
+  cid: string,
+  sort: string,
+  at: number | undefined = undefined,
+  fetchAll = false,
+  cacheBust?: number
+): RecordListResult {
+  const [val, setVal] = useState({});
+
+  const args = at ? { sort, at } : { sort };
+
+  useEffect(() => {
+    setVal({});
+    if (!bid || !cid) return;
+    if (sort) {
+      fetchRecords(bid, cid, args, fetchAll, [], setVal);
+    }
+  }, [bid, cid, sort, at, cacheBust]);
 
   return val;
 }
@@ -40,7 +65,7 @@ export function useRecordList(
 async function fetchRecords(
   bid: string,
   cid: string,
-  sort: string,
+  args: Record<string, any>,
   fetchAll: boolean,
   curData,
   setVal,
@@ -52,10 +77,13 @@ async function fetchRecords(
     if (nextPageFn) {
       result = await nextPageFn();
     } else {
-      result = await getClient().bucket(bid).collection(cid).listRecords({
-        sort,
-        limit: MAX_PER_PAGE,
-      });
+      result = await getClient()
+        .bucket(bid)
+        .collection(cid)
+        .listRecords({
+          ...args,
+          limit: MAX_PER_PAGE,
+        });
     }
     totalCount = await getClient()
       .bucket(bid)
@@ -69,7 +97,7 @@ async function fetchRecords(
   const data = curData.concat(result.data);
 
   if (fetchAll && result.hasNextPage) {
-    fetchRecords(bid, cid, sort, fetchAll, data, setVal, result.next);
+    fetchRecords(bid, cid, args, fetchAll, data, setVal, result.next);
     return;
   }
 
@@ -80,7 +108,7 @@ async function fetchRecords(
     totalRecords: totalCount,
     next: () => {
       if (result.hasNextPage && result.next) {
-        fetchRecords(bid, cid, sort, fetchAll, data, setVal, result.next);
+        fetchRecords(bid, cid, args, fetchAll, data, setVal, result.next);
       }
     },
   });

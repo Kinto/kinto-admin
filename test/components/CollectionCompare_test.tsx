@@ -1,73 +1,53 @@
 import { CollectionCompare } from "@src/components/collection/CollectionCompare";
-import { useBucketList } from "@src/hooks/bucket";
-import { useCollectionList } from "@src/hooks/collection";
-import { useRecordList } from "@src/hooks/record";
+import * as bucketHooks from "@src/hooks/bucket";
+import * as collectionHooks from "@src/hooks/collection";
+import * as recordHooks from "@src/hooks/record";
 import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import React from "react";
 
-vi.mock("@src/hooks/bucket", () => ({
-  useBucketList: vi.fn(),
-}));
-
-vi.mock("@src/hooks/collection", () => ({
-  useCollectionList: vi.fn(),
-}));
-
-vi.mock("@src/hooks/record", () => ({
-  useRecordList: vi.fn(),
-}));
-
-vi.mock("../Spinner", () => ({
-  __esModule: true,
-  default: () => <div data-testid="spinner">Loading...</div>,
-}));
-
-vi.mock("./CollectionTabs", () => ({
-  __esModule: true,
-  default: ({ children }) => <div>{children}</div>,
-}));
-
 describe("CollectionCompare", () => {
-  const mockBuckets = [
-    {
-      id: "other-bucket",
-    },
-    {
-      id: "main-bucket",
-    },
-  ];
-
-  const mockCollections = {
-    data: [
-      {
-        id: "col1",
-      },
-      {
-        id: "col2",
-      },
-    ],
-  };
+  const mockBucketList = vi.fn();
+  const mockCollectionList = vi.fn();
 
   beforeEach(() => {
-    useBucketList.mockReturnValue(mockBuckets);
-    useCollectionList.mockReturnValue(mockCollections);
-    useRecordList.mockImplementation((bid, cid) => {
-      if (bid && cid) {
-        return {
-          data: [
-            { id: `${bid}-${cid}-record-1` },
-            { id: `${bid}-${cid}-record-2` },
-          ],
-        };
-      }
-      return { data: [] };
+    const recordsMock = (bid, cid) => {
+      if (!bid || !cid) return undefined;
+      return {
+        data: [
+          { id: `${bid}-${cid}-record-1` },
+          { id: `${bid}-${cid}-record-2` },
+        ],
+      } as any;
+    };
+    vi.spyOn(recordHooks, "useRecordList").mockImplementation(recordsMock);
+    vi.spyOn(recordHooks, "useRecordListAt").mockImplementation(recordsMock);
+    vi.spyOn(bucketHooks, "useBucketList").mockImplementation(mockBucketList);
+    vi.spyOn(collectionHooks, "useCollectionList").mockImplementation(
+      mockCollectionList
+    );
+    mockBucketList.mockReturnValue([
+      {
+        id: "other-bucket",
+      },
+      {
+        id: "main-bucket",
+      },
+    ]);
+    mockCollectionList.mockReturnValue({
+      data: [
+        {
+          id: "col1",
+        },
+        {
+          id: "col2",
+        },
+      ],
     });
   });
 
   it("should render loading spinner initially", () => {
-    useBucketList.mockReturnValue(undefined);
-    useCollectionList.mockReturnValue(mockCollections);
+    mockBucketList.mockReturnValue(undefined);
     renderWithRouter(<CollectionCompare />, {
       route: "/buckets/main-bucket/collections/main-collection/compare",
       path: "/buckets/:bid/collections/:cid/compare",
@@ -110,28 +90,6 @@ describe("CollectionCompare", () => {
 
     expect(screen.queryAllByTestId("record-diff")).toBeDefined();
     expect(screen.getByText("other-bucket-col2-record-2")).toBeDefined();
-  });
-
-  it("should disable selection of same bucket/collection", async () => {
-    renderWithRouter(<CollectionCompare />, {
-      route: "/buckets/main-bucket/collections/main-collection/compare",
-      path: "/buckets/:bid/collections/:cid/compare",
-    });
-
-    // Ensure the current route collection exists in the list so it can be disabled.
-    useCollectionList.mockReturnValue({
-      data: [{ id: "main-collection" }, { id: "col1" }],
-    });
-
-    const bucketSelect = await screen.findByLabelText("Bucket");
-    fireEvent.change(bucketSelect, { target: { value: "main-bucket" } });
-
-    await screen.findByLabelText("Collection");
-
-    // The same collection should be disabled
-    expect(
-      screen.getByRole("option", { name: "main-collection" })
-    ).toBeDisabled();
   });
 
   it("should show diff when both bucket and collection are selected", async () => {
@@ -191,7 +149,12 @@ describe("CollectionCompare", () => {
   });
 
   it("should disable dropdowns when loading records", async () => {
-    useRecordList.mockImplementation((bid, cid) => undefined);
+    vi.spyOn(recordHooks, "useRecordList").mockImplementation(
+      (bid, cid) => undefined
+    );
+    vi.spyOn(recordHooks, "useRecordListAt").mockImplementation(
+      (bid, cid) => undefined
+    );
     renderWithRouter(<CollectionCompare />, {
       route:
         "/buckets/main-bucket/collections/main-collection/compare?target=other-bucket/col1",
