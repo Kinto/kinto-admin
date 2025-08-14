@@ -5,17 +5,39 @@ import { useBucketList } from "@src/hooks/bucket";
 import { useCollectionList } from "@src/hooks/collection";
 import { useRecordList } from "@src/hooks/record";
 import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router";
+import { useParams, useSearchParams } from "react-router";
 
 export function CollectionCompare() {
   const { bid, cid } = useParams();
+  const [params, _] = useSearchParams();
+  const target = params.get("target");
+  const [targetBucket, targetCollection] = target?.split("/") || [];
 
-  const [selectedBucket, setSelectedBucket] = useState("");
-  const [selectedCollection, setSelectedCollection] = useState("");
+  const [selectedBucket, setSelectedBucket] = useState(targetBucket);
+  const [selectedCollection, setSelectedCollection] =
+    useState(targetCollection);
   const hasAutoSelected = useRef(false);
 
   const bucketsList = useBucketList();
+  // Check that selectedBucket is valid.
+  if (
+    bucketsList &&
+    selectedBucket &&
+    !bucketsList.find(b => b.id === selectedBucket)
+  ) {
+    setSelectedBucket("");
+    setSelectedCollection("");
+  }
+
   const collectionsList = useCollectionList(selectedBucket);
+  // Check that selectedCollection is valid.
+  if (
+    collectionsList &&
+    selectedCollection &&
+    !collectionsList.data?.find(c => c.id === selectedCollection)
+  ) {
+    setSelectedCollection("");
+  }
 
   // Auto-select same collection if bucket is different than current.
   useEffect(() => {
@@ -31,6 +53,17 @@ export function CollectionCompare() {
       hasAutoSelected.current = true;
     }
   }, [bid, cid, selectedBucket, collectionsList, selectedCollection]);
+
+  useEffect(() => {
+    // Refresh location bar with params for users to copy and share.
+    if (!bid || !cid || !selectedBucket || !selectedCollection) return;
+    const baseUrl = window.location.toString().split("?")[0];
+    window.history.replaceState(
+      null,
+      "",
+      baseUrl + `?target=${selectedBucket}/${selectedCollection}`
+    );
+  }, [bid, cid, selectedBucket, selectedCollection]);
 
   // Fetch record lists for comparison
   const leftRecords = useRecordList(bid, cid, "id");

@@ -153,4 +153,38 @@ describe("CollectionCompare", () => {
     expect(screen.queryAllByTestId("record-diff")).toBeDefined();
     expect(screen.getByText("other-bucket-col1-record-2")).toBeDefined();
   });
+
+  it("should use target bucket and collection from URL", async () => {
+    renderWithRouter(<CollectionCompare />, {
+      route:
+        "/buckets/main-bucket/collections/main-collection/compare?target=other-bucket/col1",
+      path: "/buckets/:bid/collections/:cid/compare",
+      initialEntries: [
+        "/buckets/:bid/collections/:cid/compare?target=other-bucket/col1",
+      ],
+    });
+
+    await waitFor(() =>
+      expect(screen.queryByTestId("spinner")).not.toBeInTheDocument()
+    );
+
+    expect(screen.queryAllByTestId("record-diff")).toBeDefined();
+    expect(screen.getByText("other-bucket-col1-record-2")).toBeDefined();
+  });
+
+  it("should ignore target bucket and collection from URL if unknown", async () => {
+    renderWithRouter(<CollectionCompare />, {
+      route:
+        "/buckets/main-bucket/collections/main-collection/compare?target=unknown/foo",
+      path: "/buckets/:bid/collections/:cid/compare",
+      initialEntries: [
+        "/buckets/:bid/collections/:cid/compare?target=unknown/foo",
+      ],
+    });
+
+    const bucket = screen.getByLabelText("Bucket");
+    expect(bucket.value).toBe("");
+    const collection = screen.getByLabelText("Collection");
+    expect(collection.value).toBe("");
+  });
 });
