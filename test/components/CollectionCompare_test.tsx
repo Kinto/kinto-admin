@@ -168,6 +168,8 @@ describe("CollectionCompare", () => {
       expect(screen.queryByTestId("spinner")).not.toBeInTheDocument()
     );
 
+    expect(screen.getByLabelText("Bucket")).not.toBeDisabled();
+    expect(screen.getByLabelText("Collection")).not.toBeDisabled();
     expect(screen.queryAllByTestId("record-diff")).toBeDefined();
     expect(screen.getByText("other-bucket-col1-record-2")).toBeDefined();
   });
@@ -186,5 +188,20 @@ describe("CollectionCompare", () => {
     expect(bucket.value).toBe("");
     const collection = screen.getByLabelText("Collection");
     expect(collection.value).toBe("");
+  });
+
+  it("should disable dropdowns when loading records", async () => {
+    useRecordList.mockImplementation((bid, cid) => undefined);
+    renderWithRouter(<CollectionCompare />, {
+      route:
+        "/buckets/main-bucket/collections/main-collection/compare?target=other-bucket/col1",
+      path: "/buckets/:bid/collections/:cid/compare",
+      initialEntries: [
+        "/buckets/:bid/collections/:cid/compare?target=other-bucket/col1",
+      ],
+    });
+    expect(screen.getByLabelText("Bucket")).toBeDisabled();
+    expect(screen.getByLabelText("Collection")).toBeDisabled();
+    expect(screen.queryByTestId("spinner")).toBeInTheDocument();
   });
 });
