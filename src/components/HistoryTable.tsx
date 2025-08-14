@@ -3,12 +3,30 @@ import PaginatedTable from "./PaginatedTable";
 import Spinner from "./Spinner";
 import { getClient } from "@src/client";
 import { notifyError } from "@src/hooks/notifications";
+import { useShowNonHumans, useShowSignerPlugin } from "@src/hooks/preferences";
 import { useServerInfo } from "@src/hooks/session";
-import type { RecordData, ResourceHistoryEntry } from "@src/types";
+import type {
+  HistoryFilters,
+  RecordData,
+  ResourceHistoryEntry,
+} from "@src/types";
 import { diffJson, humanDate, timeago } from "@src/utils";
 import { omit, sortHistoryEntryPermissions } from "@src/utils";
 import React, { useState } from "react";
-import { Eye } from "react-bootstrap-icons";
+import {
+  ArrowClockwise,
+  Check2Circle,
+  CheckCircleFill,
+  CheckSquare,
+  Eye,
+  FileEarmark,
+  Folder2,
+  Justify,
+  Pencil,
+  People,
+  Plus,
+  Trash,
+} from "react-bootstrap-icons";
 import { EyeSlash } from "react-bootstrap-icons";
 import { SkipStart } from "react-bootstrap-icons";
 
@@ -129,14 +147,91 @@ function HistoryRow({
     data: { id: objectId },
   } = target;
 
+  // We turn sign-off operations into real verbs.
+  let shownAction =
+    resource_name === "collection" &&
+    action === "update" &&
+    // Note: we don't do reject here since we can distinguish it from
+    // a collection metadata change without querying the previous state.
+    target.data.status != "work-in-progress"
+      ? target.data.status
+      : action;
+  shownAction =
+    {
+      create: (
+        <>
+          <Plus /> create
+        </>
+      ),
+      update: (
+        <>
+          <Pencil /> update
+        </>
+      ),
+      delete: (
+        <>
+          <Trash /> delete
+        </>
+      ),
+      "to-sign": (
+        <>
+          <CheckCircleFill /> approve
+        </>
+      ),
+      "to-review": (
+        <>
+          <CheckSquare /> request
+        </>
+      ),
+      "to-rollback": (
+        <>
+          <ArrowClockwise /> rollback
+        </>
+      ),
+      "to-resign": (
+        <>
+          <ArrowClockwise /> resign
+        </>
+      ),
+      signed: (
+        <>
+          <Check2Circle /> sign
+        </>
+      ),
+    }[shownAction] || shownAction;
+
+  const shownResource =
+    {
+      bucket: (
+        <>
+          <Folder2 /> collection
+        </>
+      ),
+      group: (
+        <>
+          <People /> collection
+        </>
+      ),
+      collection: (
+        <>
+          <Justify /> collection
+        </>
+      ),
+      record: (
+        <>
+          <FileEarmark /> record
+        </>
+      ),
+    }[resource_name] || resource_name;
+
   return (
     <React.Fragment>
       <tr>
         <td>
           <span title={humanDate(last_modified)}>{timeago(last_modified)}</span>
         </td>
-        <td>{action}</td>
-        <td>{resource_name}</td>
+        <td>{shownAction}</td>
+        <td>{shownResource}</td>
         <td>
           <AdminLink
             name={`${resource_name}:attributes`}
@@ -272,7 +367,8 @@ interface HistoryTableProps {
   hasNextHistory: boolean;
   listNextHistory?;
   enableDiffOverview?: boolean;
-  sinceFilter?: string;
+  initialFilters?: HistoryFilters;
+  onFiltersChange: (filters: HistoryFilters) => void;
 }
 
 export default function HistoryTable({
@@ -282,8 +378,9 @@ export default function HistoryTable({
   historyLoaded,
   hasNextHistory,
   listNextHistory,
+  onFiltersChange,
+  initialFilters = undefined,
   enableDiffOverview = false,
-  sinceFilter = "",
 }: HistoryTableProps) {
   const [diffOverview, setDiffOverview] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -292,6 +389,36 @@ export default function HistoryTable({
   const [previous, setPrevious] = useState(null);
 
   const serverInfo = useServerInfo();
+
+  // GroupHistory, BucketHistory, and RecordHistory don't take filter
+  // from URL and do not provide `initialFilters`.
+  // CollectionHistory provide it and can pass `initialFilters.show_signer_plugin: false`.
+  const [showSignerPlugin, setShowSignerPlugin] = useShowSignerPlugin(
+    initialFilters?.show_signer_plugin !== undefined
+      ? initialFilters.show_signer_plugin
+      : true
+  );
+  const [showNonHumans, setShowNonHumans] = useShowNonHumans(
+    initialFilters?.show_non_humans !== undefined
+      ? initialFilters.show_non_humans
+      : true
+  );
+
+  const handleNonHumanToggle = value => {
+    setShowNonHumans(value);
+    onFiltersChange({ ...initialFilters, show_non_humans: value });
+  };
+
+  const handleSignerToggle = value => {
+    setShowSignerPlugin(value);
+    onFiltersChange({ ...initialFilters, show_signer_plugin: value });
+  };
+
+  // Hide the non human filters if the server does not support openid or signer
+  const hasOpenID = serverInfo && "openid" in serverInfo.capabilities;
+  const hasSigner = serverInfo && "signer" in serverInfo.capabilities;
+
+  // If collection history was disabled from server configuration, just show a warning.
   const wasDisabled = (
     serverInfo.capabilities.history?.excluded_resources || []
   ).some(
@@ -379,9 +506,40 @@ export default function HistoryTable({
 
   return (
     <div>
-      {!!sinceFilter && (
+      {hasOpenID && (
+        <div className="form-check form-check-inline mb-3">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            checked={showNonHumans}
+            onChange={e => handleNonHumanToggle(e.currentTarget.checked)}
+            id="showNonHumans"
+            data-testid="showNonHumans"
+          />
+          <label className="form-check-label" htmlFor="showNonHumans">
+            Show non humans entries
+          </label>
+        </div>
+      )}
+      {hasSigner && (
+        <div className="form-check form-check-inline mb-3">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            checked={showSignerPlugin && showNonHumans}
+            onChange={e => handleSignerToggle(e.currentTarget.checked)}
+            id="showSignerPlugin"
+            data-testid="showSignerPlugin"
+            disabled={!showNonHumans}
+          />
+          <label className="form-check-label" htmlFor="showSignerPlugin">
+            Show plugin entries
+          </label>
+        </div>
+      )}
+      {!!initialFilters?.since && (
         <FilterInfo
-          since={sinceFilter}
+          since={initialFilters?.since}
           enableDiffOverview={enableDiffOverview}
           onDiffOverviewClick={onDiffOverviewClick}
           onViewJournalClick={onViewJournalClick}
@@ -390,7 +548,11 @@ export default function HistoryTable({
       {busy ? (
         <Spinner />
       ) : diffOverview ? (
-        <DiffOverview since={sinceFilter} source={previous} target={current} />
+        <DiffOverview
+          since={initialFilters?.since}
+          source={previous}
+          target={current}
+        />
       ) : (
         <PaginatedTable
           colSpan={6}

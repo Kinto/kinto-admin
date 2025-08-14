@@ -5,6 +5,7 @@ import type {
   RecordData,
   ResourceHistoryEntry,
   ServerEntry,
+  ServerInfo,
 } from "@src/types";
 import { diffJson as diff } from "diff";
 import React from "react";
@@ -320,18 +321,48 @@ export const getAuthLabel = (authType: string) => {
 };
 
 export function parseHistoryFilters(params: URLSearchParams): HistoryFilters {
-  const ret: HistoryFilters = [
-    "since",
-    "resource_name",
-    "exclude_user_id",
-    "exclude_signer_plugin",
-    "exclude_non_humans",
-  ].reduce((acc, field) => {
-    const val = params.get(field);
-    if (val) acc[field] = val == "true" ? true : val == "false" ? false : val;
-    return acc;
-  }, {});
+  const ret: HistoryFilters = {
+    since: params.get("since") ?? undefined,
+    resource_name: params.get("resource_name") ?? undefined,
+    exclude_user_id: params.get("exclude_user_id") ?? undefined,
+    show_signer_plugin: parseBool(params.get("show_signer_plugin")),
+    show_non_humans: parseBool(params.get("show_non_humans")),
+  };
   return ret;
+}
+
+function parseBool(val: string | null): boolean {
+  return val === "true" ? true : val === "false" ? false : undefined;
+}
+
+export function historyFiltersToServerFilters(
+  serverInfo: ServerInfo,
+  filters: HistoryFilters
+): Record<string, any> {
+  // Turn the HistoryFilters into server filters.
+  const serverFilters: Record<string, string> = {
+    resource_name: filters.resource_name,
+    "gt_target.data.last_modified": filters.since,
+  };
+  if (filters.exclude_user_id) {
+    serverFilters.exclude_user_id = filters.exclude_user_id;
+  }
+  if (filters.show_signer_plugin === false) {
+    const pluginUserId =
+      serverInfo.capabilities.signer.plugin_user_id ?? "plugin:remote-settings";
+    serverFilters.exclude_user_id = serverFilters.exclude_user_id
+      ? `${serverFilters.exclude_user_id},${pluginUserId}`
+      : pluginUserId;
+  }
+  if (
+    filters.show_non_humans === false &&
+    "openid" in serverInfo.capabilities
+  ) {
+    // Human authType is openid for now. Become smart when needed.
+    const authType = serverInfo.capabilities.openid.providers[0].name;
+    serverFilters.like_user_id = `${authType}:*`;
+  }
+  return serverFilters;
 }
 
 /**

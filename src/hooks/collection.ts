@@ -9,6 +9,7 @@ import {
   ListHistoryResult,
   ListResult,
 } from "@src/types";
+import { historyFiltersToServerFilters } from "@src/utils";
 import { useEffect, useState } from "react";
 
 export function useCollection(
@@ -114,31 +115,8 @@ export function useCollectionHistory(
   cacheBust?: number
 ): ListHistoryResult {
   const [val, setVal] = useState({});
-
   const serverInfo = useServerInfo();
-  // Turn the HistoryFilters into server filters.
-  const serverFilters: Record<string, string> = {
-    resource_name: filters.resource_name,
-    "gt_target.data.last_modified": filters.since,
-  };
-  if (filters.exclude_user_id) {
-    serverFilters.exclude_user_id = filters.exclude_user_id;
-  }
-  if (filters.show_signer_plugin === false) {
-    const pluginUserId =
-      serverInfo.capabilities.signer.plugin_user_id ?? "plugin:remote-settings";
-    serverFilters.exclude_user_id = serverFilters.exclude_user_id
-      ? `${serverFilters.exclude_user_id},${pluginUserId}`
-      : pluginUserId;
-  }
-  if (
-    filters.show_non_humans === false &&
-    "openid" in serverInfo.capabilities
-  ) {
-    // Human authType is openid for now. Become smart when needed.
-    const authType = serverInfo.capabilities.openid.providers[0].name;
-    serverFilters.like_user_id = `${authType}:*`;
-  }
+  const serverFilters = historyFiltersToServerFilters(serverInfo, filters);
 
   useEffect(() => {
     setVal({});
@@ -173,7 +151,7 @@ async function fetchHistory(
         });
     }
   } catch (err) {
-    notifyError("Error fetching record history", err);
+    notifyError("Error fetching collection history", err);
     return;
   }
 

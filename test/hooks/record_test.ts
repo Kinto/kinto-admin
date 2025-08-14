@@ -188,7 +188,7 @@ describe("record hooks", () => {
         next: null,
       });
       const { result } = renderHook(() =>
-        useRecordHistory("bid", "cid", "rid")
+        useRecordHistory("bid", "cid", "rid", {})
       );
       expect(result.current).toEqual({});
 
@@ -221,7 +221,7 @@ describe("record hooks", () => {
         },
       });
       const { result } = renderHook(() =>
-        useRecordHistory("bid", "gid", "rid")
+        useRecordHistory("bid", "gid", "rid", {})
       );
 
       expect(result.current).toEqual({});
@@ -243,7 +243,7 @@ describe("record hooks", () => {
     it("should create an error message when an exception occurs", async () => {
       const notifyErrorMock = mockNotifyError();
       listHistoryMock.mockRejectedValue(new Error("Test foo"));
-      renderHook(() => useRecordHistory("bid", "cid", "rid"));
+      renderHook(() => useRecordHistory("bid", "cid", "rid", {}));
       await vi.waitFor(() => {
         expect(notifyErrorMock).toHaveBeenCalledWith(
           "Error fetching record history",

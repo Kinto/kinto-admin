@@ -477,11 +477,14 @@ describe("parseHistoryFilters", () => {
   it("should parse querystrings", async () => {
     expect(
       parseHistoryFilters(
-        new URLSearchParams("?resource_name=record&exclude_signer_plugin=true")
+        new URLSearchParams("?resource_name=record&show_signer_plugin=false")
       )
     ).toEqual({
       resource_name: "record",
-      exclude_signer_plugin: true,
+      since: undefined,
+      exclude_user_id: undefined,
+      show_non_humans: undefined,
+      show_signer_plugin: false,
     });
   });
 });
