@@ -38,36 +38,37 @@ export default function PerRecordDiffView({
 
   return (
     <div>
-      <div className="form-check form-check-inline mb-3">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          checked={showExtraFields}
-          onChange={e => setShowExtraFields(e.currentTarget.checked)}
-          id="showExtraFields"
-        />
-        <label className="form-check-label" htmlFor="showExtraFields">
-          Show record timestamps
-        </label>
-      </div>
-
-      <div className="form-check form-check-inline mb-3">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          checked={showAllLines}
-          onChange={e => setShowAllLines(e.currentTarget.checked)}
-          id="showAllLines"
-        />
-        <label className="form-check-label" htmlFor="showAllLines">
-          Show all lines
-        </label>
-      </div>
-
-      {changes.length === 0 && (
+      {changes.length === 0 ? (
         <div className="text-center my-4 text-muted">No differences found.</div>
-      )}
+      ) : (
+        <>
+          <div className="form-check form-check-inline mb-3">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              checked={showExtraFields}
+              onChange={e => setShowExtraFields(e.currentTarget.checked)}
+              id="showExtraFields"
+            />
+            <label className="form-check-label" htmlFor="showExtraFields">
+              Show record timestamps
+            </label>
+          </div>
 
+          <div className="form-check form-check-inline mb-3">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              checked={showAllLines}
+              onChange={e => setShowAllLines(e.currentTarget.checked)}
+              id="showAllLines"
+            />
+            <label className="form-check-label" htmlFor="showAllLines">
+              Show all lines
+            </label>
+          </div>
+        </>
+      )}
       {changes.map(({ id, changeType, source, target }) => (
         <Diff
           key={id}

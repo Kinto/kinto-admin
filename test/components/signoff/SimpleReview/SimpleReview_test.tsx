@@ -186,6 +186,7 @@ describe("SimpleTest component", () => {
           principals: [],
         },
       },
+      newRecords: [{id: "abc"}],
     });
     expect(screen.getByText(/Status is/).textContent).toBe(
       "Status is work-in-progress. "
