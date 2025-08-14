@@ -10,30 +10,12 @@ function renderSimpleReview(props = null) {
   const mergedProps = {
     oldRecords: [],
     newRecords: [],
-    collectionData: {
-      status: "to-review",
-      bid: "a",
-      cid: "b",
-    },
     ...props,
   };
   return render(<PerRecordDiffView {...mergedProps} />);
 }
 
 describe("PerRecordDiffView component", () => {
-  it("should render loading when authenticating", async () => {
-    const { container } = renderSimpleReview({
-      collectionData: {
-        status: "signed",
-        bid: "a",
-        cid: "b",
-      },
-    });
-    expect(container).toHaveTextContent(
-      "No changes to review, collection status is signed."
-    );
-  });
-
   it("should render diffs", () => {
     renderSimpleReview({
       oldRecords: [{ id: "foo" }, { id: "bar" }],

@@ -70,7 +70,9 @@ export function useCollectionList(
 
   useEffect(() => {
     setVal(undefined);
-    fetchCollections(bid, [], setVal);
+    if (bid) {
+      fetchCollections(bid, [], setVal);
+    }
   }, [bid, cacheBust]);
 
   return val;

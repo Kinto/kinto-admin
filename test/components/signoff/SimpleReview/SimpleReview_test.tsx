@@ -162,6 +162,20 @@ describe("SimpleTest component", () => {
     );
   });
 
+  it("should render loading when authenticating", async () => {
+    const { container } = renderSimpleReview({
+      signoff: {
+        source: {
+          status: "signed",
+        },
+        destination: {},
+      },
+    });
+    expect(container).toHaveTextContent(
+      "No changes to review, collection status is signed."
+    );
+  });
+
   it("should render a diff form for not a reviewer", async () => {
     renderSimpleReview({
       serverInfo: {
@@ -172,6 +186,7 @@ describe("SimpleTest component", () => {
           principals: [],
         },
       },
+      newRecords: [{ id: "abc" }],
     });
     expect(screen.getByText(/Status is/).textContent).toBe(
       "Status is work-in-progress. "
