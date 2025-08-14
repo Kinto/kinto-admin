@@ -9,20 +9,13 @@ import { useParams } from "react-router";
 
 export function CollectionCompare() {
   const { bid, cid } = useParams();
-  const [loadingBuckets, setLoadingBuckets] = useState(true);
-  const [loadingRecords, setLoadingRecords] = useState(true);
-  const [loadingCollections, setLoadingCollections] = useState(true);
+
   const [selectedBucket, setSelectedBucket] = useState("");
   const [selectedCollection, setSelectedCollection] = useState("");
   const hasAutoSelected = useRef(false);
 
   const bucketsList = useBucketList();
-  useEffect(() => {
-    if (bucketsList) {
-      setLoadingBuckets(false);
-    }
-  }, [bucketsList]);
-
+  const loadingBuckets = bucketsList === undefined;
   const foundBucket = bucketsList?.find(({ id }) => id === selectedBucket);
 
   // Safety check to reset selected bucket if it's no longer found (should not happen)
@@ -34,16 +27,7 @@ export function CollectionCompare() {
 
   // Fetch collections for the selected bucket
   const collectionsList = useCollectionList(selectedBucket);
-  useEffect(() => {
-    if (collectionsList) {
-      setLoadingCollections(false);
-    }
-  }, [collectionsList]);
-
-  // Reset `loadingRecords` state when bucket/collection is changed
-  useEffect(() => {
-    setLoadingRecords(true);
-  }, [selectedBucket, selectedCollection]);
+  const loadingCollections = collectionsList === undefined;
 
   // Auto-select same collection if bucket is different than current.
   useEffect(() => {
@@ -55,6 +39,7 @@ export function CollectionCompare() {
       collectionsList?.data.find(c => c.id === cid)
     ) {
       setSelectedCollection(cid);
+      // We use a flag to avoid interferring with the user selection.
       hasAutoSelected.current = true;
     }
   }, [foundBucket, collectionsList, selectedCollection, cid, bid]);
@@ -62,13 +47,7 @@ export function CollectionCompare() {
   // Fetch record lists for comparison
   const leftRecords = useRecordList(bid, cid, "id");
   const rightRecords = useRecordList(selectedBucket, selectedCollection, "id");
-
-  // Wait for both record lists to load
-  useEffect(() => {
-    if (leftRecords.data && rightRecords.data) {
-      setLoadingRecords(false);
-    }
-  }, [leftRecords.data, rightRecords.data]);
+  const loadingRecords = leftRecords === undefined || rightRecords == undefined;
 
   function onBucketChange(bucketId) {
     setSelectedBucket(bucketId);
