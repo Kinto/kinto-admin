@@ -16,14 +16,6 @@ export function CollectionCompare() {
 
   const bucketsList = useBucketList();
   const loadingBuckets = bucketsList === undefined;
-  const foundBucket = bucketsList?.find(({ id }) => id === selectedBucket);
-
-  // Safety check to reset selected bucket if it's no longer found (should not happen)
-  useEffect(() => {
-    if (bucketsList && selectedBucket && !foundBucket) {
-      setSelectedBucket("");
-    }
-  }, [bucketsList, selectedBucket, foundBucket]);
 
   // Fetch collections for the selected bucket
   const collectionsList = useCollectionList(selectedBucket);
@@ -34,15 +26,15 @@ export function CollectionCompare() {
     if (
       !hasAutoSelected.current &&
       !selectedCollection &&
-      foundBucket &&
-      foundBucket.id !== bid &&
+      selectedBucket &&
+      selectedBucket !== bid &&
       collectionsList?.data.find(c => c.id === cid)
     ) {
       setSelectedCollection(cid);
       // We use a flag to avoid interferring with the user selection.
       hasAutoSelected.current = true;
     }
-  }, [foundBucket, collectionsList, selectedCollection, cid, bid]);
+  }, [bid, cid, selectedBucket, collectionsList, selectedCollection]);
 
   // Fetch record lists for comparison
   const leftRecords = useRecordList(bid, cid, "id");
