@@ -1,14 +1,16 @@
 import { notifyError } from "./notifications";
+import { useServerInfo } from "./session";
 import { getClient } from "@src/client";
 import { DEFAULT_SORT, MAX_PER_PAGE } from "@src/constants";
 import {
   BucketData,
   BucketEntry,
   BucketPermissions,
+  HistoryFilters,
   ListHistoryResult,
   PermissionsListEntry,
 } from "@src/types";
-import { makeObservable } from "@src/utils";
+import { historyFiltersToServerFilters, makeObservable } from "@src/utils";
 import { useEffect, useMemo, useState } from "react";
 
 export function useBucket(
@@ -142,18 +144,28 @@ export function useBucketPermissions(
 
 export function useBucketHistory(
   bid: string,
+  filters: HistoryFilters,
   cacheBust?: number
 ): ListHistoryResult {
   const [val, setVal] = useState({});
+  const serverInfo = useServerInfo();
+  const serverFilters = historyFiltersToServerFilters(serverInfo, filters);
 
   useEffect(() => {
-    fetchHistory(bid, [], setVal);
-  }, [bid, cacheBust]);
+    setVal({});
+    fetchHistory(bid, serverFilters, [], setVal);
+  }, [bid, ...Object.values(filters), cacheBust]);
 
   return val;
 }
 
-async function fetchHistory(bid: string, curData, setVal, nextPageFn?) {
+async function fetchHistory(
+  bid: string,
+  filters: Record<string, string>,
+  curData,
+  setVal,
+  nextPageFn?
+) {
   let result;
 
   try {
@@ -166,6 +178,7 @@ async function fetchHistory(bid: string, curData, setVal, nextPageFn?) {
           limit: MAX_PER_PAGE,
           sort: DEFAULT_SORT,
           filters: {
+            ...filters,
             exclude_resource_name: "record",
           },
         });
@@ -182,7 +195,7 @@ async function fetchHistory(bid: string, curData, setVal, nextPageFn?) {
     hasNextPage: result.hasNextPage,
     next: () => {
       if (result.hasNextPage && result.next) {
-        return fetchHistory(bid, data, setVal, result.next);
+        fetchHistory(bid, filters, data, setVal, result.next);
       }
     },
   });

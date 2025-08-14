@@ -6,7 +6,10 @@ import { useParams } from "react-router";
 
 export default function RecordHistory() {
   const { bid, cid, rid } = useParams();
-  const history = useRecordHistory(bid, cid, rid);
+
+  const [filters, setFilters] = React.useState({});
+  // Refetch from the server when filters change.
+  const history = useRecordHistory(bid, cid, rid, filters);
 
   return (
     <div>
@@ -23,6 +26,7 @@ export default function RecordHistory() {
           history={history.data ?? []}
           hasNextHistory={history.hasNextPage}
           listNextHistory={history.next}
+          onFiltersChange={setFilters}
         />
       </RecordTabs>
     </div>

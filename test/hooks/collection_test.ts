@@ -357,7 +357,7 @@ describe("collection hooks", () => {
       renderHook(() => useCollectionHistory("bid", "cid", {}));
       await vi.waitFor(() => {
         expect(notifyErrorMock).toHaveBeenCalledWith(
-          "Error fetching record history",
+          "Error fetching collection history",
           expect.any(Error)
         );
       });

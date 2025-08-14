@@ -7,7 +7,9 @@ import { useParams } from "react-router";
 export default function GroupHistory() {
   const { bid, gid } = useParams();
 
-  const history = useGroupHistory(bid, gid);
+  const [filters, setFilters] = React.useState({});
+  // Refetch from the server when filters change.
+  const history = useGroupHistory(bid, gid, filters);
 
   return (
     <div>
@@ -24,6 +26,7 @@ export default function GroupHistory() {
           history={history.data ?? []}
           hasNextHistory={history.hasNextPage}
           listNextHistory={history.next}
+          onFiltersChange={setFilters}
         />
       </CollectionTabs>
     </div>

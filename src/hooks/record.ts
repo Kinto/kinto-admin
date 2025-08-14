@@ -1,12 +1,15 @@
 import { notifyError } from "./notifications";
+import { useServerInfo } from "./session";
 import { getClient } from "@src/client";
 import { MAX_PER_PAGE } from "@src/constants";
 import type {
+  HistoryFilters,
   ListHistoryResult,
   ListResult,
   RecordData,
   RecordResource,
 } from "@src/types";
+import { historyFiltersToServerFilters } from "@src/utils";
 import { useEffect, useState } from "react";
 
 export type RecordListResult = ListResult<RecordData> & {
@@ -113,13 +116,16 @@ export function useRecordHistory(
   bid: string,
   cid: string,
   rid: string,
+  filters: HistoryFilters,
   cacheBust?: number
 ): ListHistoryResult {
   const [val, setVal] = useState({});
+  const serverInfo = useServerInfo();
+  const serverFilters = historyFiltersToServerFilters(serverInfo, filters);
 
   useEffect(() => {
-    fetchHistory(bid, cid, rid, [], setVal);
-  }, [bid, cid, rid, cacheBust]);
+    fetchHistory(bid, cid, rid, serverFilters, [], setVal);
+  }, [bid, cid, rid, ...Object.values(filters), cacheBust]);
 
   return val;
 }
@@ -128,6 +134,7 @@ async function fetchHistory(
   bid: string,
   cid: string,
   rid: string,
+  filters: Record<string, string>,
   curData,
   setVal,
   nextPageFn?
@@ -143,6 +150,7 @@ async function fetchHistory(
         .listHistory({
           limit: MAX_PER_PAGE,
           filters: {
+            ...filters,
             collection_id: cid,
             record_id: rid,
           },
@@ -160,7 +168,7 @@ async function fetchHistory(
     hasNextPage: result.hasNextPage,
     next: () => {
       if (result.hasNextPage && result.next) {
-        fetchHistory(bid, cid, rid, data, setVal, result.next);
+        fetchHistory(bid, cid, rid, filters, data, setVal, result.next);
       }
     },
   });
