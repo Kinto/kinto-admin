@@ -3,20 +3,29 @@ import PerRecordDiffView from "../signoff/SimpleReview/PerRecordDiffView";
 import CollectionTabs from "./CollectionTabs";
 import { useBucketList } from "@src/hooks/bucket";
 import { useCollectionList } from "@src/hooks/collection";
-import { useRecordList } from "@src/hooks/record";
+import { useRecordList, useRecordListAt } from "@src/hooks/record";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router";
+
+const JANUARY_2015 = 1420070400000;
 
 export function CollectionCompare() {
   const { bid, cid } = useParams();
   const [params, _] = useSearchParams();
   const target = params.get("target");
-  const [targetBucket, targetCollection] = target?.split("/") || [];
+  const [targetBucket, targetCollectionAndTimestamp] = target?.split("/") || [];
+  const [targetCollection, targetTimestampStr] =
+    targetCollectionAndTimestamp?.split("@") || [];
 
   const [selectedBucket, setSelectedBucket] = useState(targetBucket);
   const [selectedCollection, setSelectedCollection] =
     useState(targetCollection);
   const hasAutoSelected = useRef(false);
+
+  // Read timestamp from URL and set it as if user enter a raw string.
+  const [selectedTimestampStr, setSelectedTimestampStr] = useState(
+    targetTimestampStr || ""
+  );
 
   const bucketsList = useBucketList();
   // Check that selectedBucket is valid.
@@ -54,6 +63,19 @@ export function CollectionCompare() {
     }
   }, [bid, cid, selectedBucket, collectionsList, selectedCollection]);
 
+  // Parse selected timestamp. If not correct ignore it.
+  const selectedTimestampInt = selectedTimestampStr
+    ? parseInt(selectedTimestampStr.replace('"', ""), 10)
+    : undefined;
+  const invalidTimestamp =
+    selectedTimestampStr &&
+    (isNaN(selectedTimestampInt) || selectedTimestampInt < JANUARY_2015);
+  const selectedTimestamp = invalidTimestamp ? undefined : selectedTimestampInt;
+
+  function onTimestampChange(timestampStr) {
+    setSelectedTimestampStr(timestampStr);
+  }
+
   useEffect(() => {
     // Refresh location bar with params for users to copy and share.
     if (!bid || !cid || !selectedBucket || !selectedCollection) return;
@@ -61,13 +83,14 @@ export function CollectionCompare() {
     window.history.replaceState(
       null,
       "",
-      baseUrl + `?target=${selectedBucket}/${selectedCollection}`
+      baseUrl +
+        `?target=${selectedBucket}/${selectedCollection}${selectedTimestamp ? `@${selectedTimestamp}` : ""}`
     );
-  }, [bid, cid, selectedBucket, selectedCollection]);
+  }, [bid, cid, selectedBucket, selectedCollection, selectedTimestampStr]);
 
   // Fetch record lists for comparison
   const leftRecords = useRecordList(bid, cid, "id");
-  const rightRecords = useRecordList(selectedBucket, selectedCollection, "id");
+  const rightRecords = useRecordListAt(bid, cid, "id", selectedTimestamp);
 
   function onBucketChange(bucketId) {
     setSelectedBucket(bucketId);
@@ -85,7 +108,7 @@ export function CollectionCompare() {
       </h1>
       <CollectionTabs bid={bid} cid={cid} selected="compare">
         <div className="d-flex justify-content-center align-items-center mb-4">
-          <span className="mr-2">With</span>
+          <span>With</span>
 
           {/* Bucket Select */}
           <div className="input-group mx-2" style={{ maxWidth: "220px" }}>
@@ -140,11 +163,7 @@ export function CollectionCompare() {
                   {collectionsList?.data
                     .sort(({ id: a }, { id: b }) => a.localeCompare(b))
                     .map(({ id }) => (
-                      <option
-                        key={id}
-                        value={id}
-                        disabled={selectedBucket === bid && id === cid}
-                      >
+                      <option key={id} value={id}>
                         {id}
                       </option>
                     ))}
@@ -152,6 +171,19 @@ export function CollectionCompare() {
               )}
             </select>
           </div>
+          <span>at</span>
+          <div className="input-group mx-2" style={{ maxWidth: "140px" }}>
+            <input
+              id="timestampSelect"
+              type="text"
+              className={`form-control ${invalidTimestamp ? "is-invalid" : ""}`}
+              value={selectedTimestampStr}
+              onChange={e => onTimestampChange(e.target.value)}
+              placeholder="latest"
+              disabled={!selectedBucket || !selectedCollection}
+            />
+          </div>
+          <span>timestamp</span>
         </div>
         {selectedBucket &&
           selectedCollection &&
@@ -161,8 +193,7 @@ export function CollectionCompare() {
             </div>
           ) : (
             <>
-              {leftRecords.totalRecords == 0 &&
-              rightRecords.totalRecords == 0 ? (
+              {leftRecords.data.length == 0 && rightRecords.data.length == 0 ? (
                 <div className="text-center my-4 text-muted">
                   No records to compare.
                 </div>
