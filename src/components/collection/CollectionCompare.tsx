@@ -15,11 +15,7 @@ export function CollectionCompare() {
   const hasAutoSelected = useRef(false);
 
   const bucketsList = useBucketList();
-  const loadingBuckets = bucketsList === undefined;
-
-  // Fetch collections for the selected bucket
   const collectionsList = useCollectionList(selectedBucket);
-  const loadingCollections = collectionsList === undefined;
 
   // Auto-select same collection if bucket is different than current.
   useEffect(() => {
@@ -39,7 +35,6 @@ export function CollectionCompare() {
   // Fetch record lists for comparison
   const leftRecords = useRecordList(bid, cid, "id");
   const rightRecords = useRecordList(selectedBucket, selectedCollection, "id");
-  const loadingRecords = leftRecords === undefined || rightRecords == undefined;
 
   function onBucketChange(bucketId) {
     setSelectedBucket(bucketId);
@@ -71,9 +66,9 @@ export function CollectionCompare() {
               className="custom-select"
               value={selectedBucket}
               onChange={e => onBucketChange(e.target.value)}
-              disabled={loadingBuckets}
+              disabled={!bucketsList}
             >
-              {loadingBuckets ? (
+              {!bucketsList ? (
                 <option value="">⏳ Loading...</option>
               ) : (
                 <>
@@ -104,7 +99,7 @@ export function CollectionCompare() {
               onChange={e => setSelectedCollection(e.target.value)}
               disabled={!selectedBucket}
             >
-              {loadingCollections && selectedBucket ? (
+              {selectedBucket && !collectionsList ? (
                 <option value="">⏳ Loading...</option>
               ) : (
                 <>
@@ -127,20 +122,21 @@ export function CollectionCompare() {
         </div>
         {selectedBucket &&
           selectedCollection &&
-          (loadingRecords ? (
+          (!leftRecords.data || !rightRecords.data ? (
             <div className="d-flex justify-content-center align-items-center">
               <Spinner />
             </div>
           ) : (
             <>
-              {!leftRecords.data?.length && !rightRecords.data?.length ? (
+              {leftRecords.totalRecords == 0 &&
+              rightRecords.totalRecords == 0 ? (
                 <div className="text-center my-4 text-muted">
                   No records to compare.
                 </div>
               ) : (
                 <PerRecordDiffView
-                  newRecords={leftRecords.data || []}
-                  oldRecords={rightRecords.data || []}
+                  newRecords={leftRecords.data}
+                  oldRecords={rightRecords.data}
                 />
               )}
             </>
