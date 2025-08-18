@@ -9,20 +9,20 @@ async function onCopyClick(value: string) {
 }
 
 interface TimestampProps {
-  value?: number | null;
+  timestamp?: number | null;
 }
 
-export default function Timestamp({ value }: TimestampProps) {
-  if (!value) {
+export default function Timestamp({ timestamp }: TimestampProps) {
+  if (!timestamp) {
     return <>{"N/A"}</>;
   }
   return (
-    <span className="timestamp" title={humanDate(value)}>
-      {timeago(value)}{" "}
+    <span className="timestamp" title={humanDate(timestamp)}>
+      {timeago(timestamp)}{" "}
       <span
         className="icon"
-        title={value.toString()}
-        onClick={() => onCopyClick(value.toString())}
+        title={timestamp.toString()}
+        onClick={() => onCopyClick(timestamp.toString())}
       >
         <Copy className="icon" />
       </span>

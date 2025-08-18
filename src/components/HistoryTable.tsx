@@ -228,7 +228,7 @@ function HistoryRow({
   return (
     <React.Fragment>
       <tr>
-        <td>
+        <td className="lastmod">
           <HumanDate timestamp={last_modified} />
         </td>
         <td>{shownAction}</td>
