@@ -12,7 +12,7 @@ interface TimestampProps {
   value?: number | null;
 }
 
-export function Timestamp({ value }: TimestampProps) {
+export default function Timestamp({ value }: TimestampProps) {
   if (!value) {
     return <>{"N/A"}</>;
   }

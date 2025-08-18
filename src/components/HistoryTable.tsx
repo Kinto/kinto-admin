@@ -1,7 +1,7 @@
 import AdminLink from "./AdminLink";
+import HumanDate from "./HumanDate";
 import PaginatedTable from "./PaginatedTable";
 import Spinner from "./Spinner";
-import HumanDate from "./signoff/HumanDate";
 import { getClient } from "@src/client";
 import { notifyError } from "@src/hooks/notifications";
 import { useShowNonHumans, useShowSignerPlugin } from "@src/hooks/preferences";
