@@ -82,14 +82,12 @@ export default function SimpleReview() {
         Not authenticated
       </div>
     );
-  } else if (
+  }
+
+  const isLoading =
     signoff?.source && // Always true
     !("status" in signoff.source) && // "status" is set after loading.
-    !newRecords?.data &&
-    !oldRecords?.data
-  ) {
-    return <Spinner />;
-  }
+    (!newRecords?.data || !oldRecords?.data);
 
   // At this point, signoff is loaded (not null and with `status` field)
   const signoffSource = signoff.source as SignoffSourceInfo;
@@ -201,11 +199,7 @@ export default function SimpleReview() {
         Changes
       </h1>
       <CollectionTabs bid={bid} cid={cid} selected="simple-review">
-        {!oldRecords.data || !newRecords.data ? (
-          <Spinner />
-        ) : (
-          <SignoffContent />
-        )}
+        {isLoading ? <Spinner /> : <SignoffContent />}
       </CollectionTabs>
     </div>
   );
