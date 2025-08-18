@@ -1,6 +1,7 @@
 import AdminLink from "./AdminLink";
 import PaginatedTable from "./PaginatedTable";
 import Spinner from "./Spinner";
+import HumanDate from "./signoff/HumanDate";
 import { getClient } from "@src/client";
 import { notifyError } from "@src/hooks/notifications";
 import { useShowNonHumans, useShowSignerPlugin } from "@src/hooks/preferences";
@@ -10,7 +11,7 @@ import type {
   RecordData,
   ResourceHistoryEntry,
 } from "@src/types";
-import { diffJson, humanDate, timeago } from "@src/utils";
+import { diffJson, humanDate } from "@src/utils";
 import { omit, sortHistoryEntryPermissions } from "@src/utils";
 import React, { useState } from "react";
 import {
@@ -228,7 +229,7 @@ function HistoryRow({
     <React.Fragment>
       <tr>
         <td>
-          <span title={humanDate(last_modified)}>{timeago(last_modified)}</span>
+          <HumanDate timestamp={last_modified} />
         </td>
         <td>{shownAction}</td>
         <td>{shownResource}</td>
