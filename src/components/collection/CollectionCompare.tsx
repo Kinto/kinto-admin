@@ -68,6 +68,10 @@ export function CollectionCompare() {
   // Fetch record lists for comparison
   const leftRecords = useRecordList(bid, cid, "id");
   const rightRecords = useRecordList(selectedBucket, selectedCollection, "id");
+  const recordsLoading =
+    selectedBucket &&
+    selectedCollection &&
+    (!leftRecords?.data || !rightRecords?.data);
 
   function onBucketChange(bucketId) {
     setSelectedBucket(bucketId);
@@ -99,7 +103,7 @@ export function CollectionCompare() {
               className="custom-select"
               value={selectedBucket}
               onChange={e => onBucketChange(e.target.value)}
-              disabled={!bucketsList}
+              disabled={!bucketsList || recordsLoading}
             >
               {!bucketsList ? (
                 <option value="">⏳ Loading...</option>
@@ -130,7 +134,7 @@ export function CollectionCompare() {
               className="custom-select"
               value={selectedCollection}
               onChange={e => setSelectedCollection(e.target.value)}
-              disabled={!selectedBucket}
+              disabled={!selectedBucket || recordsLoading}
             >
               {selectedBucket && !collectionsList ? (
                 <option value="">⏳ Loading...</option>
@@ -153,27 +157,28 @@ export function CollectionCompare() {
             </select>
           </div>
         </div>
-        {selectedBucket &&
-          selectedCollection &&
-          (!leftRecords.data || !rightRecords.data ? (
-            <div className="d-flex justify-content-center align-items-center">
-              <Spinner />
-            </div>
-          ) : (
-            <>
-              {leftRecords.totalRecords == 0 &&
-              rightRecords.totalRecords == 0 ? (
-                <div className="text-center my-4 text-muted">
-                  No records to compare.
-                </div>
-              ) : (
-                <PerRecordDiffView
-                  newRecords={leftRecords.data}
-                  oldRecords={rightRecords.data}
-                />
-              )}
-            </>
-          ))}
+        {!selectedBucket || !selectedCollection ? (
+          <div className="text-center my-4 text-muted">
+            Pick a bucket and collection to compare with.
+          </div>
+        ) : recordsLoading ? (
+          <div className="d-flex justify-content-center align-items-center">
+            <Spinner />
+          </div>
+        ) : (
+          <>
+            {leftRecords.totalRecords == 0 && rightRecords.totalRecords == 0 ? (
+              <div className="text-center my-4 text-muted">
+                No records to compare.
+              </div>
+            ) : (
+              <PerRecordDiffView
+                newRecords={leftRecords.data}
+                oldRecords={rightRecords.data}
+              />
+            )}
+          </>
+        )}
       </CollectionTabs>
     </div>
   );
