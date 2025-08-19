@@ -1,10 +1,10 @@
+import HumanDate from "../HumanDate";
 import Spinner from "../Spinner";
 import AdminLink from "@src/components/AdminLink";
 import PaginatedTable from "@src/components/PaginatedTable";
 import { usePermissions, useServerInfo } from "@src/hooks/session";
 import { canCreateGroup } from "@src/permission";
 import { GroupData, ListResult } from "@src/types";
-import { timeago } from "@src/utils";
 import React, { useState } from "react";
 import { Gear } from "react-bootstrap-icons";
 import { ClockHistory } from "react-bootstrap-icons";
@@ -65,7 +65,6 @@ export function DataList(props: DataListProps) {
     <tbody className={""}>
       {data?.map((group, index) => {
         const { id: gid, members, last_modified } = group;
-        const date = new Date(last_modified);
         return (
           <tr key={index}>
             <td>
@@ -75,7 +74,7 @@ export function DataList(props: DataListProps) {
             </td>
             <td>{members.join(", ")}</td>
             <td>
-              <span title={date.toISOString()}>{timeago(date.getTime())}</span>
+              <HumanDate timestamp={last_modified} />
             </td>
             <td className="actions">
               <div className="btn-group">

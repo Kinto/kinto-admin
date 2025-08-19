@@ -1,10 +1,10 @@
+import HumanDate from "../HumanDate";
 import Spinner from "../Spinner";
 import AdminLink from "@src/components/AdminLink";
 import PaginatedTable from "@src/components/PaginatedTable";
 import { usePermissions } from "@src/hooks/session";
 import { canCreateCollection } from "@src/permission";
 import { Capabilities, CollectionData, ListResult } from "@src/types";
-import { timeago } from "@src/utils";
 import React, { useState } from "react";
 import { ClockHistory, Gear, Justify } from "react-bootstrap-icons";
 
@@ -74,10 +74,6 @@ export function DataList(props: DataListProps) {
           last_modified,
           attachment,
         } = collection;
-        // FIXME: last_modified should always be here, but the types
-        // don't express that
-        const date = last_modified && new Date(last_modified);
-        const ageString = date && timeago(date.getTime());
         return (
           <tr key={index}>
             <td>
@@ -91,7 +87,7 @@ export function DataList(props: DataListProps) {
             </td>
             <td>{cache_expires ? `${cache_expires} seconds` : "No"}</td>
             <td>
-              <span title={date ? date.toISOString() : ""}>{ageString}</span>
+              <HumanDate timestamp={last_modified} />
             </td>
             <td className="actions">
               <div className="btn-group">

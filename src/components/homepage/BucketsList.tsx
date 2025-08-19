@@ -1,3 +1,4 @@
+import HumanDate from "../HumanDate";
 import Spinner from "../Spinner";
 import HomePageTabs from "./HomePageTabs";
 import AdminLink from "@src/components/AdminLink";
@@ -6,7 +7,6 @@ import { useBucketList } from "@src/hooks/bucket";
 import { usePermissions, useServerInfo } from "@src/hooks/session";
 import { canCreateBucket } from "@src/permission";
 import { BucketData, ServerInfo } from "@src/types";
-import { timeago } from "@src/utils";
 import React from "react";
 import {
   ClockHistory,
@@ -63,7 +63,6 @@ export function DataList(props: DataListProps) {
     <tbody className={""}>
       {buckets?.map((bucket, index) => {
         const { id: bid, last_modified } = bucket;
-        const date = new Date(last_modified);
         return (
           <tr key={index}>
             <td>
@@ -72,7 +71,7 @@ export function DataList(props: DataListProps) {
               </AdminLink>
             </td>
             <td>
-              <span title={date.toISOString()}>{timeago(date.getTime())}</span>
+              <HumanDate timestamp={last_modified} />
             </td>
             <td className="actions">
               <div className="btn-group">

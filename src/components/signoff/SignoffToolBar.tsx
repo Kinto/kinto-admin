@@ -1,12 +1,12 @@
 import AdminLink from "../AdminLink";
 import Spinner from "../Spinner";
 import { Comment, CommentDialog } from "./Comment";
-import HumanDate from "./HumanDate";
 import { ProgressBar, ProgressStep } from "./ProgressBar";
 import { DiffInfo, Review } from "./Review";
 import { Signed } from "./Signed";
 import { isMember, toReviewEnabled } from "./utils";
 import { getClient } from "@src/client";
+import HumanDate from "@src/components/HumanDate";
 import { useCollection } from "@src/hooks/collection";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { useSimpleReview } from "@src/hooks/preferences";

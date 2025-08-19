@@ -792,3 +792,11 @@ i.fa:before {
   top: 152px;
   right: 30px;
 }
+
+span.timestamp .icon {
+  opacity: 0;
+}
+
+span.timestamp:hover .icon {
+  opacity: 1;
+}
