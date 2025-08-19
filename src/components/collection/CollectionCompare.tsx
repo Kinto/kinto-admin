@@ -4,6 +4,8 @@ import CollectionTabs from "./CollectionTabs";
 import { useBucketList } from "@src/hooks/bucket";
 import { useCollectionList } from "@src/hooks/collection";
 import { useRecordList, useRecordListAt } from "@src/hooks/record";
+import { useServerInfo } from "@src/hooks/session";
+import { hasHistoryDisabled } from "@src/utils";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router";
 
@@ -22,9 +24,17 @@ export function CollectionCompare() {
     useState(targetCollection);
   const hasAutoSelected = useRef(false);
 
+  // Some collections have history disabled.
+  const serverInfo = useServerInfo();
+  const historyDisabled = hasHistoryDisabled(
+    serverInfo,
+    selectedBucket,
+    selectedCollection
+  );
+
   // Read timestamp from URL and set it as if user enter a raw string.
   const [selectedTimestampStr, setSelectedTimestampStr] = useState(
-    targetTimestampStr || ""
+    historyDisabled ? "" : targetTimestampStr || ""
   );
 
   const bucketsList = useBucketList();
@@ -186,13 +196,18 @@ export function CollectionCompare() {
           <span>at</span>
           <div className="input-group mx-2" style={{ maxWidth: "150px" }}>
             <input
-              id="timestampSelect"
+              data-testid="timestampSelect"
               type="text"
               className={`form-control ${invalidTimestamp ? "is-invalid" : ""}`}
               value={selectedTimestampStr}
               onChange={e => onTimestampChange(e.target.value)}
               placeholder="latest"
-              disabled={!selectedBucket || !selectedCollection}
+              disabled={
+                !selectedBucket || !selectedCollection || historyDisabled
+              }
+              title={
+                historyDisabled ? "History is disabled for this collection" : ""
+              }
             />
           </div>
           <span>timestamp</span>

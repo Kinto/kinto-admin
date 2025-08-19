@@ -10,7 +10,7 @@ import type {
   RecordData,
   ResourceHistoryEntry,
 } from "@src/types";
-import { diffJson, humanDate, timeago } from "@src/utils";
+import { diffJson, hasHistoryDisabled, humanDate, timeago } from "@src/utils";
 import { omit, sortHistoryEntryPermissions } from "@src/utils";
 import React, { useState } from "react";
 import {
@@ -419,14 +419,7 @@ export default function HistoryTable({
   const hasSigner = serverInfo && "signer" in serverInfo.capabilities;
 
   // If collection history was disabled from server configuration, just show a warning.
-  const wasDisabled = (
-    serverInfo.capabilities.history?.excluded_resources || []
-  ).some(
-    resource =>
-      resource.bucket == bid &&
-      (resource.collection == cid || !resource.collection)
-  );
-  if (wasDisabled) {
+  if (hasHistoryDisabled(serverInfo, bid, cid)) {
     return (
       <div className="alert alert-warning" data-testid="warning">
         <p>History was disabled for this collection in server configuration.</p>

@@ -461,3 +461,19 @@ export function makeObservable(target) {
     subscribe,
   };
 }
+
+export function hasHistoryDisabled(
+  serverInfo?: ServerInfo,
+  bid?: string,
+  cid?: string
+): boolean {
+  if (!serverInfo || !bid || !cid) {
+    // Let's consider it's not disabled if cannot know.
+    return false;
+  }
+  return (serverInfo.capabilities.history?.excluded_resources || []).some(
+    resource =>
+      resource.bucket == bid &&
+      (resource.collection == cid || !resource.collection)
+  );
+}

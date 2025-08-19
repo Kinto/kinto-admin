@@ -1,7 +1,9 @@
 import { CollectionCompare } from "@src/components/collection/CollectionCompare";
+import { SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES } from "@src/constants";
 import * as bucketHooks from "@src/hooks/bucket";
 import * as collectionHooks from "@src/hooks/collection";
 import * as recordHooks from "@src/hooks/record";
+import * as sessionHooks from "@src/hooks/session";
 import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import React from "react";
@@ -9,6 +11,7 @@ import React from "react";
 describe("CollectionCompare", () => {
   const mockBucketList = vi.fn();
   const mockCollectionList = vi.fn();
+  const mockUseServerInfo = vi.fn();
 
   beforeEach(() => {
     const recordsMock = (bid, cid) => {
@@ -20,6 +23,12 @@ describe("CollectionCompare", () => {
         ],
       } as any;
     };
+    vi.spyOn(sessionHooks, "useServerInfo").mockImplementation(
+      mockUseServerInfo
+    );
+    mockUseServerInfo.mockReturnValue(
+      SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES
+    );
     vi.spyOn(recordHooks, "useRecordList").mockImplementation(recordsMock);
     vi.spyOn(recordHooks, "useRecordListAt").mockImplementation(recordsMock);
     vi.spyOn(bucketHooks, "useBucketList").mockImplementation(mockBucketList);
@@ -166,5 +175,30 @@ describe("CollectionCompare", () => {
     expect(screen.getByLabelText("Bucket")).toBeDisabled();
     expect(screen.getByLabelText("Collection")).toBeDisabled();
     expect(screen.queryByTestId("spinner")).toBeInTheDocument();
+  });
+
+  it("should disable timestamp if history is disabled for this collection", async () => {
+    mockUseServerInfo.mockReturnValue({
+      ...SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES,
+      capabilities: {
+        ...SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES.capabilities,
+        history: {
+          excluded_resources: [{ bucket: "other-bucket" }],
+        },
+      },
+    });
+    renderWithRouter(<CollectionCompare />, {
+      route:
+        "/buckets/main-bucket/collections/main-collection/compare?target=other-bucket/col1",
+      path: "/buckets/:bid/collections/:cid/compare",
+      initialEntries: [
+        "/buckets/:bid/collections/:cid/compare?target=other-bucket/col1",
+      ],
+    });
+    expect(screen.getByTestId("timestampSelect")).toBeDisabled();
+    expect(screen.getByTestId("timestampSelect")).toHaveAttribute(
+      "title",
+      "History is disabled for this collection"
+    );
   });
 });
