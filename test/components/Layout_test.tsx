@@ -41,11 +41,12 @@ describe("App component", () => {
   });
 
   describe("Session top bar", () => {
-    it("should not render a session top bar when not authenticated", () => {
+    it("should render an empty session top bar when not authenticated", () => {
       useAuthMock.mockReturnValueOnce(undefined);
       useServerInfoMock.mockReturnValueOnce(undefined);
       renderWithRouter(<Layout />, routeProps);
-      expect(screen.queryByTestId("sessionInfo-bar")).toBeNull();
+      expect(screen.queryByTestId("sessionInfo-bar")).toBeDefined();
+      expect(screen.queryByTestId("sessionInfo-bar")).toContainHTML("");
     });
 
     it("should render a session top bar when anonymous", async () => {
