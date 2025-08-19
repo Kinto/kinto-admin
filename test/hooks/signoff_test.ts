@@ -72,7 +72,7 @@ describe("signoff hooks", () => {
       });
     });
 
-    it("Uses a SignoffCollectionsInfo object a signer resource is found", async () => {
+    it("Uses a SignoffCollectionsInfo object if a signer resource is found", async () => {
       const { result } = renderHook(() => useSignoff("source", "cid", signer));
       await vi.waitFor(() => {
         expect(result.current).toStrictEqual({
@@ -87,6 +87,24 @@ describe("signoff hooks", () => {
           source: {
             bucket: "source",
             collection: "cid",
+            isLoading: false,
+            lastEditBy: undefined,
+            lastEditDate: null,
+            lastEditorComment: undefined,
+            lastReviewBy: undefined,
+            lastReviewDate: null,
+            lastReviewRequestBy: undefined,
+            lastReviewRequestDate: null,
+            lastReviewerComment: undefined,
+            lastSignatureBy: undefined,
+            lastSignatureDate: null,
+            status: "work-in-progress",
+          },
+          changesOnPreview: null,
+          changesOnSource: {
+            deleted: 0,
+            since: 24,
+            updated: 1,
           },
         });
       });

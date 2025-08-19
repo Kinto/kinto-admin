@@ -6,6 +6,7 @@ import type {
   SignerCapabilityResourceEntry,
   SignoffCollectionStatus,
   SignoffCollectionsInfo,
+  SignoffSourceInfo,
 } from "@src/types";
 import { useEffect, useState } from "react";
 
@@ -14,13 +15,19 @@ export function useSignoff(
   cid: string,
   signer: any,
   cacheBust?: number
-): SignerCapabilityResource | SignoffCollectionsInfo {
-  const resource = _pickSignoffResource(signer, bid, cid);
-  const [val, setVal] = useState(null);
+): null | SignerCapabilityResource | SignoffCollectionsInfo {
+  const resource: null | SignerCapabilityResource = _pickSignoffResource(
+    signer,
+    bid,
+    cid
+  );
+  const [val, setVal] = useState(resource);
 
   useEffect(() => {
-    setVal(resource); // `null` or `SignerCapabilityResource`
     if (resource?.source) {
+      const emptyInfos = resource.source as SignoffSourceInfo;
+      emptyInfos.isLoading = true;
+      setVal({ ...resource, ...emptyInfos });
       calculateChangesInfo(resource).then((infos: SignoffCollectionsInfo) =>
         setVal(infos)
       );
@@ -58,6 +65,7 @@ async function calculateChangesInfo(
     ...resource,
     source: {
       ...resource.source,
+      isLoading: false,
       status: collection.status as SignoffCollectionStatus,
       lastEditBy: collection.last_edit_by,
       lastEditDate: new Date(collection.last_edit_date).getTime() || null,
