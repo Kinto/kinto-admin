@@ -1,12 +1,14 @@
 import { getClient } from "@src/client";
 import type {
   ChangesList,
+  ServerInfo,
   SignedCollectionData,
   SignerCapabilityResource,
   SignerCapabilityResourceEntry,
   SignoffCollectionStatus,
   SignoffCollectionsInfo,
 } from "@src/types";
+import { hasHistoryDisabled } from "@src/utils";
 import { useEffect, useState } from "react";
 
 export function useSignoff(
@@ -161,4 +163,53 @@ async function fetchChangesInfo(
     deleted: changes.filter(r => r.deleted).length,
     updated: changes.filter(r => !r.deleted).length,
   };
+}
+
+export function useLatestApprovals(
+  serverInfo?: ServerInfo,
+  bid?: string,
+  cid?: string
+): undefined | string[] {
+  const [val, setVal] = useState(undefined);
+
+  useEffect(() => {
+    if (!serverInfo || !bid || !cid) {
+      return; // need loaded inputs.
+    }
+    if (hasHistoryDisabled(serverInfo, bid, cid)) {
+      // Specified resource has history disabled.
+      setVal([]);
+      return;
+    }
+    const resource = _pickSignoffResource(
+      serverInfo.capabilities.signer,
+      bid,
+      cid
+    );
+    if (!resource) {
+      // Specified resource is not signed, no approvals will be found.
+      setVal([]);
+      return;
+    }
+    // Now, look for 20 latest approvals on the source collection.
+    getClient()
+      .bucket(resource.source.bucket)
+      .listHistory({
+        limit: 20,
+        filters: {
+          collection_id: resource.source.collection,
+          resource_name: "collection",
+          "target.data.status": "to-sign",
+          _sort: "-last_modified",
+        },
+      })
+      .then(results => {
+        setVal(results.data.map(r => r.last_modified));
+      })
+      .catch(err => {
+        console.error("Error fetching latest approvals", err);
+        setVal([]);
+      });
+  }, [serverInfo, bid, cid]);
+  return val;
 }

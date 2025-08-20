@@ -1,22 +1,48 @@
+import InputWithDropdown from "../InputDropdown";
 import Spinner from "../Spinner";
 import PerRecordDiffView from "../signoff/SimpleReview/PerRecordDiffView";
 import CollectionTabs from "./CollectionTabs";
 import { useBucketList } from "@src/hooks/bucket";
 import { useCollectionList } from "@src/hooks/collection";
-import { useRecordList } from "@src/hooks/record";
+import { useRecordList, useRecordListAt } from "@src/hooks/record";
+import { useServerInfo } from "@src/hooks/session";
+import { useLatestApprovals } from "@src/hooks/signoff";
+import { hasHistoryDisabled } from "@src/utils";
 import React, { useEffect, useRef, useState } from "react";
+import { ClockHistory } from "react-bootstrap-icons";
 import { useParams, useSearchParams } from "react-router";
+
+const JANUARY_2015 = 1420070400000;
 
 export function CollectionCompare() {
   const { bid, cid } = useParams();
   const [params, _] = useSearchParams();
   const target = params.get("target");
-  const [targetBucket, targetCollection] = target?.split("/") || [];
+  const [targetBucket, targetCollectionAndTimestamp] = target?.split("/") || [];
+  const [targetCollection, targetTimestampStr] =
+    targetCollectionAndTimestamp?.split("@") || [];
 
   const [selectedBucket, setSelectedBucket] = useState(targetBucket);
   const [selectedCollection, setSelectedCollection] =
     useState(targetCollection);
   const hasAutoSelected = useRef(false);
+
+  // Some collections have history disabled.
+  const serverInfo = useServerInfo();
+  const historyDisabled = hasHistoryDisabled(
+    serverInfo,
+    selectedBucket,
+    selectedCollection
+  );
+
+  // Read timestamp from URL and set it as if user enter a raw string.
+  const [selectedTimestampStr, setSelectedTimestampStr] = useState(
+    targetTimestampStr || ""
+  );
+  if (selectedTimestampStr && historyDisabled) {
+    // If history is disabled, we can only look at collection at 'latest' timestamp.
+    setSelectedTimestampStr("");
+  }
 
   const bucketsList = useBucketList();
   // Check that selectedBucket is valid.
@@ -54,6 +80,21 @@ export function CollectionCompare() {
     }
   }, [bid, cid, selectedBucket, collectionsList, selectedCollection]);
 
+  // Parse selected timestamp. If not correct ignore it.
+  const selectedTimestampInt = selectedTimestampStr
+    ? parseInt(selectedTimestampStr.replace('"', ""), 10)
+    : undefined;
+  const invalidTimestamp =
+    selectedTimestampStr &&
+    (isNaN(selectedTimestampInt) ||
+      selectedTimestampInt < JANUARY_2015 ||
+      selectedTimestampInt > Date.now());
+  const selectedTimestamp = invalidTimestamp ? undefined : selectedTimestampInt;
+
+  function onTimestampChange(timestampStr) {
+    setSelectedTimestampStr(timestampStr);
+  }
+
   useEffect(() => {
     // Refresh location bar with params for users to copy and share.
     if (!bid || !cid || !selectedBucket || !selectedCollection) return;
@@ -61,13 +102,20 @@ export function CollectionCompare() {
     window.history.replaceState(
       null,
       "",
-      baseUrl + `?target=${selectedBucket}/${selectedCollection}`
+      baseUrl +
+        `?target=${selectedBucket}/${selectedCollection}${selectedTimestamp ? `@${selectedTimestamp}` : ""}`
     );
-  }, [bid, cid, selectedBucket, selectedCollection]);
+  }, [bid, cid, selectedBucket, selectedCollection, selectedTimestampStr]);
 
   // Fetch record lists for comparison
   const leftRecords = useRecordList(bid, cid, "id");
-  const rightRecords = useRecordList(selectedBucket, selectedCollection, "id");
+  const rightRecords = useRecordListAt(
+    selectedBucket,
+    selectedCollection,
+    "id",
+    selectedTimestamp
+  );
+
   const recordsLoading =
     selectedBucket &&
     selectedCollection &&
@@ -76,7 +124,20 @@ export function CollectionCompare() {
   function onBucketChange(bucketId) {
     setSelectedBucket(bucketId);
     setSelectedCollection("");
+    setSelectedTimestampStr("");
   }
+
+  function onCollectionChange(collectionId) {
+    setSelectedCollection(collectionId);
+    setSelectedTimestampStr("");
+  }
+
+  // Fetch list of latest approvals
+  const latestApprovals = useLatestApprovals(
+    serverInfo,
+    selectedBucket,
+    selectedCollection
+  );
 
   return (
     <div>
@@ -89,7 +150,7 @@ export function CollectionCompare() {
       </h1>
       <CollectionTabs bid={bid} cid={cid} selected="compare">
         <div className="d-flex justify-content-center align-items-center mb-4">
-          <span className="mr-2">With</span>
+          <span>With</span>
 
           {/* Bucket Select */}
           <div className="input-group mx-2" style={{ maxWidth: "220px" }}>
@@ -133,7 +194,7 @@ export function CollectionCompare() {
               id="collectionSelect"
               className="custom-select"
               value={selectedCollection}
-              onChange={e => setSelectedCollection(e.target.value)}
+              onChange={e => onCollectionChange(e.target.value)}
               disabled={!selectedBucket || recordsLoading}
             >
               {selectedBucket && !collectionsList ? (
@@ -144,11 +205,7 @@ export function CollectionCompare() {
                   {collectionsList?.data
                     .sort(({ id: a }, { id: b }) => a.localeCompare(b))
                     .map(({ id }) => (
-                      <option
-                        key={id}
-                        value={id}
-                        disabled={selectedBucket === bid && id === cid}
-                      >
+                      <option key={id} value={id}>
                         {id}
                       </option>
                     ))}
@@ -156,6 +213,31 @@ export function CollectionCompare() {
               )}
             </select>
           </div>
+          <span>at</span>
+          <div className="input-group mx-2" style={{ maxWidth: "160px" }}>
+            <InputWithDropdown
+              icon={<ClockHistory />}
+              data-testid="timestampSelect"
+              type="text"
+              options={
+                latestApprovals === undefined
+                  ? undefined
+                  : latestApprovals.map(t => [new Date(t).toISOString(), t])
+              }
+              className={invalidTimestamp ? "is-invalid" : ""}
+              value={selectedTimestampStr}
+              onValuePicked={val => onTimestampChange(val.toString())}
+              placeholder="latest"
+              disabled={
+                !selectedBucket || !selectedCollection || historyDisabled
+              }
+              title={
+                historyDisabled ? "History is disabled for this collection" : ""
+              }
+              dropDownTitle={"Latest approvals..."}
+            />
+          </div>
+          <span>timestamp</span>
         </div>
         {!selectedBucket || !selectedCollection ? (
           <div className="text-center my-4 text-muted">

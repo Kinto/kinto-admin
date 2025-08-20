@@ -126,7 +126,7 @@ export function useCollectionHistory(
   return val;
 }
 
-async function fetchHistory(
+export async function fetchHistory(
   bid: string,
   cid: string,
   filters: Record<string, string>,
