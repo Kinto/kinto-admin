@@ -34,8 +34,12 @@ export function CollectionCompare() {
 
   // Read timestamp from URL and set it as if user enter a raw string.
   const [selectedTimestampStr, setSelectedTimestampStr] = useState(
-    historyDisabled ? "" : targetTimestampStr || ""
+    targetTimestampStr || ""
   );
+  if (selectedTimestampStr && historyDisabled) {
+    // If history is disabled, we can only look at collection at 'latest' timestamp.
+    setSelectedTimestampStr("");
+  }
 
   const bucketsList = useBucketList();
   // Check that selectedBucket is valid.
@@ -117,6 +121,12 @@ export function CollectionCompare() {
   function onBucketChange(bucketId) {
     setSelectedBucket(bucketId);
     setSelectedCollection("");
+    setSelectedTimestampStr("");
+  }
+
+  function onCollectionChange(collectionId) {
+    setSelectedCollection(collectionId);
+    setSelectedTimestampStr("");
   }
 
   return (
@@ -174,7 +184,7 @@ export function CollectionCompare() {
               id="collectionSelect"
               className="custom-select"
               value={selectedCollection}
-              onChange={e => setSelectedCollection(e.target.value)}
+              onChange={e => onCollectionChange(e.target.value)}
               disabled={!selectedBucket || recordsLoading}
             >
               {selectedBucket && !collectionsList ? (

@@ -201,4 +201,47 @@ describe("CollectionCompare", () => {
       "History is disabled for this collection"
     );
   });
+
+  it("should empty the timestamp value if history is disabled for the selected collection", async () => {
+    mockUseServerInfo.mockReturnValue({
+      ...SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES,
+      capabilities: {
+        ...SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES.capabilities,
+        history: {
+          excluded_resources: [{ bucket: "other-bucket" }],
+        },
+      },
+    });
+    renderWithRouter(<CollectionCompare />, {
+      route:
+        "/buckets/main-bucket/collections/main-collection/compare?target=other-bucket/col1@1420070400100",
+      path: "/buckets/:bid/collections/:cid/compare",
+      initialEntries: [
+        "/buckets/:bid/collections/:cid/compare?target=other-bucket/col1@1420070400100",
+      ],
+    });
+    expect(screen.getByTestId("timestampSelect")).toBeDisabled();
+    expect(screen.getByTestId("timestampSelect")).toHaveValue("");
+  });
+
+  it("should empty timestamp value when collection is changed", async () => {
+    renderWithRouter(<CollectionCompare />, {
+      route:
+        "/buckets/main-bucket/collections/main-collection/compare?target=other-bucket/col1@1420070400100",
+      path: "/buckets/:bid/collections/:cid/compare",
+      initialEntries: [
+        "/buckets/:bid/collections/:cid/compare?target=other-bucket/col1@1420070400100",
+      ],
+    });
+
+    await waitFor(() =>
+      expect(screen.queryByTestId("spinner")).not.toBeInTheDocument()
+    );
+    expect(screen.getByTestId("timestampSelect")).toHaveValue("1420070400100");
+
+    const collectionSelect = await screen.findByLabelText("Collection");
+    fireEvent.change(collectionSelect, { target: { value: "col2" } });
+
+    expect(screen.getByTestId("timestampSelect")).toHaveValue("");
+  });
 });
