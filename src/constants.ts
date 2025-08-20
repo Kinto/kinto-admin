@@ -27,7 +27,9 @@ export const SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES = {
   capabilities: {
     signer: {},
     openid: {},
-    history: {},
+    history: {
+      excluded_resources: [],
+    },
     ...DEFAULT_SERVERINFO.capabilities,
   },
 };
