@@ -2,16 +2,11 @@ import AdminLink from "./AdminLink";
 import PaginatedTable from "./PaginatedTable";
 import Spinner from "./Spinner";
 import { getClient } from "@src/client";
-import { notifyError } from "@src/hooks/notifications";
 import { useShowNonHumans, useShowSignerPlugin } from "@src/hooks/preferences";
 import { useServerInfo } from "@src/hooks/session";
-import type {
-  HistoryFilters,
-  RecordData,
-  ResourceHistoryEntry,
-} from "@src/types";
+import type { HistoryFilters, ResourceHistoryEntry } from "@src/types";
 import { diffJson, humanDate, timeago } from "@src/utils";
-import { omit, sortHistoryEntryPermissions } from "@src/utils";
+import { sortHistoryEntryPermissions } from "@src/utils";
 import React, { useState } from "react";
 import {
   ArrowClockwise,
@@ -28,7 +23,6 @@ import {
   Trash,
 } from "react-bootstrap-icons";
 import { EyeSlash } from "react-bootstrap-icons";
-import { SkipStart } from "react-bootstrap-icons";
 
 function Diff({ source, target }: { source: any; target: any }) {
   const diff = diffJson(source, target);
@@ -65,34 +59,13 @@ function fetchPreviousVersion(
     .then(({ data }) => data[0]);
 }
 
-function fetchCollectionStateAt(
-  bid: string,
-  cid: string,
-  timestamp?: string
-): Promise<object[]> {
-  const coll = getClient().bucket(bid).collection(cid);
-  const query = timestamp ? { at: parseInt(timestamp, 10) } : {};
-  return coll.listRecords(query).then(({ data: records }) => {
-    // clean entries for easier review
-    return records
-      .map(record => omit(record, ["last_modified", "schema"]))
-      .sort((a, b) => (a.id > b.id ? 1 : -1));
-  });
-}
-
 interface HistoryRowProps {
   bid: string;
   entry: ResourceHistoryEntry;
   pos: number;
-  enableDiffOverview: boolean;
 }
 
-function HistoryRow({
-  bid,
-  entry,
-  pos,
-  enableDiffOverview = false,
-}: HistoryRowProps) {
+function HistoryRow({ bid, entry, pos }: HistoryRowProps) {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [previous, setPrevious] = useState(null);
@@ -242,19 +215,6 @@ function HistoryRow({
         </td>
         <td>{user_id}</td>
         <td className="text-center">
-          {resource_name === "record" && enableDiffOverview && pos !== 0 && (
-            <span>
-              <AdminLink
-                className="btn btn-sm btn-secondary"
-                title="Start history log from this point"
-                name="collection:history"
-                params={{ bid, cid }}
-                query={{ since: last_modified, resource_name: "record" }}
-              >
-                <SkipStart className="icon" />
-              </AdminLink>{" "}
-            </span>
-          )}
           <a
             href="."
             className="btn btn-sm btn-secondary"
@@ -287,78 +247,6 @@ function HistoryRow({
   );
 }
 
-interface FilterInfoProps {
-  since: string;
-  enableDiffOverview: boolean;
-  onViewJournalClick: () => void;
-  onDiffOverviewClick: (timestamp: string) => void;
-}
-
-function FilterInfo(props: FilterInfoProps) {
-  const { since, enableDiffOverview, onViewJournalClick, onDiffOverviewClick } =
-    props;
-
-  return (
-    <p>
-      Since {since ? humanDate(since) : ""}.{" "}
-      <a
-        href="#"
-        onClick={event => {
-          event.preventDefault();
-          onViewJournalClick();
-        }}
-      >
-        List view
-      </a>
-      {enableDiffOverview && since != null && (
-        <span>
-          {" | "}
-          <a
-            href="#"
-            onClick={event => {
-              event.preventDefault();
-              onDiffOverviewClick(since);
-            }}
-          >
-            Diff view
-          </a>
-        </span>
-      )}
-    </p>
-  );
-}
-
-interface DiffOverviewProps {
-  source: RecordData[];
-  target: RecordData[];
-  since: string;
-}
-
-function DiffOverview({ source, target, since }: DiffOverviewProps) {
-  if (!source || !target) {
-    // When something goes wrong while retrieving history (notification is shown).
-    return null;
-  }
-
-  return (
-    <div>
-      <div className="alert alert-info">
-        <p>
-          This diff overview is computed against the current list of records in
-          this collection and the list it contained on <b>{humanDate(since)}</b>
-          .
-        </p>
-        <p>
-          <b>Note:</b> <code>last_modified</code> and <code>schema</code> record
-          metadata are omitted for easier review.
-        </p>
-      </div>
-
-      <Diff source={source} target={target} />
-    </div>
-  );
-}
-
 interface HistoryTableProps {
   bid: string;
   cid?: string;
@@ -366,7 +254,6 @@ interface HistoryTableProps {
   historyLoaded: boolean;
   hasNextHistory: boolean;
   listNextHistory?;
-  enableDiffOverview?: boolean;
   initialFilters?: HistoryFilters;
   onFiltersChange: (filters: HistoryFilters) => void;
 }
@@ -380,13 +267,8 @@ export default function HistoryTable({
   listNextHistory,
   onFiltersChange,
   initialFilters = undefined,
-  enableDiffOverview = false,
 }: HistoryTableProps) {
-  const [diffOverview, setDiffOverview] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [busy, setBusy] = useState(false);
-  const [current, setCurrent] = useState(null);
-  const [previous, setPrevious] = useState(null);
 
   const serverInfo = useServerInfo();
 
@@ -440,33 +322,6 @@ export default function HistoryTable({
     setLoading(false);
   };
 
-  const onDiffOverviewClick = async since => {
-    if (!enableDiffOverview || cid == null) {
-      return;
-    }
-    setBusy(true);
-    setDiffOverview(true);
-    try {
-      const fetchedCurrent = await fetchCollectionStateAt(bid, cid);
-      setCurrent(fetchedCurrent);
-      const fetchedPrevious = await fetchCollectionStateAt(bid, cid, since);
-      setPrevious(fetchedPrevious);
-      setBusy(false);
-    } catch (err) {
-      notifyError("Couldn't compute records list diff overview", err);
-      setDiffOverview(false);
-      setBusy(false);
-      setCurrent(null);
-      setPrevious(null);
-    }
-  };
-
-  const onViewJournalClick = () => {
-    setDiffOverview(false);
-    setCurrent(null);
-    setPrevious(null);
-  };
-
   const thead = (
     <thead>
       <tr>
@@ -490,15 +345,7 @@ export default function HistoryTable({
         </tr>
       ) : (
         history.map((entry, index) => {
-          return (
-            <HistoryRow
-              key={index}
-              pos={index}
-              enableDiffOverview={enableDiffOverview}
-              bid={bid}
-              entry={entry}
-            />
-          );
+          return <HistoryRow key={index} pos={index} bid={bid} entry={entry} />;
         })
       )}
     </tbody>
@@ -537,32 +384,14 @@ export default function HistoryTable({
           </label>
         </div>
       )}
-      {!!initialFilters?.since && (
-        <FilterInfo
-          since={initialFilters?.since}
-          enableDiffOverview={enableDiffOverview}
-          onDiffOverviewClick={onDiffOverviewClick}
-          onViewJournalClick={onViewJournalClick}
-        />
-      )}
-      {busy ? (
-        <Spinner />
-      ) : diffOverview ? (
-        <DiffOverview
-          since={initialFilters?.since}
-          source={previous}
-          target={current}
-        />
-      ) : (
-        <PaginatedTable
-          colSpan={6}
-          thead={thead}
-          tbody={tbody}
-          dataLoaded={historyLoaded}
-          hasNextPage={hasNextHistory}
-          listNextPage={nextHistoryWrapper}
-        />
-      )}
+      <PaginatedTable
+        colSpan={6}
+        thead={thead}
+        tbody={tbody}
+        dataLoaded={historyLoaded}
+        hasNextPage={hasNextHistory}
+        listNextPage={nextHistoryWrapper}
+      />
     </div>
   );
 }

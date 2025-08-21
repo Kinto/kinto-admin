@@ -7,15 +7,13 @@ import { getClient } from "@src/client";
 import Spinner from "@src/components/Spinner";
 import CollectionTabs from "@src/components/collection/CollectionTabs";
 import { useCollection } from "@src/hooks/collection";
-import { useSimpleReview } from "@src/hooks/preferences";
 import { useRecordList } from "@src/hooks/record";
 import { useAuth, usePermissions, useServerInfo } from "@src/hooks/session";
 import { useSignoff } from "@src/hooks/signoff";
 import { canEditCollection } from "@src/permission";
 import type { RecordData, SignoffSourceInfo } from "@src/types";
 import React from "react";
-import { Shuffle } from "react-bootstrap-icons";
-import { Navigate, useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 interface SignedCollectionRecordDiffViewProps {
   collectionData: SignoffSourceInfo;
@@ -51,7 +49,6 @@ function SignedCollectionRecordDiffView({
 export default function SimpleReview() {
   const { bid, cid } = useParams();
   const collection = useCollection(bid, cid);
-  const [simpleReview, setSimpleReview] = useSimpleReview();
   const serverInfo = useServerInfo();
   const auth = useAuth();
   const permissions = usePermissions();
@@ -70,10 +67,6 @@ export default function SimpleReview() {
 
   if (!signoff) {
     return null;
-  }
-
-  if (!simpleReview) {
-    return <Navigate to={`/buckets/${bid}/collections/${cid}/records`} />;
   }
 
   if (!auth) {
@@ -175,18 +168,6 @@ export default function SimpleReview() {
           newRecords={newRecords.data ?? []}
           displayFields={collection?.displayFields || []}
         />
-        <button
-          type="button"
-          className="btn btn-secondary"
-          onClick={() => {
-            setSimpleReview(false);
-          }}
-          style={{
-            float: "right",
-          }}
-        >
-          <Shuffle className="icon" /> Switch to Legacy Review UI
-        </button>
       </>
     );
   };

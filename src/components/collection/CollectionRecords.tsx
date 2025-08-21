@@ -1,15 +1,12 @@
 import CollectionTabs from "./CollectionTabs";
 import RecordTable from "./RecordTable";
 import { ListActions } from "./RecordTable";
-import AdminLink from "@src/components/AdminLink";
 import Spinner from "@src/components/Spinner";
 import { DEFAULT_SORT } from "@src/constants";
 import { useCollection } from "@src/hooks/collection";
-import { useSimpleReview } from "@src/hooks/preferences";
 import { useRecordList } from "@src/hooks/record";
 import { useServerInfo } from "@src/hooks/session";
 import React, { useEffect, useState } from "react";
-import { Shuffle } from "react-bootstrap-icons";
 import { useParams } from "react-router";
 
 export default function CollectionRecords() {
@@ -19,8 +16,6 @@ export default function CollectionRecords() {
   const [cacheVal, setCacheVal] = useState(0);
   const collection = useCollection(bid, cid, cacheVal);
   const records = useRecordList(bid, cid, sort, false, cacheVal);
-
-  const [simpleReview, setSimpleReview] = useSimpleReview();
 
   useEffect(() => {
     if (!serverInfo || !collection?.last_modified) {
@@ -53,22 +48,6 @@ export default function CollectionRecords() {
         selected="records"
         totalRecords={records?.totalRecords}
       >
-        {serverInfo?.capabilities.signer && !simpleReview && (
-          <AdminLink
-            className="btn btn-secondary"
-            params={{ bid, cid }}
-            name="collection:simple-review"
-            onClick={() => {
-              setSimpleReview(true);
-            }}
-            style={{
-              float: "right",
-              marginTop: "0em",
-            }}
-          >
-            <Shuffle className="icon" /> Switch to Default Review UI
-          </AdminLink>
-        )}
         {listActions}
         {!collection?.id || !records.data ? (
           <Spinner />

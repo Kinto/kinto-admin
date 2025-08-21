@@ -16,17 +16,6 @@ describe("preferences hooks", () => {
     });
   });
 
-  describe("useSimpleReview", () => {
-    it("returns storage val and setVal", async () => {
-      const setValMock = vi.fn();
-      mock.mockReturnValue([false, setValMock]);
-      const [val, setVal] = preferencesHooks.useSimpleReview();
-      setVal(true);
-      expect(val).toBe(false);
-      expect(setValMock).toHaveBeenCalledWith(true);
-    });
-  });
-
   describe("useSidebarFilter", () => {
     it("returns storage val and setVal", async () => {
       const setValMock = vi.fn();

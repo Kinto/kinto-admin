@@ -5,11 +5,6 @@ export function useShowSidebar(): [boolean, (boolean) => void] {
   return [val, setVal] as [boolean, (boolean) => void];
 }
 
-export function useSimpleReview(): [boolean, (boolean) => void] {
-  const [val, setVal] = useLocalStorage("useSimpleReview", true);
-  return [val, setVal] as [boolean, (boolean) => void];
-}
-
 export function useSidebarFilter(): [string, (string) => void] {
   const [val, setVal] = useLocalStorage("sidebarFilter", null);
   return [val, setVal] as [string, (string) => void];
