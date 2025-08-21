@@ -19,7 +19,7 @@ import type {
   SignoffSourceInfo,
 } from "@src/types";
 import React, { useEffect, useState } from "react";
-import { ChatLeft, XCircleFill } from "react-bootstrap-icons";
+import { ChatLeft } from "react-bootstrap-icons";
 import { useParams } from "react-router";
 
 function isEditor(source, serverInfo) {
@@ -64,18 +64,6 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
     });
     setCacheVal(cacheVal + 1);
     callback();
-  };
-
-  const rollbackChanges = async (text: string) => {
-    try {
-      await reviewAction({
-        status: "to-rollback",
-        last_editor_comment: text,
-      });
-      notifySuccess("Changes rolled back.");
-    } catch (ex) {
-      notifyError("Couldn't rollback changes", ex);
-    }
   };
 
   const declineChanges = async (text: string) => {
@@ -129,7 +117,6 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
     ((isReviewer(source, serverInfo) &&
       !hasRequestedReview(source, serverInfo)) ||
       !toReviewEnabled(serverInfo, source, destination));
-  const canRollback = canEdit;
 
   const isCurrentUrl = source.bucket == bid && source.collection == cid;
   const currentStep = Math.max(
@@ -176,28 +163,11 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
         />
       </ProgressBar>
 
-      {canRollback && source.status != "signed" && (
-        <RollbackChangesButton
-          onClick={() => {
-            setPendingConfirm("rollback");
-          }}
-        />
-      )}
       {pendingConfirm == "review" && (
         <CommentDialog
           description="Leave some notes for the reviewer:"
           confirmLabel="Request review"
           onConfirm={requestReview}
-          onClose={() => {
-            setPendingConfirm("");
-          }}
-        />
-      )}
-      {pendingConfirm == "rollback" && (
-        <CommentDialog
-          description="This will reset the collection to the latest approved content. All pending changes will be lost. Are you sure?"
-          confirmLabel="Rollback changes"
-          onConfirm={rollbackChanges}
           onClose={() => {
             setPendingConfirm("");
           }}
@@ -316,15 +286,6 @@ function RequestReviewButton(props: { onClick: () => void }) {
   return (
     <button className="btn btn-info request-review" onClick={onClick}>
       <ChatLeft className="icon" /> Request review...
-    </button>
-  );
-}
-
-function RollbackChangesButton(props: { onClick: () => void }) {
-  const { onClick } = props;
-  return (
-    <button className="btn btn-danger rollback-changes" onClick={onClick}>
-      <XCircleFill className="icon" /> Rollback changes...
     </button>
   );
 }
