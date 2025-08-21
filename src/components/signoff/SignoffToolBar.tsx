@@ -9,7 +9,6 @@ import { isMember, toReviewEnabled } from "./utils";
 import { getClient } from "@src/client";
 import { useCollection } from "@src/hooks/collection";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
-import { useSimpleReview } from "@src/hooks/preferences";
 import { usePermissions, useServerInfo } from "@src/hooks/session";
 import { useSignoff } from "@src/hooks/signoff";
 import { canEditCollection } from "@src/permission";
@@ -55,7 +54,6 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
     cacheVal
   );
   const [pendingConfirm, setPendingConfirm] = useState("");
-  const [simpleReview] = useSimpleReview();
 
   const reviewAction = async patchedFields => {
     setShowSpinner(true);
@@ -77,18 +75,6 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
       notifySuccess("Changes rolled back.");
     } catch (ex) {
       notifyError("Couldn't rollback changes", ex);
-    }
-  };
-
-  const approveChanges = async () => {
-    try {
-      await reviewAction({
-        status: "to-sign",
-        last_reviewer_comment: "",
-      });
-      notifySuccess("Changes approved.");
-    } catch (ex) {
-      notifyError("Couldn't approve review", ex);
     }
   };
 
@@ -144,7 +130,6 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
       !hasRequestedReview(source, serverInfo)) ||
       !toReviewEnabled(serverInfo, source, destination));
   const canRollback = canEdit;
-  const hasHistory = serverInfo && "history" in serverInfo.capabilities;
 
   const isCurrentUrl = source.bucket == bid && source.collection == cid;
   const currentStep = Math.max(
@@ -154,27 +139,6 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
 
   return (
     <div className={isCurrentUrl ? "interactive" : "informative"}>
-      {hasHistory ? null : (
-        <div className="alert alert-warning">
-          <p>
-            <b>
-              Plugin which tracks history of changes is not enabled on this
-              server.
-            </b>
-            Please reach to the server administrator.
-          </p>
-        </div>
-      )}
-      {!simpleReview && (
-        <div className="alert alert-warning">
-          <p>⚠️ This legacy review UI will be removed in the next versions.</p>
-          <p>
-            If you still rely on it actively, please contact the development
-            team to make sure your workflows will be well supported in the
-            future design.
-          </p>
-        </div>
-      )}
       <ProgressBar>
         <WorkInProgress
           label="Work in progress"
@@ -182,7 +146,6 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
           currentStep={currentStep}
           isCurrentUrl={isCurrentUrl}
           canEdit={canRequestReview}
-          hasHistory={hasHistory}
           confirmRequestReview={() => {
             setPendingConfirm("review");
           }}
@@ -197,11 +160,6 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
             !!preview && preview.bucket == bid && preview.collection == cid
           }
           canEdit={canReview}
-          hasHistory={hasHistory}
-          approveChanges={approveChanges}
-          confirmDeclineChanges={() => {
-            setPendingConfirm("decline");
-          }}
           source={source}
           preview={preview}
           changes={changesOnPreview}
@@ -272,7 +230,6 @@ interface WorkInProgressProps {
   isCurrentUrl: boolean;
   confirmRequestReview: () => void;
   source: SignoffSourceInfo;
-  hasHistory: boolean;
   changes: ChangesList | null;
 }
 
@@ -285,7 +242,6 @@ function WorkInProgress(props: WorkInProgressProps) {
     isCurrentUrl,
     confirmRequestReview,
     source,
-    hasHistory,
     changes,
   } = props;
 
@@ -297,7 +253,6 @@ function WorkInProgress(props: WorkInProgressProps) {
         isCurrentStep={isCurrentStep}
         isCurrentUrl={isCurrentUrl}
         source={source}
-        hasHistory={hasHistory}
         changes={changes}
       />
       {isCurrentStep && source.lastEditDate && canEdit && (
@@ -311,11 +266,10 @@ interface WorkInProgressInfosProps {
   isCurrentStep: boolean;
   isCurrentUrl: boolean;
   source: SignoffSourceInfo;
-  hasHistory: boolean;
   changes: ChangesList | null;
 }
 function WorkInProgressInfos(props: WorkInProgressInfosProps) {
-  const { isCurrentStep, isCurrentUrl, source, hasHistory, changes } = props;
+  const { isCurrentStep, isCurrentUrl, source, changes } = props;
   const { bucket, collection, lastEditBy, lastEditDate, lastReviewerComment } =
     source;
   if (!lastEditDate) {
@@ -351,12 +305,7 @@ function WorkInProgressInfos(props: WorkInProgressInfosProps) {
         </li>
       )}
       {isCurrentStep && changes && (
-        <DiffInfo
-          hasHistory={hasHistory}
-          bid={bucket}
-          cid={collection}
-          changes={changes}
-        />
+        <DiffInfo bid={bucket} cid={collection} changes={changes} />
       )}
     </ul>
   );

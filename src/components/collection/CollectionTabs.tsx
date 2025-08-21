@@ -1,5 +1,4 @@
 import AdminLink from "@src/components/AdminLink";
-import { useSimpleReview } from "@src/hooks/preferences";
 import { useServerInfo } from "@src/hooks/session";
 import React from "react";
 import {
@@ -32,7 +31,6 @@ export default function CollectionTabs({
   children,
   totalRecords,
 }: Props) {
-  const [simpleReview] = useSimpleReview();
   const serverInfo = useServerInfo();
 
   return (
@@ -55,7 +53,7 @@ export default function CollectionTabs({
               Records {totalRecords ? `(${totalRecords})` : null}
             </AdminLink>
           </li>
-          {serverInfo?.capabilities.signer && simpleReview && (
+          {serverInfo?.capabilities.signer && (
             <li
               className="nav-item"
               role="presentation"
