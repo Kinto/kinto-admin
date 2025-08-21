@@ -43,3 +43,10 @@ export function useShowSignerPlugin(
   const [val, setVal] = useLocalStorage("showSignerPlugin", byDefault);
   return [val, setVal] as [boolean, (boolean) => void];
 }
+
+export function useUnifiedDiff(
+  byDefault: boolean
+): [boolean, (boolean) => void] {
+  const [val, setVal] = useLocalStorage("unifiedDiff", byDefault);
+  return [val, setVal] as [boolean, (boolean) => void];
+}
