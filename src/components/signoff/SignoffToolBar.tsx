@@ -274,9 +274,7 @@ function WorkInProgressInfos(props: WorkInProgressInfosProps) {
           </AdminLink>
         </li>
       )}
-      {isCurrentStep && changes && (
-        <DiffInfo bid={bucket} cid={collection} changes={changes} />
-      )}
+      {isCurrentStep && changes && <DiffInfo changes={changes} />}
     </ul>
   );
 }

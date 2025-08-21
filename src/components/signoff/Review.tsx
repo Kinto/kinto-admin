@@ -81,13 +81,8 @@ interface ReviewInfosProps {
 
 function ReviewInfos(props: ReviewInfosProps) {
   const { isCurrentStep, source, link, changes, isCurrentUrl } = props;
-  const {
-    bucket,
-    collection,
-    lastReviewRequestBy,
-    lastReviewRequestDate,
-    lastEditorComment,
-  } = source;
+  const { lastReviewRequestBy, lastReviewRequestDate, lastEditorComment } =
+    source;
   return (
     <ul>
       <li>
@@ -107,19 +102,13 @@ function ReviewInfos(props: ReviewInfosProps) {
           <strong>Preview: </strong> {link}
         </li>
       )}
-      {isCurrentStep && changes && (
-        <DiffInfo bid={bucket} cid={collection} changes={changes} />
-      )}
+      {isCurrentStep && changes && <DiffInfo changes={changes} />}
     </ul>
   );
 }
 
-export function DiffInfo(props: {
-  bid: string;
-  cid: string;
-  changes: ChangesList;
-}) {
-  const { bid, cid, changes } = props;
+export function DiffInfo(props: { changes: ChangesList }) {
+  const { changes } = props;
   const { deleted = 0, updated = 0 } = changes || {};
   if (deleted === 0 && updated === 0) {
     return null;
@@ -130,14 +119,7 @@ export function DiffInfo(props: {
       <span className="diffstats">
         {updated > 0 && <span className="text-green">+{updated}</span>}
         {deleted > 0 && <span className="text-red">-{deleted}</span>}
-      </span>{" "}
-      <AdminLink
-        className="btn btn-info"
-        params={{ bid, cid }}
-        name="collection:simple-review"
-      >
-        <Braces className="icon" /> details...
-      </AdminLink>
+      </span>
     </li>
   );
 }
