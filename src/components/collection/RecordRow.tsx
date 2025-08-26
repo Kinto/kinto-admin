@@ -3,7 +3,7 @@ import AdminLink from "@src/components/AdminLink";
 import { useAuth } from "@src/hooks/session";
 import type { RecordData } from "@src/types";
 import { buildAttachmentUrl, renderDisplayField, timeago } from "@src/utils";
-import React from "react";
+import React, { useRef } from "react";
 import { Dropdown } from "react-bootstrap";
 import {
   ClipboardCheck,
@@ -37,6 +37,7 @@ export default function RecordRow({
 }: RowProps) {
   const navigate = useNavigate();
   const auth = useAuth();
+  const toggle = useRef();
 
   const lastModified = () => {
     const lastModified = record.last_modified;
@@ -111,6 +112,7 @@ export default function RecordRow({
             style={{
               margin: "1pt",
             }}
+            ref={toggle}
           />
           <Dropdown.Menu
             style={{
@@ -142,15 +144,18 @@ export default function RecordRow({
             >
               <Lock className="icon" /> Edit Permissions
             </AdminLink>
-            <Dropdown.Item
+            <button
+              className="dropdown-item"
               onClick={() => {
                 navigator.clipboard.writeText(
                   `${auth.server}/buckets/${bid}/collections/${cid}/records/${record.id}`
                 );
+                // @ts-expect-error
+                toggle.current.click();
               }}
             >
               <ClipboardCheck className="icon" /> Copy Link to Clipboard
-            </Dropdown.Item>
+            </button>
           </Dropdown.Menu>
         </Dropdown>
       </td>

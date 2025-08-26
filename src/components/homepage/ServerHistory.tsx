@@ -1,7 +1,7 @@
 import { ANONYMOUS_AUTH } from "@src/constants";
 import { clearServersHistory } from "@src/hooks/servers";
 import { debounce } from "@src/utils";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import FormControl from "react-bootstrap/FormControl";
@@ -25,10 +25,16 @@ const debounceMillis = 400;
 
 export default function ServerHistory(props: ServerHistoryProps) {
   const [value, setValue] = useState(props.value);
+  const toggleRef = useRef();
+  const toggleDropdown = () => {
+    // @ts-expect-error
+    toggleRef.current.click();
+  };
 
   const select = useCallback(
     server => event => {
       event.preventDefault();
+      toggleDropdown();
       props.onChange(server);
       debouncedFetchServerInfo(server);
       setValue(server);
@@ -39,6 +45,7 @@ export default function ServerHistory(props: ServerHistoryProps) {
   const clear = useCallback(
     event => {
       event.preventDefault();
+      toggleDropdown();
       clearServersHistory();
     },
     [props]
@@ -92,22 +99,27 @@ export default function ServerHistory(props: ServerHistoryProps) {
         variant="outline-secondary"
         title="Servers"
         disabled={disabled}
+        ref={toggleRef}
       >
         {servers.length === 0 ? (
-          <Dropdown.Item>
+          <button className="dropdown-item">
             <em>No server history</em>
-          </Dropdown.Item>
+          </button>
         ) : (
           servers.map(({ server }, key) => (
-            <Dropdown.Item key={key} onClick={select(server)}>
+            <button
+              className="dropdown-item"
+              key={key}
+              onClick={select(server)}
+            >
               {server}
-            </Dropdown.Item>
+            </button>
           ))
         )}
         <Dropdown.Divider />
-        <Dropdown.Item href="#" onClick={clear}>
+        <button className="dropdown-item" onClick={clear}>
           Clear
-        </Dropdown.Item>
+        </button>
       </DropdownButton>
     </InputGroup>
   );
