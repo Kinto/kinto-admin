@@ -37,7 +37,7 @@ export default function RecordRow({
 }: RowProps) {
   const navigate = useNavigate();
   const auth = useAuth();
-  const toggle = useRef();
+  const toggle = useRef<HTMLButtonElement>();
 
   const lastModified = () => {
     const lastModified = record.last_modified;
@@ -150,7 +150,6 @@ export default function RecordRow({
                 navigator.clipboard.writeText(
                   `${auth.server}/buckets/${bid}/collections/${cid}/records/${record.id}`
                 );
-                // @ts-expect-error
                 toggle.current.click();
               }}
             >

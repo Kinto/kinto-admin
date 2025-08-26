@@ -25,9 +25,8 @@ const debounceMillis = 400;
 
 export default function ServerHistory(props: ServerHistoryProps) {
   const [value, setValue] = useState(props.value);
-  const toggleRef = useRef();
+  const toggleRef = useRef<HTMLButtonElement>();
   const toggleDropdown = () => {
-    // @ts-expect-error
     toggleRef.current.click();
   };
 
