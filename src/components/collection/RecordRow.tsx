@@ -38,7 +38,7 @@ export default function RecordRow({
 }: RowProps) {
   const navigate = useNavigate();
   const auth = useAuth();
-  const toggle = useRef<HTMLButtonElement>();
+  const toggle = useRef<HTMLButtonElement>(null);
 
   const onDoubleClick = (event: React.MouseEvent) => {
     event.preventDefault();
