@@ -15,6 +15,7 @@ import {
   CheckCircleFill,
   CheckSquare,
   Eye,
+  FileDiff,
   FileEarmark,
   Folder2,
   Justify,
@@ -215,15 +216,27 @@ function HistoryRow({ bid, entry, pos }: HistoryRowProps) {
           </AdminLink>
         </td>
         <td>{user_id}</td>
-        <td className="text-center">
-          <a
-            href="."
-            className="btn btn-sm btn-secondary"
-            onClick={toggle}
-            title="View entry details"
-          >
-            {open ? <EyeSlash className="icon" /> : <Eye className="icon" />}
-          </a>
+        <td className="actions">
+          <div className="btn-group">
+            <button
+              className="btn btn-sm btn-secondary"
+              onClick={toggle}
+              title="View entry details"
+            >
+              {open ? <EyeSlash className="icon" /> : <Eye className="icon" />}
+            </button>
+            {resource_name == "record" ? (
+              <AdminLink
+                name="collection:compare"
+                params={{ bid, cid }}
+                query={`target=${bid}/${cid}@${last_modified}`}
+                className="btn btn-sm btn-secondary"
+                title="Compare with this version"
+              >
+                <FileDiff className="icon" />
+              </AdminLink>
+            ) : null}
+          </div>
         </td>
       </tr>
       {open ? (
