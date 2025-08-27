@@ -336,6 +336,7 @@ export interface SignoffCollectionsInfo {
   source: SignoffSourceInfo;
   destination: SignerCapabilityResourceEntry;
   preview?: SignerCapabilityResourceEntry;
+
   // List of changes, present or absent depending on status.
   // If work-in-progress, show changes since the last review request. It will be
   // null if no changes were made.
@@ -366,6 +367,7 @@ export type SignoffCollectionStatus =
   | "work-in-progress";
 
 export type SignoffSourceInfo = SignerCapabilityResourceEntry & {
+  isLoading: boolean;
   // Full info once we fetch attributes from server
   status?: SignoffCollectionStatus;
   lastEditBy?: string;

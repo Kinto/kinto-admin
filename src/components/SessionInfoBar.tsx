@@ -1,4 +1,3 @@
-import Spinner from "./Spinner";
 import { getAuthHeader } from "@src/client";
 import { useHeartbeat } from "@src/hooks/heartbeat";
 import { notifySuccess } from "@src/hooks/notifications";
@@ -21,7 +20,11 @@ export function SessionInfoBar() {
   const serverInfo = useServerInfo();
 
   if (!serverInfo) {
-    return <Spinner />;
+    return (
+      <div className="top-info-bar" data-testid="sessionInfo-bar">
+        <h1 className="kinto-admin-title">&nbsp;</h1>
+      </div>
+    );
   }
   const { url, project_name, project_docs, user } = serverInfo;
 
