@@ -1,8 +1,9 @@
+import HumanDate from "../HumanDate";
 import { CommonProps } from "./commonPropTypes";
 import AdminLink from "@src/components/AdminLink";
 import { useAuth } from "@src/hooks/session";
 import type { RecordData } from "@src/types";
-import { buildAttachmentUrl, renderDisplayField, timeago } from "@src/utils";
+import { buildAttachmentUrl, renderDisplayField } from "@src/utils";
 import React from "react";
 import { Dropdown } from "react-bootstrap";
 import {
@@ -38,17 +39,6 @@ export default function RecordRow({
   const navigate = useNavigate();
   const auth = useAuth();
 
-  const lastModified = () => {
-    const lastModified = record.last_modified;
-    if (!lastModified) {
-      return null;
-    }
-    const date = new Date(lastModified);
-    return date.toJSON() == null ? null : (
-      <span title={date.toISOString()}>{timeago(date.getTime())}</span>
-    );
-  };
-
   const onDoubleClick = (event: React.MouseEvent) => {
     event.preventDefault();
     const { id: rid } = record;
@@ -76,7 +66,9 @@ export default function RecordRow({
           {renderDisplayField(record, displayField)}
         </td>
       ))}
-      <td className="lastmod">{lastModified()}</td>
+      <td className="lastmod">
+        <HumanDate timestamp={record.last_modified} />
+      </td>
       <td className="actions" data-testid={`${rid}-actions`}>
         <AdminLink
           name="record:attributes"

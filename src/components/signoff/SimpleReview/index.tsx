@@ -68,10 +68,6 @@ export default function SimpleReview() {
   const newRecords = useRecordList(sourceBid, sourceCid, "id", true);
   const oldRecords = useRecordList(destBid, destCid, "id", true);
 
-  if (!signoff) {
-    return null;
-  }
-
   if (!simpleReview) {
     return <Navigate to={`/buckets/${bid}/collections/${cid}/records`} />;
   }
@@ -82,27 +78,14 @@ export default function SimpleReview() {
         Not authenticated
       </div>
     );
-  } else if (
-    signoff?.source && // Always true
-    !("status" in signoff.source) && // "status" is set after loading.
-    !newRecords?.data &&
-    !oldRecords?.data
-  ) {
-    return <Spinner />;
   }
 
-  // At this point, signoff is loaded (not null and with `status` field)
-  const signoffSource = signoff.source as SignoffSourceInfo;
-
-  const canReview = signoffSource
-    ? (isReviewer(signoffSource, serverInfo) &&
-        serverInfo?.user?.id !== signoffSource.lastReviewRequestBy) ||
-      !toReviewEnabled(serverInfo, signoffSource, signoffDest)
-    : false;
-
-  const canRequestReview =
-    canEditCollection(permissions, bid, cid) &&
-    isMember("editors_group", signoffSource, serverInfo);
+  const loadingServerInfo = !serverInfo;
+  const isSigned = !loadingServerInfo && signoff;
+  const loadingMetadata =
+    isSigned && (signoff.source as SignoffSourceInfo).isLoading;
+  const loadingRecords = isSigned && (!newRecords?.data || !oldRecords?.data);
+  const isLoading = loadingServerInfo || loadingMetadata || loadingRecords;
 
   const reviewAction = async patchedFields => {
     await getClient()
@@ -145,7 +128,9 @@ export default function SimpleReview() {
   };
 
   const SignoffContent = () => {
-    if (!signoffSource || !signoffSource?.status) {
+    // At this point everything is loaded.
+    if (!isSigned || !(signoff.source as SignoffSourceInfo).status) {
+      // Collection is not signed or missing reviews attribute.
       return (
         <div className="alert alert-warning">
           This collection does not support reviews, or you do not have
@@ -153,6 +138,18 @@ export default function SimpleReview() {
         </div>
       );
     }
+
+    const signoffSource = signoff.source as SignoffSourceInfo;
+
+    const canReview = signoffSource
+      ? (isReviewer(signoffSource, serverInfo) &&
+          serverInfo?.user?.id !== signoffSource.lastReviewRequestBy) ||
+        !toReviewEnabled(serverInfo, signoffSource, signoffDest)
+      : false;
+
+    const canRequestReview =
+      canEditCollection(permissions, bid, cid) &&
+      isMember("editors_group", signoffSource, serverInfo);
 
     return (
       <>
@@ -201,11 +198,7 @@ export default function SimpleReview() {
         Changes
       </h1>
       <CollectionTabs bid={bid} cid={cid} selected="simple-review">
-        {!oldRecords.data || !newRecords.data ? (
-          <Spinner />
-        ) : (
-          <SignoffContent />
-        )}
+        {isLoading ? <Spinner /> : <SignoffContent />}
       </CollectionTabs>
     </div>
   );

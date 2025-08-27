@@ -1,4 +1,5 @@
 import AdminLink from "./AdminLink";
+import HumanDate from "./HumanDate";
 import PaginatedTable from "./PaginatedTable";
 import Spinner from "./Spinner";
 import { getClient } from "@src/client";
@@ -10,7 +11,7 @@ import type {
   RecordData,
   ResourceHistoryEntry,
 } from "@src/types";
-import { diffJson, hasHistoryDisabled, humanDate, timeago } from "@src/utils";
+import { diffJson, hasHistoryDisabled, humanDate } from "@src/utils";
 import { omit, sortHistoryEntryPermissions } from "@src/utils";
 import React, { useState } from "react";
 import {
@@ -227,8 +228,8 @@ function HistoryRow({
   return (
     <React.Fragment>
       <tr>
-        <td>
-          <span title={humanDate(last_modified)}>{timeago(last_modified)}</span>
+        <td className="lastmod">
+          <HumanDate timestamp={last_modified} />
         </td>
         <td>{shownAction}</td>
         <td>{shownResource}</td>
