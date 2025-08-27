@@ -1,6 +1,6 @@
 import AdminLink from "../AdminLink";
-import HumanDate from "./HumanDate";
 import { ProgressStep } from "./ProgressBar";
+import HumanDate from "@src/components/HumanDate";
 import type {
   SignerCapabilityResourceEntry,
   SignoffSourceInfo,

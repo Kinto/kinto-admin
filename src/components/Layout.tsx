@@ -1,6 +1,8 @@
 import Breadcrumbs from "./Breadcrumbs";
 import { SessionInfoBar } from "./SessionInfoBar";
 import { CollectionCompare } from "./collection/CollectionCompare";
+import AuthCallback from "./homepage/AuthCallback";
+import AuthForm from "./homepage/AuthForm";
 import Notifications from "@src/components/Notifications";
 import { Sidebar } from "@src/components/Sidebar";
 import BucketAttributes from "@src/components/bucket/BucketAttributes";
@@ -27,14 +29,18 @@ import RecordHistory from "@src/components/record/RecordHistory";
 import { RecordPermissions } from "@src/components/record/RecordPermissions";
 import SimpleReview from "@src/components/signoff/SimpleReview";
 import { useShowSidebar } from "@src/hooks/preferences";
-import { useServerInfo } from "@src/hooks/session";
+import { useAuth } from "@src/hooks/session";
 import * as React from "react";
 import { LayoutSidebar, LayoutSidebarInset } from "react-bootstrap-icons";
-import { Route, Routes } from "react-router";
+import { Outlet, Route, Routes } from "react-router";
+
+function ProtectedLayout() {
+  const auth = useAuth();
+  if (!auth) return <AuthForm />;
+  return <Outlet />;
+}
 
 export function Layout() {
-  const serverInfo = useServerInfo();
-
   const [showSidebar, setShowSidebar] = useShowSidebar();
 
   const toggleSideBar = () => {
@@ -43,23 +49,6 @@ export function Layout() {
 
   const contentClasses = `col-sm-${showSidebar ? 9 : 12} content`;
   const version = KINTO_ADMIN_VERSION;
-
-  if (!serverInfo) {
-    return (
-      <div className="container-fluid main">
-        <Notifications />
-        <div className="row">
-          <div className="col-sm-3 sidebar"></div>
-          <div className={contentClasses}>
-            <Routes>
-              <Route path="/auth/:payload/:token" Component={HomePage} />
-              <Route path="/*" Component={HomePage} />
-            </Routes>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div>
@@ -91,89 +80,93 @@ export function Layout() {
             </button>
             <Breadcrumbs separator=" / " />
             <Routes>
-              <Route path="/" Component={HomePage} />
-              <Route path="/buckets" Component={BucketsList} />
-              <Route path="/auth/:payload/:token" Component={HomePage} />
-              {/* /buckets */}
-              <Route path="/buckets/create" Component={BucketCreate} />
-              <Route path="/buckets/:bid/groups" Component={BucketGroups} />
-              <Route
-                path="/buckets/:bid/groups/create"
-                Component={GroupCreate}
-              />
-              <Route
-                path="/buckets/:bid/groups/:gid/attributes?"
-                Component={GroupAttributes}
-              />
-              <Route
-                path="/buckets/:bid/groups/:gid/permissions"
-                Component={GroupPermissions}
-              />
-              <Route
-                path="/buckets/:bid/groups/:gid/history"
-                Component={GroupHistory}
-              />
-              <Route
-                path="/buckets/:bid/attributes"
-                Component={BucketAttributes}
-              />
-              <Route
-                path="/buckets/:bid/permissions"
-                Component={BucketPermissions}
-              />
-              <Route path="/buckets/:bid/history" Component={BucketHistory} />
-              <Route
-                path="/buckets/:bid/collections?"
-                Component={BucketCollections}
-              />
-              <Route
-                path="/buckets/:bid/collections/create"
-                Component={CollectionCreate}
-              />
-              <Route
-                path="/buckets/:bid/collections/:cid/attributes"
-                Component={CollectionAttributes}
-              />
-              <Route
-                path="/buckets/:bid/collections/:cid/permissions"
-                Component={CollectionPermissions}
-              />
-              <Route
-                path="/buckets/:bid/collections/:cid/history"
-                Component={CollectionHistory}
-              />
-              <Route
-                path="/buckets/:bid/collections/:cid/simple-review"
-                Component={SimpleReview}
-              />
-              <Route
-                path="/buckets/:bid/collections/:cid/compare"
-                Component={CollectionCompare}
-              />
-              <Route
-                path="/buckets/:bid/collections/:cid/records?"
-                Component={CollectionRecords}
-              />
-              <Route
-                path="/buckets/:bid/collections/:cid/records/create"
-                Component={RecordCreate}
-              />
-              <Route
-                path="/buckets/:bid/collections/:cid/records/bulk"
-                Component={RecordBulk}
-              />
-              <Route
-                path="/buckets/:bid/collections/:cid/records/:rid/attributes?"
-                Component={RecordAttributes}
-              />
-              <Route
-                path="/buckets/:bid/collections/:cid/records/:rid/permissions"
-                Component={RecordPermissions}
-              />
-              <Route
-                path="/buckets/:bid/collections/:cid/records/:rid/history"
-                Component={RecordHistory}
-              />
+              {/* Without auth */}
+              <Route path="/auth/:payload/:token" Component={AuthCallback} />
+              <Route element={<ProtectedLayout />}>
+                <Route path="/" Component={HomePage} />
+                <Route path="/buckets" Component={BucketsList} />
+                {/* /buckets */}
+                <Route path="/buckets/create" Component={BucketCreate} />
+                <Route path="/buckets/:bid/groups" Component={BucketGroups} />
+                <Route
+                  path="/buckets/:bid/groups/create"
+                  Component={GroupCreate}
+                />
+                <Route
+                  path="/buckets/:bid/groups/:gid/attributes?"
+                  Component={GroupAttributes}
+                />
+                <Route
+                  path="/buckets/:bid/groups/:gid/permissions"
+                  Component={GroupPermissions}
+                />
+                <Route
+                  path="/buckets/:bid/groups/:gid/history"
+                  Component={GroupHistory}
+                />
+                <Route
+                  path="/buckets/:bid/attributes"
+                  Component={BucketAttributes}
+                />
+                <Route
+                  path="/buckets/:bid/permissions"
+                  Component={BucketPermissions}
+                />
+                <Route path="/buckets/:bid/history" Component={BucketHistory} />
+                <Route
+                  path="/buckets/:bid/collections?"
+                  Component={BucketCollections}
+                />
+                <Route
+                  path="/buckets/:bid/collections/create"
+                  Component={CollectionCreate}
+                />
+                <Route
+                  path="/buckets/:bid/collections/:cid/attributes"
+                  Component={CollectionAttributes}
+                />
+                <Route
+                  path="/buckets/:bid/collections/:cid/permissions"
+                  Component={CollectionPermissions}
+                />
+                <Route
+                  path="/buckets/:bid/collections/:cid/history"
+                  Component={CollectionHistory}
+                />
+                <Route
+                  path="/buckets/:bid/collections/:cid/simple-review"
+                  Component={SimpleReview}
+                />
+                <Route
+                  path="/buckets/:bid/collections/:cid/compare"
+                  Component={CollectionCompare}
+                />
+                <Route
+                  path="/buckets/:bid/collections/:cid/records?"
+                  Component={CollectionRecords}
+                />
+                <Route
+                  path="/buckets/:bid/collections/:cid/records/create"
+                  Component={RecordCreate}
+                />
+                <Route
+                  path="/buckets/:bid/collections/:cid/records/bulk"
+                  Component={RecordBulk}
+                />
+                <Route
+                  path="/buckets/:bid/collections/:cid/records/:rid/attributes?"
+                  Component={RecordAttributes}
+                />
+                <Route
+                  path="/buckets/:bid/collections/:cid/records/:rid/permissions"
+                  Component={RecordPermissions}
+                />
+                <Route
+                  path="/buckets/:bid/collections/:cid/records/:rid/history"
+                  Component={RecordHistory}
+                />
+              </Route>
+
               <Route path="*" Component={_ => <h1>Page not found.</h1>} />
             </Routes>
           </div>

@@ -1,11 +1,12 @@
 import AdminLink from "./AdminLink";
+import HumanDate from "./HumanDate";
 import PaginatedTable from "./PaginatedTable";
 import Spinner from "./Spinner";
 import { getClient } from "@src/client";
 import { useShowNonHumans, useShowSignerPlugin } from "@src/hooks/preferences";
 import { useServerInfo } from "@src/hooks/session";
 import type { HistoryFilters, ResourceHistoryEntry } from "@src/types";
-import { diffJson, humanDate, timeago } from "@src/utils";
+import { diffJson, hasHistoryDisabled } from "@src/utils";
 import { sortHistoryEntryPermissions } from "@src/utils";
 import React, { useState } from "react";
 import {
@@ -200,8 +201,8 @@ function HistoryRow({ bid, entry, pos }: HistoryRowProps) {
   return (
     <React.Fragment>
       <tr>
-        <td>
-          <span title={humanDate(last_modified)}>{timeago(last_modified)}</span>
+        <td className="lastmod">
+          <HumanDate timestamp={last_modified} />
         </td>
         <td>{shownAction}</td>
         <td>{shownResource}</td>
@@ -301,14 +302,7 @@ export default function HistoryTable({
   const hasSigner = serverInfo && "signer" in serverInfo.capabilities;
 
   // If collection history was disabled from server configuration, just show a warning.
-  const wasDisabled = (
-    serverInfo.capabilities.history?.excluded_resources || []
-  ).some(
-    resource =>
-      resource.bucket == bid &&
-      (resource.collection == cid || !resource.collection)
-  );
-  if (wasDisabled) {
+  if (hasHistoryDisabled(serverInfo, bid, cid)) {
     return (
       <div className="alert alert-warning" data-testid="warning">
         <p>History was disabled for this collection in server configuration.</p>

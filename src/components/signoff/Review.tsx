@@ -1,7 +1,7 @@
 import AdminLink from "../AdminLink";
 import { Comment } from "./Comment";
-import HumanDate from "./HumanDate";
 import { ProgressStep } from "./ProgressBar";
+import HumanDate from "@src/components/HumanDate";
 import type {
   ChangesList,
   SignerCapabilityResourceEntry,
