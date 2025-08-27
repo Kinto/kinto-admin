@@ -140,6 +140,7 @@ export interface Notification {
   type: string;
   message: string;
   details: string[];
+  timeout?: number;
 }
 
 export type Notifications = Notification[];

@@ -576,44 +576,40 @@ form button[type="submit"].btn-primary {
   }
 }
 
-.notifications > div {
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.notifications {
+  position: absolute;
+  right: 1em;
+  top: 1em;
+  z-index: 999;
+}
+
+.notifications .toast-header {
+  font-weight: bold;
+  font-size: 20px;
+  padding-right: 3em;
+}
+
+.notifications .toast-body {
+  font-size: 16px;
+}
+
+.notifications .fade {
   top: 3em;
-}
-/*
- * react-bs-notifier uses Font Awesome: alias the classes to bootstrap icons instead.
- */
-i.fa {
-  position: relative;
-  top: 1px;
-  display: inline-block;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 1;
+  animation: fadeIn .5s;
 }
 
-i.fa:before {
-  display: inline-block;
-  content: "";
-  background-repeat: no-repeat;
-  background-size: 24px 24px;
-  width: 24px;
-  height: 24px;
+.notifications .close {
+  position: absolute;
+  right: .5em;
 }
 
-.fa.fa-check:before {
-  background-image: url("~bootstrap-icons/icons/check.svg");
-}
-
-.fa-exclamation-circle:before {
-  background-image: url("~bootstrap-icons/icons/exclamation-circle-fill.svg");
-}
-
-.fa-info:before {
-  background-image: url("~bootstrap-icons/icons/info-circle-fill.svg");
-}
-
-.fa-warning:before {
-  background-image: url("~bootstrap-icons/icons/exclamation-triangle-fill.svg");
+.notifications .bg-danger {
+  color: #fff;
 }
 
 .rjsf {
