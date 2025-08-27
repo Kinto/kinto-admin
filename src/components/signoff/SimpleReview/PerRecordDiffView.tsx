@@ -1,6 +1,7 @@
 import {
   useShowDiffAllLines,
   useShowDiffExtraFields,
+  useUnifiedDiff,
 } from "@src/hooks/preferences";
 import type { RecordData } from "@src/types";
 import { diffJson, omit, renderDisplayField } from "@src/utils";
@@ -29,18 +30,57 @@ export default function PerRecordDiffView({
 }: PerRecordDiffViewProps) {
   const [showExtraFields, setShowExtraFields] = useShowDiffExtraFields();
   const [showAllLines, setShowAllLines] = useShowDiffAllLines();
+  const [unifiedDiff, setUnifiedDiff] = useUnifiedDiff(false);
 
-  const changes = findChangeTypes(
-    oldRecords,
-    newRecords,
-    showExtraFields ? undefined : EXTRA_FIELDS
-  );
+  let diffContent;
+  if (unifiedDiff) {
+    // Compute diff on the whole collection
+    const sortedOldRecords = oldRecords.sort((a, b) =>
+      a.id.localeCompare(b.id)
+    );
+    const sortedNewRecords = newRecords.sort((a, b) =>
+      a.id.localeCompare(b.id)
+    );
+    const strippedOldRecords = showExtraFields
+      ? sortedOldRecords
+      : sortedOldRecords.map(r => omit(r, EXTRA_FIELDS));
+    const strippedNewRecords = showExtraFields
+      ? sortedNewRecords
+      : sortedNewRecords.map(r => omit(r, EXTRA_FIELDS));
+    const diff = diffJson(
+      strippedOldRecords,
+      strippedNewRecords,
+      showAllLines ? "all" : undefined
+    );
+    diffContent = (
+      <div className="card mb-4">
+        <div className="card-body p-0">
+          <DiffContent diff={diff} />
+        </div>
+      </div>
+    );
+  } else {
+    const changes = findChangeTypes(
+      oldRecords,
+      newRecords,
+      showExtraFields ? undefined : EXTRA_FIELDS
+    );
+    diffContent = changes.map(({ id, changeType, source, target }) => (
+      <Diff
+        key={id}
+        id={id}
+        changeType={changeType}
+        source={source}
+        target={target}
+        allLines={showAllLines}
+        displayFields={displayFields}
+      />
+    ));
+  }
 
   return (
     <div>
-      {changes.length === 0 ? (
-        <div className="text-center my-4 text-muted">No differences found.</div>
-      ) : (
+      {diffContent ? (
         <>
           <div className="form-check form-check-inline mb-3">
             <input
@@ -67,19 +107,39 @@ export default function PerRecordDiffView({
               Show all lines
             </label>
           </div>
+
+          <div className="form-check form-check-inline mb-3">
+            <input
+              className="form-check-input"
+              type="radio"
+              id="perRecord"
+              name="diffMode"
+              checked={!unifiedDiff}
+              onChange={() => setUnifiedDiff(false)}
+            />
+            <label className="form-check-label" htmlFor="perRecord">
+              Per record
+            </label>
+          </div>
+
+          <div className="form-check form-check-inline mb-3">
+            <input
+              className="form-check-input"
+              type="radio"
+              id="unified"
+              name="diffMode"
+              checked={unifiedDiff}
+              onChange={() => setUnifiedDiff(true)}
+            />
+            <label className="form-check-label" htmlFor="unified">
+              Entire collection
+            </label>
+          </div>
+          {diffContent}
         </>
+      ) : (
+        <div className="text-center my-4 text-muted">No differences found.</div>
       )}
-      {changes.map(({ id, changeType, source, target }) => (
-        <Diff
-          key={id}
-          id={id}
-          changeType={changeType}
-          source={source}
-          target={target}
-          allLines={showAllLines}
-          displayFields={displayFields}
-        />
-      ))}
     </div>
   );
 }
@@ -125,21 +185,7 @@ function Diff({
         {formatDiffHeader({ source, target, displayFields })}
       </div>
       <div className="card-body p-0">
-        <pre className="json-record json-record-simple-review mb-0">
-          {diff.map((chunk: string, i) => {
-            let className = "";
-            if (chunk.startsWith("+")) {
-              className = "added";
-            } else if (chunk.startsWith("-")) {
-              className = "removed";
-            }
-            return (
-              <div key={i} className={className}>
-                <code>{chunk}</code>
-              </div>
-            );
-          })}
-        </pre>
+        <DiffContent diff={diff} />
       </div>
     </div>
   );
@@ -189,6 +235,26 @@ export function formatDiffHeader({
   );
 
   return <>{fields}</>;
+}
+
+function DiffContent({ diff }: { diff: string[] }) {
+  return (
+    <pre className="json-record json-record-simple-review mb-0">
+      {diff.map((chunk: string, i) => {
+        let className = "";
+        if (chunk.startsWith("+")) {
+          className = "added";
+        } else if (chunk.startsWith("-")) {
+          className = "removed";
+        }
+        return (
+          <div key={i} className={className}>
+            <code>{chunk}</code>
+          </div>
+        );
+      })}
+    </pre>
+  );
 }
 
 function recordsAreDifferent(a: RecordData, b: RecordData): boolean {
