@@ -9,7 +9,6 @@ import { getClient } from "@src/client";
 import HumanDate from "@src/components/HumanDate";
 import { useCollection } from "@src/hooks/collection";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
-import { useSimpleReview } from "@src/hooks/preferences";
 import { usePermissions, useServerInfo } from "@src/hooks/session";
 import { useSignoff } from "@src/hooks/signoff";
 import { canEditCollection } from "@src/permission";
@@ -20,7 +19,7 @@ import type {
   SignoffSourceInfo,
 } from "@src/types";
 import React, { useEffect, useState } from "react";
-import { ChatLeft, XCircleFill } from "react-bootstrap-icons";
+import { ChatLeft } from "react-bootstrap-icons";
 import { useParams } from "react-router";
 
 function isEditor(source, serverInfo) {
@@ -55,7 +54,6 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
     cacheVal
   );
   const [pendingConfirm, setPendingConfirm] = useState("");
-  const [simpleReview] = useSimpleReview();
 
   const reviewAction = async patchedFields => {
     setShowSpinner(true);
@@ -66,30 +64,6 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
     });
     setCacheVal(cacheVal + 1);
     callback();
-  };
-
-  const rollbackChanges = async (text: string) => {
-    try {
-      await reviewAction({
-        status: "to-rollback",
-        last_editor_comment: text,
-      });
-      notifySuccess("Changes rolled back.");
-    } catch (ex) {
-      notifyError("Couldn't rollback changes", ex);
-    }
-  };
-
-  const approveChanges = async () => {
-    try {
-      await reviewAction({
-        status: "to-sign",
-        last_reviewer_comment: "",
-      });
-      notifySuccess("Changes approved.");
-    } catch (ex) {
-      notifyError("Couldn't approve review", ex);
-    }
   };
 
   const declineChanges = async (text: string) => {
@@ -143,8 +117,6 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
     ((isReviewer(source, serverInfo) &&
       !hasRequestedReview(source, serverInfo)) ||
       !toReviewEnabled(serverInfo, source, destination));
-  const canRollback = canEdit;
-  const hasHistory = serverInfo && "history" in serverInfo.capabilities;
 
   const isCurrentUrl = source.bucket == bid && source.collection == cid;
   const currentStep = Math.max(
@@ -154,27 +126,6 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
 
   return (
     <div className={isCurrentUrl ? "interactive" : "informative"}>
-      {hasHistory ? null : (
-        <div className="alert alert-warning">
-          <p>
-            <b>
-              Plugin which tracks history of changes is not enabled on this
-              server.
-            </b>
-            Please reach to the server administrator.
-          </p>
-        </div>
-      )}
-      {!simpleReview && (
-        <div className="alert alert-warning">
-          <p>⚠️ This legacy review UI will be removed in the next versions.</p>
-          <p>
-            If you still rely on it actively, please contact the development
-            team to make sure your workflows will be well supported in the
-            future design.
-          </p>
-        </div>
-      )}
       <ProgressBar>
         <WorkInProgress
           label="Work in progress"
@@ -182,7 +133,6 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
           currentStep={currentStep}
           isCurrentUrl={isCurrentUrl}
           canEdit={canRequestReview}
-          hasHistory={hasHistory}
           confirmRequestReview={() => {
             setPendingConfirm("review");
           }}
@@ -197,11 +147,6 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
             !!preview && preview.bucket == bid && preview.collection == cid
           }
           canEdit={canReview}
-          hasHistory={hasHistory}
-          approveChanges={approveChanges}
-          confirmDeclineChanges={() => {
-            setPendingConfirm("decline");
-          }}
           source={source}
           preview={preview}
           changes={changesOnPreview}
@@ -218,28 +163,11 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
         />
       </ProgressBar>
 
-      {canRollback && source.status != "signed" && (
-        <RollbackChangesButton
-          onClick={() => {
-            setPendingConfirm("rollback");
-          }}
-        />
-      )}
       {pendingConfirm == "review" && (
         <CommentDialog
           description="Leave some notes for the reviewer:"
           confirmLabel="Request review"
           onConfirm={requestReview}
-          onClose={() => {
-            setPendingConfirm("");
-          }}
-        />
-      )}
-      {pendingConfirm == "rollback" && (
-        <CommentDialog
-          description="This will reset the collection to the latest approved content. All pending changes will be lost. Are you sure?"
-          confirmLabel="Rollback changes"
-          onConfirm={rollbackChanges}
           onClose={() => {
             setPendingConfirm("");
           }}
@@ -272,7 +200,6 @@ interface WorkInProgressProps {
   isCurrentUrl: boolean;
   confirmRequestReview: () => void;
   source: SignoffSourceInfo;
-  hasHistory: boolean;
   changes: ChangesList | null;
 }
 
@@ -285,7 +212,6 @@ function WorkInProgress(props: WorkInProgressProps) {
     isCurrentUrl,
     confirmRequestReview,
     source,
-    hasHistory,
     changes,
   } = props;
 
@@ -297,7 +223,6 @@ function WorkInProgress(props: WorkInProgressProps) {
         isCurrentStep={isCurrentStep}
         isCurrentUrl={isCurrentUrl}
         source={source}
-        hasHistory={hasHistory}
         changes={changes}
       />
       {isCurrentStep && source.lastEditDate && canEdit && (
@@ -311,11 +236,10 @@ interface WorkInProgressInfosProps {
   isCurrentStep: boolean;
   isCurrentUrl: boolean;
   source: SignoffSourceInfo;
-  hasHistory: boolean;
   changes: ChangesList | null;
 }
 function WorkInProgressInfos(props: WorkInProgressInfosProps) {
-  const { isCurrentStep, isCurrentUrl, source, hasHistory, changes } = props;
+  const { isCurrentStep, isCurrentUrl, source, changes } = props;
   const { bucket, collection, lastEditBy, lastEditDate, lastReviewerComment } =
     source;
   if (!lastEditDate) {
@@ -350,14 +274,7 @@ function WorkInProgressInfos(props: WorkInProgressInfosProps) {
           </AdminLink>
         </li>
       )}
-      {isCurrentStep && changes && (
-        <DiffInfo
-          hasHistory={hasHistory}
-          bid={bucket}
-          cid={collection}
-          changes={changes}
-        />
-      )}
+      {isCurrentStep && changes && <DiffInfo changes={changes} />}
     </ul>
   );
 }
@@ -367,15 +284,6 @@ function RequestReviewButton(props: { onClick: () => void }) {
   return (
     <button className="btn btn-info request-review" onClick={onClick}>
       <ChatLeft className="icon" /> Request review...
-    </button>
-  );
-}
-
-function RollbackChangesButton(props: { onClick: () => void }) {
-  const { onClick } = props;
-  return (
-    <button className="btn btn-danger rollback-changes" onClick={onClick}>
-      <XCircleFill className="icon" /> Rollback changes...
     </button>
   );
 }

@@ -33,7 +33,6 @@ export default function CollectionHistory() {
       </h1>
       <CollectionTabs bid={bid} cid={cid} selected="history">
         <HistoryTable
-          enableDiffOverview
           bid={bid}
           cid={cid}
           historyLoaded={history.data !== undefined}
