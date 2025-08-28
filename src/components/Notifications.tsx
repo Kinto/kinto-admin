@@ -29,15 +29,15 @@ export default function Notifications() {
   const notifications = useNotifications();
 
   const alerts = notifications.map(
-    ({ message: headline, details = [], timeout, type }, i) => {
+    ({ id, message: headline, details = [], timeout, type }) => {
       return (
         <Toast
           className={`bg-${type}`}
-          key={`notification-${i}`}
+          key={`notification-${id}`}
           autohide={timeout > 0}
           delay={timeout > 0 ? timeout : undefined}
           onClose={() => {
-            removeNotification(i);
+            removeNotification(id);
           }}
         >
           <Toast.Header closeButton={false}>
@@ -47,7 +47,7 @@ export default function Notifications() {
               title="Dismiss"
               aria-label="Dismiss"
               onClick={() => {
-                removeNotification(i);
+                removeNotification(id);
               }}
             >
               x

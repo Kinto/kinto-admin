@@ -10,8 +10,8 @@ describe("Notifications component", () => {
     removeNotificationParam = null;
     useNotificationsMock = vi.spyOn(notificationsHooks, "useNotifications");
     vi.spyOn(notificationsHooks, "removeNotification").mockImplementation(
-      idx => {
-        removeNotificationParam = idx;
+      id => {
+        removeNotificationParam = id;
       }
     );
   });
@@ -39,21 +39,23 @@ describe("Notifications component", () => {
   });
 
   it("should remove a single notif when the list has one", () => {
-    useNotificationsMock.mockReturnValue([{ type: "info", message: "plop" }]);
+    useNotificationsMock.mockReturnValue([
+      { type: "info", message: "plop", id: "id" },
+    ]);
     render(<Notifications />);
 
     fireEvent.click(screen.getByTitle("Dismiss"));
-    expect(removeNotificationParam).toBe(0);
+    expect(removeNotificationParam).toBe("id");
   });
 
   it("should remove a single notif when the list has two", () => {
     useNotificationsMock.mockReturnValue([
-      { type: "info", message: "plop" },
-      { type: "info", message: "plap" },
+      { type: "info", message: "plop", id: "id1" },
+      { type: "info", message: "plap", id: "id2" },
     ]);
     render(<Notifications />);
     // second notification close button clicked
     fireEvent.click(screen.getAllByTitle("Dismiss")[1]);
-    expect(removeNotificationParam).toBe(1);
+    expect(removeNotificationParam).toBe("id2");
   });
 });

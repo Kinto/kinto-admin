@@ -86,7 +86,7 @@ describe("notifications hooks", () => {
       expect(result.current.length).toBe(3);
     });
 
-    removeNotification(1);
+    removeNotification(result.current[1].id);
 
     await vi.waitFor(() => {
       expect(result.current.length).toBe(2);
@@ -145,7 +145,7 @@ describe("notifications hooks", () => {
       expect(result3.current).toMatchObject(match);
     });
 
-    removeNotification(1);
+    removeNotification(result1.current[1].id);
 
     await vi.waitFor(() => {
       const match = [{ message: "Test info" }, { message: "Test error" }];
