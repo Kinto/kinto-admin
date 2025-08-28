@@ -4,6 +4,7 @@ import * as bucketHooks from "@src/hooks/bucket";
 import * as collectionHooks from "@src/hooks/collection";
 import * as recordHooks from "@src/hooks/record";
 import * as sessionHooks from "@src/hooks/session";
+import * as signoffHooks from "@src/hooks/signoff";
 import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import React from "react";
@@ -12,6 +13,7 @@ describe("CollectionCompare", () => {
   const mockBucketList = vi.fn();
   const mockCollectionList = vi.fn();
   const mockUseServerInfo = vi.fn();
+  const mockUseLatestApprovals = vi.fn();
 
   beforeEach(() => {
     const recordsMock = (bid, cid) => {
@@ -31,6 +33,9 @@ describe("CollectionCompare", () => {
     );
     vi.spyOn(recordHooks, "useRecordList").mockImplementation(recordsMock);
     vi.spyOn(recordHooks, "useRecordListAt").mockImplementation(recordsMock);
+    vi.spyOn(signoffHooks, "useLatestApprovals").mockImplementation(
+      mockUseLatestApprovals
+    );
     vi.spyOn(bucketHooks, "useBucketList").mockImplementation(mockBucketList);
     vi.spyOn(collectionHooks, "useCollectionList").mockImplementation(
       mockCollectionList
@@ -53,6 +58,7 @@ describe("CollectionCompare", () => {
         },
       ],
     });
+    mockUseLatestApprovals.mockReturnValue([1755703164649, 1755633782328]);
   });
 
   it("should render loading spinner initially", () => {
@@ -243,5 +249,29 @@ describe("CollectionCompare", () => {
     fireEvent.change(collectionSelect, { target: { value: "col2" } });
 
     expect(screen.getByTestId("timestampSelect")).toHaveValue("");
+  });
+
+  it("should set the input value when picked from latest approvals", async () => {
+    renderWithRouter(<CollectionCompare />, {
+      route:
+        "/buckets/main-bucket/collections/main-collection/compare?target=other-bucket/col1",
+      path: "/buckets/:bid/collections/:cid/compare",
+      initialEntries: [
+        "/buckets/:bid/collections/:cid/compare?target=other-bucket/col1",
+      ],
+    });
+
+    await waitFor(() =>
+      expect(screen.queryByTestId("spinner")).not.toBeInTheDocument()
+    );
+
+    const latestApproval = screen.getByTestId("input-dropdown-button");
+    fireEvent.click(latestApproval);
+
+    const choice = screen.getByTestId("input-dropdown-item-1755703164649");
+    expect(choice).toBeVisible();
+    fireEvent.click(choice);
+
+    expect(screen.getByTestId("timestampSelect")).toHaveValue("1755703164649");
   });
 });
