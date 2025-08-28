@@ -32,15 +32,15 @@ function notify(type: Levels, message: string, options: NotificationOptions) {
       message: message,
       details: options?.details ?? [],
       timeout: options?.timeout,
+      id: Math.random().toString(),
     },
   ];
   state.set(notifications);
 }
 
-export function removeNotification(index: number) {
+export function removeNotification(id: string) {
   const notifications = [...state.get()];
-  notifications.splice(index, 1);
-  state.set(notifications);
+  state.set(notifications.filter(x => x.id !== id));
 }
 
 export function clearNotifications() {

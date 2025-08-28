@@ -137,9 +137,11 @@ export interface GroupPermissions {
 }
 
 export interface Notification {
+  id: string;
   type: string;
   message: string;
   details: string[];
+  timeout?: number;
 }
 
 export type Notifications = Notification[];
