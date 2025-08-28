@@ -205,12 +205,12 @@ function HistoryRow({
     {
       bucket: (
         <>
-          <Folder2 /> collection
+          <Folder2 /> bucket
         </>
       ),
       group: (
         <>
-          <People /> collection
+          <People /> group
         </>
       ),
       collection: (
