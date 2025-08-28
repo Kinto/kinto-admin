@@ -596,6 +596,13 @@ form button[type="submit"].btn-primary {
 
 .notifications .toast-body {
   font-size: 16px;
+  background-color: rgba(255, 255, 255, 0.6);
+  color: black;
+}
+
+.notifications .toast-header {
+  background-color: inherit;
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .notifications .fade {
@@ -606,10 +613,6 @@ form button[type="submit"].btn-primary {
 .notifications .close {
   position: absolute;
   right: .5em;
-}
-
-.notifications .bg-danger {
-  color: #fff;
 }
 
 .rjsf {

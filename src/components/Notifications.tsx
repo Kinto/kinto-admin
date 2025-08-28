@@ -30,7 +30,6 @@ export default function Notifications() {
 
   const alerts = notifications.map(
     ({ message: headline, details = [], timeout, type }, i) => {
-      console.log(details);
       return (
         <Toast
           className={`bg-${type}`}
