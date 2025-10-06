@@ -7,6 +7,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import js from "@eslint/js";
 import { FlatCompat } from "@eslint/eslintrc";
+import reactHooks from 'eslint-plugin-react-hooks';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,12 +24,14 @@ export default defineConfig([globalIgnores(["**/dist", "**/eslint.config.mjs", "
     "plugin:@typescript-eslint/stylistic-type-checked",
     "plugin:react/jsx-runtime",
     "plugin:react/recommended",
-    "plugin:react-hooks/recommended",
     "prettier",
-  )),
+  ).concat([
+    "react-hooks/recommended",
+  ])),
 
   plugins: {
     "@typescript-eslint": fixupPluginRules(typescriptEslintEslintPlugin),
+    "react-hooks": reactHooks,
   },
 
   languageOptions: {
@@ -47,7 +50,6 @@ export default defineConfig([globalIgnores(["**/dist", "**/eslint.config.mjs", "
   },
 
   rules: {
-    "react-hooks/exhaustive-deps": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/prefer-nullish-coalescing": "off", // requires Typescript `strictNullChecks`
 
