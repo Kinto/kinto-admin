@@ -105,8 +105,7 @@ function _pickSignoffResource(
       (source.bucket == bid &&
         (!source.collection || source.collection == cid)) ??
       // Preview is enabled and we are viewing it.
-      (preview &&
-        preview.bucket == bid &&
+      (preview?.bucket == bid &&
         (!preview.collection || preview.collection == cid)) ??
       // We are viewing the destination.
       (destination.bucket == bid &&

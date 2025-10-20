@@ -19,7 +19,7 @@ export default function BucketCollections() {
       </h1>
       <BucketTabs bid={bid} selected="collections">
         {listActions}
-        {collections && collections.data.length === 0 ? (
+        {collections?.data.length === 0 ? (
           <div className="alert alert-info">
             <p>This bucket has no collections.</p>
           </div>

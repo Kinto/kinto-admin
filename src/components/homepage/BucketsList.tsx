@@ -152,7 +152,7 @@ export default function BucketsList() {
       </h1>
       <HomePageTabs selected="buckets">
         {listActions}
-        {buckets && buckets.length === 0 ? (
+        {buckets?.length === 0 ? (
           <div className="alert alert-info">
             <p>This server has no visible buckets.</p>
           </div>
