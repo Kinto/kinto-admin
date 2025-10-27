@@ -9,8 +9,8 @@ const hugeTestTxt = `data:text/plain;base64,${"aGkK".repeat(1024 * 512)}`; // "h
 
 // helper function to take the above encoded strings and turn them into blobs
 function b64ToBlob(b64str) {
-  let [type, b64] = b64str.split(",");
-  type = type.replace(/^data\:/, "").replace(/\;base64$/, "");
+  const [typeStr, b64] = b64str.split(",");
+  const type = typeStr.replace(/^data:/, "").replace(/;base64$/, "");
   const data = atob(b64);
   const b64Nums = new Array(data.length);
   for (let i = 0; i < b64Nums.length; i++) {
