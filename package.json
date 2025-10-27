@@ -24,8 +24,8 @@
     "test-all:ci": "npm run lint && npm run test:ci"
   },
   "engines": {
-    "npm": ">=8",
-    "node": ">=16"
+    "npm": ">=10",
+    "node": ">=22"
   },
   "dependencies": {
     "@rjsf/bootstrap-4": "^5.24.11",
@@ -56,13 +56,13 @@
     "@typescript-eslint/eslint-plugin": "^8.22.0",
     "@typescript-eslint/parser": "^8.0.0",
     "@vitejs/plugin-react": "^5.0.0",
-    "@vitest/coverage-v8": "^3.1.4",
+    "@vitest/coverage-v8": "^4.0.4",
     "eslint": "^9.24.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^6.1.1",
     "globals": "^16.0.0",
-    "jsdom": "^27.0.0",
+    "jsdom": "^27.0.1",
     "node-fetch": "^3.3.2",
     "prettier": "^3.2.5",
     "toctoc": "^0.4.0",

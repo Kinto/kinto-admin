@@ -7,33 +7,22 @@ const tinyTestImg =
 const tinyTestTxt = "data:text/plain;base64,aGkK"; // "hi"
 const hugeTestTxt = `data:text/plain;base64,${"aGkK".repeat(1024 * 512)}`; // "hi" repeatedly
 
-class fileReaderMock {
-  error: FileReader["error"] = null;
-  result: FileReader["result"] = null;
-  addEventListener = vitest.fn();
-  onloadend = {
-    get() {
-      return this._onloadend;
-    },
-    set(onloadend) {
-      this._onloadend = onloadend;
-    },
-  };
-  readAsDataURL = vitest.fn();
-  removeEventListener = vitest.fn();
+// helper function to take the above encoded strings and turn them into blobs
+function b64ToBlob(b64str) {
+  let [type, b64] = b64str.split(",");
+  type = type.replace(/^data\:/, "").replace(/\;base64$/, "");
+  const data = atob(b64);
+  const b64Nums = new Array(data.length);
+  for (let i = 0; i < b64Nums.length; i++) {
+    b64Nums[i] = data.charCodeAt(i);
+  }
+  const bytes = new Uint8Array(b64Nums);
+  return new Blob([bytes], {
+    type,
+  });
 }
 
 describe("Base64File rjsf component", () => {
-  beforeAll(() => {
-    const fileReader = new fileReaderMock();
-    vitest.spyOn(global, "FileReader").mockImplementation(() => fileReader);
-    fileReader.addEventListener.mockImplementation((_, fn) => fn());
-    fileReader.readAsDataURL.mockImplementation(file => {
-      fileReader.result = file;
-      fileReader.onloadend();
-    });
-  });
-
   afterAll(() => {
     vitest.restoreAllMocks();
   });
@@ -72,7 +61,7 @@ describe("Base64File rjsf component", () => {
     render(<Base64File onChange={changeMock} />);
     fireEvent.change(await screen.getByTestId("b64-file"), {
       target: {
-        files: [tinyTestImg],
+        files: [b64ToBlob(tinyTestImg)],
       },
     });
     await waitFor(() => new Promise(resolve => setTimeout(resolve, 10))); // debounce wait
@@ -89,7 +78,7 @@ describe("Base64File rjsf component", () => {
     render(<Base64File onChange={changeMock} />);
     fireEvent.change(await screen.getByTestId("b64-file"), {
       target: {
-        files: [hugeTestTxt],
+        files: [b64ToBlob(hugeTestTxt)],
       },
     });
     await waitFor(() => new Promise(resolve => setTimeout(resolve, 10))); // debounce wait
