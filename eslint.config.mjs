@@ -25,9 +25,7 @@ export default defineConfig([globalIgnores(["**/dist", "**/eslint.config.mjs", "
     "plugin:react/jsx-runtime",
     "plugin:react/recommended",
     "prettier",
-  ).concat([
-    "react-hooks/recommended",
-  ])),
+  )),
 
   plugins: {
     "@typescript-eslint": fixupPluginRules(typescriptEslintEslintPlugin),
