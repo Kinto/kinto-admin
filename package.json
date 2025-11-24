@@ -48,7 +48,7 @@
     "timeago.js": "^4.0.2"
   },
   "devDependencies": {
-    "@eslint/compat": "^1.2.8",
+    "@eslint/compat": "^2.0.0",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^16.0.0",
     "@trivago/prettier-plugin-sort-imports": "^6.0.0",
