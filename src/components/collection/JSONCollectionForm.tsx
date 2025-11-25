@@ -1,5 +1,5 @@
-import { Theme as BootstrapTheme } from "@rjsf/react-bootstrap";
 import { IChangeEvent, withTheme } from "@rjsf/core";
+import { Theme as BootstrapTheme } from "@rjsf/react-bootstrap";
 import { RJSFSchema, UiSchema } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv8";
 import JSONEditor from "@src/components/JSONEditor";

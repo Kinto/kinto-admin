@@ -1,8 +1,8 @@
 import Spinner from "./Spinner";
 import TagsField from "./TagsField";
 import Base64File from "./rjsf/Base64File";
-import { Theme as BootstrapTheme } from "@rjsf/react-bootstrap";
 import { FormProps, withTheme } from "@rjsf/core";
+import { Theme as BootstrapTheme } from "@rjsf/react-bootstrap";
 import {
   RJSFSchema,
   RJSFValidationError,
