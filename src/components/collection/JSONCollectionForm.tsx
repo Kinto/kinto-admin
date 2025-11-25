@@ -1,4 +1,4 @@
-import { Theme as Bootstrap4Theme } from "@rjsf/bootstrap-4";
+import { Theme as BootstrapTheme } from "@rjsf/react-bootstrap";
 import { IChangeEvent, withTheme } from "@rjsf/core";
 import { RJSFSchema, UiSchema } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv8";
@@ -8,7 +8,7 @@ import type { CollectionData } from "@src/types";
 import { omit } from "@src/utils";
 import React, { useState } from "react";
 
-const FormWithTheme = withTheme(Bootstrap4Theme);
+const FormWithTheme = withTheme(BootstrapTheme);
 
 const schema: RJSFSchema = {
   type: "object",
