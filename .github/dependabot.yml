@@ -8,6 +8,10 @@ updates:
     rjsf:
       patterns:
       - "@rjsf*"
+    vite:
+      patterns:
+      - "vite*"
+      - "@vite*"
 - package-ecosystem: github-actions
   directory: "/"
   schedule:
