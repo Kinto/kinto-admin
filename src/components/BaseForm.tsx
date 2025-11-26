@@ -10,6 +10,7 @@ import {
 } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv8";
 import React, { Component, ReactNode, useRef, useState } from "react";
+import JSONEditor from "./JSONEditor";
 
 const adminFields = { tags: TagsField };
 
@@ -23,6 +24,7 @@ export type BaseFormProps = Omit<FormProps, "validator"> & {
 
 const customWidgets: RegistryWidgetsType = {
   base64file: Base64File,
+  jsoneditor: JSONEditor,
 };
 
 export default function BaseForm(props: BaseFormProps) {
