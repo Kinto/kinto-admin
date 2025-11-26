@@ -6,7 +6,7 @@ vi.mock("kinto");
 // @rjsf/react-bootstrap has some odd vitest compat error
 vi.mock("@rjsf/react-bootstrap", () => {
   return {
-    Theme: {}
+    Theme: {},
   };
 });
 
