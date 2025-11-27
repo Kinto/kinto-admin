@@ -1,3 +1,4 @@
+import JSONEditor from "./JSONEditor";
 import Spinner from "./Spinner";
 import TagsField from "./TagsField";
 import Base64File from "./rjsf/Base64File";
@@ -10,7 +11,6 @@ import {
 } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv8";
 import React, { Component, ReactNode, useRef, useState } from "react";
-import JSONEditor from "./JSONEditor";
 
 const adminFields = { tags: TagsField };
 
