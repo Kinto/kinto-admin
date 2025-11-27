@@ -2,8 +2,8 @@ import JSONEditor from "./JSONEditor";
 import Spinner from "./Spinner";
 import TagsField from "./TagsField";
 import Base64File from "./rjsf/Base64File";
-import { Theme as Bootstrap4Theme } from "@rjsf/bootstrap-4";
 import { FormProps, withTheme } from "@rjsf/core";
+import { Theme as BootstrapTheme } from "@rjsf/react-bootstrap";
 import {
   RJSFSchema,
   RJSFValidationError,
@@ -14,7 +14,7 @@ import React, { Component, ReactNode, useRef, useState } from "react";
 
 const adminFields = { tags: TagsField };
 
-const FormWithTheme = withTheme(Bootstrap4Theme);
+const FormWithTheme = withTheme(BootstrapTheme);
 
 export type BaseFormProps = Omit<FormProps, "validator"> & {
   showSpinner?: boolean;

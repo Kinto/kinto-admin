@@ -8,6 +8,9 @@ describe("TagsField component", () => {
       const props = {
         schema: { title: "test-label" },
         formData: ["a", "b", "a"],
+        fieldPathId: {
+          path: "foo",
+        },
       };
       render(<TagsField {...props} />);
 
@@ -20,13 +23,16 @@ describe("TagsField component", () => {
         schema: { uniqueItems: true, title: "test-label" },
         formData: ["a", "b"],
         onChange,
+        fieldPathId: {
+          path: "foo",
+        },
       };
       render(<TagsField {...props} />);
 
       fireEvent.change(screen.getByLabelText("test-label"), {
         target: { value: "a, b, a" },
       });
-      expect(onChange).toHaveBeenCalledWith(["a", "b"]);
+      expect(onChange).toHaveBeenCalledWith(["a", "b"], "foo");
     });
   });
 });

@@ -610,7 +610,7 @@ form button[type="submit"].btn-primary {
   animation: fadeIn .5s;
 }
 
-.notifications .close {
+.notifications .btn-close {
   position: absolute;
   right: .5em;
 }
