@@ -1,3 +1,4 @@
+import JSONEditor from "./JSONEditor";
 import Spinner from "./Spinner";
 import TagsField from "./TagsField";
 import Base64File from "./rjsf/Base64File";
@@ -23,6 +24,7 @@ export type BaseFormProps = Omit<FormProps, "validator"> & {
 
 const customWidgets: RegistryWidgetsType = {
   base64file: Base64File,
+  jsoneditor: JSONEditor,
 };
 
 export default function BaseForm(props: BaseFormProps) {
