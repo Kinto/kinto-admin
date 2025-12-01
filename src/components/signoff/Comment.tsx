@@ -55,13 +55,11 @@ export function CommentDialog({
             <h5 className="modal-title">{title}</h5>
             <button
               type="button"
-              className="close"
+              className="btn-close"
               data-dismiss="modal"
               aria-label="Close"
               onClick={onClose}
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
+            />
           </div>
           <div className="modal-body">
             <p>{description}</p>
