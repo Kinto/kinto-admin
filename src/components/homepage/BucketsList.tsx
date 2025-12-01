@@ -29,7 +29,7 @@ export function ListActions({ busy }: ListActionsProps) {
       <AdminLink
         name="bucket:create"
         params={{}}
-        className="btn btn-info btn-bucket-add"
+        className="btn btn-primary btn-bucket-add"
       >
         Create bucket
       </AdminLink>

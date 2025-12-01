@@ -23,7 +23,7 @@ export function ListActions(props: ListActionsProps) {
       <AdminLink
         name="collection:create"
         params={{ bid }}
-        className="btn btn-info btn-collection-add"
+        className="btn btn-primary btn-collection-add"
       >
         Create collection
       </AdminLink>

@@ -23,7 +23,7 @@ export function ListActions({ bid, busy }: ListActionsProps) {
       <AdminLink
         name="group:create"
         params={{ bid }}
-        className="btn btn-info btn-group-add"
+        className="btn btn-primary btn-group-add"
       >
         Create group
       </AdminLink>
