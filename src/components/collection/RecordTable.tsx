@@ -36,7 +36,7 @@ export function ListActions(props: ListActionsProps) {
             key="__1"
             name="record:create"
             params={{ bid, cid }}
-            className="btn btn-info btn-record-add"
+            className="btn btn-primary btn-record-add"
           >
             Create record
           </AdminLink>
@@ -44,7 +44,7 @@ export function ListActions(props: ListActionsProps) {
             key="__2"
             name="record:bulk"
             params={{ bid, cid }}
-            className="btn btn-info btn-record-bulk-add"
+            className="btn btn-primary btn-record-bulk-add"
           >
             Bulk create
           </AdminLink>

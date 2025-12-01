@@ -282,7 +282,7 @@ function WorkInProgressInfos(props: WorkInProgressInfosProps) {
 function RequestReviewButton(props: { onClick: () => void }) {
   const { onClick } = props;
   return (
-    <button className="btn btn-info request-review" onClick={onClick}>
+    <button className="btn btn-primary request-review" onClick={onClick}>
       <ChatLeft className="icon" /> Request review...
     </button>
   );

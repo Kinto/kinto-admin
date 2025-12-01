@@ -1,7 +1,7 @@
 import { ANONYMOUS_AUTH } from "@src/constants";
 import { clearServersHistory } from "@src/hooks/servers";
 import { debounce } from "@src/utils";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import FormControl from "react-bootstrap/FormControl";
@@ -25,15 +25,10 @@ const debounceMillis = 400;
 
 export default function ServerHistory(props: ServerHistoryProps) {
   const [value, setValue] = useState(props.value);
-  const toggleRef = useRef<HTMLButtonElement>(null);
-  const toggleDropdown = () => {
-    toggleRef.current.click();
-  };
 
   const select = useCallback(
     server => event => {
       event.preventDefault();
-      toggleDropdown();
       props.onChange(server);
       debouncedFetchServerInfo(server);
       setValue(server);
@@ -44,7 +39,6 @@ export default function ServerHistory(props: ServerHistoryProps) {
   const clear = useCallback(
     event => {
       event.preventDefault();
-      toggleDropdown();
       clearServersHistory();
     },
     [props]
@@ -94,11 +88,9 @@ export default function ServerHistory(props: ServerHistoryProps) {
         disabled={disabled}
       />
       <DropdownButton
-        as={InputGroup.Append}
         variant="outline-secondary"
         title="Servers"
         disabled={disabled}
-        ref={toggleRef}
       >
         {servers.length === 0 ? (
           <button className="dropdown-item">
@@ -106,13 +98,13 @@ export default function ServerHistory(props: ServerHistoryProps) {
           </button>
         ) : (
           servers.map(({ server }, key) => (
-            <button
+            <Dropdown.Item
               className="dropdown-item"
               key={key}
               onClick={select(server)}
             >
               {server}
-            </button>
+            </Dropdown.Item>
           ))
         )}
         <Dropdown.Divider />

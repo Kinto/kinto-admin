@@ -55,7 +55,7 @@ export default function SimpleReviewButtons({
         )}
         {status === "work-in-progress" && canRequestReview && (
           <button
-            className="btn btn-info request-review"
+            className="btn btn-primary request-review"
             onClick={() => {
               setDialog("review");
             }}

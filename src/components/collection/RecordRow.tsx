@@ -74,7 +74,7 @@ export default function RecordRow({
         <AdminLink
           name="record:attributes"
           params={{ bid, cid, rid }}
-          className="btn btn-sm btn-info"
+          className="btn btn-sm btn-primary"
           style={{
             margin: "1pt",
           }}

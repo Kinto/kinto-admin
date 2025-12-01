@@ -6,7 +6,7 @@ interface Props {
 
 export function ProgressBar({ children }: Props) {
   return (
-    <div className="progress-steps container">
+    <div className="progress-steps container p-3 m-3">
       <div className="row bs-wizard">{children}</div>
     </div>
   );

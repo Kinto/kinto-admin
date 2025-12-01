@@ -402,7 +402,7 @@ export default function AuthForm() {
           onSubmit={onSubmit}
           showSpinner={showSpinner}
         >
-          <button type="submit" className="btn btn-info">
+          <button type="submit" className="btn btn-primary">
             {"Sign in using "}
             {getAuthLabel(formData.authType)}
           </button>

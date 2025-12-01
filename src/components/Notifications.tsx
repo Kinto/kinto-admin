@@ -43,15 +43,13 @@ export default function Notifications() {
           <Toast.Header closeButton={false}>
             {headline}
             <button
-              className="close"
+              className="btn-close"
               title="Dismiss"
               aria-label="Dismiss"
               onClick={() => {
                 removeNotification(id);
               }}
-            >
-              x
-            </button>
+            ></button>
           </Toast.Header>
           <NotificationDetails details={details} />
         </Toast>

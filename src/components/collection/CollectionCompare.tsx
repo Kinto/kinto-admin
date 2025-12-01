@@ -154,14 +154,12 @@ export function CollectionCompare() {
 
           {/* Bucket Select */}
           <div className="input-group mx-2" style={{ maxWidth: "220px" }}>
-            <div className="input-group-prepend">
-              <label className="input-group-text" htmlFor="bucketSelect">
-                Bucket
-              </label>
-            </div>
+            <label className="input-group-text" htmlFor="bucketSelect">
+              Bucket
+            </label>
             <select
               id="bucketSelect"
-              className="custom-select"
+              className="form-select"
               value={selectedBucket}
               onChange={e => onBucketChange(e.target.value)}
               disabled={!bucketsList || recordsLoading}
@@ -185,14 +183,12 @@ export function CollectionCompare() {
 
           {/* Collection Select */}
           <div className="input-group mx-2" style={{ maxWidth: "240px" }}>
-            <div className="input-group-prepend">
-              <label className="input-group-text" htmlFor="collectionSelect">
-                Collection
-              </label>
-            </div>
+            <label className="input-group-text" htmlFor="collectionSelect">
+              Collection
+            </label>
             <select
               id="collectionSelect"
-              className="custom-select"
+              className="form-select"
               value={selectedCollection}
               onChange={e => onCollectionChange(e.target.value)}
               disabled={!selectedBucket || recordsLoading}

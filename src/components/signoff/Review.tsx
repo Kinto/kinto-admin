@@ -60,7 +60,7 @@ export function Review({
       )}
       {isCurrentStep && canEdit && (
         <AdminLink
-          className="btn btn-info"
+          className="btn btn-primary"
           params={{ bid: source.bucket, cid: source.collection }}
           name="collection:simple-review"
         >

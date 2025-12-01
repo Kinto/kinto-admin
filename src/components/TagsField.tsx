@@ -23,6 +23,7 @@ const TagsField: React.FC<FieldProps<string[]>> = ({
   schema,
   uiSchema = {},
   name,
+  fieldPathId,
   formData = [],
   onChange,
   required = false,
@@ -44,7 +45,7 @@ const TagsField: React.FC<FieldProps<string[]>> = ({
     const uniqueItems = schema.uniqueItems ?? false;
     const tags = toTagList(tagsStr, separator, uniqueItems);
     setTagsString(tagsStr);
-    onChange(tags);
+    onChange(tags, fieldPathId.path);
   };
 
   return (
