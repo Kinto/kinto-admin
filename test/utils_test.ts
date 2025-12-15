@@ -422,9 +422,8 @@ describe("getServerByPriority", () => {
         return "http://www.example.com/";
       },
     }));
-    const { getServerByPriority: _getServerByPriority } = await import(
-      "../src/utils"
-    );
+    const { getServerByPriority: _getServerByPriority } =
+      await import("../src/utils");
     expect(_getServerByPriority([])).toBe("http://www.example.com/");
   });
   it("should return the first server from the array", () => {
