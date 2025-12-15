@@ -1,8 +1,7 @@
 import React from "react";
 import { ChevronDown } from "react-bootstrap-icons";
 
-interface InputWithDropdownProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputWithDropdownProps extends React.InputHTMLAttributes<HTMLInputElement> {
   options: string[][];
   dropDownTitle?: string;
   icon?: React.ReactNode;
