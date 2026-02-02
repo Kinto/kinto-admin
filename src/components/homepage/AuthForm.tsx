@@ -130,7 +130,6 @@ const authSchemas = authType => {
               username: {
                 type: "string",
                 title: "Email",
-                default: "jdoe@mozilla.com",
               },
               password: {
                 type: "string",
