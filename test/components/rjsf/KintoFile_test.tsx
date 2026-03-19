@@ -2,7 +2,7 @@ import KintoFile from "@src/components/rjsf/KintoFile";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import React from "react";
 
-const testObj = { name: "test.txt", size: "123", type: "text/plain" };
+const testMinFile = { name: "test.txt", size: "123", type: "text/plain" };
 
 describe("KintoFile rjsf component", () => {
   afterAll(() => {
@@ -24,12 +24,12 @@ describe("KintoFile rjsf component", () => {
     render(<KintoFile title="File attachment test" onChange={changeMock} />);
     fireEvent.change(await screen.getByLabelText("File attachment test"), {
       target: {
-        files: [testObj],
+        files: [testMinFile],
       },
     });
     await waitFor(() => new Promise(resolve => setTimeout(resolve, 10))); // debounce wait
     expect(val).toStrictEqual({
-      ...testObj,
+      ...testMinFile,
       dataURL: "data:text/plain;base64,",
     });
     expect(errors).toBeUndefined();
@@ -44,7 +44,7 @@ describe("KintoFile rjsf component", () => {
     render(
       <KintoFile
         title="File attachment test"
-        value={testObj}
+        value={testMinFile}
         onChange={changeMock}
       />
     );
