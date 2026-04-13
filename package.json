@@ -37,7 +37,7 @@
     "@uiw/react-codemirror": "^4.25.3",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.11.3",
-    "diff": "^8.0.2",
+    "diff": "^9.0.0",
     "filesize": "^11.0.1",
     "kinto": "^17.1.1",
     "lodash": "^4.17.21",
