@@ -8,32 +8,36 @@ A Web admin UI to manage data from a [Kinto](https://kinto.readthedocs.io/) serv
 Kinto. You can also use it to build administration interfaces for
 Kinto-based systems.
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 ## Table of Contents
 
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-     - [Prebuilt Single Server Assets](#prebuilt-single-server-assets)
-     - [Building the Assets](#building-the-assets)
-        - [Latest Release](#latest-release)
-        - [Earlier Release](#earlier-release)
-  - [Build customization](#build-customization)
-     - [Single Server](#single-server)
-     - [Building for relative paths](#building-for-relative-paths)
-  - [Hacking on kinto-admin](#hacking-on-kinto-admin)
-  - [Development server](#development-server)
-  - [Tests](#tests)
-  - [Custom RJSF Fields](#Custom-RJSF-fields)
-  - [FAQ](#faq)
-     - [Browser support](#browser-support)
-     - [How to display a nested field value using the collection displayFields property?](#how-to-display-a-nested-field-value-using-the-collection-displayfields-property)
-  - [Releasing](#releasing)
-     - [Through GitHub UI](#through-github-ui)
-     - [Through git commands](#through-git-commands)
-  - [Deploying to github-pages](#deploying-to-github-pages)
-     - [Repo configuration for forks](#repo-configuration-for-forks)
-     - [Deployed automatically on release publish](#deployed-automatically-on-release-publish)
-     - [Running the github action manually](#running-the-github-action-manually)
-  - [License](#license)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+  - [Prebuilt Single Server Assets](#prebuilt-single-server-assets)
+  - [Building the Assets](#building-the-assets)
+    - [Latest Release](#latest-release)
+    - [Earlier Release](#earlier-release)
+- [Build customization](#build-customization)
+  - [Single Server](#single-server)
+  - [Building for relative paths](#building-for-relative-paths)
+- [Hacking on kinto-admin](#hacking-on-kinto-admin)
+- [Development server](#development-server)
+- [Tests](#tests)
+- [Custom RJSF fields](#custom-rjsf-fields)
+- [FAQ](#faq)
+  - [Browser support](#browser-support)
+  - [How to display a nested field value using the collection displayFields property?](#how-to-display-a-nested-field-value-using-the-collection-displayfields-property)
+- [Releasing](#releasing)
+  - [Through GitHub UI](#through-github-ui)
+  - [Through git commands](#through-git-commands)
+- [Deploying to github-pages](#deploying-to-github-pages)
+  - [Repo configuration for forks](#repo-configuration-for-forks)
+  - [Deployed automatically on release publish](#deployed-automatically-on-release-publish)
+  - [Running the github action manually](#running-the-github-action-manually)
+- [License](#license)
+
+<!-- END doctoc -->
 
 ---
 
