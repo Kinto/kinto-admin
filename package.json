@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "npm run generate-version && vite build",
-    "build:readme": "toctoc README.md -w",
+    "build:readme": "doctoc README.md --github --title '## Table of Contents'",
     "build:kinto-single": "ASSET_PATH=/v1/admin KINTO_ADMIN_SINGLE_SERVER=1 npm run build",
     "cs-check": "prettier -l \"{src,test,bin}/**/*.{js,jsx,ts,tsx}\"",
     "cs-format": "prettier \"{src,test,bin}/**/*.{js,jsx,ts,tsx}\" --write",
@@ -59,6 +59,7 @@
     "@typescript-eslint/parser": "^8.0.0",
     "@vitejs/plugin-react": "^6.0.1",
     "@vitest/coverage-v8": "^4.0.13",
+    "doctoc": "^2.4.1",
     "eslint": "^9.24.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-react": "^7.33.2",
@@ -67,7 +68,6 @@
     "jsdom": "^29.0.0",
     "node-fetch": "^3.3.2",
     "prettier": "^3.2.5",
-    "toctoc": "^0.4.0",
     "typescript": "^5.3.3",
     "vite": "^8.0.0",
     "vitest": "^4.0.13"
