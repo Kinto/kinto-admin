@@ -51,15 +51,19 @@ export function logout() {
 export function useAuth(): AuthData | undefined {
   const [val, setVal] = useLocalStorage("kinto-admin-auth", authState.get());
 
-  if (val?.expiresAt && val.expiresAt < new Date().getTime()) {
+  const isExpired = val?.expiresAt && val.expiresAt < new Date().getTime();
+  if (isExpired) {
     setVal(undefined);
   }
 
+  // Restore client synchronously on first render so descendant hooks
+  // that call getClient() during mount don't race the auth effect.
+  if (!isExpired && val !== undefined && authState.get() === undefined) {
+    authState.set(val);
+    setupClient(val);
+  }
+
   useEffect(() => {
-    if (authState.get() === undefined && val !== undefined) {
-      authState.set(val);
-      setupClient(val);
-    }
     return authState.subscribe(setVal);
   }, []);
 
