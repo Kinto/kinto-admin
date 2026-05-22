@@ -9,7 +9,7 @@ import { usePermissions } from "@src/hooks/session";
 import { canCreateRecord } from "@src/permission";
 import type { CollectionData, RecordData, ServerInfo } from "@src/types";
 import { capitalize } from "@src/utils";
-import React, { useState } from "react";
+import React from "react";
 import { SortUp } from "react-bootstrap-icons";
 import { SortDown } from "react-bootstrap-icons";
 import { useParams } from "react-router";
@@ -18,9 +18,11 @@ interface ListActionsProps {
   serverInfo: ServerInfo;
   collection: CollectionData;
   callback: () => void;
+  filter?: string;
+  onFilterChange?: (value: string) => void;
 }
 export function ListActions(props: ListActionsProps) {
-  const { serverInfo, collection, callback } = props;
+  const { serverInfo, collection, callback, filter, onFilterChange } = props;
   const { bid, cid } = useParams();
   const permissions = usePermissions();
 
@@ -32,27 +34,39 @@ export function ListActions(props: ListActionsProps) {
     <div className="list-actions">
       {canCreateRecord(permissions, bid, cid) && (
         <>
-          <AdminLink
-            key="__1"
-            name="record:create"
-            params={{ bid, cid }}
-            className="btn btn-primary btn-record-add"
-          >
-            Create record
-          </AdminLink>
-          <AdminLink
-            key="__2"
-            name="record:bulk"
-            params={{ bid, cid }}
-            className="btn btn-primary btn-record-bulk-add"
-          >
-            Bulk create
-          </AdminLink>
+          {/* won't render if the signer capability is not enabled on the server
+            or collection not configured to be signed */}
+          <SignoffToolbar key="request-signoff-toolbar" callback={callback} />
+          <div className="flex">
+            <AdminLink
+              key="__1"
+              name="record:create"
+              params={{ bid, cid }}
+              className="btn btn-primary btn-record-add"
+            >
+              Create record
+            </AdminLink>
+            <AdminLink
+              key="__2"
+              name="record:bulk"
+              params={{ bid, cid }}
+              className="btn btn-primary btn-record-bulk-add"
+            >
+              Bulk create
+            </AdminLink>
+            {onFilterChange && (
+              <input
+                type="text"
+                className="form-control quickFilter"
+                placeholder="Quicksearch"
+                onChange={e => onFilterChange(e.target.value)}
+                value={filter ?? ""}
+                data-testid="quickFilter"
+              />
+            )}
+          </div>
         </>
       )}
-      {/* won't render if the signer capability is not enabled on the server
-         or collection not configured to be signed */}
-      <SignoffToolbar key="request-signoff-toolbar" callback={callback} />
     </div>
   );
 }
@@ -134,6 +148,7 @@ type TableProps = RecordsViewProps & {
   recordsLoaded: boolean;
   updateSort: (s: string) => void;
   callback: () => void;
+  filter?: string;
 };
 
 export default function RecordTable({
@@ -149,13 +164,8 @@ export default function RecordTable({
   updateSort,
   capabilities,
   callback,
+  filter = "",
 }: TableProps) {
-  const [filter, setFilter] = useState("");
-
-  const onFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilter(e.target.value);
-  };
-
   const deleteRecord = async (rid, last_modified) => {
     try {
       await getClient().bucket(bid).collection(cid).deleteRecord(rid, {
@@ -246,23 +256,13 @@ export default function RecordTable({
   );
 
   return (
-    <>
-      <input
-        type="text"
-        className="form-control quickFilter"
-        placeholder="Quicksearch"
-        onChange={onFilterChange}
-        value={filter}
-        data-testid="quickFilter"
-      />
-      <PaginatedTable
-        thead={thead}
-        tbody={tbody}
-        dataLoaded={recordsLoaded}
-        colSpan={displayFields.length + 2}
-        hasNextPage={hasNextRecords}
-        listNextPage={listNextRecords}
-      />
-    </>
+    <PaginatedTable
+      thead={thead}
+      tbody={tbody}
+      dataLoaded={recordsLoaded}
+      colSpan={displayFields.length + 2}
+      hasNextPage={hasNextRecords}
+      listNextPage={listNextRecords}
+    />
   );
 }
