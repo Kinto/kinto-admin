@@ -11,7 +11,7 @@ import {
   PermissionsListEntry,
 } from "@src/types";
 import { historyFiltersToServerFilters, makeObservable } from "@src/utils";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 export function useBucket(
   bid: string,
@@ -61,16 +61,18 @@ export function useBucketsCollectionsList(
 export function useBucketList(): BucketData[] | undefined {
   const [val, setVal] = useState(undefined);
 
-  useMemo(async () => {
+  useEffect(() => {
     setVal(undefined);
-    const client = getClient();
-    try {
-      const buckets = (await client.listBuckets()).data;
-      setVal(buckets);
-    } catch (ex) {
-      notifyError("Unable to load buckets list", ex);
-    }
+    getClient()
+      .listBuckets()
+      .then(result => {
+        setVal(result.data);
+      })
+      .catch(err => {
+        notifyError("Unable to load buckets list", err);
+      });
   }, []);
+
   return val;
 }
 
