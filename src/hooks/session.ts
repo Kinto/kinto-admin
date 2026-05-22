@@ -51,15 +51,22 @@ export function logout() {
 export function useAuth(): AuthData | undefined {
   const [val, setVal] = useLocalStorage("kinto-admin-auth", authState.get());
 
-  if (val?.expiresAt && val.expiresAt < new Date().getTime()) {
+  const isExpired = val?.expiresAt && val.expiresAt < new Date().getTime();
+  if (isExpired) {
     setVal(undefined);
   }
 
+  // Restore the kinto client synchronously on first render when persisted
+  // auth is found, so descendants that call getClient() in mount effects
+  // don't race the auth effect (child effects commit before parent effects).
+  // Without this, hooks like useSignoff swallow "Client not configured" via
+  // their unhandled async rejection and the review buttons never appear.
+  if (!isExpired && val !== undefined && authState.get() === undefined) {
+    authState.set(val);
+    setupClient(val);
+  }
+
   useEffect(() => {
-    if (authState.get() === undefined && val !== undefined) {
-      authState.set(val);
-      setupClient(val);
-    }
     return authState.subscribe(setVal);
   }, []);
 

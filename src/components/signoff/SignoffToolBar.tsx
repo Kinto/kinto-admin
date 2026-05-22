@@ -47,12 +47,7 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
   const permissions = usePermissions();
   const [showSpinner, setShowSpinner] = useState(false);
   const collection = useCollection(bid, cid, cacheVal);
-  const signoff = useSignoff(
-    bid,
-    cid,
-    serverInfo?.capabilities?.signer,
-    cacheVal
-  );
+  const signoff = useSignoff(bid, cid, serverInfo, cacheVal);
   const [pendingConfirm, setPendingConfirm] = useState("");
 
   const reviewAction = async patchedFields => {
