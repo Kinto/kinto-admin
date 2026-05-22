@@ -78,7 +78,9 @@ describe("signoff hooks", () => {
     });
 
     it("Uses a SignoffCollectionsInfo object if a signer resource is found", async () => {
-      const { result } = renderHook(() => useSignoff("source", "cid", serverInfo));
+      const { result } = renderHook(() =>
+        useSignoff("source", "cid", serverInfo)
+      );
       await vi.waitFor(() => {
         expect(result.current).toStrictEqual({
           destination: {
@@ -120,7 +122,9 @@ describe("signoff hooks", () => {
         status: "not-work-in-progress",
         last_modified: 42,
       });
-      const { result } = renderHook(() => useSignoff("source", "cid", serverInfo));
+      const { result } = renderHook(() =>
+        useSignoff("source", "cid", serverInfo)
+      );
       await vi.waitFor(() => {
         expect(result.current).toMatchObject({
           changesOnPreview: {
@@ -145,7 +149,9 @@ describe("signoff hooks", () => {
     });
 
     it("Calculates changes for the destination collection if status is not signed signed", async () => {
-      const { result } = renderHook(() => useSignoff("source", "cid", serverInfo));
+      const { result } = renderHook(() =>
+        useSignoff("source", "cid", serverInfo)
+      );
       await vi.waitFor(() => {
         expect(result.current).toMatchObject({
           changesOnSource: {
