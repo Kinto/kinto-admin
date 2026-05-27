@@ -7,8 +7,11 @@ import {
   useBucketPermissions,
   useBucketsCollectionsList,
 } from "@src/hooks/bucket";
+import { logout, useAuth } from "@src/hooks/session";
+import * as storageHooks from "@src/hooks/storage";
 import { mockNotifyError } from "@test/testUtils";
-import { renderHook } from "@testing-library/react";
+import { render, renderHook } from "@testing-library/react";
+import React from "react";
 
 describe("bucket hooks", () => {
   describe("useBucket", () => {
@@ -445,6 +448,74 @@ describe("bucket hooks", () => {
       const fooBucket = tree.find(b => b.id === "foo");
       expect(fooBucket).toBeDefined();
       expect(fooBucket.collections.find(c => c.id === "foo")).toBeDefined();
+    });
+  });
+
+  // Regression test for https://github.com/mozilla/remote-settings/issues/1089
+  //
+  // On page refresh, `useAuth` reads persisted auth from localStorage during
+  // render and immediately returns truthy, allowing descendants to render.
+  // React commits child effects before parent effects on mount, so if a child
+  // calls `getClient()` in its mount effect before `useAuth`'s effect runs
+  // `setupClient`, it would throw "Client not configured."
+  describe("useAuth + useBucketList race on refresh", () => {
+    beforeEach(() => {
+      // Drop spies installed by sibling describes (e.g. on client.getClient)
+      // so this test runs against the real client module.
+      vi.restoreAllMocks();
+      logout();
+      client.resetClient();
+    });
+
+    it("loads buckets when a descendant calls useBucketList on first mount with persisted auth", async () => {
+      const notifyErrorMock = mockNotifyError();
+      const persistedAuth = {
+        authType: "basicauth",
+        server: "http://localhost/v1",
+        credentials: { username: "u", password: "p" },
+      };
+      vi.spyOn(storageHooks, "useLocalStorage").mockReturnValue([
+        persistedAuth,
+        vi.fn(),
+      ]);
+      const listBucketsMock = vi
+        .fn()
+        .mockResolvedValue({ data: [{ id: "main" }] });
+      // Make the KintoClient instance produced by setupClient() expose our
+      // listBuckets stub, so the bucket list hook actually loads data.
+      vi.spyOn(client, "setupClient").mockImplementation(() => {
+        const instance = { listBuckets: listBucketsMock } as any;
+        client.setClient(instance);
+        return instance;
+      });
+
+      function Child() {
+        const buckets = useBucketList();
+        return React.createElement(
+          "div",
+          { "data-testid": "buckets" },
+          buckets ? buckets.map(b => b.id).join(",") : "loading"
+        );
+      }
+      function Parent() {
+        const auth = useAuth();
+        return React.createElement(
+          "div",
+          null,
+          auth ? React.createElement(Child) : "no-auth"
+        );
+      }
+
+      const { getByTestId } = render(React.createElement(Parent));
+
+      await vi.waitFor(() => {
+        expect(getByTestId("buckets").textContent).toBe("main");
+      });
+      expect(listBucketsMock).toHaveBeenCalled();
+      expect(notifyErrorMock).not.toHaveBeenCalledWith(
+        "Unable to load buckets list",
+        expect.objectContaining({ message: "Client not configured." })
+      );
     });
   });
 });
