@@ -9,7 +9,7 @@ import { usePermissions } from "@src/hooks/session";
 import { canCreateRecord } from "@src/permission";
 import type { CollectionData, RecordData, ServerInfo } from "@src/types";
 import { capitalize } from "@src/utils";
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { SortUp } from "react-bootstrap-icons";
 import { SortDown } from "react-bootstrap-icons";
 import { useParams } from "react-router";
