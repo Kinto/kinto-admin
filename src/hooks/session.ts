@@ -56,8 +56,11 @@ export function useAuth(): AuthData | undefined {
     setVal(undefined);
   }
 
-  // Restore client synchronously on first render so descendant hooks
-  // that call getClient() during mount don't race the auth effect.
+  // Restore the kinto client synchronously on first render when persisted
+  // auth is found, so descendants that call getClient() in mount effects
+  // don't race the auth effect (child effects commit before parent effects).
+  // Without this, hooks like useSignoff swallow "Client not configured" via
+  // their unhandled async rejection and the review buttons never appear.
   if (!isExpired && val !== undefined && authState.get() === undefined) {
     authState.set(val);
     setupClient(val);
