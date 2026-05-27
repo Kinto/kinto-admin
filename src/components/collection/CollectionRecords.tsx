@@ -14,6 +14,7 @@ export default function CollectionRecords() {
   const { bid, cid } = useParams();
   const [sort, setSort] = useState(null);
   const [cacheVal, setCacheVal] = useState(0);
+  const [filter, setFilter] = useState("");
   const collection = useCollection(bid, cid, cacheVal);
   const records = useRecordList(bid, cid, sort, false, cacheVal);
 
@@ -24,15 +25,7 @@ export default function CollectionRecords() {
     setSort(collection.sort ?? DEFAULT_SORT);
   }, [bid, cid, collection?.last_modified ?? 0]);
 
-  const listActions = (
-    <ListActions
-      serverInfo={serverInfo}
-      collection={collection}
-      callback={() => {
-        setCacheVal(cacheVal + 1);
-      }}
-    />
-  );
+  const bumpCache = () => setCacheVal(cacheVal + 1);
 
   return (
     <div className="list-page">
@@ -48,7 +41,13 @@ export default function CollectionRecords() {
         selected="records"
         totalRecords={records?.totalRecords}
       >
-        {listActions}
+        <ListActions
+          serverInfo={serverInfo}
+          collection={collection}
+          callback={bumpCache}
+          filter={filter}
+          onFilterChange={setFilter}
+        />
         {!collection?.id || !records.data ? (
           <Spinner />
         ) : (
@@ -68,16 +67,19 @@ export default function CollectionRecords() {
             }
             updateSort={setSort}
             capabilities={serverInfo?.capabilities}
-            callback={() => {
-              setCacheVal(cacheVal + 1);
-            }}
+            callback={bumpCache}
+            filter={filter}
           />
         )}
-        {
-          records.data?.length > 10
-            ? listActions
-            : null /* Show actions in bottom only if there are more than 10 records */
-        }
+        {records.data?.length > 10 ? (
+          // Show actions in bottom only if there are more than 10 records.
+          // The filter input lives only in the top instance.
+          <ListActions
+            serverInfo={serverInfo}
+            collection={collection}
+            callback={bumpCache}
+          />
+        ) : null}
       </CollectionTabs>
     </div>
   );

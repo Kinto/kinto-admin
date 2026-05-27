@@ -20,6 +20,22 @@ h1 {
   display: block;
 }
 
+.flex {
+  display: flex;
+  gap: 0.1em;
+  align-items: center;
+}
+
+.flex > .btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.flex > .form-control {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .main {
   padding-top: 2.8em;
 }
@@ -203,7 +219,6 @@ nav.breadcrumbs {
 }
 
 table.record-list {
-  margin-top: 1em;
   border-collapse: collapse;
   table-layout: auto;
   width: max-content; /* Let the table shrink to fit its content */
@@ -520,10 +535,6 @@ form button[type="submit"].btn-primary {
   display: none;
 }
 
-.quickFilter {
-  margin-bottom: -0.5em;
-}
-
 /* Spinner http://tobiasahlin.com/spinkit/ */
 .spinner {
   margin: 30px auto 0;
@@ -733,6 +744,10 @@ form button[type="submit"].btn-primary {
 
 .interactive {
   position: relative;
+}
+
+.bs-wizard-info ul {
+  margin-bottom: 0;
 }
 
 /*Form Wizard*/
