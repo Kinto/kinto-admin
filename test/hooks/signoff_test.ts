@@ -22,6 +22,9 @@ const signer = {
   to_review_enabled: true,
 };
 
+const serverInfo = { capabilities: { signer } } as any;
+const serverInfoNoSigner = { capabilities: {} } as any;
+
 describe("signoff hooks", () => {
   describe("useSignoff", () => {
     let getRecordsTimestampMock, getDataMock, listRecordsMock;
@@ -58,22 +61,26 @@ describe("signoff hooks", () => {
       });
     });
 
-    it("Defaults to null if no signer object is provided", async () => {
-      const { result } = renderHook(() => useSignoff("bid", "cid", null));
+    it("Defaults to null if signer capability is absent", async () => {
+      const { result } = renderHook(() =>
+        useSignoff("bid", "cid", serverInfoNoSigner)
+      );
       await vi.waitFor(() => {
         expect(result.current).toBeNull();
       });
     });
 
     it("Defaults to undefined if no signer resources are found", async () => {
-      const { result } = renderHook(() => useSignoff("bid", "cid", signer));
+      const { result } = renderHook(() => useSignoff("bid", "cid", serverInfo));
       await vi.waitFor(() => {
         expect(result.current).toBeNull();
       });
     });
 
     it("Uses a SignoffCollectionsInfo object if a signer resource is found", async () => {
-      const { result } = renderHook(() => useSignoff("source", "cid", signer));
+      const { result } = renderHook(() =>
+        useSignoff("source", "cid", serverInfo)
+      );
       await vi.waitFor(() => {
         expect(result.current).toStrictEqual({
           destination: {
@@ -115,7 +122,9 @@ describe("signoff hooks", () => {
         status: "not-work-in-progress",
         last_modified: 42,
       });
-      const { result } = renderHook(() => useSignoff("source", "cid", signer));
+      const { result } = renderHook(() =>
+        useSignoff("source", "cid", serverInfo)
+      );
       await vi.waitFor(() => {
         expect(result.current).toMatchObject({
           changesOnPreview: {
@@ -140,7 +149,9 @@ describe("signoff hooks", () => {
     });
 
     it("Calculates changes for the destination collection if status is not signed signed", async () => {
-      const { result } = renderHook(() => useSignoff("source", "cid", signer));
+      const { result } = renderHook(() =>
+        useSignoff("source", "cid", serverInfo)
+      );
       await vi.waitFor(() => {
         expect(result.current).toMatchObject({
           changesOnSource: {
@@ -166,7 +177,7 @@ describe("signoff hooks", () => {
 
     it("Falls back to collection last_modified getRecordsTimestamp returns nothing", async () => {
       getRecordsTimestampMock.mockResolvedValue(undefined);
-      renderHook(() => useSignoff("source", "cid", signer));
+      renderHook(() => useSignoff("source", "cid", serverInfo));
       await vi.waitFor(() => {
         expect(listRecordsMock).toHaveBeenCalledWith({
           since: "42",

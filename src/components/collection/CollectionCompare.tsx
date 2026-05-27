@@ -39,31 +39,39 @@ export function CollectionCompare() {
   const [selectedTimestampStr, setSelectedTimestampStr] = useState(
     targetTimestampStr || ""
   );
-  if (selectedTimestampStr && historyDisabled) {
-    // If history is disabled, we can only look at collection at 'latest' timestamp.
-    setSelectedTimestampStr("");
-  }
 
   const bucketsList = useBucketList();
-  // Check that selectedBucket is valid.
-  if (
-    bucketsList &&
-    selectedBucket &&
-    !bucketsList.find(b => b.id === selectedBucket)
-  ) {
-    setSelectedBucket("");
-    setSelectedCollection("");
-  }
-
   const collectionsList = useCollectionList(selectedBucket);
-  // Check that selectedCollection is valid.
-  if (
-    collectionsList &&
-    selectedCollection &&
-    !collectionsList.data?.find(c => c.id === selectedCollection)
-  ) {
-    setSelectedCollection("");
-  }
+
+  // If history is disabled, we can only look at collection at 'latest' timestamp.
+  useEffect(() => {
+    if (selectedTimestampStr && historyDisabled) {
+      setSelectedTimestampStr("");
+    }
+  }, [historyDisabled, selectedTimestampStr]);
+
+  // Reset selection when the chosen bucket isn't in the loaded list.
+  useEffect(() => {
+    if (
+      bucketsList &&
+      selectedBucket &&
+      !bucketsList.find(b => b.id === selectedBucket)
+    ) {
+      setSelectedBucket("");
+      setSelectedCollection("");
+    }
+  }, [bucketsList, selectedBucket]);
+
+  // Reset selection when the chosen collection isn't in the loaded list.
+  useEffect(() => {
+    if (
+      collectionsList &&
+      selectedCollection &&
+      !collectionsList.data?.find(c => c.id === selectedCollection)
+    ) {
+      setSelectedCollection("");
+    }
+  }, [collectionsList, selectedCollection]);
 
   // Auto-select same collection if bucket is different than current.
   useEffect(() => {

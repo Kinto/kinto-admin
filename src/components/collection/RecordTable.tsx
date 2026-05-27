@@ -9,7 +9,7 @@ import { usePermissions } from "@src/hooks/session";
 import { canCreateRecord } from "@src/permission";
 import type { CollectionData, RecordData, ServerInfo } from "@src/types";
 import { capitalize } from "@src/utils";
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { SortUp } from "react-bootstrap-icons";
 import { SortDown } from "react-bootstrap-icons";
 import { useParams } from "react-router";
@@ -204,11 +204,18 @@ export default function RecordTable({
     );
   }
 
-  if (filter && records.length) {
-    records = records.filter(x =>
-      new RegExp(filter, "i").exec(JSON.stringify(x))
-    );
-  }
+  const filteredRecords = useMemo(() => {
+    if (!filter || !records.length) return records;
+    let pattern: RegExp;
+    try {
+      pattern = new RegExp(filter, "i");
+    } catch {
+      // Invalid regex while the user is typing (e.g. an open paren) —
+      // skip filtering rather than crashing the table.
+      return records;
+    }
+    return records.filter(x => pattern.test(JSON.stringify(x)));
+  }, [records, filter]);
 
   const thead = (
     <thead>
@@ -240,7 +247,7 @@ export default function RecordTable({
 
   const tbody = (
     <tbody className={!recordsLoaded ? "loading" : ""}>
-      {records.map((record, index) => (
+      {filteredRecords.map((record, index) => (
         <RecordRow
           key={index}
           bid={bid}
