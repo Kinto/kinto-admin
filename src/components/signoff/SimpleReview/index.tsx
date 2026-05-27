@@ -53,7 +53,7 @@ export default function SimpleReview() {
   const auth = useAuth();
   const permissions = usePermissions();
 
-  const signoff = useSignoff(bid, cid, serverInfo?.capabilities?.signer);
+  const signoff = useSignoff(bid, cid, serverInfo);
   const navigate = useNavigate();
   const sourceBid = signoff?.source?.bucket;
   const sourceCid = signoff?.source?.collection;

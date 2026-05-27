@@ -12,12 +12,21 @@ import type {
 import { hasHistoryDisabled } from "@src/utils";
 import { useEffect, useState } from "react";
 
+let loggedMissingSigner = false;
+
 export function useSignoff(
   bid: string,
   cid: string,
-  signer: any,
+  serverInfo: ServerInfo | undefined,
   cacheBust?: number
 ): null | SignerCapabilityResource | SignoffCollectionsInfo {
+  const signer = serverInfo?.capabilities?.signer;
+  // Only log once about missing signer, when we know serverInfo has loaded
+  if (serverInfo && !signer && !loggedMissingSigner) {
+    loggedMissingSigner = true;
+    console.warn("kinto-remote-settings signer is not enabled.");
+  }
+
   const resource: null | SignerCapabilityResource = _pickSignoffResource(
     signer,
     bid,
@@ -93,7 +102,6 @@ function _pickSignoffResource(
   cid: string
 ): SignerCapabilityResource | null {
   if (!signer) {
-    console.log("kinto-remote-settings signer is not enabled.");
     return null;
   }
   const resources = signer.resources;
