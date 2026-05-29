@@ -8,6 +8,39 @@ html {
 html,
 body {
   background: #fafbfc;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+#app {
+  height: 100%;
+}
+
+.app-frame {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The app-frame allows the .main container to fill the vertical space
+ +  and allows columns (sidebar, lists) to scroll independently.*/
+.app-frame .main {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-frame .main > .row {
+  flex: 1;
+  min-height: 0;
+}
+
+.app-frame .sidebar,
+.app-frame .content {
+  height: 100%;
+  overflow-y: auto;
 }
 
 h1 {
