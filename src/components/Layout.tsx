@@ -51,7 +51,7 @@ export function Layout() {
   const version = KINTO_ADMIN_VERSION;
 
   return (
-    <div class="app-frame">
+    <div className="app-frame">
       <SessionInfoBar />
       <div className="container-fluid main">
         <div className="row">
