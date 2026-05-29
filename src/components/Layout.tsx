@@ -171,8 +171,7 @@ export function Layout() {
             </Routes>
           </div>
         </div>
-        <hr />
-        <p className="text-center">
+        <footer>
           <a href="https://github.com/Kinto/kinto-admin">
             Powered by kinto-admin
           </a>
@@ -187,7 +186,7 @@ export function Layout() {
             </span>
           )}
           .
-        </p>
+        </footer>
       </div>
     </div>
   );
