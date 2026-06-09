@@ -1,5 +1,25 @@
-.breadcrumbs {
+nav.breadcrumbs {
+  display: block;
+  overflow-wrap: anywhere;
   padding-top: 0.5em;
   font-size: 1.2em;
   text-transform: lowercase;
+}
+
+.breadcrumbs > div {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.breadcrumbs > div > span {
+  display: inline-flex;
+  min-width: 0;
+}
+
+.breadcrumbs a {
+  overflow-wrap: anywhere;
+}
+
+.breadcrumbs > div > span > span {
+  flex-shrink: 0;
 }
