@@ -1,3 +1,4 @@
+import KintoFile from "../rjsf/KintoFile";
 import { UiSchema } from "@rjsf/utils";
 import { getClient } from "@src/client";
 import type { Capabilities, RecordData, RecordResource } from "@src/types";
@@ -52,15 +53,23 @@ export function extendUiSchemaWithAttachment(
   uiSchema: UiSchema,
   attachmentConfig: { enabled: boolean; required: boolean } | null | undefined
 ): UiSchema {
+  const updated = {
+    ...uiSchema,
+    __attachment__: {
+      "ui:widget": KintoFile,
+    },
+  };
+
   if (
     !attachmentConfig ||
     !attachmentConfig.enabled ||
     !Object.prototype.hasOwnProperty.call(uiSchema, "ui:order")
   ) {
-    return uiSchema;
+    return updated;
   }
+
   return {
-    ...uiSchema,
+    ...updated,
     "ui:order": [...uiSchema["ui:order"], "__attachment__"],
   };
 }
