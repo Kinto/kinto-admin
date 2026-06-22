@@ -45,7 +45,7 @@
     "react-bootstrap": "^2.10.10",
     "react-bootstrap-icons": "^1.11.3",
     "react-dom": "^19.2.6",
-    "react-router": "^7.6.0",
+    "react-router": "^8.0.1",
     "timeago.js": "^4.0.2",
     "vite-tsconfig-paths": "^6.0.1"
   },
