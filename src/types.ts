@@ -215,11 +215,7 @@ export interface RouteLocation {
 }
 
 export type AuthMethod =
-  | "anonymous"
-  | "accounts"
-  | "ldap"
-  | "basicauth"
-  | "openid";
+  "anonymous" | "accounts" | "ldap" | "basicauth" | "openid";
 
 export interface AuthData {
   authType: AuthMethod;
@@ -362,11 +358,7 @@ export interface ChangesList {
 }
 
 export type SignoffCollectionStatus =
-  | "signed"
-  | "to-review"
-  | "to-rollback"
-  | "to-sign"
-  | "work-in-progress";
+  "signed" | "to-review" | "to-rollback" | "to-sign" | "work-in-progress";
 
 export type SignoffSourceInfo = SignerCapabilityResourceEntry & {
   isLoading: boolean;
