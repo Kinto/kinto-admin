@@ -222,4 +222,18 @@ describe("RecordForm", () => {
     expect(screen.queryByLabelText("TestContent").disabled).toBe(true);
     expect(screen.queryByLabelText("File attachment").disabled).toBe(true);
   });
+
+  it("Does not fail if ui:order has missing fields", async () => {
+    const col = {
+      ...defaultCol,
+      uiSchema: {
+        "ui:order": ["title"],  // missing "content"
+      },
+    };
+    console.log(col);
+    vi.spyOn(collectionHooks, "useCollection").mockReturnValueOnce(col);
+
+    renderWithRouter(<RecordForm />, editRouteProps);
+    expect(screen.findByLabelText("TestTitle")).toBeDefined();
+  });
 });
