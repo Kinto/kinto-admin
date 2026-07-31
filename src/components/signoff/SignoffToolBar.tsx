@@ -98,7 +98,9 @@ export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
   }
 
   if (!("status" in signoff.source)) {
-    return <Spinner />;
+    // Check whether it is not enabled or still loading.
+    const signoffSourceInfo = signoff.source as SignoffSourceInfo;
+    return signoffSourceInfo.isLoading === false ? null : <Spinner />;
   }
 
   // At this point, signoff is loaded (not null and with `status` field)
