@@ -1,3 +1,4 @@
+import { notifyError } from "./notifications";
 import { getClient } from "@src/client";
 import type {
   ChangesList,
@@ -7,7 +8,6 @@ import type {
   SignerCapabilityResourceEntry,
   SignoffCollectionStatus,
   SignoffCollectionsInfo,
-  SignoffSourceInfo,
 } from "@src/types";
 import { hasHistoryDisabled } from "@src/utils";
 import { useEffect, useState } from "react";
@@ -32,17 +32,40 @@ export function useSignoff(
     bid,
     cid
   );
-  const [val, setVal] = useState(resource);
+  const [val, setVal] = useState<
+    null | SignerCapabilityResource | SignoffCollectionsInfo
+  >(resource);
 
   useEffect(() => {
-    if (resource?.source) {
-      const emptyInfos = resource.source as SignoffSourceInfo;
-      emptyInfos.isLoading = true;
-      setVal({ ...resource, ...emptyInfos });
-      calculateChangesInfo(resource).then((infos: SignoffCollectionsInfo) =>
-        setVal(infos)
-      );
+    if (!resource?.source) {
+      // Either it not loaded, and signoff is not enabled.
+      // Reset the UI anyway.
+      setVal(resource);
+      return;
     }
+    // Effect is ran again, mark as loading and recompute changes infos.
+    setVal({ ...resource, source: { ...resource.source, isLoading: true } });
+
+    let cancelled = false;
+    calculateChangesInfo(resource)
+      .then((infos: SignoffCollectionsInfo) => {
+        if (cancelled) return;
+        // Normal case.
+        setVal(infos);
+      })
+      .catch(err => {
+        if (cancelled) return;
+        // Notify error to user.
+        notifyError("Unable to load signoff information", err);
+        setVal({
+          ...resource,
+          source: { ...resource.source, isLoading: false },
+        });
+      });
+    return () => {
+      // Abort useEffect().
+      cancelled = true;
+    };
   }, [resource?.source?.bucket, resource?.source?.collection, cacheBust]);
 
   return val;

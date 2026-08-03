@@ -1,5 +1,7 @@
 import * as client from "@src/client";
 import { useSignoff } from "@src/hooks/signoff";
+import type { SignoffCollectionsInfo } from "@src/types";
+import { mockNotifyError } from "@test/testUtils";
 import { renderHook } from "@testing-library/react";
 
 const signer = {
@@ -183,6 +185,70 @@ describe("signoff hooks", () => {
           since: "42",
           fields: ["deleted"],
         });
+      });
+    });
+
+    it("Notifies and leaves the loading state if loading fails", async () => {
+      const notifyErrorMock = mockNotifyError();
+      getDataMock.mockRejectedValue(new Error("boom"));
+
+      const { result } = renderHook(() =>
+        useSignoff("source", "cid", serverInfo)
+      );
+
+      await vi.waitFor(() => {
+        expect(notifyErrorMock).toHaveBeenCalled();
+      });
+      expect((result.current as SignoffCollectionsInfo).source.isLoading).toBe(
+        false
+      );
+    });
+
+    it("Stale request should not overwrite latest info", async () => {
+      let resolveStale;
+      getDataMock.mockImplementationOnce(
+        () =>
+          new Promise(resolve => {
+            // Won't resolve immediately.
+            resolveStale = () =>
+              resolve({ status: "work-in-progress", last_modified: 1 });
+          })
+      );
+      const { result, rerender } = renderHook(
+        ({ cacheBust }) => useSignoff("source", "cid", serverInfo, cacheBust),
+        { initialProps: { cacheBust: 0 } }
+      );
+
+      // Bump the cache, while the other is still pending.
+      getDataMock.mockResolvedValue({ status: "to-review", last_modified: 2 });
+      rerender({ cacheBust: 1 });
+      await vi.waitFor(() => {
+        expect((result.current as SignoffCollectionsInfo).source.status).toBe(
+          "to-review"
+        );
+      });
+
+      // Resolve first promise. Shouldn't overwrite the content of the lastest one.
+      resolveStale();
+      await new Promise(resolve => setTimeout(resolve, 10));
+      expect((result.current as SignoffCollectionsInfo).source.status).toBe(
+        "to-review"
+      );
+    });
+
+    it("Resets when the collection is not concerned with signoff anymore", async () => {
+      const { result, rerender } = renderHook(
+        ({ bid }) => useSignoff(bid, "cid", serverInfo),
+        { initialProps: { bid: "source" } }
+      );
+      await vi.waitFor(() => {
+        expect((result.current as SignoffCollectionsInfo).source.status).toBe(
+          "work-in-progress"
+        );
+      });
+      rerender({ bid: "unsigned" });
+      await vi.waitFor(() => {
+        expect(result.current).toBeNull();
       });
     });
   });
