@@ -25,6 +25,9 @@ export const retryingFetch: FetchFunction = async (url, options) => {
         return response;
       }
     } catch (err) {
+      console.warn(
+        `Request ${method} ${url} failed: ${err}. Attempt (${attempt + 1}/${RETRY_COUNT})`
+      );
       if (isLastAttempt) {
         throw err;
       }
