@@ -51,6 +51,8 @@
   },
   "devDependencies": {
     "@eslint/compat": "^2.0.0",
+    "@eslint/eslintrc": "^3.3.6",
+    "@eslint/js": "^10.0.1",
     "@testing-library/jest-dom": "^7.0.0",
     "@testing-library/react": "^16.0.0",
     "@trivago/prettier-plugin-sort-imports": "^6.0.0",
@@ -71,6 +73,11 @@
     "typescript": "^5.3.3",
     "vite": "^8.0.0",
     "vitest": "^4.0.13"
+  },
+  "overrides": {
+    "eslint-plugin-react": {
+      "eslint": "$eslint"
+    }
   },
   "repository": {
     "type": "git",
