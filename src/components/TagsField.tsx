@@ -16,7 +16,7 @@ function toTagList(
 }
 
 function toTagsString(tags: string[], separator = ","): string {
-  return tags.join((separator += separator !== " " ? " " : ""));
+  return tags.join(separator === " " ? " " : `${separator} `);
 }
 
 const TagsField: React.FC<FieldProps<string[]>> = ({
