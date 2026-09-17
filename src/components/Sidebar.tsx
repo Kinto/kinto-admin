@@ -8,7 +8,12 @@ import {
 } from "@src/hooks/preferences";
 import { useAuth, usePermissions, useServerInfo } from "@src/hooks/session";
 import { canCreateBucket } from "@src/permission";
-import type { BucketEntry, CollectionEntry, RouteParams } from "@src/types";
+import type {
+  BucketEntry,
+  CollectionEntry,
+  RouteParams,
+  SignedCollectionData,
+} from "@src/types";
 import url from "@src/url";
 import * as React from "react";
 import { Plus } from "react-bootstrap-icons";
@@ -115,6 +120,22 @@ function CollectionMenuEntry(props: CollectionMenuEntryProps) {
   );
 }
 
+function sortCollections(a: SignedCollectionData, b: SignedCollectionData) {
+  if (a.last_edit_date && b.last_edit_date) {
+    return new Date(a.last_edit_date) < new Date(b.last_edit_date) ? 1 : -1;
+  }
+
+  if (a.last_edit_date && !b.last_edit_date) {
+    return -1;
+  }
+
+  if (!a.last_edit_date && b.last_edit_date) {
+    return 1;
+  }
+
+  return (b?.last_modified ?? 0) - (a?.last_modified ?? 0);
+}
+
 interface BucketCollectionsMenuProps {
   bucket: BucketEntry;
   collections: CollectionEntry[];
@@ -129,7 +150,7 @@ function BucketCollectionsMenu(props: BucketCollectionsMenuProps) {
   return (
     <div className="collections-menu list-group list-group-flush">
       {collections
-        .sort((a, b) => (a.id > b.id ? 1 : -1))
+        .sort(sortCollections)
         .slice(0, SIDEBAR_MAX_LISTED_COLLECTIONS)
         .map((collection, index) => {
           return (
