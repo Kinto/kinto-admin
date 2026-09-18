@@ -15,11 +15,20 @@ describe("Sidebar component", () => {
   const buckets = [
     {
       id: "mybuck",
-      collections: [{ id: "othercoll" }, { id: "mycoll" }],
+      collections: [
+        { id: "othercoll", last_edit_date: "2024-01-16T13:48:19.630374+00:00" },
+        { id: "mycoll", last_edit_date: "2026-06-04T16:19:20.830713+00:00" },
+      ],
     },
     {
       id: "otherbuck",
-      collections: [{ id: "foo" }, { id: "bar" }, { id: "baz" }],
+      collections: [
+        { id: "foo", last_edit_date: "2024-01-16T13:48:19.630374+00:00" },
+        { id: "bar", last_edit_date: "2025-08-01T10:39:52.247351+00:00" },
+        { id: "baz", last_edit_date: "2026-06-04T16:19:20.830713+00:00" },
+        { id: "a", last_modified: 1789430450812 },
+        { id: "z", last_modified: 1789430451046 },
+      ],
     },
   ];
 
@@ -59,22 +68,25 @@ describe("Sidebar component", () => {
       const collMenus = bucketMenus[0].querySelectorAll(
         ".collections-menu-entry"
       );
-      // Sorted alphabetically.
+      // Sorted by last_edit_date descending.
       expect([].map.call(collMenus, x => x.textContent)).toStrictEqual([
         "mycoll",
         "othercoll",
       ]);
     });
 
-    it("should list collections for the second bucket", () => {
+    it("should list collections for the second bucket in the correct order", () => {
       const collMenus = bucketMenus[1].querySelectorAll(
         ".collections-menu-entry"
       );
 
+      // Sorted by last_edit_date descending, and then last_modified.
       expect([].map.call(collMenus, x => x.textContent)).toStrictEqual([
-        "bar",
         "baz",
+        "bar",
         "foo",
+        "z",
+        "a",
       ]);
     });
 
