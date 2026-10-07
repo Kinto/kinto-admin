@@ -13,7 +13,7 @@ import {
   notifyError,
   notifySuccess,
 } from "@src/hooks/notifications";
-import { clearServersHistory, useServers } from "@src/hooks/servers";
+import { useServerHistory } from "@src/hooks/servers";
 import { setAuth } from "@src/hooks/session";
 import type { ServerInfo } from "@src/types";
 import { getAuthLabel, getServerByPriority, omit } from "@src/utils";
@@ -187,11 +187,11 @@ function extendSchemaWithHistory(schema, servers, authMethods): RJSFSchema {
 }
 
 /**
- * Use the servers history for the default server field value when available.
+ * Render the server field with the server history widget, and hide the auth
+ * method choice when the server only supports one.
  */
 function extendUiSchemaWithHistory(
   uiSchema,
-  servers,
   getServerInfo,
   serverChange,
   singleAuthMethod
@@ -211,7 +211,6 @@ function extendUiSchemaWithHistory(
         "ui:widget": "hidden",
       },
       "ui:options": {
-        servers,
         getServerInfo,
       },
     };
@@ -223,8 +222,6 @@ function extendUiSchemaWithHistory(
       ...uiSchema.server,
       "ui:widget": ServerHistory,
       "ui:options": {
-        servers,
-        clearServersHistory,
         getServerInfo,
         serverChange,
       },
@@ -259,9 +256,10 @@ function navigateToOpenID(authFormData: any, provider: any) {
 
 export default function AuthForm() {
   const [showSpinner, setShowSpinner] = useState(false);
-  const servers = useServers();
+  const { serverHistory, addServerToHistory } = useServerHistory();
   const [serverInfo, setServerInfo] = useState(DEFAULT_SERVERINFO);
-  const authType = (servers.length && servers[0].authType) || ANONYMOUS_AUTH;
+  const authType =
+    (serverHistory.length && serverHistory[0].authType) || ANONYMOUS_AUTH;
   const { schema: currentSchema, uiSchema: curentUiSchema } =
     authSchemas(authType);
 
@@ -269,7 +267,7 @@ export default function AuthForm() {
   const [uiSchema, setUiSchema] = useState(curentUiSchema);
   const [formData, setFormData] = useState({
     authType,
-    server: getServerByPriority(servers),
+    server: getServerByPriority(serverHistory),
   });
 
   const serverChangeCallback = async () => {
@@ -286,7 +284,7 @@ export default function AuthForm() {
       setFormData({
         server: auth.server,
         authType:
-          servers.find(x => x.server === auth.server)?.authType ??
+          serverHistory.find(x => x.server === auth.server)?.authType ??
           ANONYMOUS_AUTH,
       });
 
@@ -308,20 +306,23 @@ export default function AuthForm() {
 
   useEffect(() => {
     // load last used server by default
-    if (SINGLE_SERVER || servers?.length > 0) {
+    if (SINGLE_SERVER || serverHistory?.length > 0) {
       serverInfoCallback({
         authType: ANONYMOUS_AUTH,
-        server: SINGLE_SERVER ?? servers[0].server,
+        server: SINGLE_SERVER ?? serverHistory[0].server,
       });
     }
   }, []);
 
   const authMethods = getSupportedAuthMethods(serverInfo);
   const singleAuthMethod = authMethods.length === 1;
-  const finalSchema = extendSchemaWithHistory(schema, servers, authMethods);
+  const finalSchema = extendSchemaWithHistory(
+    schema,
+    serverHistory,
+    authMethods
+  );
   const finalUiSchema = extendUiSchemaWithHistory(
     uiSchema,
-    servers,
     serverInfoCallback,
     serverChangeCallback,
     singleAuthMethod
@@ -363,9 +364,11 @@ export default function AuthForm() {
         if (!providerData) {
           throw new Error("Couldn't find provider data in the state. Bad.");
         }
+        addServerToHistory(formData.server, formData.authType);
         return navigateToOpenID(extendedFormData, providerData);
       }
       case "anonymous": {
+        addServerToHistory(formData.server, formData.authType);
         setAuth(extendedFormData);
         break;
       }
@@ -381,6 +384,7 @@ export default function AuthForm() {
             setShowSpinner(false);
             return;
           }
+          addServerToHistory(formData.server, formData.authType);
           setAuth(extendedFormData);
         } catch (ex) {
           notifyError("Couldn't complete login.", ex);

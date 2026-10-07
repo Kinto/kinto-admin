@@ -1,5 +1,4 @@
 import { notifyError, notifyInfo } from "./notifications";
-import { addServer } from "./servers";
 import { useLocalStorage } from "./storage";
 import { getClient, setupClient } from "@src/client";
 import {
@@ -18,13 +17,6 @@ const permissionState = makeObservable(undefined);
 const serverState = makeObservable(undefined);
 
 export function setAuth(auth: AuthData) {
-  addServer(
-    auth.server,
-    auth.authType === "openid"
-      ? `${auth.authType}-${(auth as OpenIDAuth).provider}`
-      : auth.authType
-  );
-
   let processedAuth: AuthData = auth;
   if (auth.authType.startsWith("openid-")) {
     const castedAuth = auth as OpenIDAuth;

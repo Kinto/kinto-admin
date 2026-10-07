@@ -1,46 +1,90 @@
-import { addServer, clearServersHistory, useServers } from "@src/hooks/servers";
-import { loadServers } from "@src/store/localStore";
-import { renderHook } from "@testing-library/react";
+import { ANONYMOUS_AUTH } from "@src/constants";
+import { useServerHistory } from "@src/hooks/servers";
+import { act, renderHook } from "@testing-library/react";
 
-describe("servers hooks", () => {
-  describe("servers add", () => {
-    beforeEach(() => {
-      clearServersHistory();
+const SERVER_HISTORY_KEY = "kinto-admin-server-history";
+
+describe("useServerHistory", () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it("should return an empty history by default", () => {
+    const { result } = renderHook(() => useServerHistory());
+
+    expect(result.current.serverHistory).toStrictEqual([]);
+  });
+
+  it("should load legacy servers", () => {
+    localStorage.setItem(
+      SERVER_HISTORY_KEY,
+      JSON.stringify(["someServer", "otherServer"])
+    );
+    const { result } = renderHook(() => useServerHistory());
+
+    expect(result.current.serverHistory).toStrictEqual([
+      { server: "someServer", authType: ANONYMOUS_AUTH },
+      { server: "otherServer", authType: ANONYMOUS_AUTH },
+    ]);
+  });
+
+  it("should add server to recent history", () => {
+    const { result } = renderHook(() => useServerHistory());
+
+    act(() => {
+      result.current.addServerToHistory("http://server.test/v1", "basicauth");
     });
 
-    it("should add server to recent history", async () => {
-      const { result } = renderHook(() => useServers());
-      expect(result.current).toEqual([]);
-      expect(result.current).toEqual(loadServers());
+    expect(result.current.serverHistory).toStrictEqual([
+      { server: "http://server.test/v1", authType: "basicauth" },
+    ]);
+    expect(JSON.parse(localStorage.getItem(SERVER_HISTORY_KEY))).toStrictEqual([
+      { server: "http://server.test/v1", authType: "basicauth" },
+    ]);
+  });
 
-      addServer("http://server.test/v1", "basicauth");
+  it("should not prepend a duplicate entry in stack", () => {
+    const { result } = renderHook(() => useServerHistory());
 
-      await vi.waitFor(() => {
-        expect(result.current.length).toBe(1);
-        expect(result.current).toEqual([
-          { server: "http://server.test/v1", authType: "basicauth" },
-        ]);
-        expect(result.current).toStrictEqual(loadServers());
-      });
+    act(() => {
+      result.current.addServerToHistory("http://server.test/v1", "basicauth");
+    });
+    act(() => {
+      result.current.addServerToHistory("http://other.test/v1", "anonymous");
+    });
+    act(() => {
+      result.current.addServerToHistory("http://server.test/v1", "ldap");
     });
 
-    it("should not prepend a duplicate entry in stack", async () => {
-      const { result } = renderHook(() => useServers());
-      expect(result.current).toEqual([]);
+    expect(result.current.serverHistory).toStrictEqual([
+      { server: "http://server.test/v1", authType: "ldap" },
+      { server: "http://other.test/v1", authType: "anonymous" },
+    ]);
+  });
 
-      addServer("http://server.test/v1", "basicauth");
+  it("should clear server history", () => {
+    const { result } = renderHook(() => useServerHistory());
 
-      await vi.waitFor(() => {
-        expect(result.current.length).toBe(1);
-        expect(result.current).toEqual([
-          { server: "http://server.test/v1", authType: "basicauth" },
-        ]);
-      });
-
-      addServer("http://server.test/v1", "basicauth2");
-      await vi.waitFor(() => {
-        expect(result.current.length).toBe(1);
-      });
+    act(() => {
+      result.current.addServerToHistory("http://server.test/v1", "basicauth");
     });
+    act(() => {
+      result.current.clearServerHistory();
+    });
+
+    expect(result.current.serverHistory).toStrictEqual([]);
+  });
+
+  it("should share history between hook instances", () => {
+    const { result: first } = renderHook(() => useServerHistory());
+    const { result: second } = renderHook(() => useServerHistory());
+
+    act(() => {
+      first.current.addServerToHistory("http://server.test/v1", "basicauth");
+    });
+
+    expect(second.current.serverHistory).toStrictEqual([
+      { server: "http://server.test/v1", authType: "basicauth" },
+    ]);
   });
 });

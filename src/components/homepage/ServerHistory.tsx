@@ -1,5 +1,5 @@
 import { ANONYMOUS_AUTH } from "@src/constants";
-import { clearServersHistory } from "@src/hooks/servers";
+import { useServerHistory } from "@src/hooks/servers";
 import { debounce } from "@src/utils";
 import React, { useCallback, useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
@@ -25,6 +25,7 @@ const debounceMillis = 400;
 
 export default function ServerHistory(props: ServerHistoryProps) {
   const [value, setValue] = useState(props.value);
+  const { serverHistory, clearServerHistory } = useServerHistory();
 
   const select = useCallback(
     server => event => {
@@ -39,9 +40,9 @@ export default function ServerHistory(props: ServerHistoryProps) {
   const clear = useCallback(
     event => {
       event.preventDefault();
-      clearServersHistory();
+      clearServerHistory();
     },
-    [props]
+    [clearServerHistory]
   );
 
   const onServerChange = useCallback(
@@ -74,7 +75,7 @@ export default function ServerHistory(props: ServerHistoryProps) {
   );
 
   const { id, placeholder, options, disabled = false } = props;
-  const { servers, pattern } = options;
+  const { pattern } = options;
 
   return (
     <InputGroup>
@@ -92,12 +93,12 @@ export default function ServerHistory(props: ServerHistoryProps) {
         title="Servers"
         disabled={disabled}
       >
-        {servers.length === 0 ? (
+        {serverHistory.length === 0 ? (
           <button className="dropdown-item">
             <em>No server history</em>
           </button>
         ) : (
-          servers.map(({ server }, key) => (
+          serverHistory.map(({ server }, key) => (
             <Dropdown.Item
               className="dropdown-item"
               key={key}
