@@ -41,38 +41,4 @@ describe("localStore", () => {
       expect(localStore.loadServers()).toStrictEqual([]);
     });
   });
-
-  describe("session store", () => {
-    const session = {
-      server: "http://server.test/v1",
-      credentials: {
-        username: "user",
-        password: "pass",
-      },
-      buckets: [{}],
-    };
-
-    beforeAll(() => {
-      localStore.clearSession();
-    });
-
-    it("should load initial session", () => {
-      expect(localStore.loadSession()).toBeNull();
-    });
-
-    it("should save and load session with the buckets emptied", () => {
-      localStore.saveSession(session);
-
-      expect(localStore.loadSession()).toStrictEqual({
-        ...session,
-        buckets: [],
-      });
-    });
-
-    it("should clear session", () => {
-      localStore.clearSession();
-
-      expect(localStore.loadSession()).toBeNull();
-    });
-  });
 });

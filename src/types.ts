@@ -277,17 +277,6 @@ export interface BucketEntry {
   last_modified: number;
 }
 
-export interface SessionState {
-  busy: boolean;
-  authenticating: boolean;
-  auth: AuthData | null | undefined;
-  authenticated: boolean;
-  permissions: PermissionsListEntry[] | null | undefined;
-  buckets: BucketEntry[];
-  serverInfo: ServerInfo;
-  redirectURL: string | null | undefined;
-}
-
 export interface ServerEntry {
   server: string;
   authType: string;

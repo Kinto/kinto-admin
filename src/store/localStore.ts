@@ -1,8 +1,7 @@
 import { ANONYMOUS_AUTH } from "@src/constants";
-import type { ServerEntry, SessionState } from "@src/types";
+import type { ServerEntry } from "@src/types";
 
 const HISTORY_KEY = "kinto-admin-server-history";
-const SESSION_KEY = "kinto-admin-session";
 
 export function loadServers(): ServerEntry[] {
   const jsonHistory = localStorage.getItem(HISTORY_KEY);
@@ -35,28 +34,4 @@ export function saveServers(history: ServerEntry[]): ServerEntry[] {
 
 export function clearServers(): ServerEntry[] {
   return saveServers([]);
-}
-
-export function loadSession(): SessionState | null {
-  try {
-    return JSON.parse(localStorage.getItem(SESSION_KEY) ?? "null");
-  } catch (_err) {
-    return null;
-  }
-}
-
-export function saveSession(sessionState: SessionState): Promise<any> {
-  localStorage.setItem(
-    SESSION_KEY,
-    JSON.stringify({
-      ...sessionState,
-      buckets: [],
-    })
-  );
-  return Promise.resolve();
-}
-
-export function clearSession(): Promise<any> {
-  localStorage.removeItem(SESSION_KEY);
-  return Promise.resolve();
 }
