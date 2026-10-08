@@ -151,7 +151,7 @@ export function useRecordHistory(
   cacheBust?: number
 ): ListHistoryResult {
   const [val, setVal] = useState({});
-  const serverInfo = useServerInfo();
+  const { data: serverInfo } = useServerInfo();
   const serverFilters = historyFiltersToServerFilters(serverInfo, filters);
 
   useEffect(() => {

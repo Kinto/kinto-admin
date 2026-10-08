@@ -6,6 +6,7 @@ import {
   OpenIDAuth,
   PermissionsListEntry,
   ServerInfo,
+  ServerInfoState,
 } from "@src/types";
 import { makeObservable } from "@src/utils";
 import { useEffect, useState } from "react";
@@ -14,7 +15,8 @@ const openPromises: Record<string, boolean> = {};
 
 const authState = makeObservable(undefined);
 const permissionState = makeObservable(undefined);
-const serverState = makeObservable(undefined);
+const IDLE_SERVER_INFO: ServerInfoState = { status: "idle" };
+const serverState = makeObservable(IDLE_SERVER_INFO);
 
 export function setAuth(auth: AuthData) {
   let processedAuth: AuthData = auth;
@@ -37,7 +39,7 @@ export function setAuth(auth: AuthData) {
 export function logout() {
   authState.set(undefined);
   permissionState.set(undefined);
-  serverState.set(undefined);
+  serverState.set(IDLE_SERVER_INFO);
 }
 
 export function useAuth(): AuthData | undefined {
@@ -70,11 +72,11 @@ export function usePermissions(): PermissionsListEntry[] | undefined {
 
   useEffect(() => {
     const unsub = permissionState.subscribe(setVal);
-    if (serverState.get() !== undefined && val === undefined) {
-      getPermissions(serverState.get());
+    if (serverState.get().status === "success" && val === undefined) {
+      getPermissions(serverState.get().data);
     }
     return unsub;
-  }, [serverState.get() !== undefined]);
+  }, [serverState.get().status === "success"]);
 
   return val;
 }
@@ -104,12 +106,12 @@ async function getPermissions(server: ServerInfo) {
   }
 }
 
-export function useServerInfo(): ServerInfo | undefined {
-  const [val, setVal] = useState(serverState.get());
+export function useServerInfo(): ServerInfoState {
+  const [val, setVal] = useState<ServerInfoState>(serverState.get());
 
   useEffect(() => {
     const unsub = serverState.subscribe(setVal);
-    if (authState.get() !== undefined && val === undefined) {
+    if (authState.get() !== undefined && val.status === "idle") {
       getServerInfo();
     }
     return unsub;
@@ -125,6 +127,7 @@ async function getServerInfo() {
   openPromises.getServerInfo = true;
 
   const client = getClient();
+  serverState.set({ status: "loading" });
 
   try {
     // Fetch server information
@@ -137,8 +140,9 @@ async function getServerInfo() {
     // Side effect: change window title with project name.
     document.title = project_name + " Administration";
 
-    serverState.set(serverInfo);
+    serverState.set({ status: "success", data: serverInfo });
   } catch (error) {
+    serverState.set({ status: "error", error });
     notifyError(`Could not reach server ${client.remote}`, error);
   } finally {
     delete openPromises.getServerInfo;

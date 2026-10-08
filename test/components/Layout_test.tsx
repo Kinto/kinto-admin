@@ -22,8 +22,8 @@ describe("App component", () => {
       .spyOn(sessionHooks, "useServerInfo")
       .mockImplementation(useServerInfoMock);
     useServerInfoMock.mockReturnValue({
-      ...DEFAULT_SERVERINFO,
-      url: testServer,
+      status: "success",
+      data: { ...DEFAULT_SERVERINFO, url: testServer },
     });
     vitest.spyOn(sessionHooks, "useAuth").mockImplementation(useAuthMock);
     vitest
@@ -43,7 +43,7 @@ describe("App component", () => {
   describe("Session top bar", () => {
     it("should render an empty session top bar when not authenticated", () => {
       useAuthMock.mockReturnValueOnce(undefined);
-      useServerInfoMock.mockReturnValueOnce(undefined);
+      useServerInfoMock.mockReturnValueOnce({ status: "idle" });
       renderWithRouter(<Layout />, routeProps);
       expect(screen.queryByTestId("sessionInfo-bar")).toBeDefined();
       expect(screen.queryByTestId("sessionInfo-bar")).toContainHTML("");
@@ -88,7 +88,10 @@ describe("App component", () => {
         username: "user",
         password: "pass",
       };
-      useServerInfoMock.mockReturnValue(serverInfo);
+      useServerInfoMock.mockReturnValue({
+        status: "success",
+        data: serverInfo,
+      });
       useAuthMock.mockReturnValue({
         server: serverInfo.url,
         authType: "ldap",

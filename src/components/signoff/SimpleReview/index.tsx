@@ -49,7 +49,7 @@ function SignedCollectionRecordDiffView({
 export default function SimpleReview() {
   const { bid, cid } = useParams();
   const collection = useCollection(bid, cid);
-  const serverInfo = useServerInfo();
+  const { data: serverInfo } = useServerInfo();
   const auth = useAuth();
   const permissions = usePermissions();
 

@@ -20,7 +20,7 @@ export default function RecordTabs({
   selected,
   children,
 }: Props) {
-  const serverInfo = useServerInfo();
+  const { data: serverInfo } = useServerInfo();
 
   return (
     <div className="card">

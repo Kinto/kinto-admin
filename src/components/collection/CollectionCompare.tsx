@@ -28,7 +28,7 @@ export function CollectionCompare() {
   const hasAutoSelected = useRef(false);
 
   // Some collections have history disabled.
-  const serverInfo = useServerInfo();
+  const { data: serverInfo } = useServerInfo();
   const historyDisabled = hasHistoryDisabled(
     serverInfo,
     selectedBucket,

@@ -43,7 +43,7 @@ interface SignoffToolBarProps {
 export default function SignoffToolBar({ callback }: SignoffToolBarProps) {
   const { bid, cid } = useParams();
   const [cacheVal, setCacheVal] = useState(0);
-  const serverInfo = useServerInfo();
+  const { data: serverInfo } = useServerInfo();
   const permissions = usePermissions();
   const [showSpinner, setShowSpinner] = useState(false);
   const collection = useCollection(bid, cid, cacheVal);

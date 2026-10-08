@@ -97,7 +97,10 @@ function renderSimpleReview({
     };
   });
   vi.spyOn(sessionHooks, "useAuth").mockReturnValue(auth);
-  vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(serverInfo);
+  vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue({
+    status: "success",
+    data: serverInfo,
+  });
   vi.spyOn(client, "getClient").mockReturnValue({
     bucket: bid => {
       return {

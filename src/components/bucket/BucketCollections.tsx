@@ -8,7 +8,7 @@ import { useParams } from "react-router";
 export default function BucketCollections() {
   const { bid } = useParams();
   const collections = useCollectionList(bid);
-  const serverInfo = useServerInfo();
+  const { data: serverInfo } = useServerInfo();
 
   const listActions = <ListActions bid={bid} busy={!collections} />;
 

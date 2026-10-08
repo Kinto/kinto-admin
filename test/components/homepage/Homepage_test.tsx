@@ -16,7 +16,7 @@ describe("HomePage component", () => {
 
   describe("Authenticating", () => {
     it("loads a spinner when authenticating", async () => {
-      mockUseServerInfo.mockReturnValue(undefined);
+      mockUseServerInfo.mockReturnValue({ status: "idle" });
       renderWithRouter(<HomePage />);
       expect(await screen.findByTestId("spinner")).toBeDefined();
     });
@@ -24,7 +24,10 @@ describe("HomePage component", () => {
 
   describe("Authenticated", () => {
     it("should render server information heading with default info if it cannot be fetched", async () => {
-      mockUseServerInfo.mockReturnValue(DEFAULT_SERVERINFO);
+      mockUseServerInfo.mockReturnValue({
+        status: "success",
+        data: DEFAULT_SERVERINFO,
+      });
       renderWithRouter(<HomePage />);
 
       expect(screen.getByText("Properties").textContent).toBeDefined();

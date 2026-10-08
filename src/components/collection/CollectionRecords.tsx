@@ -10,7 +10,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 
 export default function CollectionRecords() {
-  const serverInfo = useServerInfo();
+  const { data: serverInfo } = useServerInfo();
   const { bid, cid } = useParams();
   const [sort, setSort] = useState(null);
   const [cacheVal, setCacheVal] = useState(0);

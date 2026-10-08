@@ -34,7 +34,10 @@ describe("Sidebar component", () => {
 
   beforeEach(() => {
     vi.spyOn(bucketHooks, "useBucketsCollectionsList").mockReturnValue(buckets);
-    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(DEFAULT_SERVERINFO);
+    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue({
+      status: "success",
+      data: DEFAULT_SERVERINFO,
+    });
     vi.spyOn(sessionHooks, "usePermissions").mockReturnValue([]);
     vi.spyOn(sessionHooks, "useAuth").mockReturnValue({});
   });

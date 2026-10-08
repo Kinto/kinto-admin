@@ -28,9 +28,10 @@ describe("CollectionCompare", () => {
     vi.spyOn(sessionHooks, "useServerInfo").mockImplementation(
       mockUseServerInfo
     );
-    mockUseServerInfo.mockReturnValue(
-      SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES
-    );
+    mockUseServerInfo.mockReturnValue({
+      status: "success",
+      data: SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES,
+    });
     vi.spyOn(recordHooks, "useRecordList").mockImplementation(recordsMock);
     vi.spyOn(recordHooks, "useRecordListAt").mockImplementation(recordsMock);
     vi.spyOn(signoffHooks, "useLatestApprovals").mockImplementation(
@@ -199,11 +200,14 @@ describe("CollectionCompare", () => {
 
   it("should disable timestamp if history is disabled for this collection", async () => {
     mockUseServerInfo.mockReturnValue({
-      ...SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES,
-      capabilities: {
-        ...SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES.capabilities,
-        history: {
-          excluded_resources: [{ bucket: "other-bucket" }],
+      status: "success",
+      data: {
+        ...SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES,
+        capabilities: {
+          ...SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES.capabilities,
+          history: {
+            excluded_resources: [{ bucket: "other-bucket" }],
+          },
         },
       },
     });
@@ -224,11 +228,14 @@ describe("CollectionCompare", () => {
 
   it("should empty the timestamp value if history is disabled for the selected collection", async () => {
     mockUseServerInfo.mockReturnValue({
-      ...SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES,
-      capabilities: {
-        ...SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES.capabilities,
-        history: {
-          excluded_resources: [{ bucket: "other-bucket" }],
+      status: "success",
+      data: {
+        ...SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES,
+        capabilities: {
+          ...SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES.capabilities,
+          history: {
+            excluded_resources: [{ bucket: "other-bucket" }],
+          },
         },
       },
     });

@@ -47,7 +47,7 @@ export default function RecordForm() {
   const collection = useCollection(bid, cid, cacheVal);
   const record = useRecord(bid, cid, rid, cacheVal);
   const permissions = usePermissions();
-  const serverInfo = useServerInfo();
+  const { data: serverInfo } = useServerInfo();
   const navigate = useNavigate();
   const isUpdate = !!record;
 
