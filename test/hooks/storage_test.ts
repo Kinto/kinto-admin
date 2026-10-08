@@ -49,4 +49,19 @@ describe("useLocalStorage", () => {
 
     expect(result.current[0]).toBe("externalChange");
   });
+
+  it("should keep hooks using the same key in sync", () => {
+    const { result: first } = renderHook(() =>
+      useLocalStorage("testKey", "defaultValue")
+    );
+    const { result: second } = renderHook(() =>
+      useLocalStorage("testKey", "defaultValue")
+    );
+
+    act(() => {
+      first.current[1]("sharedValue");
+    });
+
+    expect(second.current[0]).toBe("sharedValue");
+  });
 });

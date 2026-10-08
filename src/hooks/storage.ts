@@ -1,40 +1,42 @@
-import { useEffect, useState } from "react";
+import { useMemo, useSyncExternalStore } from "react";
+
+function subscribe(callback: () => void) {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+}
+
+function parse(raw: string | null) {
+  if (!raw) {
+    return undefined;
+  }
+  try {
+    return JSON.parse(raw);
+  } catch (ex) {
+    console.error("Error retrieving value from localStorage", ex);
+    return undefined;
+  }
+}
 
 export function useLocalStorage(key: string, initialValue: any) {
-  const [val, setVal] = useState(() => {
-    try {
-      return localStorage[key] ? JSON.parse(localStorage[key]) : initialValue;
-    } catch (ex) {
-      console.error("Error retrieving value from localStorage", ex);
-      return initialValue;
-    }
-  });
+  const raw = useSyncExternalStore(subscribe, () => localStorage.getItem(key));
+  const stored = useMemo(() => parse(raw), [raw]);
+  const val = stored === undefined ? initialValue : stored;
 
   const setStoredVal = val => {
     try {
       if (val === undefined) {
-        delete localStorage[key];
+        localStorage.removeItem(key);
       } else {
-        localStorage[key] = JSON.stringify(val);
+        localStorage.setItem(key, JSON.stringify(val));
       }
-      setVal(val);
     } catch (ex) {
       console.error("Error setting value in localStorage", ex);
+      return;
     }
+    // Browsers only fire "storage" events in other tabs, so dispatch one
+    // here to notify subscribers in this tab too.
+    window.dispatchEvent(new StorageEvent("storage", { key }));
   };
-
-  useEffect(() => {
-    // will fire if localStorage is touched in another browser tab/window
-    const handleStorageChange = (evt: StorageEvent) => {
-      if (evt.key !== key) {
-        return;
-      }
-      setVal(evt.newValue ? JSON.parse(evt.newValue) : undefined);
-    };
-    window.addEventListener("storage", handleStorageChange);
-
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, [key]);
 
   return [val, setStoredVal];
 }
