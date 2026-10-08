@@ -4,7 +4,7 @@ import { useServerInfo } from "@src/hooks/session";
 import React from "react";
 
 export default function BucketCreate() {
-  const serverInfo = useServerInfo();
+  const { data: serverInfo } = useServerInfo();
 
   if (!serverInfo) {
     return <Spinner />;

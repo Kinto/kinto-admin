@@ -19,7 +19,7 @@ export default function RecordBulk() {
   const { bid, cid } = useParams();
   const collection = useCollection(bid, cid);
   const navigate = useNavigate();
-  const serverInfo = useServerInfo();
+  const { data: serverInfo } = useServerInfo();
 
   const onSubmit = async (evt: IChangeEvent<any>) => {
     const { formData } = evt;

@@ -17,9 +17,10 @@ describe("CollectionHistory component", () => {
     vi.spyOn(collectionHooks, "useCollectionHistory").mockImplementation(
       useCollectionHistoryMock
     );
-    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(
-      SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES
-    );
+    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue({
+      status: "success",
+      data: SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES,
+    });
     vi.spyOn(preferenceHooks, "useShowNonHumans").mockImplementation(() => [
       true,
       vi.fn(),

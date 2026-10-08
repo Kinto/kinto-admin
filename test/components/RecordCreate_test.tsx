@@ -43,7 +43,10 @@ describe("RecordCreate component", () => {
         };
       },
     });
-    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(DEFAULT_SERVERINFO);
+    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue({
+      status: "success",
+      data: DEFAULT_SERVERINFO,
+    });
     renderWithRouter(<RecordCreate />, {
       route: "/bucket/collection",
       path: "/:bid/:cid",

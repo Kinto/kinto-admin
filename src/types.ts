@@ -294,6 +294,12 @@ export interface ServerInfo {
   };
 }
 
+export interface ServerInfoState {
+  status: "idle" | "loading" | "success" | "error";
+  data?: ServerInfo;
+  error?: unknown;
+}
+
 export interface PermissionsListEntry {
   bucket_id: string;
   collection_id?: string;

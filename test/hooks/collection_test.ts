@@ -253,19 +253,22 @@ describe("collection hooks", () => {
 
     it("should call the history endpoint with transformed filters", async () => {
       vi.spyOn(sessionHooks, "useServerInfo").mockImplementation(() => ({
-        project_name: "",
-        url: "",
-        project_docs: "",
-        capabilities: {
-          openid: {
-            providers: [{ name: "oauth" }],
-          },
-          signer: {
-            resources: [],
-            editors_group: "",
-            reviewers_group: "",
-            plugin_user_id: "plugin:signer",
-            to_review_enabled: true,
+        status: "success",
+        data: {
+          project_name: "",
+          url: "",
+          project_docs: "",
+          capabilities: {
+            openid: {
+              providers: [{ name: "oauth" }],
+            },
+            signer: {
+              resources: [],
+              editors_group: "",
+              reviewers_group: "",
+              plugin_user_id: "plugin:signer",
+              to_review_enabled: true,
+            },
           },
         },
       }));

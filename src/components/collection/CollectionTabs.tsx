@@ -31,7 +31,7 @@ export default function CollectionTabs({
   children,
   totalRecords,
 }: Props) {
-  const serverInfo = useServerInfo();
+  const { data: serverInfo } = useServerInfo();
 
   return (
     <div className="card">

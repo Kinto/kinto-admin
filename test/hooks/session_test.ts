@@ -70,7 +70,7 @@ describe("session hooks", () => {
 
     const { result: serverInfo } = renderHook(() => useServerInfo());
     await vi.waitFor(() => {
-      expect(serverInfo.current).not.toBeUndefined();
+      expect(serverInfo.current.status).toBe("success");
     });
 
     const { result: permissions } = renderHook(() => usePermissions());
@@ -83,7 +83,7 @@ describe("session hooks", () => {
     await vi.waitFor(() => {
       expect(localStorageVal).toBeUndefined();
       expect(permissions.current).toBeUndefined();
-      expect(serverInfo.current).toBeUndefined();
+      expect(serverInfo.current).toStrictEqual({ status: "idle" });
     });
   });
 
@@ -140,7 +140,7 @@ describe("session hooks", () => {
       };
       const { result: serverInfo } = renderHook(() => useServerInfo());
       await vi.waitFor(() => {
-        expect(serverInfo.current).not.toBeUndefined();
+        expect(serverInfo.current.status).toBe("success");
       });
       const { result } = renderHook(() => usePermissions());
       renderHook(() => usePermissions());
@@ -156,7 +156,7 @@ describe("session hooks", () => {
     it("should call notifyInfo if the permissions endpoint is not enabled", async () => {
       const { result: serverInfo } = renderHook(() => useServerInfo());
       await vi.waitFor(() => {
-        expect(serverInfo.current).not.toBeUndefined();
+        expect(serverInfo.current.status).toBe("success");
       });
       const notifyInfoMock = mockNotifyInfo();
       const { result } = renderHook(() => usePermissions());
@@ -169,7 +169,7 @@ describe("session hooks", () => {
     it("should call notifyError if a client error is thrown", async () => {
       const { result: serverInfo } = renderHook(() => useServerInfo());
       await vi.waitFor(() => {
-        expect(serverInfo.current).not.toBeUndefined();
+        expect(serverInfo.current.status).toBe("success");
       });
       const notifyErrorMock = mockNotifyError();
       listPermissionsMock.mockRejectedValue(new Error("Test foo"));
@@ -198,23 +198,28 @@ describe("session hooks", () => {
       renderHook(() => useServerInfo());
       renderHook(() => useServerInfo());
       renderHook(() => useServerInfo());
-      expect(result.current).toBeUndefined();
+      expect(result.current.status).toBe("loading");
       await vi.waitFor(() => {
-        expect(result.current).toStrictEqual(serverInfoResult);
+        expect(result.current).toStrictEqual({
+          status: "success",
+          data: serverInfoResult,
+        });
       });
       expect(fetchServerInfoMock).toHaveBeenCalledOnce();
     });
 
     it("should call notifyError if a client error is thrown", async () => {
       const notifyErrorMock = mockNotifyError();
-      fetchServerInfoMock.mockRejectedValue(new Error("Test foo"));
-      renderHook(() => useServerInfo());
+      const error = new Error("Test foo");
+      fetchServerInfoMock.mockRejectedValue(error);
+      const { result } = renderHook(() => useServerInfo());
       await vi.waitFor(() => {
-        expect(notifyErrorMock).toHaveBeenCalledWith(
-          expect.stringContaining("Could not reach server"),
-          expect.any(Error)
-        );
+        expect(result.current).toStrictEqual({ status: "error", error });
       });
+      expect(notifyErrorMock).toHaveBeenCalledWith(
+        expect.stringContaining("Could not reach server"),
+        error
+      );
     });
   });
 });

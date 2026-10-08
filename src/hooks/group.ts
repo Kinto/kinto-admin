@@ -17,7 +17,7 @@ export function useGroupHistory(
   filters: HistoryFilters
 ): ListHistoryResult {
   const [val, setVal] = useState({});
-  const serverInfo = useServerInfo();
+  const { data: serverInfo } = useServerInfo();
   const serverFilters = historyFiltersToServerFilters(serverInfo, filters);
 
   useEffect(() => {

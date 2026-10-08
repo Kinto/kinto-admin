@@ -37,7 +37,7 @@ interface DataListProps {
 }
 export function DataList(props: DataListProps) {
   const [loading, setLoading] = useState(false);
-  const serverInfo = useServerInfo();
+  const { data: serverInfo } = useServerInfo();
   const { bid, groups, showSpinner } = props;
 
   if (showSpinner) {

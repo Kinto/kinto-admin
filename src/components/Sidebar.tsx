@@ -234,7 +234,7 @@ function filterBuckets(buckets, filters): BucketEntry[] {
 const BucketsMenu = (props: BucketsMenuProps) => {
   const [showReadOnly, setShowReadOnly] = useSidebarShowReadonly();
   const [search, setSearch] = useSidebarFilter();
-  const serverInfo = useServerInfo();
+  const { data: serverInfo } = useServerInfo();
   const permissions = usePermissions();
   const buckets = useBucketsCollectionsList(
     permissions,

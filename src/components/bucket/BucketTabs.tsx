@@ -16,7 +16,7 @@ interface Props {
 }
 
 export default function BucketTabs({ bid, selected, children }: Props) {
-  const serverInfo = useServerInfo();
+  const { data: serverInfo } = useServerInfo();
   return (
     <div className="card">
       <div className="card-header">
