@@ -105,6 +105,20 @@ describe("CollectionCompare", () => {
 
     expect(screen.queryAllByTestId("record-diff")).toBeDefined();
     expect(screen.getByText("other-bucket-col2-record-2")).toBeDefined();
+    // Every page of records must be fetched on both sides.
+    expect(recordHooks.useRecordList).toHaveBeenCalledWith(
+      "main-bucket",
+      "main-collection",
+      "id",
+      true
+    );
+    expect(recordHooks.useRecordListAt).toHaveBeenCalledWith(
+      "other-bucket",
+      "col2",
+      "id",
+      undefined,
+      true
+    );
   });
 
   it("should show diff when both bucket and collection are selected", async () => {
