@@ -116,12 +116,13 @@ export function CollectionCompare() {
   }, [bid, cid, selectedBucket, selectedCollection, selectedTimestampStr]);
 
   // Fetch record lists for comparison
-  const leftRecords = useRecordList(bid, cid, "id");
+  const leftRecords = useRecordList(bid, cid, "id", true);
   const rightRecords = useRecordListAt(
     selectedBucket,
     selectedCollection,
     "id",
-    selectedTimestamp
+    selectedTimestamp,
+    true
   );
 
   const recordsLoading =
