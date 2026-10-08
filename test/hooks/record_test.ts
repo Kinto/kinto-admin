@@ -104,7 +104,9 @@ describe("record hooks", () => {
           totalRecords: 2,
         });
       });
-      expect(listRecordsMock).toHaveBeenCalled();
+      expect(listRecordsMock).toHaveBeenCalledWith(
+        expect.objectContaining({ limit: MAX_PER_PAGE })
+      );
     });
 
     it("will fetch all records when prompted", async () => {
@@ -135,6 +137,7 @@ describe("record hooks", () => {
         });
       });
       expect(listRecordsMock).toHaveBeenCalledTimes(4);
+      expect(listRecordsMock.mock.calls[0][0].limit).toBeUndefined();
     });
 
     it("calls the API again if any parameters change", async () => {
