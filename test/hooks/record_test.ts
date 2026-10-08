@@ -108,14 +108,16 @@ describe("record hooks", () => {
     });
 
     it("will fetch all records when prompted", async () => {
-      const fakePages = {
-        data: testRecords,
+      const page = (ids: string[]) => ({
+        data: ids.map(id => ({ id })),
         hasNextPage: true,
         last_modified: 1,
-      };
-      listRecordsMock.mockResolvedValueOnce(fakePages);
-      listRecordsMock.mockResolvedValueOnce(fakePages);
-      listRecordsMock.mockResolvedValueOnce(fakePages);
+      });
+      listRecordsMock.mockResolvedValueOnce(page(["a", "b"]));
+      // The server may repeat the last record of a page at the start of the next one.
+      // TODO: can remove when pagination is fixed on server side.
+      listRecordsMock.mockResolvedValueOnce(page(["b", "c"]));
+      listRecordsMock.mockResolvedValueOnce(page(["d", "e"]));
       const { result } = renderHook(() =>
         useRecordList("bid", "cid", "sort", true)
       );
@@ -123,9 +125,11 @@ describe("record hooks", () => {
       await vi.waitFor(() => {
         expect(result.current).toMatchObject({
           data: [
-            ...testRecords,
-            ...testRecords,
-            ...testRecords,
+            { id: "a" },
+            { id: "b" },
+            { id: "c" },
+            { id: "d" },
+            { id: "e" },
             ...testRecords,
           ],
         });

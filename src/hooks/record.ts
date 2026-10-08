@@ -10,6 +10,7 @@ import type {
   RecordResource,
 } from "@src/types";
 import { historyFiltersToServerFilters } from "@src/utils";
+import uniqBy from "lodash/uniqBy";
 import { useEffect, useState } from "react";
 
 export type RecordListResult = ListResult<RecordData> & {
@@ -94,7 +95,9 @@ async function fetchRecords(
     return;
   }
 
-  const data = curData.concat(result.data);
+  // The server may repeat a record at page boundaries, drop duplicates.
+  // TODO: can remove when pagination is fixed on server side.
+  const data = uniqBy(curData.concat(result.data), "id");
 
   if (fetchAll && result.hasNextPage) {
     fetchRecords(bid, cid, args, fetchAll, data, setVal, result.next);
