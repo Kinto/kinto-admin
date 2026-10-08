@@ -83,7 +83,7 @@ async function fetchRecords(
         .collection(cid)
         .listRecords({
           ...args,
-          limit: MAX_PER_PAGE,
+          limit: fetchAll ? undefined : MAX_PER_PAGE,
         });
     }
     totalCount = await getClient()
