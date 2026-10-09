@@ -120,7 +120,7 @@ export function useServerInfo(): ServerInfoState {
   return val;
 }
 
-async function getServerInfo() {
+export async function getServerInfo() {
   if (openPromises.getServerInfo) {
     return;
   }
@@ -143,7 +143,6 @@ async function getServerInfo() {
     serverState.set({ status: "success", data: serverInfo });
   } catch (error) {
     serverState.set({ status: "error", error });
-    notifyError(`Could not reach server ${client.remote}`, error);
   } finally {
     delete openPromises.getServerInfo;
   }

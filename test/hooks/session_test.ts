@@ -1,6 +1,7 @@
 import * as client from "@src/client";
 import { DEFAULT_SERVERINFO } from "@src/constants";
 import {
+  getServerInfo,
   logout,
   setAuth,
   useAuth,
@@ -208,7 +209,7 @@ describe("session hooks", () => {
       expect(fetchServerInfoMock).toHaveBeenCalledOnce();
     });
 
-    it("should call notifyError if a client error is thrown", async () => {
+    it("should return an error state without notifying if a client error is thrown", async () => {
       const notifyErrorMock = mockNotifyError();
       const error = new Error("Test foo");
       fetchServerInfoMock.mockRejectedValue(error);
@@ -216,10 +217,26 @@ describe("session hooks", () => {
       await vi.waitFor(() => {
         expect(result.current).toStrictEqual({ status: "error", error });
       });
-      expect(notifyErrorMock).toHaveBeenCalledWith(
-        expect.stringContaining("Could not reach server"),
-        error
-      );
+      expect(notifyErrorMock).not.toHaveBeenCalled();
+    });
+
+    it("should refetch server info when getServerInfo is called after an error", async () => {
+      const error = new Error("Test foo");
+      fetchServerInfoMock.mockRejectedValueOnce(error);
+      const { result } = renderHook(() => useServerInfo());
+      await vi.waitFor(() => {
+        expect(result.current).toStrictEqual({ status: "error", error });
+      });
+
+      getServerInfo();
+
+      await vi.waitFor(() => {
+        expect(result.current).toStrictEqual({
+          status: "success",
+          data: serverInfoResult,
+        });
+      });
+      expect(fetchServerInfoMock).toHaveBeenCalledTimes(2);
     });
   });
 });
