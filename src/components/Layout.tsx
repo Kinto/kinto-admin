@@ -29,14 +29,54 @@ import RecordHistory from "@src/components/record/RecordHistory";
 import { RecordPermissions } from "@src/components/record/RecordPermissions";
 import SimpleReview from "@src/components/signoff/SimpleReview";
 import { useShowSidebar } from "@src/hooks/preferences";
-import { useAuth } from "@src/hooks/session";
+import {
+  getServerInfo,
+  logout,
+  useAuth,
+  useServerInfo,
+} from "@src/hooks/session";
 import * as React from "react";
 import { LayoutSidebar, LayoutSidebarInset } from "react-bootstrap-icons";
 import { Outlet, Route, Routes } from "react-router";
 
+function ServerInfoError({
+  server,
+  error,
+}: {
+  server: string;
+  error: unknown;
+}) {
+  return (
+    <div className="alert alert-danger" data-testid="server-info-error">
+      <p>
+        <strong>Could not reach server {server}</strong>
+      </p>
+      {error instanceof Error && <p>{error.message}</p>}
+      <button
+        type="button"
+        className="btn btn-primary"
+        onClick={() => getServerInfo()}
+      >
+        Retry
+      </button>{" "}
+      <button
+        type="button"
+        className="btn btn-secondary"
+        onClick={() => logout()}
+      >
+        Log out
+      </button>
+    </div>
+  );
+}
+
 function ProtectedLayout() {
   const auth = useAuth();
+  const { status, error } = useServerInfo();
   if (!auth) return <AuthForm />;
+  if (status === "error") {
+    return <ServerInfoError server={auth.server} error={error} />;
+  }
   return <Outlet />;
 }
 

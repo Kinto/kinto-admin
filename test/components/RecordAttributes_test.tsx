@@ -40,9 +40,10 @@ describe("RecordAttributes component", () => {
 
   beforeEach(() => {
     canEditRecord.mockReturnValue(true);
-    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(
-      SERVERINFO_WITH_ATTACHMENTS_CAPABILITY
-    );
+    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue({
+      status: "success",
+      data: SERVERINFO_WITH_ATTACHMENTS_CAPABILITY,
+    });
     vi.spyOn(recordHooks, "useRecord").mockReturnValue({
       data: { id: "abc", last_modified: 123, foo: "bar" },
     });
@@ -154,9 +155,10 @@ describe("RecordAttributes component", () => {
 
     beforeEach(() => {
       vi.spyOn(recordHooks, "useRecord").mockReturnValueOnce(record);
-      vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(
-        DEFAULT_SERVERINFO
-      );
+      vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue({
+        status: "success",
+        data: DEFAULT_SERVERINFO,
+      });
       renderWithRouter(<RecordAttributes />, routeProps);
     });
 

@@ -43,7 +43,10 @@ describe("CollectionRecords component", () => {
     canEditRecord.mockReturnValue(true);
     canEditCollection.mockReturnValue(true);
     vi.spyOn(recordHooks, "useRecordList").mockImplementation(useRecordList);
-    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(DEFAULT_SERVERINFO);
+    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue({
+      status: "success",
+      data: DEFAULT_SERVERINFO,
+    });
   });
 
   describe("Schema defined", () => {

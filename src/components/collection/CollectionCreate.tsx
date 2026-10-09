@@ -6,7 +6,7 @@ import { useParams } from "react-router";
 
 export default function CollectionCreate() {
   const { bid } = useParams();
-  const serverInfo = useServerInfo();
+  const { data: serverInfo } = useServerInfo();
 
   if (!serverInfo) {
     return <Spinner />;

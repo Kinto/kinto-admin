@@ -13,7 +13,7 @@ interface Props {
 }
 
 export default function GroupTabs(props: Props) {
-  const serverInfo = useServerInfo();
+  const { data: serverInfo } = useServerInfo();
   const { bid, gid, selected, children } = props;
 
   return (

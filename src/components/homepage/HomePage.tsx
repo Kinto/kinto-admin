@@ -36,7 +36,7 @@ function ServerProps({ node }: { node: any }) {
 }
 
 function SessionInfo() {
-  const serverInfo = useServerInfo();
+  const { data: serverInfo } = useServerInfo();
   if (!serverInfo) {
     return (
       <div>
@@ -61,7 +61,7 @@ function SessionInfo() {
 }
 
 export function HomePage() {
-  const serverInfo = useServerInfo();
+  const { data: serverInfo } = useServerInfo();
 
   return (
     <div>

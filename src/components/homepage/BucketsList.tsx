@@ -142,7 +142,7 @@ export function DataList(props: DataListProps) {
 
 export default function BucketsList() {
   const buckets = useBucketList();
-  const serverInfo = useServerInfo();
+  const { data: serverInfo } = useServerInfo();
 
   const listActions = <ListActions busy={!buckets} />;
   return (

@@ -17,7 +17,7 @@ export function SessionInfoBar() {
   const navigate = useNavigate();
   const auth = useAuth();
   const heartbeat = useHeartbeat();
-  const serverInfo = useServerInfo();
+  const { data: serverInfo } = useServerInfo();
 
   if (!serverInfo) {
     return (

@@ -22,8 +22,8 @@ describe("App component", () => {
       .spyOn(sessionHooks, "useServerInfo")
       .mockImplementation(useServerInfoMock);
     useServerInfoMock.mockReturnValue({
-      ...DEFAULT_SERVERINFO,
-      url: testServer,
+      status: "success",
+      data: { ...DEFAULT_SERVERINFO, url: testServer },
     });
     vitest.spyOn(sessionHooks, "useAuth").mockImplementation(useAuthMock);
     vitest
@@ -43,7 +43,7 @@ describe("App component", () => {
   describe("Session top bar", () => {
     it("should render an empty session top bar when not authenticated", () => {
       useAuthMock.mockReturnValueOnce(undefined);
-      useServerInfoMock.mockReturnValueOnce(undefined);
+      useServerInfoMock.mockReturnValueOnce({ status: "idle" });
       renderWithRouter(<Layout />, routeProps);
       expect(screen.queryByTestId("sessionInfo-bar")).toBeDefined();
       expect(screen.queryByTestId("sessionInfo-bar")).toContainHTML("");
@@ -88,7 +88,10 @@ describe("App component", () => {
         username: "user",
         password: "pass",
       };
-      useServerInfoMock.mockReturnValue(serverInfo);
+      useServerInfoMock.mockReturnValue({
+        status: "success",
+        data: serverInfo,
+      });
       useAuthMock.mockReturnValue({
         server: serverInfo.url,
         authType: "ldap",
@@ -107,6 +110,50 @@ describe("App component", () => {
       expect(spy).toHaveBeenCalled();
 
       spy.mockClear();
+    });
+  });
+
+  describe("Server info error", () => {
+    const auth = { authType: ANONYMOUS_AUTH, server: testServer };
+
+    beforeEach(() => {
+      useAuthMock.mockReturnValue(auth);
+      useServerInfoMock.mockReturnValue({
+        status: "error",
+        error: new Error("boom"),
+      });
+    });
+
+    it("should render the error panel instead of the page", () => {
+      renderWithRouter(<Layout />, routeProps);
+      expect(screen.getByTestId("server-info-error")).toHaveTextContent(
+        `Could not reach server ${testServer}`
+      );
+      expect(screen.getByTestId("server-info-error")).toHaveTextContent("boom");
+      expect(screen.queryByText(/Sign in using/)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Fetching server information/)).toBeNull();
+    });
+
+    it("should retry fetching server info on Retry", () => {
+      const spy = vi
+        .spyOn(sessionHooks, "getServerInfo")
+        .mockImplementation(vi.fn());
+      renderWithRouter(<Layout />, routeProps);
+      fireEvent.click(screen.getByText("Retry"));
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it("should log out on Log out", () => {
+      const spy = vi.spyOn(sessionHooks, "logout").mockImplementation(vi.fn());
+      renderWithRouter(<Layout />, routeProps);
+      fireEvent.click(screen.getByText("Log out"));
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it("should not render the error panel while loading", () => {
+      useServerInfoMock.mockReturnValue({ status: "loading" });
+      renderWithRouter(<Layout />, routeProps);
+      expect(screen.queryByTestId("server-info-error")).not.toBeInTheDocument();
     });
   });
 

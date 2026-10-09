@@ -26,9 +26,10 @@ const baseProps = {
 
 describe("HistoryTable component", () => {
   beforeEach(() => {
-    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(
-      SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES
-    );
+    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue({
+      status: "success",
+      data: SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES,
+    });
   });
 
   afterEach(() => {
@@ -37,10 +38,13 @@ describe("HistoryTable component", () => {
 
   it("should show warning banner if collection is excluded", async () => {
     vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue({
-      capabilities: {
-        ...SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES.capabilities,
-        history: {
-          excluded_resources: [{ bucket: "test" }],
+      status: "success",
+      data: {
+        capabilities: {
+          ...SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES.capabilities,
+          history: {
+            excluded_resources: [{ bucket: "test" }],
+          },
         },
       },
     });
@@ -94,9 +98,10 @@ describe("HistoryTable component", () => {
 
 describe("HistoryTable filters", () => {
   beforeEach(() => {
-    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(
-      SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES
-    );
+    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue({
+      status: "success",
+      data: SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES,
+    });
     vi.spyOn(preferenceHooks, "useShowSignerPlugin").mockImplementation(() => [
       true,
       useShowSignerPluginMock,
@@ -149,7 +154,10 @@ describe("HistoryTable filters", () => {
 
 describe("HistoryTable without capabilities", () => {
   beforeEach(() => {
-    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue(DEFAULT_SERVERINFO);
+    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue({
+      status: "success",
+      data: DEFAULT_SERVERINFO,
+    });
   });
 
   afterEach(() => {

@@ -284,7 +284,7 @@ export default function HistoryTable({
 }: HistoryTableProps) {
   const [loading, setLoading] = useState(false);
 
-  const serverInfo = useServerInfo();
+  const { data: serverInfo } = useServerInfo();
 
   // GroupHistory, BucketHistory, and RecordHistory don't take filter
   // from URL and do not provide `initialFilters`.
