@@ -141,6 +141,33 @@ describe("CollectionCompare", () => {
     expect(screen.getByText("other-bucket-col1-record-2")).toBeDefined();
   });
 
+  it("should show a message when collections are identical", async () => {
+    vi.spyOn(recordHooks, "useRecordListAt").mockImplementation(
+      (bid, cid) =>
+        ({
+          data: [
+            { id: "main-bucket-main-collection-record-1" },
+            { id: "main-bucket-main-collection-record-2" },
+          ],
+        }) as any
+    );
+    renderWithRouter(<CollectionCompare />, {
+      route:
+        "/buckets/main-bucket/collections/main-collection/compare?target=other-bucket/col1",
+      path: "/buckets/:bid/collections/:cid/compare",
+      initialEntries: [
+        "/buckets/:bid/collections/:cid/compare?target=other-bucket/col1",
+      ],
+    });
+
+    await waitFor(() =>
+      expect(screen.queryByTestId("spinner")).not.toBeInTheDocument()
+    );
+
+    expect(screen.queryAllByTestId("record-diff")).toHaveLength(0);
+    expect(screen.getByText("No differences found.")).toBeInTheDocument();
+  });
+
   it("should use target bucket and collection from URL", async () => {
     renderWithRouter(<CollectionCompare />, {
       route:

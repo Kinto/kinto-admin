@@ -31,6 +31,15 @@ describe("PerRecordDiffView component", () => {
     });
     expect(screen.queryAllByTestId("record-diff")).toHaveLength(1);
   });
+
+  it("should show a message when there are no differences", () => {
+    renderSimpleReview({
+      oldRecords: [{ id: "foo", last_modified: 1 }],
+      newRecords: [{ id: "foo", last_modified: 2 }],
+    });
+    expect(screen.queryAllByTestId("record-diff")).toHaveLength(0);
+    expect(screen.getByText("No differences found.")).toBeInTheDocument();
+  });
 });
 
 describe("findChangeTypes", () => {

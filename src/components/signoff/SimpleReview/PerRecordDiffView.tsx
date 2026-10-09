@@ -33,6 +33,7 @@ export default function PerRecordDiffView({
   const [unifiedDiff, setUnifiedDiff] = useUnifiedDiff(false);
 
   let diffContent;
+  let hasDifferences;
   if (unifiedDiff) {
     // Compute diff on the whole collection
     const sortedOldRecords = oldRecords.sort((a, b) =>
@@ -52,6 +53,9 @@ export default function PerRecordDiffView({
       strippedNewRecords,
       showAllLines ? "all" : undefined
     );
+    hasDifferences = diff.some(
+      line => line.startsWith("+") || line.startsWith("-")
+    );
     diffContent = (
       <div className="card mb-4">
         <div className="card-body p-0">
@@ -65,6 +69,7 @@ export default function PerRecordDiffView({
       newRecords,
       showExtraFields ? undefined : EXTRA_FIELDS
     );
+    hasDifferences = changes.length > 0;
     diffContent = changes.map(({ id, changeType, source, target }) => (
       <Diff
         key={id}
@@ -80,63 +85,61 @@ export default function PerRecordDiffView({
 
   return (
     <div>
-      {diffContent ? (
-        <>
-          <div className="form-check form-check-inline mb-3">
-            <input
-              className="form-check-input"
-              type="checkbox"
-              checked={showExtraFields}
-              onChange={e => setShowExtraFields(e.currentTarget.checked)}
-              id="showExtraFields"
-            />
-            <label className="form-check-label" htmlFor="showExtraFields">
-              Show record timestamps
-            </label>
-          </div>
+      <div className="form-check form-check-inline mb-3">
+        <input
+          className="form-check-input"
+          type="checkbox"
+          checked={showExtraFields}
+          onChange={e => setShowExtraFields(e.currentTarget.checked)}
+          id="showExtraFields"
+        />
+        <label className="form-check-label" htmlFor="showExtraFields">
+          Show record timestamps
+        </label>
+      </div>
 
-          <div className="form-check form-check-inline mb-3">
-            <input
-              className="form-check-input"
-              type="checkbox"
-              checked={showAllLines}
-              onChange={e => setShowAllLines(e.currentTarget.checked)}
-              id="showAllLines"
-            />
-            <label className="form-check-label" htmlFor="showAllLines">
-              Show all lines
-            </label>
-          </div>
+      <div className="form-check form-check-inline mb-3">
+        <input
+          className="form-check-input"
+          type="checkbox"
+          checked={showAllLines}
+          onChange={e => setShowAllLines(e.currentTarget.checked)}
+          id="showAllLines"
+        />
+        <label className="form-check-label" htmlFor="showAllLines">
+          Show all lines
+        </label>
+      </div>
 
-          <div className="form-check form-check-inline mb-3">
-            <input
-              className="form-check-input"
-              type="radio"
-              id="perRecord"
-              name="diffMode"
-              checked={!unifiedDiff}
-              onChange={() => setUnifiedDiff(false)}
-            />
-            <label className="form-check-label" htmlFor="perRecord">
-              Per record
-            </label>
-          </div>
+      <div className="form-check form-check-inline mb-3">
+        <input
+          className="form-check-input"
+          type="radio"
+          id="perRecord"
+          name="diffMode"
+          checked={!unifiedDiff}
+          onChange={() => setUnifiedDiff(false)}
+        />
+        <label className="form-check-label" htmlFor="perRecord">
+          Per record
+        </label>
+      </div>
 
-          <div className="form-check form-check-inline mb-3">
-            <input
-              className="form-check-input"
-              type="radio"
-              id="unified"
-              name="diffMode"
-              checked={unifiedDiff}
-              onChange={() => setUnifiedDiff(true)}
-            />
-            <label className="form-check-label" htmlFor="unified">
-              Entire collection
-            </label>
-          </div>
-          {diffContent}
-        </>
+      <div className="form-check form-check-inline mb-3">
+        <input
+          className="form-check-input"
+          type="radio"
+          id="unified"
+          name="diffMode"
+          checked={unifiedDiff}
+          onChange={() => setUnifiedDiff(true)}
+        />
+        <label className="form-check-label" htmlFor="unified">
+          Entire collection
+        </label>
+      </div>
+      {hasDifferences ? (
+        diffContent
       ) : (
         <div className="text-center my-4 text-muted">No differences found.</div>
       )}
