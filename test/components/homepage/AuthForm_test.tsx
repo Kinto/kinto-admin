@@ -3,7 +3,7 @@ import AuthForm from "@src/components/homepage/AuthForm";
 import { DEFAULT_KINTO_SERVER, DEFAULT_SERVERINFO } from "@src/constants";
 import { SERVER_HISTORY_KEY } from "@src/hooks/servers";
 import * as sessionHooks from "@src/hooks/session";
-import { renderWithRouter } from "@test/testUtils";
+import { mockNotifyError, renderWithRouter } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import React from "react";
@@ -185,6 +185,33 @@ describe("AuthForm component", () => {
       expect(getServerHistory()).toStrictEqual([]);
       fireEvent.click(screen.getByText("Servers"));
       expect(await screen.findByText("No server history")).toBeDefined();
+    });
+
+    it("should disable the sign in button when the server can't be reached", async () => {
+      mockNotifyError();
+      setServerHistory([
+        { server: "http://server.test/v1", authType: "anonymous" },
+      ]);
+      const mockFetchServerInfo = vi
+        .fn()
+        .mockRejectedValueOnce(new Error("unreachable"))
+        .mockResolvedValue(DEFAULT_SERVERINFO);
+      vi.spyOn(client, "setupClient").mockReturnValue({
+        fetchServerInfo: mockFetchServerInfo,
+      });
+
+      renderWithRouter(<AuthForm />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Sign in using/)).toBeDisabled();
+      });
+
+      fireEvent.change(screen.getByLabelText("Server*"), {
+        target: { value: "http://test.server/v1" },
+      });
+      await waitFor(() => {
+        expect(screen.getByText(/Sign in using/)).toBeEnabled();
+      });
     });
 
     it("should set the authType field value using latest entry from servers history for that server", async () => {
