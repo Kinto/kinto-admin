@@ -1,16 +1,25 @@
 import * as client from "@src/client";
 import AuthForm from "@src/components/homepage/AuthForm";
 import { DEFAULT_KINTO_SERVER, DEFAULT_SERVERINFO } from "@src/constants";
-import * as serverHooks from "@src/hooks/servers";
+import { SERVER_HISTORY_KEY } from "@src/hooks/servers";
 import * as sessionHooks from "@src/hooks/session";
 import { renderWithRouter } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import React from "react";
 
+function setServerHistory(serverHistory) {
+  localStorage.setItem(SERVER_HISTORY_KEY, JSON.stringify(serverHistory));
+}
+
+function getServerHistory() {
+  return JSON.parse(localStorage.getItem(SERVER_HISTORY_KEY));
+}
+
 describe("AuthForm component", () => {
   beforeEach(() => {
     vi.resetModules();
+    localStorage.clear();
   });
 
   describe("Single server config option", () => {
@@ -23,8 +32,6 @@ describe("AuthForm component", () => {
     });
   });
   describe("Authentication types", () => {
-    const mockClearServersHistory = vi.fn();
-    const mockUseServers = vi.fn();
     const mockFetchServerInfo = vi.fn();
     const mockLocation = {
       href: "",
@@ -32,10 +39,6 @@ describe("AuthForm component", () => {
 
     beforeEach(() => {
       vi.restoreAllMocks();
-      vi.spyOn(serverHooks, "useServers").mockImplementation(mockUseServers);
-      vi.spyOn(serverHooks, "clearServersHistory").mockImplementation(
-        mockClearServersHistory
-      );
       vi.spyOn(sessionHooks, "setAuth");
       vi.stubGlobal("location", mockLocation);
 
@@ -59,7 +62,8 @@ describe("AuthForm component", () => {
         },
         user: {},
       });
-      mockUseServers.mockReturnValue([
+      setServerHistory([
+        { server: "http://test.server/v1", authType: "anonymous" },
         { server: "http://server.test/v1", authType: "accounts" },
       ]);
       renderWithRouter(<AuthForm />);
@@ -96,6 +100,10 @@ describe("AuthForm component", () => {
             redirectURL: "/",
           });
         });
+        expect(getServerHistory()).toStrictEqual([
+          { server: "http://test.server/v1", authType: "basicauth" },
+          { server: "http://server.test/v1", authType: "accounts" },
+        ]);
       });
     });
 
@@ -138,13 +146,16 @@ describe("AuthForm component", () => {
         expect(window.location.href).toBe(
           "http://test.server/v1/auth_path?callback=http%3A%2F%2Flocalhost%3A3000%2F%23%2Fauth%2FeyJzZXJ2ZXIiOiJodHRwOi8vdGVzdC5zZXJ2ZXIvdjEiLCJhdXRoVHlwZSI6Im9wZW5pZC1nb29nbGUiLCJyZWRpcmVjdFVSTCI6Ii8ifQ%3D%3D%2F&scope=openid email"
         );
+        expect(getServerHistory()).toStrictEqual([
+          { server: "http://test.server/v1", authType: "openid-google" },
+          { server: "http://server.test/v1", authType: "accounts" },
+        ]);
       });
     });
   });
 
   describe("Servers history support", () => {
     it("should set the server field value using a default value if there's no servers", () => {
-      vi.spyOn(serverHooks, "useServers").mockReturnValue([]);
       renderWithRouter(<AuthForm />);
       expect(screen.queryByLabelText("Server*").value).toBe(
         "https://demo.kinto-storage.org/v1/"
@@ -152,7 +163,7 @@ describe("AuthForm component", () => {
     });
 
     it("should set the server field value using latest entry from servers", () => {
-      vi.spyOn(serverHooks, "useServers").mockReturnValue([
+      setServerHistory([
         { server: "http://server.test/v1", authType: "anonymous" },
       ]);
       renderWithRouter(<AuthForm />);
@@ -162,8 +173,22 @@ describe("AuthForm component", () => {
       );
     });
 
+    it("should clear server history", async () => {
+      setServerHistory([
+        { server: "http://server.test/v1", authType: "anonymous" },
+      ]);
+      renderWithRouter(<AuthForm />);
+
+      fireEvent.click(screen.getByText("Servers"));
+      fireEvent.click(await screen.findByText("Clear"));
+
+      expect(getServerHistory()).toStrictEqual([]);
+      fireEvent.click(screen.getByText("Servers"));
+      expect(await screen.findByText("No server history")).toBeDefined();
+    });
+
     it("should set the authType field value using latest entry from servers history for that server", async () => {
-      vi.spyOn(serverHooks, "useServers").mockReturnValue([
+      setServerHistory([
         { server: "http://server.test/v1", authType: "basicauth" },
         { server: "http://test.server/v1", authType: "openid-google" },
       ]);

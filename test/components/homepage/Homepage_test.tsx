@@ -1,15 +1,11 @@
 import { HomePage } from "@src/components/homepage/HomePage";
 import { DEFAULT_SERVERINFO } from "@src/constants";
 import * as sessionHooks from "@src/hooks/session";
-import * as localStore from "@src/store/localStore";
 import { renderWithRouter } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import React from "react";
 
 describe("HomePage component", () => {
-  afterEach(() => {
-    localStore.clearSession();
-  });
   const mockUseServerInfo = vi.fn();
 
   beforeEach(() => {

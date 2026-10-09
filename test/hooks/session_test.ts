@@ -1,6 +1,5 @@
 import * as client from "@src/client";
 import { DEFAULT_SERVERINFO } from "@src/constants";
-import * as serverHooks from "@src/hooks/servers";
 import {
   logout,
   setAuth,
@@ -33,7 +32,6 @@ describe("session hooks", () => {
       listPermissions: listPermissionsMock,
     });
     vi.spyOn(client, "setupClient");
-    vi.spyOn(serverHooks, "addServer");
     vi.spyOn(storageHooks, "useLocalStorage").mockReturnValue([
       defaultLocalVal,
       localStorageSet,
@@ -61,10 +59,6 @@ describe("session hooks", () => {
     setAuth(testAuth);
 
     expect(localStorageVal).toStrictEqual(processedAuth);
-    expect(serverHooks.addServer).toHaveBeenCalledWith(
-      testAuth.server,
-      testAuth.authType
-    );
     expect(client.setupClient).toHaveBeenCalledWith(processedAuth);
   });
 

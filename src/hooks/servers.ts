@@ -1,32 +1,32 @@
-import { clearServers, loadServers, saveServers } from "@src/store/localStore";
-import { ServerEntry } from "@src/types";
-import { makeObservable } from "@src/utils";
-import { useEffect, useState } from "react";
+import { useLocalStorage } from "./storage";
+import { ANONYMOUS_AUTH } from "@src/constants";
+import type { ServerEntry } from "@src/types";
 
-const state = makeObservable(loadServers());
+export const SERVER_HISTORY_KEY = "kinto-admin-server-history";
 
-export function useServers(): ServerEntry[] {
-  const [val, setVal] = useState<ServerEntry[]>(state.get());
-
-  useEffect(() => {
-    return state.subscribe(setVal);
-  }, []);
-
-  return val;
-}
-
-export function addServer(server: string, authType: string) {
-  const servers = [...state.get()];
-  const filteredHistory = servers.filter(entry => entry.server != server);
-
-  const history = saveServers(
-    [{ server: server, authType: authType }].concat(filteredHistory)
+export function useServerHistory() {
+  const [storedServerHistory, setServerHistory] = useLocalStorage(
+    SERVER_HISTORY_KEY,
+    []
+  );
+  const historyEntries = Array.isArray(storedServerHistory)
+    ? storedServerHistory
+    : [];
+  // Cope with legacy history which only stored the server as a string, without the authType.
+  const serverHistory: ServerEntry[] = historyEntries.map(entry =>
+    typeof entry === "string"
+      ? { server: entry, authType: ANONYMOUS_AUTH }
+      : entry
   );
 
-  state.set(history);
-}
+  const addServerToHistory = (server: string, authType: string) => {
+    setServerHistory([
+      { server, authType },
+      ...serverHistory.filter(entry => entry.server != server),
+    ]);
+  };
 
-export function clearServersHistory() {
-  clearServers();
-  state.set([]);
+  const clearServerHistory = () => setServerHistory([]);
+
+  return { serverHistory, addServerToHistory, clearServerHistory };
 }
