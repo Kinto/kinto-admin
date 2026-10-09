@@ -1,13 +1,12 @@
 import * as client from "@src/client";
 import AuthForm from "@src/components/homepage/AuthForm";
 import { DEFAULT_KINTO_SERVER, DEFAULT_SERVERINFO } from "@src/constants";
+import { SERVER_HISTORY_KEY } from "@src/hooks/servers";
 import * as sessionHooks from "@src/hooks/session";
 import { renderWithRouter } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import React from "react";
-
-const SERVER_HISTORY_KEY = "kinto-admin-server-history";
 
 function setServerHistory(serverHistory) {
   localStorage.setItem(SERVER_HISTORY_KEY, JSON.stringify(serverHistory));

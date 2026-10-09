@@ -1,8 +1,6 @@
 import { ANONYMOUS_AUTH } from "@src/constants";
-import { useServerHistory } from "@src/hooks/servers";
+import { SERVER_HISTORY_KEY, useServerHistory } from "@src/hooks/servers";
 import { act, renderHook } from "@testing-library/react";
-
-const SERVER_HISTORY_KEY = "kinto-admin-server-history";
 
 describe("useServerHistory", () => {
   beforeEach(() => {

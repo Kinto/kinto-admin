@@ -2,7 +2,7 @@ import { useLocalStorage } from "./storage";
 import { ANONYMOUS_AUTH } from "@src/constants";
 import type { ServerEntry } from "@src/types";
 
-const SERVER_HISTORY_KEY = "kinto-admin-server-history";
+export const SERVER_HISTORY_KEY = "kinto-admin-server-history";
 
 export function useServerHistory() {
   const [storedServerHistory, setServerHistory] = useLocalStorage(
