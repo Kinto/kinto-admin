@@ -9,8 +9,11 @@ export function useServerHistory() {
     SERVER_HISTORY_KEY,
     []
   );
+  const historyEntries = Array.isArray(storedServerHistory)
+    ? storedServerHistory
+    : [];
   // Cope with legacy history which only stored the server as a string, without the authType.
-  const serverHistory: ServerEntry[] = storedServerHistory.map(entry =>
+  const serverHistory: ServerEntry[] = historyEntries.map(entry =>
     typeof entry === "string"
       ? { server: entry, authType: ANONYMOUS_AUTH }
       : entry

@@ -15,6 +15,13 @@ describe("useServerHistory", () => {
     expect(result.current.serverHistory).toStrictEqual([]);
   });
 
+  it("should return an empty history if the stored value is not an array", () => {
+    localStorage.setItem(SERVER_HISTORY_KEY, JSON.stringify({ foo: "bar" }));
+    const { result } = renderHook(() => useServerHistory());
+
+    expect(result.current.serverHistory).toStrictEqual([]);
+  });
+
   it("should load legacy servers", () => {
     localStorage.setItem(
       SERVER_HISTORY_KEY,
