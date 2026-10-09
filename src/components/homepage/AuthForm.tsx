@@ -15,7 +15,7 @@ import {
 } from "@src/hooks/notifications";
 import { useServerHistory } from "@src/hooks/servers";
 import { setAuth } from "@src/hooks/session";
-import type { ServerInfo } from "@src/types";
+import type { ServerInfo, ServerInfoState } from "@src/types";
 import { getAuthLabel, getServerByPriority, omit } from "@src/utils";
 import React, { useEffect, useState } from "react";
 
@@ -255,9 +255,11 @@ function navigateToOpenID(authFormData: any, provider: any) {
 }
 
 export default function AuthForm() {
-  const [showSpinner, setShowSpinner] = useState(false);
   const { serverHistory, addServerToHistory } = useServerHistory();
-  const [serverInfo, setServerInfo] = useState(DEFAULT_SERVERINFO);
+  const [serverInfoState, setServerInfoState] = useState<ServerInfoState>({
+    status: "idle",
+  });
+  const serverInfo = serverInfoState.data ?? DEFAULT_SERVERINFO;
   const authType =
     (serverHistory.length && serverHistory[0].authType) || ANONYMOUS_AUTH;
   const { schema: currentSchema, uiSchema: curentUiSchema } =
@@ -271,16 +273,15 @@ export default function AuthForm() {
   });
 
   const serverChangeCallback = async () => {
-    setShowSpinner(true);
-    setServerInfo(DEFAULT_SERVERINFO);
+    setServerInfoState({ status: "loading" });
   };
 
   const serverInfoCallback = async auth => {
     try {
-      setShowSpinner(true);
+      setServerInfoState({ status: "loading" });
 
       const newInfo = await setupClient(auth).fetchServerInfo();
-      setServerInfo(newInfo);
+      setServerInfoState({ status: "success", data: newInfo });
       setFormData({
         server: auth.server,
         authType:
@@ -298,10 +299,10 @@ export default function AuthForm() {
 
       clearNotifications();
     } catch (ex) {
+      setServerInfoState({ status: "error", error: ex });
       notifyError("Unable to retrieve server information", ex);
     }
     resetClient();
-    setShowSpinner(false);
   };
 
   useEffect(() => {
@@ -374,21 +375,18 @@ export default function AuthForm() {
       }
       default: {
         try {
-          setShowSpinner(true);
           const serverInfoWithAuth =
             await setupClient(extendedFormData).fetchServerInfo();
           if (!serverInfoWithAuth.user) {
             notifyError("Authentication failed.", {
               message: `Could not authenticate with ${getAuthLabel(authType)}`,
             });
-            setShowSpinner(false);
             return;
           }
           addServerToHistory(formData.server, formData.authType);
           setAuth(extendedFormData);
         } catch (ex) {
           notifyError("Couldn't complete login.", ex);
-          setShowSpinner(false);
         }
       }
     }
@@ -403,9 +401,13 @@ export default function AuthForm() {
           formData={formData}
           onChange={onChange}
           onSubmit={onSubmit}
-          showSpinner={showSpinner}
+          showSpinner={serverInfoState.status === "loading"}
         >
-          <button type="submit" className="btn btn-primary">
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={serverInfoState.status === "error"}
+          >
             {"Sign in using "}
             {getAuthLabel(formData.authType)}
           </button>
