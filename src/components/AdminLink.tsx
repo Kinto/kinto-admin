@@ -1,6 +1,7 @@
 import type { RouteParams } from "@src/types";
 import url from "@src/url";
-import { ComponentProps, PureComponent, ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
+import { PureComponent } from "react";
 import { Link } from "react-router";
 
 type Props = Omit<ComponentProps<typeof Link>, "to"> & {

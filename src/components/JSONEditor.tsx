@@ -1,6 +1,7 @@
-import { WidgetProps } from "@rjsf/utils";
+import type { WidgetProps } from "@rjsf/utils";
 import { langs } from "@uiw/codemirror-extensions-langs";
-import CodeMirror, { ViewUpdate } from "@uiw/react-codemirror";
+import type { ViewUpdate } from "@uiw/react-codemirror";
+import CodeMirror from "@uiw/react-codemirror";
 
 export default function JSONEditor({
   readonly,

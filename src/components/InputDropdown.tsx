@@ -1,11 +1,5 @@
-import {
-  InputHTMLAttributes,
-  KeyboardEvent,
-  ReactNode,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import type { InputHTMLAttributes, KeyboardEvent, ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "react-bootstrap-icons";
 
 interface InputWithDropdownProps extends InputHTMLAttributes<HTMLInputElement> {

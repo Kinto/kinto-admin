@@ -1,7 +1,7 @@
 import { CommentDialog } from "../Comment";
 import Spinner from "@src/components/Spinner";
 import { parseSearchString } from "@src/locationUtils";
-import { SignoffCollectionStatus } from "@src/types";
+import type { SignoffCollectionStatus } from "@src/types";
 import { useState } from "react";
 import { ChatLeft, Check2, XCircleFill } from "react-bootstrap-icons";
 import { useLocation } from "react-router";

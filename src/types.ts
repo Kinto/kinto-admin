@@ -1,5 +1,5 @@
-import { PaginationResult } from "kinto/lib/http/base";
-import { HistoryEntry } from "kinto/lib/types";
+import type { PaginationResult } from "kinto/lib/http/base";
+import type { HistoryEntry } from "kinto/lib/types";
 
 export type ActionType<T extends (...args: any[]) => any> = ReturnType<T>;
 

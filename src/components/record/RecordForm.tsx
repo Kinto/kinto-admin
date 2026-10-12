@@ -4,7 +4,7 @@ import {
   extendUiSchemaWithAttachment,
 } from "./AttachmentInfo";
 import JSONRecordForm from "./JSONRecordForm";
-import { RJSFSchema } from "@rjsf/utils";
+import type { RJSFSchema } from "@rjsf/utils";
 import { getClient } from "@src/client";
 import AdminLink from "@src/components/AdminLink";
 import BaseForm from "@src/components/BaseForm";
@@ -14,8 +14,9 @@ import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { useRecord } from "@src/hooks/record";
 import { usePermissions, useServerInfo } from "@src/hooks/session";
 import { canCreateRecord, canEditRecord } from "@src/permission";
-import { LocalRecordData, RecordData } from "@src/types";
-import { MouseEvent, useState } from "react";
+import type { LocalRecordData, RecordData } from "@src/types";
+import type { MouseEvent } from "react";
+import { useState } from "react";
 import { Check2, Trash } from "react-bootstrap-icons";
 import { useNavigate, useParams } from "react-router";
 

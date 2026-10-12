@@ -2,7 +2,7 @@ import { notifyError } from "./notifications";
 import { useServerInfo } from "./session";
 import { getClient } from "@src/client";
 import { DEFAULT_SORT, MAX_PER_PAGE } from "@src/constants";
-import {
+import type {
   BucketData,
   BucketEntry,
   BucketPermissions,

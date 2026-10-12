@@ -2,7 +2,7 @@ import {
   extendSchemaWithAttachment,
   extendUiSchemaWithAttachment,
 } from "./AttachmentInfo";
-import { IChangeEvent } from "@rjsf/core";
+import type { IChangeEvent } from "@rjsf/core";
 import { getClient } from "@src/client";
 import AdminLink from "@src/components/AdminLink";
 import BaseForm from "@src/components/BaseForm";
@@ -11,7 +11,7 @@ import Spinner from "@src/components/Spinner";
 import { useCollection } from "@src/hooks/collection";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { useServerInfo } from "@src/hooks/session";
-import { LocalRecordData } from "@src/types";
+import type { LocalRecordData } from "@src/types";
 import { useNavigate, useParams } from "react-router";
 
 export default function RecordBulk() {

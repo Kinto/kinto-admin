@@ -1,6 +1,7 @@
 import { getClient } from "@src/client";
-import { HeartbeatState } from "@src/types";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import type { HeartbeatState } from "@src/types";
+import type { Dispatch, SetStateAction } from "react";
+import { useEffect, useState } from "react";
 
 export function useHeartbeat(): HeartbeatState {
   const [val, setVal] = useState<HeartbeatState>({

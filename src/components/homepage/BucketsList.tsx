@@ -6,7 +6,7 @@ import PaginatedTable from "@src/components/PaginatedTable";
 import { useBucketList } from "@src/hooks/bucket";
 import { usePermissions, useServerInfo } from "@src/hooks/session";
 import { canCreateBucket } from "@src/permission";
-import { BucketData, ServerInfo } from "@src/types";
+import type { BucketData, ServerInfo } from "@src/types";
 import {
   ClockHistory,
   Gear,

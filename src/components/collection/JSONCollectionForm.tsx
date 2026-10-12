@@ -1,12 +1,14 @@
-import { IChangeEvent, withTheme } from "@rjsf/core";
+import type { IChangeEvent } from "@rjsf/core";
+import { withTheme } from "@rjsf/core";
 import { Theme as BootstrapTheme } from "@rjsf/react-bootstrap";
-import { RJSFSchema, UiSchema } from "@rjsf/utils";
+import type { RJSFSchema, UiSchema } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv8";
 import JSONEditor from "@src/components/JSONEditor";
 import Spinner from "@src/components/Spinner";
 import type { CollectionData } from "@src/types";
 import { omit } from "@src/utils";
-import { ReactNode, useState } from "react";
+import type { ReactNode } from "react";
+import { useState } from "react";
 
 const FormWithTheme = withTheme(BootstrapTheme);
 

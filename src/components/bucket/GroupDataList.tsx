@@ -4,7 +4,7 @@ import AdminLink from "@src/components/AdminLink";
 import PaginatedTable from "@src/components/PaginatedTable";
 import { usePermissions, useServerInfo } from "@src/hooks/session";
 import { canCreateGroup } from "@src/permission";
-import { GroupData, ListResult } from "@src/types";
+import type { GroupData, ListResult } from "@src/types";
 import { useState } from "react";
 import { Gear } from "react-bootstrap-icons";
 import { ClockHistory } from "react-bootstrap-icons";

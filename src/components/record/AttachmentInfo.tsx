@@ -1,9 +1,9 @@
-import { UiSchema } from "@rjsf/utils";
+import type { UiSchema } from "@rjsf/utils";
 import { getClient } from "@src/client";
 import type { Capabilities, RecordData, RecordResource } from "@src/types";
 import { buildAttachmentUrl, omit } from "@src/utils";
 import { filesize } from "filesize";
-import { FC } from "react";
+import type { FC } from "react";
 import { Paperclip } from "react-bootstrap-icons";
 import { useParams } from "react-router";
 

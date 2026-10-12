@@ -1,10 +1,11 @@
 import HumanDate from "../HumanDate";
-import { CommonProps } from "./commonPropTypes";
+import type { CommonProps } from "./commonPropTypes";
 import AdminLink from "@src/components/AdminLink";
 import { useAuth } from "@src/hooks/session";
 import type { RecordData } from "@src/types";
 import { buildAttachmentUrl, renderDisplayField } from "@src/utils";
-import { MouseEvent, useRef } from "react";
+import type { MouseEvent } from "react";
+import { useRef } from "react";
 import { Dropdown } from "react-bootstrap";
 import {
   ClipboardCheck,

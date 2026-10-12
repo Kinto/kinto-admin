@@ -15,7 +15,7 @@ import type {
   SignedCollectionData,
 } from "@src/types";
 import url from "@src/url";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Plus } from "react-bootstrap-icons";
 import { XCircleFill } from "react-bootstrap-icons";
 import { Folder2 } from "react-bootstrap-icons";
