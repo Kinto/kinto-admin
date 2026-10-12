@@ -7,7 +7,7 @@ import type {
   SignerCapabilityResourceEntry,
   SignoffSourceInfo,
 } from "@src/types";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Braces } from "react-bootstrap-icons";
 
 interface ReviewProps {

@@ -2,15 +2,17 @@ import JSONEditor from "./JSONEditor";
 import Spinner from "./Spinner";
 import TagsField from "./TagsField";
 import Base64File from "./rjsf/Base64File";
-import { FormProps, withTheme } from "@rjsf/core";
+import type { FormProps } from "@rjsf/core";
+import { withTheme } from "@rjsf/core";
 import { Theme as BootstrapTheme } from "@rjsf/react-bootstrap";
-import {
+import type {
   RJSFSchema,
   RJSFValidationError,
   RegistryWidgetsType,
 } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv8";
-import { Component, ReactNode, useRef, useState } from "react";
+import type { ReactNode } from "react";
+import { Component, useRef, useState } from "react";
 
 const adminFields = { tags: TagsField };
 

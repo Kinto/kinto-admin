@@ -1,5 +1,6 @@
-import { FieldProps } from "@rjsf/utils";
-import { ChangeEvent, FC, useEffect, useState } from "react";
+import type { FieldProps } from "@rjsf/utils";
+import type { ChangeEvent, FC } from "react";
+import { useEffect, useState } from "react";
 
 const DEFAULT_SEPARATOR = ",";
 

@@ -1,5 +1,5 @@
 import Spinner from "./Spinner";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 interface Props {
   thead: ReactNode;

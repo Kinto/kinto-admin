@@ -1,8 +1,8 @@
-import { RJSFSchema, UiSchema } from "@rjsf/utils";
+import type { RJSFSchema, UiSchema } from "@rjsf/utils";
 import BaseForm from "@src/components/BaseForm";
 import JSONEditor from "@src/components/JSONEditor";
 import { omit } from "@src/utils";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 const schema: RJSFSchema = {
   type: "string",

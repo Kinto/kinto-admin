@@ -1,6 +1,6 @@
 import BaseForm from "./BaseForm";
 import Spinner from "./Spinner";
-import { RJSFSchema } from "@rjsf/utils";
+import type { RJSFSchema } from "@rjsf/utils";
 import { useGroupList } from "@src/hooks/group";
 import {
   formDataToPermissions,

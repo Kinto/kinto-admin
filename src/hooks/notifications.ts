@@ -1,4 +1,4 @@
-import { ClientError, Notification } from "@src/types";
+import type { ClientError, Notification } from "@src/types";
 import { makeObservable } from "@src/utils";
 import { useEffect, useState } from "react";
 

@@ -1,6 +1,6 @@
 import AdminLink from "@src/components/AdminLink";
 import { useServerInfo } from "@src/hooks/session";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import {
   Braces,
   ClockHistory,

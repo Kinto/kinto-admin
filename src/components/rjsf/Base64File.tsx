@@ -1,4 +1,4 @@
-import { WidgetProps } from "@rjsf/utils";
+import type { WidgetProps } from "@rjsf/utils";
 import { Dash, Download } from "react-bootstrap-icons";
 
 export default function Base64File({

@@ -1,7 +1,7 @@
 import { notifyError, notifyInfo } from "./notifications";
 import { useLocalStorage } from "./storage";
 import { getClient, setupClient } from "@src/client";
-import {
+import type {
   AuthData,
   OpenIDAuth,
   PermissionsListEntry,

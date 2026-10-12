@@ -1,5 +1,5 @@
-import { SignoffSourceInfo } from "@src/types";
-import { ReactElement } from "react";
+import type { SignoffSourceInfo } from "@src/types";
+import type { ReactElement } from "react";
 
 export default function SimpleReviewHeader({
   status,

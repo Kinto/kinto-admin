@@ -1,7 +1,7 @@
 import BaseForm from "../BaseForm";
 import ServerHistory from "./ServerHistory";
-import { IChangeEvent } from "@rjsf/core";
-import { RJSFSchema } from "@rjsf/utils";
+import type { IChangeEvent } from "@rjsf/core";
+import type { RJSFSchema } from "@rjsf/utils";
 import { resetClient, setupClient } from "@src/client";
 import {
   ANONYMOUS_AUTH,

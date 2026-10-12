@@ -1,6 +1,6 @@
 import DeleteForm from "./DeleteForm";
-import { IChangeEvent } from "@rjsf/core";
-import { RJSFSchema, UiSchema } from "@rjsf/utils";
+import type { IChangeEvent } from "@rjsf/core";
+import type { RJSFSchema, UiSchema } from "@rjsf/utils";
 import { getClient } from "@src/client";
 import AdminLink from "@src/components/AdminLink";
 import BaseForm from "@src/components/BaseForm";

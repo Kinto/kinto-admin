@@ -1,5 +1,5 @@
 import RecordRow from "./RecordRow";
-import { CommonProps } from "./commonPropTypes";
+import type { CommonProps } from "./commonPropTypes";
 import { getClient } from "@src/client";
 import AdminLink from "@src/components/AdminLink";
 import PaginatedTable from "@src/components/PaginatedTable";

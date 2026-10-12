@@ -1,5 +1,6 @@
 import Spinner from "../Spinner";
-import { ChangeEvent, useState } from "react";
+import type { ChangeEvent } from "react";
+import { useState } from "react";
 
 export function Comment({ text }: { text: string }) {
   return (

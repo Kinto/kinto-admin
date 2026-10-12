@@ -1,4 +1,4 @@
-import { RJSFSchema, UiSchema } from "@rjsf/utils";
+import type { RJSFSchema, UiSchema } from "@rjsf/utils";
 import type { GroupData, PermissionsListEntry } from "@src/types";
 
 export const EVERYONE = "system.Everyone";
