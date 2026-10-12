@@ -15,8 +15,6 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "experimentalDecorators": true,
-    "declaration": true,
     "allowJs": false,
     "paths": {
       "@src/*": ["./src/*"],
@@ -24,6 +22,6 @@
     },
     // "strictNullChecks": true,
   },
-  "include": ["src", "test", "__mocks__"],
+  "include": ["src", "test"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
