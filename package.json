@@ -19,9 +19,7 @@
     "tdd": "vitest",
     "test": "npm run generate-version && vitest --watch=false",
     "test:coverage": "npm run generate-version && vitest --watch=false --coverage",
-    "test:ci": "npm run test",
-    "test-all": "npm run lint && npm run test",
-    "test-all:ci": "npm run lint && npm run test:ci"
+    "test-all": "npm run lint && npm run test"
   },
   "engines": {
     "npm": ">=10",
