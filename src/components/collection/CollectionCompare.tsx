@@ -224,11 +224,10 @@ export function CollectionCompare() {
               icon={<ClockHistory />}
               data-testid="timestampSelect"
               type="text"
-              options={
-                latestApprovals === undefined
-                  ? undefined
-                  : latestApprovals.map(t => [new Date(t).toISOString(), t])
-              }
+              options={latestApprovals?.map(({ last_modified: t }) => [
+                new Date(t).toISOString(),
+                `${t}`,
+              ])}
               className={invalidTimestamp ? "is-invalid" : ""}
               value={selectedTimestampStr}
               onValuePicked={val => onTimestampChange(val.toString())}

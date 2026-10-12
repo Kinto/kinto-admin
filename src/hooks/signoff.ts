@@ -203,11 +203,16 @@ async function fetchChangesInfo(
   };
 }
 
+export interface Approval {
+  last_modified: number;
+  user_id: string;
+}
+
 export function useLatestApprovals(
   serverInfo?: ServerInfo,
   bid?: string,
   cid?: string
-): undefined | string[] {
+): undefined | Approval[] {
   const [val, setVal] = useState(undefined);
 
   useEffect(() => {
@@ -242,7 +247,12 @@ export function useLatestApprovals(
         },
       })
       .then(results => {
-        setVal(results.data.map(r => r.last_modified));
+        setVal(
+          results.data.map(({ last_modified, user_id }) => ({
+            last_modified,
+            user_id,
+          }))
+        );
       })
       .catch(err => {
         console.error("Error fetching latest approvals", err);

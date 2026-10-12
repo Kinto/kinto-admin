@@ -58,7 +58,10 @@ describe("CollectionCompare", () => {
         },
       ],
     });
-    mockUseLatestApprovals.mockReturnValue([1755703164649, 1755633782328]);
+    mockUseLatestApprovals.mockReturnValue([
+      { last_modified: 1755703164649, user_id: "ldap:a@mozilla.com" },
+      { last_modified: 1755633782328, user_id: "ldap:b@mozilla.com" },
+    ]);
   });
 
   it("should render loading spinner initially", () => {
