@@ -65,8 +65,9 @@ describe("Review", () => {
       "ms-images-reviewers"
     );
     const items = screen
-      .getByText("Suggested Reviewers:")
-      .parentElement.querySelectorAll("ul li");
+      .getByText("Suggested Reviewers")
+      .closest("details")
+      .querySelectorAll("ul li");
     expect(items).toHaveLength(2);
     expect(items[0]).toHaveTextContent("ldap:bob@mozilla.com, last reviewed");
     expect(items[1]).toHaveTextContent("ldap:alice@mozilla.com");
@@ -74,7 +75,7 @@ describe("Review", () => {
 
   it("explains how to use the suggestions in a tooltip", () => {
     renderReview();
-    expect(screen.getByText("Suggested Reviewers:")).toHaveAttribute(
+    expect(screen.getByText("Suggested Reviewers")).toHaveAttribute(
       "title",
       expect.stringContaining("reach out to one of these reviewers directly")
     );
@@ -82,12 +83,14 @@ describe("Review", () => {
 
   it("does not suggest the user who requested the review", () => {
     renderReview();
-    const reviewers = screen.getByText("Suggested Reviewers:").parentElement;
+    const reviewers = screen
+      .getByText("Suggested Reviewers")
+      .closest("details");
     expect(reviewers).not.toHaveTextContent("ldap:editor@mozilla.com");
   });
 
   it("does not show reviewers when not the current step", () => {
     renderReview(2);
-    expect(screen.queryByText("Suggested Reviewers:")).not.toBeInTheDocument();
+    expect(screen.queryByText("Suggested Reviewers")).not.toBeInTheDocument();
   });
 });

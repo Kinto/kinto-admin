@@ -898,6 +898,14 @@ form button[type="submit"].btn-primary {
   overflow-wrap: anywhere;
   text-align: left;
 }
+/* Keep collapsed content in the width calculation so opening it doesn't re-center the list */
+.bs-wizard-info details:not([open])::details-content {
+  content-visibility: visible;
+  display: block;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
 
 /* Signoff styles */
 .diffstats {

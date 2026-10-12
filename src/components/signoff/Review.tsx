@@ -101,13 +101,13 @@ function ReviewInfos(props: ReviewInfosProps) {
           <strong>Comment: </strong> <Comment text={lastEditorComment} />
         </li>
       )}
-      {isCurrentStep && <Reviewers source={source} />}
       {!isCurrentUrl && (
         <li>
           <strong>Preview: </strong> {link}
         </li>
       )}
       {isCurrentStep && changes && <DiffInfo changes={changes} />}
+      {isCurrentStep && <Reviewers source={source} />}
     </ul>
   );
 }
@@ -136,21 +136,25 @@ function Reviewers({ source }: { source: SignoffSourceInfo }) {
   }
   return (
     <li>
-      <strong title="Reviewers are usually notified automatically. To speed things up, reach out to one of these reviewers directly.">
-        Suggested Reviewers: <InfoCircle className="icon" />{" "}
-      </strong>
-      <ul>
-        {reviewers.map(({ id, lastApproval }) => (
-          <li key={id}>
-            {id}
-            {lastApproval && (
-              <>
-                , last reviewed <HumanDate timestamp={lastApproval} />
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
+      <details>
+        <summary>
+          <strong title="Reviewers are usually notified automatically. To speed things up, reach out to one of these reviewers directly.">
+            Suggested Reviewers <InfoCircle className="icon" />
+          </strong>
+        </summary>
+        <ul>
+          {reviewers.map(({ id, lastApproval }) => (
+            <li key={id}>
+              {id}
+              {lastApproval && (
+                <>
+                  , last reviewed <HumanDate timestamp={lastApproval} />
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+      </details>
     </li>
   );
 }
