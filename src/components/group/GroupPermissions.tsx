@@ -6,7 +6,7 @@ import { useGroup } from "@src/hooks/group";
 import { usePermissions } from "@src/hooks/session";
 import { canEditGroup } from "@src/permission";
 import type { GroupPermissions as GroupPermissionsType } from "@src/types";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router";
 
 export function GroupPermissions() {

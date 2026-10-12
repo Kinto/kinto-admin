@@ -6,7 +6,7 @@ import JSONEditor from "@src/components/JSONEditor";
 import Spinner from "@src/components/Spinner";
 import type { CollectionData } from "@src/types";
 import { omit } from "@src/utils";
-import React, { useState } from "react";
+import { ReactNode, useState } from "react";
 
 const FormWithTheme = withTheme(BootstrapTheme);
 
@@ -35,7 +35,7 @@ const uiSchema: UiSchema = {
 };
 
 interface Props {
-  children?: React.ReactNode;
+  children?: ReactNode;
   cid?: string | null;
   disabled?: boolean;
   formData: CollectionData;

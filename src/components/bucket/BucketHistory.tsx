@@ -1,13 +1,13 @@
 import BucketTabs from "./BucketTabs";
 import HistoryTable from "@src/components/HistoryTable";
 import { useBucketHistory } from "@src/hooks/bucket";
-import React from "react";
+import { useState } from "react";
 import { useParams } from "react-router";
 
 export default function BucketHistory() {
   const { bid } = useParams();
 
-  const [filters, setFilters] = React.useState({});
+  const [filters, setFilters] = useState({});
   // Refetch from the server when filters change.
   const history = useBucketHistory(bid, filters);
 

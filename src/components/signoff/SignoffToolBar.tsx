@@ -18,7 +18,7 @@ import type {
   SignoffCollectionsInfo,
   SignoffSourceInfo,
 } from "@src/types";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ChatLeft } from "react-bootstrap-icons";
 import { useParams } from "react-router";
 

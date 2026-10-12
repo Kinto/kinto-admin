@@ -1,5 +1,4 @@
 import AdminLink from "@src/components/AdminLink";
-import React from "react";
 import { Folder, InfoCircle } from "react-bootstrap-icons";
 
 interface Props {

@@ -17,7 +17,7 @@ import { useServerHistory } from "@src/hooks/servers";
 import { setAuth } from "@src/hooks/session";
 import type { ServerInfo, ServerInfoState } from "@src/types";
 import { getAuthLabel, getServerByPriority, omit } from "@src/utils";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const KNOWN_AUTH_METHODS = [
   "basicauth",

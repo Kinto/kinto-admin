@@ -7,7 +7,7 @@ import type {
   SignerCapabilityResourceEntry,
   SignoffSourceInfo,
 } from "@src/types";
-import React from "react";
+import { ReactNode } from "react";
 import { Braces } from "react-bootstrap-icons";
 
 interface ReviewProps {
@@ -34,7 +34,7 @@ export function Review({
   const isCurrentStep = step == currentStep;
 
   // If preview disabled, the preview object is empty.
-  let link: React.ReactNode = "disabled";
+  let link: ReactNode = "disabled";
   if (preview) {
     const { bucket, collection } = preview;
     link = (
@@ -74,7 +74,7 @@ export function Review({
 interface ReviewInfosProps {
   isCurrentStep: boolean;
   source: SignoffSourceInfo;
-  link: React.ReactNode;
+  link: ReactNode;
   isCurrentUrl: boolean;
   changes: ChangesList | null;
 }

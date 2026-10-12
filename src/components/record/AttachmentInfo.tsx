@@ -3,7 +3,7 @@ import { getClient } from "@src/client";
 import type { Capabilities, RecordData, RecordResource } from "@src/types";
 import { buildAttachmentUrl, omit } from "@src/utils";
 import { filesize } from "filesize";
-import React from "react";
+import { FC } from "react";
 import { Paperclip } from "react-bootstrap-icons";
 import { useParams } from "react-router";
 
@@ -116,7 +116,7 @@ export function AttachmentInfo(props: AttachmentInfoProps) {
     callback();
   };
 
-  const FileSize: React.FC<{ bytes: number }> = ({ bytes }) => {
+  const FileSize: FC<{ bytes: number }> = ({ bytes }) => {
     return <>{filesize(bytes)}</>;
   };
 

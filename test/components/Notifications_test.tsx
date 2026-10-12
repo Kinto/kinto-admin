@@ -1,7 +1,6 @@
 import Notifications from "@src/components/Notifications";
 import * as notificationsHooks from "@src/hooks/notifications";
 import { fireEvent, render, screen } from "@testing-library/react";
-import React from "react";
 
 describe("Notifications component", () => {
   let removeNotificationParam, useNotificationsMock;

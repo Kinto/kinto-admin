@@ -1,6 +1,6 @@
 import AdminLink from "@src/components/AdminLink";
 import { useServerInfo } from "@src/hooks/session";
-import React from "react";
+import { ReactNode } from "react";
 import { Gear } from "react-bootstrap-icons";
 import { Lock } from "react-bootstrap-icons";
 import { ClockHistory } from "react-bootstrap-icons";
@@ -10,7 +10,7 @@ interface Props {
   cid: string;
   rid: string;
   selected: "attributes" | "permissions" | "history";
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 export default function RecordTabs({

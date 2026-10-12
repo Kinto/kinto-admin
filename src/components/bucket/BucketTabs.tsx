@@ -1,6 +1,6 @@
 import AdminLink from "@src/components/AdminLink";
 import { useServerInfo } from "@src/hooks/session";
-import React from "react";
+import { ReactNode } from "react";
 import {
   ClockHistory,
   Gear,
@@ -12,7 +12,7 @@ import {
 interface Props {
   bid: string;
   selected: "collections" | "groups" | "attributes" | "permissions" | "history";
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 export default function BucketTabs({ bid, selected, children }: Props) {

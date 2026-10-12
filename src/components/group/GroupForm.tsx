@@ -10,7 +10,7 @@ import { useGroup } from "@src/hooks/group";
 import { usePermissions } from "@src/hooks/session";
 import { canCreateGroup, canEditGroup } from "@src/permission";
 import { omit } from "@src/utils";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Check2 } from "react-bootstrap-icons";
 import { useNavigate, useParams } from "react-router";
 

@@ -1,6 +1,5 @@
 import AdminLink from "@src/components/AdminLink";
 import { useServerInfo } from "@src/hooks/session";
-import React from "react";
 import { Gear } from "react-bootstrap-icons";
 import { Lock } from "react-bootstrap-icons";
 import { ClockHistory } from "react-bootstrap-icons";

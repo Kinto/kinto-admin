@@ -8,7 +8,7 @@ import { useServerInfo } from "@src/hooks/session";
 import type { HistoryFilters, ResourceHistoryEntry } from "@src/types";
 import { diffJson, hasHistoryDisabled } from "@src/utils";
 import { sortHistoryEntryPermissions } from "@src/utils";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   ArrowClockwise,
   Check2Circle,
@@ -200,7 +200,7 @@ function HistoryRow({ bid, entry, pos }: HistoryRowProps) {
     }[resource_name] || resource_name;
 
   return (
-    <React.Fragment>
+    <>
       <tr>
         <td className="lastmod">
           <HumanDate timestamp={last_modified} />
@@ -257,7 +257,7 @@ function HistoryRow({ bid, entry, pos }: HistoryRowProps) {
           </td>
         </tr>
       ) : null}
-    </React.Fragment>
+    </>
   );
 }
 

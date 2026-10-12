@@ -1,9 +1,9 @@
 import Spinner from "./Spinner";
-import React from "react";
+import { ReactNode } from "react";
 
 interface Props {
-  thead: React.ReactNode;
-  tbody: React.ReactNode;
+  thead: ReactNode;
+  tbody: ReactNode;
   dataLoaded: boolean;
   colSpan: number;
   hasNextPage: boolean;

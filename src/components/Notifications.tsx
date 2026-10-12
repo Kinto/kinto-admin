@@ -1,6 +1,5 @@
 import { removeNotification, useNotifications } from "@src/hooks/notifications";
 import type { Notifications } from "@src/types";
-import React from "react";
 import Toast from "react-bootstrap/Toast";
 
 function NotificationDetails({ details }: { details: string[] }) {

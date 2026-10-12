@@ -8,7 +8,7 @@ import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { usePermissions } from "@src/hooks/session";
 import { canEditCollection } from "@src/permission";
 import type { CollectionPermissions as CollectionPermissionsType } from "@src/types";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router";
 
 export function CollectionPermissions() {

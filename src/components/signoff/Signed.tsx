@@ -5,7 +5,6 @@ import type {
   SignerCapabilityResourceEntry,
   SignoffSourceInfo,
 } from "@src/types";
-import React from "react";
 
 interface SignedProps {
   label: string;

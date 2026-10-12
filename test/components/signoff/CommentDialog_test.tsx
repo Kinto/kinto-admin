@@ -1,6 +1,5 @@
 import { CommentDialog } from "@src/components/signoff/Comment";
 import { fireEvent, render, screen } from "@testing-library/react";
-import React from "react";
 
 describe("Signoff CommentDialog component", () => {
   it("Should render the comment and function expected", async () => {

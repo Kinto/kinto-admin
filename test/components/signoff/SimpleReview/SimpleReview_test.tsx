@@ -8,7 +8,6 @@ import * as sessionHooks from "@src/hooks/session";
 import * as signoffHooks from "@src/hooks/signoff";
 import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
-import React from "react";
 
 vi.mock("@src/permission", () => {
   return {

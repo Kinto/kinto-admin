@@ -1,6 +1,6 @@
 import AdminLink from "@src/components/AdminLink";
 import { useServerInfo } from "@src/hooks/session";
-import React from "react";
+import { ReactNode } from "react";
 import {
   Braces,
   ClockHistory,
@@ -20,7 +20,7 @@ interface Props {
     | "history"
     | "compare"
     | "simple-review";
-  children?: React.ReactNode;
+  children?: ReactNode;
   totalRecords?: number | null;
 }
 

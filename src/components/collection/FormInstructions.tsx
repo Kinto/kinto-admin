@@ -1,5 +1,3 @@
-import React from "react";
-
 interface FormInstructionsProps {
   onSchemalessLinkClick: (event: any) => void;
 }

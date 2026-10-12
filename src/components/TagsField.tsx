@@ -1,5 +1,5 @@
 import { FieldProps } from "@rjsf/utils";
-import React, { useEffect, useState } from "react";
+import { ChangeEvent, FC, useEffect, useState } from "react";
 
 const DEFAULT_SEPARATOR = ",";
 
@@ -19,7 +19,7 @@ function toTagsString(tags: string[], separator = ","): string {
   return tags.join(separator === " " ? " " : `${separator} `);
 }
 
-const TagsField: React.FC<FieldProps<string[]>> = ({
+const TagsField: FC<FieldProps<string[]>> = ({
   schema,
   uiSchema = {},
   name,
@@ -40,7 +40,7 @@ const TagsField: React.FC<FieldProps<string[]>> = ({
     setTagsString(toTagsString(formData, separator));
   }, [formData, separator]);
 
-  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     const tagsStr = e.target.value;
     const uniqueItems = schema.uniqueItems ?? false;
     const tags = toTagList(tagsStr, separator, uniqueItems);

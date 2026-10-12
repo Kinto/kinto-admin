@@ -8,7 +8,7 @@ import { useRecordList, useRecordListAt } from "@src/hooks/record";
 import { useServerInfo } from "@src/hooks/session";
 import { useLatestApprovals } from "@src/hooks/signoff";
 import { hasHistoryDisabled } from "@src/utils";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ClockHistory } from "react-bootstrap-icons";
 import { useParams, useSearchParams } from "react-router";
 

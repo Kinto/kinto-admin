@@ -1,7 +1,6 @@
 import BucketForm from "./BucketForm";
 import Spinner from "@src/components/Spinner";
 import { useServerInfo } from "@src/hooks/session";
-import React from "react";
 
 export default function BucketCreate() {
   const { data: serverInfo } = useServerInfo();

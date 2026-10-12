@@ -7,7 +7,7 @@ import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { usePermissions } from "@src/hooks/session";
 import { canEditBucket } from "@src/permission";
 import type { BucketPermissions as BucketPermissionsType } from "@src/types";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router";
 
 export function BucketPermissions() {

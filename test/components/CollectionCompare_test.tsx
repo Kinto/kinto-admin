@@ -7,7 +7,6 @@ import * as sessionHooks from "@src/hooks/session";
 import * as signoffHooks from "@src/hooks/signoff";
 import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen, waitFor } from "@testing-library/react";
-import React from "react";
 
 describe("CollectionCompare", () => {
   const mockBucketList = vi.fn();

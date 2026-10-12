@@ -2,7 +2,6 @@ import AuthCallback from "@src/components/homepage/AuthCallback";
 import * as sessionHooks from "@src/hooks/session";
 import { renderWithRouter } from "@test/testUtils";
 import { waitFor } from "@testing-library/react";
-import * as React from "react";
 
 describe("AuthCallback component", () => {
   const mockUseAuth = vi.fn();

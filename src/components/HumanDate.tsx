@@ -1,6 +1,5 @@
 import { notifySuccess } from "@src/hooks/notifications";
 import { copyToClipboard, humanDate, timeago } from "@src/utils";
-import React from "react";
 import { Copy } from "react-bootstrap-icons";
 
 async function onCopyClick(value: string) {

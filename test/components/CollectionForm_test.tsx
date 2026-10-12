@@ -8,7 +8,6 @@ import {
   renderWithRouter,
 } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
-import React from "react";
 
 const warningText =
   "You don't have the required permission to edit this collection.";

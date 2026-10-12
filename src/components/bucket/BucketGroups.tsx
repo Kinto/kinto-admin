@@ -1,7 +1,6 @@
 import BucketTabs from "./BucketTabs";
 import { DataList, ListActions } from "./GroupDataList";
 import { useGroupList } from "@src/hooks/group";
-import React from "react";
 import { useParams } from "react-router";
 
 export default function BucketGroups() {

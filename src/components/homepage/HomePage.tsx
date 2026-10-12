@@ -2,7 +2,6 @@ import Spinner from "../Spinner";
 import HomePageTabs from "./HomePageTabs";
 import { useServerInfo } from "@src/hooks/session";
 import { isObject } from "@src/utils";
-import * as React from "react";
 
 function ServerProps({ node }: { node: any }) {
   const nodes = Array.isArray(node)

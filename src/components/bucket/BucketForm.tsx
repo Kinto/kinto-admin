@@ -9,7 +9,7 @@ import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { usePermissions } from "@src/hooks/session";
 import { canEditBucket } from "@src/permission";
 import { omit } from "@src/utils";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Check2 } from "react-bootstrap-icons";
 import { Link, useNavigate, useParams } from "react-router";
 

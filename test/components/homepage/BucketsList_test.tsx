@@ -2,7 +2,6 @@ import { DataList, ListActions } from "@src/components/homepage/BucketsList";
 import { canCreateBucket } from "@src/permission";
 import { renderWithRouter } from "@test/testUtils";
 import { screen } from "@testing-library/react";
-import React from "react";
 
 vi.mock("../../../src/permission", () => {
   return {

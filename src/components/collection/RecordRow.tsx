@@ -4,7 +4,7 @@ import AdminLink from "@src/components/AdminLink";
 import { useAuth } from "@src/hooks/session";
 import type { RecordData } from "@src/types";
 import { buildAttachmentUrl, renderDisplayField } from "@src/utils";
-import React, { useRef } from "react";
+import { MouseEvent, useRef } from "react";
 import { Dropdown } from "react-bootstrap";
 import {
   ClipboardCheck,
@@ -40,13 +40,13 @@ export default function RecordRow({
   const auth = useAuth();
   const toggle = useRef<HTMLButtonElement>(null);
 
-  const onDoubleClick = (event: React.MouseEvent) => {
+  const onDoubleClick = (event: MouseEvent) => {
     event.preventDefault();
     const { id: rid } = record;
     navigate(`/buckets/${bid}/collections/${cid}/records/${rid}/attributes`);
   };
 
-  const onDeleteClick = (event: React.MouseEvent) => {
+  const onDeleteClick = (event: MouseEvent) => {
     const { id: rid, last_modified } = record;
     if (!rid) {
       // FIXME: this shouldn't be possible

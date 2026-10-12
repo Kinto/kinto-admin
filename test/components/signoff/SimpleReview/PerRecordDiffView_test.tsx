@@ -4,7 +4,6 @@ import PerRecordDiffView, {
   formatDiffHeader,
 } from "@src/components/signoff/SimpleReview/PerRecordDiffView";
 import { render, screen } from "@testing-library/react";
-import React from "react";
 
 function renderSimpleReview(props = null) {
   const mergedProps = {

@@ -1,10 +1,17 @@
-import React from "react";
+import {
+  InputHTMLAttributes,
+  KeyboardEvent,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { ChevronDown } from "react-bootstrap-icons";
 
-interface InputWithDropdownProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputWithDropdownProps extends InputHTMLAttributes<HTMLInputElement> {
   options: string[][];
   dropDownTitle?: string;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
   onValuePicked?: (value: string) => void;
 }
 
@@ -15,13 +22,13 @@ export default function InputWithDropdown({
   onValuePicked,
   ...rest
 }: InputWithDropdownProps) {
-  const [open, setOpen] = React.useState(false);
-  const rootRef = React.useRef<HTMLDivElement | null>(null);
-  const buttonRef = React.useRef<HTMLButtonElement | null>(null);
-  const listRef = React.useRef<HTMLDivElement | null>(null);
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const listRef = useRef<HTMLDivElement | null>(null);
 
   // Close when clicking outside
-  React.useEffect(() => {
+  useEffect(() => {
     function onDocClick(e: MouseEvent) {
       if (!rootRef.current) return;
       if (!rootRef.current.contains(e.target as Node)) setOpen(false);
@@ -31,7 +38,7 @@ export default function InputWithDropdown({
   }, []);
 
   // Simple keyboard support
-  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();
       setOpen(true);

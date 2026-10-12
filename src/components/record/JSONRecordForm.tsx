@@ -2,7 +2,7 @@ import { RJSFSchema, UiSchema } from "@rjsf/utils";
 import BaseForm from "@src/components/BaseForm";
 import JSONEditor from "@src/components/JSONEditor";
 import { omit } from "@src/utils";
-import React from "react";
+import { ReactNode } from "react";
 
 const schema: RJSFSchema = {
   type: "string",
@@ -47,7 +47,7 @@ interface Props {
   attachmentEnabled?: boolean;
   attachmentRequired?: boolean;
   onSubmit: (data: object) => void;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 function splitAttachment(record: string) {

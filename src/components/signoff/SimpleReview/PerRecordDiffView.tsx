@@ -6,7 +6,6 @@ import {
 import type { RecordData } from "@src/types";
 import { diffJson, omit, renderDisplayField } from "@src/utils";
 import { diffJson as diff, diffArrays } from "diff";
-import React from "react";
 
 export enum ChangeType {
   ADD = "add",
