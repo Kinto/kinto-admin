@@ -1,6 +1,4 @@
-/// <reference types="vitest" />
-
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import { readFileSync } from 'fs'
 import path from 'path'
