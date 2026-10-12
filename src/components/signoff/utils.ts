@@ -7,26 +7,31 @@ import type {
 
 type GroupKey = "editors_group" | "reviewers_group";
 
+export function groupName(
+  groupKey: GroupKey,
+  source: SignoffSourceInfo,
+  serverInfo: ServerInfo
+): string | undefined {
+  if (!source) {
+    return;
+  }
+  const name = source[groupKey] ?? serverInfo?.capabilities?.signer?.[groupKey];
+  return name?.replace("{collection_id}", source.collection);
+}
+
 export function isMember(
   groupKey: GroupKey,
   source: SignoffSourceInfo,
   serverInfo: ServerInfo
 ) {
-  const { user, capabilities } = serverInfo;
-  if (!source || !user?.principals) {
+  const { user } = serverInfo;
+  const expectedGroup = groupName(groupKey, source, serverInfo);
+  if (!expectedGroup || !user?.principals) {
     return false;
   }
-  if (!("signer" in capabilities)) {
-    return false;
-  }
-  const { principals } = user;
-  const { bucket, collection } = source;
-  const { [groupKey]: defaultGroupName } = capabilities.signer;
-  const { [groupKey]: groupName = defaultGroupName } = source;
-  const expectedGroup = groupName.replace("{collection_id}", collection);
-  const expectedPrincipal = `/buckets/${bucket}/groups/${expectedGroup}`;
+  const expectedPrincipal = `/buckets/${source.bucket}/groups/${expectedGroup}`;
 
-  return principals.includes(expectedPrincipal);
+  return user.principals.includes(expectedPrincipal);
 }
 
 export function toReviewEnabled(

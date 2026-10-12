@@ -1,4 +1,8 @@
-import { isMember, toReviewEnabled } from "@src/components/signoff/utils";
+import {
+  groupName,
+  isMember,
+  toReviewEnabled,
+} from "@src/components/signoff/utils";
 
 const source = {
   bucket: "sourceBucket",
@@ -141,5 +145,38 @@ describe("isMember", () => {
 
   it("Returns false if user is not a member of the group", () => {
     expect(isMember("reviewers_group", source, testServerInfo)).toBe(false);
+  });
+});
+
+describe("groupName", () => {
+  const testServerInfo = {
+    capabilities: {
+      signer: {
+        editors_group: "{collection_id}-editors",
+        reviewers_group: "{collection_id}-reviewers",
+      },
+    },
+  };
+
+  it("Uses the default group name with the collection id", () => {
+    expect(groupName("reviewers_group", source, testServerInfo)).toBe(
+      "sourceCol-reviewers"
+    );
+  });
+
+  it("Uses the group name override of the source", () => {
+    expect(
+      groupName(
+        "reviewers_group",
+        { ...source, reviewers_group: "custom-{collection_id}" },
+        testServerInfo
+      )
+    ).toBe("custom-sourceCol");
+  });
+
+  it("Returns undefined if signer is not enabled", () => {
+    expect(
+      groupName("reviewers_group", source, { capabilities: {} })
+    ).toBeUndefined();
   });
 });
