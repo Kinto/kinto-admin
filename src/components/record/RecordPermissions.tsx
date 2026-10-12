@@ -6,7 +6,7 @@ import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { useRecord } from "@src/hooks/record";
 import { usePermissions } from "@src/hooks/session";
 import { canEditRecord } from "@src/permission";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router";
 
 export function RecordPermissions() {

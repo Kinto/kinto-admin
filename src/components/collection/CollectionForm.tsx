@@ -14,7 +14,7 @@ import { usePermissions } from "@src/hooks/session";
 import { canCreateCollection, canEditCollection } from "@src/permission";
 import { CollectionData } from "@src/types";
 import { validateSchema, validateUiSchema } from "@src/utils";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Check2 } from "react-bootstrap-icons";
 import { Link, useNavigate, useParams } from "react-router";
 

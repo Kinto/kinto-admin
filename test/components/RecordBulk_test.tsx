@@ -3,7 +3,6 @@ import RecordBulk from "@src/components/record/RecordBulk";
 import * as collectionHooks from "@src/hooks/collection";
 import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen, waitFor } from "@testing-library/react";
-import React from "react";
 
 describe("RecordBulk component", () => {
   describe("Schema defined", () => {

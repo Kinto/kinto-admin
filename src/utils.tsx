@@ -8,7 +8,6 @@ import type {
   ServerInfo,
 } from "@src/types";
 import { diffJson as diff } from "diff";
-import React from "react";
 import { format } from "timeago.js";
 
 export function clone(obj: any) {

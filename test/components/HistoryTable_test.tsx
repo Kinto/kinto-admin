@@ -7,7 +7,6 @@ import * as preferenceHooks from "@src/hooks/preferences";
 import * as sessionHooks from "@src/hooks/session";
 import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
-import React from "react";
 
 // Mocks
 const useShowNonHumansMock = vi.fn();

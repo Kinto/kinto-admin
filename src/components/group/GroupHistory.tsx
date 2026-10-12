@@ -1,13 +1,13 @@
 import CollectionTabs from "./GroupTabs";
 import HistoryTable from "@src/components/HistoryTable";
 import { useGroupHistory } from "@src/hooks/group";
-import React from "react";
+import { useState } from "react";
 import { useParams } from "react-router";
 
 export default function GroupHistory() {
   const { bid, gid } = useParams();
 
-  const [filters, setFilters] = React.useState({});
+  const [filters, setFilters] = useState({});
   // Refetch from the server when filters change.
   const history = useGroupHistory(bid, gid, filters);
 

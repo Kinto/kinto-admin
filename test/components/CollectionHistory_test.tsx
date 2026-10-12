@@ -5,7 +5,6 @@ import * as preferenceHooks from "@src/hooks/preferences";
 import * as sessionHooks from "@src/hooks/session";
 import { renderWithRouter } from "@test/testUtils";
 import { screen } from "@testing-library/react";
-import React from "react";
 
 describe("CollectionHistory component", () => {
   const useCollectionHistoryMock = vi.fn();

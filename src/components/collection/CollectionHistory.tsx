@@ -2,7 +2,7 @@ import CollectionTabs from "./CollectionTabs";
 import HistoryTable from "@src/components/HistoryTable";
 import { useCollectionHistory } from "@src/hooks/collection";
 import { parseHistoryFilters } from "@src/utils";
-import React from "react";
+import { useState } from "react";
 import { useParams, useSearchParams } from "react-router";
 
 export default function CollectionHistory() {
@@ -13,7 +13,7 @@ export default function CollectionHistory() {
   // (ex. `?since=42&resource_name=record&show_signer_plugin:false`)
   const [params, _] = useSearchParams();
   const parsedFilters = parseHistoryFilters(params);
-  const [filters, setFilters] = React.useState(parsedFilters);
+  const [filters, setFilters] = useState(parsedFilters);
 
   // Update filter handler
   function onFiltersChange(updated) {

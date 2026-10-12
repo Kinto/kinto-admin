@@ -15,7 +15,7 @@ import type {
   SignedCollectionData,
 } from "@src/types";
 import url from "@src/url";
-import * as React from "react";
+import { ReactNode } from "react";
 import { Plus } from "react-bootstrap-icons";
 import { XCircleFill } from "react-bootstrap-icons";
 import { Folder2 } from "react-bootstrap-icons";
@@ -31,7 +31,7 @@ interface SideBarLinkProps {
   currentPath: string;
   name: string;
   params: RouteParams;
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   title?: string;
 }

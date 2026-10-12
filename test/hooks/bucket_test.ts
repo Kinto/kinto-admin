@@ -11,7 +11,7 @@ import { logout, useAuth } from "@src/hooks/session";
 import * as storageHooks from "@src/hooks/storage";
 import { mockNotifyError } from "@test/testUtils";
 import { render, renderHook } from "@testing-library/react";
-import React from "react";
+import { createElement } from "react";
 
 describe("bucket hooks", () => {
   describe("useBucket", () => {
@@ -491,7 +491,7 @@ describe("bucket hooks", () => {
 
       function Child() {
         const buckets = useBucketList();
-        return React.createElement(
+        return createElement(
           "div",
           { "data-testid": "buckets" },
           buckets ? buckets.map(b => b.id).join(",") : "loading"
@@ -499,14 +499,14 @@ describe("bucket hooks", () => {
       }
       function Parent() {
         const auth = useAuth();
-        return React.createElement(
+        return createElement(
           "div",
           null,
-          auth ? React.createElement(Child) : "no-auth"
+          auth ? createElement(Child) : "no-auth"
         );
       }
 
-      const { getByTestId } = render(React.createElement(Parent));
+      const { getByTestId } = render(createElement(Parent));
 
       await vi.waitFor(() => {
         expect(getByTestId("buckets").textContent).toBe("main");

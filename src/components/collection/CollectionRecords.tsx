@@ -6,7 +6,7 @@ import { DEFAULT_SORT } from "@src/constants";
 import { useCollection } from "@src/hooks/collection";
 import { useRecordList } from "@src/hooks/record";
 import { useServerInfo } from "@src/hooks/session";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 
 export default function CollectionRecords() {

@@ -8,7 +8,6 @@ import {
   preparePermissionsForm,
 } from "@src/permission";
 import type { Permissions } from "@src/types";
-import React from "react";
 import { useParams } from "react-router";
 
 interface Props {

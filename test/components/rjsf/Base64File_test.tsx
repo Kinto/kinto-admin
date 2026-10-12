@@ -1,6 +1,5 @@
 import Base64File from "@src/components/rjsf/Base64File";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import React from "react";
 
 const tinyTestImg =
   "data:image/bmp;base64,Qk2aAAAAAAAAAIoAAAB8AAAAAgAAAAIAAAABABgAAAAAABAAAAAjLgAAIy4AAAAAAAAAAAAAAAD/AAD/AAD/AAAAAAAAAEJHUnMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAA////AAAAAAAAAAD///8AAA==";

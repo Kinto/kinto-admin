@@ -1,6 +1,5 @@
 import RecordForm from "./RecordForm";
 import RecordTabs from "./RecordTabs";
-import React from "react";
 import { useParams } from "react-router";
 
 export default function RecordAttributes() {

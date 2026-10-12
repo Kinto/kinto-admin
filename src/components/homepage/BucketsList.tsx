@@ -7,7 +7,6 @@ import { useBucketList } from "@src/hooks/bucket";
 import { usePermissions, useServerInfo } from "@src/hooks/session";
 import { canCreateBucket } from "@src/permission";
 import { BucketData, ServerInfo } from "@src/types";
-import React from "react";
 import {
   ClockHistory,
   Gear,

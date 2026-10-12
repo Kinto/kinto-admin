@@ -12,7 +12,6 @@ import { useAuth, usePermissions, useServerInfo } from "@src/hooks/session";
 import { useSignoff } from "@src/hooks/signoff";
 import { canEditCollection } from "@src/permission";
 import type { RecordData, SignoffSourceInfo } from "@src/types";
-import React from "react";
 import { useNavigate, useParams } from "react-router";
 
 interface SignedCollectionRecordDiffViewProps {

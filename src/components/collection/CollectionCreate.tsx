@@ -1,7 +1,6 @@
 import CollectionForm from "./CollectionForm";
 import Spinner from "@src/components/Spinner";
 import { useServerInfo } from "@src/hooks/session";
-import React from "react";
 import { useParams } from "react-router";
 
 export default function CollectionCreate() {

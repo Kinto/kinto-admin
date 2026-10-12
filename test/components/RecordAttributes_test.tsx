@@ -11,7 +11,6 @@ import { canEditRecord } from "@src/permission";
 import { clone } from "@src/utils";
 import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
-import React from "react";
 
 vi.mock("@src/permission", () => {
   return {

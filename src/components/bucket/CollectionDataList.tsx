@@ -5,7 +5,7 @@ import PaginatedTable from "@src/components/PaginatedTable";
 import { usePermissions } from "@src/hooks/session";
 import { canCreateCollection } from "@src/permission";
 import { Capabilities, CollectionData, ListResult } from "@src/types";
-import React, { useState } from "react";
+import { useState } from "react";
 import { ClockHistory, Gear, Justify } from "react-bootstrap-icons";
 
 interface ListActionsProps {

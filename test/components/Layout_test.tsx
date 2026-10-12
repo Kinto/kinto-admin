@@ -6,7 +6,6 @@ import * as preferencesHooks from "@src/hooks/preferences";
 import * as sessionHooks from "@src/hooks/session";
 import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
-import React from "react";
 
 describe("App component", () => {
   const routeProps = { createRoutes: false, route: "/", path: "/" };

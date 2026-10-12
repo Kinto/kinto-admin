@@ -1,6 +1,5 @@
 import CollectionForm from "./CollectionForm";
 import CollectionTabs from "./CollectionTabs";
-import React from "react";
 import { useParams } from "react-router";
 
 export default function CollectionAttributes() {

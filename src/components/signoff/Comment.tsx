@@ -1,5 +1,5 @@
 import Spinner from "../Spinner";
-import React, { useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 export function Comment({ text }: { text: string }) {
   return (
@@ -32,7 +32,7 @@ export function CommentDialog({
   const [comment, setComment] = useState<string>("");
   const [showSpinner, setShowSpinner] = useState(false);
 
-  const onCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const onCommentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setComment(e.target.value);
   };
 

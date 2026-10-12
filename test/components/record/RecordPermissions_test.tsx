@@ -2,7 +2,6 @@ import { RecordPermissions } from "@src/components/record/RecordPermissions";
 import * as recordHooks from "@src/hooks/record";
 import { renderWithRouter } from "@test/testUtils";
 import { screen } from "@testing-library/react";
-import React from "react";
 
 describe("RecordPermissions component", () => {
   beforeEach(() => {

@@ -35,7 +35,6 @@ import {
   useAuth,
   useServerInfo,
 } from "@src/hooks/session";
-import * as React from "react";
 import { LayoutSidebar, LayoutSidebarInset } from "react-bootstrap-icons";
 import { Outlet, Route, Routes } from "react-router";
 

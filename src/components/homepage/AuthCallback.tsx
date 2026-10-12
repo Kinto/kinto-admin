@@ -2,7 +2,7 @@ import Spinner from "@src/components/Spinner";
 import { notifyError } from "@src/hooks/notifications";
 import { setAuth } from "@src/hooks/session";
 import type { OpenIDAuth } from "@src/types";
-import * as React from "react";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 
 function safeParseJSON(raw: string) {
@@ -30,7 +30,7 @@ export default function AuthCallback() {
   const { payload, token } = useParams();
   const navigate = useNavigate();
 
-  React.useEffect(() => {
+  useEffect(() => {
     (async () => {
       try {
         if (!payload || !token) {

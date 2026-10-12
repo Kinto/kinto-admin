@@ -3,7 +3,6 @@ import { useHeartbeat } from "@src/hooks/heartbeat";
 import { notifySuccess } from "@src/hooks/notifications";
 import { logout, useAuth, useServerInfo } from "@src/hooks/session";
 import { copyToClipboard } from "@src/utils";
-import React from "react";
 import {
   BoxArrowRight,
   CircleFill,

@@ -1,6 +1,5 @@
 import JSONRecordForm from "@src/components/record/JSONRecordForm";
 import { fireEvent, render, screen } from "@testing-library/react";
-import React from "react";
 
 const testAttachment = {
   hash: "efcea498c4bed6cac0076d91bf4f5df67fa875b3676248e5a6ae2ef4ed1bcef1",

@@ -2,7 +2,6 @@ import BucketTabs from "./BucketTabs";
 import { DataList, ListActions } from "./CollectionDataList";
 import { useCollectionList } from "@src/hooks/collection";
 import { useServerInfo } from "@src/hooks/session";
-import React from "react";
 import { useParams } from "react-router";
 
 export default function BucketCollections() {

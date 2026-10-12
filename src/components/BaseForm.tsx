@@ -10,7 +10,7 @@ import {
   RegistryWidgetsType,
 } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv8";
-import React, { Component, ReactNode, useRef, useState } from "react";
+import { Component, ReactNode, useRef, useState } from "react";
 
 const adminFields = { tags: TagsField };
 

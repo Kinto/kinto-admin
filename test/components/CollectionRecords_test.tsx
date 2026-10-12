@@ -10,7 +10,6 @@ import {
 } from "@src/permission";
 import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
-import React from "react";
 
 vi.mock("@src/permission", () => {
   return {

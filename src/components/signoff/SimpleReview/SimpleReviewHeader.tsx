@@ -1,5 +1,5 @@
 import { SignoffSourceInfo } from "@src/types";
-import React from "react";
+import { ReactElement } from "react";
 
 export default function SimpleReviewHeader({
   status,
@@ -9,7 +9,7 @@ export default function SimpleReviewHeader({
   children,
   lastEditDate,
   lastReviewDate,
-}: SignoffSourceInfo & { children?: React.ReactElement }) {
+}: SignoffSourceInfo & { children?: ReactElement }) {
   return (
     <div className="simple-review-header" data-testid="simple-review-header">
       <div className="card mb-4">

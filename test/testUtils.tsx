@@ -1,7 +1,6 @@
 /* Utils for tests. */
 import * as notificationsHooks from "@src/hooks/notifications";
 import { render } from "@testing-library/react";
-import React from "react";
 import { MemoryRouter, Route, Routes } from "react-router";
 
 export function mockNotifyError() {

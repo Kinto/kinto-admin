@@ -1,7 +1,7 @@
-import React from "react";
+import { ReactNode } from "react";
 
 interface Props {
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 export function ProgressBar({ children }: Props) {
@@ -16,7 +16,7 @@ interface ProgressStepProps {
   label: string;
   currentStep: number;
   step: number;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 export function ProgressStep({

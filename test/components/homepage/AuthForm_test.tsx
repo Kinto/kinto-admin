@@ -6,7 +6,6 @@ import * as sessionHooks from "@src/hooks/session";
 import { mockNotifyError, renderWithRouter } from "@test/testUtils";
 import { screen } from "@testing-library/react";
 import { fireEvent, render, waitFor } from "@testing-library/react";
-import React from "react";
 
 function setServerHistory(serverHistory) {
   localStorage.setItem(SERVER_HISTORY_KEY, JSON.stringify(serverHistory));
