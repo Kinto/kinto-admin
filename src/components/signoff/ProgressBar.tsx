@@ -32,7 +32,7 @@ export function ProgressStep({
     status = "complete";
   }
   return (
-    <div className={`col-3 bs-wizard-step ${status}`} key={step}>
+    <div className={`col bs-wizard-step ${status}`} key={step}>
       <div className="text-center bs-wizard-stepnum">{label}</div>
       <div className="progress">
         <div className="progress-bar" />
