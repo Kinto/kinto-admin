@@ -895,6 +895,7 @@ form button[type="submit"].btn-primary {
 }
 
 .bs-wizard > .bs-wizard-step .bs-wizard-info li {
+  list-style: none;
   overflow-wrap: anywhere;
   text-align: left;
 }
