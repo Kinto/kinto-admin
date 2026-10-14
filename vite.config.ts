@@ -1,6 +1,4 @@
-/// <reference types="vitest" />
-
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import { readFileSync } from 'fs'
 import path from 'path'
@@ -28,8 +26,8 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@src': path.resolve(__dirname, './src'),
-      '@test': path.resolve(__dirname, './test')
+      '@src': path.resolve(import.meta.dirname, './src'),
+      '@test': path.resolve(import.meta.dirname, './test')
     }
   },
   build: {
