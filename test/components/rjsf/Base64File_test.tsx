@@ -63,8 +63,7 @@ describe("Base64File rjsf component", () => {
         files: [b64ToBlob(tinyTestImg)],
       },
     });
-    await waitFor(() => new Promise(resolve => setTimeout(resolve, 10))); // debounce wait
-    expect(val).toBe(tinyTestImg);
+    await waitFor(() => expect(val).toBe(tinyTestImg));
     expect(errors).toBeUndefined();
   });
 
@@ -80,8 +79,7 @@ describe("Base64File rjsf component", () => {
         files: [b64ToBlob(hugeTestTxt)],
       },
     });
-    await waitFor(() => new Promise(resolve => setTimeout(resolve, 10))); // debounce wait
-    expect(val).toBe(hugeTestTxt);
+    await waitFor(() => expect(val).toBe(hugeTestTxt));
     expect(errors).toBeDefined();
     expect(errors.__errors[0]).toBe(
       "The base64 string cannot exceed 1MB in size."
