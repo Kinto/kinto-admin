@@ -272,6 +272,7 @@ describe("signoff hooks", () => {
       const { result } = renderHook(() =>
         useLatestApprovals(serverInfo, "source", "cid")
       );
+      expect(result.current).toBeUndefined();
       await vi.waitFor(() => {
         expect(result.current).toEqual([
           { last_modified: 20, user_id: "ldap:a@mozilla.com" },

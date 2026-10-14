@@ -907,6 +907,15 @@ form button[type="submit"].btn-primary {
   overflow: hidden;
   visibility: hidden;
 }
+.bs-wizard-info .spinner {
+  margin: 0.25rem 0;
+  width: auto;
+  text-align: left;
+}
+.bs-wizard-info .spinner > div {
+  width: 0.5rem;
+  height: 0.5rem;
+}
 
 /* Signoff styles */
 .diffstats {

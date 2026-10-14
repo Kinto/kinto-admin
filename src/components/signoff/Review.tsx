@@ -3,6 +3,7 @@ import { Comment } from "./Comment";
 import { ProgressStep } from "./ProgressBar";
 import { groupName, suggestReviewers } from "./utils";
 import HumanDate from "@src/components/HumanDate";
+import Spinner from "@src/components/Spinner";
 import { useGroup } from "@src/hooks/group";
 import { useServerInfo } from "@src/hooks/session";
 import { useLatestApprovals } from "@src/hooks/signoff";
@@ -123,17 +124,14 @@ function Reviewers({ source }: { source: SignoffSourceInfo }) {
     source.bucket,
     source.collection
   );
-  if (!group?.data || !approvals) {
-    return null;
-  }
-  const reviewers = suggestReviewers(
-    group.data.members,
-    approvals,
-    source.lastReviewRequestBy
-  );
-  if (reviewers.length === 0) {
-    return null;
-  }
+  const reviewers =
+    group?.data && approvals
+      ? suggestReviewers(
+          group.data.members,
+          approvals,
+          source.lastReviewRequestBy
+        )
+      : undefined;
   return (
     <li>
       <details>
@@ -143,7 +141,13 @@ function Reviewers({ source }: { source: SignoffSourceInfo }) {
           </strong>
         </summary>
         <ul>
-          {reviewers.map(({ id, lastApproval }) => (
+          {reviewers === undefined && (
+            <li>
+              <Spinner />
+            </li>
+          )}
+          {reviewers?.length === 0 && <li>None</li>}
+          {reviewers?.map(({ id, lastApproval }) => (
             <li key={id}>
               {id}
               {lastApproval && (
