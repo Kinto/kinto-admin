@@ -1,14 +1,19 @@
 import AdminLink from "../AdminLink";
 import { Comment } from "./Comment";
 import { ProgressStep } from "./ProgressBar";
+import { groupName, suggestReviewers } from "./utils";
 import HumanDate from "@src/components/HumanDate";
+import Spinner from "@src/components/Spinner";
+import { useGroup } from "@src/hooks/group";
+import { useServerInfo } from "@src/hooks/session";
+import { useLatestApprovals } from "@src/hooks/signoff";
 import type {
   ChangesList,
   SignerCapabilityResourceEntry,
   SignoffSourceInfo,
 } from "@src/types";
 import type { ReactNode } from "react";
-import { Braces } from "react-bootstrap-icons";
+import { Braces, InfoCircle } from "react-bootstrap-icons";
 
 interface ReviewProps {
   label: string;
@@ -103,7 +108,58 @@ function ReviewInfos(props: ReviewInfosProps) {
         </li>
       )}
       {isCurrentStep && changes && <DiffInfo changes={changes} />}
+      {isCurrentStep && <Reviewers source={source} />}
     </ul>
+  );
+}
+
+function Reviewers({ source }: { source: SignoffSourceInfo }) {
+  const { data: serverInfo } = useServerInfo();
+  const group = useGroup(
+    source.bucket,
+    groupName("reviewers_group", source, serverInfo)
+  );
+  const approvals = useLatestApprovals(
+    serverInfo,
+    source.bucket,
+    source.collection
+  );
+  const reviewers =
+    group?.data && approvals
+      ? suggestReviewers(
+          group.data.members,
+          approvals,
+          source.lastReviewRequestBy
+        )
+      : undefined;
+  return (
+    <li>
+      <details>
+        <summary>
+          <strong title="Reviewers are usually notified automatically. To speed things up, reach out to one of these reviewers directly.">
+            Suggested Reviewers <InfoCircle className="icon" />
+          </strong>
+        </summary>
+        <ul>
+          {reviewers === undefined && (
+            <li>
+              <Spinner />
+            </li>
+          )}
+          {reviewers?.length === 0 && <li>None</li>}
+          {reviewers?.map(({ id, lastApproval }) => (
+            <li key={id}>
+              {id}
+              {lastApproval && (
+                <>
+                  , last reviewed <HumanDate timestamp={lastApproval} />
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+      </details>
+    </li>
   );
 }
 

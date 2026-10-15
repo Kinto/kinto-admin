@@ -1,5 +1,5 @@
 import * as client from "@src/client";
-import { useSignoff } from "@src/hooks/signoff";
+import { useLatestApprovals, useSignoff } from "@src/hooks/signoff";
 import type { SignoffCollectionsInfo } from "@src/types";
 import { mockNotifyError } from "@test/testUtils";
 import { renderHook } from "@testing-library/react";
@@ -250,6 +250,43 @@ describe("signoff hooks", () => {
       await vi.waitFor(() => {
         expect(result.current).toBeNull();
       });
+    });
+  });
+
+  describe("useLatestApprovals", () => {
+    let listHistoryMock;
+
+    beforeEach(() => {
+      listHistoryMock = vi.fn().mockResolvedValue({
+        data: [
+          { last_modified: 20, user_id: "ldap:a@mozilla.com", target: {} },
+          { last_modified: 10, user_id: "ldap:b@mozilla.com", target: {} },
+        ],
+      });
+      vi.spyOn(client, "getClient").mockReturnValue({
+        bucket: () => ({ listHistory: listHistoryMock }),
+      } as any);
+    });
+
+    it("Returns the timestamp and user of the latest approvals", async () => {
+      const { result } = renderHook(() =>
+        useLatestApprovals(serverInfo, "source", "cid")
+      );
+      expect(result.current).toBeUndefined();
+      await vi.waitFor(() => {
+        expect(result.current).toEqual([
+          { last_modified: 20, user_id: "ldap:a@mozilla.com" },
+          { last_modified: 10, user_id: "ldap:b@mozilla.com" },
+        ]);
+      });
+      expect(listHistoryMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          filters: expect.objectContaining({
+            collection_id: "cid",
+            "target.data.status": "to-sign",
+          }),
+        })
+      );
     });
   });
 });

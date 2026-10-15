@@ -813,29 +813,34 @@ form button[type="submit"].btn-primary {
 }
 .bs-wizard > .bs-wizard-step {
   padding: 0;
-  position: relative;
+  display: grid;
+  grid-template-areas: "label" "track" "info";
+  align-content: start;
 }
 .bs-wizard > .bs-wizard-step + .bs-wizard-step {
 }
 .bs-wizard > .bs-wizard-step .bs-wizard-stepnum {
+  grid-area: label;
   color: #595959;
   font-size: 1rem;
   margin-bottom: 0.3125rem;
 }
 .bs-wizard > .bs-wizard-step .bs-wizard-info {
+  grid-area: info;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   color: #999;
   font-size: 0.875rem;
 }
 .bs-wizard > .bs-wizard-step > .bs-wizard-dot {
-  position: absolute;
+  position: relative;
+  grid-area: track;
+  place-self: center;
   width: 1.875rem;
   height: 1.875rem;
   display: block;
   background: #fbe8aa;
-  top: 2.8125rem;
-  left: 50%;
-  margin-top: -0.9375rem;
-  margin-left: -0.9375rem;
   border-radius: 50%;
 }
 .bs-wizard > .bs-wizard-step > .bs-wizard-dot:after {
@@ -849,7 +854,7 @@ form button[type="submit"].btn-primary {
   left: 0.5rem;
 }
 .bs-wizard > .bs-wizard-step > .progress {
-  position: relative;
+  grid-area: track;
   border-radius: 0px;
   height: 0.5rem;
   box-shadow: none;
@@ -879,7 +884,7 @@ form button[type="submit"].btn-primary {
   opacity: 0;
 }
 .bs-wizard > .bs-wizard-step:first-child > .progress {
-  left: 50%;
+  justify-self: end;
   width: 50%;
 }
 .bs-wizard > .bs-wizard-step:last-child > .progress {
@@ -890,11 +895,26 @@ form button[type="submit"].btn-primary {
 }
 
 .bs-wizard > .bs-wizard-step .bs-wizard-info li {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  max-width: 15.625rem;
+  list-style: none;
+  overflow-wrap: anywhere;
   text-align: left;
+}
+/* Keep collapsed content in the width calculation so opening it doesn't re-center the list */
+.bs-wizard-info details:not([open])::details-content {
+  content-visibility: visible;
+  display: block;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+.bs-wizard-info .spinner {
+  margin: 0.25rem 0;
+  width: auto;
+  text-align: left;
+}
+.bs-wizard-info .spinner > div {
+  width: 0.5rem;
+  height: 0.5rem;
 }
 
 /* Signoff styles */
@@ -923,6 +943,10 @@ form button[type="submit"].btn-primary {
   position: absolute;
   top: 9.5rem;
   right: 1.875rem;
+}
+
+span.timestamp {
+  white-space: nowrap;
 }
 
 span.timestamp .icon {
