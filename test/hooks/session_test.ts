@@ -39,6 +39,10 @@ describe("session hooks", () => {
     ]);
   });
 
+  afterEach(() => {
+    localStorage.clear();
+  });
+
   it("setAuth should processes the authentication object as expected", async () => {
     renderHook(() => useAuth());
     expect(localStorageVal).toBeUndefined();
@@ -88,6 +92,21 @@ describe("session hooks", () => {
     });
   });
 
+  it("logout should clear cached approvals", () => {
+    localStorage.setItem(
+      "latestApprovals:server/buckets/b/collections/c",
+      "{}"
+    );
+    localStorage.setItem("showSidebar", "true");
+
+    logout();
+
+    expect(
+      localStorage.getItem("latestApprovals:server/buckets/b/collections/c")
+    ).toBeNull();
+    expect(localStorage.getItem("showSidebar")).toBe("true");
+  });
+
   it("useAuth should call setupClient if the val is being set for the first time", async () => {
     const testVal = {
       foo: "bar",
@@ -118,6 +137,23 @@ describe("session hooks", () => {
     await vi.waitFor(() => {
       expect(setMock).toHaveBeenCalledWith(undefined);
     });
+  });
+
+  it("useAuth should clear cached approvals if the expiresAt timestamp has elapsed", () => {
+    localStorage.setItem(
+      "latestApprovals:server/buckets/b/collections/c",
+      "{}"
+    );
+    vi.spyOn(storageHooks, "useLocalStorage").mockReturnValue([
+      { credentials: {}, expiresAt: 42 },
+      vi.fn(),
+    ]);
+
+    renderHook(() => useAuth());
+
+    expect(
+      localStorage.getItem("latestApprovals:server/buckets/b/collections/c")
+    ).toBeNull();
   });
 
   describe("usePermissions", () => {

@@ -17,6 +17,15 @@ vi.mock("@src/permission", () => {
   };
 });
 
+vi.mock(
+  "@src/components/signoff/SimpleReview/SimpleReviewSuggestedReviewers",
+  () => {
+    return {
+      default: () => <div>Suggested Reviewers</div>,
+    };
+  }
+);
+
 vi.mock("@src/components/signoff/utils", () => {
   return {
     isMember: () => {
@@ -197,6 +206,7 @@ describe("SimpleTest component", () => {
       screen.getByText("(No comment was left by a reviewer)")
     ).toBeDefined();
     expect(screen.getByText("Show all lines")).toBeDefined();
+    expect(screen.queryByText("Suggested Reviewers")).toBeNull();
   });
 
   it("should render a review component after records are fetched and allow for a rollback", async () => {
@@ -286,6 +296,13 @@ describe("SimpleTest component", () => {
       });
       toReviewEnabled.mockReturnValue(false);
       expect(await screen.findByText(/Approve/)).toBeDefined();
+    });
+
+    it("should show suggested reviewers while the collection is to-review", async () => {
+      renderSimpleReview({
+        signoff,
+      });
+      expect(await screen.findByText("Suggested Reviewers")).toBeDefined();
     });
 
     it("should not show the review buttons if signer.to_review_enabled is true and the current user requested review", async () => {
