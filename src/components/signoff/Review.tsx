@@ -1,12 +1,9 @@
 import AdminLink from "../AdminLink";
 import { Comment } from "./Comment";
 import { ProgressStep } from "./ProgressBar";
-import { groupName, suggestReviewers } from "./utils";
 import HumanDate from "@src/components/HumanDate";
 import Spinner from "@src/components/Spinner";
-import { useGroup } from "@src/hooks/group";
-import { useServerInfo } from "@src/hooks/session";
-import { useLatestApprovals } from "@src/hooks/signoff";
+import { useSuggestedReviewers } from "@src/hooks/reviewers";
 import type {
   ChangesList,
   SignerCapabilityResourceEntry,
@@ -114,25 +111,7 @@ function ReviewInfos(props: ReviewInfosProps) {
 }
 
 function Reviewers({ source }: { source: SignoffSourceInfo }) {
-  const { data: serverInfo } = useServerInfo();
-  const group = useGroup(
-    source.bucket,
-    groupName("reviewers_group", source, serverInfo)
-  );
-  const approvals = useLatestApprovals(
-    serverInfo,
-    source.bucket,
-    source.collection,
-    source.lastModified
-  );
-  const reviewers =
-    group?.data && approvals
-      ? suggestReviewers(
-          group.data.members,
-          approvals,
-          source.lastReviewRequestBy
-        )
-      : undefined;
+  const reviewers = useSuggestedReviewers(source);
   return (
     <li>
       <details>
