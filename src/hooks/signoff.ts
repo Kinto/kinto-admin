@@ -247,6 +247,7 @@ export function useLatestApprovals(
       setVal([]);
       return;
     }
+    let cancelled = false;
     // Now, look for 20 latest approvals on the source collection.
     getClient()
       .bucket(resource.source.bucket)
@@ -260,6 +261,7 @@ export function useLatestApprovals(
         },
       })
       .then(results => {
+        if (cancelled) return;
         const approvals = results.data.map(({ last_modified, user_id }) => ({
           last_modified,
           user_id,
@@ -270,9 +272,13 @@ export function useLatestApprovals(
         }
       })
       .catch(err => {
+        if (cancelled) return;
         console.error("Error fetching latest approvals", err);
         setVal([]);
       });
+    return () => {
+      cancelled = true;
+    };
   }, [serverInfo, bid, cid, lastModified, isFresh]);
   return isFresh ? cached.approvals : val;
 }

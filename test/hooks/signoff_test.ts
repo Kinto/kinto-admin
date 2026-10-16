@@ -2,7 +2,7 @@ import * as client from "@src/client";
 import { useLatestApprovals, useSignoff } from "@src/hooks/signoff";
 import type { SignoffCollectionsInfo } from "@src/types";
 import { mockNotifyError } from "@test/testUtils";
-import { renderHook } from "@testing-library/react";
+import { act, renderHook } from "@testing-library/react";
 
 const signer = {
   resources: [
@@ -329,6 +329,36 @@ describe("signoff hooks", () => {
         await vi.waitFor(() => {
           expect(listHistoryMock).toHaveBeenCalledTimes(2);
         });
+      });
+
+      it("Keeps the newest approvals when an older fetch finishes last", async () => {
+        const oldApprovals = [{ last_modified: 10, user_id: "ldap:old" }];
+        const newApprovals = [{ last_modified: 30, user_id: "ldap:new" }];
+        let finishOldFetch;
+        // The first fetch hangs until we call finishOldFetch().
+        listHistoryMock
+          .mockReturnValueOnce(
+            new Promise(resolve => {
+              finishOldFetch = () => resolve({ data: oldApprovals });
+            })
+          )
+          // The second fetch finishes right away.
+          .mockResolvedValueOnce({ data: newApprovals });
+
+        // Start fetching, then change the collection before it finishes.
+        const { result, rerender } = renderHook(
+          ({ lastModified }) =>
+            useLatestApprovals(serverInfo, "source", "cid", lastModified),
+          { initialProps: { lastModified: 42 } }
+        );
+        rerender({ lastModified: 43 });
+        await vi.waitFor(() => {
+          expect(result.current).toEqual(newApprovals);
+        });
+
+        // The first fetch finishes last, and must not overwrite the result.
+        await act(async () => finishOldFetch());
+        expect(result.current).toEqual(newApprovals);
       });
 
       it("Does not cache approvals without a collection timestamp", async () => {
