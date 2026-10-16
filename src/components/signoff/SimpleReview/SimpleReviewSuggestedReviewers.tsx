@@ -11,7 +11,10 @@ export default function SimpleReviewSuggestedReviewers({
 }) {
   const reviewers = useSuggestedReviewers(source);
   return (
-    <div data-testid="simple-review-suggested-reviewers">
+    <div
+      className="simple-review-suggested-reviewers"
+      data-testid="simple-review-suggested-reviewers"
+    >
       <strong title="Reviewers are usually notified automatically. To speed things up, reach out to one of these reviewers directly.">
         Suggested Reviewers <InfoCircle className="icon" />
       </strong>

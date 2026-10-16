@@ -330,7 +330,8 @@ table.record-list td.load-more {
   text-decoration: none;
 }
 
-.card-body > .spinner {
+.card-body > .spinner,
+.simple-review-actions > .spinner {
   position: absolute;
   left: 0;
   right: 0;
@@ -348,6 +349,10 @@ table.record-list td.load-more {
 
 .load-more .spinner {
   margin-top: 0.25em;
+}
+
+.simple-review-suggested-reviewers .spinner {
+  margin: 0.25em 0 0;
 }
 
 .history-row-details {

@@ -153,7 +153,7 @@ export default function SimpleReview() {
         {signoffSource.status !== "signed" && (
           <SimpleReviewHeader {...signoffSource}>
             <div className="d-flex flex-wrap align-items-start gap-4">
-              <div>
+              <div className="simple-review-actions">
                 <SimpleReviewButtons
                   status={signoffSource.status}
                   approveChanges={approveChanges}
