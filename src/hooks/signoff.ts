@@ -1,5 +1,7 @@
 import { notifyError } from "./notifications";
+import { useLocalStorage } from "./storage";
 import { getClient } from "@src/client";
+import { LATEST_APPROVALS_STORAGE_PREFIX } from "@src/constants";
 import type {
   ChangesList,
   ServerInfo,
@@ -100,6 +102,7 @@ async function calculateChangesInfo(
     source: {
       ...resource.source,
       isLoading: false,
+      lastModified: collection.last_modified,
       status: collection.status as SignoffCollectionStatus,
       lastEditBy: collection.last_edit_by,
       lastEditDate: new Date(collection.last_edit_date).getTime() || null,
@@ -211,13 +214,23 @@ export interface Approval {
 export function useLatestApprovals(
   serverInfo?: ServerInfo,
   bid?: string,
-  cid?: string
+  cid?: string,
+  lastModified?: number
 ): undefined | Approval[] {
   const [val, setVal] = useState(undefined);
+  const [cached, setCached] = useLocalStorage(
+    `${LATEST_APPROVALS_STORAGE_PREFIX}${serverInfo?.url}/buckets/${bid}/collections/${cid}`,
+    undefined
+  );
+  const isFresh =
+    lastModified !== undefined && cached?.lastModified === lastModified;
 
   useEffect(() => {
     if (!serverInfo || !bid || !cid) {
       return; // need loaded inputs.
+    }
+    if (isFresh) {
+      return;
     }
     if (hasHistoryDisabled(serverInfo, bid, cid)) {
       // Specified resource has history disabled.
@@ -247,17 +260,19 @@ export function useLatestApprovals(
         },
       })
       .then(results => {
-        setVal(
-          results.data.map(({ last_modified, user_id }) => ({
-            last_modified,
-            user_id,
-          }))
-        );
+        const approvals = results.data.map(({ last_modified, user_id }) => ({
+          last_modified,
+          user_id,
+        }));
+        setVal(approvals);
+        if (lastModified !== undefined) {
+          setCached({ lastModified, approvals });
+        }
       })
       .catch(err => {
         console.error("Error fetching latest approvals", err);
         setVal([]);
       });
-  }, [serverInfo, bid, cid]);
-  return val;
+  }, [serverInfo, bid, cid, lastModified, isFresh]);
+  return isFresh ? cached.approvals : val;
 }

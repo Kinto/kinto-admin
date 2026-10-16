@@ -122,7 +122,8 @@ function Reviewers({ source }: { source: SignoffSourceInfo }) {
   const approvals = useLatestApprovals(
     serverInfo,
     source.bucket,
-    source.collection
+    source.collection,
+    source.lastModified
   );
   const reviewers =
     group?.data && approvals

@@ -100,6 +100,7 @@ describe("signoff hooks", () => {
             lastEditBy: undefined,
             lastEditDate: null,
             lastEditorComment: undefined,
+            lastModified: 42,
             lastReviewBy: undefined,
             lastReviewDate: null,
             lastReviewRequestBy: undefined,
@@ -287,6 +288,62 @@ describe("signoff hooks", () => {
           }),
         })
       );
+    });
+
+    describe("caching", () => {
+      const expected = [
+        { last_modified: 20, user_id: "ldap:a@mozilla.com" },
+        { last_modified: 10, user_id: "ldap:b@mozilla.com" },
+      ];
+
+      beforeEach(() => {
+        localStorage.clear();
+      });
+
+      it("Reuses cached approvals while the collection is unchanged", async () => {
+        const first = renderHook(() =>
+          useLatestApprovals(serverInfo, "source", "cid", 42)
+        );
+        await vi.waitFor(() => {
+          expect(first.result.current).toEqual(expected);
+        });
+
+        const second = renderHook(() =>
+          useLatestApprovals(serverInfo, "source", "cid", 42)
+        );
+        expect(second.result.current).toEqual(expected);
+        expect(listHistoryMock).toHaveBeenCalledTimes(1);
+      });
+
+      it("Refetches approvals when the collection has changed", async () => {
+        const { result, rerender } = renderHook(
+          ({ lastModified }) =>
+            useLatestApprovals(serverInfo, "source", "cid", lastModified),
+          { initialProps: { lastModified: 42 } }
+        );
+        await vi.waitFor(() => {
+          expect(result.current).toEqual(expected);
+        });
+
+        rerender({ lastModified: 43 });
+        await vi.waitFor(() => {
+          expect(listHistoryMock).toHaveBeenCalledTimes(2);
+        });
+      });
+
+      it("Does not cache approvals without a collection timestamp", async () => {
+        const first = renderHook(() =>
+          useLatestApprovals(serverInfo, "source", "cid")
+        );
+        await vi.waitFor(() => {
+          expect(first.result.current).toEqual(expected);
+        });
+
+        renderHook(() => useLatestApprovals(serverInfo, "source", "cid"));
+        await vi.waitFor(() => {
+          expect(listHistoryMock).toHaveBeenCalledTimes(2);
+        });
+      });
     });
   });
 });
