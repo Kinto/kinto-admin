@@ -39,6 +39,10 @@ describe("session hooks", () => {
     ]);
   });
 
+  afterEach(() => {
+    localStorage.clear();
+  });
+
   it("setAuth should processes the authentication object as expected", async () => {
     renderHook(() => useAuth());
     expect(localStorageVal).toBeUndefined();
@@ -101,7 +105,6 @@ describe("session hooks", () => {
       localStorage.getItem("latestApprovals:server/buckets/b/collections/c")
     ).toBeNull();
     expect(localStorage.getItem("showSidebar")).toBe("true");
-    localStorage.clear();
   });
 
   it("useAuth should call setupClient if the val is being set for the first time", async () => {
@@ -151,7 +154,6 @@ describe("session hooks", () => {
     expect(
       localStorage.getItem("latestApprovals:server/buckets/b/collections/c")
     ).toBeNull();
-    localStorage.clear();
   });
 
   describe("usePermissions", () => {
