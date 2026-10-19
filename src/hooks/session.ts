@@ -1,7 +1,6 @@
 import { notifyError, notifyInfo } from "./notifications";
 import { useLocalStorage } from "./storage";
 import { getClient, setupClient } from "@src/client";
-import { LATEST_APPROVALS_STORAGE_PREFIX } from "@src/constants";
 import type {
   AuthData,
   OpenIDAuth,
@@ -41,13 +40,6 @@ export function logout() {
   authState.set(undefined);
   permissionState.set(undefined);
   serverState.set(IDLE_SERVER_INFO);
-  clearCachedApprovals();
-}
-
-function clearCachedApprovals() {
-  Object.keys(localStorage)
-    .filter(key => key.startsWith(LATEST_APPROVALS_STORAGE_PREFIX))
-    .forEach(key => localStorage.removeItem(key));
 }
 
 export function useAuth(): AuthData | undefined {
@@ -56,7 +48,6 @@ export function useAuth(): AuthData | undefined {
   const isExpired = val?.expiresAt && val.expiresAt < new Date().getTime();
   if (isExpired) {
     setVal(undefined);
-    clearCachedApprovals();
   }
 
   // Restore the kinto client synchronously on first render when persisted

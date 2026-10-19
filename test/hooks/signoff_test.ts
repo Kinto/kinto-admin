@@ -296,20 +296,16 @@ describe("signoff hooks", () => {
         { last_modified: 10, user_id: "ldap:b@mozilla.com" },
       ];
 
-      beforeEach(() => {
-        localStorage.clear();
-      });
-
       it("Reuses cached approvals while the collection is unchanged", async () => {
         const first = renderHook(() =>
-          useLatestApprovals(serverInfo, "source", "cid", 42)
+          useLatestApprovals(serverInfo, "source", "cid-reuse", 42)
         );
         await vi.waitFor(() => {
           expect(first.result.current).toEqual(expected);
         });
 
         const second = renderHook(() =>
-          useLatestApprovals(serverInfo, "source", "cid", 42)
+          useLatestApprovals(serverInfo, "source", "cid-reuse", 42)
         );
         expect(second.result.current).toEqual(expected);
         expect(listHistoryMock).toHaveBeenCalledTimes(1);
@@ -318,7 +314,12 @@ describe("signoff hooks", () => {
       it("Refetches approvals when the collection has changed", async () => {
         const { result, rerender } = renderHook(
           ({ lastModified }) =>
-            useLatestApprovals(serverInfo, "source", "cid", lastModified),
+            useLatestApprovals(
+              serverInfo,
+              "source",
+              "cid-refetch",
+              lastModified
+            ),
           { initialProps: { lastModified: 42 } }
         );
         await vi.waitFor(() => {
@@ -329,6 +330,21 @@ describe("signoff hooks", () => {
         await vi.waitFor(() => {
           expect(listHistoryMock).toHaveBeenCalledTimes(2);
         });
+      });
+
+      it("Clears previous approvals while refetching", async () => {
+        const { result, rerender } = renderHook(
+          ({ lastModified }) =>
+            useLatestApprovals(serverInfo, "source", "cid-clear", lastModified),
+          { initialProps: { lastModified: 42 } }
+        );
+        await vi.waitFor(() => {
+          expect(result.current).toEqual(expected);
+        });
+
+        listHistoryMock.mockReturnValueOnce(new Promise(vi.fn()));
+        rerender({ lastModified: 43 });
+        expect(result.current).toBeUndefined();
       });
 
       it("Keeps the newest approvals when an older fetch finishes last", async () => {
@@ -348,7 +364,7 @@ describe("signoff hooks", () => {
         // Start fetching, then change the collection before it finishes.
         const { result, rerender } = renderHook(
           ({ lastModified }) =>
-            useLatestApprovals(serverInfo, "source", "cid", lastModified),
+            useLatestApprovals(serverInfo, "source", "cid-race", lastModified),
           { initialProps: { lastModified: 42 } }
         );
         rerender({ lastModified: 43 });
@@ -363,13 +379,15 @@ describe("signoff hooks", () => {
 
       it("Does not cache approvals without a collection timestamp", async () => {
         const first = renderHook(() =>
-          useLatestApprovals(serverInfo, "source", "cid")
+          useLatestApprovals(serverInfo, "source", "cid-no-timestamp")
         );
         await vi.waitFor(() => {
           expect(first.result.current).toEqual(expected);
         });
 
-        renderHook(() => useLatestApprovals(serverInfo, "source", "cid"));
+        renderHook(() =>
+          useLatestApprovals(serverInfo, "source", "cid-no-timestamp")
+        );
         await vi.waitFor(() => {
           expect(listHistoryMock).toHaveBeenCalledTimes(2);
         });

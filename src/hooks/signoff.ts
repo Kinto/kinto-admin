@@ -1,7 +1,5 @@
 import { notifyError } from "./notifications";
-import { useLocalStorage } from "./storage";
 import { getClient } from "@src/client";
-import { LATEST_APPROVALS_STORAGE_PREFIX } from "@src/constants";
 import type {
   ChangesList,
   ServerInfo,
@@ -211,6 +209,11 @@ export interface Approval {
   user_id: string;
 }
 
+const latestApprovalsCache = new Map<
+  string,
+  { lastModified: number; approvals: Approval[] }
+>();
+
 export function useLatestApprovals(
   serverInfo?: ServerInfo,
   bid?: string,
@@ -218,10 +221,8 @@ export function useLatestApprovals(
   lastModified?: number
 ): undefined | Approval[] {
   const [val, setVal] = useState(undefined);
-  const [cached, setCached] = useLocalStorage(
-    `${LATEST_APPROVALS_STORAGE_PREFIX}${serverInfo?.url}/buckets/${bid}/collections/${cid}`,
-    undefined
-  );
+  const cacheKey = `${serverInfo?.url}/buckets/${bid}/collections/${cid}`;
+  const cached = latestApprovalsCache.get(cacheKey);
   const isFresh =
     lastModified !== undefined && cached?.lastModified === lastModified;
 
@@ -247,6 +248,8 @@ export function useLatestApprovals(
       setVal([]);
       return;
     }
+    // Show loading state rather than approvals from a previous fetch.
+    setVal(undefined);
     let cancelled = false;
     // Now, look for 20 latest approvals on the source collection.
     getClient()
@@ -268,7 +271,7 @@ export function useLatestApprovals(
         }));
         setVal(approvals);
         if (lastModified !== undefined) {
-          setCached({ lastModified, approvals });
+          latestApprovalsCache.set(cacheKey, { lastModified, approvals });
         }
       })
       .catch(err => {

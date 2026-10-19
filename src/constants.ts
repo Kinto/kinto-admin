@@ -6,7 +6,6 @@ export const SINGLE_SERVER = import.meta.env.KINTO_ADMIN_SINGLE_SERVER
   ? document.location.toString().split("/admin/")[0]
   : null;
 export const SIDEBAR_MAX_LISTED_COLLECTIONS = 10;
-export const LATEST_APPROVALS_STORAGE_PREFIX = "latestApprovals:";
 
 export const DEFAULT_SERVERINFO = {
   url: "",
