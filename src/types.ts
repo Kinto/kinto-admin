@@ -358,6 +358,7 @@ export type SignoffCollectionStatus =
 export type SignoffSourceInfo = SignerCapabilityResourceEntry & {
   isLoading: boolean;
   // Full info once we fetch attributes from server
+  lastModified?: number;
   status?: SignoffCollectionStatus;
   lastEditBy?: string;
   lastEditDate?: number;

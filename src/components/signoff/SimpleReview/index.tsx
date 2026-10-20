@@ -3,6 +3,7 @@ import { isMember, toReviewEnabled } from "../utils";
 import PerRecordDiffView from "./PerRecordDiffView";
 import SimpleReviewButtons from "./SimpleReviewButtons";
 import SimpleReviewHeader from "./SimpleReviewHeader";
+import SimpleReviewSuggestedReviewers from "./SimpleReviewSuggestedReviewers";
 import { getClient } from "@src/client";
 import Spinner from "@src/components/Spinner";
 import CollectionTabs from "@src/components/collection/CollectionTabs";
@@ -151,15 +152,22 @@ export default function SimpleReview() {
       <>
         {signoffSource.status !== "signed" && (
           <SimpleReviewHeader {...signoffSource}>
-            <SimpleReviewButtons
-              status={signoffSource.status}
-              approveChanges={approveChanges}
-              declineChanges={declineChanges}
-              requestReview={requestReview}
-              rollbackChanges={rollbackChanges}
-              canReview={canReview}
-              canRequestReview={canRequestReview}
-            />
+            <div className="d-flex flex-wrap align-items-start gap-4">
+              <div className="simple-review-actions">
+                <SimpleReviewButtons
+                  status={signoffSource.status}
+                  approveChanges={approveChanges}
+                  declineChanges={declineChanges}
+                  requestReview={requestReview}
+                  rollbackChanges={rollbackChanges}
+                  canReview={canReview}
+                  canRequestReview={canRequestReview}
+                />
+              </div>
+              {signoffSource.status === "to-review" && (
+                <SimpleReviewSuggestedReviewers source={signoffSource} />
+              )}
+            </div>
           </SimpleReviewHeader>
         )}
         <SignedCollectionRecordDiffView

@@ -2,7 +2,7 @@ import * as client from "@src/client";
 import { useLatestApprovals, useSignoff } from "@src/hooks/signoff";
 import type { SignoffCollectionsInfo } from "@src/types";
 import { mockNotifyError } from "@test/testUtils";
-import { renderHook } from "@testing-library/react";
+import { act, renderHook } from "@testing-library/react";
 
 const signer = {
   resources: [
@@ -100,6 +100,7 @@ describe("signoff hooks", () => {
             lastEditBy: undefined,
             lastEditDate: null,
             lastEditorComment: undefined,
+            lastModified: 42,
             lastReviewBy: undefined,
             lastReviewDate: null,
             lastReviewRequestBy: undefined,
@@ -287,6 +288,110 @@ describe("signoff hooks", () => {
           }),
         })
       );
+    });
+
+    describe("caching", () => {
+      const expected = [
+        { last_modified: 20, user_id: "ldap:a@mozilla.com" },
+        { last_modified: 10, user_id: "ldap:b@mozilla.com" },
+      ];
+
+      it("Reuses cached approvals while the collection is unchanged", async () => {
+        const first = renderHook(() =>
+          useLatestApprovals(serverInfo, "source", "cid-reuse", 42)
+        );
+        await vi.waitFor(() => {
+          expect(first.result.current).toEqual(expected);
+        });
+
+        const second = renderHook(() =>
+          useLatestApprovals(serverInfo, "source", "cid-reuse", 42)
+        );
+        expect(second.result.current).toEqual(expected);
+        expect(listHistoryMock).toHaveBeenCalledTimes(1);
+      });
+
+      it("Refetches approvals when the collection has changed", async () => {
+        const { result, rerender } = renderHook(
+          ({ lastModified }) =>
+            useLatestApprovals(
+              serverInfo,
+              "source",
+              "cid-refetch",
+              lastModified
+            ),
+          { initialProps: { lastModified: 42 } }
+        );
+        await vi.waitFor(() => {
+          expect(result.current).toEqual(expected);
+        });
+
+        rerender({ lastModified: 43 });
+        await vi.waitFor(() => {
+          expect(listHistoryMock).toHaveBeenCalledTimes(2);
+        });
+      });
+
+      it("Clears previous approvals while refetching", async () => {
+        const { result, rerender } = renderHook(
+          ({ lastModified }) =>
+            useLatestApprovals(serverInfo, "source", "cid-clear", lastModified),
+          { initialProps: { lastModified: 42 } }
+        );
+        await vi.waitFor(() => {
+          expect(result.current).toEqual(expected);
+        });
+
+        listHistoryMock.mockReturnValueOnce(new Promise(vi.fn()));
+        rerender({ lastModified: 43 });
+        expect(result.current).toBeUndefined();
+      });
+
+      it("Keeps the newest approvals when an older fetch finishes last", async () => {
+        const oldApprovals = [{ last_modified: 10, user_id: "ldap:old" }];
+        const newApprovals = [{ last_modified: 30, user_id: "ldap:new" }];
+        let finishOldFetch;
+        // The first fetch hangs until we call finishOldFetch().
+        listHistoryMock
+          .mockReturnValueOnce(
+            new Promise(resolve => {
+              finishOldFetch = () => resolve({ data: oldApprovals });
+            })
+          )
+          // The second fetch finishes right away.
+          .mockResolvedValueOnce({ data: newApprovals });
+
+        // Start fetching, then change the collection before it finishes.
+        const { result, rerender } = renderHook(
+          ({ lastModified }) =>
+            useLatestApprovals(serverInfo, "source", "cid-race", lastModified),
+          { initialProps: { lastModified: 42 } }
+        );
+        rerender({ lastModified: 43 });
+        await vi.waitFor(() => {
+          expect(result.current).toEqual(newApprovals);
+        });
+
+        // The first fetch finishes last, and must not overwrite the result.
+        await act(async () => finishOldFetch());
+        expect(result.current).toEqual(newApprovals);
+      });
+
+      it("Does not cache approvals without a collection timestamp", async () => {
+        const first = renderHook(() =>
+          useLatestApprovals(serverInfo, "source", "cid-no-timestamp")
+        );
+        await vi.waitFor(() => {
+          expect(first.result.current).toEqual(expected);
+        });
+
+        renderHook(() =>
+          useLatestApprovals(serverInfo, "source", "cid-no-timestamp")
+        );
+        await vi.waitFor(() => {
+          expect(listHistoryMock).toHaveBeenCalledTimes(2);
+        });
+      });
     });
   });
 });

@@ -1,11 +1,9 @@
-import type { Approval } from "@src/hooks/signoff";
 import type {
   ServerInfo,
   SignerCapabilityResource,
   SignerCapabilityResourceEntry,
   SignoffSourceInfo,
 } from "@src/types";
-import uniqBy from "lodash/uniqBy";
 
 type GroupKey = "editors_group" | "reviewers_group";
 
@@ -34,31 +32,6 @@ export function isMember(
   const expectedPrincipal = `/buckets/${source.bucket}/groups/${expectedGroup}`;
 
   return user.principals.includes(expectedPrincipal);
-}
-
-export interface SuggestedReviewer {
-  id: string;
-  lastApproval?: number;
-}
-
-export function suggestReviewers(
-  members: string[],
-  approvals: Approval[],
-  excludeUserId?: string,
-  limit = 5
-): SuggestedReviewer[] {
-  const candidates = members.filter(id => id !== excludeUserId);
-  const approvers = approvals
-    .filter(({ user_id }) => candidates.includes(user_id))
-    .map(({ user_id, last_modified }) => ({
-      id: user_id,
-      lastApproval: last_modified,
-    }));
-  const suggested = uniqBy<SuggestedReviewer>(
-    [...approvers, ...candidates.map(id => ({ id }))],
-    "id"
-  );
-  return suggested.slice(0, limit);
 }
 
 export function toReviewEnabled(
