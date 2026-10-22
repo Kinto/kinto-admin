@@ -1,3 +1,4 @@
+import HumanDate from "@src/components/HumanDate";
 import type { SignoffSourceInfo } from "@src/types";
 import type { ReactElement } from "react";
 
@@ -5,6 +6,7 @@ export default function SimpleReviewHeader({
   status,
   lastEditorComment,
   lastReviewRequestBy,
+  lastReviewRequestDate,
   lastReviewerComment,
   children,
   lastEditDate,
@@ -15,7 +17,14 @@ export default function SimpleReviewHeader({
       <div className="card mb-4">
         {status === "to-review" && (
           <div className="card-header">
-            Review requested by <strong>{lastReviewRequestBy}</strong>:
+            Review requested by <strong>{lastReviewRequestBy}</strong>
+            {lastReviewRequestDate && (
+              <>
+                {" "}
+                <HumanDate timestamp={lastReviewRequestDate} />
+              </>
+            )}
+            :
           </div>
         )}
 
