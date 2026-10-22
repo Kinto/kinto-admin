@@ -115,7 +115,7 @@ nav.breadcrumbs {
   border-color: #b8daff;
 }
 
-.card-header span {
+.record-diff .card-header span {
   margin-right: 1em;
   max-width: 26em;
   display: inline-block;
@@ -125,7 +125,7 @@ nav.breadcrumbs {
   white-space: nowrap;
 }
 
-.card-header span label {
+.record-diff .card-header span label {
   font-weight: bold;
 }
 

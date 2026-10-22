@@ -9,11 +9,22 @@ async function onCopyClick(value: string) {
 
 interface TimestampProps {
   timestamp?: number | null;
+  copyable?: boolean;
 }
 
-export default function Timestamp({ timestamp }: TimestampProps) {
+export default function Timestamp({
+  timestamp,
+  copyable = true,
+}: TimestampProps) {
   if (!timestamp) {
     return <>{"N/A"}</>;
+  }
+  if (!copyable) {
+    return (
+      <span className="timestamp" title={humanDate(timestamp)}>
+        {timeago(timestamp)}
+      </span>
+    );
   }
   return (
     <span className="timestamp" title={humanDate(timestamp)}>

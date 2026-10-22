@@ -1,4 +1,5 @@
 import SimpleReviewHeader from "@src/components/signoff/SimpleReview/SimpleReviewHeader";
+import { humanDate } from "@src/utils";
 import { render, screen } from "@testing-library/react";
 
 const toReviewProps = {
@@ -22,6 +23,16 @@ describe("SimpleReviewHeader component", () => {
     expect(screen.getByText(/Review requested by/).textContent).toBe(
       "Review requested by ana:"
     );
+  });
+  it("should render the review request date when component is to-review", () => {
+    const lastReviewRequestDate = Date.UTC(2026, 9, 1);
+    render(
+      <SimpleReviewHeader
+        {...toReviewProps}
+        lastReviewRequestDate={lastReviewRequestDate}
+      />
+    );
+    expect(screen.getByTitle(humanDate(lastReviewRequestDate))).toBeDefined();
   });
   it("should render an editor comment when component is to-review", () => {
     render(<SimpleReviewHeader {...toReviewProps} />);
