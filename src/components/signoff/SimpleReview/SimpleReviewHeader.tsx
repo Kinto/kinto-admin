@@ -21,7 +21,7 @@ export default function SimpleReviewHeader({
             {lastReviewRequestDate && (
               <>
                 {" "}
-                <HumanDate timestamp={lastReviewRequestDate} />
+                <HumanDate timestamp={lastReviewRequestDate} copyable={false} />
               </>
             )}
             :
