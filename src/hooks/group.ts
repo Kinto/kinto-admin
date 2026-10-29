@@ -122,7 +122,6 @@ async function fetchGroups(bid: string, curData, setVal, nextPageFn?) {
   setVal({
     data,
     hasNextPage: result.hasNextPage,
-    lastModified: result.last_modified,
     next: () => {
       if (result.hasNextPage && result.next) {
         return fetchGroups(bid, data, setVal, result.next);
