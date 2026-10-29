@@ -1,8 +1,6 @@
 import type { PaginationResult } from "kinto/lib/http/base";
 import type { HistoryEntry } from "kinto/lib/types";
 
-export type ActionType<T extends (...args: any[]) => any> = ReturnType<T>;
-
 export interface Attachment {
   location: string;
   filename: string;
@@ -146,13 +144,6 @@ export interface Notification {
 
 export type Notifications = Notification[];
 
-export interface Paginator<T> {
-  entries: T[];
-  loaded: boolean;
-  hasNextPage: boolean;
-  next: (...args: any) => any | null | undefined;
-}
-
 export type Permissions =
   | BucketPermissions
   | GroupPermissions
@@ -209,11 +200,6 @@ export interface RouteParams {
   rid?: string;
 }
 
-export interface RouteLocation {
-  pathname: string;
-  query: HistoryFilters;
-}
-
 export type AuthMethod =
   "anonymous" | "accounts" | "ldap" | "basicauth" | "openid";
 
@@ -224,24 +210,12 @@ export interface AuthData {
   redirectURL?: string;
 }
 
-export type AnonymousAuth = {
-  authType: "anonymous";
-} & AuthData;
-
 export type CredentialsAuth = {
   credentials: {
     username: string;
     password: string;
   };
 } & AuthData;
-
-export type LDAPAuth = {
-  authType: "ldap";
-} & CredentialsAuth;
-
-export type AccountAuth = {
-  authType: "account";
-} & CredentialsAuth;
 
 export type BasicAuth = {
   authType: "basicauth";
@@ -256,10 +230,6 @@ export type OpenIDAuth = {
     expiresAt?: number;
   };
 } & AuthData;
-
-export type SagaGen = Generator<any, void, any>;
-
-export type SagaNextFunction = (...args: any[]) => any;
 
 export interface CollectionEntry {
   id: string;
@@ -337,13 +307,6 @@ export interface SignoffCollectionsInfo {
   // If to-review, show changes since the last approval. It will be null if no
   // changes were made.
   changesOnPreview?: ChangesList | null;
-}
-
-export interface SignoffState {
-  collectionsInfo: SignoffCollectionsInfo | null | undefined;
-  pendingConfirmReviewRequest: boolean;
-  pendingConfirmDeclineChanges: boolean;
-  pendingConfirmRollbackChanges: boolean;
 }
 
 export interface ChangesList {
