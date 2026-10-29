@@ -151,7 +151,6 @@ function Diff({
   changeType,
   source,
   target,
-  className = "",
   allLines = false,
   displayFields,
 }: {
@@ -159,7 +158,6 @@ function Diff({
   changeType: ChangeType;
   source?: RecordData;
   target?: RecordData;
-  className?: string;
   allLines?: boolean;
   displayFields?: string[];
 }) {
@@ -178,10 +176,7 @@ function Diff({
   }
 
   return (
-    <div
-      className={`record-diff card mb-4 ${className}`}
-      data-testid="record-diff"
-    >
+    <div className="record-diff card mb-4" data-testid="record-diff">
       <div className="card-header">
         <DiffLabel changeType={changeType} />{" "}
         {formatDiffHeader({ source, target, displayFields })}
