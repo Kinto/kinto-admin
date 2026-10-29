@@ -26,7 +26,7 @@ export interface ListResult<T> {
 export interface ListHistoryResult {
   data?: HistoryEntry<any>[];
   hasNextPage?: boolean;
-  next?: Promise<PaginationResult<HistoryEntry<any>>> | null;
+  next?: () => void;
 }
 
 export interface BucketData {
