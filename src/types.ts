@@ -62,14 +62,11 @@ export interface OpenIDProvider {
 
 export interface Capabilities {
   attachments?: any;
-  changes?: any;
-  default_bucket?: any;
   openid?: {
     providers: OpenIDProvider[];
   };
   history?: any;
   permissions_endpoint?: any;
-  schema?: any;
   signer?: {
     resources: SignerCapabilityResource[];
     editors_group: string;
