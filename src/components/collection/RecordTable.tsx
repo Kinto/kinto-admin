@@ -253,7 +253,6 @@ export default function RecordTable({
           bid={bid}
           cid={cid}
           record={record}
-          schema={schema}
           displayFields={displayFields}
           deleteRecord={deleteRecord}
           capabilities={capabilities}
