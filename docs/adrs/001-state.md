@@ -1,6 +1,6 @@
 # The state of state management in kinto-admin
 
- - Status: implementing
+ - Status: implemented
  - Date: 2025-03-20
 
 
