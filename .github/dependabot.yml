@@ -12,6 +12,10 @@ updates:
       patterns:
       - "vite*"
       - "@vite*"
+    react:
+      patterns:
+      - "react"
+      - "react-dom"
 - package-ecosystem: github-actions
   directory: "/"
   schedule:
