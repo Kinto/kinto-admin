@@ -145,7 +145,6 @@ type TableProps = RecordsViewProps & {
   hasNextRecords: boolean;
   listNextRecords: () => void;
   records: RecordData[];
-  recordsLoaded: boolean;
   updateSort: (s: string) => void;
   callback: () => void;
   filter?: string;
@@ -155,7 +154,6 @@ export default function RecordTable({
   bid,
   cid,
   records,
-  recordsLoaded,
   hasNextRecords,
   listNextRecords,
   currentSort,
@@ -196,7 +194,7 @@ export default function RecordTable({
     return schema?.properties && displayField in schema.properties;
   };
 
-  if (recordsLoaded && records.length === 0) {
+  if (records.length === 0) {
     return (
       <div className="alert alert-info">
         <p>This collection has no records.</p>
@@ -246,7 +244,7 @@ export default function RecordTable({
   );
 
   const tbody = (
-    <tbody className={!recordsLoaded ? "loading" : ""}>
+    <tbody>
       {filteredRecords.map((record, index) => (
         <RecordRow
           key={index}
@@ -265,7 +263,7 @@ export default function RecordTable({
     <PaginatedTable
       thead={thead}
       tbody={tbody}
-      dataLoaded={recordsLoaded}
+      dataLoaded={true}
       colSpan={displayFields.length + 2}
       hasNextPage={hasNextRecords}
       listNextPage={listNextRecords}
