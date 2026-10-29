@@ -1,8 +1,7 @@
 import HumanDate from "../HumanDate";
-import type { CommonProps } from "./commonPropTypes";
 import AdminLink from "@src/components/AdminLink";
 import { useAuth } from "@src/hooks/session";
-import type { RecordData } from "@src/types";
+import type { Capabilities, RecordData } from "@src/types";
 import { buildAttachmentUrl, renderDisplayField } from "@src/utils";
 import type { MouseEvent } from "react";
 import { useRef } from "react";
@@ -17,16 +16,14 @@ import {
 } from "react-bootstrap-icons";
 import { useNavigate } from "react-router";
 
-type RecordsViewProps = CommonProps & {
+interface RowProps {
   bid: string;
   cid: string;
   displayFields: string[];
+  capabilities: Capabilities;
   deleteRecord: (rid: string, last_modified: number) => void;
-};
-
-type RowProps = RecordsViewProps & {
   record: RecordData;
-};
+}
 
 export default function RecordRow({
   bid,

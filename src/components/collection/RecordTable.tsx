@@ -1,5 +1,4 @@
 import RecordRow from "./RecordRow";
-import type { CommonProps } from "./commonPropTypes";
 import { getClient } from "@src/client";
 import AdminLink from "@src/components/AdminLink";
 import PaginatedTable from "@src/components/PaginatedTable";
@@ -7,7 +6,12 @@ import SignoffToolbar from "@src/components/signoff/SignoffToolBar";
 import { notifyError, notifySuccess } from "@src/hooks/notifications";
 import { usePermissions } from "@src/hooks/session";
 import { canCreateRecord } from "@src/permission";
-import type { CollectionData, RecordData, ServerInfo } from "@src/types";
+import type {
+  Capabilities,
+  CollectionData,
+  RecordData,
+  ServerInfo,
+} from "@src/types";
 import { capitalize } from "@src/utils";
 import { useMemo } from "react";
 import { SortUp } from "react-bootstrap-icons";
@@ -133,14 +137,12 @@ export function ColumnSortLink(props: ColumnSortLinkProps) {
   );
 }
 
-type RecordsViewProps = CommonProps & {
+interface TableProps {
   bid: string;
   cid: string;
   displayFields: string[];
   schema: any;
-};
-
-type TableProps = RecordsViewProps & {
+  capabilities: Capabilities;
   currentSort: string;
   hasNextRecords: boolean;
   listNextRecords: () => void;
@@ -148,7 +150,7 @@ type TableProps = RecordsViewProps & {
   updateSort: (s: string) => void;
   callback: () => void;
   filter?: string;
-};
+}
 
 export default function RecordTable({
   bid,
