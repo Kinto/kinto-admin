@@ -2,11 +2,7 @@ import "./style.css";
 import { breadcrumbifyPath } from "@src/locationUtils";
 import { NavLink, useLocation } from "react-router";
 
-interface BreadcrumbsProps {
-  separator: string;
-}
-
-export default function Breadcrumbs({ separator }: BreadcrumbsProps) {
+export default function Breadcrumbs() {
   const { pathname } = useLocation();
   const crumbs = breadcrumbifyPath(pathname);
   return (
@@ -21,7 +17,7 @@ export default function Breadcrumbs({ separator }: BreadcrumbsProps) {
             >
               {name}
             </NavLink>
-            {i < crumbs.length - 1 ? <span>{separator}</span> : null}
+            {i < crumbs.length - 1 ? <span> / </span> : null}
           </span>
         ))}
       </div>

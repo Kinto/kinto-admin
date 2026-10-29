@@ -117,7 +117,7 @@ export function Layout() {
                 <LayoutSidebarInset className="icon" />
               )}
             </button>
-            <Breadcrumbs separator=" / " />
+            <Breadcrumbs />
             <Routes>
               {/* Without auth */}
               <Route path="/auth/:payload/:token" Component={AuthCallback} />
