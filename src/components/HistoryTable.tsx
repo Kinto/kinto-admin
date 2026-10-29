@@ -64,10 +64,9 @@ function fetchPreviousVersion(
 interface HistoryRowProps {
   bid: string;
   entry: ResourceHistoryEntry;
-  pos: number;
 }
 
-function HistoryRow({ bid, entry, pos }: HistoryRowProps) {
+function HistoryRow({ bid, entry }: HistoryRowProps) {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [previous, setPrevious] = useState(null);
@@ -352,7 +351,7 @@ export default function HistoryTable({
         </tr>
       ) : (
         history.map((entry, index) => {
-          return <HistoryRow key={index} pos={index} bid={bid} entry={entry} />;
+          return <HistoryRow key={index} bid={bid} entry={entry} />;
         })
       )}
     </tbody>
