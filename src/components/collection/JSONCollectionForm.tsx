@@ -39,7 +39,6 @@ const uiSchema: UiSchema = {
 interface Props {
   children?: ReactNode;
   cid?: string | null;
-  disabled?: boolean;
   formData: CollectionData;
   onSubmit: (data: { formData: CollectionData }) => void;
 }
@@ -49,7 +48,6 @@ export default function JSONCollectionForm({
   cid,
   formData,
   onSubmit,
-  disabled,
 }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -87,7 +85,7 @@ export default function JSONCollectionForm({
         formData={formDataSerialized}
         validator={validator}
         onSubmit={handleSubmit}
-        disabled={disabled ?? isSubmitting}
+        disabled={isSubmitting}
       >
         {children}
       </FormWithTheme>
