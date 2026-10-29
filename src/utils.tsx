@@ -10,10 +10,6 @@ import type {
 import { diffJson as diff } from "diff";
 import { format } from "timeago.js";
 
-export function clone(obj: any) {
-  return JSON.parse(JSON.stringify(obj));
-}
-
 export function omit(obj: any, keys: string[] = []): any {
   return Object.keys(obj).reduce((acc: any, key: string) => {
     return keys.includes(key) ? acc : { ...acc, [key]: obj[key] };
@@ -38,15 +34,6 @@ export function timeago(timestamp: number, now?: number | null): string {
 
 export function capitalize(str: string): string {
   return str.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase());
-}
-
-export function validJSON(string: string): boolean {
-  try {
-    JSON.parse(string);
-    return true;
-  } catch (_err) {
-    return false;
-  }
 }
 
 export function validateSchema(jsonSchema: string) {
@@ -182,7 +169,7 @@ function handleNestedDisplayField(
   return "<unknown>";
 }
 
-export function linkify(string: string): any {
+function linkify(string: string): any {
   if (/https?:\/\//.test(string)) {
     return (
       <a href={string} title={string} target="_blank" rel="noreferrer">
@@ -256,11 +243,6 @@ export function buildAttachmentUrl(
     : ensureTrailingSlash(base_url) + dropStartingSlash(location);
 }
 
-export function scrollToTop(): Promise<void> {
-  window.scrollTo(0, 0);
-  return Promise.resolve();
-}
-
 export function sortHistoryEntryPermissions(
   entry: ResourceHistoryEntry
 ): ResourceHistoryEntry {
@@ -296,10 +278,6 @@ export function getServerByPriority(servers: ServerEntry[] | null | undefined) {
   // - most recently used
   // - default
   return SINGLE_SERVER ?? servers?.[0]?.server ?? DEFAULT_KINTO_SERVER;
-}
-
-export function isObjectEmpty(obj: object) {
-  return Object.keys(obj).length === 0;
 }
 
 export const getAuthLabel = (authType: string) => {
@@ -429,8 +407,6 @@ export function diffJson(
 }
 
 // Allows us to share or expose data between components outside of poviders.
-// We could also use a context provider, but that could cause confusion
-// while redux is still in place.
 export function makeObservable(target) {
   let listeners = [];
   let value = target;
