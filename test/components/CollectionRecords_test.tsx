@@ -66,7 +66,6 @@ describe("CollectionRecords component", () => {
           { id: "id2", foo: "baz", last_modified: 1 },
         ],
         hasNextPage: false,
-        lastModified: 0,
         totalRecords: 2,
       });
       renderWithRouter(<CollectionRecords />, routeProps);
@@ -122,7 +121,6 @@ describe("CollectionRecords component", () => {
           },
         ],
         hasNextPage: false,
-        lastModified: 0,
         totalRecords: 2,
       });
       renderWithRouter(<CollectionRecords />, routeProps);
@@ -153,7 +151,6 @@ describe("CollectionRecords component", () => {
       useRecordList.mockReturnValue({
         data: [],
         hasNextPage: false,
-        lastModified: 0,
         totalRecords: 18,
       });
       renderWithRouter(<CollectionRecords />, routeProps);
@@ -185,7 +182,6 @@ describe("CollectionRecords component", () => {
         useRecordList.mockReturnValue({
           data: [],
           hasNextPage: false,
-          lastModified: 0,
           totalRecords: 0,
         });
         renderWithRouter(<CollectionRecords />, routeProps);
@@ -202,7 +198,6 @@ describe("CollectionRecords component", () => {
             last_modified: i,
           })),
           hasNextPage: false,
-          lastModified: 0,
           totalRecords: 0,
         });
         renderWithRouter(<CollectionRecords />, routeProps);
@@ -228,7 +223,6 @@ describe("CollectionRecords component", () => {
         useRecordList.mockReturnValue({
           data: [],
           hasNextPage: false,
-          lastModified: 0,
           totalRecords: 0,
         });
         renderWithRouter(<CollectionRecords />, routeProps);

@@ -167,7 +167,6 @@ describe("collection hooks", () => {
         expect(result.current).toMatchObject({
           data: testCollections,
           hasNextPage: false,
-          lastModified: 1,
         });
       });
       expect(listCollectionsMock).toHaveBeenCalled();
