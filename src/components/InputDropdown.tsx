@@ -18,7 +18,6 @@ export default function InputWithDropdown({
 }: InputWithDropdownProps) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
-  const buttonRef = useRef<HTMLButtonElement | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
 
   // Close when clicking outside
@@ -66,7 +65,6 @@ export default function InputWithDropdown({
 
       {/* Icon button inside the input */}
       <button
-        ref={buttonRef}
         type="button"
         aria-label="Open suggestions"
         aria-haspopup="true"
