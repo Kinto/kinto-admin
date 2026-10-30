@@ -55,7 +55,6 @@ export default function CollectionRecords() {
             bid={bid}
             cid={cid}
             records={records.data ?? []}
-            recordsLoaded={!!records.data}
             hasNextRecords={records.hasNextPage}
             listNextRecords={records.next}
             currentSort={sort}

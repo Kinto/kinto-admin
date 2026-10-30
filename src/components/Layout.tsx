@@ -1,4 +1,4 @@
-import Breadcrumbs from "./Breadcrumbs";
+import Breadcrumbs from "./Breadcrumbs/Breadcrumbs";
 import { SessionInfoBar } from "./SessionInfoBar";
 import { CollectionCompare } from "./collection/CollectionCompare";
 import AuthCallback from "./homepage/AuthCallback";
@@ -117,7 +117,7 @@ export function Layout() {
                 <LayoutSidebarInset className="icon" />
               )}
             </button>
-            <Breadcrumbs separator=" / " />
+            <Breadcrumbs />
             <Routes>
               {/* Without auth */}
               <Route path="/auth/:payload/:token" Component={AuthCallback} />
