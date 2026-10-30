@@ -1,10 +1,9 @@
 import { CommentDialog } from "../Comment";
 import Spinner from "@src/components/Spinner";
-import { parseSearchString } from "@src/locationUtils";
 import type { SignoffCollectionStatus } from "@src/types";
 import { useState } from "react";
 import { ChatLeft, Check2, XCircleFill } from "react-bootstrap-icons";
-import { useLocation } from "react-router";
+import { useSearchParams } from "react-router";
 
 export interface SimpleReviewButtonsProps {
   status: SignoffCollectionStatus;
@@ -28,7 +27,7 @@ export default function SimpleReviewButtons({
   const [dialog, setDialog] = useState<"reject" | "rollback" | "review" | "">(
     ""
   );
-  const searchParams = parseSearchString(useLocation().search);
+  const [searchParams] = useSearchParams();
   const [showSpinner, setShowSpinner] = useState(false);
 
   return (
@@ -65,7 +64,7 @@ export default function SimpleReviewButtons({
         )}{" "}
         {canRequestReview &&
           ["work-in-progress", "to-review"].includes(status) &&
-          !searchParams.hideRollback && (
+          !searchParams.has("hideRollback") && (
             <button
               className="btn btn-danger"
               onClick={() => setDialog("rollback")}

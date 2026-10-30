@@ -1,23 +1,24 @@
 import "./style.css";
-import { breadcrumbifyPath } from "@src/locationUtils";
 import { NavLink, useLocation } from "react-router";
 
 export default function Breadcrumbs() {
   const { pathname } = useLocation();
-  const crumbs = breadcrumbifyPath(pathname);
+  let path = "";
+  const crumbs = pathname
+    .split("/")
+    .filter(Boolean)
+    .map(name => {
+      path += "/" + name;
+      return { name, path };
+    });
   return (
-    <nav className={"breadcrumbs"}>
+    <nav className="breadcrumbs">
       <div>
-        {crumbs.map(([name, path], i) => (
-          <span key={i}>
-            <NavLink
-              to={{
-                pathname: path,
-              }}
-            >
-              {name}
-            </NavLink>
-            {i < crumbs.length - 1 ? <span> / </span> : null}
+        <NavLink to="/">home</NavLink>
+        {crumbs.map(({ name, path }) => (
+          <span key={path}>
+            <span> / </span>
+            <NavLink to={path}>{name}</NavLink>
           </span>
         ))}
       </div>
