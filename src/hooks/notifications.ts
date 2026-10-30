@@ -64,16 +64,6 @@ export function notifySuccess(
   });
 }
 
-export function notifyWarning(
-  message: string,
-  options: NotificationOptions = {}
-) {
-  notify("warning", message, {
-    ...options,
-    timeout: options.timeout ?? DEFAULT_NOTIFICATIONS_TIMEOUT,
-  });
-}
-
 export function notifyError(
   message: string,
   error?: ClientError | null,
