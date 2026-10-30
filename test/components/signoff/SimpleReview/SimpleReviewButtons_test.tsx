@@ -2,7 +2,7 @@ import SimpleReviewButtons from "@src/components/signoff/SimpleReview/SimpleRevi
 import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 
-function renderButtons(props = null) {
+function renderButtons(props = null, route = "/") {
   const approveChanges = vi.fn();
   const declineChanges = vi.fn();
   const rollbackChanges = vi.fn();
@@ -15,7 +15,7 @@ function renderButtons(props = null) {
     ...props,
   };
 
-  renderWithRouter(<SimpleReviewButtons {...mergedProps} />);
+  renderWithRouter(<SimpleReviewButtons {...mergedProps} />, { route });
   return { approveChanges, declineChanges, rollbackChanges };
 }
 
@@ -56,5 +56,14 @@ describe("SimpleReviewHeader component", () => {
     fireEvent.click(await screen.findByText("Rollback"));
     expect(rollbackChanges).toHaveBeenCalled();
     expect(await screen.findByTestId("spinner")).toBeDefined();
+  });
+
+  it("should hide the rollback button if the hideRollback query parameter is provided", () => {
+    renderButtons(
+      { status: "work-in-progress", canRequestReview: true },
+      "/?hideRollback"
+    );
+    expect(screen.getByText(/Request review/)).toBeInTheDocument();
+    expect(screen.queryByText(/Rollback changes/)).not.toBeInTheDocument();
   });
 });
