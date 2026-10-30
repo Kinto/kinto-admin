@@ -1,9 +1,11 @@
 import CollectionHistory from "@src/components/collection/CollectionHistory";
-import { SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES } from "@src/constants";
 import * as collectionHooks from "@src/hooks/collection";
 import * as preferenceHooks from "@src/hooks/preferences";
 import * as sessionHooks from "@src/hooks/session";
-import { renderWithRouter } from "@test/testUtils";
+import {
+  SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES,
+  renderWithRouter,
+} from "@test/testUtils";
 import { screen } from "@testing-library/react";
 
 describe("CollectionHistory component", () => {

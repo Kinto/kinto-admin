@@ -1,14 +1,14 @@
 import * as client from "@src/client";
 import RecordAttributes from "@src/components/record/RecordAttributes";
-import {
-  DEFAULT_SERVERINFO,
-  SERVERINFO_WITH_ATTACHMENTS_CAPABILITY,
-} from "@src/constants";
+import { DEFAULT_SERVERINFO } from "@src/constants";
 import * as collectionHooks from "@src/hooks/collection";
 import * as recordHooks from "@src/hooks/record";
 import * as sessionHooks from "@src/hooks/session";
 import { canEditRecord } from "@src/permission";
-import { renderWithRouter } from "@test/testUtils";
+import {
+  SERVERINFO_WITH_ATTACHMENTS_CAPABILITY,
+  renderWithRouter,
+} from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 
 vi.mock("@src/permission", () => {
