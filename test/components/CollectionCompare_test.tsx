@@ -1,11 +1,13 @@
 import { CollectionCompare } from "@src/components/collection/CollectionCompare";
-import { SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES } from "@src/constants";
 import * as bucketHooks from "@src/hooks/bucket";
 import * as collectionHooks from "@src/hooks/collection";
 import * as recordHooks from "@src/hooks/record";
 import * as sessionHooks from "@src/hooks/session";
 import * as signoffHooks from "@src/hooks/signoff";
-import { renderWithRouter } from "@test/testUtils";
+import {
+  SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES,
+  renderWithRouter,
+} from "@test/testUtils";
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 
 describe("CollectionCompare", () => {

@@ -1,11 +1,11 @@
 import HistoryTable from "@src/components/HistoryTable";
-import {
-  DEFAULT_SERVERINFO,
-  SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES,
-} from "@src/constants";
+import { DEFAULT_SERVERINFO } from "@src/constants";
 import * as preferenceHooks from "@src/hooks/preferences";
 import * as sessionHooks from "@src/hooks/session";
-import { renderWithRouter } from "@test/testUtils";
+import {
+  SERVERINFO_WITH_SIGNER_AND_HISTORY_CAPABILITIES,
+  renderWithRouter,
+} from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 
 // Mocks

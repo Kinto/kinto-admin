@@ -1,11 +1,13 @@
 import * as client from "@src/client";
 import RecordForm from "@src/components/record/RecordForm";
-import { SERVERINFO_WITH_ATTACHMENTS_CAPABILITY } from "@src/constants";
 import * as collectionHooks from "@src/hooks/collection";
 import * as recordHooks from "@src/hooks/record";
 import * as sessionHooks from "@src/hooks/session";
 import { canCreateRecord, canEditRecord } from "@src/permission";
-import { renderWithRouter } from "@test/testUtils";
+import {
+  SERVERINFO_WITH_ATTACHMENTS_CAPABILITY,
+  renderWithRouter,
+} from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 
 vi.mock("@src/permission", () => {
