@@ -15,7 +15,6 @@ import { useEffect, useState } from "react";
 
 export type RecordListResult = ListResult<RecordData> & {
   totalRecords?: number;
-  lastModified?: number;
 };
 
 export function useRecordList(
@@ -107,7 +106,6 @@ async function fetchRecords(
   setVal({
     data,
     hasNextPage: result.hasNextPage,
-    lastModified: result.last_modified,
     totalRecords: totalCount,
     next: () => {
       if (result.hasNextPage && result.next) {

@@ -99,7 +99,6 @@ async function fetchCollections(bid: string, curData, setVal, nextPageFn?) {
   setVal({
     data,
     hasNextPage: result.hasNextPage,
-    lastModified: result.last_modified,
     next: () => {
       if (result.hasNextPage && result.next) {
         return fetchCollections(bid, data, setVal, result.next);
@@ -126,7 +125,7 @@ export function useCollectionHistory(
   return val;
 }
 
-export async function fetchHistory(
+async function fetchHistory(
   bid: string,
   cid: string,
   filters: Record<string, string>,

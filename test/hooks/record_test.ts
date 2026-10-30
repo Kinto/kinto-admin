@@ -100,7 +100,6 @@ describe("record hooks", () => {
         expect(result.current).toMatchObject({
           data: testRecords,
           hasNextPage: false,
-          lastModified: 1,
           totalRecords: 2,
         });
       });

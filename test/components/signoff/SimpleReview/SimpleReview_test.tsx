@@ -100,7 +100,6 @@ function renderSimpleReview({
     return {
       data: list,
       hasNextPage: false,
-      lastModified: 0,
       totalRecords: list.length,
     };
   });

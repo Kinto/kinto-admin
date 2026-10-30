@@ -8,7 +8,6 @@ import * as collectionHooks from "@src/hooks/collection";
 import * as recordHooks from "@src/hooks/record";
 import * as sessionHooks from "@src/hooks/session";
 import { canEditRecord } from "@src/permission";
-import { clone } from "@src/utils";
 import { renderWithRouter } from "@test/testUtils";
 import { fireEvent, screen } from "@testing-library/react";
 
@@ -119,7 +118,7 @@ describe("RecordAttributes component", () => {
     });
 
     describe("With Gzipped attachment", () => {
-      const gzipped = clone(record);
+      const gzipped = structuredClone(record);
       gzipped.data.attachment.original = {
         filename: "plop.png",
         size: 99999,
@@ -172,11 +171,11 @@ describe("RecordAttributes component", () => {
     let field;
 
     describe("ID in schema", () => {
-      const withID = clone(collection);
+      const withID = structuredClone(collection);
       withID.schema.properties.id = { type: "string" };
 
       describe("ID in UISchema", () => {
-        const withUISchema = clone(withID);
+        const withUISchema = structuredClone(withID);
         withUISchema.uiSchema = {
           id: {
             "ui:widget": "textarea",

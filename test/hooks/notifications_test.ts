@@ -3,7 +3,6 @@ import {
   notifyError,
   notifyInfo,
   notifySuccess,
-  notifyWarning,
   removeNotification,
   useNotifications,
 } from "@src/hooks/notifications";
@@ -41,21 +40,6 @@ describe("notifications hooks", () => {
     expect(result.current[0]).toMatchObject({
       type: "success",
       message: "Test success message",
-    });
-  });
-
-  it("notifyWarning should create a warning notification", async () => {
-    const { result } = renderHook(() => useNotifications());
-    expect(result.current).toEqual([]);
-    notifyWarning("Test warning message");
-
-    await vi.waitFor(() => {
-      expect(result.current.length).toBe(1);
-    });
-
-    expect(result.current[0]).toMatchObject({
-      type: "warning",
-      message: "Test warning message",
     });
   });
 
@@ -131,13 +115,13 @@ describe("notifications hooks", () => {
     expect(result3.current).toEqual([]);
 
     notifyInfo("Test info");
-    notifyWarning("Test warn");
+    notifySuccess("Test success");
     notifyError("Test error");
 
     await vi.waitFor(() => {
       const match = [
         { message: "Test info" },
-        { message: "Test warn" },
+        { message: "Test success" },
         { message: "Test error" },
       ];
       expect(result1.current).toMatchObject(match);
