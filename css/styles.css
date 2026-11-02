@@ -323,6 +323,19 @@ nav.breadcrumbs {
   margin: 0 0.5em;
 }
 
+.data-table-actions > .btn,
+.data-table-actions > .dropdown > .btn {
+  margin: 0.1rem;
+}
+
+.data-table-actions > .dropdown {
+  display: inline;
+}
+
+.data-table-actions .dropdown-menu {
+  margin: 0 1.7em 0 0;
+}
+
 .data-table-load-more > a {
   display: block;
   width: 100%;

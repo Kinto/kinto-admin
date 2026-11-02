@@ -72,9 +72,6 @@ export default function RecordRow({
           name="record:attributes"
           params={{ bid, cid, rid }}
           className="btn btn-sm btn-primary"
-          style={{
-            margin: "1pt",
-          }}
           title="Edit record"
         >
           <Pencil className="icon" />
@@ -82,32 +79,18 @@ export default function RecordRow({
         <button
           type="button"
           className="btn btn-sm btn-danger"
-          style={{
-            margin: "1pt",
-          }}
           onClick={onDeleteClick}
           title="Delete record"
         >
           <Trash className="icon" />
         </button>
-        <Dropdown
-          style={{
-            display: "inline",
-          }}
-        >
+        <Dropdown>
           <Dropdown.Toggle
             variant="secondary"
             className="btn-sm"
-            style={{
-              margin: "1pt",
-            }}
             ref={toggle}
           />
-          <Dropdown.Menu
-            style={{
-              margin: "0px 1.7em 0px 0px",
-            }}
-          >
+          <Dropdown.Menu>
             {attachmentUrl && (
               <a
                 href={attachmentUrl}
