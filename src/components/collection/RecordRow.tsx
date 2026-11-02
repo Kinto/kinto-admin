@@ -64,7 +64,7 @@ export default function RecordRow({
           {renderDisplayField(record, displayField)}
         </td>
       ))}
-      <td className="lastmod">
+      <td>
         <HumanDate timestamp={record.last_modified} />
       </td>
       <td className="actions" data-testid={`${rid}-actions`}>

@@ -201,7 +201,7 @@ function HistoryRow({ bid, entry }: HistoryRowProps) {
   return (
     <>
       <tr>
-        <td className="lastmod">
+        <td>
           <HumanDate timestamp={last_modified} />
         </td>
         <td>{shownAction}</td>

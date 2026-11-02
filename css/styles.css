@@ -293,11 +293,6 @@ table.record-list td {
   max-width: 18.75rem;
 }
 
-table.record-list td.lastmod {
-  width: 7.5rem;
-  max-width: 7.5rem;
-}
-
 table.record-list td.actions {
   min-width: 6.875rem;
   width: 6.875rem;
