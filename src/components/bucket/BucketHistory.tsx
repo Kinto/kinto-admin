@@ -12,7 +12,7 @@ export default function BucketHistory() {
   const history = useBucketHistory(bid, filters);
 
   return (
-    <div>
+    <div className="table-page">
       <h1>
         History for <b>{bid}</b>
       </h1>

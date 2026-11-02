@@ -358,38 +358,40 @@ export default function HistoryTable({
   );
 
   return (
-    <div>
-      {hasOpenID && (
-        <div className="form-check form-check-inline mb-3">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            checked={showNonHumans}
-            onChange={e => handleNonHumanToggle(e.currentTarget.checked)}
-            id="showNonHumans"
-            data-testid="showNonHumans"
-          />
-          <label className="form-check-label" htmlFor="showNonHumans">
-            Show non humans entries
-          </label>
-        </div>
-      )}
-      {hasSigner && (
-        <div className="form-check form-check-inline mb-3">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            checked={showSignerPlugin && showNonHumans}
-            onChange={e => handleSignerToggle(e.currentTarget.checked)}
-            id="showSignerPlugin"
-            data-testid="showSignerPlugin"
-            disabled={!showNonHumans}
-          />
-          <label className="form-check-label" htmlFor="showSignerPlugin">
-            Show plugin entries
-          </label>
-        </div>
-      )}
+    <>
+      <div>
+        {hasOpenID && (
+          <div className="form-check form-check-inline mb-3">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              checked={showNonHumans}
+              onChange={e => handleNonHumanToggle(e.currentTarget.checked)}
+              id="showNonHumans"
+              data-testid="showNonHumans"
+            />
+            <label className="form-check-label" htmlFor="showNonHumans">
+              Show non humans entries
+            </label>
+          </div>
+        )}
+        {hasSigner && (
+          <div className="form-check form-check-inline mb-3">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              checked={showSignerPlugin && showNonHumans}
+              onChange={e => handleSignerToggle(e.currentTarget.checked)}
+              id="showSignerPlugin"
+              data-testid="showSignerPlugin"
+              disabled={!showNonHumans}
+            />
+            <label className="form-check-label" htmlFor="showSignerPlugin">
+              Show plugin entries
+            </label>
+          </div>
+        )}
+      </div>
       <PaginatedTable
         colSpan={6}
         thead={thead}
@@ -398,6 +400,6 @@ export default function HistoryTable({
         hasNextPage={hasNextHistory}
         listNextPage={nextHistoryWrapper}
       />
-    </div>
+    </>
   );
 }

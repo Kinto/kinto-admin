@@ -12,7 +12,7 @@ export default function RecordHistory() {
   const history = useRecordHistory(bid, cid, rid, filters);
 
   return (
-    <div>
+    <div className="table-page">
       <h1>
         History for{" "}
         <b>

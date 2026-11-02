@@ -12,7 +12,7 @@ export default function GroupHistory() {
   const history = useGroupHistory(bid, gid, filters);
 
   return (
-    <div>
+    <div className="table-page">
       <h1>
         History for{" "}
         <b>
