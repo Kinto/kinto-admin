@@ -310,10 +310,6 @@ table.record-list td.actions .btn-group {
   margin: 0 0.5em;
 }
 
-table.record-list > tbody + tbody {
-  border-top: none;
-}
-
 .load-more > a {
   display: block;
   width: 100%;
