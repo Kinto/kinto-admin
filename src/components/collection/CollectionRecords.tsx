@@ -28,7 +28,7 @@ export default function CollectionRecords() {
   const bumpCache = () => setCacheVal(cacheVal + 1);
 
   return (
-    <div className="list-page">
+    <div className="list-page table-page">
       <h1>
         Records of{" "}
         <b>

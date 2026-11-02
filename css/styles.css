@@ -43,6 +43,11 @@ body {
   overflow-y: auto;
 }
 
+.app-frame .content {
+  display: flex;
+  flex-direction: column;
+}
+
 footer {
   text-align: center;
   font-size: 80%;
@@ -258,8 +263,21 @@ nav.breadcrumbs {
   margin-top: 2em;
 }
 
+.table-page {
+  min-height: 25rem; /* on very short windows, let .content scroll instead */
+  display: flex;
+  flex-direction: column;
+}
+
+.table-page > .card,
+.table-page > .card > .card-body {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 .data-table {
-  overflow-x: auto;
+  overflow: auto;
   width: 100%;
 }
 

@@ -145,7 +145,7 @@ export default function BucketsList() {
 
   const listActions = <ListActions busy={!buckets} />;
   return (
-    <div className="list-page">
+    <div className="list-page table-page">
       <h1>
         Buckets of <b>{serverInfo?.project_name}</b>
       </h1>
