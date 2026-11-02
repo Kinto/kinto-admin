@@ -23,7 +23,6 @@ export default function BucketGroups() {
         ) : (
           <DataList bid={bid} groups={groups} showSpinner={!groups} />
         )}
-        {listActions}
       </BucketTabs>
     </div>
   );

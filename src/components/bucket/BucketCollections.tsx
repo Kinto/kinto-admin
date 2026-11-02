@@ -30,7 +30,6 @@ export default function BucketCollections() {
             showSpinner={!collections}
           />
         )}
-        {listActions}
       </BucketTabs>
     </div>
   );

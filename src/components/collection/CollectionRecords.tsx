@@ -70,15 +70,6 @@ export default function CollectionRecords() {
             filter={filter}
           />
         )}
-        {records.data?.length > 10 ? (
-          // Show actions in bottom only if there are more than 10 records.
-          // The filter input lives only in the top instance.
-          <ListActions
-            serverInfo={serverInfo}
-            collection={collection}
-            callback={bumpCache}
-          />
-        ) : null}
       </CollectionTabs>
     </div>
   );
