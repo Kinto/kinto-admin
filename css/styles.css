@@ -258,19 +258,19 @@ nav.breadcrumbs {
   margin-top: 2em;
 }
 
-.table-wrapper {
+.data-table {
   overflow-x: auto;
   width: 100%;
 }
 
-table.record-list {
+.data-table table {
   border-collapse: collapse;
   table-layout: auto;
   width: max-content; /* Let the table shrink to fit its content */
   min-width: 100%; /* But not smaller than viewport/container */
 }
 
-table.record-list th {
+.data-table thead th {
   background: rgba(0, 0, 0, 0.08);
   position: sticky;
   top: 0;
@@ -279,13 +279,13 @@ table.record-list th {
   vertical-align: middle;
 }
 
-table.record-list tbody.loading td {
+.data-table tbody.loading td {
   background: rgba(220, 220, 220, 0.15);
   color: #777;
 }
 
-table.record-list th,
-table.record-list td {
+.data-table th,
+.data-table td {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -293,7 +293,7 @@ table.record-list td {
   max-width: 18.75rem;
 }
 
-table.record-list td.actions {
+.data-table .data-table-actions {
   min-width: 6.875rem;
   width: 6.875rem;
   padding: 0 0;
@@ -301,24 +301,47 @@ table.record-list td.actions {
   overflow: visible;
 }
 
-table.record-list td.actions .btn-group {
+.data-table-actions .btn-group {
   margin: 0 0.5em;
 }
 
-.load-more > a {
+.data-table-load-more > a {
   display: block;
   width: 100%;
 }
 
-table.record-list td.load-more {
+.data-table .data-table-load-more {
   padding: 0;
   line-height: 2.5em;
 }
 
-.load-more > a:hover,
-.load-more > a:active {
+.data-table-load-more > a:hover,
+.data-table-load-more > a:active {
   background: #d9edf7;
   text-decoration: none;
+}
+
+.data-table-load-more .spinner {
+  margin-top: 0.25em;
+}
+
+.data-table-details {
+  display: table-row;
+}
+
+.data-table .data-table-details > td {
+  padding: 0;
+  margin: 0;
+}
+
+.data-table-details td pre {
+  border: none;
+  margin: 0;
+}
+
+.data-table-details .alert {
+  margin: 0;
+  border-radius: 0;
 }
 
 .card-body > .spinner,
@@ -338,31 +361,8 @@ table.record-list td.load-more {
   border-radius: 3px;
 }
 
-.load-more .spinner {
-  margin-top: 0.25em;
-}
-
 .simple-review-suggested-reviewers .spinner {
   margin: 0.25em 0 0;
-}
-
-.history-row-details {
-  display: table-row;
-}
-
-.table > tbody > tr.history-row-details > td {
-  padding: 0;
-  margin: 0;
-}
-
-.history-row-details td pre {
-  border: none;
-  margin: 0;
-}
-
-.history-row-details .alert {
-  margin: 0;
-  border-radius: 0;
 }
 
 .sort-link {

@@ -67,7 +67,7 @@ export default function RecordRow({
       <td>
         <HumanDate timestamp={record.last_modified} />
       </td>
-      <td className="actions" data-testid={`${rid}-actions`}>
+      <td className="data-table-actions" data-testid={`${rid}-actions`}>
         <AdminLink
           name="record:attributes"
           params={{ bid, cid, rid }}

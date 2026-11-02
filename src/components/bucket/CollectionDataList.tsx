@@ -89,7 +89,7 @@ export function DataList(props: DataListProps) {
             <td>
               <HumanDate timestamp={last_modified} />
             </td>
-            <td className="actions">
+            <td className="data-table-actions">
               <div className="btn-group">
                 <AdminLink
                   name="collection:records"

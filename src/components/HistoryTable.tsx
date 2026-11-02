@@ -215,7 +215,7 @@ function HistoryRow({ bid, entry }: HistoryRowProps) {
           </AdminLink>
         </td>
         <td>{user_id}</td>
-        <td className="actions">
+        <td className="data-table-actions">
           <div className="btn-group">
             <button
               className="btn btn-sm btn-secondary"
@@ -240,7 +240,7 @@ function HistoryRow({ bid, entry }: HistoryRowProps) {
       </tr>
       {open ? (
         <tr
-          className="history-row-details"
+          className="data-table-details"
           style={{ display: busy || open ? "table-row" : "none" }}
         >
           <td colSpan={6}>
