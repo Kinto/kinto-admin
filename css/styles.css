@@ -276,7 +276,7 @@ table.record-list th {
   top: 0;
   z-index: 2;
   white-space: nowrap;
-  vertical-align: center;
+  vertical-align: middle;
 }
 
 table.record-list tbody.loading td {
@@ -289,7 +289,7 @@ table.record-list td {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  vertical-align: center;
+  vertical-align: middle;
   max-width: 18.75rem;
 }
 
