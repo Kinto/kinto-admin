@@ -59,7 +59,7 @@ export function DataList(props: DataListProps) {
   );
 
   const tbody = (
-    <tbody className={""}>
+    <tbody>
       {buckets?.map((bucket, index) => {
         const { id: bid, last_modified } = bucket;
         return (

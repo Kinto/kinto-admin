@@ -62,7 +62,7 @@ export function DataList(props: DataListProps) {
   };
 
   const tbody = (
-    <tbody className={""}>
+    <tbody>
       {data?.map((group, index) => {
         const { id: gid, members, last_modified } = group;
         return (

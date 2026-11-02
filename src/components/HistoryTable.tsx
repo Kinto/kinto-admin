@@ -342,7 +342,7 @@ export default function HistoryTable({
   );
 
   const tbody = (
-    <tbody className={!historyLoaded || loading ? "loading" : ""}>
+    <tbody>
       {history.length === 0 ? (
         <tr>
           <td colSpan={6}>
@@ -394,7 +394,7 @@ export default function HistoryTable({
         colSpan={6}
         thead={thead}
         tbody={tbody}
-        dataLoaded={historyLoaded}
+        dataLoaded={historyLoaded && !loading}
         hasNextPage={hasNextHistory}
         listNextPage={nextHistoryWrapper}
       />

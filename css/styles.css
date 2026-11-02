@@ -279,7 +279,7 @@ nav.breadcrumbs {
   vertical-align: middle;
 }
 
-.data-table tbody.loading td {
+.data-table-loading tbody td {
   background: rgba(220, 220, 220, 0.15);
   color: #777;
 }

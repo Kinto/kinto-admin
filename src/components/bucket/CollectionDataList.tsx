@@ -65,7 +65,7 @@ export function DataList(props: DataListProps) {
   );
 
   const tbody = (
-    <tbody className={""}>
+    <tbody>
       {data?.map((collection, index) => {
         const {
           id: cid,

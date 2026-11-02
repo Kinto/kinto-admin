@@ -19,7 +19,9 @@ export default function PaginatedTable({
   listNextPage,
 }: Props) {
   return (
-    <div className="data-table">
+    <div
+      className={dataLoaded ? "data-table" : "data-table data-table-loading"}
+    >
       <table
         className="table table-striped table-bordered"
         data-testid="paginatedTable"
