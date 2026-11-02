@@ -130,7 +130,7 @@ export function DataList(props: DataListProps) {
       thead={thead}
       tbody={tbody}
       dataLoaded={!loading}
-      colSpan={5}
+      colSpan={6}
       hasNextPage={hasNextPage}
       listNextPage={nextWrapper}
     />
