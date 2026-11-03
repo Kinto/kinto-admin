@@ -256,10 +256,10 @@ describe("SimpleTest component", () => {
     };
 
     it("should show the review buttons if to_review_enabled is false", async () => {
+      toReviewEnabled.mockReturnValue(false);
       renderSimpleReview({
         signoff,
       });
-      toReviewEnabled.mockReturnValue(false);
       expect(await screen.findByText(/Approve/)).toBeDefined();
     });
 
