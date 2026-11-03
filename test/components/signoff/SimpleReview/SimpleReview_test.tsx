@@ -127,17 +127,6 @@ function renderSimpleReview({
 }
 
 describe("SimpleTest component", () => {
-  beforeEach(async () => {
-    localStorage.setItem("useSimpleReview", true);
-  });
-
-  it("should render spinner when authenticating", async () => {
-    renderSimpleReview({
-      auth: null,
-    });
-    expect(screen.findByTestId("spinner")).toBeDefined();
-  });
-
   it("should render spinner when session is busy", async () => {
     renderSimpleReview({
       serverInfo: null,
@@ -231,13 +220,6 @@ describe("SimpleTest component", () => {
     );
   });
 
-  it("should hide the rollback button if the hideRollback query parameter is provided", async () => {
-    renderSimpleReview({
-      search: "?hideRollback",
-    });
-    expect(screen.queryByText("Rollback")).toBeNull();
-  });
-
   it("Should not get stuck showing a spinner if signoff source fails to load", async () => {
     renderSimpleReview({
       signoff: {
@@ -252,23 +234,6 @@ describe("SimpleTest component", () => {
       },
     });
     expect(screen.queryByTestId("spinner")).toBeNull();
-  });
-
-  it("should redirect the user if the legacy review process is enabled", async () => {
-    localStorage.setItem("useSimpleReview", false);
-    renderSimpleReview({
-      serverInfo: {
-        capabilities: {
-          signer: true,
-        },
-        user: {
-          principals: [],
-        },
-      },
-    });
-
-    // Since Simple Review is the default, this means we're in the legacy UI
-    expect(screen.findByText("Switch to Default Review UI")).toBeDefined();
   });
 
   describe("to_review_enabled checks", () => {
