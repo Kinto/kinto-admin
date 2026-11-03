@@ -24,9 +24,7 @@ export default defineConfig([globalIgnores(["**/eslint.config.mjs", "**/build", 
   },
 
   languageOptions: {
-    globals: {
-      ...globals.browser,
-    },
+    globals: globals.browser,
 
     parserOptions: {
       project: ["./tsconfig.json", "./tsconfig.node.json"],
