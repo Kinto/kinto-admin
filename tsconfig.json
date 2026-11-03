@@ -20,7 +20,15 @@
       "@src/*": ["./src/*"],
       "@test/*": ["./test/*"],
     },
-    // "strictNullChecks": true,
+    // Strict flags that still have errors are turned off below. Remove each
+    // line once its errors are fixed:
+    // https://github.com/Kinto/kinto-admin/issues/2132
+    "strict": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "strictFunctionTypes": false,
+    "noImplicitThis": false,
+    "useUnknownInCatchVariables": false,
   },
   "include": ["src", "test"],
   "references": [{ "path": "./tsconfig.node.json" }]
