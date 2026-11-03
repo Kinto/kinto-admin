@@ -124,7 +124,7 @@ export default function SimpleReview() {
     });
   };
 
-  const SignoffContent = () => {
+  const renderSignoffContent = () => {
     // At this point everything is loaded.
     if (!isSigned || !(signoff.source as SignoffSourceInfo).status) {
       // Collection is not signed or missing reviews attribute.
@@ -190,7 +190,7 @@ export default function SimpleReview() {
         Changes
       </h1>
       <CollectionTabs bid={bid} cid={cid} selected="simple-review">
-        {isLoading ? <Spinner /> : <SignoffContent />}
+        {isLoading ? <Spinner /> : renderSignoffContent()}
       </CollectionTabs>
     </div>
   );
