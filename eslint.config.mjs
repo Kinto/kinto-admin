@@ -19,6 +19,10 @@ export default defineConfig([globalIgnores(["**/eslint.config.mjs", "**/build", 
     prettier,
   ],
 
+  settings: {
+    react: { version: "detect" },
+  },
+
   plugins: {
     "react-hooks": reactHooks,
   },
