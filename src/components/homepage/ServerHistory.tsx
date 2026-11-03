@@ -1,7 +1,7 @@
 import { ANONYMOUS_AUTH } from "@src/constants";
 import { useServerHistory } from "@src/hooks/servers";
 import { debounce } from "@src/utils";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import FormControl from "react-bootstrap/FormControl";
@@ -38,8 +38,8 @@ export default function ServerHistory(props: ServerHistoryProps) {
     [props]
   );
 
-  const debouncedFetchServerInfo = useCallback(
-    debounce(fetchServerInfo, debounceMillis),
+  const debouncedFetchServerInfo = useMemo(
+    () => debounce(fetchServerInfo, debounceMillis),
     [fetchServerInfo]
   );
 
