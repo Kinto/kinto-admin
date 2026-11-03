@@ -100,7 +100,7 @@ function renderSimpleReview({
     return {
       data: list,
       hasNextPage: false,
-      totalRecords: list.length,
+      totalRecords: list?.length,
     };
   });
   vi.spyOn(sessionHooks, "useAuth").mockReturnValue(auth);
@@ -131,13 +131,14 @@ describe("SimpleTest component", () => {
     renderSimpleReview({
       serverInfo: null,
     });
-    expect(screen.findByTestId("spinner")).toBeDefined();
+    expect(await screen.findByTestId("spinner")).toBeInTheDocument();
   });
 
   it("should render spinner when records are still loading", async () => {
-    vi.spyOn(recordHooks, "useRecordList").mockReturnValue({});
-    renderSimpleReview({});
-    expect(screen.findByTestId("spinner")).toBeDefined();
+    renderSimpleReview({
+      newRecords: null,
+    });
+    expect(await screen.findByTestId("spinner")).toBeInTheDocument();
   });
 
   it("should render not authenticated", async () => {
