@@ -27,6 +27,22 @@ export default function ServerHistory(props: ServerHistoryProps) {
   const [value, setValue] = useState(props.value);
   const { serverHistory, clearServerHistory } = useServerHistory();
 
+  const fetchServerInfo = useCallback(
+    server => {
+      // Server changed, request its capabilities to check what auth methods it supports.
+      const { getServerInfo, serverChange } = props.options;
+      props.onChange(server);
+      serverChange();
+      getServerInfo(anonymousAuthData(server));
+    },
+    [props]
+  );
+
+  const debouncedFetchServerInfo = useCallback(
+    debounce(fetchServerInfo, debounceMillis),
+    [fetchServerInfo]
+  );
+
   const select = useCallback(
     server => event => {
       event.preventDefault();
@@ -56,22 +72,6 @@ export default function ServerHistory(props: ServerHistoryProps) {
       }
     },
     [props]
-  );
-
-  const fetchServerInfo = useCallback(
-    server => {
-      // Server changed, request its capabilities to check what auth methods it supports.
-      const { getServerInfo, serverChange } = props.options;
-      props.onChange(server);
-      serverChange();
-      getServerInfo(anonymousAuthData(server));
-    },
-    [props]
-  );
-
-  const debouncedFetchServerInfo = useCallback(
-    debounce(fetchServerInfo, debounceMillis),
-    [fetchServerInfo]
   );
 
   const { id, placeholder, options, disabled = false } = props;
