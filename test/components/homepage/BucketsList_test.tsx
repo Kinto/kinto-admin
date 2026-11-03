@@ -24,17 +24,15 @@ describe("BucketsList", () => {
     ],
   };
 
-  it("Should render a list of groups as expected", () => {
+  it("Should render a list of buckets as expected", () => {
     renderWithRouter(<DataList {...props} />);
-    expect(screen.queryByText("groupA")).toBeDefined();
-    expect(screen.queryByText("groupB")).toBeDefined();
-    expect(screen.queryByText("memberA-1, memberA-2")).toBeDefined();
-    expect(screen.queryByText("memberB-1, memberB-2")).toBeDefined();
+    expect(screen.getByText("main-workspace")).toBeInTheDocument();
+    expect(screen.getByText("main-preview")).toBeInTheDocument();
   });
 
   it("Should render a spinner when showSpinner is true", () => {
     renderWithRouter(<DataList {...props} showSpinner={true} />);
-    expect(screen.queryByTestId("spinner")).toBeDefined();
+    expect(screen.getByTestId("spinner")).toBeInTheDocument();
   });
 });
 
@@ -43,13 +41,13 @@ describe("BucketsList list actions", () => {
     busy: false,
   };
 
-  it("Should render a Create Group button when the user has permission", () => {
+  it("Should render a Create Bucket button when the user has permission", () => {
     canCreateBucket.mockReturnValue(true);
     renderWithRouter(<ListActions {...props} />);
-    expect(screen.queryByText("Create bucket")).toBeDefined();
+    expect(screen.getByText("Create bucket")).toBeInTheDocument();
   });
 
-  it("Should render no Create Group button when the user lacks permission", () => {
+  it("Should render no Create Bucket button when the user lacks permission", () => {
     canCreateBucket.mockReturnValue(false);
     renderWithRouter(<ListActions {...props} />);
     expect(screen.queryByText("Create bucket")).toBeNull();
