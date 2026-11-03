@@ -17,14 +17,11 @@ export default defineConfig([globalIgnores(["**/eslint.config.mjs", "**/build", 
     // https://github.com/jsx-eslint/eslint-plugin-react/issues/3977
     fixupConfigRules([react.configs.flat.recommended, react.configs.flat["jsx-runtime"]]),
     prettier,
+    reactHooks.configs.flat.recommended,
   ],
 
   settings: {
     react: { version: "detect" },
-  },
-
-  plugins: {
-    "react-hooks": reactHooks,
   },
 
   languageOptions: {
@@ -40,6 +37,14 @@ export default defineConfig([globalIgnores(["**/eslint.config.mjs", "**/build", 
     "@typescript-eslint/consistent-type-imports": "error",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/prefer-nullish-coalescing": "off", // requires Typescript `strictNullChecks`
+
+    // Existing violations; switch each back to "error" once fixed.
+    "react-hooks/globals": "warn",
+    "react-hooks/immutability": "warn",
+    "react-hooks/purity": "warn",
+    "react-hooks/set-state-in-effect": "warn",
+    "react-hooks/static-components": "warn",
+    "react-hooks/use-memo": "warn",
 
     "@typescript-eslint/no-unused-vars": ["error", {
       vars: "all",
