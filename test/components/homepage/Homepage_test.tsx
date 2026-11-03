@@ -30,7 +30,7 @@ describe("HomePage component", () => {
       renderWithRouter(<HomePage />);
 
       expect(screen.getByText("Properties").textContent).toBeDefined();
-      vi.waitFor(() => {
+      await vi.waitFor(() => {
         expect(
           [].map.call(screen.getAllByTestId("home-th"), x => x.textContent)
         ).toStrictEqual([
