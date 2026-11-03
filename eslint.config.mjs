@@ -1,34 +1,25 @@
 import { defineConfig, globalIgnores } from "eslint/config";
-import { fixupConfigRules, fixupPluginRules } from "@eslint/compat";
-import typescriptEslintEslintPlugin from "@typescript-eslint/eslint-plugin";
-import globals from "globals";
-import tsParser from "@typescript-eslint/parser";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fixupConfigRules } from "@eslint/compat";
 import js from "@eslint/js";
-import { FlatCompat } from "@eslint/eslintrc";
-import reactHooks from 'eslint-plugin-react-hooks';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all
-});
+import tseslint from "@typescript-eslint/eslint-plugin";
+import react from "eslint-plugin-react";
+import reactHooks from "eslint-plugin-react-hooks";
+import prettier from "eslint-config-prettier/flat";
+import globals from "globals";
 
 export default defineConfig([globalIgnores(["**/eslint.config.mjs", "**/build", "**/bin", "**/coverage"]), {
-  extends: fixupConfigRules(compat.extends(
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/stylistic-type-checked",
-    "plugin:react/recommended",
-    "plugin:react/jsx-runtime",
-    "prettier",
-  )),
+  extends: [
+    js.configs.recommended,
+    tseslint.configs["flat/recommended"],
+    tseslint.configs["flat/stylistic-type-checked"],
+    // eslint-plugin-react does not support ESLint 10 yet; the fixup restores
+    // the context methods it still calls. Remove once it does:
+    // https://github.com/jsx-eslint/eslint-plugin-react/issues/3977
+    fixupConfigRules([react.configs.flat.recommended, react.configs.flat["jsx-runtime"]]),
+    prettier,
+  ],
 
   plugins: {
-    "@typescript-eslint": fixupPluginRules(typescriptEslintEslintPlugin),
     "react-hooks": reactHooks,
   },
 
@@ -37,13 +28,9 @@ export default defineConfig([globalIgnores(["**/eslint.config.mjs", "**/build", 
       ...globals.browser,
     },
 
-    parser: tsParser,
-    ecmaVersion: "latest",
-    sourceType: "module",
-
     parserOptions: {
       project: ["./tsconfig.json", "./tsconfig.node.json"],
-      tsconfigRootDir: __dirname,
+      tsconfigRootDir: import.meta.dirname,
     },
   },
 
