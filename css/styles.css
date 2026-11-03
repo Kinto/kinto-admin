@@ -43,6 +43,11 @@ body {
   overflow-y: auto;
 }
 
+.app-frame .content {
+  display: flex;
+  flex-direction: column;
+}
+
 footer {
   text-align: center;
   font-size: 80%;
@@ -258,76 +263,116 @@ nav.breadcrumbs {
   margin-top: 2em;
 }
 
-.table-wrapper {
-  overflow-x: auto;
+.table-page {
+  min-height: 25rem; /* on very short windows, let .content scroll instead */
+  display: flex;
+  flex-direction: column;
+}
+
+.table-page > .card,
+.table-page > .card > .card-body {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.data-table {
+  overflow: auto;
   width: 100%;
 }
 
-table.record-list {
+.data-table table {
   border-collapse: collapse;
   table-layout: auto;
   width: max-content; /* Let the table shrink to fit its content */
   min-width: 100%; /* But not smaller than viewport/container */
 }
 
-table.record-list th {
-  background: rgba(0, 0, 0, 0.08);
+.data-table thead th {
+  background-color: var(--bs-secondary-bg);
   position: sticky;
   top: 0;
   z-index: 2;
   white-space: nowrap;
-  vertical-align: center;
+  vertical-align: middle;
 }
 
-table.record-list tbody.loading td {
+.data-table-loading tbody td {
   background: rgba(220, 220, 220, 0.15);
   color: #777;
 }
 
-table.record-list th,
-table.record-list td {
+.data-table th,
+.data-table td {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  vertical-align: center;
+  vertical-align: middle;
   max-width: 18.75rem;
 }
 
-table.record-list td.lastmod {
-  width: 7.5rem;
-  max-width: 7.5rem;
-}
-
-table.record-list td.actions {
+.data-table .data-table-actions {
   min-width: 6.875rem;
   width: 6.875rem;
-  padding: 0 0;
+  padding: 0 1rem 0 0;
   text-align: center;
   overflow: visible;
 }
 
-table.record-list td.actions .btn-group {
+.data-table-actions .btn-group {
   margin: 0 0.5em;
 }
 
-table.record-list > tbody + tbody {
-  border-top: none;
+.data-table-actions > .btn,
+.data-table-actions > .dropdown > .btn {
+  margin: 0.1rem;
 }
 
-.load-more > a {
+.data-table-actions > .dropdown {
+  display: inline;
+}
+
+.data-table-actions .dropdown-menu {
+  margin: 0 1.7em 0 0;
+}
+
+.data-table-load-more > a {
   display: block;
   width: 100%;
 }
 
-table.record-list td.load-more {
+.data-table .data-table-load-more {
   padding: 0;
   line-height: 2.5em;
 }
 
-.load-more > a:hover,
-.load-more > a:active {
+.data-table-load-more > a:hover,
+.data-table-load-more > a:active {
   background: #d9edf7;
   text-decoration: none;
+}
+
+.data-table-load-more .spinner {
+  margin-top: 0.25em;
+}
+
+.data-table-details {
+  display: table-row;
+}
+
+.data-table .data-table-details > td {
+  padding: 0;
+  margin: 0;
+}
+
+.data-table-details td pre {
+  border: none;
+  margin: 0;
+}
+
+.data-table-details .alert {
+  margin: 0;
+  border-radius: 0;
 }
 
 .card-body > .spinner,
@@ -347,31 +392,8 @@ table.record-list td.load-more {
   border-radius: 3px;
 }
 
-.load-more .spinner {
-  margin-top: 0.25em;
-}
-
 .simple-review-suggested-reviewers .spinner {
   margin: 0.25em 0 0;
-}
-
-.history-row-details {
-  display: table-row;
-}
-
-.table > tbody > tr.history-row-details > td {
-  padding: 0;
-  margin: 0;
-}
-
-.history-row-details td pre {
-  border: none;
-  margin: 0;
-}
-
-.history-row-details .alert {
-  margin: 0;
-  border-radius: 0;
 }
 
 .sort-link {

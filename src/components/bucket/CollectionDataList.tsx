@@ -65,7 +65,7 @@ export function DataList(props: DataListProps) {
   );
 
   const tbody = (
-    <tbody className={""}>
+    <tbody>
       {data?.map((collection, index) => {
         const {
           id: cid,
@@ -89,7 +89,7 @@ export function DataList(props: DataListProps) {
             <td>
               <HumanDate timestamp={last_modified} />
             </td>
-            <td className="actions">
+            <td className="data-table-actions">
               <div className="btn-group">
                 <AdminLink
                   name="collection:records"
@@ -130,7 +130,7 @@ export function DataList(props: DataListProps) {
       thead={thead}
       tbody={tbody}
       dataLoaded={!loading}
-      colSpan={5}
+      colSpan={6}
       hasNextPage={hasNextPage}
       listNextPage={nextWrapper}
     />

@@ -12,7 +12,7 @@ export default function BucketCollections() {
   const listActions = <ListActions bid={bid} busy={!collections} />;
 
   return (
-    <div className="list-page">
+    <div className="list-page table-page">
       <h1>
         Collections of <b>{bid}</b>
       </h1>
@@ -30,7 +30,6 @@ export default function BucketCollections() {
             showSpinner={!collections}
           />
         )}
-        {listActions}
       </BucketTabs>
     </div>
   );

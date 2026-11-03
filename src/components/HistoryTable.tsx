@@ -201,7 +201,7 @@ function HistoryRow({ bid, entry }: HistoryRowProps) {
   return (
     <>
       <tr>
-        <td className="lastmod">
+        <td>
           <HumanDate timestamp={last_modified} />
         </td>
         <td>{shownAction}</td>
@@ -215,7 +215,7 @@ function HistoryRow({ bid, entry }: HistoryRowProps) {
           </AdminLink>
         </td>
         <td>{user_id}</td>
-        <td className="actions">
+        <td className="data-table-actions">
           <div className="btn-group">
             <button
               className="btn btn-sm btn-secondary"
@@ -240,7 +240,7 @@ function HistoryRow({ bid, entry }: HistoryRowProps) {
       </tr>
       {open ? (
         <tr
-          className="history-row-details"
+          className="data-table-details"
           style={{ display: busy || open ? "table-row" : "none" }}
         >
           <td colSpan={6}>
@@ -342,7 +342,7 @@ export default function HistoryTable({
   );
 
   const tbody = (
-    <tbody className={!historyLoaded || loading ? "loading" : ""}>
+    <tbody>
       {history.length === 0 ? (
         <tr>
           <td colSpan={6}>
@@ -358,46 +358,48 @@ export default function HistoryTable({
   );
 
   return (
-    <div>
-      {hasOpenID && (
-        <div className="form-check form-check-inline mb-3">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            checked={showNonHumans}
-            onChange={e => handleNonHumanToggle(e.currentTarget.checked)}
-            id="showNonHumans"
-            data-testid="showNonHumans"
-          />
-          <label className="form-check-label" htmlFor="showNonHumans">
-            Show non humans entries
-          </label>
-        </div>
-      )}
-      {hasSigner && (
-        <div className="form-check form-check-inline mb-3">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            checked={showSignerPlugin && showNonHumans}
-            onChange={e => handleSignerToggle(e.currentTarget.checked)}
-            id="showSignerPlugin"
-            data-testid="showSignerPlugin"
-            disabled={!showNonHumans}
-          />
-          <label className="form-check-label" htmlFor="showSignerPlugin">
-            Show plugin entries
-          </label>
-        </div>
-      )}
+    <>
+      <div>
+        {hasOpenID && (
+          <div className="form-check form-check-inline mb-3">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              checked={showNonHumans}
+              onChange={e => handleNonHumanToggle(e.currentTarget.checked)}
+              id="showNonHumans"
+              data-testid="showNonHumans"
+            />
+            <label className="form-check-label" htmlFor="showNonHumans">
+              Show non humans entries
+            </label>
+          </div>
+        )}
+        {hasSigner && (
+          <div className="form-check form-check-inline mb-3">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              checked={showSignerPlugin && showNonHumans}
+              onChange={e => handleSignerToggle(e.currentTarget.checked)}
+              id="showSignerPlugin"
+              data-testid="showSignerPlugin"
+              disabled={!showNonHumans}
+            />
+            <label className="form-check-label" htmlFor="showSignerPlugin">
+              Show plugin entries
+            </label>
+          </div>
+        )}
+      </div>
       <PaginatedTable
         colSpan={6}
         thead={thead}
         tbody={tbody}
-        dataLoaded={historyLoaded}
+        dataLoaded={historyLoaded && !loading}
         hasNextPage={hasNextHistory}
         listNextPage={nextHistoryWrapper}
       />
-    </div>
+    </>
   );
 }

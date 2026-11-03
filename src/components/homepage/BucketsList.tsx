@@ -59,7 +59,7 @@ export function DataList(props: DataListProps) {
   );
 
   const tbody = (
-    <tbody className={""}>
+    <tbody>
       {buckets?.map((bucket, index) => {
         const { id: bid, last_modified } = bucket;
         return (
@@ -72,7 +72,7 @@ export function DataList(props: DataListProps) {
             <td>
               <HumanDate timestamp={last_modified} />
             </td>
-            <td className="actions">
+            <td className="data-table-actions">
               <div className="btn-group">
                 {[
                   {
@@ -145,7 +145,7 @@ export default function BucketsList() {
 
   const listActions = <ListActions busy={!buckets} />;
   return (
-    <div className="list-page">
+    <div className="list-page table-page">
       <h1>
         Buckets of <b>{serverInfo?.project_name}</b>
       </h1>

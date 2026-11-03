@@ -24,7 +24,7 @@ export default function CollectionHistory() {
   const history = useCollectionHistory(bid, cid, filters);
 
   return (
-    <div>
+    <div className="table-page">
       <h1>
         History for{" "}
         <b>

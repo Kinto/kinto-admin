@@ -10,7 +10,7 @@ export default function BucketGroups() {
   const listActions = <ListActions bid={bid} busy={!groups} />;
 
   return (
-    <div className="list-page">
+    <div className="list-page table-page">
       <h1>
         Groups of <b>{bid}</b>
       </h1>
@@ -23,7 +23,6 @@ export default function BucketGroups() {
         ) : (
           <DataList bid={bid} groups={groups} showSpinner={!groups} />
         )}
-        {listActions}
       </BucketTabs>
     </div>
   );

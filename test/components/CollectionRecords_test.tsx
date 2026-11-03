@@ -190,7 +190,7 @@ describe("CollectionRecords component", () => {
         expect(screen.getAllByText("Bulk create").length).toBe(1);
       });
 
-      it("should render list actions twice if list is long", () => {
+      it("should render list actions once even if list is long", () => {
         useRecordList.mockReturnValue({
           data: Array.from({ length: 11 }, (_, i) => ({
             id: `id${i}`,
@@ -202,8 +202,8 @@ describe("CollectionRecords component", () => {
         });
         renderWithRouter(<CollectionRecords />, routeProps);
 
-        expect(screen.getAllByText("Create record").length).toBe(2);
-        expect(screen.getAllByText("Bulk create").length).toBe(2);
+        expect(screen.getAllByText("Create record").length).toBe(1);
+        expect(screen.getAllByText("Bulk create").length).toBe(1);
       });
     });
 

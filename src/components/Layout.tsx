@@ -106,18 +106,20 @@ export function Layout() {
           ) : null}
           <div className={contentClasses}>
             <Notifications />
-            <button
-              data-testid="sidebar-toggle"
-              className={"btn toggle-sidebar"}
-              onClick={toggleSideBar}
-            >
-              {showSidebar ? (
-                <LayoutSidebar className="icon" />
-              ) : (
-                <LayoutSidebarInset className="icon" />
-              )}
-            </button>
-            <Breadcrumbs />
+            <div>
+              <button
+                data-testid="sidebar-toggle"
+                className={"btn toggle-sidebar"}
+                onClick={toggleSideBar}
+              >
+                {showSidebar ? (
+                  <LayoutSidebar className="icon" />
+                ) : (
+                  <LayoutSidebarInset className="icon" />
+                )}
+              </button>
+              <Breadcrumbs />
+            </div>
             <Routes>
               {/* Without auth */}
               <Route path="/auth/:payload/:token" Component={AuthCallback} />

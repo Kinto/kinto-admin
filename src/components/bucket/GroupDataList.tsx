@@ -62,7 +62,7 @@ export function DataList(props: DataListProps) {
   };
 
   const tbody = (
-    <tbody className={""}>
+    <tbody>
       {data?.map((group, index) => {
         const { id: gid, members, last_modified } = group;
         return (
@@ -76,7 +76,7 @@ export function DataList(props: DataListProps) {
             <td>
               <HumanDate timestamp={last_modified} />
             </td>
-            <td className="actions">
+            <td className="data-table-actions">
               <div className="btn-group">
                 {serverInfo && "history" in serverInfo.capabilities && (
                   <AdminLink

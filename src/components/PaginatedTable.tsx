@@ -19,9 +19,11 @@ export default function PaginatedTable({
   listNextPage,
 }: Props) {
   return (
-    <div className="table-wrapper">
+    <div
+      className={dataLoaded ? "data-table" : "data-table data-table-loading"}
+    >
       <table
-        className="table table-striped table-bordered record-list"
+        className="table table-striped table-bordered"
         data-testid="paginatedTable"
       >
         {thead}
@@ -29,7 +31,10 @@ export default function PaginatedTable({
         {hasNextPage && (
           <tfoot>
             <tr>
-              <td colSpan={colSpan} className="load-more text-center">
+              <td
+                colSpan={colSpan}
+                className="data-table-load-more text-center"
+              >
                 {!dataLoaded ? (
                   <Spinner />
                 ) : (
