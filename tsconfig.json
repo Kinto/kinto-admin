@@ -11,8 +11,6 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "forceConsistentCasingInFileNames": true,
-    "allowJs": false,
     "paths": {
       "@src/*": ["./src/*"],
       "@test/*": ["./test/*"],
