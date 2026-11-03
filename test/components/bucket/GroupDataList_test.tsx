@@ -13,32 +13,35 @@ vi.mock("../../../src/permission", () => {
 describe("Bucket GroupDataList", () => {
   const props = {
     bid: "test",
-    groups: [
-      {
-        members: ["memberB-1", "memberB-2"],
-        id: "groupB",
-        last_modified: 1699997111073,
-      },
-      {
-        members: ["memberA-1", "memberA-2"],
-        id: "groupA",
-        last_modified: 1699997106916,
-      },
-    ],
+    groups: {
+      data: [
+        {
+          members: ["memberB-1", "memberB-2"],
+          id: "groupB",
+          last_modified: 1699997111073,
+        },
+        {
+          members: ["memberA-1", "memberA-2"],
+          id: "groupA",
+          last_modified: 1699997106916,
+        },
+      ],
+      hasNextPage: false,
+    },
     capabilities: {},
   };
 
   it("Should render a list of groups as expected", () => {
     renderWithRouter(<DataList {...props} />);
-    expect(screen.queryByText("groupA")).toBeDefined();
-    expect(screen.queryByText("groupB")).toBeDefined();
-    expect(screen.queryByText("memberA-1, memberA-2")).toBeDefined();
-    expect(screen.queryByText("memberB-1, memberB-2")).toBeDefined();
+    expect(screen.getByText("groupA")).toBeInTheDocument();
+    expect(screen.getByText("groupB")).toBeInTheDocument();
+    expect(screen.getByText("memberA-1, memberA-2")).toBeInTheDocument();
+    expect(screen.getByText("memberB-1, memberB-2")).toBeInTheDocument();
   });
 
   it("Should render a spinner when showSpinner is true", () => {
     renderWithRouter(<DataList {...props} showSpinner={true} />);
-    expect(screen.queryByTestId("spinner")).toBeDefined();
+    expect(screen.getByTestId("spinner")).toBeInTheDocument();
   });
 });
 
@@ -59,7 +62,7 @@ describe("Bucket GroupListActions", () => {
   it("Should render a Create Group button when the user has permission", () => {
     canCreateGroup.mockReturnValue(true);
     renderWithRouter(<ListActions {...props} />);
-    expect(screen.queryByText("Create group")).toBeDefined();
+    expect(screen.getByText("Create group")).toBeInTheDocument();
   });
 
   it("Should render no Create Group button when the user lacks permission", () => {
