@@ -196,14 +196,6 @@ export default function RecordTable({
     return schema?.properties && displayField in schema.properties;
   };
 
-  if (records.length === 0) {
-    return (
-      <div className="alert alert-info">
-        <p>This collection has no records.</p>
-      </div>
-    );
-  }
-
   const filteredRecords = useMemo(() => {
     if (!filter || !records.length) return records;
     let pattern: RegExp;
@@ -216,6 +208,14 @@ export default function RecordTable({
     }
     return records.filter(x => pattern.test(JSON.stringify(x)));
   }, [records, filter]);
+
+  if (records.length === 0) {
+    return (
+      <div className="alert alert-info">
+        <p>This collection has no records.</p>
+      </div>
+    );
+  }
 
   const thead = (
     <thead>
