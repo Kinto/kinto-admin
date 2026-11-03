@@ -314,7 +314,7 @@ nav.breadcrumbs {
 .data-table .data-table-actions {
   min-width: 6.875rem;
   width: 6.875rem;
-  padding: 0 0;
+  padding: 0 1rem 0 0;
   text-align: center;
   overflow: visible;
 }
