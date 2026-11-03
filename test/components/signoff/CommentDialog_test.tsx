@@ -28,6 +28,6 @@ describe("Signoff CommentDialog component", () => {
     expect(testProps.onConfirm).toBeCalledTimes(0);
     fireEvent.click(confirm);
     expect(testProps.onConfirm).toBeCalledTimes(1);
-    expect(screen.queryByTestId("spinner")).toBeDefined();
+    expect(screen.getByTestId("spinner")).toBeInTheDocument();
   });
 });

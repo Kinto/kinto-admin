@@ -96,7 +96,7 @@ describe("BaseForm component", () => {
     expect(inputTitle.disabled).toBe(true);
     expect(inputContent.disabled).toBe(true);
     expect(submit.disabled).toBe(true);
-    expect(spinner).toBeDefined();
+    expect(spinner).toBeInTheDocument();
   });
 
   it("Should show a spinner and disable the form when form is submitted", async () => {
@@ -123,7 +123,7 @@ describe("BaseForm component", () => {
     expect(inputTitle.disabled).toBe(true);
     expect(inputContent.disabled).toBe(true);
     expect(submit.disabled).toBe(true);
-    expect(screen.queryByTestId("spinner")).toBeDefined();
+    expect(screen.getByTestId("spinner")).toBeInTheDocument();
   });
 
   it("Should scroll to the first property that fails validation", async () => {

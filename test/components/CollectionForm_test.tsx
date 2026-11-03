@@ -138,8 +138,8 @@ describe("CollectionForm component", () => {
       path: "/:bid",
     });
 
-    const warning = await screen.queryByText(warningText);
-    expect(warning).toBeDefined();
+    const warning = await screen.findByText(warningText);
+    expect(warning).toBeInTheDocument();
     const title = await screen.findByLabelText("Collection id*");
     expect(title.disabled).toBe(true);
   });
@@ -151,8 +151,8 @@ describe("CollectionForm component", () => {
       path: "/:bid/:cid",
     });
 
-    const warning = await screen.queryByText(warningText);
-    expect(warning).toBeDefined();
+    const warning = await screen.findByText(warningText);
+    expect(warning).toBeInTheDocument();
     const title = await screen.findByLabelText("Collection id*");
     expect(title.disabled).toBe(true);
   });

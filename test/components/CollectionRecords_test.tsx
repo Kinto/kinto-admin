@@ -100,7 +100,7 @@ describe("CollectionRecords component", () => {
         target: { value: "" },
       });
       expect(screen.getByTestId("id1-row")).toBeDefined();
-      expect(screen.queryByTestId("id2-row")).toBeDefined();
+      expect(screen.getByTestId("id2-row")).toBeInTheDocument();
     });
   });
 

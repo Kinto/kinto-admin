@@ -60,7 +60,7 @@ describe("JSONRecordForm", () => {
     const value = getCodeMirrorValue(container);
 
     expect(value).toBe("{}");
-    expect(screen.queryByLabelText("File attachment")).toBeDefined();
+    expect(screen.getByLabelText(/File attachment/)).toBeInTheDocument();
     fireEvent.click(screen.queryByText("Submit"));
     expect(lastSubmittedData.formData).toStrictEqual({
       attachment: undefined,
@@ -80,7 +80,7 @@ describe("JSONRecordForm", () => {
     const value = getCodeMirrorValue(container);
 
     expect(value).toBe('{\n  "foo": "bar"\n}');
-    expect(screen.queryByLabelText("File attachment")).toBeDefined();
+    expect(screen.getByLabelText(/File attachment/)).toBeInTheDocument();
     fireEvent.click(screen.queryByText("Submit"));
     expect(lastSubmittedData.formData).toStrictEqual({
       foo: "bar",
@@ -104,7 +104,7 @@ describe("JSONRecordForm", () => {
     const value = getCodeMirrorValue(container);
 
     expect(value).toBe('{\n  "foo": "bar"\n}');
-    expect(screen.queryByLabelText("File attachment")).toBeDefined();
+    expect(screen.getByLabelText(/File attachment/)).toBeInTheDocument();
     fireEvent.click(screen.queryByText("Submit"));
     expect(lastSubmittedData.formData).toStrictEqual({
       foo: "bar",
@@ -127,7 +127,7 @@ describe("JSONRecordForm", () => {
     const value = getCodeMirrorValue(container);
 
     expect(value).toBe('{\n  "foo": "bar"\n}');
-    expect(screen.queryByLabelText("File attachment")).toBeDefined();
+    expect(screen.getByLabelText(/File attachment/)).toBeInTheDocument();
     fireEvent.click(screen.queryByText("Submit"));
     expect(lastSubmittedData).toBeNull();
   });

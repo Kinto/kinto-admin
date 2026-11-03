@@ -108,7 +108,7 @@ describe("CollectionCompare", () => {
       expect(screen.queryByTestId("spinner")).not.toBeInTheDocument()
     );
 
-    expect(screen.queryAllByTestId("record-diff")).toBeDefined();
+    expect(screen.getAllByTestId("record-diff")).not.toHaveLength(0);
     expect(screen.getByText("other-bucket-col2-record-2")).toBeDefined();
     // Every page of records must be fetched on both sides.
     expect(recordHooks.useRecordList).toHaveBeenCalledWith(
@@ -142,7 +142,7 @@ describe("CollectionCompare", () => {
       expect(screen.queryByTestId("spinner")).not.toBeInTheDocument()
     );
 
-    expect(screen.queryAllByTestId("record-diff")).toBeDefined();
+    expect(screen.getAllByTestId("record-diff")).not.toHaveLength(0);
     expect(screen.getByText("other-bucket-col1-record-2")).toBeDefined();
   });
 
@@ -189,7 +189,7 @@ describe("CollectionCompare", () => {
 
     expect(screen.getByLabelText("Bucket")).not.toBeDisabled();
     expect(screen.getByLabelText("Collection")).not.toBeDisabled();
-    expect(screen.queryAllByTestId("record-diff")).toBeDefined();
+    expect(screen.getAllByTestId("record-diff")).not.toHaveLength(0);
     expect(screen.getByText("other-bucket-col1-record-2")).toBeDefined();
   });
 
