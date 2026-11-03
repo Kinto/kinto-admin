@@ -40,7 +40,6 @@ export default defineConfig([globalIgnores(["**/eslint.config.mjs", "**/build", 
 
     // Existing violations; switch each back to "error" once fixed.
     "react-hooks/globals": "warn",
-    "react-hooks/immutability": "warn",
     "react-hooks/purity": "warn",
     "react-hooks/set-state-in-effect": "warn",
     "react-hooks/static-components": "warn",
