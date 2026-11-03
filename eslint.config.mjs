@@ -43,7 +43,6 @@ export default defineConfig([globalIgnores(["**/eslint.config.mjs", "**/build", 
     "react-hooks/purity": "warn",
     "react-hooks/set-state-in-effect": "warn",
     "react-hooks/static-components": "warn",
-    "react-hooks/use-memo": "warn",
 
     "@typescript-eslint/no-unused-vars": ["error", {
       vars: "all",
