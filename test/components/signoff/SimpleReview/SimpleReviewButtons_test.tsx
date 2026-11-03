@@ -19,7 +19,7 @@ function renderButtons(props = null, route = "/") {
   return { approveChanges, declineChanges, rollbackChanges };
 }
 
-describe("SimpleReviewHeader component", () => {
+describe("SimpleReviewButtons component", () => {
   it("should call approveChanges when approve button is clicked", async () => {
     const { approveChanges } = renderButtons({
       status: "to-review",

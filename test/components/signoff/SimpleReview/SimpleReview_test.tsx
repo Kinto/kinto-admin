@@ -126,7 +126,7 @@ function renderSimpleReview({
   });
 }
 
-describe("SimpleTest component", () => {
+describe("SimpleReview component", () => {
   it("should render spinner when session is busy", async () => {
     renderSimpleReview({
       serverInfo: null,
