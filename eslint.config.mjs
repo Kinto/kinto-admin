@@ -39,7 +39,6 @@ export default defineConfig([globalIgnores(["**/eslint.config.mjs", "**/build", 
     "@typescript-eslint/prefer-nullish-coalescing": "off", // requires Typescript `strictNullChecks`
 
     // Existing violations; switch each back to "error" once fixed.
-    "react-hooks/globals": "warn",
     "react-hooks/set-state-in-effect": "warn",
 
     "@typescript-eslint/no-unused-vars": ["error", {
