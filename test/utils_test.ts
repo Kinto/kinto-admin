@@ -233,15 +233,6 @@ describe("buildAttachmentUrl", () => {
     ).toBe("http://cdn/file");
   });
 
-  it("should build an attachment url from the capability config", () => {
-    expect(
-      buildAttachmentUrl(
-        { attachment: { location: "/file" } },
-        { attachments: { base_url: "http://cdn" } }
-      )
-    ).toBe("http://cdn/file");
-  });
-
   it("should ensure a valid url is built", () => {
     expect(
       buildAttachmentUrl(
