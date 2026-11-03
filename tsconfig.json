@@ -5,8 +5,6 @@
     "lib": ["ESNext", "DOM"],
     "skipLibCheck": true,
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
     "types": ["vitest/globals"],
     "isolatedModules": true,
     "noEmit": true,
