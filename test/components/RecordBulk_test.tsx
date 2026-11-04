@@ -31,18 +31,21 @@ describe("RecordBulk component", () => {
           };
         },
       });
+    });
 
+    it("should render a form", () => {
       renderWithRouter(<RecordBulk />, {
         route: "/bucket/collection",
         path: "/:bid/:cid",
       });
-    });
-
-    it("should render a form", () => {
       expect(screen.getByTestId("formWrapper")).toBeDefined();
     });
 
     it("should submitted entered data", async () => {
+      renderWithRouter(<RecordBulk />, {
+        route: "/bucket/collection",
+        path: "/:bid/:cid",
+      });
       fireEvent.change(screen.getAllByLabelText("foo")[0], {
         target: { value: "bar1" },
       });

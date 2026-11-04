@@ -64,15 +64,16 @@ describe("AuthForm component", () => {
         { server: "http://test.server/v1", authType: "anonymous" },
         { server: "http://server.test/v1", authType: "accounts" },
       ]);
-      renderWithRouter(<AuthForm />);
     });
 
     it("should render a setup form", () => {
+      renderWithRouter(<AuthForm />);
       expect(screen.getByTestId("formWrapper")).toBeDefined();
     });
 
     describe("Basic Auth", () => {
       it("should submit setup data", async () => {
+        renderWithRouter(<AuthForm />);
         fireEvent.change(screen.queryByLabelText("Server*"), {
           target: { value: "http://test.server/v1" },
         });
@@ -107,6 +108,7 @@ describe("AuthForm component", () => {
 
     describe("LDAP", () => {
       it("should submit setup data", async () => {
+        renderWithRouter(<AuthForm />);
         fireEvent.change(screen.queryByLabelText("Server*"), {
           target: { value: "http://test.server/v1" },
         });
@@ -135,6 +137,7 @@ describe("AuthForm component", () => {
 
     describe("OpenID", () => {
       it("should navigate to external auth URL with our redirect URL", async () => {
+        renderWithRouter(<AuthForm />);
         fireEvent.change(screen.queryByLabelText("Server*"), {
           target: { value: "http://test.server/v1" },
         });

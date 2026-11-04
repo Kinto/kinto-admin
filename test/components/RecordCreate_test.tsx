@@ -46,17 +46,21 @@ describe("RecordCreate component", () => {
       status: "success",
       data: DEFAULT_SERVERINFO,
     });
+  });
+
+  it("should render a form", () => {
     renderWithRouter(<RecordCreate />, {
       route: "/bucket/collection",
       path: "/:bid/:cid",
     });
-  });
-
-  it("should render a form", () => {
     expect(screen.getByTestId("formWrapper")).toBeDefined();
   });
 
   it("should submitted entered data", () => {
+    renderWithRouter(<RecordCreate />, {
+      route: "/bucket/collection",
+      path: "/:bid/:cid",
+    });
     fireEvent.change(screen.getByLabelText("foo"), {
       target: { value: "bar" },
     });

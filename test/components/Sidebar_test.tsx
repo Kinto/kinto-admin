@@ -53,20 +53,19 @@ describe("Sidebar component", () => {
   });
 
   describe("Authenticated", () => {
-    let bucketMenus;
-
-    beforeEach(() => {
+    it("should list the user buckets", () => {
       renderWithRouter(<Sidebar />, {
         ...routeProps,
       });
-      bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
-    });
-
-    it("should list the user buckets", () => {
+      const bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
       expect(bucketMenus).toHaveLength(2);
     });
 
     it("should list collections for the first bucket", () => {
+      renderWithRouter(<Sidebar />, {
+        ...routeProps,
+      });
+      const bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
       const collMenus = bucketMenus[0].querySelectorAll(
         ".collections-menu-entry"
       );
@@ -78,6 +77,10 @@ describe("Sidebar component", () => {
     });
 
     it("should list collections for the second bucket in the correct order", () => {
+      renderWithRouter(<Sidebar />, {
+        ...routeProps,
+      });
+      const bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
       const collMenus = bucketMenus[1].querySelectorAll(
         ".collections-menu-entry"
       );
@@ -93,6 +96,10 @@ describe("Sidebar component", () => {
     });
 
     it("should highlight the selected collection", () => {
+      renderWithRouter(<Sidebar />, {
+        ...routeProps,
+      });
+      const bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
       const targetEntry = bucketMenus[0].querySelectorAll(
         ".collections-menu-entry"
       )[0];
@@ -102,8 +109,6 @@ describe("Sidebar component", () => {
   });
 
   describe("Read only collections", () => {
-    let bucketMenus;
-
     beforeEach(() => {
       vi.spyOn(bucketHooks, "useBucketsCollectionsList").mockReturnValueOnce(
         buckets.map(b => {
@@ -118,13 +123,13 @@ describe("Sidebar component", () => {
           };
         })
       );
-      renderWithRouter(<Sidebar />, {
-        ...routeProps,
-      });
-      bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
     });
 
     it("should highlight the selected collection even if it's read-only and we haven't enabled show read-only collections", () => {
+      renderWithRouter(<Sidebar />, {
+        ...routeProps,
+      });
+      const bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
       const targetEntry = bucketMenus[0].querySelectorAll(
         ".collections-menu-entry"
       )[0];
