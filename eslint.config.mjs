@@ -6,6 +6,8 @@ import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import prettier from "eslint-config-prettier/flat";
 import globals from "globals";
+import vitest from "@vitest/eslint-plugin";
+import testingLibrary from "eslint-plugin-testing-library";
 
 export default defineConfig([globalIgnores(["**/eslint.config.mjs", "**/build", "**/bin", "**/coverage"]), {
   extends: [
@@ -48,4 +50,7 @@ export default defineConfig([globalIgnores(["**/eslint.config.mjs", "**/build", 
       caughtErrorsIgnorePattern: "^_",
     }],
   },
+}, {
+  files: ["test/**"],
+  extends: [vitest.configs.recommended, testingLibrary.configs["flat/react"]],
 }]);
