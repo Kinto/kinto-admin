@@ -38,6 +38,8 @@ export default defineConfig({
     environment: "jsdom",
     include: ["**/*_{test,spec}.?(c|m)[jt]s?(x)"],
     setupFiles: ["test/setupTests.ts"],
+    restoreMocks: true,
+    unstubGlobals: true,
     coverage: {
       include: ["src/**"]
     }
