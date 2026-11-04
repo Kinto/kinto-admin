@@ -1,5 +1,6 @@
 import JSONRecordForm from "@src/components/record/JSONRecordForm";
 import { fireEvent, render, screen } from "@testing-library/react";
+import { EditorView } from "@uiw/react-codemirror";
 
 const testAttachment = {
   hash: "efcea498c4bed6cac0076d91bf4f5df67fa875b3676248e5a6ae2ef4ed1bcef1",
@@ -9,11 +10,10 @@ const testAttachment = {
   mimetype: "image/jpeg",
 };
 
-function getCodeMirrorValue(container) {
-  const lines = Array.from(container.querySelectorAll(".cm-line"))
-    .map(el => el.textContent)
-    .filter(Boolean);
-  return lines.join("\n");
+function getCodeMirrorValue() {
+  return EditorView.findFromDOM(
+    screen.getByRole("textbox")
+  ).state.doc.toString();
 }
 
 describe("JSONRecordForm", () => {
@@ -23,10 +23,10 @@ describe("JSONRecordForm", () => {
   };
 
   it("Renders an empty form for a new record (attachments disabled)", async () => {
-    const { container } = render(
+    render(
       <JSONRecordForm disabled={false} record="{}" onSubmit={submitMock} />
     );
-    const value = getCodeMirrorValue(container);
+    const value = getCodeMirrorValue();
 
     expect(value).toBe("{}");
     fireEvent.click(screen.queryByText("Submit"));
@@ -34,14 +34,14 @@ describe("JSONRecordForm", () => {
   });
 
   it("Renders the expected form for an existing record (attachments disabled)", async () => {
-    const { container } = render(
+    render(
       <JSONRecordForm
         disabled={false}
         record='{ "foo": "bar" }'
         onSubmit={submitMock}
       />
     );
-    const value = getCodeMirrorValue(container);
+    const value = getCodeMirrorValue();
 
     expect(value).toBe('{ "foo": "bar" }');
     fireEvent.click(screen.queryByText("Submit"));
@@ -49,7 +49,7 @@ describe("JSONRecordForm", () => {
   });
 
   it("Renders an empty form for a new record (attachments enabled)", async () => {
-    const { container } = render(
+    render(
       <JSONRecordForm
         disabled={false}
         record="{}"
@@ -57,7 +57,7 @@ describe("JSONRecordForm", () => {
         attachmentEnabled={true}
       />
     );
-    const value = getCodeMirrorValue(container);
+    const value = getCodeMirrorValue();
 
     expect(value).toBe("{}");
     expect(screen.getByLabelText(/File attachment/)).toBeInTheDocument();
@@ -69,7 +69,7 @@ describe("JSONRecordForm", () => {
   });
 
   it("Renders the expected form for an existing record (attachments enabled)", async () => {
-    const { container } = render(
+    render(
       <JSONRecordForm
         disabled={false}
         record='{ "foo": "bar" }'
@@ -77,7 +77,7 @@ describe("JSONRecordForm", () => {
         attachmentEnabled={true}
       />
     );
-    const value = getCodeMirrorValue(container);
+    const value = getCodeMirrorValue();
 
     expect(value).toBe('{\n  "foo": "bar"\n}');
     expect(screen.getByLabelText(/File attachment/)).toBeInTheDocument();
@@ -90,7 +90,7 @@ describe("JSONRecordForm", () => {
   });
 
   it("Returns the previous attachment data when updating an existing record and not changing the attachment", async () => {
-    const { container } = render(
+    render(
       <JSONRecordForm
         disabled={false}
         record={JSON.stringify({
@@ -101,7 +101,7 @@ describe("JSONRecordForm", () => {
         attachmentEnabled={true}
       />
     );
-    const value = getCodeMirrorValue(container);
+    const value = getCodeMirrorValue();
 
     expect(value).toBe('{\n  "foo": "bar"\n}');
     expect(screen.getByLabelText(/File attachment/)).toBeInTheDocument();
@@ -115,7 +115,7 @@ describe("JSONRecordForm", () => {
 
   it("Requires an attachment to submit when told attachmentRequired and attachmentEnabled are true", async () => {
     lastSubmittedData = null;
-    const { container } = render(
+    render(
       <JSONRecordForm
         disabled={false}
         record='{ "foo": "bar" }'
@@ -124,7 +124,7 @@ describe("JSONRecordForm", () => {
         attachmentRequired={true}
       />
     );
-    const value = getCodeMirrorValue(container);
+    const value = getCodeMirrorValue();
 
     expect(value).toBe('{\n  "foo": "bar"\n}');
     expect(screen.getByLabelText(/File attachment/)).toBeInTheDocument();
