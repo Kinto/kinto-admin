@@ -160,15 +160,14 @@ describe("JSONRecordForm", () => {
   });
 
   it("Disables the form when disabled is true", async () => {
-    const { container } = render(
+    render(
       <JSONRecordForm
         disabled={true}
         record='{ "foo": "bar" }'
         onSubmit={submitMock}
       />
     );
-    const value = container.querySelector("pre").textContent;
-    expect(value).toBe('{ "foo": "bar" }');
+    expect(screen.getByText('{ "foo": "bar" }')).toBeInTheDocument();
     expect(screen.queryByText("Submit").disabled).toBe(true);
   });
 });

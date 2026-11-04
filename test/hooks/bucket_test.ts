@@ -10,7 +10,7 @@ import {
 import { logout, useAuth } from "@src/hooks/session";
 import * as storageHooks from "@src/hooks/storage";
 import { mockNotifyError } from "@test/testUtils";
-import { render, renderHook } from "@testing-library/react";
+import { render, renderHook, screen } from "@testing-library/react";
 import { createElement } from "react";
 
 describe("bucket hooks", () => {
@@ -503,10 +503,10 @@ describe("bucket hooks", () => {
         );
       }
 
-      const { getByTestId } = render(createElement(Parent));
+      render(createElement(Parent));
 
       await vi.waitFor(() => {
-        expect(getByTestId("buckets").textContent).toBe("main");
+        expect(screen.getByTestId("buckets").textContent).toBe("main");
       });
       expect(listBucketsMock).toHaveBeenCalled();
       expect(notifyErrorMock).not.toHaveBeenCalledWith(
