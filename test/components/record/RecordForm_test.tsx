@@ -157,10 +157,11 @@ describe("RecordForm", () => {
   });
 
   it("Renders an empty form for a new record (attachments enabled)", async () => {
+    vi.spyOn(collectionHooks, "useCollection").mockReturnValueOnce(attachCol);
     renderWithRouter(<RecordForm />, createRouteProps);
     expect(screen.queryByLabelText("TestTitle").value).toBe("");
     expect(screen.queryByLabelText("TestContent").value).toBe("");
-    expect(screen.findByLabelText("File attachment")).toBeDefined();
+    expect(await screen.findByLabelText(/File attachment/)).toBeInTheDocument();
   });
 
   it("Renders the expected form for an existing record (attachments enabled) and allows user to save without updating attachment", async () => {
@@ -176,7 +177,7 @@ describe("RecordForm", () => {
     renderWithRouter(<RecordForm />, editRouteProps);
     expect(screen.queryByLabelText("TestTitle").value).toBe("test title");
     expect(screen.queryByLabelText("TestContent").value).toBe("test content");
-    expect(screen.findByLabelText("File attachment")).toBeDefined();
+    expect(await screen.findByLabelText(/File attachment/)).toBeInTheDocument();
     fireEvent.change(screen.queryByLabelText("TestTitle"), {
       target: { value: "updated title" },
     });

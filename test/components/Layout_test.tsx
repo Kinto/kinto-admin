@@ -44,8 +44,7 @@ describe("App component", () => {
       useAuthMock.mockReturnValueOnce(undefined);
       useServerInfoMock.mockReturnValueOnce({ status: "idle" });
       renderWithRouter(<Layout />, routeProps);
-      expect(screen.queryByTestId("sessionInfo-bar")).toBeDefined();
-      expect(screen.queryByTestId("sessionInfo-bar")).toContainHTML("");
+      expect(screen.getByTestId("sessionInfo-bar")).not.toHaveTextContent(/\S/);
     });
 
     it("should render a session top bar when anonymous", async () => {

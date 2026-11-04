@@ -19,7 +19,7 @@ describe("Bucket CollectionDataList", () => {
     capabilities: {},
     listBucketNextCollections: vi.fn(),
     collections: {
-      entries: [
+      data: [
         {
           schema: {
             type: "object",
@@ -53,19 +53,18 @@ describe("Bucket CollectionDataList", () => {
           last_modified: 1699985728831,
         },
       ],
-      loaded: true,
       hasNextPage: false,
     },
   };
   it("Should render a list of collections as expected", () => {
     renderWithRouter(<DataList {...props} />);
-    expect(screen.queryByText("test-collection-id")).toBeDefined();
-    expect(screen.queryByTitle("Browse collection")).toBeDefined();
-    expect(screen.queryByTitle("Edit collection attributes")).toBeDefined();
+    expect(screen.getByText("test-collection-id")).toBeInTheDocument();
+    expect(screen.getByTitle("Browse collection")).toBeInTheDocument();
+    expect(screen.getByTitle("Edit collection attributes")).toBeInTheDocument();
   });
   it("Should render a spinner when showSpinner is true", () => {
     renderWithRouter(<DataList {...props} showSpinner={true} />);
-    expect(screen.queryByTestId("spinner")).toBeDefined();
+    expect(screen.getByTestId("spinner")).toBeInTheDocument();
   });
 });
 
@@ -85,7 +84,7 @@ describe("Bucket CollectionListActions", () => {
   it("Should render a Create Collection button when the user has permission to create one", () => {
     canCreateCollection.mockReturnValue(true);
     renderWithRouter(<ListActions {...props} />);
-    expect(screen.queryByText("Create collection")).toBeDefined();
+    expect(screen.getByText("Create collection")).toBeInTheDocument();
   });
 
   it("Should render no Create Collection button when the user lacks permission", () => {
