@@ -10,7 +10,7 @@ const schema: RJSFSchema = {
   default: "{}",
 };
 
-const schemaWithUpload: RJSFSchema = {
+const schemaWithUpload: RJSFSchema & { required: string[] } = {
   type: "object",
   properties: {
     jsonContent: {
@@ -72,9 +72,12 @@ export default function JSONRecordForm({
   const _record: any | string = attachmentEnabled
     ? splitAttachment(record)
     : record;
-  const _schema = attachmentEnabled ? schemaWithUpload : schema;
+  let _schema = attachmentEnabled ? schemaWithUpload : schema;
   if (attachmentEnabled && attachmentRequired) {
-    _schema.required.push("__attachment__");
+    _schema = {
+      ...schemaWithUpload,
+      required: [...schemaWithUpload.required, "__attachment__"],
+    };
   }
 
   const handleOnSubmit = data => {

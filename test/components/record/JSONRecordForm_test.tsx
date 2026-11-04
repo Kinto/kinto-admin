@@ -132,6 +132,33 @@ describe("JSONRecordForm", () => {
     expect(lastSubmittedData).toBeNull();
   });
 
+  it("Does not require an attachment when editing after creating a record", async () => {
+    // Render a JSONRecordForm with `attachmentRequired=true`. This used to add
+    // the requirement to a schema shared by every JSONRecordForm.
+    const { unmount } = render(
+      <JSONRecordForm
+        disabled={false}
+        record="{}"
+        onSubmit={submitMock}
+        attachmentEnabled={true}
+        attachmentRequired={true}
+      />
+    );
+    unmount();
+    // render the form again, this time with `attachmentRequired=false`
+    render(
+      <JSONRecordForm
+        disabled={false}
+        record='{ "foo": "bar" }'
+        onSubmit={submitMock}
+        attachmentEnabled={true}
+        attachmentRequired={false}
+      />
+    );
+    // The attachment field is not required
+    expect(screen.getByLabelText(/File attachment/)).not.toBeRequired();
+  });
+
   it("Disables the form when disabled is true", async () => {
     const { container } = render(
       <JSONRecordForm
