@@ -65,15 +65,13 @@ describe("RecordAttributes component", () => {
   };
 
   describe("Simple schema", () => {
-    beforeEach(() => {
-      renderWithRouter(<RecordAttributes />, routeProps);
-    });
-
     it("should render a form", () => {
+      renderWithRouter(<RecordAttributes />, routeProps);
       expect(screen.getByTestId("formWrapper")).toBeDefined();
     });
 
     it("should submitted entered data", () => {
+      renderWithRouter(<RecordAttributes />, routeProps);
       const field = screen.getByLabelText("foo");
 
       expect(field.value).toBe("bar");
@@ -105,15 +103,16 @@ describe("RecordAttributes component", () => {
     };
 
     beforeEach(() => {
-      vi.spyOn(recordHooks, "useRecord").mockReturnValueOnce(record);
-      renderWithRouter(<RecordAttributes />, routeProps);
+      vi.spyOn(recordHooks, "useRecord").mockReturnValue(record);
     });
 
     it("should render the attachment info", () => {
+      renderWithRouter(<RecordAttributes />, routeProps);
       expect(screen.getByText("Attachment information")).toBeDefined();
     });
 
     it("should show a delete attachment button", () => {
+      renderWithRouter(<RecordAttributes />, routeProps);
       expect(screen.getByText("Delete this attachment")).toBeDefined();
     });
 
@@ -125,12 +124,11 @@ describe("RecordAttributes component", () => {
       };
 
       beforeEach(() => {
-        vi.spyOn(recordHooks, "useRecord").mockReturnValueOnce(gzipped);
-
-        renderWithRouter(<RecordAttributes />, routeProps);
+        vi.spyOn(recordHooks, "useRecord").mockReturnValue(gzipped);
       });
 
       it("should show original file attributes", () => {
+        renderWithRouter(<RecordAttributes />, routeProps);
         expect(
           screen.getByTestId("attachmentInfo-currentSize").textContent
         ).toBe("100 kB");
@@ -157,10 +155,10 @@ describe("RecordAttributes component", () => {
         status: "success",
         data: DEFAULT_SERVERINFO,
       });
-      renderWithRouter(<RecordAttributes />, routeProps);
     });
 
     it("should show a warning that server does not support attachments", () => {
+      renderWithRouter(<RecordAttributes />, routeProps);
       expect(
         screen.getByText("Attachments are not enabled on this server.")
       ).toBeDefined();
@@ -168,8 +166,6 @@ describe("RecordAttributes component", () => {
   });
 
   describe("Kinto fields", () => {
-    let field;
-
     describe("ID in schema", () => {
       const withID = structuredClone(collection);
       withID.schema.properties.id = { type: "string" };
@@ -186,19 +182,23 @@ describe("RecordAttributes component", () => {
           vi.spyOn(collectionHooks, "useCollection").mockReturnValueOnce(
             withUISchema
           );
-          renderWithRouter(<RecordAttributes />);
-          field = screen.getByLabelText("id");
         });
 
         it("should load the id value", () => {
+          renderWithRouter(<RecordAttributes />);
+          const field = screen.getByLabelText("id");
           expect(field.value).toBe("abc");
         });
 
         it("should show a custom field", () => {
+          renderWithRouter(<RecordAttributes />);
+          const field = screen.getByLabelText("id");
           expect(field.tagName.toLowerCase()).toBe("textarea");
         });
 
         it("should show the custom widget as disabled", () => {
+          renderWithRouter(<RecordAttributes />);
+          const field = screen.getByLabelText("id");
           expect(field.hasAttribute("disabled")).toBe(true);
         });
       });
