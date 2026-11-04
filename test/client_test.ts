@@ -26,10 +26,6 @@ describe("retryingFetch", () => {
     vi.stubGlobal("fetch", fetchMock);
   });
 
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
   it("retries a transient server error and returns the successful response", async () => {
     fetchMock
       .mockResolvedValueOnce(response(502))

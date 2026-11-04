@@ -133,7 +133,7 @@ describe("bucket hooks", () => {
   describe("useBucketHistory", () => {
     let listHistoryMock;
 
-    beforeAll(() => {
+    beforeEach(() => {
       listHistoryMock = vi.fn();
       vi.spyOn(client, "getClient").mockReturnValue({
         bucket: bid => {
@@ -460,9 +460,6 @@ describe("bucket hooks", () => {
   // `setupClient`, it would throw "Client not configured."
   describe("useAuth + useBucketList race on refresh", () => {
     beforeEach(() => {
-      // Drop spies installed by sibling describes (e.g. on client.getClient)
-      // so this test runs against the real client module.
-      vi.restoreAllMocks();
       logout();
       client.resetClient();
     });

@@ -22,10 +22,6 @@ function b64ToBlob(b64str) {
 }
 
 describe("Base64File rjsf component", () => {
-  afterAll(() => {
-    vitest.restoreAllMocks();
-  });
-
   it("Should render a file input and an empty value when no value is provided", async () => {
     render(<Base64File />);
     expect(await screen.getByTestId("b64-file")).toBeDefined();

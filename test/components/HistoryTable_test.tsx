@@ -31,10 +31,6 @@ describe("HistoryTable component", () => {
     });
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
   it("should show warning banner if collection is excluded", async () => {
     vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue({
       status: "success",
@@ -111,10 +107,6 @@ describe("HistoryTable filters", () => {
     ]);
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
   it("should render both filters when supported", async () => {
     renderWithRouter(<HistoryTable {...baseProps} />);
     expect(await screen.findByTestId("showNonHumans")).toBeInTheDocument();
@@ -157,10 +149,6 @@ describe("HistoryTable without capabilities", () => {
       status: "success",
       data: DEFAULT_SERVERINFO,
     });
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   it("should hide filters when capabilities are missing", async () => {

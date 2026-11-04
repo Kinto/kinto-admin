@@ -3,7 +3,9 @@ import * as storageHooks from "@src/hooks/storage";
 
 describe("preferences hooks", () => {
   const mock = vi.fn();
-  vi.spyOn(storageHooks, "useLocalStorage").mockImplementation(mock);
+  beforeEach(() => {
+    vi.spyOn(storageHooks, "useLocalStorage").mockImplementation(mock);
+  });
 
   describe("useShowSidebar", () => {
     it("returns storage val and setVal", async () => {

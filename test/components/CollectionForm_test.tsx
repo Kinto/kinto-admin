@@ -11,6 +11,8 @@ import { fireEvent, screen } from "@testing-library/react";
 
 const warningText =
   "You don't have the required permission to edit this collection.";
+const createWarningText =
+  "You don't have the required permission to create a collection in this bucket.";
 
 vi.mock("@src/permission", () => {
   return {
@@ -138,7 +140,7 @@ describe("CollectionForm component", () => {
       path: "/:bid",
     });
 
-    const warning = await screen.findByText(warningText);
+    const warning = await screen.findByText(createWarningText);
     expect(warning).toBeInTheDocument();
     const title = await screen.findByLabelText("Collection id*");
     expect(title.disabled).toBe(true);
@@ -146,6 +148,12 @@ describe("CollectionForm component", () => {
 
   it("Should render as read-only for a user lacking permissions editing a collection", async () => {
     canEditCollection.mockReturnValue(false);
+    vi.spyOn(collectionHooks, "useCollection").mockReturnValue({
+      id: "test",
+      schema: { type: "object", properties: { foo: "bar" } },
+      uiSchema: {},
+      last_modified: 2,
+    });
     renderWithRouter(<CollectionForm />, {
       route: "/default/test",
       path: "/:bid/:cid",

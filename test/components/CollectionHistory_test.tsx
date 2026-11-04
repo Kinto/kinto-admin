@@ -12,8 +12,6 @@ describe("CollectionHistory component", () => {
   const useCollectionHistoryMock = vi.fn();
 
   beforeEach(() => {
-    vi.restoreAllMocks();
-
     // Hook mocks
     vi.spyOn(collectionHooks, "useCollectionHistory").mockImplementation(
       useCollectionHistoryMock
@@ -37,10 +35,6 @@ describe("CollectionHistory component", () => {
       hasNextPage: false,
       next: vi.fn(),
     });
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   it("should render the history table", async () => {

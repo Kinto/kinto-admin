@@ -15,10 +15,6 @@ describe("Notifications component", () => {
     );
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
   it("should render an error", () => {
     useNotificationsMock.mockReturnValue([{ type: "danger", message: "fail" }]);
     render(<Notifications />);

@@ -120,7 +120,7 @@ describe("group hooks", () => {
   describe("useGroupHistory", () => {
     let listHistoryMock;
 
-    beforeAll(() => {
+    beforeEach(() => {
       listHistoryMock = vi.fn();
       vi.spyOn(client, "getClient").mockReturnValue({
         bucket: bid => {
