@@ -3,7 +3,6 @@ import { getClient } from "@src/client";
 import type { Capabilities, RecordData, RecordResource } from "@src/types";
 import { buildAttachmentUrl, omit } from "@src/utils";
 import { filesize } from "filesize";
-import type { FC } from "react";
 import { Paperclip } from "react-bootstrap-icons";
 import { useParams } from "react-router";
 
@@ -116,10 +115,6 @@ export function AttachmentInfo(props: AttachmentInfoProps) {
     callback();
   };
 
-  const FileSize: FC<{ bytes: number }> = ({ bytes }) => {
-    return <>{filesize(bytes)}</>;
-  };
-
   return (
     <div className="card attachment-info">
       <div className="card-header">
@@ -154,7 +149,7 @@ export function AttachmentInfo(props: AttachmentInfoProps) {
               <tr>
                 <th>Size</th>
                 <td data-testid="attachmentInfo-newSize">
-                  <FileSize bytes={attachment.size} />
+                  {filesize(attachment.size)}
                 </td>
               </tr>
               <tr>
@@ -179,7 +174,7 @@ export function AttachmentInfo(props: AttachmentInfoProps) {
                 </tr>
                 <tr>
                   <td data-testid="attachmentInfo-currentSize">
-                    <FileSize bytes={attachment.original.size} />
+                    {filesize(attachment.original.size)}
                   </td>
                 </tr>
                 <tr>

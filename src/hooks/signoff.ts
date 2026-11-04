@@ -21,11 +21,14 @@ export function useSignoff(
   cacheBust?: number
 ): null | SignerCapabilityResource | SignoffCollectionsInfo {
   const signer = serverInfo?.capabilities?.signer;
+  const signerMissing = !!serverInfo && !signer;
   // Only log once about missing signer, when we know serverInfo has loaded
-  if (serverInfo && !signer && !loggedMissingSigner) {
-    loggedMissingSigner = true;
-    console.warn("kinto-remote-settings signer is not enabled.");
-  }
+  useEffect(() => {
+    if (signerMissing && !loggedMissingSigner) {
+      loggedMissingSigner = true;
+      console.warn("kinto-remote-settings signer is not enabled.");
+    }
+  }, [signerMissing]);
 
   const resource: null | SignerCapabilityResource = _pickSignoffResource(
     signer,

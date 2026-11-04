@@ -26,6 +26,7 @@ export function CollectionCompare() {
   const [selectedCollection, setSelectedCollection] =
     useState(targetCollection);
   const hasAutoSelected = useRef(false);
+  const [now] = useState(() => Date.now());
 
   // Some collections have history disabled.
   const { data: serverInfo } = useServerInfo();
@@ -96,7 +97,7 @@ export function CollectionCompare() {
     selectedTimestampStr &&
     (isNaN(selectedTimestampInt) ||
       selectedTimestampInt < JANUARY_2015 ||
-      selectedTimestampInt > Date.now());
+      selectedTimestampInt > now);
   const selectedTimestamp = invalidTimestamp ? undefined : selectedTimestampInt;
 
   function onTimestampChange(timestampStr) {
