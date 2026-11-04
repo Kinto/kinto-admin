@@ -30,21 +30,21 @@ describe("group hooks", () => {
     });
 
     it("calls the API again if the bid, gid, or cacheBust values change", async () => {
-      const rendered = renderHook(
+      const { rerender } = renderHook(
         ({ bid, gid, cb }) => useGroup(bid, gid, cb),
         {
           initialProps: { bid: "bid", gid: "gid", cb: undefined },
         }
       );
-      rendered.rerender({ bid: "bid", gid: "gid" });
-      rendered.rerender({ bid: "bid", gid: "gid" });
+      rerender({ bid: "bid", gid: "gid" });
+      rerender({ bid: "bid", gid: "gid" });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(getGroupMock).toHaveBeenCalledTimes(1);
 
-      rendered.rerender({ bid: "biz", gid: "gid" });
-      rendered.rerender({ bid: "biz", gid: "gid", cb: 0 });
-      rendered.rerender({ bid: "biz", gid: "gid", cb: 1 });
-      rendered.rerender({ bid: "biz", gid: "gid1" });
+      rerender({ bid: "biz", gid: "gid" });
+      rerender({ bid: "biz", gid: "gid", cb: 0 });
+      rerender({ bid: "biz", gid: "gid", cb: 1 });
+      rerender({ bid: "biz", gid: "gid1" });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(getGroupMock).toHaveBeenCalledTimes(5);
     });
@@ -89,17 +89,17 @@ describe("group hooks", () => {
     });
 
     it("calls the API again if bid changes", async () => {
-      const rendered = renderHook(({ bid }) => useGroupList(bid), {
+      const { rerender } = renderHook(({ bid }) => useGroupList(bid), {
         initialProps: { bid: "bid" },
       });
-      rendered.rerender({ bid: "bid" });
-      rendered.rerender({ bid: "bid" });
+      rerender({ bid: "bid" });
+      rerender({ bid: "bid" });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(listGroupsMock).toHaveBeenCalledTimes(1);
 
-      rendered.rerender({ bid: "biz" });
-      rendered.rerender({ bid: "big" });
-      rendered.rerender({ bid: "biz" });
+      rerender({ bid: "biz" });
+      rerender({ bid: "big" });
+      rerender({ bid: "biz" });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(listGroupsMock).toHaveBeenCalledTimes(4);
     });

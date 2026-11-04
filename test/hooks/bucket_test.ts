@@ -42,19 +42,19 @@ describe("bucket hooks", () => {
     });
 
     it("calls the API again if the bid or cacheBust values change", async () => {
-      const rendered = renderHook(({ bid, cb }) => useBucket(bid, cb), {
+      const { rerender } = renderHook(({ bid, cb }) => useBucket(bid, cb), {
         initialProps: { bid: "bid", cb: undefined },
       });
-      rendered.rerender({ bid: "bid" });
-      rendered.rerender({ bid: "bid" });
+      rerender({ bid: "bid" });
+      rerender({ bid: "bid" });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(getDataMock).toHaveBeenCalledTimes(1);
 
-      rendered.rerender({ bid: "bid", cb: 0 });
-      rendered.rerender({ bid: "bid", cb: 1 });
-      rendered.rerender({ bid: "biz" });
-      rendered.rerender({ bid: "biz", cb: 0 });
-      rendered.rerender({ bid: "biz", cb: 1 });
+      rerender({ bid: "bid", cb: 0 });
+      rerender({ bid: "bid", cb: 1 });
+      rerender({ bid: "biz" });
+      rerender({ bid: "biz", cb: 0 });
+      rerender({ bid: "biz", cb: 1 });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(getDataMock).toHaveBeenCalledTimes(6);
     });
@@ -99,20 +99,20 @@ describe("bucket hooks", () => {
     });
 
     it("calls the API again if the bid or cacheBust values change", async () => {
-      const rendered = renderHook(
+      const { rerender } = renderHook(
         ({ bid, cb }) => useBucketPermissions(bid, cb),
         { initialProps: { bid: "bid", cb: undefined } }
       );
-      rendered.rerender({ bid: "bid" });
-      rendered.rerender({ bid: "bid" });
+      rerender({ bid: "bid" });
+      rerender({ bid: "bid" });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(getPermissionsMock).toHaveBeenCalledTimes(1);
 
-      rendered.rerender({ bid: "bid", cb: 0 });
-      rendered.rerender({ bid: "bid", cb: 1 });
-      rendered.rerender({ bid: "biz" });
-      rendered.rerender({ bid: "biz", cb: 0 });
-      rendered.rerender({ bid: "biz", cb: 1 });
+      rerender({ bid: "bid", cb: 0 });
+      rerender({ bid: "bid", cb: 1 });
+      rerender({ bid: "biz" });
+      rerender({ bid: "biz", cb: 0 });
+      rerender({ bid: "biz", cb: 1 });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(getPermissionsMock).toHaveBeenCalledTimes(6);
     });

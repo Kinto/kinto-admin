@@ -42,22 +42,22 @@ describe("collection hooks", () => {
     });
 
     it("calls the API again if the bid, cid, or cacheBust values change", async () => {
-      const rendered = renderHook(
+      const { rerender } = renderHook(
         ({ bid, cid, cb }) => useCollection(bid, cid, cb),
         {
           initialProps: { bid: "bid", cid: "cid", cb: undefined },
         }
       );
-      rendered.rerender({ bid: "bid", cid: "cid" });
-      rendered.rerender({ bid: "bid", cid: "cid" });
+      rerender({ bid: "bid", cid: "cid" });
+      rerender({ bid: "bid", cid: "cid" });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(getDataMock).toHaveBeenCalledTimes(1);
 
-      rendered.rerender({ bid: "bid", cid: "cid1" });
-      rendered.rerender({ bid: "bid1", cid: "cid1" });
-      rendered.rerender({ bid: "bid1", cid: "cid" });
-      rendered.rerender({ bid: "bid1", cid: "cid", cb: 1 });
-      rendered.rerender({ bid: "bid1", cid: "cid", cb: 2 });
+      rerender({ bid: "bid", cid: "cid1" });
+      rerender({ bid: "bid1", cid: "cid1" });
+      rerender({ bid: "bid1", cid: "cid" });
+      rerender({ bid: "bid1", cid: "cid", cb: 1 });
+      rerender({ bid: "bid1", cid: "cid", cb: 2 });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(getDataMock).toHaveBeenCalledTimes(6);
     });
@@ -108,22 +108,22 @@ describe("collection hooks", () => {
     });
 
     it("calls the API again if the bid, cid, or cacheBust values change", async () => {
-      const rendered = renderHook(
+      const { rerender } = renderHook(
         ({ bid, cid, cb }) => useCollectionPermissions(bid, cid, cb),
         {
           initialProps: { bid: "bid", cid: "cid", cb: undefined },
         }
       );
-      rendered.rerender({ bid: "bid", cid: "cid" });
-      rendered.rerender({ bid: "bid", cid: "cid" });
+      rerender({ bid: "bid", cid: "cid" });
+      rerender({ bid: "bid", cid: "cid" });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(getPermissionsMock).toHaveBeenCalledTimes(1);
 
-      rendered.rerender({ bid: "bid", cid: "cid1" });
-      rendered.rerender({ bid: "bid1", cid: "cid1" });
-      rendered.rerender({ bid: "bid1", cid: "cid" });
-      rendered.rerender({ bid: "bid1", cid: "cid", cb: 1 });
-      rendered.rerender({ bid: "bid1", cid: "cid", cb: 2 });
+      rerender({ bid: "bid", cid: "cid1" });
+      rerender({ bid: "bid1", cid: "cid1" });
+      rerender({ bid: "bid1", cid: "cid" });
+      rerender({ bid: "bid1", cid: "cid", cb: 1 });
+      rerender({ bid: "bid1", cid: "cid", cb: 2 });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(getPermissionsMock).toHaveBeenCalledTimes(6);
     });
@@ -173,19 +173,22 @@ describe("collection hooks", () => {
     });
 
     it("calls the API again if the bid or cacheBust values change", async () => {
-      const rendered = renderHook(({ bid, cb }) => useCollectionList(bid, cb), {
-        initialProps: { bid: "bid", cb: undefined },
-      });
-      rendered.rerender({ bid: "bid" });
-      rendered.rerender({ bid: "bid" });
+      const { rerender } = renderHook(
+        ({ bid, cb }) => useCollectionList(bid, cb),
+        {
+          initialProps: { bid: "bid", cb: undefined },
+        }
+      );
+      rerender({ bid: "bid" });
+      rerender({ bid: "bid" });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(listCollectionsMock).toHaveBeenCalledTimes(1);
 
-      rendered.rerender({ bid: "bid", cb: 0 });
-      rendered.rerender({ bid: "bid", cb: 1 });
-      rendered.rerender({ bid: "biz", cb: 0 });
-      rendered.rerender({ bid: "biz", cb: 1 });
-      rendered.rerender({ bid: "biz", cb: 2 });
+      rerender({ bid: "bid", cb: 0 });
+      rerender({ bid: "bid", cb: 1 });
+      rerender({ bid: "biz", cb: 0 });
+      rerender({ bid: "biz", cb: 1 });
+      rerender({ bid: "biz", cb: 2 });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(listCollectionsMock).toHaveBeenCalledTimes(6);
     });
@@ -332,23 +335,23 @@ describe("collection hooks", () => {
 
     it("calls the API again if the bid or cacheBust values change", async () => {
       listHistoryMock.mockResolvedValue({ data: [] });
-      const rendered = renderHook(
+      const { rerender } = renderHook(
         ({ bid, cid, filters, cb }) =>
           useCollectionHistory(bid, cid, filters, cb),
         {
           initialProps: { bid: "bid", cid: "cid", filters: {}, cb: undefined },
         }
       );
-      rendered.rerender({ bid: "bid", cid: "cid", filters: {} });
-      rendered.rerender({ bid: "bid", cid: "cid", filters: {} });
+      rerender({ bid: "bid", cid: "cid", filters: {} });
+      rerender({ bid: "bid", cid: "cid", filters: {} });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(listHistoryMock).toHaveBeenCalledTimes(1);
 
-      rendered.rerender({ bid: "bid", cid: "cid1", filters: {} });
-      rendered.rerender({ bid: "bid", cid: "cid1", filters: { foo: "bar" } });
-      rendered.rerender({ bid: "bid", cid: "cid1", filters: { foo: "baz" } });
-      rendered.rerender({ bid: "bid1", cid: "cid1", filters: { foo: "baz" } });
-      rendered.rerender({ bid: "bid1", cid: "cid1", filters: {} });
+      rerender({ bid: "bid", cid: "cid1", filters: {} });
+      rerender({ bid: "bid", cid: "cid1", filters: { foo: "bar" } });
+      rerender({ bid: "bid", cid: "cid1", filters: { foo: "baz" } });
+      rerender({ bid: "bid1", cid: "cid1", filters: { foo: "baz" } });
+      rerender({ bid: "bid1", cid: "cid1", filters: {} });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(listHistoryMock).toHaveBeenCalledTimes(6);
     });
