@@ -133,7 +133,7 @@ describe("bucket hooks", () => {
   describe("useBucketHistory", () => {
     let listHistoryMock;
 
-    beforeAll(() => {
+    beforeEach(() => {
       listHistoryMock = vi.fn();
       vi.spyOn(client, "getClient").mockReturnValue({
         bucket: bid => {
