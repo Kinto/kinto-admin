@@ -10,7 +10,7 @@ import {
 import { logout, useAuth } from "@src/hooks/session";
 import * as storageHooks from "@src/hooks/storage";
 import { mockNotifyError } from "@test/testUtils";
-import { render, renderHook } from "@testing-library/react";
+import { render, renderHook, screen } from "@testing-library/react";
 import { createElement } from "react";
 
 describe("bucket hooks", () => {
@@ -42,19 +42,19 @@ describe("bucket hooks", () => {
     });
 
     it("calls the API again if the bid or cacheBust values change", async () => {
-      const rendered = renderHook(({ bid, cb }) => useBucket(bid, cb), {
+      const { rerender } = renderHook(({ bid, cb }) => useBucket(bid, cb), {
         initialProps: { bid: "bid", cb: undefined },
       });
-      rendered.rerender({ bid: "bid" });
-      rendered.rerender({ bid: "bid" });
+      rerender({ bid: "bid" });
+      rerender({ bid: "bid" });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(getDataMock).toHaveBeenCalledTimes(1);
 
-      rendered.rerender({ bid: "bid", cb: 0 });
-      rendered.rerender({ bid: "bid", cb: 1 });
-      rendered.rerender({ bid: "biz" });
-      rendered.rerender({ bid: "biz", cb: 0 });
-      rendered.rerender({ bid: "biz", cb: 1 });
+      rerender({ bid: "bid", cb: 0 });
+      rerender({ bid: "bid", cb: 1 });
+      rerender({ bid: "biz" });
+      rerender({ bid: "biz", cb: 0 });
+      rerender({ bid: "biz", cb: 1 });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(getDataMock).toHaveBeenCalledTimes(6);
     });
@@ -99,20 +99,20 @@ describe("bucket hooks", () => {
     });
 
     it("calls the API again if the bid or cacheBust values change", async () => {
-      const rendered = renderHook(
+      const { rerender } = renderHook(
         ({ bid, cb }) => useBucketPermissions(bid, cb),
         { initialProps: { bid: "bid", cb: undefined } }
       );
-      rendered.rerender({ bid: "bid" });
-      rendered.rerender({ bid: "bid" });
+      rerender({ bid: "bid" });
+      rerender({ bid: "bid" });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(getPermissionsMock).toHaveBeenCalledTimes(1);
 
-      rendered.rerender({ bid: "bid", cb: 0 });
-      rendered.rerender({ bid: "bid", cb: 1 });
-      rendered.rerender({ bid: "biz" });
-      rendered.rerender({ bid: "biz", cb: 0 });
-      rendered.rerender({ bid: "biz", cb: 1 });
+      rerender({ bid: "bid", cb: 0 });
+      rerender({ bid: "bid", cb: 1 });
+      rerender({ bid: "biz" });
+      rerender({ bid: "biz", cb: 0 });
+      rerender({ bid: "biz", cb: 1 });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(getPermissionsMock).toHaveBeenCalledTimes(6);
     });
@@ -503,10 +503,10 @@ describe("bucket hooks", () => {
         );
       }
 
-      const { getByTestId } = render(createElement(Parent));
+      render(createElement(Parent));
 
       await vi.waitFor(() => {
-        expect(getByTestId("buckets").textContent).toBe("main");
+        expect(screen.getByTestId("buckets").textContent).toBe("main");
       });
       expect(listBucketsMock).toHaveBeenCalled();
       expect(notifyErrorMock).not.toHaveBeenCalledWith(

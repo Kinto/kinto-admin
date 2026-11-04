@@ -84,9 +84,7 @@ describe("CollectionCompare", () => {
       path: "/buckets/:bid/collections/:cid/compare",
     });
 
-    await waitFor(() =>
-      expect(screen.getByLabelText("Bucket")).toBeInTheDocument()
-    );
+    expect(await screen.findByLabelText("Bucket")).toBeInTheDocument();
 
     expect(screen.getByText("other-bucket")).toBeDefined();
     expect(screen.getByText("main-bucket")).toBeDefined();
@@ -226,7 +224,7 @@ describe("CollectionCompare", () => {
     });
     expect(screen.getByLabelText("Bucket")).toBeDisabled();
     expect(screen.getByLabelText("Collection")).toBeDisabled();
-    expect(screen.queryByTestId("spinner")).toBeInTheDocument();
+    expect(screen.getByTestId("spinner")).toBeInTheDocument();
   });
 
   it("should disable timestamp if history is disabled for this collection", async () => {

@@ -64,15 +64,16 @@ describe("AuthForm component", () => {
         { server: "http://test.server/v1", authType: "anonymous" },
         { server: "http://server.test/v1", authType: "accounts" },
       ]);
-      renderWithRouter(<AuthForm />);
     });
 
     it("should render a setup form", () => {
+      renderWithRouter(<AuthForm />);
       expect(screen.getByTestId("formWrapper")).toBeDefined();
     });
 
     describe("Basic Auth", () => {
       it("should submit setup data", async () => {
+        renderWithRouter(<AuthForm />);
         fireEvent.change(screen.queryByLabelText("Server*"), {
           target: { value: "http://test.server/v1" },
         });
@@ -107,6 +108,7 @@ describe("AuthForm component", () => {
 
     describe("LDAP", () => {
       it("should submit setup data", async () => {
+        renderWithRouter(<AuthForm />);
         fireEvent.change(screen.queryByLabelText("Server*"), {
           target: { value: "http://test.server/v1" },
         });
@@ -135,6 +137,7 @@ describe("AuthForm component", () => {
 
     describe("OpenID", () => {
       it("should navigate to external auth URL with our redirect URL", async () => {
+        renderWithRouter(<AuthForm />);
         fireEvent.change(screen.queryByLabelText("Server*"), {
           target: { value: "http://test.server/v1" },
         });
@@ -239,12 +242,12 @@ describe("AuthForm component", () => {
         fetchServerInfo: mockFetchServerInfo,
       });
 
-      const form = render(<AuthForm />);
-      const serverField = form.getByLabelText("Server*");
+      render(<AuthForm />);
+      const serverField = screen.getByLabelText("Server*");
 
       await waitFor(() => {
         expect(serverField.value).toBe("http://server.test/v1");
-        expect(form.getByText("BasicAuth credentials")).toBeDefined();
+        expect(screen.getByText("BasicAuth credentials")).toBeDefined();
       });
 
       fireEvent.change(serverField, {
@@ -253,10 +256,10 @@ describe("AuthForm component", () => {
       await waitFor(() => new Promise(resolve => setTimeout(resolve, 500))); // debounce wait
       expect(serverField.value).toBe("http://test.server/v1");
       expect(
-        form.getByText("Sign in using OpenID Connect (Google)")
+        screen.getByText("Sign in using OpenID Connect (Google)")
       ).toBeDefined();
 
-      const googleAuthButton = await form.findByText(
+      const googleAuthButton = await screen.findByText(
         "Sign in using OpenID Connect (Google)"
       );
       expect(googleAuthButton).toBeDefined();

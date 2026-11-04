@@ -67,10 +67,7 @@ describe("Review", () => {
       "main-workspace",
       "ms-images-reviewers"
     );
-    const items = screen
-      .getByText("Suggested Reviewers")
-      .closest("details")
-      .querySelectorAll("ul li");
+    const items = within(screen.getByRole("group")).getAllByRole("listitem");
     expect(items).toHaveLength(2);
     expect(items[0]).toHaveTextContent("ldap:bob@mozilla.com, last reviewed");
     expect(items[1]).toHaveTextContent("ldap:alice@mozilla.com");
@@ -86,27 +83,21 @@ describe("Review", () => {
 
   it("does not suggest the user who requested the review", () => {
     renderReview();
-    const reviewers = screen
-      .getByText("Suggested Reviewers")
-      .closest("details");
+    const reviewers = screen.getByRole("group");
     expect(reviewers).not.toHaveTextContent("ldap:editor@mozilla.com");
   });
 
   it("shows the Suggested Reviewers dropdown while reviewers are loading", () => {
     vi.spyOn(signoffHooks, "useLatestApprovals").mockReturnValue(undefined);
     renderReview();
-    const reviewers = screen
-      .getByText("Suggested Reviewers")
-      .closest("details");
+    const reviewers = screen.getByRole("group");
     expect(within(reviewers).getByTestId("spinner")).toBeInTheDocument();
   });
 
   it("shows the Suggested Reviewers dropdown while the reviewers group is loading", () => {
     vi.spyOn(groupHooks, "useGroup").mockReturnValue(undefined);
     renderReview();
-    const reviewers = screen
-      .getByText("Suggested Reviewers")
-      .closest("details");
+    const reviewers = screen.getByRole("group");
     expect(within(reviewers).getByTestId("spinner")).toBeInTheDocument();
   });
 
@@ -115,9 +106,7 @@ describe("Review", () => {
       .spyOn(signoffHooks, "useLatestApprovals")
       .mockReturnValue(undefined);
     const { rerender } = renderReview();
-    const dropdownWhileLoading = screen
-      .getByText("Suggested Reviewers")
-      .closest("details");
+    const dropdownWhileLoading = screen.getByRole("group");
     expect(
       within(dropdownWhileLoading).getByTestId("spinner")
     ).toBeInTheDocument();
@@ -126,9 +115,7 @@ describe("Review", () => {
       { last_modified: 1755633782328, user_id: "ldap:bob@mozilla.com" },
     ]);
     rerender(reviewElement());
-    const dropdownAfterLoading = screen
-      .getByText("Suggested Reviewers")
-      .closest("details");
+    const dropdownAfterLoading = screen.getByRole("group");
     expect(dropdownAfterLoading).toBe(dropdownWhileLoading);
     expect(
       within(dropdownAfterLoading).queryByTestId("spinner")
@@ -141,9 +128,7 @@ describe("Review", () => {
       data: { id: "ms-images-reviewers", members: ["ldap:editor@mozilla.com"] },
     });
     renderReview();
-    const reviewers = screen
-      .getByText("Suggested Reviewers")
-      .closest("details");
+    const reviewers = screen.getByRole("group");
     expect(reviewers).toHaveTextContent("None");
   });
 

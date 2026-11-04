@@ -121,11 +121,8 @@ describe("session hooks", () => {
   });
 
   describe("usePermissions", () => {
-    beforeEach(async () => {
-      const { result: auth } = renderHook(() => useAuth());
-      await vi.waitFor(() => {
-        expect(auth.current).not.toBeUndefined();
-      });
+    beforeEach(() => {
+      setAuth({ authType: "anonymous", server: "http://test.server" });
     });
 
     it("should return undefined if serverInfo isn't loaded yet", async () => {
@@ -186,11 +183,8 @@ describe("session hooks", () => {
   });
 
   describe("useServerInfo", () => {
-    beforeEach(async () => {
-      const { result: auth } = renderHook(() => useAuth());
-      await vi.waitFor(() => {
-        expect(auth.current).not.toBeUndefined();
-      });
+    beforeEach(() => {
+      setAuth({ authType: "anonymous", server: "http://test.server" });
     });
 
     it("should call the server info endpoint once for all components and return the expected result", async () => {

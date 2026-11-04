@@ -297,17 +297,17 @@ describe("signoff hooks", () => {
       ];
 
       it("Reuses cached approvals while the collection is unchanged", async () => {
-        const first = renderHook(() =>
+        const { result: first } = renderHook(() =>
           useLatestApprovals(serverInfo, "source", "cid-reuse", 42)
         );
         await vi.waitFor(() => {
-          expect(first.result.current).toEqual(expected);
+          expect(first.current).toEqual(expected);
         });
 
-        const second = renderHook(() =>
+        const { result: second } = renderHook(() =>
           useLatestApprovals(serverInfo, "source", "cid-reuse", 42)
         );
-        expect(second.result.current).toEqual(expected);
+        expect(second.current).toEqual(expected);
         expect(listHistoryMock).toHaveBeenCalledTimes(1);
       });
 
@@ -378,11 +378,11 @@ describe("signoff hooks", () => {
       });
 
       it("Does not cache approvals without a collection timestamp", async () => {
-        const first = renderHook(() =>
+        const { result: first } = renderHook(() =>
           useLatestApprovals(serverInfo, "source", "cid-no-timestamp")
         );
         await vi.waitFor(() => {
-          expect(first.result.current).toEqual(expected);
+          expect(first.current).toEqual(expected);
         });
 
         renderHook(() =>

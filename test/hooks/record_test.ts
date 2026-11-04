@@ -37,19 +37,19 @@ describe("record hooks", () => {
     });
 
     it("calls the API again if the bid, cid, rid, or cacheBust values change", async () => {
-      const rendered = renderHook(
+      const { rerender } = renderHook(
         ({ bid, cid, rid, cb }) => useRecord(bid, cid, rid, cb),
         { initialProps: { bid: "bid", cid: "cid", rid: "rid", cb: undefined } }
       );
-      rendered.rerender({ bid: "bid", cid: "cid", rid: "rid" });
-      rendered.rerender({ bid: "bid", cid: "cid", rid: "rid" });
+      rerender({ bid: "bid", cid: "cid", rid: "rid" });
+      rerender({ bid: "bid", cid: "cid", rid: "rid" });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(getRecordMock).toHaveBeenCalledTimes(1);
 
-      rendered.rerender({ bid: "bid", cid: "cid", rid: "rid1" });
-      rendered.rerender({ bid: "bid", cid: "cid", rid: "rid1", cb: 0 });
-      rendered.rerender({ bid: "bid", cid: "cid", rid: "rid1", cb: 1 });
-      rendered.rerender({ bid: "bid", cid: "cid1", rid: "rid" });
+      rerender({ bid: "bid", cid: "cid", rid: "rid1" });
+      rerender({ bid: "bid", cid: "cid", rid: "rid1", cb: 0 });
+      rerender({ bid: "bid", cid: "cid", rid: "rid1", cb: 1 });
+      rerender({ bid: "bid", cid: "cid1", rid: "rid" });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(getRecordMock).toHaveBeenCalledTimes(5);
     });
@@ -140,22 +140,22 @@ describe("record hooks", () => {
     });
 
     it("calls the API again if any parameters change", async () => {
-      const rendered = renderHook(
+      const { rerender } = renderHook(
         ({ bid, cid, sort, cb }) => useRecordList(bid, cid, sort, false, cb),
         {
           initialProps: { bid: "bid", cid: "cid", sort: "sort", cb: undefined },
         }
       );
-      rendered.rerender({ bid: "bid", cid: "cid", sort: "sort" });
-      rendered.rerender({ bid: "bid", cid: "cid", sort: "sort" });
+      rerender({ bid: "bid", cid: "cid", sort: "sort" });
+      rerender({ bid: "bid", cid: "cid", sort: "sort" });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(listRecordsMock).toHaveBeenCalledTimes(1);
 
-      rendered.rerender({ bid: "bid", cid: "cid1", sort: "sort" });
-      rendered.rerender({ bid: "bid", cid: "cid1", sort: "sort", cb: 0 });
-      rendered.rerender({ bid: "bid", cid: "cid1", sort: "sort", cb: 1 });
-      rendered.rerender({ bid: "bid1", cid: "cid1", sort: "sort" });
-      rendered.rerender({ bid: "bid1", cid: "cid1", sort: "sor1" });
+      rerender({ bid: "bid", cid: "cid1", sort: "sort" });
+      rerender({ bid: "bid", cid: "cid1", sort: "sort", cb: 0 });
+      rerender({ bid: "bid", cid: "cid1", sort: "sort", cb: 1 });
+      rerender({ bid: "bid1", cid: "cid1", sort: "sort" });
+      rerender({ bid: "bid1", cid: "cid1", sort: "sor1" });
       await vi.waitFor(() => new Promise(resolve => setTimeout(resolve, 50)));
       expect(listRecordsMock).toHaveBeenCalledTimes(6);
     });

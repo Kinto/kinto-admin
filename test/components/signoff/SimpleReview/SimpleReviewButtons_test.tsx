@@ -5,18 +5,20 @@ import { fireEvent, screen } from "@testing-library/react";
 function renderButtons(props = null, route = "/") {
   const approveChanges = vi.fn();
   const declineChanges = vi.fn();
+  const requestReview = vi.fn();
   const rollbackChanges = vi.fn();
 
   const mergedProps = {
     status: "to-review",
     approveChanges,
     declineChanges,
+    requestReview,
     rollbackChanges,
     ...props,
   };
 
   renderWithRouter(<SimpleReviewButtons {...mergedProps} />, { route });
-  return { approveChanges, declineChanges, rollbackChanges };
+  return { approveChanges, declineChanges, requestReview, rollbackChanges };
 }
 
 describe("SimpleReviewButtons component", () => {
@@ -42,9 +44,15 @@ describe("SimpleReviewButtons component", () => {
     expect(await screen.findByTestId("spinner")).toBeDefined();
   });
 
-  it.skip("should open CommentDialog when request review is clicked and call requestReview from modal", async () => {
-    // TODO: What should this test do?
-    // const { } = renderButtons({ status: "work-in-progress" });
+  it("should open CommentDialog when request review is clicked and call requestReview from modal", async () => {
+    const { requestReview } = renderButtons({
+      status: "work-in-progress",
+      canRequestReview: true,
+    });
+    fireEvent.click(screen.getByText(/Request review/));
+    fireEvent.click(await screen.findByText("Request review"));
+    expect(requestReview).toHaveBeenCalled();
+    expect(await screen.findByTestId("spinner")).toBeDefined();
   });
 
   it("should display rollback button when status is wip and call rollbackChanges from modal", async () => {

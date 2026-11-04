@@ -24,27 +24,25 @@ function b64ToBlob(b64str) {
 describe("Base64File rjsf component", () => {
   it("Should render a file input and an empty value when no value is provided", async () => {
     render(<Base64File />);
-    expect(await screen.getByTestId("b64-file")).toBeDefined();
+    expect(screen.getByTestId("b64-file")).toBeDefined();
     expect(screen.queryByTitle("Remove existing value")).toBeNull();
     expect(screen.queryByTestId("b64-download")).toBeNull();
   });
 
   it("Should render an image when one the existing value is an image", async () => {
     render(<Base64File value={tinyTestImg} />);
-    expect(await screen.getByTestId("b64-file")).toBeDefined();
-    expect(await screen.getByTitle("Remove existing value")).toBeDefined();
-    expect(await screen.getByTestId("b64-download")).toBeDefined();
-    expect(
-      await screen.getByTitle("Image preview, click to download")
-    ).toBeDefined();
+    expect(screen.getByTestId("b64-file")).toBeDefined();
+    expect(screen.getByTitle("Remove existing value")).toBeDefined();
+    expect(screen.getByTestId("b64-download")).toBeDefined();
+    expect(screen.getByTitle("Image preview, click to download")).toBeDefined();
   });
 
   it("Should render a download link when the existing value is not an image", async () => {
     render(<Base64File value={tinyTestTxt} />);
-    expect(await screen.getByTestId("b64-file")).toBeDefined();
-    expect(await screen.getByTitle("Remove existing value")).toBeDefined();
-    expect(await screen.getByTestId("b64-download")).toBeDefined();
-    expect(await screen.getByTitle("Click to download")).toBeDefined();
+    expect(screen.getByTestId("b64-file")).toBeDefined();
+    expect(screen.getByTitle("Remove existing value")).toBeDefined();
+    expect(screen.getByTestId("b64-download")).toBeDefined();
+    expect(screen.getByTitle("Click to download")).toBeDefined();
   });
 
   it("Should update the value when a new file is uploaded", async () => {
@@ -54,7 +52,7 @@ describe("Base64File rjsf component", () => {
       errors = e;
     };
     render(<Base64File onChange={changeMock} />);
-    fireEvent.change(await screen.getByTestId("b64-file"), {
+    fireEvent.change(screen.getByTestId("b64-file"), {
       target: {
         files: [b64ToBlob(tinyTestImg)],
       },
@@ -70,7 +68,7 @@ describe("Base64File rjsf component", () => {
       errors = e;
     };
     render(<Base64File onChange={changeMock} />);
-    fireEvent.change(await screen.getByTestId("b64-file"), {
+    fireEvent.change(screen.getByTestId("b64-file"), {
       target: {
         files: [b64ToBlob(hugeTestTxt)],
       },

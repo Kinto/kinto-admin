@@ -68,14 +68,15 @@ describe("CollectionRecords component", () => {
         hasNextPage: false,
         totalRecords: 2,
       });
-      renderWithRouter(<CollectionRecords />, routeProps);
     });
 
     it("should render a table", () => {
+      renderWithRouter(<CollectionRecords />, routeProps);
       expect(screen.getByTestId("paginatedTable")).toBeDefined();
     });
 
     it("should render record rows", () => {
+      renderWithRouter(<CollectionRecords />, routeProps);
       expect(screen.getByTestId("id1-row")).toBeDefined();
       expect(screen.getByTestId("id2-row")).toBeDefined();
       expect(screen.getByTestId("id1-foo").textContent).toBe("bar");
@@ -83,6 +84,7 @@ describe("CollectionRecords component", () => {
     });
 
     it("should apply live filtering", () => {
+      renderWithRouter(<CollectionRecords />, routeProps);
       const quickFilter = screen.getByTestId("quickFilter");
       fireEvent.change(quickFilter, {
         target: { value: "bar" },
@@ -123,14 +125,15 @@ describe("CollectionRecords component", () => {
         hasNextPage: false,
         totalRecords: 2,
       });
-      renderWithRouter(<CollectionRecords />, routeProps);
     });
 
     it("should render a table", () => {
+      renderWithRouter(<CollectionRecords />, routeProps);
       expect(screen.getByTestId("paginatedTable")).toBeDefined();
     });
 
     it("should render record rows", () => {
+      renderWithRouter(<CollectionRecords />, routeProps);
       expect(screen.getByTestId("id1-id").textContent).toBe("id1");
       expect(screen.getByTestId("id1-__json").textContent).toBe(
         JSON.stringify({ foo: "bar" })
@@ -153,10 +156,10 @@ describe("CollectionRecords component", () => {
         hasNextPage: false,
         totalRecords: 18,
       });
-      renderWithRouter(<CollectionRecords />, routeProps);
     });
 
     it("should show the total number of records", () => {
+      renderWithRouter(<CollectionRecords />, routeProps);
       expect(screen.getByTestId("nav-records").textContent).toBe(
         "Records (18)"
       );
@@ -225,10 +228,10 @@ describe("CollectionRecords component", () => {
           hasNextPage: false,
           totalRecords: 0,
         });
-        renderWithRouter(<CollectionRecords />, routeProps);
       });
 
       it("should not render list actions", () => {
+        renderWithRouter(<CollectionRecords />, routeProps);
         expect(screen.queryByText("Bulk create")).toBeNull();
       });
     });

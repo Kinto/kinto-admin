@@ -3,7 +3,7 @@ import { DEFAULT_SERVERINFO } from "@src/constants";
 import * as bucketHooks from "@src/hooks/bucket";
 import * as sessionHooks from "@src/hooks/session";
 import { renderWithRouter } from "@test/testUtils";
-import { screen } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 
 describe("Sidebar component", () => {
   const routeProps = {
@@ -53,37 +53,40 @@ describe("Sidebar component", () => {
   });
 
   describe("Authenticated", () => {
-    let bucketMenus;
-
-    beforeEach(() => {
+    it("should list the user buckets", () => {
       renderWithRouter(<Sidebar />, {
         ...routeProps,
       });
-      bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
-    });
-
-    it("should list the user buckets", () => {
+      const bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
       expect(bucketMenus).toHaveLength(2);
     });
 
     it("should list collections for the first bucket", () => {
-      const collMenus = bucketMenus[0].querySelectorAll(
-        ".collections-menu-entry"
+      renderWithRouter(<Sidebar />, {
+        ...routeProps,
+      });
+      const bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
+      const collMenus = within(bucketMenus[0]).getAllByTestId(
+        "sidebar-menuEntry"
       );
       // Sorted by last_edit_date descending.
-      expect([].map.call(collMenus, x => x.textContent)).toStrictEqual([
+      expect(collMenus.map(x => x.textContent)).toStrictEqual([
         "mycoll",
         "othercoll",
       ]);
     });
 
     it("should list collections for the second bucket in the correct order", () => {
-      const collMenus = bucketMenus[1].querySelectorAll(
-        ".collections-menu-entry"
+      renderWithRouter(<Sidebar />, {
+        ...routeProps,
+      });
+      const bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
+      const collMenus = within(bucketMenus[1]).getAllByTestId(
+        "sidebar-menuEntry"
       );
 
       // Sorted by last_edit_date descending, and then last_modified.
-      expect([].map.call(collMenus, x => x.textContent)).toStrictEqual([
+      expect(collMenus.map(x => x.textContent)).toStrictEqual([
         "baz",
         "bar",
         "foo",
@@ -93,8 +96,12 @@ describe("Sidebar component", () => {
     });
 
     it("should highlight the selected collection", () => {
-      const targetEntry = bucketMenus[0].querySelectorAll(
-        ".collections-menu-entry"
+      renderWithRouter(<Sidebar />, {
+        ...routeProps,
+      });
+      const bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
+      const targetEntry = within(bucketMenus[0]).getAllByTestId(
+        "sidebar-menuEntry"
       )[0];
 
       expect(targetEntry.classList.contains("active")).toBe(true);
@@ -102,8 +109,6 @@ describe("Sidebar component", () => {
   });
 
   describe("Read only collections", () => {
-    let bucketMenus;
-
     beforeEach(() => {
       vi.spyOn(bucketHooks, "useBucketsCollectionsList").mockReturnValueOnce(
         buckets.map(b => {
@@ -118,15 +123,15 @@ describe("Sidebar component", () => {
           };
         })
       );
-      renderWithRouter(<Sidebar />, {
-        ...routeProps,
-      });
-      bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
     });
 
     it("should highlight the selected collection even if it's read-only and we haven't enabled show read-only collections", () => {
-      const targetEntry = bucketMenus[0].querySelectorAll(
-        ".collections-menu-entry"
+      renderWithRouter(<Sidebar />, {
+        ...routeProps,
+      });
+      const bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
+      const targetEntry = within(bucketMenus[0]).getAllByTestId(
+        "sidebar-menuEntry"
       )[0];
 
       expect(targetEntry.classList.contains("active")).toBe(true);
