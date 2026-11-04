@@ -53,8 +53,8 @@ describe("RecordBulk component", () => {
 
       await waitFor(() => {
         expect(createRecord).toHaveBeenCalledWith({ foo: "bar1" });
-        expect(createRecord).toHaveBeenCalledWith({ foo: "bar2" });
       });
+      expect(createRecord).toHaveBeenCalledWith({ foo: "bar2" });
     });
   });
 });

@@ -28,7 +28,7 @@ describe("query heartbeat", () => {
     });
   });
 
-  it("should return the expected state model for heartbeat response ", async () => {
+  it("should return the expected state model for heartbeat response", async () => {
     const response = { serviceA: true, serviceB: false };
     client.execute.mockResolvedValue(response);
 

@@ -161,7 +161,7 @@ describe("App component", () => {
 
       renderWithRouter(<Layout />, routeProps);
 
-      expect(screen.queryByTestId("sidebar-panel")).toBeInTheDocument();
+      expect(screen.getByTestId("sidebar-panel")).toBeInTheDocument();
     });
 
     it("should not render a sidebar when false in prefs", () => {
@@ -178,7 +178,7 @@ describe("App component", () => {
 
       renderWithRouter(<Layout />, routeProps);
 
-      expect(screen.queryByTestId("sidebar-panel")).toBeInTheDocument();
+      expect(screen.getByTestId("sidebar-panel")).toBeInTheDocument();
       fireEvent.click(screen.getByTestId("sidebar-toggle"));
       expect(setShowSidebar).toHaveBeenCalledWith(false);
     });
