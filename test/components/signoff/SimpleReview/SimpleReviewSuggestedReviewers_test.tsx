@@ -1,6 +1,6 @@
 import SimpleReviewSuggestedReviewers from "@src/components/signoff/SimpleReview/SimpleReviewSuggestedReviewers";
 import * as reviewersHooks from "@src/hooks/reviewers";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 
 const source = {
   bucket: "main-workspace",
@@ -17,9 +17,9 @@ describe("SimpleReviewSuggestedReviewers component", () => {
       { id: "ldap:alice@mozilla.com" },
     ]);
     render(<SimpleReviewSuggestedReviewers source={source} />);
-    const items = screen
-      .getByTestId("simple-review-suggested-reviewers")
-      .querySelectorAll("li");
+    const items = within(
+      screen.getByTestId("simple-review-suggested-reviewers")
+    ).getAllByRole("listitem");
     expect(items).toHaveLength(2);
     expect(items[0]).toHaveTextContent("ldap:bob@mozilla.com, last reviewed");
     expect(items[1]).toHaveTextContent("ldap:alice@mozilla.com");

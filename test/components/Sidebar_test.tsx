@@ -3,7 +3,7 @@ import { DEFAULT_SERVERINFO } from "@src/constants";
 import * as bucketHooks from "@src/hooks/bucket";
 import * as sessionHooks from "@src/hooks/session";
 import { renderWithRouter } from "@test/testUtils";
-import { screen } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 
 describe("Sidebar component", () => {
   const routeProps = {
@@ -66,11 +66,11 @@ describe("Sidebar component", () => {
         ...routeProps,
       });
       const bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
-      const collMenus = bucketMenus[0].querySelectorAll(
-        ".collections-menu-entry"
+      const collMenus = within(bucketMenus[0]).getAllByTestId(
+        "sidebar-menuEntry"
       );
       // Sorted by last_edit_date descending.
-      expect([].map.call(collMenus, x => x.textContent)).toStrictEqual([
+      expect(collMenus.map(x => x.textContent)).toStrictEqual([
         "mycoll",
         "othercoll",
       ]);
@@ -81,12 +81,12 @@ describe("Sidebar component", () => {
         ...routeProps,
       });
       const bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
-      const collMenus = bucketMenus[1].querySelectorAll(
-        ".collections-menu-entry"
+      const collMenus = within(bucketMenus[1]).getAllByTestId(
+        "sidebar-menuEntry"
       );
 
       // Sorted by last_edit_date descending, and then last_modified.
-      expect([].map.call(collMenus, x => x.textContent)).toStrictEqual([
+      expect(collMenus.map(x => x.textContent)).toStrictEqual([
         "baz",
         "bar",
         "foo",
@@ -100,8 +100,8 @@ describe("Sidebar component", () => {
         ...routeProps,
       });
       const bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
-      const targetEntry = bucketMenus[0].querySelectorAll(
-        ".collections-menu-entry"
+      const targetEntry = within(bucketMenus[0]).getAllByTestId(
+        "sidebar-menuEntry"
       )[0];
 
       expect(targetEntry.classList.contains("active")).toBe(true);
@@ -130,8 +130,8 @@ describe("Sidebar component", () => {
         ...routeProps,
       });
       const bucketMenus = screen.getAllByTestId("sidebar-bucketMenu");
-      const targetEntry = bucketMenus[0].querySelectorAll(
-        ".collections-menu-entry"
+      const targetEntry = within(bucketMenus[0]).getAllByTestId(
+        "sidebar-menuEntry"
       )[0];
 
       expect(targetEntry.classList.contains("active")).toBe(true);
