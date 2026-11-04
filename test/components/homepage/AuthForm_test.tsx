@@ -37,7 +37,6 @@ describe("AuthForm component", () => {
     };
 
     beforeEach(() => {
-      vi.restoreAllMocks();
       vi.spyOn(sessionHooks, "setAuth");
       vi.stubGlobal("location", mockLocation);
 
