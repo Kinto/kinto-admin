@@ -3,7 +3,6 @@ import {
   buildAttachmentUrl,
   capitalize,
   cleanRecord,
-  diffJson,
   getServerByPriority,
   humanDate,
   makeObservable,
@@ -292,113 +291,6 @@ describe("sortHistoryEntryPermissions()", () => {
       },
     };
     expect(sortHistoryEntryPermissions(entry)).toStrictEqual(entry);
-  });
-});
-
-describe("diffJson", function () {
-  it("should return diff as string lines", () => {
-    const diff = diffJson({ x: 0, a: 1, b: 2 }, { x: 0, a: 1, b: 3 });
-    expect(diff).toStrictEqual([
-      '  {\n    "a": 1,',
-      '-   "b": 2,',
-      '+   "b": 3,',
-      '    "x": 0\n  }',
-    ]);
-  });
-
-  it("should truncate identical lines on first and last chunks", () => {
-    const a = { a: 1, b: 2, c: 3, d: 4, e: 5, f: 6, g: 7, h: 8, i: 9 };
-    const b = { ...a, e: "1" };
-    const diff = diffJson(a, b);
-    expect(diff).toStrictEqual([
-      '  ...\n    "b": 2,\n    "c": 3,\n    "d": 4,',
-      '-   "e": 5,',
-      '+   "e": "1",',
-      '    "f": 6,\n    "g": 7,\n    "h": 8,\n  ...',
-    ]);
-  });
-
-  it("should not truncate if first or last is smaller than context", () => {
-    const a = { a: 1, b: 2, c: 3, d: 4, e: 5, f: 6, g: 7, h: 8, i: 9 };
-    const b = { ...a, d: "d", f: "f" };
-    const diff = diffJson(a, b);
-    expect(diff).toStrictEqual([
-      '  {\n    "a": 1,\n    "b": 2,\n    "c": 3,',
-      '-   "d": 4,',
-      '+   "d": "d",',
-      '    "e": 5,',
-      '-   "f": 6,',
-      '+   "f": "f",',
-      '    "g": 7,\n    "h": 8,\n    "i": 9\n  }',
-    ]);
-  });
-
-  it("should not truncate if smaller than context", () => {
-    const a = { a: 1, b: 2, c: 3, d: 4, e: 5, f: 6, g: 7, h: 8, i: 9 };
-    const b = { ...a, b: "b", g: "h" };
-    const diff = diffJson(a, b);
-    expect(diff).toStrictEqual([
-      '  {\n    "a": 1,',
-      '-   "b": 2,',
-      '+   "b": "b",',
-      '    "c": 3,\n    "d": 4,\n    "e": 5,\n    "f": 6,',
-      '-   "g": 7,',
-      '+   "g": "h",',
-      '    "h": 8,\n    "i": 9\n  }',
-    ]);
-  });
-
-  it("should truncate identical lines on middle chunks", () => {
-    const a = { a: 1, b: 2, c: 3, d: 4, e: 5, f: 6, g: 7, h: 8, i: 9 };
-    const b = { ...a, a: "a", i: "i" };
-    const diff = diffJson(a, b);
-    expect(diff).toStrictEqual([
-      "  {",
-      '-   "a": 1,',
-      '+   "a": "a",',
-      '    "b": 2,\n    "c": 3,\n    "d": 4,\n  ...\n    "f": 6,\n    "g": 7,\n    "h": 8,',
-      '-   "i": 9',
-      '+   "i": "i"',
-      "  }",
-    ]);
-  });
-
-  it("should not truncate diff chunks", () => {
-    const a = { a: 1, b: 2, c: 3, d: 4, e: 5, f: 6, g: 7, h: 8, i: 9 };
-    const b = {};
-    const diff = diffJson(a, b);
-    expect(diff).toStrictEqual([
-      '- {\n-   "a": 1,\n-   "b": 2,\n-   "c": 3,\n-   "d": 4,\n-   "e": 5,\n-   "f": 6,\n-   "g": 7,\n-   "h": 8,\n-   "i": 9\n- }',
-      "+ {}",
-    ]);
-  });
-
-  it("should not truncate if context is 'all'", () => {
-    const a = {
-      a: 1,
-      b: 2,
-      c: 3,
-      d: 4,
-      e: 5,
-      f: 6,
-      g: 7,
-      h: 8,
-      i: 9,
-      j: 10,
-      k: 11,
-      l: 12,
-    };
-    const b = { ...a, f: "f", h: "h" };
-    const diff = diffJson(a, b, "all");
-    expect(diff).toStrictEqual([
-      '  {\n    "a": 1,\n    "b": 2,\n    "c": 3,\n    "d": 4,\n    "e": 5,',
-      '-   "f": 6,',
-      '+   "f": "f",',
-      '    "g": 7,',
-      '-   "h": 8,',
-      '+   "h": "h",',
-      '    "i": 9,\n    "j": 10,\n    "k": 11,\n    "l": 12\n  }',
-    ]);
   });
 });
 
