@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@codemirror/lang-json": "^6.0.2",
+    "@codemirror/merge": "^6.12.3",
     "@rjsf/core": "^6.1.2",
     "@rjsf/react-bootstrap": "^6.1.2",
     "@rjsf/utils": "^6.1.2",
