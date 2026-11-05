@@ -1,5 +1,5 @@
 import { unifiedMergeView } from "@codemirror/merge";
-import CodeMirror from "@uiw/react-codemirror";
+import CodeMirror, { EditorState, EditorView } from "@uiw/react-codemirror";
 import { canonicalize } from "diff";
 import { useMemo } from "react";
 
@@ -19,6 +19,20 @@ function stringifyForDiff(value: unknown): string {
   );
 }
 
+// Match the old diff look: solid green/red rows, colored text, +/- markers.
+const diffTheme = EditorView.theme({
+  ".cm-line::before": { content: '"  "' },
+  ".cm-line.cm-changedLine": { background: "#cbeecb", color: "green" },
+  ".cm-line.cm-changedLine::before": { content: '"+ "' },
+  ".cm-deletedChunk": { background: "#f0c9c9", color: "red" },
+  ".cm-deletedLine::before": { content: '"- "' },
+  // Every document has at least one line, so an added or removed record ends
+  // with an empty one. Hide it.
+  ".cm-line:last-child:has(> br:only-child)": { display: "none" },
+  ".cm-collapsedLines": { background: "none", padding: "0 6px" },
+  ".cm-collapsedLines:before, .cm-collapsedLines:after": { content: "none" },
+});
+
 export default function DiffView({
   source,
   target,
@@ -36,15 +50,19 @@ export default function DiffView({
       unifiedMergeView({
         original: oldText,
         mergeControls: false,
-        // Underlining every token of an added or removed record is noise.
-        highlightChanges: oldText !== "" && newText !== "",
+        highlightChanges: false,
+        syntaxHighlightDeletions: false,
+        gutter: false,
         // The default scanLimit gives up on precise diffs for anything over
         // ~8KB, which turns whole-collection diffs into one big block.
         diffConfig: { timeout: 1000 },
         collapseUnchanged: allLines ? undefined : {},
       }),
+      diffTheme,
+      EditorView.lineWrapping,
+      EditorState.phrases.of({ "$ unchanged lines": "..." }),
     ],
-    [oldText, newText, allLines]
+    [oldText, allLines]
   );
 
   return (
@@ -53,7 +71,7 @@ export default function DiffView({
       value={newText}
       editable={false}
       readOnly
-      maxHeight="40em"
+      basicSetup={false}
       extensions={extensions}
     />
   );
