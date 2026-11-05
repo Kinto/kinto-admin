@@ -31,8 +31,14 @@ export default function PerRecordDiffView({
   const [showAllLines, setShowAllLines] = useShowDiffAllLines();
   const [unifiedDiff, setUnifiedDiff] = useUnifiedDiff(false);
 
+  const changes = findChangeTypes(
+    oldRecords,
+    newRecords,
+    showExtraFields ? undefined : EXTRA_FIELDS
+  );
+  const hasDifferences = changes.length > 0;
+
   let diffContent;
-  let hasDifferences;
   if (unifiedDiff) {
     // Compute diff on the whole collection
     const sortedOldRecords = oldRecords.sort((a, b) =>
@@ -52,9 +58,6 @@ export default function PerRecordDiffView({
       strippedNewRecords,
       showAllLines ? "all" : undefined
     );
-    hasDifferences = diff.some(
-      line => line.startsWith("+") || line.startsWith("-")
-    );
     diffContent = (
       <div className="card mb-4">
         <div className="card-body p-0">
@@ -63,12 +66,6 @@ export default function PerRecordDiffView({
       </div>
     );
   } else {
-    const changes = findChangeTypes(
-      oldRecords,
-      newRecords,
-      showExtraFields ? undefined : EXTRA_FIELDS
-    );
-    hasDifferences = changes.length > 0;
     diffContent = changes.map(({ id, changeType, source, target }) => (
       <Diff
         key={id}
