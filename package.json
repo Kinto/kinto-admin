@@ -61,7 +61,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-testing-library": "^7.16.2",
     "globals": "^17.1.0",
-    "jsdom": "^30.0.1",
+    "jsdom": "^31.0.0",
     "node-fetch": "^3.3.2",
     "prettier": "^3.2.5",
     "typescript": "~6.0.3",
