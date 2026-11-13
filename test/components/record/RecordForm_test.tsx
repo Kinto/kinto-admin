@@ -8,7 +8,7 @@ import {
   SERVERINFO_WITH_ATTACHMENTS_CAPABILITY,
   renderWithRouter,
 } from "@test/testUtils";
-import { fireEvent, screen } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 
 vi.mock("@src/permission", () => {
   return {
@@ -208,6 +208,61 @@ describe("RecordForm", () => {
     });
     fireEvent.click(screen.queryByText("Create record"));
     expect(lastSubmittedData).toBeNull();
+  });
+
+  const attachFile = async () => {
+    const file = new File(["hello"], "hello.txt", { type: "text/plain" });
+    fireEvent.change(await screen.findByLabelText(/File attachment/), {
+      target: { files: [file] },
+    });
+    await screen.findByText(/hello\.txt/);
+  };
+
+  it("Keeps the id from the form when creating a record with an attachment", async () => {
+    lastSubmittedData = null;
+    vi.spyOn(collectionHooks, "useCollection").mockReturnValue({
+      ...attachCol,
+      schema: {
+        ...attachCol.schema,
+        properties: {
+          id: { type: "string", title: "TestId" },
+          ...attachCol.schema.properties,
+        },
+      },
+      uiSchema: {
+        ...attachCol.uiSchema,
+        "ui:order": ["id", "title", "content"],
+      },
+    });
+    renderWithRouter(<RecordForm />, createRouteProps);
+    fireEvent.change(screen.queryByLabelText("TestId"), {
+      target: { value: "my-id" },
+    });
+    fireEvent.change(screen.queryByLabelText("TestTitle"), {
+      target: { value: "test title" },
+    });
+    await attachFile();
+    fireEvent.click(screen.queryByText("Create record"));
+    await waitFor(() => expect(lastSubmittedData).not.toBeNull());
+    expect(lastSubmittedData.fn).toBe("addAttachment");
+    expect(lastSubmittedData.data).toStrictEqual({
+      id: "my-id",
+      title: "test title",
+    });
+  });
+
+  it("Does not send an id when creating a record with an attachment without id field", async () => {
+    lastSubmittedData = null;
+    vi.spyOn(collectionHooks, "useCollection").mockReturnValue(attachCol);
+    renderWithRouter(<RecordForm />, createRouteProps);
+    fireEvent.change(screen.queryByLabelText("TestTitle"), {
+      target: { value: "test title" },
+    });
+    await attachFile();
+    fireEvent.click(screen.queryByText("Create record"));
+    await waitFor(() => expect(lastSubmittedData).not.toBeNull());
+    expect(lastSubmittedData.fn).toBe("addAttachment");
+    expect(lastSubmittedData.data).toStrictEqual({ title: "test title" });
   });
 
   it("Disables the form when user cannot edit", async () => {

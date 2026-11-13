@@ -95,9 +95,12 @@ export default function RecordForm() {
 
     try {
       if (serverInfo.capabilities.attachments && attachment) {
+        // On update, the record id comes from the URL.
+        // On creation, keep the id from the form if any.
+        // If `id` is undefined, kinto-http assigns it with `uuid()`.
         await col.addAttachment(
           attachment,
-          { ...updatedRecord, id: rid },
+          isUpdate ? { ...updatedRecord, id: rid } : updatedRecord,
           {
             safe: true,
           }
