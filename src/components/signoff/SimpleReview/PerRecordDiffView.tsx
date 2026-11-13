@@ -1,10 +1,11 @@
+import DiffView from "@src/components/DiffView";
 import {
   useShowDiffAllLines,
   useShowDiffExtraFields,
   useUnifiedDiff,
 } from "@src/hooks/preferences";
 import type { RecordData } from "@src/types";
-import { diffJson, omit, renderDisplayField } from "@src/utils";
+import { omit, renderDisplayField } from "@src/utils";
 import { diffJson as diff, diffArrays } from "diff";
 
 export enum ChangeType {
@@ -31,8 +32,14 @@ export default function PerRecordDiffView({
   const [showAllLines, setShowAllLines] = useShowDiffAllLines();
   const [unifiedDiff, setUnifiedDiff] = useUnifiedDiff(false);
 
+  const changes = findChangeTypes(
+    oldRecords,
+    newRecords,
+    showExtraFields ? undefined : EXTRA_FIELDS
+  );
+  const hasDifferences = changes.length > 0;
+
   let diffContent;
-  let hasDifferences;
   if (unifiedDiff) {
     // Compute diff on the whole collection
     const sortedOldRecords = oldRecords.sort((a, b) =>
@@ -47,28 +54,18 @@ export default function PerRecordDiffView({
     const strippedNewRecords = showExtraFields
       ? sortedNewRecords
       : sortedNewRecords.map(r => omit(r, EXTRA_FIELDS));
-    const diff = diffJson(
-      strippedOldRecords,
-      strippedNewRecords,
-      showAllLines ? "all" : undefined
-    );
-    hasDifferences = diff.some(
-      line => line.startsWith("+") || line.startsWith("-")
-    );
     diffContent = (
       <div className="card mb-4">
         <div className="card-body p-0">
-          <DiffContent diff={diff} />
+          <DiffView
+            source={strippedOldRecords}
+            target={strippedNewRecords}
+            allLines={showAllLines}
+          />
         </div>
       </div>
     );
   } else {
-    const changes = findChangeTypes(
-      oldRecords,
-      newRecords,
-      showExtraFields ? undefined : EXTRA_FIELDS
-    );
-    hasDifferences = changes.length > 0;
     diffContent = changes.map(({ id, changeType, source, target }) => (
       <Diff
         key={id}
@@ -161,20 +158,6 @@ function Diff({
   allLines?: boolean;
   displayFields?: string[];
 }) {
-  let diff: string[];
-
-  if (source && !target) {
-    diff = JSON.stringify(source, null, 2)
-      .split("\n")
-      .map(line => `- ${line}`);
-  } else if (target && !source) {
-    diff = JSON.stringify(target, null, 2)
-      .split("\n")
-      .map(line => `+ ${line}`);
-  } else {
-    diff = diffJson(source, target, allLines ? "all" : undefined);
-  }
-
   return (
     <div className="record-diff card mb-4" data-testid="record-diff">
       <div className="card-header">
@@ -182,7 +165,7 @@ function Diff({
         {formatDiffHeader({ source, target, displayFields })}
       </div>
       <div className="card-body p-0">
-        <DiffContent diff={diff} />
+        <DiffView source={source} target={target} allLines={allLines} />
       </div>
     </div>
   );
@@ -232,26 +215,6 @@ export function formatDiffHeader({
   );
 
   return <>{fields}</>;
-}
-
-function DiffContent({ diff }: { diff: string[] }) {
-  return (
-    <pre className="json-record json-record-simple-review mb-0">
-      {diff.map((chunk: string, i) => {
-        let className = "";
-        if (chunk.startsWith("+")) {
-          className = "added";
-        } else if (chunk.startsWith("-")) {
-          className = "removed";
-        }
-        return (
-          <div key={i} className={className}>
-            <code>{chunk}</code>
-          </div>
-        );
-      })}
-    </pre>
-  );
 }
 
 function recordsAreDifferent(a: RecordData, b: RecordData): boolean {
