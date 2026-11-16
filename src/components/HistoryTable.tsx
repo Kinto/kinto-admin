@@ -1,4 +1,5 @@
 import AdminLink from "./AdminLink";
+import DiffView from "./DiffView";
 import HumanDate from "./HumanDate";
 import PaginatedTable from "./PaginatedTable";
 import Spinner from "./Spinner";
@@ -6,7 +7,7 @@ import { getClient } from "@src/client";
 import { useShowNonHumans, useShowSignerPlugin } from "@src/hooks/preferences";
 import { useServerInfo } from "@src/hooks/session";
 import type { HistoryFilters, ResourceHistoryEntry } from "@src/types";
-import { diffJson, hasHistoryDisabled } from "@src/utils";
+import { hasHistoryDisabled } from "@src/utils";
 import { sortHistoryEntryPermissions } from "@src/utils";
 import { useState } from "react";
 import {
@@ -25,27 +26,6 @@ import {
   Trash,
 } from "react-bootstrap-icons";
 import { EyeSlash } from "react-bootstrap-icons";
-
-function Diff({ source, target }: { source: any; target: any }) {
-  const diff = diffJson(source, target);
-  return (
-    <pre className="json-record">
-      {diff.map((chunk: string, i) => {
-        let className = "";
-        if (chunk.startsWith("+")) {
-          className = "added";
-        } else if (chunk.startsWith("-")) {
-          className = "removed";
-        }
-        return (
-          <div key={i} className={className}>
-            <code>{chunk}</code>
-          </div>
-        );
-      })}
-    </pre>
-  );
-}
 
 function fetchPreviousVersion(
   bid: string,
@@ -247,7 +227,7 @@ function HistoryRow({ bid, entry }: HistoryRowProps) {
             {busy ? (
               <Spinner />
             ) : previous ? (
-              <Diff source={previous.target} target={entry.target} />
+              <DiffView source={previous.target} target={entry.target} />
             ) : error ? (
               <p className="alert alert-danger">{error.toString()}</p>
             ) : (

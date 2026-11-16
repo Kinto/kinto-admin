@@ -7,7 +7,6 @@ import type {
   ServerEntry,
   ServerInfo,
 } from "@src/types";
-import { diffJson as diff } from "diff";
 import { format } from "timeago.js";
 
 export function omit(obj: any, keys: string[] = []): any {
@@ -359,51 +358,6 @@ export async function copyToClipboard(s: string | null | undefined) {
   if (["granted", "prompt", "firefox"].includes(state)) {
     await navigator.clipboard.writeText(s ?? "");
   }
-}
-
-export function diffJson(
-  a: object,
-  b: object,
-  // Number of lines to show above/below changes in diffs.
-  nLines: number | "all" = 3
-): string[] {
-  const chunks = diff(a, b);
-  return chunks.map((chunk, i) => {
-    const isFirstChunk = i == 0;
-    const isLastChunk = i == chunks.length - 1;
-
-    // Remove empty lines.
-    let lines = chunk.value.split("\n").filter(part => part !== "");
-
-    const context: number = nLines === "all" ? lines.length : nLines;
-
-    if (!chunk.added && !chunk.removed) {
-      // Truncate beginning of first chunk if larger than context.
-      // The opening brace "{" does not count as context, hence +1.
-      if (isFirstChunk && lines.length > context + 1) {
-        lines = ["..."].concat(lines.slice(-context));
-        // Truncate end of last chunk if larger than context.
-        // The closing brace "}" does not count as context, hence +1.
-      } else if (isLastChunk && lines.length > context + 1) {
-        lines = lines.slice(0, context).concat(["..."]);
-        // Truncate middle chunk only if larger than twice the context (above + below).
-      } else if (lines.length > context * 2) {
-        lines = lines
-          .slice(0, context)
-          .concat(["..."])
-          .concat(lines.slice(-context));
-      }
-    }
-
-    // Prefix chunk lines with sign.
-    const prefixedChunk = lines
-      .map(line => {
-        const prefix = chunk.added ? "+ " : chunk.removed ? "- " : "  ";
-        return prefix + line;
-      })
-      .join("\n");
-    return prefixedChunk;
-  });
 }
 
 // Allows us to share or expose data between components outside of poviders.

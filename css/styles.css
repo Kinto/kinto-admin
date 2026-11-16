@@ -406,24 +406,6 @@ nav.breadcrumbs {
   color: #fff;
 }
 
-.json-record > div {
-  padding: 1px 0 1px 4px;
-}
-
-.json-record > div.added {
-  background: #cbeecb;
-  color: green;
-}
-
-.json-record > div.removed {
-  background: #f0c9c9;
-  color: red;
-}
-
-.json-record-simple-review {
-  white-space: pre-wrap;
-}
-
 .card-header > .icon,
 .list-group-item .icon,
 .nav-tabs li .icon {
