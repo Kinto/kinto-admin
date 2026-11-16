@@ -21,16 +21,31 @@ function stringifyForDiff(value: unknown): string {
 
 // Match the old diff look: solid green/red rows, colored text, +/- markers.
 const diffTheme = EditorView.theme({
+  // Indent unchanged lines so they line up with the +/- markers.
   ".cm-line::before": { content: '"  "' },
-  ".cm-line.cm-changedLine": { background: "#cbeecb", color: "green" },
-  ".cm-line.cm-changedLine::before": { content: '"+ "' },
-  ".cm-deletedChunk": { background: "#f0c9c9", color: "red" },
-  ".cm-deletedLine::before": { content: '"- "' },
   // Every document has at least one line, so an added or removed record ends
   // with an empty one. Hide it.
   ".cm-line:last-child:has(> br:only-child)": { display: "none" },
-  ".cm-collapsedLines": { background: "none", padding: "0 6px" },
-  ".cm-collapsedLines:before, .cm-collapsedLines:after": { content: "none" },
+  // added lines
+  ".cm-line.cm-changedLine": {
+    background: "#cbeecb",
+    color: "green",
+    "&::before": { content: '"+ "' },
+  },
+  "&.cm-merge-b .cm-changedText": { background: "#9ddb9d" },
+  // deleted lines
+  ".cm-deletedChunk": {
+    background: "#f0c9c9",
+    color: "red",
+    "& .cm-deletedLine::before": { content: '"- "' },
+    "& .cm-deletedText": { background: "#e3a3a3" },
+  },
+  // Collapsed unchanged lines
+  ".cm-collapsedLines": {
+    background: "none",
+    padding: "0 6px",
+    "&:before, &:after": { content: "none" },
+  },
 });
 
 export default function DiffView({
@@ -50,8 +65,7 @@ export default function DiffView({
       unifiedMergeView({
         original: oldText,
         mergeControls: false,
-        highlightChanges: false,
-        syntaxHighlightDeletions: false,
+        highlightChanges: oldText !== "" && newText !== "",
         gutter: false,
         // The default scanLimit gives up on precise diffs for anything over
         // ~8KB, which turns whole-collection diffs into one big block.
@@ -62,7 +76,7 @@ export default function DiffView({
       EditorView.lineWrapping,
       EditorState.phrases.of({ "$ unchanged lines": "..." }),
     ],
-    [oldText, allLines]
+    [oldText, newText, allLines]
   );
 
   return (
