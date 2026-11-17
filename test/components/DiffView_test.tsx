@@ -1,4 +1,4 @@
-import DiffView from "@src/components/DiffView";
+import DiffView, { TextDiffView } from "@src/components/DiffView";
 import { render, screen } from "@testing-library/react";
 
 function addedLines() {
@@ -158,5 +158,14 @@ describe("DiffView", () => {
     rerender(<DiffView source={{ title: "a" }} target={{ title: "b" }} />);
     expect(removedLines()).toEqual(['"title": "a"']);
     expect(addedLines()).toEqual(['"title": "b"']);
+  });
+});
+
+describe("TextDiffView", () => {
+  it("diffs text line by line, keeping blank lines", () => {
+    render(<TextDiffView oldText={"a\n\nb\n"} newText={"a\n\nc\n"} />);
+    expect(removedLines()).toEqual(["b"]);
+    expect(addedLines()).toEqual(["c"]);
+    expect(screen.getByText("a")).toBeInTheDocument();
   });
 });

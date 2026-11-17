@@ -57,9 +57,24 @@ export default function DiffView({
   target?: unknown;
   allLines?: boolean;
 }) {
-  const oldText = stringifyForDiff(source);
-  const newText = stringifyForDiff(target);
+  return (
+    <TextDiffView
+      oldText={stringifyForDiff(source)}
+      newText={stringifyForDiff(target)}
+      allLines={allLines}
+    />
+  );
+}
 
+export function TextDiffView({
+  oldText,
+  newText,
+  allLines = false,
+}: {
+  oldText: string;
+  newText: string;
+  allLines?: boolean;
+}) {
   const extensions = useMemo(
     () => [
       unifiedMergeView({
