@@ -242,6 +242,20 @@ export function buildAttachmentUrl(
     : ensureTrailingSlash(base_url) + dropStartingSlash(location);
 }
 
+// The admin page's CSP only lets it fetch() from its own origin and the ones
+// listed in the server's admin_csp_connect_src setting.
+export function canFetchAttachments(capabilities: Capabilities): boolean {
+  const baseUrl = capabilities.attachments?.base_url;
+  if (!baseUrl) {
+    return false;
+  }
+  const { origin } = new URL(baseUrl, window.location.href);
+  const allowed = (capabilities.admin?.csp_connect_src ?? []).map(src =>
+    src.replace(/\/$/, "")
+  );
+  return origin === window.location.origin || allowed.includes(origin);
+}
+
 export function sortHistoryEntryPermissions(
   entry: ResourceHistoryEntry
 ): ResourceHistoryEntry {
