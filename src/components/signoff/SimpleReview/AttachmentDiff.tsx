@@ -4,7 +4,7 @@ import type { Attachment, Capabilities, RecordData } from "@src/types";
 import { buildAttachmentUrl } from "@src/utils";
 import { filesize } from "filesize";
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useId, useState } from "react";
 
 // Chosen by extension because attachment mimetypes are unreliable.
 const TEXT_ATTACHMENT_EXTENSIONS = [
@@ -101,6 +101,8 @@ export default function AttachmentDiff({
   );
 }
 
+// Stays mounted while the <details> is closed, so view settings survive
+// closing and reopening it.
 function ComparisonResult({
   state,
   links,
@@ -110,6 +112,9 @@ function ComparisonResult({
   links: ReactNode;
   allLines: boolean;
 }) {
+  const [sideBySide, setSideBySide] = useState(false);
+  const sideBySideId = useId();
+
   switch (state.status) {
     case "idle":
       return null;
@@ -130,13 +135,30 @@ function ComparisonResult({
         );
       }
       return (
-        <div className="attachment-diff" data-testid="attachment-diff">
-          <TextDiffView
-            oldText={state.oldText}
-            newText={state.newText}
-            allLines={allLines}
-          />
-        </div>
+        <>
+          <div className="d-flex align-items-center gap-3 mb-2">
+            <div className="form-check form-check-inline m-0">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                id={sideBySideId}
+                checked={sideBySide}
+                onChange={e => setSideBySide(e.currentTarget.checked)}
+              />
+              <label className="form-check-label" htmlFor={sideBySideId}>
+                Side by side
+              </label>
+            </div>
+          </div>
+          <div className="attachment-diff" data-testid="attachment-diff">
+            <TextDiffView
+              oldText={state.oldText}
+              newText={state.newText}
+              sideBySide={sideBySide}
+              allLines={allLines}
+            />
+          </div>
+        </>
       );
   }
 }

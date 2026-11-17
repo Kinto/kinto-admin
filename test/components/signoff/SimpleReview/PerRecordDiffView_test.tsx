@@ -5,7 +5,13 @@ import PerRecordDiffView, {
 } from "@src/components/signoff/SimpleReview/PerRecordDiffView";
 import { DEFAULT_SERVERINFO } from "@src/constants";
 import * as sessionHooks from "@src/hooks/session";
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 
 function renderSimpleReview(props = null) {
   const mergedProps = {
@@ -132,12 +138,14 @@ describe("PerRecordDiffView attachment diff", () => {
     renderSimpleReview({ oldRecords: [oldRecord], newRecords: [newRecord] });
     fireEvent.click(screen.getByText("Compare attachment contents"));
     await screen.findByText("c");
+    fireEvent.click(screen.getByLabelText("Side by side"));
 
     fireEvent.click(screen.getByText("Compare attachment contents"));
     expect(screen.getByTestId("attachment-diff")).not.toBeVisible();
 
     fireEvent.click(screen.getByText("Compare attachment contents"));
     expect(screen.getByTestId("attachment-diff")).toBeVisible();
+    expect(screen.getByLabelText("Side by side")).toBeChecked();
     expect(fetch).toHaveBeenCalledTimes(2);
   });
 
@@ -150,6 +158,50 @@ describe("PerRecordDiffView attachment diff", () => {
     expect(
       await screen.findByText("No differences in attachment contents.")
     ).toBeInTheDocument();
+  });
+
+  describe("once loaded", () => {
+    // 20 lines with the last one changed, so the first ones get collapsed.
+    const lines = Array.from({ length: 20 }, (_, i) => `line ${i}`);
+    const oldText = lines.join("\n") + "\n";
+    const newText = [...lines.slice(0, 19), "changed"].join("\n") + "\n";
+
+    beforeEach(() => {
+      stubAttachments(oldText, newText);
+    });
+
+    it("can be shown side by side", async () => {
+      renderSimpleReview({ oldRecords: [oldRecord], newRecords: [newRecord] });
+      fireEvent.click(screen.getByText("Compare attachment contents"));
+      await screen.findByText("changed");
+      expect(screen.getAllByText("line 18")).toHaveLength(1);
+
+      fireEvent.click(screen.getByLabelText("Side by side"));
+
+      expect(screen.getAllByText("line 18")).toHaveLength(2);
+      expect(attachmentLines("deletion")).toEqual(["line 19"]);
+      expect(attachmentLines("insertion")).toEqual(["changed"]);
+    });
+
+    it("is shown side by side per record", async () => {
+      const otherOld = { ...oldRecord, id: "other" };
+      const otherNew = { ...newRecord, id: "other" };
+      renderSimpleReview({
+        oldRecords: [oldRecord, otherOld],
+        newRecords: [newRecord, otherNew],
+      });
+      for (const button of screen.getAllByText("Compare attachment contents")) {
+        fireEvent.click(button);
+      }
+      await waitFor(() =>
+        expect(screen.getAllByText("line 18")).toHaveLength(2)
+      );
+
+      fireEvent.click(screen.getAllByLabelText("Side by side")[0]);
+
+      expect(screen.getAllByText("line 18")).toHaveLength(3);
+      expect(screen.getAllByLabelText("Side by side")[1]).not.toBeChecked();
+    });
   });
 
   it("shows the error and links when fetching fails", async () => {
