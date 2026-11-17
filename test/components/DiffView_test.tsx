@@ -168,4 +168,19 @@ describe("TextDiffView", () => {
     expect(addedLines()).toEqual(["c"]);
     expect(screen.getByText("a")).toBeInTheDocument();
   });
+
+  it("shows the old text on one side and the new on the other", () => {
+    render(<TextDiffView oldText={"a\nb\n"} newText={"a\nc\n"} sideBySide />);
+    expect(removedLines()).toEqual(["b"]);
+    expect(addedLines()).toEqual(["c"]);
+    expect(screen.getAllByText("a")).toHaveLength(2);
+  });
+
+  it("highlights changed words on both sides", () => {
+    render(
+      <TextDiffView oldText={"one cat\n"} newText={"one dog\n"} sideBySide />
+    );
+    expect(screen.getByText("cat")).toHaveClass("cm-changedText");
+    expect(screen.getByText("dog")).toHaveClass("cm-changedText");
+  });
 });
