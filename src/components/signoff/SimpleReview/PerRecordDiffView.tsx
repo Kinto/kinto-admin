@@ -1,11 +1,13 @@
 import DiffView from "@src/components/DiffView";
+import AttachmentDiff from "@src/components/signoff/SimpleReview/AttachmentDiff";
 import {
   useShowDiffAllLines,
   useShowDiffExtraFields,
   useUnifiedDiff,
 } from "@src/hooks/preferences";
-import type { RecordData } from "@src/types";
-import { omit, renderDisplayField } from "@src/utils";
+import { useServerInfo } from "@src/hooks/session";
+import type { Capabilities, RecordData } from "@src/types";
+import { canFetchAttachments, omit, renderDisplayField } from "@src/utils";
 import { diffJson as diff, diffArrays } from "diff";
 
 export enum ChangeType {
@@ -31,6 +33,7 @@ export default function PerRecordDiffView({
   const [showExtraFields, setShowExtraFields] = useShowDiffExtraFields();
   const [showAllLines, setShowAllLines] = useShowDiffAllLines();
   const [unifiedDiff, setUnifiedDiff] = useUnifiedDiff(false);
+  const { data: serverInfo } = useServerInfo();
 
   const changes = findChangeTypes(
     oldRecords,
@@ -75,6 +78,7 @@ export default function PerRecordDiffView({
         target={target}
         allLines={showAllLines}
         displayFields={displayFields}
+        capabilities={serverInfo?.capabilities}
       />
     ));
   }
@@ -150,6 +154,7 @@ function Diff({
   target,
   allLines = false,
   displayFields,
+  capabilities,
 }: {
   id: string;
   changeType: ChangeType;
@@ -157,7 +162,13 @@ function Diff({
   target?: RecordData;
   allLines?: boolean;
   displayFields?: string[];
+  capabilities?: Capabilities;
 }) {
+  const attachmentChanged =
+    source?.attachment &&
+    target?.attachment &&
+    source.attachment.hash !== target.attachment.hash;
+
   return (
     <div className="record-diff card mb-4" data-testid="record-diff">
       <div className="card-header">
@@ -167,6 +178,20 @@ function Diff({
       <div className="card-body p-0">
         <DiffView source={source} target={target} allLines={allLines} />
       </div>
+      {attachmentChanged &&
+        capabilities &&
+        canFetchAttachments(capabilities) && (
+          <div className="card-footer">
+            <AttachmentDiff
+              // Start over when the review reloads with different attachments.
+              key={`${source.attachment.hash}:${target.attachment.hash}`}
+              source={source}
+              target={target}
+              capabilities={capabilities}
+              allLines={allLines}
+            />
+          </div>
+        )}
     </div>
   );
 }
