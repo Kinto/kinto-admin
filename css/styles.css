@@ -406,6 +406,11 @@ nav.breadcrumbs {
   color: #fff;
 }
 
+.attachment-diff {
+  max-height: 40em;
+  overflow: auto;
+}
+
 .card-header > .icon,
 .list-group-item .icon,
 .nav-tabs li .icon {

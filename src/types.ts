@@ -61,6 +61,9 @@ export interface OpenIDProvider {
 }
 
 export interface Capabilities {
+  admin?: {
+    csp_connect_src?: string[];
+  };
   attachments?: any;
   openid?: {
     providers: OpenIDProvider[];

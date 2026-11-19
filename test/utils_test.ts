@@ -1,6 +1,7 @@
 import { ANONYMOUS_AUTH, DEFAULT_KINTO_SERVER } from "@src/constants";
 import {
   buildAttachmentUrl,
+  canFetchAttachments,
   capitalize,
   cleanRecord,
   getServerByPriority,
@@ -245,6 +246,47 @@ describe("buildAttachmentUrl", () => {
         { attachments: { base_url: "http://cdn/" } }
       )
     ).toBe("http://cdn/file");
+  });
+});
+
+describe("canFetchAttachments", () => {
+  const cdn = { attachments: { base_url: "https://cdn.example.com/files/" } };
+
+  it("is false without the attachments capability", () => {
+    expect(canFetchAttachments({})).toBe(false);
+  });
+
+  it("is false when the attachments origin isn't allowed", () => {
+    expect(canFetchAttachments(cdn)).toBe(false);
+    expect(
+      canFetchAttachments({
+        ...cdn,
+        admin: { csp_connect_src: ["https://other.example.com"] },
+      })
+    ).toBe(false);
+  });
+
+  it("is true when the attachments origin is listed", () => {
+    expect(
+      canFetchAttachments({
+        ...cdn,
+        admin: { csp_connect_src: ["https://cdn.example.com"] },
+      })
+    ).toBe(true);
+    expect(
+      canFetchAttachments({
+        ...cdn,
+        admin: { csp_connect_src: ["https://cdn.example.com/"] },
+      })
+    ).toBe(true);
+  });
+
+  it("is true when attachments are on the admin's own origin", () => {
+    expect(
+      canFetchAttachments({
+        attachments: { base_url: `${window.location.origin}/attachments/` },
+      })
+    ).toBe(true);
   });
 });
 

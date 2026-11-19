@@ -1,4 +1,4 @@
-import DiffView from "@src/components/DiffView";
+import DiffView, { TextDiffView } from "@src/components/DiffView";
 import { render, screen } from "@testing-library/react";
 
 function addedLines() {
@@ -158,5 +158,29 @@ describe("DiffView", () => {
     rerender(<DiffView source={{ title: "a" }} target={{ title: "b" }} />);
     expect(removedLines()).toEqual(['"title": "a"']);
     expect(addedLines()).toEqual(['"title": "b"']);
+  });
+});
+
+describe("TextDiffView", () => {
+  it("diffs text line by line, keeping blank lines", () => {
+    render(<TextDiffView oldText={"a\n\nb\n"} newText={"a\n\nc\n"} />);
+    expect(removedLines()).toEqual(["b"]);
+    expect(addedLines()).toEqual(["c"]);
+    expect(screen.getByText("a")).toBeInTheDocument();
+  });
+
+  it("shows the old text on one side and the new on the other", () => {
+    render(<TextDiffView oldText={"a\nb\n"} newText={"a\nc\n"} sideBySide />);
+    expect(removedLines()).toEqual(["b"]);
+    expect(addedLines()).toEqual(["c"]);
+    expect(screen.getAllByText("a")).toHaveLength(2);
+  });
+
+  it("highlights changed words on both sides", () => {
+    render(
+      <TextDiffView oldText={"one cat\n"} newText={"one dog\n"} sideBySide />
+    );
+    expect(screen.getByText("cat")).toHaveClass("cm-changedText");
+    expect(screen.getByText("dog")).toHaveClass("cm-changedText");
   });
 });

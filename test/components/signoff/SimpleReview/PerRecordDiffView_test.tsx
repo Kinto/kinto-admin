@@ -3,7 +3,15 @@ import PerRecordDiffView, {
   findChangeTypes,
   formatDiffHeader,
 } from "@src/components/signoff/SimpleReview/PerRecordDiffView";
-import { render, screen } from "@testing-library/react";
+import { DEFAULT_SERVERINFO } from "@src/constants";
+import * as sessionHooks from "@src/hooks/session";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 
 function renderSimpleReview(props = null) {
   const mergedProps = {
@@ -38,6 +46,214 @@ describe("PerRecordDiffView component", () => {
     });
     expect(screen.queryAllByTestId("record-diff")).toHaveLength(0);
     expect(screen.getByText("No differences found.")).toBeInTheDocument();
+  });
+});
+
+describe("PerRecordDiffView attachment diff", () => {
+  function attachment(location, hash, filename = "list.txt", size = 100) {
+    return { location, hash, filename, size, mimetype: "text/plain" };
+  }
+
+  const oldRecord = { id: "foo", attachment: attachment("old.txt", "aaa") };
+  const newRecord = { id: "foo", attachment: attachment("new.txt", "bbb") };
+
+  function mockCapabilities(admin) {
+    vi.spyOn(sessionHooks, "useServerInfo").mockReturnValue({
+      status: "success",
+      data: {
+        ...DEFAULT_SERVERINFO,
+        capabilities: {
+          admin,
+          attachments: { base_url: "https://cdn.example.com/" },
+        },
+      },
+    });
+  }
+
+  function stubAttachments(oldText: string, newText: string) {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(
+        async url => new Response(url.endsWith("old.txt") ? oldText : newText)
+      )
+    );
+  }
+
+  beforeEach(() => {
+    mockCapabilities({ csp_connect_src: ["https://cdn.example.com"] });
+  });
+
+  function attachmentLines(role: "insertion" | "deletion") {
+    return within(screen.getByTestId("attachment-diff"))
+      .queryAllByRole(role)
+      .map(el => el.textContent.trim());
+  }
+
+  it("is hidden when the CSP doesn't allow the attachments origin", () => {
+    mockCapabilities({});
+    renderSimpleReview({ oldRecords: [oldRecord], newRecords: [newRecord] });
+    expect(screen.getByTestId("record-diff")).toBeInTheDocument();
+    expect(
+      screen.queryByText("Compare attachment contents")
+    ).not.toBeInTheDocument();
+  });
+
+  it("fetches and diffs text attachments on click", async () => {
+    stubAttachments("a\nb\n", "a\nc\n");
+    renderSimpleReview({ oldRecords: [oldRecord], newRecords: [newRecord] });
+    expect(fetch).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByText("Compare attachment contents"));
+
+    await screen.findByText("c");
+    expect(attachmentLines("deletion")).toEqual(["b"]);
+    expect(attachmentLines("insertion")).toEqual(["c"]);
+    expect(fetch).toHaveBeenCalledWith("https://cdn.example.com/old.txt");
+    expect(fetch).toHaveBeenCalledWith("https://cdn.example.com/new.txt");
+  });
+
+  it("starts over when the attachments change", async () => {
+    stubAttachments("a\nb\n", "a\nc\n");
+    const { rerender } = renderSimpleReview({
+      oldRecords: [oldRecord],
+      newRecords: [newRecord],
+    });
+    fireEvent.click(screen.getByText("Compare attachment contents"));
+    await screen.findByText("c");
+
+    const newerRecord = {
+      id: "foo",
+      attachment: attachment("newer.txt", "ccc"),
+    };
+    rerender(
+      <PerRecordDiffView oldRecords={[oldRecord]} newRecords={[newerRecord]} />
+    );
+
+    expect(screen.queryByTestId("attachment-diff")).not.toBeInTheDocument();
+    expect(screen.getByText("Compare attachment contents")).toBeInTheDocument();
+  });
+
+  it("can be closed and opened again without refetching", async () => {
+    stubAttachments("a\nb\n", "a\nc\n");
+    renderSimpleReview({ oldRecords: [oldRecord], newRecords: [newRecord] });
+    fireEvent.click(screen.getByText("Compare attachment contents"));
+    await screen.findByText("c");
+    fireEvent.click(screen.getByLabelText("Side by side"));
+
+    fireEvent.click(screen.getByText("Compare attachment contents"));
+    expect(screen.getByTestId("attachment-diff")).not.toBeVisible();
+
+    fireEvent.click(screen.getByText("Compare attachment contents"));
+    expect(screen.getByTestId("attachment-diff")).toBeVisible();
+    expect(screen.getByLabelText("Side by side")).toBeChecked();
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it("says so when the contents are the same", async () => {
+    stubAttachments("same\n", "same\n");
+    renderSimpleReview({ oldRecords: [oldRecord], newRecords: [newRecord] });
+
+    fireEvent.click(screen.getByText("Compare attachment contents"));
+
+    expect(
+      await screen.findByText("No differences in attachment contents.")
+    ).toBeInTheDocument();
+  });
+
+  describe("once loaded", () => {
+    // 20 lines with the last one changed, so the first ones get collapsed.
+    const lines = Array.from({ length: 20 }, (_, i) => `line ${i}`);
+    const oldText = lines.join("\n") + "\n";
+    const newText = [...lines.slice(0, 19), "changed"].join("\n") + "\n";
+
+    beforeEach(() => {
+      stubAttachments(oldText, newText);
+    });
+
+    it("can be shown side by side", async () => {
+      renderSimpleReview({ oldRecords: [oldRecord], newRecords: [newRecord] });
+      fireEvent.click(screen.getByText("Compare attachment contents"));
+      await screen.findByText("changed");
+      expect(screen.getAllByText("line 18")).toHaveLength(1);
+
+      fireEvent.click(screen.getByLabelText("Side by side"));
+
+      expect(screen.getAllByText("line 18")).toHaveLength(2);
+      expect(attachmentLines("deletion")).toEqual(["line 19"]);
+      expect(attachmentLines("insertion")).toEqual(["changed"]);
+    });
+
+    it("is shown side by side per record", async () => {
+      const otherOld = { ...oldRecord, id: "other" };
+      const otherNew = { ...newRecord, id: "other" };
+      renderSimpleReview({
+        oldRecords: [oldRecord, otherOld],
+        newRecords: [newRecord, otherNew],
+      });
+      for (const button of screen.getAllByText("Compare attachment contents")) {
+        fireEvent.click(button);
+      }
+      await waitFor(() =>
+        expect(screen.getAllByText("line 18")).toHaveLength(2)
+      );
+
+      fireEvent.click(screen.getAllByLabelText("Side by side")[0]);
+
+      expect(screen.getAllByText("line 18")).toHaveLength(3);
+      expect(screen.getAllByLabelText("Side by side")[1]).not.toBeChecked();
+    });
+  });
+
+  it("shows the error and links when fetching fails", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response("", { status: 404 }))
+    );
+    renderSimpleReview({ oldRecords: [oldRecord], newRecords: [newRecord] });
+
+    fireEvent.click(screen.getByText("Compare attachment contents"));
+
+    expect(
+      await screen.findByText(/Could not fetch attachment contents/)
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "old" })).toHaveAttribute(
+      "href",
+      "https://cdn.example.com/old.txt"
+    );
+  });
+
+  it("doesn't offer to compare attachments over 5MB", () => {
+    renderSimpleReview({
+      oldRecords: [oldRecord],
+      newRecords: [
+        {
+          id: "foo",
+          attachment: attachment("new.txt", "bbb", "list.txt", 6e6),
+        },
+      ],
+    });
+
+    expect(screen.getByText(/too large to compare/)).toBeInTheDocument();
+    expect(
+      screen.queryByText("Compare attachment contents")
+    ).not.toBeInTheDocument();
+  });
+
+  it("shows links for non-text attachments", () => {
+    renderSimpleReview({
+      oldRecords: [
+        { id: "foo", attachment: attachment("old.bin", "aaa", "data.bin") },
+      ],
+      newRecords: [
+        { id: "foo", attachment: attachment("new.bin", "bbb", "data.bin") },
+      ],
+    });
+
+    expect(screen.getByText(/can't be compared/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "new" })).toHaveAttribute(
+      "href",
+      "https://cdn.example.com/new.bin"
+    );
   });
 });
 

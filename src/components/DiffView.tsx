@@ -1,7 +1,7 @@
-import { unifiedMergeView } from "@codemirror/merge";
-import CodeMirror, { EditorState, EditorView } from "@uiw/react-codemirror";
+import { MergeView, unifiedMergeView } from "@codemirror/merge";
+import { EditorState, EditorView } from "@uiw/react-codemirror";
 import { canonicalize } from "diff";
-import { useMemo } from "react";
+import { useEffect, useRef } from "react";
 
 // Sort keys so that key order doesn't show up as a change. A missing value
 // (added or removed record) diffs against "". The trailing newline keeps that
@@ -33,6 +33,13 @@ const diffTheme = EditorView.theme({
     "&::before": { content: '"+ "' },
   },
   "&.cm-merge-b .cm-changedText": { background: "#9ddb9d" },
+  "&.cm-merge-a .cm-changedText": { background: "#e3a3a3" },
+  // side by side: the old pane marks its changed lines as deleted
+  "&.cm-merge-a .cm-line.cm-changedLine": {
+    background: "#f0c9c9",
+    color: "red",
+    "&::before": { content: '"- "' },
+  },
   // deleted lines
   ".cm-deletedChunk": {
     background: "#f0c9c9",
@@ -48,6 +55,10 @@ const diffTheme = EditorView.theme({
   },
 });
 
+// The default scanLimit gives up on precise diffs for anything over ~8KB,
+// which turns whole-collection diffs into one big block.
+const diffConfig = { timeout: 1000 };
+
 export default function DiffView({
   source,
   target,
@@ -57,36 +68,63 @@ export default function DiffView({
   target?: unknown;
   allLines?: boolean;
 }) {
-  const oldText = stringifyForDiff(source);
-  const newText = stringifyForDiff(target);
+  return (
+    <TextDiffView
+      oldText={stringifyForDiff(source)}
+      newText={stringifyForDiff(target)}
+      allLines={allLines}
+    />
+  );
+}
 
-  const extensions = useMemo(
-    () => [
-      unifiedMergeView({
-        original: oldText,
-        mergeControls: false,
-        highlightChanges: oldText !== "" && newText !== "",
-        gutter: false,
-        // The default scanLimit gives up on precise diffs for anything over
-        // ~8KB, which turns whole-collection diffs into one big block.
-        diffConfig: { timeout: 1000 },
-        collapseUnchanged: allLines ? undefined : {},
-      }),
+export function TextDiffView({
+  oldText,
+  newText,
+  sideBySide = false,
+  allLines = false,
+}: {
+  oldText: string;
+  newText: string;
+  sideBySide?: boolean;
+  allLines?: boolean;
+}) {
+  const parent = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const extensions = [
+      EditorState.readOnly.of(true),
+      EditorView.editable.of(false),
       diffTheme,
       EditorView.lineWrapping,
       EditorState.phrases.of({ "$ unchanged lines": "..." }),
-    ],
-    [oldText, newText, allLines]
-  );
+    ];
+    const options = {
+      highlightChanges: oldText !== "" && newText !== "",
+      gutter: false,
+      diffConfig,
+      collapseUnchanged: allLines ? undefined : {},
+    };
+    const view = sideBySide
+      ? new MergeView({
+          a: { doc: oldText, extensions },
+          b: { doc: newText, extensions },
+          parent: parent.current,
+          ...options,
+        })
+      : new EditorView({
+          doc: newText,
+          extensions: [
+            unifiedMergeView({
+              original: oldText,
+              mergeControls: false,
+              ...options,
+            }),
+            ...extensions,
+          ],
+          parent: parent.current,
+        });
+    return () => view.destroy();
+  }, [oldText, newText, sideBySide, allLines]);
 
-  return (
-    <CodeMirror
-      key={oldText}
-      value={newText}
-      editable={false}
-      readOnly
-      basicSetup={false}
-      extensions={extensions}
-    />
-  );
+  return <div ref={parent} />;
 }
